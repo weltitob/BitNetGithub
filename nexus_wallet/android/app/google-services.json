@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "204856789338",
+    "project_id": "nexus-4c28d",
+    "storage_bucket": "nexus-4c28d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204856789338:android:845e62f5f0702b5ad18b63",
+        "android_client_info": {
+          "package_name": "com.example.nexus_wallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "204856789338-nuh466nimfs62kc7tv97913fq2i5615g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTP2WJGTOh_A0lvWLRrwYK3_cCzcFucSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "204856789338-nuh466nimfs62kc7tv97913fq2i5615g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "204856789338-qalff5o1p7thagj35jdgh3na59re3uof.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.nexus"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
