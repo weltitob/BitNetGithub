@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.nexus_wallet">
    <application
-        android:label="nexus_wallet"
+        android:label="NexusWallet"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
