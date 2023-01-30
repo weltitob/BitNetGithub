@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:google_fonts/google_fonts.dart';
 
 /// Darken a color by [percent] amount (100 = black)
 Color darken(Color c, [int percent = 10]) {

@@ -14,7 +14,8 @@ class BitcoinScreen extends StatefulWidget {
   _BitcoinScreenState createState() => _BitcoinScreenState();
 }
 
-class _BitcoinScreenState extends State<BitcoinScreen> {
+class _BitcoinScreenState extends State<BitcoinScreen>
+  with TickerProviderStateMixin {
   final _controller = PageController(viewportFraction: 0.9);
   bool _state = true;
   bool _alarm = false;
