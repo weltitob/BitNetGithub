@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/pages/auth/loginscreen.dart';
 import 'package:nexus_wallet/pages/auth/registerscreen.dart';
+import 'package:nexus_wallet/pages/auth/resetpasswordscreen.dart';
 
 
 class AuthTree extends StatefulWidget {
@@ -11,8 +12,8 @@ class AuthTree extends StatefulWidget {
 }
 
 class _AuthTreeState extends State<AuthTree> {
-  GlobalKey<_AuthTreeState> _myKey = GlobalKey();
   bool showSignIn = true;
+  bool resetpassword = false;
 
   void toggleView() {
     setState(() {
@@ -24,13 +25,28 @@ class _AuthTreeState extends State<AuthTree> {
     });
   }
 
+  void toggleresetpassword(){
+    setState(() {
+      if(resetpassword == true)
+        resetpassword = false;
+      else {
+        resetpassword = true;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (showSignIn) {
-      return LoginScreen(toggleView: toggleView);
+    if (resetpassword) {
+      return ResetPasswordScreen(toggleView: toggleView, toggleResetPassword: toggleresetpassword,);
     }
     else {
-      return RegisterScreen(toggleView: toggleView,);
+      if (showSignIn) {
+        return LoginScreen(toggleView: toggleView, toggleResetPassword: toggleresetpassword,);
+      }
+      else {
+        return RegisterScreen(toggleView: toggleView,);
+      }
     }
   }
 }

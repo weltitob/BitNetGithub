@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nexus_wallet/actions/amountscreen.dart';
-import 'package:nexus_wallet/actions/receivescreen.dart';
-import 'package:nexus_wallet/actions/sendscreen.dart';
+import 'package:nexus_wallet/pages/actions/receivescreen.dart';
+import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/components/balancecard.dart';
 import 'package:nexus_wallet/components/cryptoitem.dart';
 import 'package:nexus_wallet/theme.dart';
@@ -175,7 +174,10 @@ class BackgroundGradientOrange extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment(0.9, -0.2),
-            colors: [Color(0x00FFFFFF), Color(0x4DFFFFFF),],
+            colors: [
+              AppTheme.colorPrimaryGradient,
+              AppTheme.colorBitcoin
+              ,],
           ),
         ),
       ),
@@ -193,8 +195,10 @@ class BackgroundGradientOrange extends StatelessWidget {
           end: Alignment.bottomRight,
           stops: [0, 0.25, 0.75, 1],
           colors: [
-            Color(0x99FFFFFF), Color(0x00FFFFFF),
-            Color(0x00FFFFFF), Color(0x99FFFFFF),
+            AppTheme.colorPrimaryGradient,
+            AppTheme.colorBitcoin,
+            AppTheme.colorPrimaryGradient,
+            AppTheme.colorBitcoin,
           ],
         ),
       ),

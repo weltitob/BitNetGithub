@@ -1,24 +1,23 @@
-import 'dart:ffi' as ffi;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/authtree.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
-import 'package:nexus_wallet/pages/auth/registerscreen.dart';
-import 'package:provider/provider.dart';
 import '../../theme.dart';
 import 'dart:math';
 
 Random random = new Random();
 
+// ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
   Function() toggleView;
+  Function() toggleResetPassword;
 
   LoginScreen({
     required this.toggleView,
+    required this.toggleResetPassword,
   });
 
   @override
@@ -30,15 +29,11 @@ class LoginScreen extends StatefulWidget {
 class _SignupScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   String? lottiefile = '';
-  String? errorMessage = '';
+  String? errorMessage = null;
   String? email = '';
   String? password = '';
 
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
-
-  Widget _errorMessage() {
-    return Text(errorMessage == '' ? '' : 'Humm ? $errorMessage');
-  }
 
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
@@ -73,6 +68,7 @@ class _SignupScreenState extends State<LoginScreen>
   Future<void> signInWithEmailAndPassword() async {
     setState(() {
       _isLoading = true;
+      errorMessage = null;
     });
     try {
       await Auth().signInWithEmailAndPassword(
@@ -81,8 +77,8 @@ class _SignupScreenState extends State<LoginScreen>
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message;
-        print(errorMessage);
+        errorMessage = 'Hmm. Hier stimmt etwas nicht!';
+        print(e.message);
       });
     }
     setState(() {
@@ -92,8 +88,6 @@ class _SignupScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -133,7 +127,7 @@ class _SignupScreenState extends State<LoginScreen>
                       "Willkommen zurück!",
                       style: Theme.of(context)
                           .textTheme
-                          .headline1!
+                          .displayLarge!
                           .copyWith(color: AppTheme.white90),
                     ),
                   ),
@@ -144,7 +138,7 @@ class _SignupScreenState extends State<LoginScreen>
                         "Gestiftet von der Bundesregierung",
                         style: Theme.of(context)
                             .textTheme
-                            .caption!
+                            .bodySmall!
                             .copyWith(color: AppTheme.white70),
                       ),
                       Container(
@@ -201,14 +195,43 @@ class _SignupScreenState extends State<LoginScreen>
                         title: 'Anmelden',
                         onTap: () {
                           print('Sign up pressed');
-                          _form.currentState?.validate();
-                          signInWithEmailAndPassword();
+                          if (_form.currentState!.validate()) {
+                            signInWithEmailAndPassword();
+                          }
                         },
                         state:
                             _isLoading ? ButtonState.loading : ButtonState.idle,
                       ),
+                      errorMessage == null
+                          ? Container()
+                          : Padding(
+                            padding: const EdgeInsets.only(top: AppTheme.cardPadding),
+                            child: Text(
+                                errorMessage!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(color: AppTheme.errorColor),
+                              ),
+                          ),
+                      SizedBox(height: AppTheme.cardPadding,),
+                      GestureDetector(
+                        onTap: () {
+                          //sollte resetpasswordscreen switchen
+                          print('switch to reset password in authtree');
+                          widget.toggleResetPassword();
+                        },
+                        child: Text(
+                          'Passwort vergessen',
+                          style: GoogleFonts.manrope(
+                            color: AppTheme.colorBitcoin,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
                       Container(
-                        margin: EdgeInsets.only(top: 35),
+                        margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
                         child: Text(
                           "Du hast noch kein Konto?",
                           style: GoogleFonts.manrope(

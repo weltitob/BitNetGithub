@@ -96,8 +96,8 @@ class AppTheme {
     hintText: hintText,
     contentPadding: const EdgeInsets.all(0.25),
     border: InputBorder.none,
-    hintStyle: Theme.of(context).textTheme.bodyText1!.copyWith(
-      color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.4),
+    hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+      color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.4),
     ),
   );
 
@@ -111,67 +111,67 @@ class AppTheme {
   );
 
   static final textTheme = TextTheme(
-    headline1: GoogleFonts.inter(
+    displayLarge: GoogleFonts.inter(
       fontSize: 45,
       fontWeight: FontWeight.bold,
       letterSpacing: -1.5,
     ),
-    headline2: GoogleFonts.inter(
+    displayMedium: GoogleFonts.inter(
         fontSize: 34,
         fontWeight: FontWeight.bold,
         letterSpacing: -0.5
     ),
-    headline3: GoogleFonts.inter(
+    displaySmall: GoogleFonts.inter(
       fontSize: 28,
       fontWeight: FontWeight.bold,
       letterSpacing: 0.0,
     ),
-    headline4: GoogleFonts.inter(
+    headlineMedium: GoogleFonts.inter(
       fontSize: 22,
       fontWeight: FontWeight.bold,
       letterSpacing: 0.25,
     ),
-    headline5: GoogleFonts.inter(
+    headlineSmall: GoogleFonts.inter(
       fontSize: 20,
       fontWeight: FontWeight.bold,
       letterSpacing: 0.15,
     ),
-    headline6: GoogleFonts.inter(
+    titleLarge: GoogleFonts.inter(
       fontSize: 17,
       fontWeight: FontWeight.bold,
       letterSpacing: 0.15,
     ),
-    subtitle1: GoogleFonts.inter(
+    titleMedium: GoogleFonts.inter(
       fontSize: 17,
       fontWeight: FontWeight.w600,
       letterSpacing: 0.0,
     ),
-    subtitle2: GoogleFonts.inter(
+    titleSmall: GoogleFonts.inter(
       fontSize: 15,
       fontWeight: FontWeight.w600,
       letterSpacing: 0.0,
     ),
-    bodyText1: GoogleFonts.inter(
+    bodyLarge: GoogleFonts.inter(
       fontSize: 17,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.15,
     ),
-    bodyText2: const TextStyle(
+    bodyMedium: const TextStyle(
       fontSize: 15,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.15,
     ),
-    caption: const TextStyle(
+    bodySmall: const TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.25,
     ),
-    button: const TextStyle(
+    labelLarge: const TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.bold,
       letterSpacing: 0.25,
     ),
-    overline: GoogleFonts.inter(
+    labelSmall: GoogleFonts.inter(
       fontSize: 10,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.25,
@@ -179,43 +179,43 @@ class AppTheme {
   );
 
   static final textThemeDarkMode = textTheme.copyWith(
-    headline1: textTheme.headline1!.copyWith(
+    displayLarge: textTheme.displayLarge!.copyWith(
       color: AppTheme.white90,
     ),
-    headline2: textTheme.headline2!.copyWith(
+    displayMedium: textTheme.displayMedium!.copyWith(
       color: AppTheme.white90,
     ),
-    headline3: textTheme.headline3!.copyWith(
+    displaySmall: textTheme.displaySmall!.copyWith(
       color: AppTheme.white90,
     ),
-    headline4: textTheme.headline4!.copyWith(
+    headlineMedium: textTheme.headlineMedium!.copyWith(
       color: AppTheme.white90,
     ),
-    headline5: textTheme.headline5!.copyWith(
+    headlineSmall: textTheme.headlineSmall!.copyWith(
       color: AppTheme.white90,
     ),
-    headline6: textTheme.headline6!.copyWith(
+    titleLarge: textTheme.titleLarge!.copyWith(
       color: AppTheme.white90,
     ),
-    subtitle1: textTheme.subtitle1!.copyWith(
+    titleMedium: textTheme.titleMedium!.copyWith(
       color: AppTheme.white70,
     ),
-    subtitle2: textTheme.subtitle2!.copyWith(
+    titleSmall: textTheme.titleSmall!.copyWith(
       color: AppTheme.white70,
     ),
-    bodyText1: textTheme.bodyText1!.copyWith(
+    bodyLarge: textTheme.bodyLarge!.copyWith(
       color: AppTheme.white60,
     ),
-    bodyText2: textTheme.bodyText2!.copyWith(
+    bodyMedium: textTheme.bodyMedium!.copyWith(
       color: AppTheme.white60,
     ),
-    caption: textTheme.caption!.copyWith(
+    bodySmall: textTheme.bodySmall!.copyWith(
       color: AppTheme.white60,
     ),
-    overline: textTheme.overline!.copyWith(
+    labelSmall: textTheme.labelSmall!.copyWith(
       color: AppTheme.white60,
     ),
-    button: textTheme.button!.copyWith(
+    labelLarge: textTheme.labelLarge!.copyWith(
       color: AppTheme.white90,
     ),
   );
