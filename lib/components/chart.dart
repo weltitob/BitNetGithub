@@ -280,7 +280,7 @@ class _buildChartState extends State<buildChart> {
                 child: Container(
                   color: AppTheme.colorBackground,
                   height: AppTheme.cardPadding * 15,
-                  child: avatarGlow(context, Icons.currency_bitcoin, "loading"),
+                  child: avatarGlow(context, Icons.currency_bitcoin,),
                 ),
               )
                   : SizedBox(

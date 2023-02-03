@@ -5,7 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:nexus_wallet/theme.dart';
 
-Widget avatarGlow(BuildContext context, IconData icon, String text) {
+Widget avatarGlow(BuildContext context, IconData icon) {
   return Center(
     child: AvatarGlow(
       glowColor: darken(Colors.orange, 80),

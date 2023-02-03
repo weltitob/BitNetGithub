@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nexus_wallet/loaders.dart';
 import 'package:nexus_wallet/pages/actions/receivescreen.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/components/balancecard.dart';
@@ -16,16 +17,33 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late final Future<LottieComposition> _composition;
+  bool _loadinglottiefiles = true;
+
+  // Future<LottieComposition> _loadComposition() async {
+  //   var assetData = await rootBundle.load('assets/LottieLogo1.json');
+  //   return await LottieComposition.(assetData);
+  // }
+
+
   final PageController _controller = PageController();
   Future<void> _handleRefresh() async {
     return await Future.delayed(const Duration(seconds: 2));
   }
 
   @override
+  void initState() {
+    super.initState();
+    // _composition = _loadComposition();
+    _loadinglottiefiles = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: LiquidPullToRefresh(
+      body: _loadinglottiefiles ? avatarGlow(context, Icons.currency_bitcoin_rounded) :
+      LiquidPullToRefresh(
       color: lighten(AppTheme.colorBackground, 10),
       showChildOpacityTransition: false,
       height: 200,
@@ -135,6 +153,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 120,
                 child: LottieBuilder.network(
                   lottieNetworkFile,
+                  onLoaded: (composition){
+                    setState(() {
+                      print('loaded lottiefile');
+                      _loadinglottiefiles = false;
+                    });
+                  },
                   repeat: true,
                 ),
               ),
@@ -146,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const SizedBox(width: AppTheme.cardPadding,),
                   Text(text,
-                    style: Theme.of(context).textTheme.subtitle2!
+                    style: Theme.of(context).textTheme.titleSmall!
                         .copyWith(fontWeight: FontWeight.w700, color: AppTheme.white90),),
                   const SizedBox(width: AppTheme.elementSpacing,),
                   const Icon(Icons.arrow_forward_rounded,
@@ -195,10 +219,10 @@ class BackgroundGradientOrange extends StatelessWidget {
           end: Alignment.bottomRight,
           stops: [0, 0.25, 0.75, 1],
           colors: [
+            Color(0x99FFFFFF),
             AppTheme.colorPrimaryGradient,
             AppTheme.colorBitcoin,
-            AppTheme.colorPrimaryGradient,
-            AppTheme.colorBitcoin,
+            Color(0x99FFFFFF),
           ],
         ),
       ),
