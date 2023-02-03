@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/components/currencypicture.dart';
-import 'package:nexus_wallet/pages/bitcoinscreen.dart';
+import 'package:nexus_wallet/pages/secondpages/bitcoinscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';

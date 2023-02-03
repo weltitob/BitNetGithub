@@ -62,6 +62,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
       await Auth().sendPasswordResetEmail(
         email: _controllerEmail.text,
       );
+      print('Passwort rücksetzen angefragt');
       //success iwas anzeigen
 
     } on FirebaseAuthException catch (e) {
@@ -132,6 +133,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                           .copyWith(color: AppTheme.white90),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
+                    child: Text(
+                      "Wir senden dir einen Link per E-Mail!",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: AppTheme.white70),
+                    ),
+                  ),
                   SizedBox(
                     height: AppTheme.cardPadding,
                   ),
@@ -156,7 +167,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                       LongButtonWidget(
                         title: 'Anfrage senden',
                         onTap: () {
-                          print('Passwort rücksetzen angefragt');
                           if (_form.currentState!.validate()) {
                             //passwortz zurücksetzen email versenden
                             resetPassword();

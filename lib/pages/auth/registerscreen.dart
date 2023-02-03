@@ -91,15 +91,15 @@ class _RegisterScreenState extends State<RegisterScreen>
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "Gestiftet von der Bundesregierung",
+                        "Sichere deine Zukunft, mit NexusWallet!",
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall!
                             .copyWith(color: AppTheme.white70),
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: 8),
-                        height: 40,
+                        margin: EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                        height: AppTheme.cardPadding * 1.5,
                         child: Image.asset("assets/images/logotransparent.png"),
                       ),
                     ],

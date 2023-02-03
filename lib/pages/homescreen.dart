@@ -25,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
   //   return await LottieComposition.(assetData);
   // }
 
+  //die 3 lottiefiles downloaden und anzeigen direkt gespeichert?
+
 
   final PageController _controller = PageController();
   Future<void> _handleRefresh() async {

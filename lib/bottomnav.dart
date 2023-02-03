@@ -19,7 +19,7 @@ class _BottomNavState extends State<BottomNav> {
     final screens = [
       const HomeScreen(),
       const QRScreen(),
-      const SettingsScreen(),
+      SettingsScreen(),
       //BitcoinScreen(),
     ];
 
