@@ -128,7 +128,7 @@ class _SignupScreenState extends State<LoginScreen>
             Container(
               height: double.infinity,
               width: double.infinity,
-              color: Colors.black.withOpacity(0.25),
+              color: Colors.black.withOpacity(0.35),
             ),
             Form(
               key: _form,
@@ -152,7 +152,7 @@ class _SignupScreenState extends State<LoginScreen>
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "Sichere deine Zukunft, mit NexusWallet!",
+                        "Wir haben deine Bitcoin sicher aufbewahrt!",
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall!

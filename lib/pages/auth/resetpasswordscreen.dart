@@ -136,7 +136,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                   Padding(
                     padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
                     child: Text(
-                      "Wir senden dir einen Link per E-Mail!",
+                      "Keine Panik! Wir senden dir einen Link per E-Mail.",
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall!
