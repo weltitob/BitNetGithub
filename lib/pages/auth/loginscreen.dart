@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
@@ -28,7 +31,7 @@ class LoginScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-  String? lottiefile = '';
+  late final Future<LottieComposition> _composition;
   String? errorMessage = null;
   String? email = '';
   String? password = '';
@@ -41,23 +44,28 @@ class _SignupScreenState extends State<LoginScreen>
   bool _visible = false;
   bool _isLoading = false;
 
-  void chooseLottieFile() async {
-    int randomNumber = random.nextInt(lottiebackgrounds.length);
-    lottiefile = lottiebackgrounds[randomNumber];
-    await lottiefile; //that picture is already loaded can also use timedelay
-    setState(() {
-      _visible = !_visible;
-    });
-  }
-
-  List<String> lottiebackgrounds = [
-    "https://assets8.lottiefiles.com/packages/lf20_flhqgevg.json", //astronaut
-  ];
-
   @override
   void initState() {
     super.initState();
-    chooseLottieFile();
+    _composition = _loadComposition();
+    updatevisibility();
+  }
+
+  void updatevisibility() async {
+    await _composition;
+    var timer = Timer(Duration(seconds: 1),
+        () {
+          setState(() {
+            _visible = true;
+          });
+        }
+    );
+  }
+
+  Future<LottieComposition> _loadComposition() async {
+    var assetData = await rootBundle.load('assets/lottiefiles/background.json');
+    dynamic mycomposition = await LottieComposition.fromByteData(assetData);
+    return mycomposition;
   }
 
   @override
@@ -95,23 +103,32 @@ class _SignupScreenState extends State<LoginScreen>
             Container(
               height: double.infinity,
               width: double.infinity,
-              child: lottiefile == ''
-                  ? Container()
-                  : FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: AnimatedOpacity(
-                        opacity: _visible ? 1.0 : 0.0,
-                        duration: Duration(milliseconds: 7000),
-                        //lottieflie wird wahrscheinlich erst fertig geladen wenn animation schon angefangen
-                        //hat daher geht es auf falsches lottiefile und funktioniert nicht
-                        child: LottieBuilder.network(lottiefile!),
-                      ),
+              color: Colors.black,
+              child: FutureBuilder(
+                      future: _composition,
+                      builder: (context, snapshot) {
+                        var composition = snapshot.data;
+                        if (composition != null) {
+                          return FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: AnimatedOpacity(
+                              opacity: _visible ? 1.0 : 0.0,
+                              duration: Duration(milliseconds: 3000),
+                              child: Lottie(composition: composition),
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            color: Colors.black,
+                          );
+                        }
+                      },
                     ),
             ),
             Container(
               height: double.infinity,
               width: double.infinity,
-              color: Colors.black.withOpacity(0.80),
+              color: Colors.black.withOpacity(0.25),
             ),
             Form(
               key: _form,
@@ -142,7 +159,8 @@ class _SignupScreenState extends State<LoginScreen>
                             .copyWith(color: AppTheme.white70),
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                        margin:
+                            EdgeInsets.only(left: AppTheme.elementSpacing / 2),
                         height: AppTheme.cardPadding * 1.5,
                         child: Image.asset("assets/images/logotransparent.png"),
                       ),
@@ -205,16 +223,19 @@ class _SignupScreenState extends State<LoginScreen>
                       errorMessage == null
                           ? Container()
                           : Padding(
-                            padding: const EdgeInsets.only(top: AppTheme.cardPadding),
-                            child: Text(
+                              padding: const EdgeInsets.only(
+                                  top: AppTheme.cardPadding),
+                              child: Text(
                                 errorMessage!,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall!
                                     .copyWith(color: AppTheme.errorColor),
                               ),
-                          ),
-                      SizedBox(height: AppTheme.cardPadding,),
+                            ),
+                      SizedBox(
+                        height: AppTheme.cardPadding,
+                      ),
                       GestureDetector(
                         onTap: () {
                           //sollte resetpasswordscreen switchen
@@ -231,7 +252,8 @@ class _SignupScreenState extends State<LoginScreen>
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
+                        margin:
+                            EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
                         child: Text(
                           "Du hast noch kein Konto?",
                           style: GoogleFonts.manrope(
