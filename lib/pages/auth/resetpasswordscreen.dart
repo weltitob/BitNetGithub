@@ -4,7 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
+import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
+import 'package:nexus_wallet/pages/auth/background.dart';
 import '../../theme.dart';
 import 'dart:math';
 
@@ -64,7 +66,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
       );
       print('Passwort rücksetzen angefragt');
       //success iwas anzeigen
-
+      displaySnackbar(context, "Wir haben Ihnen eine E-Mail gesendet!");
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = 'Bitte geb eine gültige E-Mail Adresse an!';
@@ -87,33 +89,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Stack(
           children: <Widget>[
+            BackgroundAuth(),
             Container(
               height: double.infinity,
               width: double.infinity,
-              child: lottiefile == ''
-                  ? Container()
-                  : FittedBox(
-                fit: BoxFit.fitHeight,
-                child: AnimatedOpacity(
-                  opacity: _visible ? 1.0 : 0.0,
-                  duration: Duration(milliseconds: 7000),
-                  //lottieflie wird wahrscheinlich erst fertig geladen wenn animation schon angefangen
-                  //hat daher geht es auf falsches lottiefile und funktioniert nicht
-                  child: LottieBuilder.network(lottiefile!),
-                ),
-              ),
-            ),
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Colors.black.withOpacity(0.80),
+              color: Colors.black.withOpacity(0.35),
             ),
             Form(
               key: _form,

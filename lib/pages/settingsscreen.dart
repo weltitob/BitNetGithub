@@ -52,13 +52,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           'Einstellungen',
                           style: Theme.of(context).textTheme.headlineMedium,
                         ),
-                        IconButton(icon: const Icon(Icons.logout),
-                            padding: new EdgeInsets.all(0.0),
-                            iconSize: 25.0,
-                            color: Colors.grey,
-                            onPressed: () {
-                              signOut();
-                            }),
                       ],
                     ),
                   ),
@@ -136,7 +129,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: <Widget>[
                     ChildBuildBoxIntern(Icons.email_rounded, "E-Mail Adresse ändern"),
                     MyDivider(),
-                    ChildBuildBoxIntern(Icons.login_rounded, "Abmelden")
+                    GestureDetector(
+                      onTap: (){
+                        signOut();
+                      },
+                        child: ChildBuildBoxIntern(Icons.login_rounded, "Abmelden"))
                   ]),
             )),
       ],

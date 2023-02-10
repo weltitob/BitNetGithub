@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: AppTheme.cardPadding),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Text("Actions", style: Theme.of(context).textTheme.headline6,),
+            child: Text("Aktionen", style: Theme.of(context).textTheme.headline6,),
           ),
           const SizedBox(height: AppTheme.cardPadding),
           Padding(
@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context) =>
                     const SendBTCScreen(),),),
                  child: circButtonWidget(
-                     "Send",
+                     "Senden",
                      "https://assets7.lottiefiles.com/packages/lf20_6q3x8d8e.json",
                      const BackgroundGradientPurple()),),
                 GestureDetector(
@@ -117,12 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const ReceiveScreen(),),),
                   child: circButtonWidget(
-                      "Receive",
+                      "Erhalten",
                       "https://assets10.lottiefiles.com/private_files/lf30_0vn96xcf.json",
                       const BackgroundGradientOrange()),
-                ),
-              ],
-            ),
+                ),],),
           ),
           const SizedBox(height: AppTheme.cardPadding),
           // Padding(

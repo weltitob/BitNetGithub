@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
+import 'package:nexus_wallet/pages/auth/background.dart';
 import '../../theme.dart';
 import 'dart:math';
 
@@ -41,36 +42,12 @@ class _SignupScreenState extends State<LoginScreen>
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
-  bool _visible = false;
   bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _composition = _loadComposition();
-    updatevisibility();
-  }
-
-  void updatevisibility() async {
-    await _composition;
-    var timer = Timer(Duration(seconds: 1),
-        () {
-          setState(() {
-            _visible = true;
-          });
-        }
-    );
-  }
 
   Future<LottieComposition> _loadComposition() async {
     var assetData = await rootBundle.load('assets/lottiefiles/background.json');
     dynamic mycomposition = await LottieComposition.fromByteData(assetData);
     return mycomposition;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   Future<void> signInWithEmailAndPassword() async {
@@ -100,31 +77,7 @@ class _SignupScreenState extends State<LoginScreen>
       child: Scaffold(
         body: Stack(
           children: <Widget>[
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Colors.black,
-              child: FutureBuilder(
-                      future: _composition,
-                      builder: (context, snapshot) {
-                        var composition = snapshot.data;
-                        if (composition != null) {
-                          return FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: AnimatedOpacity(
-                              opacity: _visible ? 1.0 : 0.0,
-                              duration: Duration(milliseconds: 3000),
-                              child: Lottie(composition: composition),
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            color: Colors.black,
-                          );
-                        }
-                      },
-                    ),
-            ),
+            BackgroundAuth(),
             Container(
               height: double.infinity,
               width: double.infinity,

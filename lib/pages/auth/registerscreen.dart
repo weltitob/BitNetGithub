@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
+import 'package:nexus_wallet/pages/auth/background.dart';
 import 'package:nexus_wallet/theme.dart';
 
 // ignore: must_be_immutable
@@ -26,8 +29,6 @@ class _RegisterScreenState extends State<RegisterScreen>
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerPasswordconfirm = TextEditingController();
-
-  bool _visible = false;
   bool _isLoading = false;
 
   Future<void> createUserWithEmailAndPassword() async {
@@ -57,17 +58,11 @@ class _RegisterScreenState extends State<RegisterScreen>
       child: Scaffold(
         body: Stack(
           children: <Widget>[
+            BackgroundAuth(),
             Container(
               height: double.infinity,
               width: double.infinity,
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                    AppTheme.colorBackground,
-                    Color(0xFF522F77),
-                  ])),
+              color: Colors.black.withOpacity(0.35),
             ),
             Form(
               key: _form,

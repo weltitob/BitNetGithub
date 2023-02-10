@@ -1,9 +1,6 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:nexus_wallet/components/balancecard.dart';
 import 'package:nexus_wallet/components/cameraqr.dart';
-import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/components/qrscanner.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
@@ -44,7 +41,7 @@ class _QRScreenState extends State<QRScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: AppTheme.cardPadding * 3,),
+              const SizedBox(height: AppTheme.cardPadding * 2,),
               Text(
                 "My Bitcoinadress",
                 style: Theme
@@ -126,7 +123,7 @@ class _QRScreenState extends State<QRScreen> {
     return Center(
       child: AvatarGlow(
         glowColor: darken(Colors.orange, 20),
-        endRadius: 60.0,
+        endRadius: 70.0,
         duration: const Duration(milliseconds: 2000),
         repeatPauseDuration: const Duration(milliseconds: 200),
         repeat: true,
