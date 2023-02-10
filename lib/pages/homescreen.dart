@@ -1,11 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nexus_wallet/cards/welcomecard.dart';
-import 'package:nexus_wallet/loaders.dart';
 import 'package:nexus_wallet/pages/actions/receivescreen.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/cards/balancecard.dart';

@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:nexus_wallet/components/cameraqr.dart';
-import 'package:nexus_wallet/components/qrscanner.dart';
+import 'package:nexus_wallet/components/roundedbutton.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
@@ -13,134 +16,130 @@ class QRScreen extends StatefulWidget {
 }
 
 class _QRScreenState extends State<QRScreen> {
-
-  GlobalKey globalKeyQR = GlobalKey();
+  @override
+  MobileScannerController cameraController = MobileScannerController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme
-          .of(context)
-          .backgroundColor,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF522F77),
-                  AppTheme.colorBackground,
-                ]
-            )
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
+        children: [
+          MobileScanner(
+              allowDuplicates: false,
+              controller: cameraController,
+              onDetect: (barcode, args) {
+                final String? code = barcode.rawValue;
+                debugPrint('Barcode found! $code');
+              }),
+          QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)),
+          buildButtons(),
+        ],
+      ),
+    );
+  }
+  Widget buildButtons() {
+
+    return Padding(
+      padding: const EdgeInsets.only(
+          top: 80,
+          left: AppTheme.cardPadding,
+          bottom: 40,
+          right: AppTheme.cardPadding),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const SizedBox(height: AppTheme.cardPadding * 2,),
-              Text(
-                "My Bitcoinadress",
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline5,
-              ),
-              const SizedBox(
-                height: AppTheme.cardPadding,
-              ),
-              SizedBox(
-                child: Center(
-                  child: RepaintBoundary(
-                    key: globalKeyQR,
-                    child: Column(
-                      children: [
-                        CustomPaint(
-                          foregroundPainter: BorderPainter(),
-                          child: Container(
-                            margin: const EdgeInsets.all(AppTheme.cardPadding),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: AppTheme.cardRadiusSmall),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: PrettyQr(
-                                image: const AssetImage(
-                                    'assets/images/bitcoin.png'),
-                                typeNumber: 3,
-                                size: 200,
-                                data: 'test',
-                                errorCorrectLevel: QrErrorCorrectLevel.M,
-                                roundEdges: true,
+              Padding(
+                padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
+                child: ClipRRect(
+                  borderRadius: AppTheme.cardRadiusSmall,
+                  child: BackdropFilter(
+                    filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(
+                      width: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: AppTheme.cardRadiusSmall,
+                          color: AppTheme.glassMorphColor),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              child: ValueListenableBuilder(
+                                valueListenable: cameraController.cameraFacingState,
+                                builder: (context, state, child) {
+                                  switch (state as CameraFacing) {
+                                    case CameraFacing.front:
+                                      return const Icon(Icons.camera_front);
+                                    case CameraFacing.back:
+                                      return const Icon(Icons.camera_rear);
+                                  }
+                                },
                               ),
+                              onTap: () => cameraController.switchCamera(),
                             ),
-                          ),
+                            const SizedBox(
+                              height: AppTheme.cardPadding * 0.75,
+                            ),
+                            GestureDetector(
+                              child: ValueListenableBuilder(
+                                valueListenable: cameraController.torchState,
+                                builder: (context, state, child) {
+                                  switch (state as TorchState) {
+                                    case TorchState.off:
+                                      return Icon(Icons.flash_off, color: AppTheme.white90,);
+                                    case TorchState.on:
+                                      return Icon(Icons.flash_on, color: AppTheme.white90,);
+                                  }
+                                },
+                              ),
+                              onTap: () => cameraController.toggleTorch(),
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          height: AppTheme.cardPadding,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: AppTheme.cardPadding * 2,
-              ),
-              Text(
-                "Scan QR-Code",
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline5,
-              ),
-              const SizedBox(
-                height: AppTheme.elementSpacing * 0.75,
-              ),
-              Center(
-                child: GestureDetector(
-                    onTap: () =>
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                            const QRCodeScanner(),
-                          ),
-                        ),
-                    child: avatarGlow(context, Icons.circle, "cam")
-                ),
-              ),
+              )
             ],
           ),
-        ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              RoundedButtonWidget(
+                iconData: Icons.arrow_back_rounded,
+                onTap: () => Navigator.pop(context),
+                isGlassmorph: true,
+              ),
+              const SizedBox(
+                width: AppTheme.cardPadding,
+              ),
+              Container(
+                width: AppTheme.cardPadding * 3.5,
+                height: AppTheme.cardPadding * 3.5,
+                decoration: BoxDecoration(
+                    borderRadius: AppTheme.cardRadiusBigger,
+                    border: Border.all(width: 5, color: AppTheme.white90)),
+              ),
+              const SizedBox(
+                width: AppTheme.cardPadding,
+              ),
+              RoundedButtonWidget(
+                iconData: Icons.text_fields_rounded,
+                onTap: () =>
+                    setState(() {
+                    }),
+                isGlassmorph: true,
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
 
-  Widget avatarGlow(BuildContext context, IconData icon, String text) {
-    return Center(
-      child: AvatarGlow(
-        glowColor: darken(Colors.orange, 20),
-        endRadius: 70.0,
-        duration: const Duration(milliseconds: 2000),
-        repeatPauseDuration: const Duration(milliseconds: 200),
-        repeat: true,
-        showTwoGlows: true,
-        child:
-        CustomPaint(
-          foregroundPainter: BorderPainterSmall(),
-          child: Container(
-            margin: const EdgeInsets.all(AppTheme.elementSpacing),
-            child: Icon(
-              icon,
-              size: AppTheme.cardPadding * 1.5,
-              color: Colors.orange,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
