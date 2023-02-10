@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
@@ -37,7 +36,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
   final TextEditingController _controllerEmail = TextEditingController();
-  final TextEditingController _controllerPassword = TextEditingController();
 
   bool _visible = false;
   bool _isLoading = false;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
+import 'package:nexus_wallet/pages/secondpages/agb.dart';
 import 'package:nexus_wallet/theme.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -14,7 +15,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
   final User? user = Auth().currentUser;
 
   Future<void> signOut() async {
@@ -35,41 +35,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        width: MediaQuery.of(context).size.width,
         color: AppTheme.colorBackground,
         child: SafeArea(
-            child: ListView(
+            child: ListView(children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(
+                top: AppTheme.elementSpacing,),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                ),
+                SizedBox(width: AppTheme.elementSpacing / 2,),
+                Text(
+                  'Einstellungen',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ],
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.only(
+                  left: AppTheme.cardPadding, right: AppTheme.cardPadding),
+              child: Column(
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 15, left: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Einstellungen',
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                      ],
-                    ),
+                  SizedBox(
+                    height: AppTheme.cardPadding,
                   ),
-                  Padding(
-                      padding: const EdgeInsets.only(
-                          left: AppTheme.cardPadding, right: AppTheme.cardPadding),
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(height: AppTheme.cardPadding,),
-                          _userUid(),
-                          SizedBox(height: AppTheme.cardPadding,),
-                          buildBox(),
-                        ],
-                      )
-                  )]
-            )));
+                  _userUid(),
+                  SizedBox(
+                    height: AppTheme.cardPadding,
+                  ),
+                  buildBox(),
+                ],
+              ))
+        ])));
   }
-  Widget buildBox(){
+
+  Widget buildBox() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -79,40 +85,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
             opacity: 0.1,
             radius: AppTheme.cardPadding,
             child: Container(
-              padding: EdgeInsets.only(top: 10,
+              padding: EdgeInsets.only(
+                  top: 10,
                   left: AppTheme.elementSpacing,
                   right: AppTheme.elementSpacing,
                   bottom: 10),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    ChildBuildBoxInternToggleSwich(Icons.nights_stay_outlined, "Darkmode"),
+                    ChildBuildBoxInternToggleSwich(
+                        Icons.nights_stay_outlined, "Darkmode"),
                     MyDivider(),
-                    ChildBuildBoxIntern(Icons.article_outlined, "Geschäftsbedingungen"),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const AGBScreen(),
+                          ),
+                        );
+                      },
+                      child: ChildBuildBoxIntern(
+                          Icons.article_outlined, "Allg. Geschäftsbedingungen"),
+                    )
                   ]),
             )),
-        Padding(padding: EdgeInsets.only(top: AppTheme.cardPadding,)),
+        Padding(
+            padding: EdgeInsets.only(
+          top: AppTheme.cardPadding,
+        )),
         ChildBuildBoxHeader("Contact"),
         Glassmorphism(
             blur: 20,
             opacity: 0.1,
             radius: AppTheme.cardPadding,
             child: Container(
-              padding: EdgeInsets.only(top: 10,
+              padding: EdgeInsets.only(
+                  top: 10,
                   left: AppTheme.elementSpacing,
                   right: AppTheme.elementSpacing,
                   bottom: 10),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    ChildBuildBoxIntern(Icons.bug_report_outlined, "Fehler melden"),
+                    ChildBuildBoxIntern(
+                        Icons.bug_report_outlined, "Fehler melden"),
                     MyDivider(),
-                    ChildBuildBoxIntern(Icons.mail_outline_rounded, "Impressum"),
+                    ChildBuildBoxIntern(
+                        Icons.mail_outline_rounded, "Impressum"),
                     MyDivider(),
                     ChildBuildBoxIntern(Icons.payment_rounded, "Spenden"),
                   ]),
             )),
-        Padding(padding: EdgeInsets.only(top: AppTheme.cardPadding,)),
+        Padding(
+            padding: EdgeInsets.only(
+          top: AppTheme.cardPadding,
+        )),
         ChildBuildBoxHeader("Authentifizierung"),
         Glassmorphism(
             blur: 20,
@@ -127,22 +154,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    ChildBuildBoxIntern(Icons.email_rounded, "E-Mail Adresse ändern"),
+                    ChildBuildBoxIntern(
+                        Icons.email_rounded, "E-Mail Adresse ändern"),
                     MyDivider(),
                     GestureDetector(
-                      onTap: (){
-                        signOut();
-                      },
-                        child: ChildBuildBoxIntern(Icons.login_rounded, "Abmelden"))
+                        onTap: () {
+                          signOut();
+                        },
+                        child: ChildBuildBoxIntern(
+                            Icons.login_rounded, "Abmelden"))
                   ]),
             )),
       ],
     );
   }
 
-  Widget ChildBuildBoxHeader(String header){
+  Widget ChildBuildBoxHeader(String header) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10,),
+      padding: const EdgeInsets.only(
+        bottom: 10,
+      ),
       child: Text(
         header,
         style: TextStyle(
@@ -161,17 +192,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(icon, color: Colors.grey[200], size: 24,),
-            Padding(padding: EdgeInsets.only(left: 10,)),
+            Icon(
+              icon,
+              color: Colors.grey[200],
+              size: 24,
+            ),
+            Padding(
+                padding: EdgeInsets.only(
+              left: 10,
+            )),
             Container(
-              child: Text(text,
-                  style: Theme.of(context).textTheme.titleSmall),
+              child: Text(text, style: Theme.of(context).textTheme.titleSmall),
             ),
           ],
         ),
         Row(
           children: [
-            Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey[200], size: 20,),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.grey[200],
+              size: 20,
+            ),
           ],
         ),
       ],
@@ -186,11 +227,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Icon(icon, color: Colors.grey[200], size: 24,),
-              Padding(padding: EdgeInsets.only(left: 10,)),
+              Icon(
+                icon,
+                color: Colors.grey[200],
+                size: 24,
+              ),
+              Padding(
+                  padding: EdgeInsets.only(
+                left: 10,
+              )),
               Container(
-                child: Text(text,
-                    style: Theme.of(context).textTheme.titleSmall),
+                child:
+                    Text(text, style: Theme.of(context).textTheme.titleSmall),
               ),
             ],
           ),
@@ -200,21 +248,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
               scale: 0.8,
               child: CupertinoSwitch(
                 value: _lights,
-                onChanged: (bool value) { setState(() { _lights = value; }); },
+                onChanged: (bool value) {
+                  setState(() {
+                    _lights = value;
+                  });
+                },
               ),
             ),
           ),
         ],
       ),
-      onTap: () { setState(() { _lights = !_lights; }); },
+      onTap: () {
+        setState(() {
+          _lights = !_lights;
+        });
+      },
     );
   }
+}
 
-  Widget MyDivider() {
-    return Divider(
-      height: AppTheme.elementSpacing * 1.5,
-      color: Colors.grey,
-    );
-  }
-
+Widget MyDivider() {
+  return Divider(
+    height: AppTheme.elementSpacing * 1.5,
+    color: Colors.grey,
+  );
 }
