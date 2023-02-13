@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/components/currencypicture.dart';
@@ -15,7 +14,6 @@ class Currency {
   final double currentAmount;
   final double profit;
   final List<double> priceHistory;
-  final List<Trade> tradeHistory;
 
   Currency({
     required this.code,
@@ -24,7 +22,6 @@ class Currency {
     required this.priceHistory,
     this.currentAmount = 0.0,
     this.profit = 0.0,
-    this.tradeHistory = const [],
   });
 
   String get usdAmountString =>
@@ -44,32 +41,6 @@ class Currency {
   String get priceChangeString => _toPercent(priceChange);
 }
 
-
-enum TradeDirection {
-  buy,
-  sell,
-}
-
-class Trade {
-  final TradeDirection tradeDirection;
-  final String date;
-  final double amount;
-
-  Trade({
-    required this.tradeDirection,
-    required this.date,
-    required this.amount,
-  });
-
-  String get dateFormatted =>
-      DateFormat('dd MMMM yyyy').format(DateFormat('yyyy-MM-dd').parse(date));
-
-  String get amountString {
-    final amountSign = tradeDirection == TradeDirection.buy ? '+' : '-';
-
-    return '$amountSign${NumberFormat('#,###.####').format(amount)}';
-  }
-}
 
 class MockFavorites {
   static final data = [
@@ -102,23 +73,6 @@ class MockFavorites {
         40000.52730,
         22203.53318,
         200.53318,
-      ],
-      tradeHistory: [
-        Trade(
-          tradeDirection: TradeDirection.sell,
-          date: '2022-05-22',
-          amount: 850,
-        ),
-        Trade(
-          tradeDirection: TradeDirection.buy,
-          date: '2022-04-19',
-          amount: 350,
-        ),
-        Trade(
-          tradeDirection: TradeDirection.buy,
-          date: '2022-04-14',
-          amount: 500,
-        ),
       ],
     ),
   ];
@@ -172,11 +126,11 @@ class _CryptoItemState extends State<CryptoItem> {
       children: [
         Text(
           widget.currency.code,
-          style: Theme.of(widget.context).textTheme.subtitle2,
+          style: Theme.of(widget.context).textTheme.titleSmall,
         ),
         Text(
           widget.currency.name,
-          style: Theme.of(widget.context).textTheme.headline6
+          style: Theme.of(widget.context).textTheme.titleLarge
         ),
       ],
     );
@@ -189,7 +143,7 @@ class _CryptoItemState extends State<CryptoItem> {
       children: [
         Text(
           widget.currency.currentPriceString,
-          style: AppTheme.textTheme.bodyText2,
+          style: AppTheme.textTheme.bodyMedium,
         ),
         const SizedBox(height: 4),
         Row(

@@ -4,6 +4,7 @@ import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/pages/secondpages/agb.dart';
+import 'package:nexus_wallet/pages/secondpages/impressum.dart';
 import 'package:nexus_wallet/theme.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -79,7 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        ChildBuildBoxHeader("Hallo iwas"),
+        ChildBuildBoxHeader("Allgemeines"),
         Glassmorphism(
             blur: 20,
             opacity: 0.1,
@@ -106,7 +107,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                       child: ChildBuildBoxIntern(
                           Icons.article_outlined, "Allg. Geschäftsbedingungen"),
-                    )
+                    ),
+                    MyDivider(),
+                    ChildBuildBoxIntern(Icons.payment_rounded, "Spenden & uns unterstützen"),
                   ]),
             )),
         Padding(
@@ -127,13 +130,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ImpressumScreen(),
+                          ),
+                        );
+                      },
+                      child: ChildBuildBoxIntern(
+                          Icons.mail_outline_rounded, "Impressum"),
+                    ),
+                    MyDivider(),
                     ChildBuildBoxIntern(
                         Icons.bug_report_outlined, "Fehler melden"),
-                    MyDivider(),
-                    ChildBuildBoxIntern(
-                        Icons.mail_outline_rounded, "Impressum"),
-                    MyDivider(),
-                    ChildBuildBoxIntern(Icons.payment_rounded, "Spenden"),
                   ]),
             )),
         Padding(
@@ -156,6 +166,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: <Widget>[
                     ChildBuildBoxIntern(
                         Icons.email_rounded, "E-Mail Adresse ändern"),
+                    MyDivider(),
+                    GestureDetector(
+                        onTap: () {
+                          // widget tree wieder raus aus auth oder lieber drin bleiben?
+                        },
+                        child: ChildBuildBoxIntern(
+                            Icons.key_rounded, "Passwort zurücksetzen")),
                     MyDivider(),
                     GestureDetector(
                         onTap: () {

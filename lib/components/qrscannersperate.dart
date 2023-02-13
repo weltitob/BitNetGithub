@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:nexus_wallet/components/cameraqr.dart';
-import 'package:nexus_wallet/components/roundedbutton.dart';
+import 'package:nexus_wallet/components/buttons/roundedbutton.dart';
 import 'package:nexus_wallet/theme.dart';
 
 

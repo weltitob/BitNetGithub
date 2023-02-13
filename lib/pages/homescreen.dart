@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/pages/actions/receivescreen.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/cards/balancecard.dart';
-import 'package:nexus_wallet/components/cryptoitem.dart';
+import 'package:nexus_wallet/components/items/cryptoitem.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
