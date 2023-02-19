@@ -3,8 +3,9 @@ import 'package:nexus_wallet/theme.dart';
 
 displaySnackbar(BuildContext context, String text) {
   final snackBar = SnackBar(
+    padding: EdgeInsets.only(bottom: AppTheme.cardPadding),
     content: Text(text,
-    style: Theme.of(context).textTheme.bodyMedium,),
+    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppTheme.black90),),
     elevation: 0.0,
     backgroundColor: Colors.white,
     behavior: SnackBarBehavior.floating,

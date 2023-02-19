@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nexus_wallet/components/items/transactionitem.dart';
 import 'package:nexus_wallet/pages/actions/receivescreen.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/cards/balancecard.dart';
@@ -213,12 +214,11 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                             currency: currency,
                             context: context,
                           ),
-                          const SizedBox(height: 16),
                         ],
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppTheme.cardPadding),
+                  const SizedBox(height: AppTheme.cardPadding * 1.5),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: AppTheme.cardPadding),
@@ -257,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppTheme.cardPadding),
+                  const SizedBox(height: AppTheme.cardPadding * 1.5),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: AppTheme.cardPadding),
@@ -267,6 +267,38 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                     ),
                   ),
                   const SizedBox(height: AppTheme.cardPadding),
+                  Column(
+                    children: [
+                      SizedBox(height: AppTheme.elementSpacing * 0.75),
+                      TransactionItem(
+                          transaction: Transaction(
+                              tradeDirection: TransactionDirection.receive,
+                              transactionReceiver: "uhadoihasoidahiosd",
+                              transactionSender: "jioafojiadpjianodaps",
+                              date: "23.03.2022",
+                              amount: 3402.063),
+                          context: context),
+                      SizedBox(height: AppTheme.elementSpacing * 0.75),
+                      TransactionItem(
+                          transaction: Transaction(
+                              tradeDirection: TransactionDirection.send,
+                              transactionReceiver: "uhadoihasoidahiosd",
+                              transactionSender: "jioafojiadpjianodaps",
+                              date: "23.03.2022",
+                              amount: 3402.063),
+                          context: context),
+                      SizedBox(height: AppTheme.elementSpacing * 0.75),
+                      TransactionItem(
+                          transaction: Transaction(
+                              tradeDirection: TransactionDirection.send,
+                              transactionReceiver: "uhadoihasoidahiosd",
+                              transactionSender: "jioafojiadpjianodaps",
+                              date: "23.03.2022",
+                              amount: 3402.063),
+                          context: context),
+                      SizedBox(height: AppTheme.elementSpacing * 0.75),
+                    ],
+                  ),
                 ],
               ),
             ),
