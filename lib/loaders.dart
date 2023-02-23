@@ -5,6 +5,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:nexus_wallet/theme.dart';
 
+Container dotProgress(BuildContext context) {
+  return Container(
+    child: Center(
+      child: SpinKitThreeBounce(
+        color: AppTheme.colorBitcoin,
+        size: AppTheme.iconSize,
+      ),
+    ),
+  );
+}
+
 Widget avatarGlow(BuildContext context, IconData icon) {
   return Center(
     child: AvatarGlow(

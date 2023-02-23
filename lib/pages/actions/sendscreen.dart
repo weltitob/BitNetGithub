@@ -1,10 +1,12 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/components/cameraqr.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/components/sendappbar.dart';
 import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';
+import 'package:nexus_wallet/loaders.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:page_transition/page_transition.dart';
@@ -17,12 +19,33 @@ class SendBTCScreen extends StatefulWidget {
 }
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
+  late FocusNode myFocusNode;
   TextEditingController listController = TextEditingController();
+  TextEditingController moneyController = TextEditingController();
   List numberAsList = [];
   bool isFinished = false;
-  String money = '0001';
   bool _hasReceiver = false;
   String _bitcoinAdresse = '';
+  bool _isLoadingExchangeRt = false;
+
+  @override
+  void initState() {
+    super.initState();
+    moneyController.text = "0001";
+    myFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
+
+  getEchangeInEur(){
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +56,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         children: <Widget>[
           const SizedBox(
             height: AppTheme.cardPadding,
-          ),
-          Center(child: bitcoinWidget()),
-          Center(child: bitcoinToMoneyWidget()),
-          const SizedBox(
-            height: AppTheme.cardPadding * 2,
           ),
           _hasReceiver ? userTile() : Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -84,6 +102,32 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           const SizedBox(
             height: AppTheme.cardPadding,
           ),
+          Center(child: bitcoinWidget()),
+          Center(child: bitcoinToMoneyWidget()),
+          const SizedBox(
+            height: AppTheme.cardPadding * 2,
+          ),
+          const SizedBox(
+            height: AppTheme.cardPadding,
+          ),
+          Container(
+            color: Colors.green,
+            child: TextFormField(
+              onChanged: (text) {
+                print('Bitcoin amount entered: $text');
+                setState(() {});
+              },
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
+              ],
+              focusNode: myFocusNode,
+              controller: moneyController,
+              autofocus: false,
+              style: Theme.of(context).textTheme.bodyMedium,
+              decoration: InputDecoration(labelText: 'Enter Number'),
+            ),
+          ),
           const SizedBox(
             height: AppTheme.cardPadding,
           ),
@@ -125,7 +169,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   Widget bitcoinToMoneyWidget() {
-    return Text(
+    return _isLoadingExchangeRt ? dotProgress(context) :
+    Text(
       "= 2778901.09 USD",
       style: Theme.of(context).textTheme.titleMedium,
     );
@@ -179,26 +224,37 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   Widget bitcoinWidget() {
     return Padding(
       padding: const EdgeInsets.only(
-          top: AppTheme.cardPadding, bottom: AppTheme.elementSpacing),
-      child: RichText(
-          text: TextSpan(
-            text: '0.',
-            style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                color: Colors.grey.withOpacity(0.5),
-                fontWeight: FontWeight.w200
-            ),
-            children: [
-              TextSpan(
-                text: money,
-                style: Theme.of(context).textTheme.displayLarge,
+          top: AppTheme.cardPadding,
+          bottom: AppTheme.elementSpacing,
+          left: AppTheme.cardPadding,
+          right: AppTheme.cardPadding),
+      child: GestureDetector(
+        onTap: (){
+
+        },
+        child: RichText(
+          maxLines: 3,
+
+            text: TextSpan(
+              text: '0.',
+              style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                  color: Colors.grey.withOpacity(0.5),
+                  fontWeight: FontWeight.w200
               ),
-              if (money != '')
+              children: [
                 TextSpan(
-                    text: ' BTC', style: Theme.of(context).textTheme.displaySmall),
-            ],
-          )),
+                  text: moneyController.text,
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
+                if (moneyController.text != '')
+                  TextSpan(
+                      text: ' BTC', style: Theme.of(context).textTheme.displaySmall),
+              ],
+            )),
+      ),
     );
   }
+
   Widget button() {
     return Padding(
       padding: const EdgeInsets.all(AppTheme.cardPadding),

@@ -269,7 +269,6 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                   const SizedBox(height: AppTheme.cardPadding),
                   Column(
                     children: [
-                      SizedBox(height: AppTheme.elementSpacing * 0.75),
                       TransactionItem(
                           transaction: Transaction(
                               tradeDirection: TransactionDirection.receive,
