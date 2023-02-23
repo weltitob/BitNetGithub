@@ -199,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                         horizontal: AppTheme.cardPadding),
                     child: Text(
                       "Cryptos",
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
                   const SizedBox(height: AppTheme.cardPadding),
@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                         horizontal: AppTheme.cardPadding),
                     child: Text(
                       "Aktionen",
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
                   const SizedBox(height: AppTheme.cardPadding),
@@ -263,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                         horizontal: AppTheme.cardPadding),
                     child: Text(
                       "Transaktionen",
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
                   const SizedBox(height: AppTheme.cardPadding),

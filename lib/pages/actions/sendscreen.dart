@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/components/cameraqr.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
-import 'package:nexus_wallet/components/qrscannersperate.dart';
 import 'package:nexus_wallet/components/sendappbar.dart';
 import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';
-import 'package:nexus_wallet/pages/homescreen.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:page_transition/page_transition.dart';
@@ -183,7 +181,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       padding: const EdgeInsets.only(
           top: AppTheme.cardPadding, bottom: AppTheme.elementSpacing),
       child: RichText(
-//$
           text: TextSpan(
             text: '0.',
             style: Theme.of(context).textTheme.displayLarge!.copyWith(
