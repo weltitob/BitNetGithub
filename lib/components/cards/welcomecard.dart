@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nexus_wallet/cards/balancecard.dart';
+import 'package:nexus_wallet/components/cards/balancecard.dart';
 import 'package:nexus_wallet/theme.dart';
 
 class WelcomeCard extends StatelessWidget {

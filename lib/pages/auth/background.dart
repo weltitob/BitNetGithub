@@ -12,7 +12,6 @@ class BackgroundAuth extends StatefulWidget {
 }
 
 class _BackgroundAuthState extends State<BackgroundAuth> {
-
   bool _visible = false;
   late final Future<LottieComposition> _composition;
 
@@ -30,13 +29,11 @@ class _BackgroundAuthState extends State<BackgroundAuth> {
 
   void updatevisibility() async {
     await _composition;
-    var timer = Timer(Duration(seconds: 1),
-            () {
-          setState(() {
-            _visible = true;
-          });
-        }
-    );
+    Timer(Duration(seconds: 1), () {
+      setState(() {
+        _visible = true;
+      });
+    });
   }
 
   Future<LottieComposition> _loadComposition() async {
