@@ -3,10 +3,10 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/components/cameraqr.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
-import 'package:nexus_wallet/components/sendappbar.dart';
 import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';
 import 'package:nexus_wallet/loaders.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
@@ -22,21 +22,20 @@ class SendBTCScreen extends StatefulWidget {
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
   late FocusNode myFocusNode;
-  TextEditingController listController = TextEditingController();
+  TextEditingController bitcoinReceiverAdressController =
+      TextEditingController();
   TextEditingController moneyController = TextEditingController();
-  List numberAsList = [];
   bool isFinished = false;
   bool _hasReceiver = false;
   String _bitcoinAdresse = '';
   dynamic _moneyineur = '';
   bool _isLoadingExchangeRt = true;
-
   double bitcoinBalanceWallet = 1.24;
 
   @override
   void initState() {
     super.initState();
-    moneyController.text = "0.0001";
+    moneyController.text = "";
     myFocusNode = FocusNode();
     getBitcoinPrice();
   }
@@ -78,57 +77,98 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
-      appBar: appBarSend(context),
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.arrow_back)),
+        elevation: 0,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Send Bitcoin", style: Theme.of(context).textTheme.titleLarge),
+            Text("${bitcoinBalanceWallet}BTC available",
+                style: Theme.of(context).textTheme.bodyMedium),
+          ],
+        ),
+        backgroundColor: AppTheme.colorBackground,
+      ),
       body: ListView(
         children: <Widget>[
           const SizedBox(
             height: AppTheme.cardPadding,
           ),
-          _hasReceiver
-              ? userTile()
-              : Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppTheme.cardPadding),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: AppTheme.cardPadding * 11.5,
-                        child: Glassmorphism(
-                          blur: 20,
-                          opacity: 0.1,
-                          radius: 50.0,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: AppTheme.elementSpacing * 1.5),
-                            height: AppTheme.cardPadding * 2,
-                            alignment: Alignment.center,
-                            child: TextFormField(
-                              controller: listController,
-                              autofocus: false,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Bitcoin-Adresse hier eingeben",
-                                hintStyle: TextStyle(color: AppTheme.white60),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding),
+                child: Text(
+                  "Receiver",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+              _hasReceiver
+                  ? userTile()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding,
+                          vertical: AppTheme.elementSpacing / 2),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: AppTheme.cardPadding * 11.5,
+                            child: Glassmorphism(
+                              blur: 20,
+                              opacity: 0.1,
+                              radius: 50.0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: AppTheme.elementSpacing * 1.5),
+                                height: AppTheme.cardPadding * 2,
+                                alignment: Alignment.center,
+                                child: TextField(
+                                  maxLength: 40,
+                                  controller: bitcoinReceiverAdressController,
+                                  autofocus: false,
+                                  onSubmitted: (text) {
+                                    setState(() {
+                                      _bitcoinAdresse = text;
+                                      _hasReceiver = true;
+                                    });
+                                    ;
+                                  },
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    counterText: "",
+                                    hintText: "Bitcoin-Adresse hier eingeben",
+                                    hintStyle:
+                                        TextStyle(color: AppTheme.white60),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          GestureDetector(
+                              onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => const QRScreen(),
+                                    ),
+                                  ),
+                              child: avatarGlow(
+                                context,
+                                Icons.circle,
+                              )),
+                        ],
                       ),
-                      GestureDetector(
-                          onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const QRScreen(),
-                                ),
-                              ),
-                          child: avatarGlow(
-                            context,
-                            Icons.circle,
-                          )),
-                    ],
-                  ),
-                ),
+                    ),
+            ],
+          ),
           const SizedBox(
             height: AppTheme.cardPadding,
           ),
@@ -139,29 +179,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           ),
           const SizedBox(
             height: AppTheme.cardPadding,
-          ),
-          Visibility(
-            visible: true,
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 5),
-              color: Colors.red,
-              child: TextFormField(
-                onChanged: (text) {
-                  print('Bitcoin amount entered: $text');
-                  getBitcoinPrice();
-                  setState(() {});
-                },
-                maxLength: 10,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
-                ],
-                focusNode: myFocusNode,
-                controller: moneyController,
-                autofocus: false,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
           ),
           const SizedBox(
             height: AppTheme.cardPadding,
@@ -215,13 +232,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-          child: Text(
-            "Receiver",
-            style: Theme.of(context).textTheme.headline6,
-          ),
-        ),
         ListTile(
           leading: const CircleAvatar(
             backgroundImage: NetworkImage(
@@ -236,7 +246,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
               icon:
                   const Icon(Icons.edit_rounded, color: Colors.grey, size: 18),
               onPressed: () {
-                Navigator.pop(context);
+                setState(() {
+                  _hasReceiver = false;
+                });
               }),
         ),
       ],
@@ -248,7 +260,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       children: [
         const Icon(Icons.copy_rounded, color: Colors.grey, size: 16),
         Text(
-          "3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5",
+          _bitcoinAdresse,
           style: Theme.of(context).textTheme.caption,
           overflow: TextOverflow.ellipsis,
         ),
@@ -263,23 +275,47 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           bottom: AppTheme.elementSpacing,
           left: AppTheme.cardPadding,
           right: AppTheme.cardPadding),
-      child: GestureDetector(
-        onTap: () {
-          myFocusNode.requestFocus();
-        },
-        child: RichText(
-            maxLines: 3,
-            text: TextSpan(
-              text: moneyController.text,
-              style: Theme.of(context).textTheme.displayLarge,
-              children: [
-                if (moneyController.text != '')
-                  TextSpan(
-                      text: ' BTC',
-                      style: Theme.of(context).textTheme.displaySmall),
-              ],
-            )),
+      child: Container(
+        child: TextField(
+          textAlign: TextAlign.center,
+          onChanged: (text) {
+            print('Bitcoin amount entered: $text');
+            getBitcoinPrice();
+            setState(() {});
+          },
+          maxLength: 10,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
+            DotFormatter(),
+            NumericalRangeFormatter(
+                min: 0, max: bitcoinBalanceWallet, context: context),
+          ],
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            counterText: "",
+            hintText: "Bitcoin-Adresse hier eingeben",
+            hintStyle: TextStyle(color: AppTheme.white60),
+          ),
+          focusNode: myFocusNode,
+          controller: moneyController,
+          autofocus: false,
+          style: Theme.of(context).textTheme.displayLarge,
+        ),
       ),
+
+      /*RichText(
+          maxLines: 3,
+          text: TextSpan(
+            text: moneyController.text,
+            style: Theme.of(context).textTheme.displayLarge,
+            children: [
+              if (moneyController.text != '')
+                TextSpan(
+                    text: ' BTC',
+                    style: Theme.of(context).textTheme.displaySmall),
+            ],
+          )),*/
     );
   }
 
