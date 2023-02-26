@@ -19,5 +19,6 @@ displaySnackbar(BuildContext context, String text) {
       },
     ),
   );
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  ScaffoldMessenger.of(context).showSnackBar(snackBar).closed
+      .then((value) => ScaffoldMessenger.of(context).clearSnackBars());;
 }

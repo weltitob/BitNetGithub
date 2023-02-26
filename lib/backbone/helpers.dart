@@ -32,8 +32,7 @@ class NumericalRangeFormatter extends TextInputFormatter {
 
 class DotFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate
-      (TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
 
     int numDots = RegExp(r"\.").allMatches(oldValue.toString()).length;
     print("The string '$oldValue' contains $numDots dots.");
@@ -42,11 +41,11 @@ class DotFormatter extends TextInputFormatter {
     print("The string '$newValue' contains $newDots dots.");
 
     //flutter thinks there are two more dots then there really are
-    if (numDots > 3) {
+    if (numDots >= 3) {
       return oldValue;
-    } else if (newDots == 3) {
+    } else if (newDots == 2) {
       return newValue;
-    } else if (newDots == 4) {
+    } else if (newDots == 3) {
       return newValue;
     }
     else if (newDots > 3) {

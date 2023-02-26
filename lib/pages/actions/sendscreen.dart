@@ -30,12 +30,12 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   String _bitcoinAdresse = '';
   dynamic _moneyineur = '';
   bool _isLoadingExchangeRt = true;
-  double bitcoinBalanceWallet = 1.24;
+  double bitcoinBalanceWallet = 13.24;
 
   @override
   void initState() {
     super.initState();
-    moneyController.text = "";
+    moneyController.text = "0.00001";
     myFocusNode = FocusNode();
     getBitcoinPrice();
   }
@@ -62,8 +62,12 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       print('The current price of Bitcoin in Euro is $bitcoinPrice');
       ;
       setState(() {
-        _moneyineur = bitcoinPrice * double.parse(moneyController.text);
-        _isLoadingExchangeRt = false;
+        if(moneyController.text.isNotEmpty){
+          _moneyineur = bitcoinPrice * double.parse(moneyController.text);
+          _isLoadingExchangeRt = false;
+        } else {
+          _moneyineur = 0.0;
+        }
       });
     } else {
       print('Error ${response.statusCode}: ${response.reasonPhrase}');
@@ -276,32 +280,38 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           left: AppTheme.cardPadding,
           right: AppTheme.cardPadding),
       child: Container(
-        child: TextField(
-          textAlign: TextAlign.center,
-          onChanged: (text) {
-            print('Bitcoin amount entered: $text');
-            getBitcoinPrice();
-            setState(() {});
-          },
-          maxLength: 10,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
-            DotFormatter(),
-            NumericalRangeFormatter(
-                min: 0, max: bitcoinBalanceWallet, context: context),
+        child:
+        Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            TextField(
+              textAlign: TextAlign.center,
+              onChanged: (text) {
+                getBitcoinPrice();
+                setState(() {});
+              },
+              maxLength: 10,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
+                NumericalRangeFormatter(
+                    min: 0, max: bitcoinBalanceWallet, context: context),
+              ],
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                counterText: "",
+                hintText: "0.0",
+                hintStyle: TextStyle(color: AppTheme.white60),
+              ),
+              focusNode: myFocusNode,
+              controller: moneyController,
+              autofocus: false,
+              style: Theme.of(context).textTheme.displayLarge,
+            ),
+            Icon(Icons.currency_bitcoin_rounded,
+              size: AppTheme.cardPadding * 1.5,)
           ],
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            counterText: "",
-            hintText: "Bitcoin-Adresse hier eingeben",
-            hintStyle: TextStyle(color: AppTheme.white60),
-          ),
-          focusNode: myFocusNode,
-          controller: moneyController,
-          autofocus: false,
-          style: Theme.of(context).textTheme.displayLarge,
-        ),
+        )
       ),
 
       /*RichText(
