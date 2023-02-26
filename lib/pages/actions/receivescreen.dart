@@ -20,6 +20,23 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.arrow_back)),
+        elevation: 0,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Send Bitcoin", style: Theme.of(context).textTheme.titleLarge),
+            Text("BTC available",
+                style: Theme.of(context).textTheme.bodyMedium),
+          ],
+        ),
+        backgroundColor: AppTheme.colorBackground,
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -37,6 +54,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
           padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "My Bitcoinadress",
@@ -46,7 +64,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                     .headline5,
               ),
               const SizedBox(
-                height: AppTheme.cardPadding,
+                height: AppTheme.cardPadding * 2,
               ),
               SizedBox(
                 child: Center(
@@ -113,6 +131,9 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                       "Share", Icons.share_rounded, () => null),
                   glassButton("Keys", Icons.key_rounded, () => null)
                 ],
+              ),
+              const SizedBox(
+                height: AppTheme.cardPadding * 2,
               ),
             ],
           ),

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/pages/secondpages/agb.dart';
 import 'package:nexus_wallet/pages/secondpages/impressum.dart';
+import 'package:nexus_wallet/pages/secondpages/reportissuescreen.dart';
 import 'package:nexus_wallet/theme.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -142,8 +143,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           Icons.mail_outline_rounded, "Impressum"),
                     ),
                     MyDivider(),
-                    ChildBuildBoxIntern(
-                        Icons.bug_report_outlined, "Fehler melden"),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ReportIssueScreen(),
+                          ),
+                        );
+                      },
+                      child: ChildBuildBoxIntern(
+                          Icons.bug_report_outlined, "Fehler melden"),
+                    ),
                   ]),
             )),
         Padding(
