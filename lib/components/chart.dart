@@ -158,7 +158,8 @@ class _buildChartState extends State<buildChart> {
     _trackballBehavior = TrackballBehavior(
         lineColor: Colors.grey[400],
         enable: true,
-        tooltipDisplayMode: TrackballDisplayMode.none,
+        tooltipDisplayMode: TrackballDisplayMode.floatAllPoints,
+        tooltipAlignment: ChartAlignment.near,
         activationMode: ActivationMode.singleTap,
         lineWidth: 2,
         lineType: TrackballLineType.horizontal,
