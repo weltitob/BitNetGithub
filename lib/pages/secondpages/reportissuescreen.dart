@@ -17,7 +17,7 @@ class ReportIssueScreen extends StatefulWidget {
 class _ReportIssueScreenState extends State<ReportIssueScreen> {
   TextEditingController _issueController = TextEditingController();
 
-  void sendIssue() {
+  sendIssue() {
     print('Issue commited');
     _issueController.text = "";
     displaySnackbar(context, "Deine Fehlermeldung wurde weitergeleitet");
@@ -55,7 +55,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.elementSpacing * 1.5),
-                  height: AppTheme.cardPadding * 10,
+                  height: AppTheme.cardPadding * 11,
                   alignment: Alignment.topLeft,
                   child: TextField(
                     keyboardType: TextInputType.multiline,
@@ -63,7 +63,10 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                     controller: _issueController,
                     autofocus: false,
                     onSubmitted: (text) {
-                      setState(() {});
+                      setState(() {
+                        print('pressed');
+                        sendIssue();
+                      });
                       ;
                     },
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -79,9 +82,16 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
               ),
             ),
             SizedBox(height: AppTheme.cardPadding,),
-            Container(
-              child: glassButton(
-                  "Melden", Icons.send, () => sendIssue()),
+            GestureDetector(
+              onTap: () => sendIssue(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 5),
+                child: GestureDetector(
+                  onTap: () => sendIssue(),
+                  child: glassButton(
+                      "Melden", Icons.send, () => sendIssue()),
+                ),
+              ),
             ),
 
           ],

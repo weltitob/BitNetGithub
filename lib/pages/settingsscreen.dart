@@ -4,6 +4,7 @@ import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/pages/secondpages/agb.dart';
+import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
 import 'package:nexus_wallet/pages/secondpages/impressum.dart';
 import 'package:nexus_wallet/pages/secondpages/reportissuescreen.dart';
 import 'package:nexus_wallet/theme.dart';
@@ -174,8 +175,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    ChildBuildBoxIntern(
-                        Icons.email_rounded, "E-Mail Adresse ändern"),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ChangeEmailScreen(),
+                          ),
+                        );
+                      },
+                      child: ChildBuildBoxIntern(
+                          Icons.email_rounded, "E-Mail Adresse ändern"),
+                    ),
                     MyDivider(),
                     GestureDetector(
                         onTap: () {
