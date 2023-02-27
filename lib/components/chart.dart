@@ -231,7 +231,7 @@ class _buildChartState extends State<buildChart> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        _loading ? "" : "${double.parse((currentline[0].price).toStringAsFixed(2))}€",
+                        _loading ? "" : "${double.parse((onedaychart[onedaychart.length-1].price).toStringAsFixed(2))}€",
                         style: Theme.of(context).textTheme.headline3,
                       ),
                     ],
