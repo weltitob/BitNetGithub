@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
+
+String toPercent(double value) => NumberFormat('+#.##%; -#.##%').format(value);
 
 class NumericalRangeFormatter extends TextInputFormatter {
   final double min;

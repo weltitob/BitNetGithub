@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/components/currencypicture.dart';
 import 'package:nexus_wallet/pages/secondpages/bitcoinscreen.dart';
@@ -11,36 +12,13 @@ class Currency {
   final String code;
   final String name;
   final Image icon;
-  final double currentAmount;
-  final double profit;
-  final List<double> priceHistory;
 
   Currency({
     required this.code,
     required this.name,
     required this.icon,
-    required this.priceHistory,
-    this.currentAmount = 0.0,
-    this.profit = 0.0,
   });
-
-  String get usdAmountString =>
-      NumberFormat.simpleCurrency().format(currentAmount * priceHistory.last);
-
-  String _toPercent(double value) =>
-      NumberFormat('+#.##%; -#.##%').format(value);
-
-  String get profitString => _toPercent(profit);
-
-  String get currentPriceString =>
-      NumberFormat.simpleCurrency().format(priceHistory.last);
-
-  double get priceChange =>
-      (priceHistory.last - priceHistory.first) / priceHistory.first;
-
-  String get priceChangeString => _toPercent(priceChange);
 }
-
 
 class MockFavorites {
   static final data = [
@@ -48,32 +26,6 @@ class MockFavorites {
       code: 'BTC',
       name: 'Bitcoin',
       icon: Image.asset('assets/images/ada_icon.png'),
-      priceHistory: [
-        0.52543,
-        0.51538,
-        0.51715,
-        0.52900,
-        0.53250,
-        0.53423,
-        0.52864,
-        0.52598,
-        0.52986,
-        0.53392,
-        0.54404,
-        0.52392,
-        0.51803,
-        0.52535,
-        0.53479,
-        0.53129,
-        0.52307,
-        0.51462,
-        0.52479,
-        33333.52220,
-        50000.52730,
-        40000.52730,
-        22203.53318,
-        200.53318,
-      ],
     ),
   ];
 }
@@ -94,19 +46,30 @@ class CryptoItem extends StatefulWidget {
 
 class _CryptoItemState extends State<CryptoItem> {
   late List<ChartLine> onedaychart;
-
-  late bool _loading;
+  bool _loading = true;
+  late String _currentPriceString;
+  late String _priceChangeString;
+  late double priceChange;
 
   getChartLine() async {
     CryptoChartLine chartClassDay = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "usd",
+      currency: "eur",
       days: "1",
       interval: "hourly",
     );
     await chartClassDay.getChartData();
 
     onedaychart = chartClassDay.chartLine;
+
+    final double lastprice = chartClassDay.chartLine.last.price;
+    final double firstprice = chartClassDay.chartLine.first.price;
+    _currentPriceString =
+        NumberFormat.simpleCurrency(name: "USD").format(lastprice);
+
+    priceChange = (lastprice - firstprice) / firstprice;
+    _priceChangeString = toPercent(priceChange);
+
     setState(() {
       _loading = false;
     });
@@ -115,8 +78,53 @@ class _CryptoItemState extends State<CryptoItem> {
   @override
   void initState() {
     super.initState();
-    _loading = true;
     getChartLine();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _loading
+        ? ClipRRect(
+            borderRadius: BorderRadius.circular(AppTheme.cardPadding),
+            child: Container(
+                height: AppTheme.cardPadding * 3,
+                color: lighten(Theme.of(context).backgroundColor, 10)))
+        : ClipRRect(
+            borderRadius: BorderRadius.circular(AppTheme.cardPadding),
+            child: Container(
+              height: AppTheme.cardPadding * 3,
+              color: lighten(Theme.of(context).backgroundColor, 10),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing),
+                    child: Row(
+                      children: [
+                        currencyPicture(context),
+                        //CustomIcon(icon: currency.icon),
+                        const SizedBox(width: AppTheme.elementSpacing),
+                        title(),
+                        const Spacer(),
+                        chart(onedaychart),
+                        price(),
+                      ],
+                    ),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const BitcoinScreen(),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
   }
 
   Widget title() {
@@ -128,10 +136,8 @@ class _CryptoItemState extends State<CryptoItem> {
           widget.currency.code,
           style: Theme.of(widget.context).textTheme.titleSmall,
         ),
-        Text(
-          widget.currency.name,
-          style: Theme.of(widget.context).textTheme.titleLarge
-        ),
+        Text(widget.currency.name,
+            style: Theme.of(widget.context).textTheme.titleLarge),
       ],
     );
   }
@@ -142,14 +148,14 @@ class _CryptoItemState extends State<CryptoItem> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          widget.currency.currentPriceString,
+          _currentPriceString,
           style: AppTheme.textTheme.bodyMedium,
         ),
         const SizedBox(height: 4),
         Row(
           children: [
             Icon(
-              widget.currency.priceChange >= 0
+              priceChange >= 0
                   ? FontAwesomeIcons.caretUp
                   : FontAwesomeIcons.caretDown,
               size: 16,
@@ -157,7 +163,7 @@ class _CryptoItemState extends State<CryptoItem> {
             ),
             const SizedBox(width: 3),
             Text(
-              widget.currency.priceChangeString,
+              _priceChangeString,
               style: const TextStyle(
                 color: AppTheme.successColor,
               ),
@@ -168,9 +174,10 @@ class _CryptoItemState extends State<CryptoItem> {
     );
   }
 
-  Widget chart(onedaychart){
+  Widget chart(onedaychart) {
     return Container(
-      width: 95,
+      margin: EdgeInsets.only(right: AppTheme.elementSpacing),
+      width: AppTheme.cardPadding * 4,
       color: Colors.transparent,
       child: SfCartesianChart(
           enableAxisAnimation: true,
@@ -197,45 +204,6 @@ class _CryptoItemState extends State<CryptoItem> {
               color: AppTheme.successColor,
             )
           ]),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppTheme.cardPadding),
-      child: Container(
-        height: AppTheme.cardPadding * 3,
-        color: lighten(Theme.of(context).backgroundColor, 10),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-              child: Row(
-                children: [
-                  currencyPicture(context),
-                  //CustomIcon(icon: currency.icon),
-                  const SizedBox(width: AppTheme.elementSpacing),
-                  title(),
-                  const Spacer(),
-                  _loading ? Container() : chart(onedaychart),
-                  price(),
-                ],
-              ),
-            ),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () =>
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                const BitcoinScreen(),
-              ),
-            ),),
-            )
-          ],
-        ),
-      ),
     );
   }
 }

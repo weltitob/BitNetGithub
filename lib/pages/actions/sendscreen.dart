@@ -185,7 +185,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             height: AppTheme.cardPadding,
           ),
           const SizedBox(
-            height: AppTheme.cardPadding,
+            height: AppTheme.cardPadding * 10,
           ),
           Center(child: button()),
         ],
@@ -331,7 +331,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
 
   Widget button() {
     return Padding(
-      padding: const EdgeInsets.all(AppTheme.cardPadding),
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SwipeableButtonView(
           buttontextstyle: Theme.of(context).textTheme.headline6!.copyWith(
               color: AppTheme.white80, shadows: [AppTheme.boxShadowSmall]),
