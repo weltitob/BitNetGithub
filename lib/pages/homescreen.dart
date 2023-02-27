@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/cards/balancecard.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
 import 'package:nexus_wallet/pages/actions/receivescreen.dart';
@@ -269,6 +270,26 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             const SizedBox(height: AppTheme.cardPadding),
             Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      glassButton(
+                        text: "Alle",
+                      ),
+                      SizedBox(width: AppTheme.elementSpacing,),
+                      glassButton(
+                        text: "Gesendet", isSelected: false
+                      ),
+                      SizedBox(width: AppTheme.elementSpacing,),
+                      glassButton(
+                        text: "Erhalten", isSelected: false
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: AppTheme.elementSpacing,),
                 TransactionItem(
                     transaction: Transaction(
                         tradeDirection: TransactionDirection.receive,

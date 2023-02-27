@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/components/currencypicture.dart';
+import 'package:nexus_wallet/loaders.dart';
 import 'package:nexus_wallet/pages/secondpages/bitcoinscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -64,8 +65,7 @@ class _CryptoItemState extends State<CryptoItem> {
 
     final double lastprice = chartClassDay.chartLine.last.price;
     final double firstprice = chartClassDay.chartLine.first.price;
-    _currentPriceString =
-        NumberFormat.simpleCurrency(name: "USD").format(lastprice);
+    _currentPriceString = lastprice.toStringAsFixed(2) + "€";
 
     priceChange = (lastprice - firstprice) / firstprice;
     _priceChangeString = toPercent(priceChange);
@@ -88,7 +88,12 @@ class _CryptoItemState extends State<CryptoItem> {
             borderRadius: BorderRadius.circular(AppTheme.cardPadding),
             child: Container(
                 height: AppTheme.cardPadding * 3,
-                color: lighten(Theme.of(context).backgroundColor, 10)))
+                color: lighten(Theme.of(context).backgroundColor, 10,),
+              child: Center(
+                child: dotProgress(context),
+              ),
+            )
+    )
         : ClipRRect(
             borderRadius: BorderRadius.circular(AppTheme.cardPadding),
             child: Container(
@@ -159,13 +164,17 @@ class _CryptoItemState extends State<CryptoItem> {
                   ? FontAwesomeIcons.caretUp
                   : FontAwesomeIcons.caretDown,
               size: 16,
-              color: AppTheme.successColor,
+              color: priceChange >= 0
+                  ? AppTheme.successColor
+                  : AppTheme.errorColor,
             ),
             const SizedBox(width: 3),
             Text(
               _priceChangeString,
-              style: const TextStyle(
-                color: AppTheme.successColor,
+              style: TextStyle(
+                color: priceChange >= 0
+                    ? AppTheme.successColor
+                    : AppTheme.errorColor,
               ),
             ),
           ],
@@ -201,7 +210,10 @@ class _CryptoItemState extends State<CryptoItem> {
               animationDuration: 0,
               xValueMapper: (ChartLine crypto, _) => crypto.time,
               yValueMapper: (ChartLine crypto, _) => crypto.price,
-              color: AppTheme.successColor,
+              color: onedaychart[0].price <
+                  onedaychart[onedaychart.length - 1].price
+                  ? AppTheme.successColor
+                  : AppTheme.errorColor,
             )
           ]),
     );

@@ -12,9 +12,7 @@ class ReceiveScreen extends StatefulWidget {
 }
 
 class _ReceiveScreenState extends State<ReceiveScreen> {
-
   GlobalKey globalKeyQR = GlobalKey();
-
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +25,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
             },
             icon: const Icon(Icons.arrow_back)),
         elevation: 0,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Send Bitcoin", style: Theme.of(context).textTheme.titleLarge),
-            Text("BTC available",
-                style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ),
+        title: Text("Bitcoin erhalten", style: Theme.of(context).textTheme.titleLarge),
         backgroundColor: AppTheme.colorBackground,
       ),
       body: Container(
@@ -45,11 +36,9 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                 begin: Alignment.topRight,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF522F77),
-                  AppTheme.colorBackground,
-                ]
-            )
-        ),
+              Color(0xFF522F77),
+              AppTheme.colorBackground,
+            ])),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
           child: Column(
@@ -57,11 +46,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "My Bitcoinadress",
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline5,
+                "Meine Bitcoinadresse",
+                style: Theme.of(context).textTheme.headline5,
               ),
               const SizedBox(
                 height: AppTheme.cardPadding * 2,
@@ -110,13 +96,11 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                     color: AppTheme.white60,
                   ),
                   const SizedBox(
-                    width: AppTheme.elementSpacing * 0.25,),
+                    width: AppTheme.elementSpacing * 0.25,
+                  ),
                   Text(
                     "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy",
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
               ),
@@ -126,10 +110,15 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  glassButton("Copy", Icons.copy_rounded, () => null),
+                  glassButton(text: "Kopieren", iconData: Icons.copy_rounded),
                   glassButton(
-                      "Share", Icons.share_rounded, () => null),
-                  glassButton("Keys", Icons.key_rounded, () => null)
+                    text: "Teilen",
+                    iconData: Icons.share_rounded,
+                  ),
+                  glassButton(
+                    text: "Schlüssel",
+                    iconData: Icons.key_rounded,
+                  )
                 ],
               ),
               const SizedBox(

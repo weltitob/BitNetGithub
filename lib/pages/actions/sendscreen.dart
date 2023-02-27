@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/bottomnav.dart';
+import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/cameraqr.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
+import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';
 import 'package:nexus_wallet/loaders.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
@@ -31,6 +33,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   dynamic _moneyineur = '';
   bool _isLoadingExchangeRt = true;
   double bitcoinBalanceWallet = 13.24;
+  bool _isAllowedToSend = true;
 
   @override
   void initState() {
@@ -44,6 +47,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   void dispose() {
     // Clean up the focus node when the Form is disposed.
     myFocusNode.dispose();
+    moneyController.dispose();
     super.dispose();
   }
 
@@ -62,7 +66,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       print('The current price of Bitcoin in Euro is $bitcoinPrice');
       ;
       setState(() {
-        if(moneyController.text.isNotEmpty){
+        if (moneyController.text.isNotEmpty) {
           _moneyineur = bitcoinPrice * double.parse(moneyController.text);
           _isLoadingExchangeRt = false;
         } else {
@@ -91,8 +95,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Send Bitcoin", style: Theme.of(context).textTheme.titleLarge),
-            Text("${bitcoinBalanceWallet}BTC available",
+            Text("Bitcoin versenden", style: Theme.of(context).textTheme.titleLarge),
+            Text("${bitcoinBalanceWallet}BTC verfügbar",
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
@@ -111,7 +115,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding),
                 child: Text(
-                  "Receiver",
+                  "Empfänger",
                   style: Theme.of(context).textTheme.headline6,
                 ),
               ),
@@ -144,7 +148,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                       _bitcoinAdresse = text;
                                       _hasReceiver = true;
                                     });
-                                    ;
                                   },
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   decoration: InputDecoration(
@@ -174,18 +177,64 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             ],
           ),
           const SizedBox(
-            height: AppTheme.cardPadding,
+            height: AppTheme.cardPadding * 1,
           ),
           Center(child: bitcoinWidget()),
           Center(child: bitcoinToMoneyWidget()),
           const SizedBox(
-            height: AppTheme.cardPadding * 2,
+            height: AppTheme.cardPadding * 3,
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Gebühren",
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    SizedBox(
+                      width: AppTheme.elementSpacing / 2,
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        displaySnackbar(context, "Die Gebührenhöhe bestimmt über "
+                            "die Transaktionsgeschwindigkeit. "
+                            "Wenn du hohe Gebühren zahlst wird deine "
+                            "Transaktion schneller bei dem Empfänger ankommen");
+                      },
+                      child: Icon(
+                        Icons.info_outline_rounded,
+                        color: AppTheme.white90,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    glassButton(
+                      text: "Niedrig",
+                    ),
+                    glassButton(
+                      text: "Mittel",
+                    ),
+                    glassButton(
+                      text: "Hoch",
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
           const SizedBox(
-            height: AppTheme.cardPadding,
-          ),
-          const SizedBox(
-            height: AppTheme.cardPadding * 10,
+            height: AppTheme.cardPadding * 7,
           ),
           Center(child: button()),
         ],
@@ -227,7 +276,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     return _isLoadingExchangeRt
         ? dotProgress(context)
         : Text(
-            "${_moneyineur.toStringAsFixed(2)}€",
+            "= ${_moneyineur.toStringAsFixed(2)}€",
             style: Theme.of(context).textTheme.titleMedium,
           );
   }
@@ -242,7 +291,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 "https://bitfalls.com/wp-content/uploads/2017/09/header-5.png"),
           ),
           title: Text(
-            "Unknown Wallet",
+            "Unbekannte Walletadresse",
             style: Theme.of(context).textTheme.subtitle2,
           ),
           subtitle: cardWithNumber(),
@@ -274,44 +323,50 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
 
   Widget bitcoinWidget() {
     return Padding(
-      padding: const EdgeInsets.only(
-          top: AppTheme.cardPadding,
-          bottom: AppTheme.elementSpacing,
-          left: AppTheme.cardPadding,
-          right: AppTheme.cardPadding),
-      child: Container(
-        child:
-        Stack(
-          alignment: Alignment.centerRight,
-          children: [
-            TextField(
-              textAlign: TextAlign.center,
-              onChanged: (text) {
-                getBitcoinPrice();
-                setState(() {});
-              },
-              maxLength: 10,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
-                NumericalRangeFormatter(
-                    min: 0, max: bitcoinBalanceWallet, context: context),
-              ],
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                counterText: "",
-                hintText: "0.0",
-                hintStyle: TextStyle(color: AppTheme.white60),
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Wert eingeben",
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(height: AppTheme.cardPadding,),
+          Container(
+              child: Stack(
+            alignment: Alignment.centerRight,
+            children: [
+              TextField(
+                textAlign: TextAlign.center,
+                onChanged: (text) {
+                  getBitcoinPrice();
+                  setState(() {});
+                },
+                maxLength: 10,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
+                  NumericalRangeFormatter(
+                      min: 0, max: bitcoinBalanceWallet, context: context),
+                ],
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  counterText: "",
+                  hintText: "0.0",
+                  hintStyle: TextStyle(color: AppTheme.white60),
+                ),
+                focusNode: myFocusNode,
+                controller: moneyController,
+                autofocus: false,
+                style: Theme.of(context).textTheme.displayLarge,
               ),
-              focusNode: myFocusNode,
-              controller: moneyController,
-              autofocus: false,
-              style: Theme.of(context).textTheme.displayLarge,
-            ),
-            Icon(Icons.currency_bitcoin_rounded,
-              size: AppTheme.cardPadding * 1.5,)
-          ],
-        )
+              Icon(
+                Icons.currency_bitcoin_rounded,
+                size: AppTheme.cardPadding * 1.5,
+              )
+            ],
+          )),
+        ],
       ),
 
       /*RichText(
@@ -333,18 +388,22 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SwipeableButtonView(
+          isActive: _isAllowedToSend,
           buttontextstyle: Theme.of(context).textTheme.headline6!.copyWith(
               color: AppTheme.white80, shadows: [AppTheme.boxShadowSmall]),
-          buttonText: "ZIEHE SENDSCH KOHL!",
+          buttonText: "JETZT SENDEN!",
           buttonWidget: Container(
             child: Icon(
-              Icons.double_arrow_rounded,
-              color: AppTheme.colorBackground,
+              _isAllowedToSend
+                  ? Icons.double_arrow_rounded
+                  : Icons.lock_outline_rounded,
+              color: AppTheme.white90,
               size: 33,
               shadows: [AppTheme.boxShadowProfile],
             ),
           ),
           activeColor: Colors.purple.shade800,
+          disableColor: Colors.purple.shade800,
           isFinished: isFinished,
           onWaitingProcess: () {
             Future.delayed(const Duration(seconds: 2), () {

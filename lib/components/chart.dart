@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_wallet/components/currencypicture.dart';
@@ -105,31 +104,31 @@ class _buildChartState extends State<buildChart> {
   getChartLine() async {
     CryptoChartLine chartClassDay = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "usd",
+      currency: "eur",
       days: "1",
       interval: "minutely",
     );
     CryptoChartLine chartClassWeek = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "usd",
+      currency: "eur",
       days: "7",
       interval: "hourly",
     );
     CryptoChartLine chartClassMonth = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "usd",
+      currency: "eur",
       days: "30",
       interval: "hourly",
     );
     CryptoChartLine chartClassYear = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "usd",
+      currency: "eur",
       days: "365",
       interval: "daily",
     );
     CryptoChartLine chartClassMax = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "usd",
+      currency: "eur",
       days: "max",
       interval: "daily",
     );
@@ -145,6 +144,7 @@ class _buildChartState extends State<buildChart> {
     oneweekchart = chartClassWeek.chartLine;
     onedaychart = chartClassDay.chartLine;
     currentline = onedaychart;
+
     setState(() {
       _loading = false;
     });
@@ -163,8 +163,8 @@ class _buildChartState extends State<buildChart> {
         lineWidth: 2,
         lineType: TrackballLineType.horizontal,
         markerSettings: const TrackballMarkerSettings(
-            color: AppTheme.colorBitcoin,
-            borderColor:  AppTheme.colorBitcoin,
+            color: Colors.grey,
+            borderColor:  Colors.grey,
             markerVisibility: TrackballVisibilityMode.visible));
   }
 
@@ -231,7 +231,7 @@ class _buildChartState extends State<buildChart> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "\$${double.parse((12928.31).toStringAsFixed(2))}",
+                        _loading ? "" : "${double.parse((currentline[0].price).toStringAsFixed(2))}€",
                         style: Theme.of(context).textTheme.headline3,
                       ),
                     ],
@@ -255,7 +255,7 @@ class _buildChartState extends State<buildChart> {
                           child: Center(
                             child: Text(
                                 _loading
-                                    ? formatpercentvalue("7.67%")
+                                    ? formatpercentvalue("")
                                     : formatpercentvalue(
                                   percent_of_change(
                                       currentline[0].price,
@@ -322,7 +322,11 @@ class _buildChartState extends State<buildChart> {
                             animationDuration: 0,
                             xValueMapper: (ChartLine crypto, _) => crypto.time,
                             yValueMapper: (ChartLine crypto, _) => crypto.price,
-                            color: AppTheme.colorBitcoin,
+                            color:
+                            currentline[0].price <
+                                currentline[currentline.length - 1].price
+                                ? AppTheme.successColor
+                                : AppTheme.errorColor,
                           )
                         ]),
                   ),
@@ -398,7 +402,7 @@ class _buildChartState extends State<buildChart> {
               child: Text(
                 timeperiod,
                 style:
-                Theme.of(context).textTheme.headline6!.copyWith(
+                Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: timespan == timeperiod ? Theme.of(context).colorScheme.
                     onPrimaryContainer : Theme.of(context).colorScheme.
                     onPrimaryContainer.withOpacity(0.6)
@@ -410,7 +414,7 @@ class _buildChartState extends State<buildChart> {
         TextButton(
           style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
-              minimumSize: const Size(50, 30),
+              minimumSize: const Size(50, 20),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               alignment: Alignment.centerLeft),
           onPressed: () {
@@ -443,11 +447,11 @@ class _buildChartState extends State<buildChart> {
             child: Text(
                 timeperiod,
                 style:
-                Theme.of(context).textTheme.headline6!.copyWith(
+                Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: timespan == timeperiod ? Theme.of(context).colorScheme.
                     onPrimaryContainer : Theme.of(context).colorScheme.
                     onPrimaryContainer.withOpacity(0.6)
-                )
+                ),
             ),
           ),
         ),
@@ -455,9 +459,7 @@ class _buildChartState extends State<buildChart> {
     );
   }
 
-  Widget buildChildTimeChooser(
-      String timeperiod,
-      ) {
+  Widget buildChildTimeChooser(String timeperiod) {
     return GestureDetector(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
@@ -472,7 +474,7 @@ class _buildChartState extends State<buildChart> {
             padding:
             const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
             child: Text(timeperiod,
-                style: Theme.of(context).textTheme.headline6!.copyWith(
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: timespan == timeperiod ? Theme.of(context).colorScheme.
                     onPrimaryContainer : Theme.of(context).colorScheme.
                     onPrimaryContainer.withOpacity(0.6)

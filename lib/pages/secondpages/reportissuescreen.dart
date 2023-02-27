@@ -89,7 +89,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                 child: GestureDetector(
                   onTap: () => sendIssue(),
                   child: glassButton(
-                      "Melden", Icons.send, () => sendIssue()),
+                      text: "Melden", iconData: Icons.send, function: () => sendIssue()),
                 ),
               ),
             ),
