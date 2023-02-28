@@ -24,8 +24,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   late final Future<LottieComposition> _compositionSend;
   late final Future<LottieComposition> _compositionReceive;
   bool _visible = false;
-
-  final transactionstate = "all";
+  final _transactionindex = 0;
 
   @override
   void initState() {
@@ -133,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                               CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Welcome to your',
+                                  'Willkommen bei',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium!
@@ -166,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                                         vertical:
                                         AppTheme.elementSpacing / 2),
                                     child: Text(
-                                      "Simple & Fast",
+                                      "Simpel & Schnell",
                                       // NumberFormat.simpleCurrency().format(MockBalance.data.last),
                                       style: Theme.of(context)
                                           .textTheme
@@ -279,31 +278,31 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                     children: [
                       glassButton(
                         text: "Alle",
-                        isSelected: transactionstate == "all" ? true : false,
+                        isSelected: _transactionindex == 0? true : false,
                         onTap: (){
                           print('pressed');
                           setState(() {
-                            transactionstate == "all";
+                            _transactionindex == 0;
                           });
                         },
                       ),
                       SizedBox(width: AppTheme.elementSpacing,),
                       glassButton(
                         text: "Gesendet",
-                        isSelected: transactionstate == "sended" ? true : false,
+                        isSelected: _transactionindex == 1 ? true : false,
                         onTap: (){
                           setState(() {
-                            transactionstate == "sended";
+                            _transactionindex == 1;
                           });
                         },
                       ),
                       SizedBox(width: AppTheme.elementSpacing,),
                       glassButton(
                         text: "Erhalten",
-                        isSelected: transactionstate == "received" ? true : false,
+                        isSelected: _transactionindex == 2 ? true : false,
                         onTap: (){
                           setState(() {
-                            transactionstate == "received";
+                            _transactionindex == 2;
                           });
                         },
                       )

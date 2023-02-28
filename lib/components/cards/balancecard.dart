@@ -18,7 +18,7 @@ class BalanceCardBtc extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Balance',
+            'Guthaben',
             style: Theme.of(context).textTheme.subtitle1,
           ),
           const SizedBox(height: 2),
@@ -28,7 +28,7 @@ class BalanceCardBtc extends StatelessWidget {
             style: Theme.of(context).textTheme.headline3),
           const Spacer(),
           Text(
-            'Wallet adress',
+            'Deine Wallet-Adresse',
             style: Theme.of(context).textTheme.caption,
           ),
           Row(
