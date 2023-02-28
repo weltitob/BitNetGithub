@@ -86,16 +86,10 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
               ),
             ),
             SizedBox(height: AppTheme.cardPadding,),
-            GestureDetector(
-              onTap: () => sendIssue(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 5),
-                child: GestureDetector(
-                  onTap: () => sendIssue(),
-                  child: glassButton(
-                      text: "Melden", iconData: Icons.send, onTap: () => sendIssue()),
-                ),
-              ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 5),
+              child: glassButton(
+                  text: "Melden", iconData: Icons.send, onTap: () => sendIssue()),
             ),
 
           ],

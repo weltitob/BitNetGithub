@@ -220,13 +220,13 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     glassButton(
-                      text: "Niedrig",
+                      text: "Niedrig", onTap: () {  },
                     ),
                     glassButton(
-                      text: "Mittel",
+                      text: "Mittel", onTap: () {  },
                     ),
                     glassButton(
-                      text: "Hoch",
+                      text: "Hoch", onTap: () {  },
                     )
                   ],
                 ),

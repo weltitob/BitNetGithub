@@ -110,14 +110,14 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  glassButton(text: "Kopieren", iconData: Icons.copy_rounded),
+                  glassButton(text: "Kopieren", iconData: Icons.copy_rounded, onTap: () {  },),
                   glassButton(
                     text: "Teilen",
-                    iconData: Icons.share_rounded,
+                    iconData: Icons.share_rounded, onTap: () {  },
                   ),
                   glassButton(
                     text: "Schlüssel",
-                    iconData: Icons.key_rounded,
+                    iconData: Icons.key_rounded, onTap: () {  },
                   )
                 ],
               ),

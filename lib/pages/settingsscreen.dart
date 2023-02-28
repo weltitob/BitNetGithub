@@ -25,10 +25,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await Auth().signOut();
   }
 
-  Widget _title() {
-    return const Text('Firebase Auth');
-  }
-
   Widget _userUid() {
     return Text(user?.email ?? 'User email');
   }

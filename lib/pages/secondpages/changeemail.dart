@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
@@ -13,7 +15,53 @@ class ChangeEmailScreen extends StatefulWidget {
 }
 
 class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
-  TextEditingController _issueController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  final _auth = FirebaseAuth.instance;
+  final User? user = Auth().currentUser;
+  String? email = '';
+  bool _isLoading = false;
+
+  Widget _userUid() {
+    return Text(user?.email ?? 'User email');
+  }
+
+  @override void initState() {
+    email = user!.email;
+    setState(() {
+      _emailController.text = email!;
+    });
+  }
+
+  @override void dispose() {
+    _emailController.dispose();
+  }
+
+  void _updateEmail() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final user = await _auth.signInWithEmailAndPassword(
+        email: _auth.currentUser!.email!,
+        password: _passwordController.text,
+      );
+      await user.user?.updateEmail(_emailController.text);
+      Navigator.pop(context);
+      displaySnackbar(context, "Ihre E-Mail Adresse wurde aktualisiert, bitte überprüfen "
+          "sie ihr Postfach!");
+    } on FirebaseAuthException catch (e) {
+      displaySnackbar(context, "Ein Fehler ist aufgetreten. E-Mail wurde nicht aktualisiert");
+      print(e);
+      email = user!.email;
+      _emailController.text = email!;
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +86,11 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
             ),
             MyDivider(),
             SizedBox(height: AppTheme.cardPadding,),
+            Text(
+              "Neue E-Mail Adresse",
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            SizedBox(height: AppTheme.elementSpacing,),
             Container(
               width: AppTheme.cardPadding * 11.5,
               child: Glassmorphism(
@@ -50,9 +103,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                   height: AppTheme.cardPadding * 2,
                   alignment: Alignment.topLeft,
                   child: TextField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    controller: _issueController,
+                    controller: _emailController,
                     autofocus: false,
                     onSubmitted: (text) {
                       setState(() {
@@ -72,7 +123,44 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
               ),
             ),
             SizedBox(height: AppTheme.cardPadding,),
-
+            Text(
+              "Passwort",
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            SizedBox(height: AppTheme.elementSpacing,),
+            Container(
+              width: AppTheme.cardPadding * 11.5,
+              child: Glassmorphism(
+                blur: 20,
+                opacity: 0.1,
+                radius: 24.0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing * 1.5),
+                  height: AppTheme.cardPadding * 2,
+                  alignment: Alignment.topLeft,
+                  child: TextField(
+                    obscureText: true,
+                    controller: _passwordController,
+                    autofocus: false,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      counterText: "",
+                      hintText: "Passwort eingeben",
+                      hintStyle:
+                      TextStyle(color: AppTheme.white60),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: AppTheme.cardPadding * 2),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 4.75),
+              child: glassButton(
+                  text: "Speichern", iconData: Icons.save, onTap: () => _updateEmail()),
+            ),
           ],
         ),
       ),
