@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/cards/balancecard.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
+import 'package:nexus_wallet/components/transactions/transactions.dart';
 import 'package:nexus_wallet/pages/actions/receivescreen.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/components/items/cryptoitem.dart';
@@ -32,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     _compositionRocket = _loadComposition('assets/lottiefiles/rocket.json');
     _compositionSend = _loadComposition('assets/lottiefiles/senden.json');
     _compositionReceive = _loadComposition('assets/lottiefiles/erhalten.json');
-    ;
     updatevisibility();
   }
 
@@ -269,76 +269,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
               ),
             ),
             const SizedBox(height: AppTheme.cardPadding),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      glassButton(
-                        text: "Alle",
-                        isSelected: _transactionindex == 0? true : false,
-                        onTap: (){
-                          print('pressed');
-                          setState(() {
-                            _transactionindex == 0;
-                          });
-                        },
-                      ),
-                      SizedBox(width: AppTheme.elementSpacing,),
-                      glassButton(
-                        text: "Gesendet",
-                        isSelected: _transactionindex == 1 ? true : false,
-                        onTap: (){
-                          setState(() {
-                            _transactionindex == 1;
-                          });
-                        },
-                      ),
-                      SizedBox(width: AppTheme.elementSpacing,),
-                      glassButton(
-                        text: "Erhalten",
-                        isSelected: _transactionindex == 2 ? true : false,
-                        onTap: (){
-                          setState(() {
-                            _transactionindex == 2;
-                          });
-                        },
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: AppTheme.elementSpacing,),
-                TransactionItem(
-                    transaction: Transaction(
-                        tradeDirection: TransactionDirection.receive,
-                        transactionReceiver: "uhadoihasoidahiosd",
-                        transactionSender: "jioafojiadpjianodaps",
-                        date: "23.03.2022",
-                        amount: 3402.063),
-                    context: context),
-                SizedBox(height: AppTheme.elementSpacing * 0.75),
-                TransactionItem(
-                    transaction: Transaction(
-                        tradeDirection: TransactionDirection.send,
-                        transactionReceiver: "uhadoihasoidahiosd",
-                        transactionSender: "jioafojiadpjianodaps",
-                        date: "23.03.2022",
-                        amount: 3402.063),
-                    context: context),
-                SizedBox(height: AppTheme.elementSpacing * 0.75),
-                TransactionItem(
-                    transaction: Transaction(
-                        tradeDirection: TransactionDirection.send,
-                        transactionReceiver: "uhadoihasoidahiosd",
-                        transactionSender: "jioafojiadpjianodaps",
-                        date: "23.03.2022",
-                        amount: 3402.063),
-                    context: context),
-                SizedBox(height: AppTheme.elementSpacing * 0.75),
-              ],
-            ),
+            Transactions(),
           ],
         ),
       ),
@@ -483,6 +414,8 @@ class BackgroundGradientOrange extends StatelessWidget {
       ),
     );
   }
+
+
 }
 
 class BackgroundGradientPurple extends StatelessWidget {

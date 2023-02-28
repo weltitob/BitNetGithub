@@ -90,7 +90,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(Icons.arrow_back_rounded)),
         elevation: 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

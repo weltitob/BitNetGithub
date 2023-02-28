@@ -23,7 +23,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(Icons.arrow_back_rounded)),
         elevation: 0,
         title: Text("Bitcoin erhalten", style: Theme.of(context).textTheme.titleLarge),
         backgroundColor: AppTheme.colorBackground,

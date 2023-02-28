@@ -175,10 +175,13 @@ class _buildChartState extends State<buildChart> {
 
   @override
   Widget build(BuildContext context) {
-    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-    DateFormat timeFormat = DateFormat("HH:mm:ss");
+    DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+    DateFormat timeFormat = DateFormat("HH:mm");
+
+
     String date = dateFormat.format(DateTime.now());
-    String time = timeFormat.format(DateTime.now());
+    String timeincomp = timeFormat.format(DateTime.now());
+    String timecomp = timeincomp + " Uhr";
 
     late double lastpriceexact = currentline.last.price;
     late double firstprice = currentline.first.price;
@@ -225,7 +228,7 @@ class _buildChartState extends State<buildChart> {
                               ),
                             ),
                             Text(
-                              time,
+                              timecomp,
                               style: Theme.of(context).textTheme.subtitle2,
                             ),
                           ],
