@@ -19,8 +19,12 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
 
   sendIssue() {
     print('Issue commited');
-    _issueController.text = "";
-    displaySnackbar(context, "Deine Fehlermeldung wurde weitergeleitet");
+    if(_issueController.text.isNotEmpty) {
+      _issueController.text = "";
+      displaySnackbar(context, "Deine Fehlermeldung wurde weitergeleitet");
+    } else {
+      displaySnackbar(context, "Bitte geben Sie erst einen Fehlertext an");
+    }
   }
 
   @override
@@ -89,7 +93,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                 child: GestureDetector(
                   onTap: () => sendIssue(),
                   child: glassButton(
-                      text: "Melden", iconData: Icons.send, function: () => sendIssue()),
+                      text: "Melden", iconData: Icons.send, onTap: () => sendIssue()),
                 ),
               ),
             ),

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
-import 'package:nexus_wallet/pages/secondpages/agb.dart';
+import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
-import 'package:nexus_wallet/pages/secondpages/impressum.dart';
+import 'package:nexus_wallet/pages/secondpages/impressumscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/reportissuescreen.dart';
 import 'package:nexus_wallet/theme.dart';
 

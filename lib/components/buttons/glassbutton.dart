@@ -5,13 +5,13 @@ import 'package:nexus_wallet/theme.dart';
 class glassButton extends StatelessWidget {
   final String text;
   final IconData? iconData;
-  final Function()? function;
+  final Function()? onTap;
   final bool? isSelected;
 
   const glassButton({
     required this.text,
     this.iconData,
-    this.function,
+    this.onTap,
     this.isSelected,
   });
 
@@ -28,9 +28,7 @@ class glassButton extends StatelessWidget {
                   minimumSize: const Size(50, 30),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   alignment: Alignment.centerLeft),
-              onPressed: () {
-                // handle push to HomeScreen
-              },
+              onPressed: onTap,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: AppTheme.elementSpacing * 0.5,

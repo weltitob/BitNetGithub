@@ -25,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   late final Future<LottieComposition> _compositionReceive;
   bool _visible = false;
 
+  final transactionstate = "all";
+
   @override
   void initState() {
     super.initState();
@@ -277,14 +279,33 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                     children: [
                       glassButton(
                         text: "Alle",
+                        isSelected: transactionstate == "all" ? true : false,
+                        onTap: (){
+                          print('pressed');
+                          setState(() {
+                            transactionstate == "all";
+                          });
+                        },
                       ),
                       SizedBox(width: AppTheme.elementSpacing,),
                       glassButton(
-                        text: "Gesendet", isSelected: false
+                        text: "Gesendet",
+                        isSelected: transactionstate == "sended" ? true : false,
+                        onTap: (){
+                          setState(() {
+                            transactionstate == "sended";
+                          });
+                        },
                       ),
                       SizedBox(width: AppTheme.elementSpacing,),
                       glassButton(
-                        text: "Erhalten", isSelected: false
+                        text: "Erhalten",
+                        isSelected: transactionstate == "received" ? true : false,
+                        onTap: (){
+                          setState(() {
+                            transactionstate == "received";
+                          });
+                        },
                       )
                     ],
                   ),
