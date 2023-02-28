@@ -64,8 +64,8 @@ class _CryptoItemState extends State<CryptoItem> {
     onedaychart = chartClassDay.chartLine;
 
     final double lastprice = chartClassDay.chartLine.last.price;
-    final double firstprice = chartClassDay.chartLine.first.price;
     _currentPriceString = lastprice.toStringAsFixed(2) + "€";
+    final double firstprice = chartClassDay.chartLine.first.price;
 
     priceChange = (lastprice - firstprice) / firstprice;
     _priceChangeString = toPercent(priceChange);

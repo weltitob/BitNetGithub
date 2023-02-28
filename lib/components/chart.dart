@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/components/currencypicture.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/loaders.dart';
@@ -144,7 +145,8 @@ class _buildChartState extends State<buildChart> {
     onedaychart = chartClassDay.chartLine;
     currentline = onedaychart;
 
-    _latestprice = double.parse((onedaychart[onedaychart.length - 1].price).toStringAsFixed(2));
+    _latestprice = double.parse(
+        (onedaychart.last.price).toStringAsFixed(2));
     trackBallValue = _latestprice.toString();
 
     setState(() {
@@ -177,6 +179,12 @@ class _buildChartState extends State<buildChart> {
     DateFormat timeFormat = DateFormat("HH:mm:ss");
     String date = dateFormat.format(DateTime.now());
     String time = timeFormat.format(DateTime.now());
+
+    late double lastpriceexact = currentline.last.price;
+    late double firstprice = currentline.first.price;
+
+    late final priceChange = (lastpriceexact - firstprice) / firstprice;
+    late final _priceChangeString = toPercent(priceChange);
 
     return Column(
       children: [
@@ -242,8 +250,6 @@ class _buildChartState extends State<buildChart> {
                     margin: const EdgeInsets.only(top: 15, bottom: 15),
                     child: InkWell(
                       child: Container(
-                          width: 80,
-                          height: 35,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12.0),
@@ -257,18 +263,11 @@ class _buildChartState extends State<buildChart> {
                                       ? AppTheme.successColor.withOpacity(0.5)
                                       : AppTheme.errorColor.withOpacity(0.5)),
                           child: Center(
-                            child: Text(
-                                _loading
-                                    ? formatpercentvalue("")
-                                    : formatpercentvalue(
-                                        percent_of_change(
-                                                currentline[0].price,
-                                                currentline[
-                                                        currentline.length - 1]
-                                                    .price)
-                                            .toStringAsFixed(2),
-                                      ),
-                                style: Theme.of(context).textTheme.subtitle2),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(_loading ? "0.00%" : _priceChangeString,
+                                  style: Theme.of(context).textTheme.subtitle2),
+                            ),
                           )),
                     ),
                   ),
@@ -298,14 +297,17 @@ class _buildChartState extends State<buildChart> {
                           onTrackballPositionChanging: (args) {
                             // Print the y-value of the first series in the trackball.
                             if (args.chartPointInfo.yPosition != null) {
-                              final pointInfo = double.parse(args.chartPointInfo.label!).toStringAsFixed(2);
+                              final pointInfo =
+                                  double.parse(args.chartPointInfo.label!)
+                                      .toStringAsFixed(2);
                               //update for CustomWidget
 
                               trackBallValue = pointInfo;
                               key.currentState!.refresh();
                             }
                           },
-                          onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
+                          onChartTouchInteractionUp:
+                              (ChartTouchInteractionArgs args) {
                             //reset to current latest price when selection ends
                             trackBallValue = _latestprice.toString();
                             key.currentState!.refresh();
@@ -521,32 +523,6 @@ class _buildChartState extends State<buildChart> {
 getaverage(dynamic currentline) {
   return currentline.map((m) => m.price).reduce((a, b) => a + b) /
       currentline.length;
-}
-
-double percent_of_change(num num1, num num2) => ((num2 - num1) / num1) * 100;
-
-formatpercentvalue(String percent) {
-  if (percent.contains('-')) {
-    if (percent.length > 7) {
-      String percentwithoutminus = percent.replaceAll('-', '');
-      double toolongpercent = double.parse(percentwithoutminus);
-      String formattedpercent = "- ${toolongpercent.toStringAsFixed(0)}%";
-      return formattedpercent;
-    } else {
-      String percentwithoutminus = percent.replaceAll('-', '');
-      String formattedpercent = "- ${percentwithoutminus}%";
-      return formattedpercent;
-    }
-  } else {
-    if (percent.length > 7) {
-      double toolongpercent = double.parse(percent);
-      String formattedpercent = "+ ${toolongpercent.toStringAsFixed(0)}%";
-      return formattedpercent;
-    } else {
-      String formattedpercent = "+ ${percent}%";
-      return formattedpercent;
-    }
-  }
 }
 
 class CustomWidget extends StatefulWidget {
