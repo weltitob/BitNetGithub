@@ -8,8 +8,14 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class News {
-  List<Article> news = [];
+class buildNews extends StatefulWidget {
+  @override
+  _buildNewsState createState() => _buildNewsState();
+}
+
+class _buildNewsState extends State<buildNews> {
+  List<Article> newslist = [];
+  bool _loading = true;
 
   Future<void> getNews() async {
     var url = Uri.parse(
@@ -28,27 +34,11 @@ class News {
             urlToImage: element['urlToImage'].toString(),
             publishedAt: DateTime.parse(element['publishedAt'].toString()),
           );
-          news.add(article);
+          newslist.add(article);
           print(article);
         }
       });
     }
-  }
-}
-
-class buildNews extends StatefulWidget {
-  @override
-  _buildNewsState createState() => _buildNewsState();
-}
-
-class _buildNewsState extends State<buildNews> {
-  var newslist;
-  bool _loading = true;
-
-  getNews() async {
-    News newsClass = News();
-    await newsClass.getNews();
-    newslist = newsClass.news;
     print(newslist);
     setState(() {
       _loading = false;
