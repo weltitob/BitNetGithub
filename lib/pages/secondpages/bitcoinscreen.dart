@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/components/container/buildroundedbox.dart';
-import 'package:nexus_wallet/components/items/newsitem.dart';
-import 'package:nexus_wallet/loaders.dart';
+import 'package:nexus_wallet/pages/secondpages/newsscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 
 class BitcoinScreen extends StatefulWidget {
@@ -49,7 +48,8 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               ),
               SizedBox(
                 height: AppTheme.cardPadding,
-              )
+              ),
+              buildNews(),
             ],
           ))
         ],

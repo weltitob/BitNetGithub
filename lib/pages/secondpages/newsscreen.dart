@@ -13,7 +13,7 @@ class News {
 
   Future<void> getNews() async {
     var url = Uri.parse(
-        "https://newsapi.org/v2/top-headlines?q=bitcoin&language=en&category=business&apiKey=be561302ff234a908ac60730ef999db6");
+        "https://newsapi.org/v2/top-headlines?q=bitcoin&language=de&category=business&apiKey=be561302ff234a908ac60730ef999db6");
     var response = await http.get(url);
     var jsonData = jsonDecode(response.body);
     if (jsonData['status'] == "ok") {
@@ -29,6 +29,7 @@ class News {
             publishedAt: DateTime.parse(element['publishedAt'].toString()),
           );
           news.add(article);
+          print(article);
         }
       });
     }
@@ -42,12 +43,13 @@ class buildNews extends StatefulWidget {
 
 class _buildNewsState extends State<buildNews> {
   var newslist;
-  late bool _loading;
+  bool _loading = true;
 
   getNews() async {
     News newsClass = News();
     await newsClass.getNews();
     newslist = newsClass.news;
+    print(newslist);
     setState(() {
       _loading = false;
     });
@@ -56,7 +58,6 @@ class _buildNewsState extends State<buildNews> {
   @override
   void initState() {
     super.initState();
-    _loading = true;
     getNews();
   }
 
@@ -110,10 +111,7 @@ class _NewsScreenState extends State<NewsScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[Text("News")],
-        ),
+        title: Text("News"),
         backgroundColor: Colors.black,
         elevation: 0.0,
       ),
