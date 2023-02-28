@@ -9,7 +9,10 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
 
-class CryptoChartLine{
+GlobalKey<_CustomWidgetState> key = GlobalKey<_CustomWidgetState>();
+String trackBallValue = "";
+
+class CryptoChartLine {
   final String crypto;
   final String interval;
   final String days;
@@ -22,14 +25,15 @@ class CryptoChartLine{
     required this.currency,
   });
 
-  List<ChartLine> chartLine  = [];
-  Future<void> getChartData() async{
-    var url = "https://api.coingecko.com/api/v3/coins/$crypto/market_chart?vs_currency=$currency&days=$days&interval=$interval";
+  List<ChartLine> chartLine = [];
+  Future<void> getChartData() async {
+    var url =
+        "https://api.coingecko.com/api/v3/coins/$crypto/market_chart?vs_currency=$currency&days=$days&interval=$interval";
     Response res = await get(Uri.parse(url));
     var jsonData = jsonDecode(res.body);
     if (res.statusCode == 200) {
-      if(days == "max"){
-        for(var i = 0; i < jsonData["prices"].length; i+=14) {
+      if (days == "max") {
+        for (var i = 0; i < jsonData["prices"].length; i += 14) {
           dynamic element = jsonData["prices"][i];
           double time = element[0].toDouble();
           double price = element[1].toDouble();
@@ -39,8 +43,7 @@ class CryptoChartLine{
           );
           chartLine.add(chartData);
         }
-      }
-      else if (days == "30") {
+      } else if (days == "30") {
         for (var i = 0; i < jsonData["prices"].length; i += 4) {
           dynamic element = jsonData["prices"][i];
           double time = element[0].toDouble();
@@ -51,8 +54,7 @@ class CryptoChartLine{
           );
           chartLine.add(chartData);
         }
-      }
-      else {
+      } else {
         jsonData["prices"].forEach((element) {
           double time = element[0].toDouble();
           double price = element[1].toDouble();
@@ -69,15 +71,11 @@ class CryptoChartLine{
   }
 }
 
-
 class ChartLine {
   final double time;
   final double price;
 
-  ChartLine({
-    required this.time,
-    required this.price
-  });
+  ChartLine({required this.time, required this.price});
 }
 
 class buildChart extends StatefulWidget {
@@ -99,6 +97,7 @@ class _buildChartState extends State<buildChart> {
   late List<ChartLine> onedaychart;
   late List<ChartLine> currentline;
   late bool _loading;
+  late double _latestprice;
   String timespan = "1D";
 
   getChartLine() async {
@@ -145,6 +144,9 @@ class _buildChartState extends State<buildChart> {
     onedaychart = chartClassDay.chartLine;
     currentline = onedaychart;
 
+    _latestprice = double.parse((onedaychart[onedaychart.length - 1].price).toStringAsFixed(2));
+    trackBallValue = _latestprice.toString();
+
     setState(() {
       _loading = false;
     });
@@ -156,17 +158,17 @@ class _buildChartState extends State<buildChart> {
     _loading = true;
     getChartLine();
     _trackballBehavior = TrackballBehavior(
-        lineColor: Colors.grey[400],
-        enable: true,
-        tooltipDisplayMode: TrackballDisplayMode.floatAllPoints,
-        tooltipAlignment: ChartAlignment.near,
-        activationMode: ActivationMode.singleTap,
-        lineWidth: 2,
-        lineType: TrackballLineType.horizontal,
-        markerSettings: const TrackballMarkerSettings(
-            color: Colors.grey,
-            borderColor:  Colors.grey,
-            markerVisibility: TrackballVisibilityMode.visible));
+      lineColor: Colors.grey[400],
+      enable: true,
+      activationMode: ActivationMode.singleTap,
+      lineWidth: 2,
+      lineType: TrackballLineType.horizontal,
+      tooltipSettings: InteractiveTooltip(enable: false),
+      markerSettings: const TrackballMarkerSettings(
+          color: Colors.grey,
+          borderColor: Colors.grey,
+          markerVisibility: TrackballVisibilityMode.visible),
+    );
   }
 
   @override
@@ -231,9 +233,8 @@ class _buildChartState extends State<buildChart> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        _loading ? "" : "${double.parse((onedaychart[onedaychart.length-1].price).toStringAsFixed(2))}€",
-                        style: Theme.of(context).textTheme.headline3,
+                      CustomWidget(
+                        key: key,
                       ),
                     ],
                   ),
@@ -248,23 +249,26 @@ class _buildChartState extends State<buildChart> {
                               borderRadius: BorderRadius.circular(12.0),
                               color: _loading
                                   ? 10 < 0
-                                  ? AppTheme.successColor.withOpacity(0.5)
-                                  : AppTheme.errorColor.withOpacity(0.5)
-                                  : currentline[0].price < currentline[currentline.length - 1].price
-                                  ? AppTheme.successColor.withOpacity(0.5)
-                                  : AppTheme.errorColor.withOpacity(0.5)),
+                                      ? AppTheme.successColor.withOpacity(0.5)
+                                      : AppTheme.errorColor.withOpacity(0.5)
+                                  : currentline[0].price <
+                                          currentline[currentline.length - 1]
+                                              .price
+                                      ? AppTheme.successColor.withOpacity(0.5)
+                                      : AppTheme.errorColor.withOpacity(0.5)),
                           child: Center(
                             child: Text(
                                 _loading
                                     ? formatpercentvalue("")
                                     : formatpercentvalue(
-                                  percent_of_change(
-                                      currentline[0].price,
-                                      currentline[currentline.length - 1].price)
-                                      .toStringAsFixed(2),
-                                ),
-                                style:
-                                Theme.of(context).textTheme.subtitle2),
+                                        percent_of_change(
+                                                currentline[0].price,
+                                                currentline[
+                                                        currentline.length - 1]
+                                                    .price)
+                                            .toStringAsFixed(2),
+                                      ),
+                                style: Theme.of(context).textTheme.subtitle2),
                           )),
                     ),
                   ),
@@ -278,59 +282,78 @@ class _buildChartState extends State<buildChart> {
             Container(
               child: _loading
                   ? Center(
-                child: Container(
-                  color: AppTheme.colorBackground,
-                  height: AppTheme.cardPadding * 15,
-                  child: avatarGlow(context, Icons.currency_bitcoin,),
-                ),
-              )
+                      child: Container(
+                        color: AppTheme.colorBackground,
+                        height: AppTheme.cardPadding * 15,
+                        child: avatarGlow(
+                          context,
+                          Icons.currency_bitcoin,
+                        ),
+                      ),
+                    )
                   : SizedBox(
-                    height: AppTheme.cardPadding * 15,
-                    child: SfCartesianChart(
-                        trackballBehavior: _trackballBehavior,
-                        enableAxisAnimation: true,
-                        plotAreaBorderWidth: 0,
-                        primaryXAxis: CategoryAxis(
-                            labelPlacement: LabelPlacement.onTicks,
-                            edgeLabelPlacement: EdgeLabelPlacement.none,
-                            isVisible: false,
-                            majorGridLines: const MajorGridLines(width: 0),
-                            majorTickLines: const MajorTickLines(width: 0)),
-                        primaryYAxis: NumericAxis(
-                            plotBands: <PlotBand>[
-                              PlotBand(
-                                  isVisible: true,
-                                  dashArray: const <double>[2, 5],
-                                  start: getaverage(currentline),
-                                  end: getaverage(currentline),
-                                  horizontalTextAlignment: TextAnchor.start,
-                                  textStyle: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                  borderColor: Colors.grey,
-                                  borderWidth: 1.5)
-                            ],
-                            plotOffset: 0,
-                            edgeLabelPlacement: EdgeLabelPlacement.none,
-                            isVisible: false,
-                            majorGridLines: const MajorGridLines(width: 0),
-                            majorTickLines: const MajorTickLines(width: 0)),
-                        series: <ChartSeries>[
-                          // Renders line chart
-                          LineSeries<ChartLine, double>(
-                            dataSource: currentline,
-                            animationDuration: 0,
-                            xValueMapper: (ChartLine crypto, _) => crypto.time,
-                            yValueMapper: (ChartLine crypto, _) => crypto.price,
-                            color:
-                            currentline[0].price <
-                                currentline[currentline.length - 1].price
-                                ? AppTheme.successColor
-                                : AppTheme.errorColor,
-                          )
-                        ]),
-                  ),
+                      height: AppTheme.cardPadding * 15,
+                      child: SfCartesianChart(
+                          trackballBehavior: _trackballBehavior,
+                          onTrackballPositionChanging: (args) {
+                            // Print the y-value of the first series in the trackball.
+                            if (args.chartPointInfo.yPosition != null) {
+                              final pointInfo = double.parse(args.chartPointInfo.label!).toStringAsFixed(2);
+                              //update for CustomWidget
+
+                              trackBallValue = pointInfo;
+                              key.currentState!.refresh();
+                            }
+                          },
+                          onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
+                            //reset to current latest price when selection ends
+                            trackBallValue = _latestprice.toString();
+                            key.currentState!.refresh();
+                          },
+                          enableAxisAnimation: true,
+                          plotAreaBorderWidth: 0,
+                          primaryXAxis: CategoryAxis(
+                              labelPlacement: LabelPlacement.onTicks,
+                              edgeLabelPlacement: EdgeLabelPlacement.none,
+                              isVisible: false,
+                              majorGridLines: const MajorGridLines(width: 0),
+                              majorTickLines: const MajorTickLines(width: 0)),
+                          primaryYAxis: NumericAxis(
+                              plotBands: <PlotBand>[
+                                PlotBand(
+                                    isVisible: true,
+                                    dashArray: const <double>[2, 5],
+                                    start: getaverage(currentline),
+                                    end: getaverage(currentline),
+                                    horizontalTextAlignment: TextAnchor.start,
+                                    textStyle: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                    borderColor: Colors.grey,
+                                    borderWidth: 1.5)
+                              ],
+                              plotOffset: 0,
+                              edgeLabelPlacement: EdgeLabelPlacement.none,
+                              isVisible: false,
+                              majorGridLines: const MajorGridLines(width: 0),
+                              majorTickLines: const MajorTickLines(width: 0)),
+                          series: <ChartSeries>[
+                            // Renders line chart
+                            LineSeries<ChartLine, double>(
+                              dataSource: currentline,
+                              animationDuration: 0,
+                              xValueMapper: (ChartLine crypto, _) =>
+                                  crypto.time,
+                              yValueMapper: (ChartLine crypto, _) =>
+                                  crypto.price,
+                              color: currentline[0].price <
+                                      currentline[currentline.length - 1].price
+                                  ? AppTheme.successColor
+                                  : AppTheme.errorColor,
+                            )
+                          ]),
+                    ),
             ),
           ],
         ),
@@ -380,82 +403,85 @@ class _buildChartState extends State<buildChart> {
         });
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
-        child: timespan == timeperiod ?
-        Glassmorphism(
-          blur: 20,
-          opacity: 0.1,
-          radius: 50.0,
-          child: TextButton(
-            style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(50, 30),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                alignment: Alignment.centerLeft),
-            onPressed: () {
-              // handle push to HomeScreen
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: AppTheme.elementSpacing * 0.5,
-                horizontal: AppTheme.elementSpacing,
-              ),
-              child: Text(
-                timeperiod,
-                style:
-                Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: timespan == timeperiod ? Theme.of(context).colorScheme.
-                    onPrimaryContainer : Theme.of(context).colorScheme.
-                    onPrimaryContainer.withOpacity(0.6)
-                )
-              ),
-            ),
-          ),
-        ) :
-        TextButton(
-          style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: const Size(50, 20),
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              alignment: Alignment.centerLeft),
-          onPressed: () {
-            setState(() {
-              timespan = timeperiod;
-              switch (timespan) {
-                case "1D":
-                  currentline = onedaychart;
-                  break;
-                case "1W":
-                  currentline = oneweekchart;
-                  break;
-                case "1M":
-                  currentline = onemonthchart;
-                  break;
-                case "1Y":
-                  currentline = oneyearchart;
-                  break;
-                case "Max":
-                  currentline = maxchart;
-                  break;
-              }
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppTheme.elementSpacing * 0.5,
-              horizontal: AppTheme.elementSpacing,
-            ),
-            child: Text(
-                timeperiod,
-                style:
-                Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: timespan == timeperiod ? Theme.of(context).colorScheme.
-                    onPrimaryContainer : Theme.of(context).colorScheme.
-                    onPrimaryContainer.withOpacity(0.6)
+        padding:
+            const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
+        child: timespan == timeperiod
+            ? Glassmorphism(
+                blur: 20,
+                opacity: 0.1,
+                radius: 50.0,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.centerLeft),
+                  onPressed: () {
+                    // handle push to HomeScreen
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppTheme.elementSpacing * 0.5,
+                      horizontal: AppTheme.elementSpacing,
+                    ),
+                    child: Text(timeperiod,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color: timespan == timeperiod
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer
+                                    .withOpacity(0.6))),
+                  ),
                 ),
-            ),
-          ),
-        ),
+              )
+            : TextButton(
+                style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(50, 20),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    alignment: Alignment.centerLeft),
+                onPressed: () {
+                  setState(() {
+                    timespan = timeperiod;
+                    switch (timespan) {
+                      case "1D":
+                        currentline = onedaychart;
+                        break;
+                      case "1W":
+                        currentline = oneweekchart;
+                        break;
+                      case "1M":
+                        currentline = onemonthchart;
+                        break;
+                      case "1Y":
+                        currentline = oneyearchart;
+                        break;
+                      case "Max":
+                        currentline = maxchart;
+                        break;
+                    }
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5,
+                    horizontal: AppTheme.elementSpacing,
+                  ),
+                  child: Text(
+                    timeperiod,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: timespan == timeperiod
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer
+                                .withOpacity(0.6)),
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -463,7 +489,8 @@ class _buildChartState extends State<buildChart> {
   Widget buildChildTimeChooser(String timeperiod) {
     return GestureDetector(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+        padding:
+            const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
         child: Container(
           decoration: BoxDecoration(
             color: timespan == timeperiod
@@ -473,33 +500,34 @@ class _buildChartState extends State<buildChart> {
           ),
           child: Padding(
             padding:
-            const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
+                const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
             child: Text(timeperiod,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: timespan == timeperiod ? Theme.of(context).colorScheme.
-                    onPrimaryContainer : Theme.of(context).colorScheme.
-                    onPrimaryContainer.withOpacity(0.6)
-                )
-            ),
+                    color: timespan == timeperiod
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : Theme.of(context)
+                            .colorScheme
+                            .onPrimaryContainer
+                            .withOpacity(0.6))),
           ),
         ),
       ),
-
     );
   }
 }
 
 //Helper
 
-getaverage(dynamic currentline){
-  return currentline.map((m) => m.price).reduce((a, b) => a + b) / currentline.length;
+getaverage(dynamic currentline) {
+  return currentline.map((m) => m.price).reduce((a, b) => a + b) /
+      currentline.length;
 }
 
 double percent_of_change(num num1, num num2) => ((num2 - num1) / num1) * 100;
 
 formatpercentvalue(String percent) {
   if (percent.contains('-')) {
-    if(percent.length > 7){
+    if (percent.length > 7) {
       String percentwithoutminus = percent.replaceAll('-', '');
       double toolongpercent = double.parse(percentwithoutminus);
       String formattedpercent = "- ${toolongpercent.toStringAsFixed(0)}%";
@@ -509,16 +537,38 @@ formatpercentvalue(String percent) {
       String formattedpercent = "- ${percentwithoutminus}%";
       return formattedpercent;
     }
-  }
-  else {
-    if(percent.length > 7){
+  } else {
+    if (percent.length > 7) {
       double toolongpercent = double.parse(percent);
       String formattedpercent = "+ ${toolongpercent.toStringAsFixed(0)}%";
       return formattedpercent;
-    }
-    else {
+    } else {
       String formattedpercent = "+ ${percent}%";
       return formattedpercent;
     }
+  }
+}
+
+class CustomWidget extends StatefulWidget {
+  final Key key;
+  const CustomWidget({required this.key});
+
+  @override
+  State<CustomWidget> createState() => _CustomWidgetState();
+}
+
+class _CustomWidgetState extends State<CustomWidget> {
+  void refresh() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      "${trackBallValue}€",
+      style: Theme.of(context).textTheme.displaySmall,
+    );
   }
 }
