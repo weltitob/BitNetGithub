@@ -19,12 +19,15 @@ class _buildNewsState extends State<buildNews> {
 
   Future<void> getNews() async {
     var url = Uri.parse(
-        "https://newsapi.org/v2/top-headlines?q=bitcoin&language=de&category=business&apiKey=be561302ff234a908ac60730ef999db6");
+        "https://newsapi.org/v2/everything?q=bitcoin&sortBy=publishedAt&apiKey=be561302ff234a908ac60730ef999db6");
     var response = await http.get(url);
+    print(response);
     var jsonData = jsonDecode(response.body);
+    print("json decoded");
     if (jsonData['status'] == "ok") {
+      print('status ok');
       jsonData["articles"].forEach((element) {
-        if (element['urlToImage'] != null && element['description'] != null) {
+        //if (element['urlToImage'] != null && element['description'] != null) {
           Article article = Article(
             title: element['title'].toString(),
             content: element['content'].toString(),
@@ -36,7 +39,8 @@ class _buildNewsState extends State<buildNews> {
           );
           newslist.add(article);
           print(article);
-        }
+          print('article added');
+        //}
       });
     }
     print(newslist);
@@ -77,7 +81,7 @@ class _buildNewsState extends State<buildNews> {
                       content: newslist[index].content,
                       posturl: newslist[index].url,
                       publishedAt: newslist[index].publishedAt.toString(),
-                      author: 'Riinger',
+                      author: 'Ringer',
                     );
                   }),
             ),
@@ -102,7 +106,7 @@ class _NewsScreenState extends State<NewsScreen> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text("News"),
-        backgroundColor: Colors.black,
+        backgroundColor: lighten(AppTheme.colorBackground, 10),
         elevation: 0.0,
       ),
       body: Container(
