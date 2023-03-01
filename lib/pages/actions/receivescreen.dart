@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/cameraqr.dart';
+import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
@@ -13,6 +15,7 @@ class ReceiveScreen extends StatefulWidget {
 
 class _ReceiveScreenState extends State<ReceiveScreen> {
   GlobalKey globalKeyQR = GlobalKey();
+  final String _walletAdress = "1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71";
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
             },
             icon: const Icon(Icons.arrow_back_rounded)),
         elevation: 0,
-        title: Text("Bitcoin erhalten", style: Theme.of(context).textTheme.titleLarge),
+        title: Text("Bitcoin erhalten",
+            style: Theme.of(context).textTheme.titleLarge),
         backgroundColor: AppTheme.colorBackground,
       ),
       body: Container(
@@ -72,7 +76,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                                     'assets/images/bitcoin.png'),
                                 typeNumber: 3,
                                 size: 200,
-                                data: 'test',
+                                data: _walletAdress,
                                 errorCorrectLevel: QrErrorCorrectLevel.M,
                                 roundEdges: true,
                               ),
@@ -90,10 +94,19 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.copy_rounded,
-                    size: 18,
-                    color: AppTheme.white60,
+                  GestureDetector(
+                    onTap: () async {
+                      await Clipboard.setData(
+                          ClipboardData(text: _walletAdress));
+                      // copied successfully
+                      displaySnackbar(
+                          context, "Wallet-Adresse in Zwischenablage kopiert");
+                    },
+                    child: Icon(
+                      Icons.copy_rounded,
+                      size: 18,
+                      color: AppTheme.white60,
+                    ),
                   ),
                   const SizedBox(
                     width: AppTheme.elementSpacing * 0.25,
@@ -110,15 +123,16 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  glassButton(text: "Kopieren", iconData: Icons.copy_rounded, onTap: () {  },),
                   glassButton(
-                    text: "Teilen",
-                    iconData: Icons.share_rounded, onTap: () {  },
+                    text: "Kopieren",
+                    iconData: Icons.copy_rounded,
+                    onTap: () {},
                   ),
                   glassButton(
-                    text: "Schlüssel",
-                    iconData: Icons.key_rounded, onTap: () {  },
-                  )
+                    text: "Teilen",
+                    iconData: Icons.share_rounded,
+                    onTap: () {},
+                  ),
                 ],
               ),
               const SizedBox(

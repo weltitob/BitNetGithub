@@ -31,7 +31,7 @@ class NewsTile extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
         decoration: BoxDecoration(
-          color: lighten(AppTheme.colorBackground, 15),
+          color: lighten(AppTheme.colorBackground, 20),
           boxShadow: [
             AppTheme.boxShadowBig
           ],

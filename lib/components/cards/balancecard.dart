@@ -2,14 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:math' as math;
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
+import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/theme.dart';
 
 class BalanceCardBtc extends StatelessWidget {
   const BalanceCardBtc({Key? key}) : super(key: key);
+
+  final String _walletAdress = "1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71";
 
   Widget balanceText(BuildContext context) {
     return Padding(
@@ -19,27 +20,38 @@ class BalanceCardBtc extends StatelessWidget {
         children: [
           Text(
             'Guthaben',
-            style: Theme.of(context).textTheme.subtitle1,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 2),
           Text(
             "2.150 BTC",
             // NumberFormat.simpleCurrency().format(MockBalance.data.last),
-            style: Theme.of(context).textTheme.headline3),
+            style: Theme.of(context).textTheme.displaySmall),
           const Spacer(),
           Text(
             'Deine Wallet-Adresse',
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
-          Row(
-            children: [
-              Icon(Icons.copy_rounded, color: AppTheme.white80, size: 18,),
-              const SizedBox(width: 4,),
-              Text(
-                '3FZbgi29cpjq2...',
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
-            ],
+          GestureDetector(
+            onTap: () async {
+              await Clipboard.setData(ClipboardData(text: _walletAdress));
+              // copied successfully
+              displaySnackbar(context, "Wallet-Adresse in Zwischenablage kopiert");
+            },
+            child: Row(
+              children: [
+                Icon(Icons.copy_rounded, color: AppTheme.white80, size: 18,),
+                const SizedBox(width: 4,),
+                Container(
+                  width: AppTheme.cardPadding * 5,
+                  child: Text(
+                    _walletAdress,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -54,7 +66,7 @@ class BalanceCardBtc extends StatelessWidget {
         height: AppTheme.cardPadding * 2,
         width: AppTheme.cardPadding * 2,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2),
           color: Theme.of(context).backgroundColor.withOpacity(0.25),
         ),
         child: CachedNetworkImage(
@@ -82,7 +94,7 @@ class BalanceCardBtc extends StatelessWidget {
               size: 16,
             ),
             const SizedBox(width: 4),
-            Text('+5.2%', style: Theme.of(context).textTheme.bodyText2,),
+            Text('+5.2%', style: Theme.of(context).textTheme.bodyMedium,),
           ],
         ),
       ),
@@ -132,7 +144,6 @@ class BalanceBackground2 extends StatelessWidget {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
