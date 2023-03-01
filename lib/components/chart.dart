@@ -183,8 +183,8 @@ class _buildChartState extends State<buildChart> {
       lineType: TrackballLineType.horizontal,
       tooltipSettings: InteractiveTooltip(enable: false),
       markerSettings: const TrackballMarkerSettings(
-          color: Colors.grey,
-          borderColor: Colors.grey,
+          color: Colors.white,
+          borderColor: Colors.white,
           markerVisibility: TrackballVisibilityMode.visible),
     );
   }
@@ -306,7 +306,7 @@ class _buildChartState extends State<buildChart> {
                   ? Center(
                       child: Container(
                         color: AppTheme.colorBackground,
-                        height: AppTheme.cardPadding * 15,
+                        height: AppTheme.cardPadding * 16,
                         child: avatarGlow(
                           context,
                           Icons.currency_bitcoin,
@@ -314,7 +314,7 @@ class _buildChartState extends State<buildChart> {
                       ),
                     )
                   : SizedBox(
-                      height: AppTheme.cardPadding * 15,
+                      height: AppTheme.cardPadding * 16,
                       child: SfCartesianChart(
                           trackballBehavior: _trackballBehavior,
                           onTrackballPositionChanging: (args) {
