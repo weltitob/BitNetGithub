@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/components/glassmorph.dart';
 import '../../../theme.dart';
 
 class RoundedContainer extends StatefulWidget {
@@ -17,19 +18,23 @@ class _RoundedContainerState extends State<RoundedContainer> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
-      child: Container(
-          padding: const EdgeInsets.only(
-              top: AppTheme.elementSpacing,
-              bottom: AppTheme.elementSpacing,
-              left: AppTheme.cardPadding,
-              right: AppTheme.cardPadding),
-          decoration: BoxDecoration(
-              color: lighten(AppTheme.colorBackground, 10),
-              boxShadow: [
-                AppTheme.boxShadowProfile
-              ],
-              borderRadius: AppTheme.cardRadiusBig),
-          child: widget.child
+      child: Glassmorphism(
+        blur: 20,
+        opacity: 0.1,
+        radius: AppTheme.cardPadding,
+        child: Container(
+            padding: const EdgeInsets.only(
+                top: AppTheme.elementSpacing,
+                bottom: AppTheme.elementSpacing,
+                left: AppTheme.cardPadding,
+                right: AppTheme.cardPadding),
+            decoration: BoxDecoration(
+                boxShadow: [
+                  AppTheme.boxShadowProfile
+                ],
+                borderRadius: AppTheme.cardRadiusBig),
+            child: widget.child
+        ),
       ),
     );
   }
