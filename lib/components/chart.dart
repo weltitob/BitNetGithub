@@ -11,7 +11,8 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 GlobalKey<_CustomWidgetState> key = GlobalKey<_CustomWidgetState>();
-String trackBallValue = "";
+String trackBallValuePrice = "";
+String trackBallValueTime = "";
 
 class CryptoChartLine {
   final String crypto;
@@ -98,7 +99,10 @@ class _buildChartState extends State<buildChart> {
   late List<ChartLine> onedaychart;
   late List<ChartLine> currentline;
   late bool _loading;
+
   late double _latestprice;
+  late double _latesttime;
+
   String timespan = "1D";
 
   getChartLine() async {
@@ -138,15 +142,24 @@ class _buildChartState extends State<buildChart> {
     await chartClassYear.getChartData();
     await chartClassMax.getChartData();
 
-    maxchart = chartClassMax.chartLine;
-    oneyearchart = chartClassYear.chartLine;
-    onemonthchart = chartClassMonth.chartLine;
-    oneweekchart = chartClassWeek.chartLine;
+    final maxchartunfinished = chartClassMax.chartLine;
+    final oneyearchartunfinished = chartClassYear.chartLine;
+    final onemonthchartunfinished = chartClassMonth.chartLine;
+    final oneweekchartunfinished = chartClassWeek.chartLine;
     onedaychart = chartClassDay.chartLine;
+
+    maxchart = maxchartunfinished + onedaychart;
+    oneyearchart = oneyearchartunfinished + onedaychart;
+    onemonthchart = onemonthchartunfinished + onedaychart;
+    oneweekchart = oneweekchartunfinished + onedaychart;
+    //standard current line should be onedaychart
     currentline = onedaychart;
 
+    _latesttime = double.parse((onedaychart.last.time).toString());
     _latestprice = double.parse((onedaychart.last.price).toStringAsFixed(2));
-    trackBallValue = _latestprice.toString();
+
+    trackBallValuePrice = _latestprice.toString();
+    trackBallValueTime = _latesttime.toString();
 
     setState(() {
       _loading = false;
@@ -176,14 +189,11 @@ class _buildChartState extends State<buildChart> {
   Widget build(BuildContext context) {
     DateFormat dateFormat = DateFormat("dd.MM.yyyy");
     DateFormat timeFormat = DateFormat("HH:mm");
-
     String date = dateFormat.format(DateTime.now());
     String timeincomp = timeFormat.format(DateTime.now());
     String timecomp = timeincomp + " Uhr";
-
     late double lastpriceexact = currentline.last.price;
     late double firstprice = currentline.first.price;
-
     late final priceChange = (lastpriceexact - firstprice) / firstprice;
     late final _priceChangeString = toPercent(priceChange);
 
@@ -206,11 +216,11 @@ class _buildChartState extends State<buildChart> {
                           children: [
                             Text(
                               "BTC",
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
                             Text(
                               date.toString(),
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
                           ],
                         ),
@@ -227,7 +237,7 @@ class _buildChartState extends State<buildChart> {
                             ),
                             Text(
                               timecomp,
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
                           ],
                         ),
@@ -306,25 +316,29 @@ class _buildChartState extends State<buildChart> {
                           onTrackballPositionChanging: (args) {
                             // Print the y-value of the first series in the trackball.
                             if (args.chartPointInfo.yPosition != null) {
-                              final pointInfo =
+                              final pointInfoPrice =
                                   double.parse(args.chartPointInfo.label!)
                                       .toStringAsFixed(2);
+                              final pointInfoTime =
+                                  double.parse(args.chartPointInfo.header!)
+                                      .toString();
+                              print(pointInfoTime);
                               //update for CustomWidget
 
-                              trackBallValue = pointInfo;
+                              trackBallValuePrice = pointInfoPrice;
                               key.currentState!.refresh();
                             }
                           },
                           onChartTouchInteractionUp:
                               (ChartTouchInteractionArgs args) {
                             //reset to current latest price when selection ends
-                            trackBallValue = _latestprice.toString();
+                            trackBallValuePrice = _latestprice.toString();
                             key.currentState!.refresh();
                           },
                           enableAxisAnimation: true,
                           plotAreaBorderWidth: 0,
-                          primaryXAxis: CategoryAxis(
-                              labelPlacement: LabelPlacement.onTicks,
+                          primaryXAxis: DateTimeAxis(
+                              //labelPlacement: LabelPlacement.onTicks,
                               edgeLabelPlacement: EdgeLabelPlacement.none,
                               isVisible: false,
                               majorGridLines: const MajorGridLines(width: 0),
@@ -351,11 +365,11 @@ class _buildChartState extends State<buildChart> {
                               majorTickLines: const MajorTickLines(width: 0)),
                           series: <ChartSeries>[
                             // Renders line chart
-                            LineSeries<ChartLine, double>(
+                            LineSeries<ChartLine, DateTime>(
                               dataSource: currentline,
                               animationDuration: 0,
                               xValueMapper: (ChartLine crypto, _) =>
-                                  crypto.time,
+                                  DateTime.fromMicrosecondsSinceEpoch(crypto.time.toInt()),
                               yValueMapper: (ChartLine crypto, _) =>
                                   crypto.price,
                               color: currentline[0].price <
@@ -427,9 +441,7 @@ class _buildChartState extends State<buildChart> {
                       minimumSize: const Size(50, 30),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       alignment: Alignment.centerLeft),
-                  onPressed: () {
-                    // handle push to HomeScreen
-                  },
+                  onPressed: () {},
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: AppTheme.elementSpacing * 0.5,
@@ -552,7 +564,7 @@ class _CustomWidgetState extends State<CustomWidget> {
   @override
   Widget build(BuildContext context) {
     return Text(
-      "${trackBallValue}€",
+      "${trackBallValuePrice}€",
       style: Theme.of(context).textTheme.displaySmall,
     );
   }

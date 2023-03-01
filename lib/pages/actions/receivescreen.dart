@@ -54,7 +54,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                 style: Theme.of(context).textTheme.headline5,
               ),
               const SizedBox(
-                height: AppTheme.cardPadding * 2,
+                height: AppTheme.cardPadding * 3,
               ),
               SizedBox(
                 child: Center(
