@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
@@ -142,16 +144,18 @@ class _buildChartState extends State<buildChart> {
     await chartClassYear.getChartData();
     await chartClassMax.getChartData();
 
-    final maxchartunfinished = chartClassMax.chartLine;
-    final oneyearchartunfinished = chartClassYear.chartLine;
-    final onemonthchartunfinished = chartClassMonth.chartLine;
-    final oneweekchartunfinished = chartClassWeek.chartLine;
-    onedaychart = chartClassDay.chartLine;
+    final maxchartunfinished = chartClassMax.chartLine.toSet().toList();
+    final oneyearchartunfinished = chartClassYear.chartLine.toSet().toList();
+    final onemonthchartunfinished = chartClassMonth.chartLine.toSet().toList();
+    final oneweekchartunfinished = chartClassWeek.chartLine.toSet().toList();
+    onedaychart = chartClassDay.chartLine.toSet().toList();
 
-    maxchart = maxchartunfinished + onedaychart;
-    oneyearchart = oneyearchartunfinished + onedaychart;
-    onemonthchart = onemonthchartunfinished + onedaychart;
-    oneweekchart = oneweekchartunfinished + onedaychart;
+    List<ChartLine> onedaychartlast = [onedaychart.last];
+
+    maxchart = maxchartunfinished + onedaychartlast;
+    oneyearchart = oneyearchartunfinished + onedaychartlast;
+    onemonthchart = onemonthchartunfinished + onedaychartlast;
+    oneweekchart = oneweekchartunfinished + onedaychartlast;
     //standard current line should be onedaychart
     currentline = onedaychart;
 
@@ -337,7 +341,7 @@ class _buildChartState extends State<buildChart> {
                           },
                           enableAxisAnimation: true,
                           plotAreaBorderWidth: 0,
-                          primaryXAxis: DateTimeAxis(
+                          primaryXAxis: NumericAxis(
                               //labelPlacement: LabelPlacement.onTicks,
                               edgeLabelPlacement: EdgeLabelPlacement.none,
                               isVisible: false,
@@ -365,11 +369,11 @@ class _buildChartState extends State<buildChart> {
                               majorTickLines: const MajorTickLines(width: 0)),
                           series: <ChartSeries>[
                             // Renders line chart
-                            LineSeries<ChartLine, DateTime>(
+                            LineSeries<ChartLine, double>(
                               dataSource: currentline,
                               animationDuration: 0,
                               xValueMapper: (ChartLine crypto, _) =>
-                                  DateTime.fromMicrosecondsSinceEpoch(crypto.time.toInt()),
+                                  crypto.time,
                               yValueMapper: (ChartLine crypto, _) =>
                                   crypto.price,
                               color: currentline[0].price <
