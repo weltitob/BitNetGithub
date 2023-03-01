@@ -27,7 +27,7 @@ class _buildNewsState extends State<buildNews> {
     if (jsonData['status'] == "ok") {
       print('status ok');
       jsonData["articles"].forEach((element) {
-        //if (element['urlToImage'] != null && element['description'] != null) {
+        if (element['urlToImage'] != null && element['description'] != null) {
           Article article = Article(
             title: element['title'].toString(),
             content: element['content'].toString(),
@@ -40,7 +40,7 @@ class _buildNewsState extends State<buildNews> {
           newslist.add(article);
           print(article);
           print('article added');
-        //}
+        }
       });
     }
     print(newslist);
@@ -68,8 +68,8 @@ class _buildNewsState extends State<buildNews> {
             padding: const EdgeInsets.only(top: 5.0),
             child: Container(
               child: ListView.builder(
-                  itemCount: newslist.length > 4
-                      ? newslist.length = 4
+                  itemCount: newslist.length > 5
+                      ? newslist.length = 5
                       : newslist.length,
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -105,9 +105,11 @@ class _NewsScreenState extends State<NewsScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text("News"),
+        title: Text("NextNews"),
         backgroundColor: lighten(AppTheme.colorBackground, 10),
         elevation: 0.0,
+        automaticallyImplyLeading: false,
+        actions: [],
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,

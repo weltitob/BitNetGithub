@@ -33,7 +33,7 @@ class NewsTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: lighten(AppTheme.colorBackground, 15),
           boxShadow: [
-            AppTheme.boxShadowProfile
+            AppTheme.boxShadowBig
           ],
           borderRadius: BorderRadius.circular(AppTheme.cardPadding),
         ),

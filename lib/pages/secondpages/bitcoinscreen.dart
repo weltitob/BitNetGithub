@@ -33,7 +33,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               Navigator.pop(context);
             }),
       ),
-      body: ListView(
+      body: PageView(
         scrollDirection: Axis.vertical,
         controller: _controller,
         children: <Widget>[
