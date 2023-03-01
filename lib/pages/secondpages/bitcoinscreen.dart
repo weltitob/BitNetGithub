@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/components/container/buildroundedbox.dart';
+import 'package:nexus_wallet/components/walletstats/walletstats.dart';
 import 'package:nexus_wallet/pages/secondpages/newsscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 
 class BitcoinScreen extends StatefulWidget {
+
+
   const BitcoinScreen({
     Key? key,
   }) : super(key: key);
@@ -38,6 +41,20 @@ class _BitcoinScreenState extends State<BitcoinScreen>
         controller: _controller,
         children: <Widget>[
           buildChart(),
+          RoundedContainer(child:
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Wallet Statistik",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              SizedBox(
+                height: AppTheme.cardPadding,
+              ),
+              WalletStats(),
+            ],
+          )),
           RoundedContainer(
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +68,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               ),
               buildNews(),
             ],
-          ))
+          )),
         ],
       ),
     );

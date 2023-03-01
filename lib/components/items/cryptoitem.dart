@@ -59,13 +59,21 @@ class _CryptoItemState extends State<CryptoItem> {
       days: "1",
       interval: "hourly",
     );
+    CryptoChartLine chartClassDayMin = CryptoChartLine(
+      crypto: "bitcoin",
+      currency: "eur",
+      days: "1",
+      interval: "minuetly",
+    );
+
     await chartClassDay.getChartData();
+    await chartClassDayMin.getChartData();
 
     onedaychart = chartClassDay.chartLine;
 
-    final double lastprice = chartClassDay.chartLine.last.price;
+    final double lastprice = chartClassDayMin.chartLine.last.price;
     _currentPriceString = lastprice.toStringAsFixed(2) + "€";
-    final double firstprice = chartClassDay.chartLine.first.price;
+    final double firstprice = chartClassDayMin.chartLine.first.price;
 
     priceChange = (lastprice - firstprice) / firstprice;
     _priceChangeString = toPercent(priceChange);

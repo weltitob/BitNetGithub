@@ -106,7 +106,7 @@ class _buildChartState extends State<buildChart> {
       crypto: "bitcoin",
       currency: "eur",
       days: "1",
-      interval: "minutely",
+      interval: "minuetly",
     );
     CryptoChartLine chartClassWeek = CryptoChartLine(
       crypto: "bitcoin",
@@ -145,8 +145,7 @@ class _buildChartState extends State<buildChart> {
     onedaychart = chartClassDay.chartLine;
     currentline = onedaychart;
 
-    _latestprice = double.parse(
-        (onedaychart.last.price).toStringAsFixed(2));
+    _latestprice = double.parse((onedaychart.last.price).toStringAsFixed(2));
     trackBallValue = _latestprice.toString();
 
     setState(() {
@@ -177,7 +176,6 @@ class _buildChartState extends State<buildChart> {
   Widget build(BuildContext context) {
     DateFormat dateFormat = DateFormat("dd.MM.yyyy");
     DateFormat timeFormat = DateFormat("HH:mm");
-
 
     String date = dateFormat.format(DateTime.now());
     String timeincomp = timeFormat.format(DateTime.now());
@@ -255,21 +253,29 @@ class _buildChartState extends State<buildChart> {
                       child: Container(
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.0),
+                              borderRadius: BorderRadius.circular(
+                                  AppTheme.cardPadding * 2),
                               color: _loading
                                   ? 10 < 0
-                                      ? AppTheme.successColor.withOpacity(0.5)
-                                      : AppTheme.errorColor.withOpacity(0.5)
+                                      ? AppTheme.successColor.withOpacity(0.625)
+                                      : AppTheme.errorColor.withOpacity(0.625)
                                   : currentline[0].price <
                                           currentline[currentline.length - 1]
                                               .price
-                                      ? AppTheme.successColor.withOpacity(0.5)
-                                      : AppTheme.errorColor.withOpacity(0.5)),
+                                      ? AppTheme.successColor.withOpacity(0.625)
+                                      : AppTheme.errorColor.withOpacity(0.625)),
                           child: Center(
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(_loading ? "0.00%" : _priceChangeString,
-                                  style: Theme.of(context).textTheme.subtitle2),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: AppTheme.elementSpacing * 0.75,
+                                horizontal: AppTheme.elementSpacing,
+                              ),
+                              child: Text(
+                                  _loading ? "0.00%" : _priceChangeString,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall!
+                                      .copyWith(color: AppTheme.white100)),
                             ),
                           )),
                     ),
