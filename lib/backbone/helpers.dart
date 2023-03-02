@@ -3,6 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 
+getaverage(dynamic currentline) {
+  return currentline.map((m) => m.price).reduce((a, b) => a + b) /
+      currentline.length;
+}
+
 String displayTimeAgoFromTimestamp(String publishedAt,
     {bool numericDates = true}) {
   DateTime date = DateTime.parse(publishedAt);

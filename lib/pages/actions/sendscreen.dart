@@ -81,6 +81,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     }
   }
 
+  String feesSelected = "Niedrig";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -216,20 +218,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 SizedBox(
                   height: AppTheme.cardPadding,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    glassButton(
-                      text: "Niedrig", onTap: () {  },
-                    ),
-                    glassButton(
-                      text: "Mittel", onTap: () {  },
-                    ),
-                    glassButton(
-                      text: "Hoch", onTap: () {  },
-                    )
-                  ],
-                ),
+                buildFeesChooser()
               ],
             ),
           ),
@@ -381,6 +370,118 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                     style: Theme.of(context).textTheme.displaySmall),
             ],
           )),*/
+    );
+  }
+
+  Widget buildFeesChooser() {
+    return Container(
+      padding: const EdgeInsets.only(top: 15.0, bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          glassButtonFees(
+            "Niedrig",
+          ),
+          glassButtonFees(
+            "Mittel",
+          ),
+          glassButtonFees(
+            "Hoch",
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget glassButtonFees(
+      String fees,
+      ) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          //update custom widget
+          //switch
+          switch (fees) {
+            case "Niedrig":
+              break;
+            case "Mittel":
+              break;
+            case "Hoch":
+              break;
+          }
+        });
+      },
+      child: Padding(
+        padding:
+        const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
+        child: fees == feesSelected
+            ? Glassmorphism(
+          blur: 20,
+          opacity: 0.1,
+          radius: 50.0,
+          child: TextButton(
+            style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(50, 30),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                alignment: Alignment.centerLeft),
+            onPressed: () {},
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: AppTheme.elementSpacing * 0.5,
+                horizontal: AppTheme.elementSpacing,
+              ),
+              child: Text(
+                  fees,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: fees == feesSelected
+                          ? Theme.of(context)
+                          .colorScheme
+                          .onPrimaryContainer
+                          : Theme.of(context)
+                          .colorScheme
+                          .onPrimaryContainer
+                          .withOpacity(0.6))),
+            ),
+          ),
+        )
+            : TextButton(
+          style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(50, 20),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              alignment: Alignment.centerLeft),
+          onPressed: () {
+            setState(() {
+              feesSelected = fees;
+              switch (feesSelected) {
+                case "Niedrig":
+                  break;
+                case "Mittel":
+                  break;
+                case "Hoch":
+                  break;
+              }
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppTheme.elementSpacing * 0.5,
+              horizontal: AppTheme.elementSpacing,
+            ),
+            child: Text(
+              fees,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: fees == feesSelected
+                      ? Theme.of(context).colorScheme.onPrimaryContainer
+                      : Theme.of(context)
+                      .colorScheme
+                      .onPrimaryContainer
+                      .withOpacity(0.6)),
+            ),
+          ),
+        ),
+      ),
     );
   }
 

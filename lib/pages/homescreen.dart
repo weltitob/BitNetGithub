@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/cards/balancecard.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
@@ -61,10 +62,13 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   }
 
   //die 3 lottiefiles downloaden und anzeigen direkt gespeichert?
-
   final PageController _controller = PageController();
+
   Future<void> _handleRefresh() async {
-    return await Future.delayed(const Duration(seconds: 2));
+    Navigator.pop(context); // pop current page
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const BottomNav(),
+    ));
   }
 
   @override

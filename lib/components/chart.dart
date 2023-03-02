@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
@@ -8,13 +6,21 @@ import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/loaders.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
 import 'dart:convert';
 import 'package:http/http.dart';
 
 GlobalKey<_CustomWidgetState> key = GlobalKey<_CustomWidgetState>();
 String trackBallValuePrice = "";
 String trackBallValueTime = "";
+String priceChangeString = "";
+String dateTime = "";
+
+class ChartLine {
+  final double time;
+  final double price;
+
+  ChartLine({required this.time, required this.price});
+}
 
 class CryptoChartLine {
   final String crypto;
@@ -37,7 +43,7 @@ class CryptoChartLine {
     var jsonData = jsonDecode(res.body);
     if (res.statusCode == 200) {
       if (days == "max") {
-        for (var i = 0; i < jsonData["prices"].length; i += 14) {
+        for (var i = 0; i < jsonData["prices"].length; i += 15) {
           dynamic element = jsonData["prices"][i];
           double time = element[0].toDouble();
           double price = element[1].toDouble();
@@ -75,13 +81,6 @@ class CryptoChartLine {
   }
 }
 
-class ChartLine {
-  final double time;
-  final double price;
-
-  ChartLine({required this.time, required this.price});
-}
-
 class buildChart extends StatefulWidget {
   const buildChart({
     Key? key,
@@ -101,8 +100,8 @@ class _buildChartState extends State<buildChart> {
   late List<ChartLine> onedaychart;
   late List<ChartLine> currentline;
   late bool _loading;
-
   late double _latestprice;
+  late double _firstprice;
   late double _latesttime;
 
   String timespan = "1D";
@@ -159,11 +158,17 @@ class _buildChartState extends State<buildChart> {
     //standard current line should be onedaychart
     currentline = onedaychart;
 
-    _latesttime = double.parse((onedaychart.last.time).toString());
-    _latestprice = double.parse((onedaychart.last.price).toStringAsFixed(2));
+    _latesttime = double.parse((currentline.last.time).toString());
+    _latestprice = double.parse((currentline.last.price).toStringAsFixed(2));
+    _firstprice = double.parse((currentline.first.price).toStringAsFixed(2));
 
+    //for custom widget define default value
     trackBallValuePrice = _latestprice.toString();
     trackBallValueTime = _latesttime.toString();
+    double priceChange =
+        (double.parse(_latestprice.toStringAsFixed(2)) - _firstprice) /
+            _firstprice;
+    priceChangeString = toPercent(priceChange);
 
     setState(() {
       _loading = false;
@@ -196,10 +201,9 @@ class _buildChartState extends State<buildChart> {
     String date = dateFormat.format(DateTime.now());
     String timeincomp = timeFormat.format(DateTime.now());
     String timecomp = timeincomp + " Uhr";
-    late double lastpriceexact = currentline.last.price;
-    late double firstprice = currentline.first.price;
-    late final priceChange = (lastpriceexact - firstprice) / firstprice;
-    late final _priceChangeString = toPercent(priceChange);
+
+    double _lastpriceexact = currentline.last.price;
+    double _firstpriceexact = currentline.first.price;
 
     return Column(
       children: [
@@ -250,51 +254,8 @@ class _buildChartState extends State<buildChart> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CustomWidget(
-                        key: key,
-                      ),
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 15, bottom: 15),
-                    child: InkWell(
-                      child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                  AppTheme.cardPadding * 2),
-                              color: _loading
-                                  ? 10 < 0
-                                      ? AppTheme.successColor.withOpacity(0.625)
-                                      : AppTheme.errorColor.withOpacity(0.625)
-                                  : currentline[0].price <
-                                          currentline[currentline.length - 1]
-                                              .price
-                                      ? AppTheme.successColor.withOpacity(0.625)
-                                      : AppTheme.errorColor.withOpacity(0.625)),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: AppTheme.elementSpacing * 0.75,
-                                horizontal: AppTheme.elementSpacing,
-                              ),
-                              child: Text(
-                                  _loading ? "0.00%" : _priceChangeString,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleSmall!
-                                      .copyWith(color: AppTheme.white100)),
-                            ),
-                          )),
-                    ),
-                  ),
-                ],
+              CustomWidget(
+                key: key,
               ),
             ],
           ),
@@ -326,10 +287,14 @@ class _buildChartState extends State<buildChart> {
                               final pointInfoTime =
                                   double.parse(args.chartPointInfo.header!)
                                       .toString();
-                              print(pointInfoTime);
-                              //update for CustomWidget
 
+                              //update for CustomWidget
                               trackBallValuePrice = pointInfoPrice;
+                              double priceChange =
+                                  (double.parse(trackBallValuePrice) -
+                                          _firstpriceexact) /
+                                      _firstpriceexact;
+                              priceChangeString = toPercent(priceChange);
                               key.currentState!.refresh();
                             }
                           },
@@ -337,6 +302,11 @@ class _buildChartState extends State<buildChart> {
                               (ChartTouchInteractionArgs args) {
                             //reset to current latest price when selection ends
                             trackBallValuePrice = _latestprice.toString();
+
+                            double priceChange =
+                                (_lastpriceexact - _firstpriceexact) /
+                                    _firstpriceexact;
+                            priceChangeString = toPercent(priceChange);
                             key.currentState!.refresh();
                           },
                           enableAxisAnimation: true,
@@ -397,36 +367,61 @@ class _buildChartState extends State<buildChart> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          glassButton("1D"),
-          glassButton("1W"),
-          glassButton("1M"),
-          glassButton("1Y"),
-          glassButton("Max")
+          glassButton(
+            "1D",
+          ),
+          glassButton(
+            "1W",
+          ),
+          glassButton(
+            "1M",
+          ),
+          glassButton(
+            "1Y",
+          ),
+          glassButton(
+            "Max",
+          )
         ],
       ),
     );
   }
 
-  Widget glassButton(String timeperiod) {
+  Widget glassButton(
+    String timeperiod,
+  ) {
     return GestureDetector(
       onTap: () {
         setState(() {
+          //update custom widget
           timespan = timeperiod;
+
+          //switch
           switch (timespan) {
             case "1D":
               currentline = onedaychart;
+              double _lastpriceexact = currentline.last.price;
+              double _firstpriceexact = currentline.first.price;
+              double priceChange =
+                  (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
+              priceChangeString = toPercent(priceChange);
+              key.currentState!.refresh();
               break;
             case "1W":
               currentline = oneweekchart;
+              key.currentState!.refresh();
               break;
             case "1M":
               currentline = onemonthchart;
+              key.currentState!.refresh();
               break;
             case "1Y":
               currentline = oneyearchart;
+              key.currentState!.refresh();
               break;
             case "Max":
               currentline = maxchart;
+              key.currentState!.refresh();
               break;
           }
         });
@@ -543,16 +538,12 @@ class _buildChartState extends State<buildChart> {
   }
 }
 
-//Helper
-
-getaverage(dynamic currentline) {
-  return currentline.map((m) => m.price).reduce((a, b) => a + b) /
-      currentline.length;
-}
-
 class CustomWidget extends StatefulWidget {
   final Key key;
-  const CustomWidget({required this.key});
+
+  const CustomWidget({
+    required this.key,
+  });
 
   @override
   State<CustomWidget> createState() => _CustomWidgetState();
@@ -567,9 +558,40 @@ class _CustomWidgetState extends State<CustomWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      "${trackBallValuePrice}€",
-      style: Theme.of(context).textTheme.displaySmall,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          "${trackBallValuePrice}€",
+          style: Theme.of(context).textTheme.displaySmall,
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 15, bottom: 15),
+          child: InkWell(
+            child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.cardPadding * 2),
+                    color: priceChangeString.contains("-")
+                        ? AppTheme.errorColor.withOpacity(0.625)
+                        : AppTheme.successColor.withOpacity(0.625)),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppTheme.elementSpacing * 0.75,
+                      horizontal: AppTheme.elementSpacing,
+                    ),
+                    child: Text(priceChangeString,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(color: AppTheme.white100)),
+                  ),
+                )),
+          ),
+        ),
+      ],
     );
   }
 }
