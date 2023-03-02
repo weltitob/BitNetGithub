@@ -373,6 +373,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     );
   }
 
+  //test
   Widget buildFeesChooser() {
     return Container(
       padding: const EdgeInsets.only(top: 15.0, bottom: 10),
