@@ -164,7 +164,6 @@ class _buildChartState extends State<buildChart> {
     _firstprice = double.parse((currentline.first.price).toStringAsFixed(2));
 
     //for custom widget define default value
-
     trackBallValuePrice = _latestprice.toString();
     var datetime = DateTime.fromMillisecondsSinceEpoch(_latesttime.round() + 3600000, isUtc: false);
     DateFormat dateFormat = DateFormat("dd.MM.yyyy");
