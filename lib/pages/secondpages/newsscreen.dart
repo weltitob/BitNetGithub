@@ -43,7 +43,6 @@ class _buildNewsState extends State<buildNews> {
         }
       });
     }
-    print(newslist);
     setState(() {
       _loading = false;
     });

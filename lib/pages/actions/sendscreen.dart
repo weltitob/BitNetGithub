@@ -56,7 +56,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     final String url = 'https://api.coingecko.com/api/v3/simple/price';
     final Map<String, String> params = {
       'ids': 'bitcoin',
-      'vs_currencies': 'eur'
+      'vs_currencies': 'eur',
+      'include_last_updated_at': 'true'
     };
 
     final response =

@@ -191,7 +191,36 @@ class _ChartWidgetState extends State<ChartWidget> {
     });
   }
 
+  void _getBitcoinPrice() async {
+    final String url = 'https://api.coingecko.com/api/v3/simple/price';
+    final Map<String, String> params = {
+      'ids': 'bitcoin',
+      'vs_currencies': 'eur',
+      'include_last_updated_at': 'true'
+    };
 
+    final response =
+    await get(Uri.parse(url).replace(queryParameters: params), headers: {});
+
+    if (response.statusCode == 200) {
+      final price = jsonDecode(response.body)['bitcoin']['eur'];
+      final time = jsonDecode(response.body)['bitcoin']['last_updated_at'];
+      print('The current price of Bitcoin in Euro is $price');
+      ChartLine chartData = ChartLine(
+        time: time,
+        price: price,
+      );
+      _priceStreamController.add(chartData);
+      print(chartData.price);
+      print(chartData.time);
+      setState(() {});
+    } else {
+      print('Error ${response.statusCode}: ${response.reasonPhrase}');
+      setState(() {
+        print("An Error occured trying to livefetch the bitcoinprice");
+      });
+    }
+  }
 
   @override
   void initState() {
