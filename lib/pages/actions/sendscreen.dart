@@ -397,89 +397,61 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   Widget glassButtonFees(
       String fees,
       ) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          //update custom widget
-          //switch
-          switch (fees) {
-            case "Niedrig":
-              break;
-            case "Mittel":
-              break;
-            case "Hoch":
-              break;
-          }
-        });
-      },
-      child: Padding(
-        padding:
-        const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
-        child: fees == feesSelected
-            ? Glassmorphism(
-          blur: 20,
-          opacity: 0.1,
-          radius: 50.0,
-          child: TextButton(
-            style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(50, 30),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                alignment: Alignment.centerLeft),
-            onPressed: () {},
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: AppTheme.elementSpacing * 0.5,
-                horizontal: AppTheme.elementSpacing,
-              ),
-              child: Text(
-                  fees,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: fees == feesSelected
-                          ? Theme.of(context)
-                          .colorScheme
-                          .onPrimaryContainer
-                          : Theme.of(context)
-                          .colorScheme
-                          .onPrimaryContainer
-                          .withOpacity(0.6))),
-            ),
-          ),
-        )
-            : TextButton(
+    return Padding(
+      padding:
+      const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
+      child: fees == feesSelected
+          ? Glassmorphism(
+        blur: 20,
+        opacity: 0.1,
+        radius: 50.0,
+        child: TextButton(
           style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
-              minimumSize: const Size(50, 20),
+              minimumSize: const Size(50, 30),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               alignment: Alignment.centerLeft),
-          onPressed: () {
-            setState(() {
-              feesSelected = fees;
-              switch (feesSelected) {
-                case "Niedrig":
-                  break;
-                case "Mittel":
-                  break;
-                case "Hoch":
-                  break;
-              }
-            });
-          },
+          onPressed: () {},
           child: Container(
             padding: const EdgeInsets.symmetric(
               vertical: AppTheme.elementSpacing * 0.5,
               horizontal: AppTheme.elementSpacing,
             ),
             child: Text(
-              fees,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: fees == feesSelected
-                      ? Theme.of(context).colorScheme.onPrimaryContainer
-                      : Theme.of(context)
-                      .colorScheme
-                      .onPrimaryContainer
-                      .withOpacity(0.6)),
-            ),
+                fees,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: AppTheme.white90)),
+          ),
+        ),
+      )
+          : TextButton(
+        style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(50, 20),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            alignment: Alignment.centerLeft),
+        onPressed: () {
+          setState(() {
+            feesSelected = fees;
+            switch (feesSelected) {
+              case "Niedrig":
+                break;
+              case "Mittel":
+                break;
+              case "Hoch":
+                break;
+            }
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: AppTheme.elementSpacing * 0.5,
+            horizontal: AppTheme.elementSpacing,
+          ),
+          child: Text(
+            fees,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: AppTheme.white60),
           ),
         ),
       ),
