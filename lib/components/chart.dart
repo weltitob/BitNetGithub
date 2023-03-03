@@ -205,7 +205,6 @@ class _ChartWidgetState extends State<ChartWidget> {
     if (response.statusCode == 200) {
       final price = jsonDecode(response.body)['bitcoin']['eur'];
       final time = jsonDecode(response.body)['bitcoin']['last_updated_at'];
-      print('The current price of Bitcoin in Euro is $price');
       ChartLine chartData = ChartLine(
         time: time,
         price: price,

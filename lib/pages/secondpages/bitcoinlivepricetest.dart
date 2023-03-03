@@ -15,17 +15,9 @@ class _BitcoinPriceState extends State<BitcoinPrice> {
   StreamController<double> _priceStreamController =
   StreamController<double>();
 
-  @override
-  void initState() {
-    super.initState();
-    _getBitcoinPrice();
-  }
+  late StreamSubscription<double> _priceStreamSubscription;
 
-  @override
-  void dispose() {
-    _priceStreamController.close();
-    super.dispose();
-  }
+  double _currentPrice = 0;
 
   void _getBitcoinPrice() async {
     final String url = 'https://api.coingecko.com/api/v3/simple/price';
@@ -34,43 +26,53 @@ class _BitcoinPriceState extends State<BitcoinPrice> {
       'vs_currencies': 'eur',
       'include_last_updated_at': 'true'
     };
-
     final response =
     await get(Uri.parse(url).replace(queryParameters: params), headers: {});
 
     if (response.statusCode == 200) {
-      final price = jsonDecode(response.body)['bitcoin']['eur'];
-      final time = jsonDecode(response.body)['bitcoin']['last_updated_at'];
+      print('Getting BTC price...');
+      String price = jsonDecode(response.body)['bitcoin']['eur'].toString();
+      final time = jsonDecode(response.body)['bitcoin']['last_updated_at'].toString();
+      print('The current price of Bitcoin in Euro is $price');
+      double priceasdouble = double.parse(price);
       setState(() {
-        _priceStreamController.add(price);
+        _priceStreamController.add(priceasdouble);
       });
     } else {
       print('Error ${response.statusCode}: ${response.reasonPhrase}');
       setState(() {
         print("An Error occured trying to livefetch the bitcoinprice");
       });
+      await Timer(const Duration(seconds: 5), () => print('Timer finished'));
+      _getBitcoinPrice();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getBitcoinPrice();
+    _priceStreamSubscription = _priceStreamController.stream.listen((price) {
+      setState(() {
+        _currentPrice = price;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _priceStreamSubscription.cancel();
+    _priceStreamController.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
       child: Center(
-        child: StreamBuilder<double>(
-          stream: _priceStreamController.stream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(
-                '\$${snapshot.data!.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 24),
-              );
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
+        child: Text(
+          '\$${_currentPrice.toStringAsFixed(2)}',
+          style: TextStyle(fontSize: 24),
         ),
       ),
     );

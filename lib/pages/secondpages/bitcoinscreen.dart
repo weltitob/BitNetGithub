@@ -54,7 +54,6 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           controller: _controller,
           children: <Widget>[
             ChartWidget(),
-            BitcoinPrice(),
             RoundedContainer(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +65,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                 SizedBox(
                   height: AppTheme.cardPadding,
                 ),
+                BitcoinPrice(),
                 WalletStats(),
               ],
             )),
