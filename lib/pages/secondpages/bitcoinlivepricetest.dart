@@ -28,7 +28,6 @@ class _BitcoinPriceState extends State<BitcoinPrice> {
   }
 
   void _getBitcoinPrice() async {
-    print('START');
     final String url = 'https://api.coingecko.com/api/v3/simple/price';
     final Map<String, String> params = {
       'ids': 'bitcoin',
@@ -40,10 +39,8 @@ class _BitcoinPriceState extends State<BitcoinPrice> {
     await get(Uri.parse(url).replace(queryParameters: params), headers: {});
 
     if (response.statusCode == 200) {
-      print('STATUS 200');
       final price = jsonDecode(response.body)['bitcoin']['eur'];
       final time = jsonDecode(response.body)['bitcoin']['last_updated_at'];
-      print('The current price of Bitcoin in Euro is $price');
       setState(() {
         _priceStreamController.add(price);
       });

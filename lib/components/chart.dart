@@ -227,6 +227,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     super.initState();
     _loading = true;
     getChartLine();
+    _getBitcoinPrice();
     _trackballBehavior = TrackballBehavior(
       lineColor: Colors.grey[400],
       enable: true,
