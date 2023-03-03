@@ -13,7 +13,7 @@ GlobalKey<_CustomWidgetState> key = GlobalKey<_CustomWidgetState>();
 String trackBallValuePrice = "";
 String trackBallValueTime = "0";
 String trackBallValueDate = "0";
-String priceChangeString = "";
+String trackBallValuePricechange = "";
 
 class ChartLine {
   final double time;
@@ -35,6 +35,7 @@ class CryptoChartLine {
     required this.currency,
   });
 
+  //fetch chartdatas from coingecko api
   List<ChartLine> chartLine = [];
   Future<void> getChartData() async {
     var url =
@@ -81,16 +82,16 @@ class CryptoChartLine {
   }
 }
 
-class buildChart extends StatefulWidget {
-  const buildChart({
+class ChartWidget extends StatefulWidget {
+  const ChartWidget({
     Key? key,
   }) : super(key: key);
 
   @override
-  _buildChartState createState() => _buildChartState();
+  _ChartWidgetState createState() => _ChartWidgetState();
 }
 
-class _buildChartState extends State<buildChart> {
+class _ChartWidgetState extends State<ChartWidget> {
   late TrackballBehavior _trackballBehavior;
   late List<ChartLine> chartData;
   late List<ChartLine> maxchart;
@@ -100,9 +101,9 @@ class _buildChartState extends State<buildChart> {
   late List<ChartLine> onedaychart;
   late List<ChartLine> currentline;
   late bool _loading;
-  late double _latestprice;
-  late double _firstprice;
-  late double _latesttime;
+  late double _lastpriceinit;
+  late double _firstpriceinit;
+  late double _latesttimeinit;
 
   String timespan = "1D";
 
@@ -148,9 +149,9 @@ class _buildChartState extends State<buildChart> {
     final onemonthchartunfinished = chartClassMonth.chartLine.toSet().toList();
     final oneweekchartunfinished = chartClassWeek.chartLine.toSet().toList();
     onedaychart = chartClassDay.chartLine.toSet().toList();
-
+    //get latest price from onedaychart
     List<ChartLine> onedaychartlast = [onedaychart.last];
-
+    //add latest price to every chart
     maxchart = maxchartunfinished + onedaychartlast;
     oneyearchart = oneyearchartunfinished + onedaychartlast;
     onemonthchart = onemonthchartunfinished + onedaychartlast;
@@ -158,27 +159,25 @@ class _buildChartState extends State<buildChart> {
     //standard current line should be onedaychart
     currentline = onedaychart;
 
-    _latesttime = currentline.last.time;
-
-    _latestprice = double.parse((currentline.last.price).toStringAsFixed(2));
-    _firstprice = double.parse((currentline.first.price).toStringAsFixed(2));
+    _latesttimeinit = currentline.last.time;
+    _lastpriceinit = double.parse((currentline.last.price).toStringAsFixed(2));
+    _firstpriceinit = double.parse((currentline.first.price).toStringAsFixed(2));
 
     //for custom widget define default value
-    trackBallValuePrice = _latestprice.toString();
-    var datetime = DateTime.fromMillisecondsSinceEpoch(_latesttime.round() + 3600000, isUtc: false);
+    //price
+    trackBallValuePrice = _lastpriceinit.toString();
+    //date
+    var datetime = DateTime.fromMillisecondsSinceEpoch(_latesttimeinit.round() + 3600000, isUtc: false);
     DateFormat dateFormat = DateFormat("dd.MM.yyyy");
     DateFormat timeFormat = DateFormat("HH:mm");
-
     String date = dateFormat.format(datetime);
     String time = timeFormat.format(datetime);
-
     trackBallValueTime = time.toString();
     trackBallValueDate = date.toString();
-
+    //percent
     double priceChange =
-        (double.parse(_latestprice.toStringAsFixed(2)) - _firstprice) /
-            _firstprice;
-    priceChangeString = toPercent(priceChange);
+        (double.parse(_lastpriceinit.toStringAsFixed(2)) - _firstpriceinit) / _firstpriceinit;
+    trackBallValuePricechange = toPercent(priceChange);
 
     setState(() {
       _loading = false;
@@ -206,10 +205,6 @@ class _buildChartState extends State<buildChart> {
 
   @override
   Widget build(BuildContext context) {
-
-    double _lastpriceexact = currentline.last.price;
-    double _firstpriceexact = currentline.first.price;
-
     return Column(
       children: [
         Container(
@@ -230,90 +225,96 @@ class _buildChartState extends State<buildChart> {
                         ),
                       ),
                     )
-                  : SizedBox(
-                      height: AppTheme.cardPadding * 16,
-                      child: SfCartesianChart(
-                          trackballBehavior: _trackballBehavior,
-                          onTrackballPositionChanging: (args) {
-                            // Print the y-value of the first series in the trackball.
-                            if (args.chartPointInfo.yPosition != null) {
-                              final pointInfoPrice =
-                                  double.parse(args.chartPointInfo.label!)
-                                      .toStringAsFixed(2);
-                              final pointInfoTime =
-                                  double.parse(args.chartPointInfo.header!)
-                                      .toString();
-
-                              //update for CustomWidget
-                              trackBallValuePrice = pointInfoPrice;
-                              double priceChange =
-                                  (double.parse(trackBallValuePrice) -
-                                          _firstpriceexact) /
-                                      _firstpriceexact;
-                              priceChangeString = toPercent(priceChange);
-                              key.currentState!.refresh();
-                            }
-                          },
-                          onChartTouchInteractionUp:
-                              (ChartTouchInteractionArgs args) {
-                            //reset to current latest price when selection ends
-                            trackBallValuePrice = _latestprice.toString();
-
-                            double priceChange =
-                                (_lastpriceexact - _firstpriceexact) /
-                                    _firstpriceexact;
-                            priceChangeString = toPercent(priceChange);
-                            key.currentState!.refresh();
-                          },
-                          enableAxisAnimation: true,
-                          plotAreaBorderWidth: 0,
-                          primaryXAxis: NumericAxis(
-                              //labelPlacement: LabelPlacement.onTicks,
-                              edgeLabelPlacement: EdgeLabelPlacement.none,
-                              isVisible: false,
-                              majorGridLines: const MajorGridLines(width: 0),
-                              majorTickLines: const MajorTickLines(width: 0)),
-                          primaryYAxis: NumericAxis(
-                              plotBands: <PlotBand>[
-                                PlotBand(
-                                    isVisible: true,
-                                    dashArray: const <double>[2, 5],
-                                    start: getaverage(currentline),
-                                    end: getaverage(currentline),
-                                    horizontalTextAlignment: TextAnchor.start,
-                                    textStyle: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600),
-                                    borderColor: Colors.grey,
-                                    borderWidth: 1.5)
-                              ],
-                              plotOffset: 0,
-                              edgeLabelPlacement: EdgeLabelPlacement.none,
-                              isVisible: false,
-                              majorGridLines: const MajorGridLines(width: 0),
-                              majorTickLines: const MajorTickLines(width: 0)),
-                          series: <ChartSeries>[
-                            // Renders line chart
-                            LineSeries<ChartLine, double>(
-                              dataSource: currentline,
-                              animationDuration: 0,
-                              xValueMapper: (ChartLine crypto, _) =>
-                                  crypto.time,
-                              yValueMapper: (ChartLine crypto, _) =>
-                                  crypto.price,
-                              color: currentline[0].price <
-                                      currentline[currentline.length - 1].price
-                                  ? AppTheme.successColor
-                                  : AppTheme.errorColor,
-                            )
-                          ]),
-                    ),
+                  : buildChart(),
             ),
           ],
         ),
         buildTimeChooser(),
       ],
+    );
+  }
+
+  Widget buildChart(){
+    double _lastpriceexact = currentline.last.price;
+    double _lastpricerounded = double.parse((_lastpriceexact).toStringAsFixed(2));
+    double _firstpriceexact = currentline.first.price;
+
+    return SizedBox(
+      height: AppTheme.cardPadding * 16,
+      child: SfCartesianChart(
+          trackballBehavior: _trackballBehavior,
+          onTrackballPositionChanging: (args) {
+            // Print the y-value of the first series in the trackball.
+            if (args.chartPointInfo.yPosition != null) {
+              final pointInfoPrice =
+              double.parse(args.chartPointInfo.label!)
+                  .toStringAsFixed(2);
+              final pointInfoTime =
+              double.parse(args.chartPointInfo.header!)
+                  .toString();
+
+              //update for CustomWidget
+              trackBallValuePrice = pointInfoPrice;
+              double priceChange =
+                  (double.parse(trackBallValuePrice) -
+                      _firstpriceexact) /
+                      _firstpriceexact;
+              trackBallValuePricechange = toPercent(priceChange);
+              key.currentState!.refresh();
+            }
+          },
+          onChartTouchInteractionUp:
+              (ChartTouchInteractionArgs args) {
+            //reset to current latest price when selection ends
+            trackBallValuePrice = _lastpricerounded.toString();
+
+            double priceChange = (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
+            trackBallValuePricechange = toPercent(priceChange);
+            key.currentState!.refresh();
+          },
+          enableAxisAnimation: true,
+          plotAreaBorderWidth: 0,
+          primaryXAxis: NumericAxis(
+            //labelPlacement: LabelPlacement.onTicks,
+              edgeLabelPlacement: EdgeLabelPlacement.none,
+              isVisible: false,
+              majorGridLines: const MajorGridLines(width: 0),
+              majorTickLines: const MajorTickLines(width: 0)),
+          primaryYAxis: NumericAxis(
+              plotBands: <PlotBand>[
+                PlotBand(
+                    isVisible: true,
+                    dashArray: const <double>[2, 5],
+                    start: getaverage(currentline),
+                    end: getaverage(currentline),
+                    horizontalTextAlignment: TextAnchor.start,
+                    textStyle: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                    borderColor: Colors.grey,
+                    borderWidth: 1.5)
+              ],
+              plotOffset: 0,
+              edgeLabelPlacement: EdgeLabelPlacement.none,
+              isVisible: false,
+              majorGridLines: const MajorGridLines(width: 0),
+              majorTickLines: const MajorTickLines(width: 0)),
+          series: <ChartSeries>[
+            // Renders line chart
+            LineSeries<ChartLine, double>(
+              dataSource: currentline,
+              animationDuration: 0,
+              xValueMapper: (ChartLine crypto, _) =>
+              crypto.time,
+              yValueMapper: (ChartLine crypto, _) =>
+              crypto.price,
+              color: currentline[0].price <
+                  currentline[currentline.length - 1].price
+                  ? AppTheme.successColor
+                  : AppTheme.errorColor,
+            )
+          ]),
     );
   }
 
@@ -346,121 +347,99 @@ class _buildChartState extends State<buildChart> {
   Widget glassButton(
     String timeperiod,
   ) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          //update custom widget
-          timespan = timeperiod;
 
-          //switch
-          switch (timespan) {
-            case "1D":
-              currentline = onedaychart;
-              double _lastpriceexact = currentline.last.price;
-              double _firstpriceexact = currentline.first.price;
-              double priceChange =
-                  (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
-              priceChangeString = toPercent(priceChange);
-              key.currentState!.refresh();
-              break;
-            case "1W":
-              currentline = oneweekchart;
-              key.currentState!.refresh();
-              break;
-            case "1M":
-              currentline = onemonthchart;
-              key.currentState!.refresh();
-              break;
-            case "1Y":
-              currentline = oneyearchart;
-              key.currentState!.refresh();
-              break;
-            case "Max":
-              currentline = maxchart;
-              key.currentState!.refresh();
-              break;
-          }
-        });
-      },
-      child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
-        child: timespan == timeperiod
-            ? Glassmorphism(
-                blur: 20,
-                opacity: 0.1,
-                radius: 50.0,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(50, 30),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      alignment: Alignment.centerLeft),
-                  onPressed: () {},
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppTheme.elementSpacing * 0.5,
-                      horizontal: AppTheme.elementSpacing,
-                    ),
-                    child: Text(timeperiod,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: timespan == timeperiod
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryContainer
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryContainer
-                                    .withOpacity(0.6))),
-                  ),
-                ),
-              )
-            : TextButton(
+    return Padding(
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
+      child: timespan == timeperiod
+          ? Glassmorphism(
+              blur: 20,
+              opacity: 0.1,
+              radius: 50.0,
+              child: TextButton(
                 style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
-                    minimumSize: const Size(50, 20),
+                    minimumSize: const Size(50, 30),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     alignment: Alignment.centerLeft),
-                onPressed: () {
-                  setState(() {
-                    timespan = timeperiod;
-                    switch (timespan) {
-                      case "1D":
-                        currentline = onedaychart;
-                        break;
-                      case "1W":
-                        currentline = oneweekchart;
-                        break;
-                      case "1M":
-                        currentline = onemonthchart;
-                        break;
-                      case "1Y":
-                        currentline = oneyearchart;
-                        break;
-                      case "Max":
-                        currentline = maxchart;
-                        break;
-                    }
-                  });
-                },
+                onPressed: () {},
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: AppTheme.elementSpacing * 0.5,
                     horizontal: AppTheme.elementSpacing,
                   ),
-                  child: Text(
-                    timeperiod,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: timespan == timeperiod
-                            ? Theme.of(context).colorScheme.onPrimaryContainer
-                            : Theme.of(context)
-                                .colorScheme
-                                .onPrimaryContainer
-                                .withOpacity(0.6)),
-                  ),
+                  child: Text(timeperiod,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: timespan == timeperiod
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer
+                                  .withOpacity(0.6))),
                 ),
               ),
-      ),
+            )
+          : TextButton(
+              style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(50, 20),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  alignment: Alignment.centerLeft),
+              onPressed: () {
+                setState(() {
+                  timespan = timeperiod;
+                  //update price widget
+                  switch (timespan) {
+                    case "1D":
+                      currentline = onedaychart;
+                      break;
+                    case "1W":
+                      currentline = oneweekchart;
+                      break;
+                    case "1M":
+                      currentline = onemonthchart;
+                      break;
+                    case "1Y":
+                      currentline = oneyearchart;
+                      break;
+                    case "Max":
+                      currentline = maxchart;
+                      break;
+                  }
+                  //define for currentline
+                  double _lastpriceexact = currentline.last.price;
+                  double _lastpricerounded = double.parse((_lastpriceexact).toStringAsFixed(2));
+                  double _firstpriceexact = currentline.first.price;
+                  //update last price
+                  trackBallValuePrice = _lastpricerounded.toString();
+                  //update percent
+                  double priceChange = (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
+                  trackBallValuePricechange = toPercent(priceChange);
+                  //update date
+
+                  //update the entire information widget
+                  key.currentState!.refresh();
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppTheme.elementSpacing * 0.5,
+                  horizontal: AppTheme.elementSpacing,
+                ),
+                child: Text(
+                  timeperiod,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: timespan == timeperiod
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : Theme.of(context)
+                              .colorScheme
+                              .onPrimaryContainer
+                              .withOpacity(0.6)),
+                ),
+              ),
+            ),
     );
   }
 
@@ -574,7 +553,7 @@ class _CustomWidgetState extends State<CustomWidget> {
                     decoration: BoxDecoration(
                         borderRadius:
                             BorderRadius.circular(AppTheme.cardPadding * 2),
-                        color: priceChangeString.contains("-")
+                        color: trackBallValuePricechange.contains("-")
                             ? AppTheme.errorColor.withOpacity(0.625)
                             : AppTheme.successColor.withOpacity(0.625)),
                     child: Center(
@@ -583,7 +562,7 @@ class _CustomWidgetState extends State<CustomWidget> {
                           vertical: AppTheme.elementSpacing * 0.75,
                           horizontal: AppTheme.elementSpacing,
                         ),
-                        child: Text(priceChangeString,
+                        child: Text(trackBallValuePricechange,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!

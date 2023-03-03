@@ -52,7 +52,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           scrollDirection: Axis.vertical,
           controller: _controller,
           children: <Widget>[
-            buildChart(),
+            ChartWidget(),
             RoundedContainer(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
