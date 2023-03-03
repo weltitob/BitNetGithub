@@ -11,9 +11,9 @@ import 'package:http/http.dart';
 
 GlobalKey<_CustomWidgetState> key = GlobalKey<_CustomWidgetState>();
 String trackBallValuePrice = "";
-String trackBallValueTime = "";
+String trackBallValueTime = "0";
+String trackBallValueDate = "0";
 String priceChangeString = "";
-String dateTime = "";
 
 class ChartLine {
   final double time;
@@ -158,13 +158,25 @@ class _buildChartState extends State<buildChart> {
     //standard current line should be onedaychart
     currentline = onedaychart;
 
-    _latesttime = double.parse((currentline.last.time).toString());
+    _latesttime = currentline.last.time;
+
     _latestprice = double.parse((currentline.last.price).toStringAsFixed(2));
     _firstprice = double.parse((currentline.first.price).toStringAsFixed(2));
 
     //for custom widget define default value
+
     trackBallValuePrice = _latestprice.toString();
-    trackBallValueTime = _latesttime.toString();
+    var milliseconds = _latesttime;
+    var datetime = DateTime.fromMillisecondsSinceEpoch(milliseconds.round(), isUtc: false);
+    DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+    DateFormat timeFormat = DateFormat("HH:mm");
+
+    String date = dateFormat.format(datetime);
+    String time = timeFormat.format(datetime);
+
+    trackBallValueTime = time.toString();
+    trackBallValueDate = date.toString();
+
     double priceChange =
         (double.parse(_latestprice.toStringAsFixed(2)) - _firstprice) /
             _firstprice;
@@ -196,11 +208,6 @@ class _buildChartState extends State<buildChart> {
 
   @override
   Widget build(BuildContext context) {
-    DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-    DateFormat timeFormat = DateFormat("HH:mm");
-    String date = dateFormat.format(DateTime.now());
-    String timeincomp = timeFormat.format(DateTime.now());
-    String timecomp = timeincomp + " Uhr";
 
     double _lastpriceexact = currentline.last.price;
     double _firstpriceexact = currentline.first.price;
@@ -208,58 +215,9 @@ class _buildChartState extends State<buildChart> {
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  currencyPicture(context),
-                  const Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "BTC",
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                            Text(
-                              date.toString(),
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            const Text(
-                              "Bitcoin",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              timecomp,
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              CustomWidget(
-                key: key,
-              ),
-            ],
-          ),
-        ),
+            margin:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: CustomWidget(key: key)),
         Column(
           children: [
             Container(
@@ -558,38 +516,85 @@ class _CustomWidgetState extends State<CustomWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          "${trackBallValuePrice}€",
-          style: Theme.of(context).textTheme.displaySmall,
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 15, bottom: 15),
-          child: InkWell(
-            child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.cardPadding * 2),
-                    color: priceChangeString.contains("-")
-                        ? AppTheme.errorColor.withOpacity(0.625)
-                        : AppTheme.successColor.withOpacity(0.625)),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppTheme.elementSpacing * 0.75,
-                      horizontal: AppTheme.elementSpacing,
-                    ),
-                    child: Text(priceChangeString,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall!
-                            .copyWith(color: AppTheme.white100)),
+    return Column(
+      children: [
+        Row(
+          children: [
+            currencyPicture(context),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "BTC",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      Text(
+                        trackBallValueDate,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ],
                   ),
-                )),
-          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      const Text(
+                        "Bitcoin",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "${trackBallValueTime} Uhr",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              "${trackBallValuePrice}€",
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 15, bottom: 15),
+              child: InkWell(
+                child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(AppTheme.cardPadding * 2),
+                        color: priceChangeString.contains("-")
+                            ? AppTheme.errorColor.withOpacity(0.625)
+                            : AppTheme.successColor.withOpacity(0.625)),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppTheme.elementSpacing * 0.75,
+                          horizontal: AppTheme.elementSpacing,
+                        ),
+                        child: Text(priceChangeString,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(color: AppTheme.white100)),
+                      ),
+                    )),
+              ),
+            ),
+          ],
         ),
       ],
     );
