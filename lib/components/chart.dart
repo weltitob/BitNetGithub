@@ -236,6 +236,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   Widget buildChart(){
     double _lastpriceexact = currentline.last.price;
+    double _lastimeeexact = currentline.last.time;
     double _lastpricerounded = double.parse((_lastpriceexact).toStringAsFixed(2));
     double _firstpriceexact = currentline.first.price;
 
@@ -250,10 +251,15 @@ class _ChartWidgetState extends State<ChartWidget> {
               double.parse(args.chartPointInfo.label!)
                   .toStringAsFixed(2);
               final pointInfoTime =
-              double.parse(args.chartPointInfo.header!)
-                  .toString();
-
+              double.parse(args.chartPointInfo.header!);
+              var datetime = DateTime.fromMillisecondsSinceEpoch(pointInfoTime.round() + 3600000, isUtc: false);
+              DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+              DateFormat timeFormat = DateFormat("HH:mm");
+              String date = dateFormat.format(datetime);
+              String time = timeFormat.format(datetime);
               //update for CustomWidget
+              trackBallValueTime = time.toString();
+              trackBallValueDate = date.toString();
               trackBallValuePrice = pointInfoPrice;
               double priceChange =
                   (double.parse(trackBallValuePrice) -
@@ -267,10 +273,18 @@ class _ChartWidgetState extends State<ChartWidget> {
               (ChartTouchInteractionArgs args) {
             //reset to current latest price when selection ends
             trackBallValuePrice = _lastpricerounded.toString();
-
+            //reset to percent of screen
             double priceChange = (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
             trackBallValuePricechange = toPercent(priceChange);
             key.currentState!.refresh();
+            //reset to date of last value
+            var datetime = DateTime.fromMillisecondsSinceEpoch(_lastimeeexact.round() + 3600000, isUtc: false);
+            DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+            DateFormat timeFormat = DateFormat("HH:mm");
+            String date = dateFormat.format(datetime);
+            String time = timeFormat.format(datetime);
+            trackBallValueTime = time.toString();
+            trackBallValueDate = date.toString();
           },
           enableAxisAnimation: true,
           plotAreaBorderWidth: 0,
@@ -412,13 +426,20 @@ class _ChartWidgetState extends State<ChartWidget> {
                   double _lastpriceexact = currentline.last.price;
                   double _lastpricerounded = double.parse((_lastpriceexact).toStringAsFixed(2));
                   double _firstpriceexact = currentline.first.price;
+                  double _lastimeeexact = currentline.last.time;
                   //update last price
                   trackBallValuePrice = _lastpricerounded.toString();
                   //update percent
                   double priceChange = (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
                   trackBallValuePricechange = toPercent(priceChange);
                   //update date
-
+                  var datetime = DateTime.fromMillisecondsSinceEpoch(_lastimeeexact.round() + 3600000, isUtc: false);
+                  DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+                  DateFormat timeFormat = DateFormat("HH:mm");
+                  String date = dateFormat.format(datetime);
+                  String time = timeFormat.format(datetime);
+                  trackBallValueTime = time.toString();
+                  trackBallValueDate = date.toString();
                   //update the entire information widget
                   key.currentState!.refresh();
                 });
