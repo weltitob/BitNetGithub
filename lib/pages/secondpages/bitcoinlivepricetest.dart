@@ -12,11 +12,8 @@ class BitcoinPrice extends StatefulWidget {
 }
 
 class _BitcoinPriceState extends State<BitcoinPrice> {
-  StreamController<double> _priceStreamController =
-  StreamController<double>();
-
+  StreamController<double> _priceStreamController = StreamController<double>();
   late StreamSubscription<double> _priceStreamSubscription;
-
   double _currentPrice = 0;
 
   void _getBitcoinPrice() async {

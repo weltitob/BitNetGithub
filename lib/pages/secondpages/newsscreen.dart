@@ -23,10 +23,12 @@ class _buildNewsState extends State<buildNews> {
     var response = await http.get(url);
     print(response);
     var jsonData = jsonDecode(response.body);
-    print("json decoded");
     if (jsonData['status'] == "ok") {
-      print('status ok');
+      int articleCount = 0;
       jsonData["articles"].forEach((element) {
+        if (articleCount >= 5) {
+          return; // exit the loop if we already have 5 articles
+        }
         if (element['urlToImage'] != null && element['description'] != null) {
           Article article = Article(
             title: element['title'].toString(),
@@ -38,8 +40,7 @@ class _buildNewsState extends State<buildNews> {
             publishedAt: DateTime.parse(element['publishedAt'].toString()),
           );
           newslist.add(article);
-          print(article);
-          print('article added');
+          articleCount++;
         }
       });
     }

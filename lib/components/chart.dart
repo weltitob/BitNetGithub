@@ -15,7 +15,7 @@ GlobalKey<_CustomWidgetState> key = GlobalKey<_CustomWidgetState>();
 String trackBallValuePrice = "";
 String trackBallValueTime = "0";
 String trackBallValueDate = "0";
-String trackBallValuePricechange = "";
+String trackBallValuePricechange = "0";
 
 class ChartLine {
   final double time;
@@ -109,6 +109,8 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   StreamController<ChartLine> _priceStreamController = StreamController<ChartLine>();
   String timespan = "1D";
+  // Initialized the global variable
+  ChartSeriesController? _chartSeriesController;
 
   getChartLine() async {
     CryptoChartLine chartClassDay = CryptoChartLine(
@@ -203,15 +205,13 @@ class _ChartWidgetState extends State<ChartWidget> {
     await get(Uri.parse(url).replace(queryParameters: params), headers: {});
 
     if (response.statusCode == 200) {
-      final price = jsonDecode(response.body)['bitcoin']['eur'];
-      final time = jsonDecode(response.body)['bitcoin']['last_updated_at'];
+      final price = jsonDecode(response.body)['bitcoin']['eur'].toString();
+      final time = jsonDecode(response.body)['bitcoin']['last_updated_at'].toString();
       ChartLine chartData = ChartLine(
-        time: time,
-        price: price,
+        time: double.parse(time),
+        price: double.parse(price),
       );
       _priceStreamController.add(chartData);
-      print(chartData.price);
-      print(chartData.time);
       setState(() {});
     } else {
       print('Error ${response.statusCode}: ${response.reasonPhrase}');
@@ -219,6 +219,15 @@ class _ChartWidgetState extends State<ChartWidget> {
         print("An Error occured trying to livefetch the bitcoinprice");
       });
     }
+  }
+
+  // updateChart when new data arrives
+  void updateChart() {
+    ChartLine newdata = onedaychart.last;
+    setState(() {
+      currentline.add(newdata);
+      _chartSeriesController?.animate();
+    });
   }
 
   @override
@@ -363,6 +372,9 @@ class _ChartWidgetState extends State<ChartWidget> {
           series: <ChartSeries>[
             // Renders line chart
             LineSeries<ChartLine, double>(
+              onRendererCreated: (ChartSeriesController controller){
+                _chartSeriesController = controller;
+              },
               dataSource: currentline,
               animationDuration: 0,
               xValueMapper: (ChartLine crypto, _) => crypto.time,
