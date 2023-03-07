@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/widgettree.dart';
-import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 

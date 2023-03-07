@@ -15,7 +15,7 @@ GlobalKey<_CustomWidgetState> key = GlobalKey<_CustomWidgetState>();
 String trackBallValuePrice = "";
 String trackBallValueTime = "0";
 String trackBallValueDate = "0";
-String trackBallValuePricechange = "0";
+String trackBallValuePricechange = "-";
 
 class ChartLine {
   final double time;

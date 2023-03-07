@@ -128,12 +128,18 @@ class _QRScreenState extends State<QRScreen> {
               const SizedBox(
                 width: AppTheme.cardPadding,
               ),
-              RoundedButtonWidget(
-                iconData: Icons.text_fields_rounded,
-                onTap: () =>
-                    setState(() {
-                    }),
-                isGlassmorph: true,
+              const SizedBox(
+                width: AppTheme.cardPadding * 2,
+              ),
+              Visibility(
+                visible: false,
+                child: RoundedButtonWidget(
+                  iconData: Icons.text_fields_rounded,
+                  onTap: () =>
+                      setState(() {
+                      }),
+                  isGlassmorph: true,
+                ),
               ),
             ],
           )
