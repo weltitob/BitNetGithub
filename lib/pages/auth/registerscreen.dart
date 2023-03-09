@@ -1,10 +1,9 @@
 import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
@@ -24,7 +23,6 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen>
     with TickerProviderStateMixin {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
-  final usersCollection = FirebaseFirestore.instance.collection("users");
 
   String? errorMessage = null;
   String? email = '';
@@ -69,11 +67,10 @@ class _RegisterScreenState extends State<RegisterScreen>
         email: _controllerEmail.text,
         walletAdress: 'fakewalletadress',
       );
-
       await createFirebaseUserWithEmailAndPassword();
-
       final User? currentuser = Auth().currentUser;
       await usersCollection.doc(currentuser!.uid).set(userwallet.toMap());
+
       print('user registered successfully');
     } catch (e) {
       print('error trying to register user');

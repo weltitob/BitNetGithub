@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/settingsscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 
@@ -19,16 +21,16 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
   TextEditingController _passwordController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
-  final User? user = Auth().currentUser;
+  final User? currentuser = Auth().currentUser;
   String? email = '';
   bool _isLoading = false;
 
   Widget _userUid() {
-    return Text(user?.email ?? 'User email');
+    return Text(currentuser?.email ?? 'User email');
   }
 
   @override void initState() {
-    email = user!.email;
+    email = currentuser!.email;
     setState(() {
       _emailController.text = email!;
     });
@@ -42,20 +44,30 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
     setState(() {
       _isLoading = true;
     });
-
     try {
+      //update it for firebaseauth
       final user = await _auth.signInWithEmailAndPassword(
         email: _auth.currentUser!.email!,
         password: _passwordController.text,
       );
       await user.user?.updateEmail(_emailController.text);
+      //update in our database
+      final userwallet = UserWallet(
+        walletType: 'simple',
+        seedPhrases: 'seedphraselmao',
+        email: _emailController.text,
+        walletAdress: 'fakewalletadress',
+      );
+      await usersCollection.doc(currentuser!.uid).update(userwallet.toMap());
+      //go back and show success message
       Navigator.pop(context);
       displaySnackbar(context, "Ihre E-Mail Adresse wurde aktualisiert, bitte überprüfen "
           "sie ihr Postfach!");
+
     } on FirebaseAuthException catch (e) {
       displaySnackbar(context, "Ein Fehler ist aufgetreten. E-Mail wurde nicht aktualisiert");
       print(e);
-      email = user!.email;
+      email = currentuser!.email;
       _emailController.text = email!;
     }
     setState(() {

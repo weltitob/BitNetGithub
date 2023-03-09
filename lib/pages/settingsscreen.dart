@@ -40,7 +40,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: ListView(children: <Widget>[
           Container(
             margin: EdgeInsets.only(
-                top: AppTheme.elementSpacing,),
+              top: AppTheme.elementSpacing,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -48,7 +49,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icons.settings,
                   color: Colors.white,
                 ),
-                SizedBox(width: AppTheme.elementSpacing / 2,),
+                SizedBox(
+                  width: AppTheme.elementSpacing / 2,
+                ),
                 Text(
                   'Einstellungen',
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -107,7 +110,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           Icons.article_outlined, "Allg. Geschäftsbedingungen"),
                     ),
                     MyDivider(),
-                    ChildBuildBoxIntern(Icons.payment_rounded, "Spenden & uns unterstützen"),
+                    ChildBuildBoxIntern(
+                        Icons.payment_rounded, "Spenden & uns unterstützen"),
                   ]),
             )),
         Padding(
@@ -172,7 +176,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const ChangeEmailScreen(),
