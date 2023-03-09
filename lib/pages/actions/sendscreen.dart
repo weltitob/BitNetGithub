@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/bottomnav.dart';
-import 'package:nexus_wallet/components/cameraqr.dart';
+import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';

@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 
-class QRScannerOverlay extends StatelessWidget {
-  const QRScannerOverlay({Key? key, required this.overlayColour})
+class TextScannerOverlay extends StatelessWidget {
+  const TextScannerOverlay({Key? key, required this.overlayColour})
       : super(key: key);
 
   final Color overlayColour;
 
   @override
   Widget build(BuildContext context) {
-    double scanArea = (MediaQuery.of(context).size.width < 400 ||
-        MediaQuery.of(context).size.height < 400)
-        ? 240.0
-        : 350.0;
+    double scanAreaHeight = (MediaQuery.of(context).size.width < 200 * 0.75 ||
+        MediaQuery.of(context).size.height < 200 * 0.75)
+        ? 120.0 * 0.75
+        : 175.0 * 0.75;
+    double scanAreaWidth = (MediaQuery.of(context).size.width < 450 ||
+        MediaQuery.of(context).size.height < 450)
+        ? 320.0
+        : 420.0;
     return Stack(children: [
       ColorFiltered(
         colorFilter: ColorFilter.mode(
@@ -27,11 +31,11 @@ class QRScannerOverlay extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: Container(
-                height: scanArea,
-                width: scanArea,
+                height: scanAreaHeight,
+                width: scanAreaWidth,
                 decoration: BoxDecoration(
                   color: Colors.red,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(15),
                 ),
               ),
             ),
@@ -41,10 +45,10 @@ class QRScannerOverlay extends StatelessWidget {
       Align(
         alignment: Alignment.center,
         child: CustomPaint(
-          foregroundPainter: BorderPainter(),
+          foregroundPainter: TextBorderPainter(),
           child: SizedBox(
-            width: scanArea + 25,
-            height: scanArea + 25,
+            width: scanAreaWidth + 25,
+            height: scanAreaHeight + 25,
           ),
         ),
       ),
@@ -53,11 +57,11 @@ class QRScannerOverlay extends StatelessWidget {
 }
 
 //small version for buttons
-class BorderPainterSmall extends CustomPainter {
+class TextBorderPainterSmall extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     const width = 4.0 / 1.5;
-    const radius = 20.0 / 2;
+    const radius = 15.0 / 2;
     const tRadius = 3 * radius / 2;
     final rect = Rect.fromLTWH(
       width,
@@ -114,11 +118,11 @@ class BorderPainterSmall extends CustomPainter {
 }
 
 // Creates the white borders
-class BorderPainter extends CustomPainter {
+class TextBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     const width = 4.0;
-    const radius = 20.0;
+    const radius = 15.0;
     const tRadius = 3 * radius;
     final rect = Rect.fromLTWH(
       width,
@@ -166,33 +170,6 @@ class BorderPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = width,
     );
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-class BarReaderSize {
-  static double width = 200;
-  static double height = 200;
-}
-
-class OverlayWithHolePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.black54;
-    canvas.drawPath(
-        Path.combine(
-          PathOperation.difference,
-          Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height)),
-          Path()
-            ..addOval(Rect.fromCircle(
-                center: Offset(size.width - 44, size.height - 44), radius: 40))
-            ..close(),
-        ),
-        paint);
   }
 
   @override
