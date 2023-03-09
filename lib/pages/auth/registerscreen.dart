@@ -1,13 +1,16 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/auth/background.dart';
 import 'package:nexus_wallet/theme.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 // ignore: must_be_immutable
 class RegisterScreen extends StatefulWidget {
@@ -21,6 +24,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen>
     with TickerProviderStateMixin {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
+  final usersCollection = FirebaseFirestore.instance.collection("users");
 
   String? errorMessage = null;
   String? email = '';
@@ -28,15 +32,62 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  final TextEditingController _controllerPasswordconfirm = TextEditingController();
+  final TextEditingController _controllerPasswordconfirm =
+      TextEditingController();
   bool _isLoading = false;
 
-  Future<void> createUserWithEmailAndPassword() async {
+  Future<UserWallet?> createWallet() async {
+    try {
+      HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('createWallet');
+      final resp = await callable.call(<String, dynamic>{
+        //later pass entire user relevant info then create ION account
+        // and get entire user as mydata back who is then registered
+        // 'email': usernameController.text,
+      });
+      final mydata = UserWallet.fromJson(resp.data);
+      return mydata;
+    } catch (e) {
+      setState(() {
+        errorMessage = "Wir konnten keine neue Wallet für dich erstellen...";
+      });
+      print(e);
+      return null;
+    }
+  }
+
+  Future<void> createUser() async {
     setState(() {
       errorMessage = null;
       _isLoading = true;
     });
     try {
+      final userwalletdata = await createWallet();
+      final userwallet = UserWallet(
+        walletType: 'simple',
+        seedPhrases: 'seedphraselmao',
+        email: _controllerEmail.text,
+        walletAdress: 'fakewalletadress',
+      );
+
+      await createFirebaseUserWithEmailAndPassword();
+
+      final User? currentuser = Auth().currentUser;
+      await usersCollection.doc(currentuser!.uid).set(userwallet.toMap());
+      print('user registered successfully');
+    } catch (e) {
+      print('error trying to register user');
+      print(e);
+    }
+    setState(() {
+      //error text will also be updated
+      _isLoading = false;
+    });
+  }
+
+  Future<void> createFirebaseUserWithEmailAndPassword() async {
+    try {
+      //blablabla
       await Auth().createUserWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,
@@ -47,9 +98,6 @@ class _RegisterScreenState extends State<RegisterScreen>
         print(e.message);
       });
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -93,7 +141,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                             .copyWith(color: AppTheme.white70),
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                        margin:
+                            EdgeInsets.only(left: AppTheme.elementSpacing / 2),
                         height: AppTheme.cardPadding * 1.5,
                         child: Image.asset("assets/images/logotransparent.png"),
                       ),
@@ -158,7 +207,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                         onTap: () {
                           print('Sign up pressed');
                           if (_form.currentState!.validate()) {
-                            createUserWithEmailAndPassword();
+                            createUser();
                           }
                         },
                         state:
@@ -167,17 +216,19 @@ class _RegisterScreenState extends State<RegisterScreen>
                       errorMessage == null
                           ? Container()
                           : Padding(
-                        padding: const EdgeInsets.only(top: AppTheme.cardPadding),
-                        child: Text(
-                          errorMessage!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(color: AppTheme.errorColor),
-                        ),
-                      ),
+                              padding: const EdgeInsets.only(
+                                  top: AppTheme.cardPadding),
+                              child: Text(
+                                errorMessage!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(color: AppTheme.errorColor),
+                              ),
+                            ),
                       Container(
-                        margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
+                        margin:
+                            EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
                         child: Text(
                           'Du hast bereits ein Konto?',
                           style: GoogleFonts.manrope(

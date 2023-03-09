@@ -8,11 +8,13 @@ import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/cards/balancecard.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
 import 'package:nexus_wallet/components/transactions/transactions.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/actions/receivescreen.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/components/items/cryptoitem.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
