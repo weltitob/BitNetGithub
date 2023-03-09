@@ -70,7 +70,6 @@ class _RegisterScreenState extends State<RegisterScreen>
       await createFirebaseUserWithEmailAndPassword();
       final User? currentuser = Auth().currentUser;
       await usersCollection.doc(currentuser!.uid).set(userwallet.toMap());
-
       print('user registered successfully');
     } catch (e) {
       print('error trying to register user');

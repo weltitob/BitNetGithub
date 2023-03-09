@@ -19,6 +19,7 @@ class UserWallet {
       email: json['email'].toString(),
     );
   }
+
   Map<String, dynamic> toMap() {
     return {
       'walletAdress': walletAdress,
@@ -26,5 +27,19 @@ class UserWallet {
       'seedPhrases': seedPhrases,
       'email': email,
     };
+  }
+
+  UserWallet copyWith({
+    String? walletAdress,
+    String? walletType,
+    String? seedPhrases,
+    String? email,
+  }) {
+    return UserWallet(
+      walletAdress: walletAdress ?? this.walletAdress,
+      walletType: walletType ?? this.walletType,
+      seedPhrases: seedPhrases ?? this.seedPhrases,
+      email: email ?? this.email,
+    );
   }
 }

@@ -29,14 +29,16 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
     return Text(currentuser?.email ?? 'User email');
   }
 
-  @override void initState() {
+  @override
+  void initState() {
     email = currentuser!.email;
     setState(() {
       _emailController.text = email!;
     });
   }
 
-  @override void dispose() {
+  @override
+  void dispose() {
     _emailController.dispose();
   }
 
@@ -52,20 +54,24 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
       );
       await user.user?.updateEmail(_emailController.text);
       //update in our database
+      //get userwallet here is fakdata
       final userwallet = UserWallet(
         walletType: 'simple',
         seedPhrases: 'seedphraselmao',
-        email: _emailController.text,
+        email: 'lel',
         walletAdress: 'fakewalletadress',
       );
-      await usersCollection.doc(currentuser!.uid).update(userwallet.toMap());
-      //go back and show success message
+      final newuserwallet = userwallet.copyWith(email: _emailController.text);
+      await usersCollection.doc(currentuser!.uid).update(newuserwallet.toMap());
+      //zurück gehen und bestätigen dass alles richtig gelaufen ist
       Navigator.pop(context);
-      displaySnackbar(context, "Ihre E-Mail Adresse wurde aktualisiert, bitte überprüfen "
+      displaySnackbar(
+          context,
+          "Ihre E-Mail Adresse wurde aktualisiert, bitte überprüfen "
           "sie ihr Postfach!");
-
     } on FirebaseAuthException catch (e) {
-      displaySnackbar(context, "Ein Fehler ist aufgetreten. E-Mail wurde nicht aktualisiert");
+      displaySnackbar(context,
+          "Ein Fehler ist aufgetreten. E-Mail wurde nicht aktualisiert");
       print(e);
       email = currentuser!.email;
       _emailController.text = email!;
@@ -82,7 +88,8 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
       body: Container(
         padding: EdgeInsets.only(top: AppTheme.cardPadding * 2),
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
+          padding: EdgeInsets.symmetric(
+              horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -91,18 +98,26 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                   Icons.email_outlined,
                   color: Colors.white,
                 ),
-                SizedBox(width: AppTheme.elementSpacing / 2,),
-                Text("E-Mail Adresse ändern",
-                  style: Theme.of(context).textTheme.headlineMedium,),
+                SizedBox(
+                  width: AppTheme.elementSpacing / 2,
+                ),
+                Text(
+                  "E-Mail Adresse ändern",
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ],
             ),
             MyDivider(),
-            SizedBox(height: AppTheme.cardPadding,),
+            SizedBox(
+              height: AppTheme.cardPadding,
+            ),
             Text(
               "Neue E-Mail Adresse",
               style: Theme.of(context).textTheme.headline6,
             ),
-            SizedBox(height: AppTheme.elementSpacing,),
+            SizedBox(
+              height: AppTheme.elementSpacing,
+            ),
             Container(
               width: AppTheme.cardPadding * 11.5,
               child: Glassmorphism(
@@ -118,8 +133,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                     controller: _emailController,
                     autofocus: false,
                     onSubmitted: (text) {
-                      setState(() {
-                      });
+                      setState(() {});
                       ;
                     },
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -127,19 +141,22 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                       border: InputBorder.none,
                       counterText: "",
                       hintText: "Neue E-Mail Adresse hier angeben",
-                      hintStyle:
-                      TextStyle(color: AppTheme.white60),
+                      hintStyle: TextStyle(color: AppTheme.white60),
                     ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: AppTheme.cardPadding,),
+            SizedBox(
+              height: AppTheme.cardPadding,
+            ),
             Text(
               "Passwort",
               style: Theme.of(context).textTheme.headline6,
             ),
-            SizedBox(height: AppTheme.elementSpacing,),
+            SizedBox(
+              height: AppTheme.elementSpacing,
+            ),
             Container(
               width: AppTheme.cardPadding * 11.5,
               child: Glassmorphism(
@@ -160,8 +177,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                       border: InputBorder.none,
                       counterText: "",
                       hintText: "Passwort eingeben",
-                      hintStyle:
-                      TextStyle(color: AppTheme.white60),
+                      hintStyle: TextStyle(color: AppTheme.white60),
                     ),
                   ),
                 ),
@@ -169,9 +185,12 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
             ),
             SizedBox(height: AppTheme.cardPadding * 2),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 4.75),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.cardPadding * 4.75),
               child: glassButton(
-                  text: "Speichern", iconData: Icons.save, onTap: () => _updateEmail()),
+                  text: "Speichern",
+                  iconData: Icons.save,
+                  onTap: () => _updateEmail()),
             ),
           ],
         ),
