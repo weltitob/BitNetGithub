@@ -18,7 +18,7 @@ class _BottomNavState extends State<BottomNav> {
   Widget build(BuildContext context) {
     final screens = [
       const HomeScreen(),
-      const QRScreen(),
+      const QRScreen(isBottomButtonVisible: false,),
       SettingsScreen(),
       //BitcoinScreen(),
     ];

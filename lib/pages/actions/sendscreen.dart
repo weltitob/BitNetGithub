@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/bottomnav.dart';
-import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/cameraqr.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
@@ -167,7 +166,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                           GestureDetector(
                               onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => const QRScreen(),
+                                      builder: (context) => const QRScreen(isBottomButtonVisible: true,),
                                     ),
                                   ),
                               child: avatarGlow(
@@ -188,8 +187,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             height: AppTheme.cardPadding * 3,
           ),
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
