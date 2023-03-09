@@ -193,33 +193,33 @@ class _ChartWidgetState extends State<ChartWidget> {
     });
   }
 
-  void _getBitcoinPrice() async {
-    final String url = 'https://api.coingecko.com/api/v3/simple/price';
-    final Map<String, String> params = {
-      'ids': 'bitcoin',
-      'vs_currencies': 'eur',
-      'include_last_updated_at': 'true'
-    };
-
-    final response =
-    await get(Uri.parse(url).replace(queryParameters: params), headers: {});
-
-    if (response.statusCode == 200) {
-      final price = jsonDecode(response.body)['bitcoin']['eur'].toString();
-      final time = jsonDecode(response.body)['bitcoin']['last_updated_at'].toString();
-      ChartLine chartData = ChartLine(
-        time: double.parse(time),
-        price: double.parse(price),
-      );
-      _priceStreamController.add(chartData);
-      setState(() {});
-    } else {
-      print('Error ${response.statusCode}: ${response.reasonPhrase}');
-      setState(() {
-        print("An Error occured trying to livefetch the bitcoinprice");
-      });
-    }
-  }
+  // void _getBitcoinPrice() async {
+  //   final String url = 'https://api.coingecko.com/api/v3/simple/price';
+  //   final Map<String, String> params = {
+  //     'ids': 'bitcoin',
+  //     'vs_currencies': 'eur',
+  //     'include_last_updated_at': 'true'
+  //   };
+  //
+  //   final response =
+  //   await get(Uri.parse(url).replace(queryParameters: params), headers: {});
+  //
+  //   if (response.statusCode == 200) {
+  //     final price = jsonDecode(response.body)['bitcoin']['eur'].toString();
+  //     final time = jsonDecode(response.body)['bitcoin']['last_updated_at'].toString();
+  //     ChartLine chartData = ChartLine(
+  //       time: double.parse(time),
+  //       price: double.parse(price),
+  //     );
+  //     _priceStreamController.add(chartData);
+  //     setState(() {});
+  //   } else {
+  //     print('Error ${response.statusCode}: ${response.reasonPhrase}');
+  //     setState(() {
+  //       print("An Error occured trying to livefetch the bitcoinprice");
+  //     });
+  //   }
+  // }
 
   // updateChart when new data arrives
   void updateChart() {
@@ -235,7 +235,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     super.initState();
     _loading = true;
     getChartLine();
-    _getBitcoinPrice();
+    // _getBitcoinPrice();
     _trackballBehavior = TrackballBehavior(
       lineColor: Colors.grey[400],
       enable: true,
