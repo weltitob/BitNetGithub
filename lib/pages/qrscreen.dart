@@ -9,7 +9,12 @@ import 'package:nexus_wallet/theme.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class QRScreen extends StatefulWidget {
-  const QRScreen({Key? key}) : super(key: key);
+  final bool isBottomButtonVisible;
+
+  const QRScreen({
+    Key? key,
+    required this.isBottomButtonVisible,
+  }) : super(key: key);
 
   @override
   State<QRScreen> createState() => _QRScreenState();
@@ -37,8 +42,8 @@ class _QRScreenState extends State<QRScreen> {
       ),
     );
   }
-  Widget buildButtons() {
 
+  Widget buildButtons() {
     return Padding(
       padding: const EdgeInsets.only(
           top: 80,
@@ -69,7 +74,8 @@ class _QRScreenState extends State<QRScreen> {
                           children: [
                             GestureDetector(
                               child: ValueListenableBuilder(
-                                valueListenable: cameraController.cameraFacingState,
+                                valueListenable:
+                                    cameraController.cameraFacingState,
                                 builder: (context, state, child) {
                                   switch (state as CameraFacing) {
                                     case CameraFacing.front:
@@ -90,9 +96,15 @@ class _QRScreenState extends State<QRScreen> {
                                 builder: (context, state, child) {
                                   switch (state as TorchState) {
                                     case TorchState.off:
-                                      return Icon(Icons.flash_off, color: AppTheme.white90,);
+                                      return Icon(
+                                        Icons.flash_off,
+                                        color: AppTheme.white90,
+                                      );
                                     case TorchState.on:
-                                      return Icon(Icons.flash_on, color: AppTheme.white90,);
+                                      return Icon(
+                                        Icons.flash_on,
+                                        color: AppTheme.white90,
+                                      );
                                   }
                                 },
                               ),
@@ -110,10 +122,13 @@ class _QRScreenState extends State<QRScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              RoundedButtonWidget(
-                iconData: Icons.arrow_back_rounded,
-                onTap: () => Navigator.pop(context),
-                isGlassmorph: true,
+              Visibility(
+                visible: widget.isBottomButtonVisible,
+                child: RoundedButtonWidget(
+                  iconData: Icons.arrow_back_rounded,
+                  onTap: () => Navigator.pop(context),
+                  isGlassmorph: true,
+                ),
               ),
               const SizedBox(
                 width: AppTheme.cardPadding,
@@ -129,12 +144,10 @@ class _QRScreenState extends State<QRScreen> {
                 width: AppTheme.cardPadding,
               ),
               Visibility(
-                visible: true,
+                visible: widget.isBottomButtonVisible,
                 child: RoundedButtonWidget(
                   iconData: Icons.text_fields_rounded,
-                  onTap: () =>
-                      setState(() {
-                      }),
+                  onTap: () => setState(() {}),
                   isGlassmorph: true,
                 ),
               ),
@@ -144,5 +157,4 @@ class _QRScreenState extends State<QRScreen> {
       ),
     );
   }
-
 }
