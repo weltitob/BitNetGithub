@@ -8,10 +8,10 @@ class TextScannerOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double scanAreaHeight = (MediaQuery.of(context).size.width < 200 * 0.75 ||
-        MediaQuery.of(context).size.height < 200 * 0.75)
-        ? 120.0 * 0.75
-        : 175.0 * 0.75;
+    double scanAreaHeight = (MediaQuery.of(context).size.width < 200 * 0.65 ||
+        MediaQuery.of(context).size.height < 200 * 0.65)
+        ? 120.0 * 0.65
+        : 175.0 * 0.65;
     double scanAreaWidth = (MediaQuery.of(context).size.width < 450 ||
         MediaQuery.of(context).size.height < 450)
         ? 320.0
@@ -35,7 +35,7 @@ class TextScannerOverlay extends StatelessWidget {
                 width: scanAreaWidth,
                 decoration: BoxDecoration(
                   color: Colors.red,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
@@ -61,7 +61,7 @@ class TextBorderPainterSmall extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     const width = 4.0 / 1.5;
-    const radius = 15.0 / 2;
+    const radius = 10.0 / 2;
     const tRadius = 3 * radius / 2;
     final rect = Rect.fromLTWH(
       width,
@@ -122,7 +122,7 @@ class TextBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     const width = 4.0;
-    const radius = 15.0;
+    const radius = 10.0;
     const tRadius = 3 * radius;
     final rect = Rect.fromLTWH(
       width,
