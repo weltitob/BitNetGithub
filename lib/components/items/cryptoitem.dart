@@ -218,8 +218,7 @@ class _CryptoItemState extends State<CryptoItem> {
               animationDuration: 0,
               xValueMapper: (ChartLine crypto, _) => crypto.time,
               yValueMapper: (ChartLine crypto, _) => crypto.price,
-              color: onedaychart[0].price <
-                  onedaychart[onedaychart.length - 1].price
+              color: priceChange >= 0
                   ? AppTheme.successColor
                   : AppTheme.errorColor,
             )
