@@ -19,6 +19,7 @@ import 'package:nexus_wallet/models/transaction_status.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:uuid/uuid.dart';
 
 class SendBTCScreen extends StatefulWidget {
   const SendBTCScreen({Key? key}) : super(key: key);
@@ -312,42 +313,55 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   Widget userTile() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          leading: const CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://bitfalls.com/wp-content/uploads/2017/09/header-5.png"),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            leading: const CircleAvatar(
+              backgroundImage: NetworkImage(
+                  "https://bitfalls.com/wp-content/uploads/2017/09/header-5.png"),
+            ),
+            title: Text(
+              "Unbekannte Walletadresse",
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
+            subtitle: cardWithNumber(),
+            trailing: IconButton(
+                icon:
+                    const Icon(Icons.edit_rounded, color: Colors.grey, size: 18),
+                onPressed: () {
+                  setState(() {
+                    _hasReceiver = false;
+                  });
+                }),
           ),
-          title: Text(
-            "Unbekannte Walletadresse",
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-          subtitle: cardWithNumber(),
-          trailing: IconButton(
-              icon:
-                  const Icon(Icons.edit_rounded, color: Colors.grey, size: 18),
-              onPressed: () {
-                setState(() {
-                  _hasReceiver = false;
-                });
-              }),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget cardWithNumber() {
-    return Row(
-      children: [
-        const Icon(Icons.copy_rounded, color: Colors.grey, size: 16),
-        Text(
-          _bitcoinReceiverAdress,
-          style: Theme.of(context).textTheme.caption,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+    return GestureDetector(
+      onTap: () async {
+        await Clipboard.setData(ClipboardData(text: _bitcoinReceiverAdress));
+        // copied successfully
+        displaySnackbar(context, "Wallet-Adresse in Zwischenablage kopiert");
+      },
+      child: Row(
+        children: [
+          const Icon(Icons.copy_rounded, color: Colors.grey, size: 16),
+          SizedBox(
+            width: AppTheme.cardPadding * 8,
+            child: Text(
+              _bitcoinReceiverAdress,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -535,7 +549,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           onFinish: () async {
             TransactionStatus mydata = await sendBitcoin();
             if (mydata.status == "success") {
-
               //when the bitcoin transaction was successfully pushed to the blockchain also add it to firebase
               final newtransaction = Transaction(
                   transactionDirection: TransactionDirection.send,
@@ -543,13 +556,21 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   transactionSender: "Eigene Bitcoin Adresse",
                   transactionReceiver: _bitcoinReceiverAdress,
                   amount: moneyController.text);
-              await transactionCollection.doc(currentuser!.uid).set(newtransaction.toMap());
+              String transactionuuid = Uuid().toString();
+
+              await transactionCollection
+                  .doc(currentuser!.uid)
+                  .collection("all")
+                  .doc(transactionuuid)
+                  .set(newtransaction.toMap());
 
               await Navigator.push(
                   context,
                   PageTransition(
                       type: PageTransitionType.fade, child: const BottomNav()));
-              displaySnackbar(context, "Deine Bitcoin wurden versendet!"
+              displaySnackbar(
+                  context,
+                  "Deine Bitcoin wurden versendet!"
                   " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
             } else {
               print('Keine success message als status. ${mydata.message}');

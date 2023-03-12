@@ -22,8 +22,7 @@ class _TransactionsState extends State<Transactions>
   late TabController _tabController;
   final User? currentuser = Auth().currentUser;
 
-  StreamController<double> _transactionStreamController = StreamController<double>();
-  late StreamSubscription<double> _priceStreamSubscription;
+  late StreamSubscription<double> _transactionstreamlistener;
 
   List<Transaction> transactions = [];
 
@@ -31,32 +30,17 @@ class _TransactionsState extends State<Transactions>
 
   }
 
-
   @override
   void initState() {
     _getTransactions();
-    _priceStreamSubscription = _transactionStreamController.stream.listen((price) {
-      setState(() {
-        print('new lol');
-      });
-    });
-    transactionCollection.doc(currentuser!.uid).collection('transactions').snapshots().listen((snapshot) {
-      snapshot.docs.forEach((doc) {
-        setState(() {
-          Transaction newTransaction = Transaction.fromMap(doc as Map<String, dynamic>);
-          // Add the new document ID to the list
-          transactions.add(newTransaction);
-        });
-      });
-    });
+    final userstransactions = transactionCollection.doc(currentuser!.uid).collection("all");
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _priceStreamSubscription.cancel();
-    _transactionStreamController.close();
+    _transactionstreamlistener.cancel();
     _tabController.dispose();
     super.dispose();
   }
@@ -158,6 +142,14 @@ class _TransactionsState extends State<Transactions>
                             amount: "3402.063"),
                         context: context),
                     SizedBox(height: AppTheme.elementSpacing * 0.75),
+                    TransactionItem(
+                        transaction: Transaction(
+                            transactionDirection: TransactionDirection.send,
+                            transactionReceiver: "uhadoihasoidahiosd",
+                            transactionSender: "jioafojiadpjianodaps",
+                            date: "23.03.2022",
+                            amount: "3402.063"),
+                        context: context),
                   ],
                 ),
               ),
