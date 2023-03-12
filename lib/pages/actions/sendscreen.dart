@@ -62,7 +62,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         'private_key': "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
         'sender': "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
         'receiver': "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
-        'amount_to_send': "0.000187",
+        'amount_to_send': "${moneyController.text}",
         'feeSize': '$feesSelected',
       });
       final mydata = TransactionStatus.fromJson(resp.data);
