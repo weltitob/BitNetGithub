@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -10,6 +11,7 @@ import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';
 import 'package:nexus_wallet/loaders.dart';
+import 'package:nexus_wallet/models/transaction_status.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:page_transition/page_transition.dart';
@@ -48,6 +50,27 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     myFocusNode.dispose();
     moneyController.dispose();
     super.dispose();
+  }
+
+  Future<TransactionStatus?> sendBitcoin() async {
+    try {
+      HttpsCallable callable =
+      FirebaseFunctions.instance.httpsCallable('createWallet');
+      final resp = await callable.call(<String, dynamic>{
+        //later pass entire user relevant info then create ION account
+        // and get entire user as mydata back who is then registered
+        'private_key': "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
+        'sender': "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
+        'receiver': "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
+        'amount_to_send': "0.000187",
+        'feeSize': '$feesSelected',
+      });
+      final mydata = TransactionStatus.fromJson(resp.data);
+      return mydata;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   Future<void> getBitcoinPrice() async {
@@ -486,6 +509,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             });
           },
           onFinish: () async {
+            await sendBitcoin();
+            print('sendBitcoin function was triggered');
             await Navigator.push(
                 context,
                 PageTransition(
