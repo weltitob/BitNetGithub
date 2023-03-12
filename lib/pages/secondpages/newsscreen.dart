@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/components/items/newsitem.dart';
-import 'package:nexus_wallet/components/news/news.dart';
+import 'package:nexus_wallet/models/news.dart';
 import 'package:nexus_wallet/loaders.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -19,7 +19,7 @@ class _buildNewsState extends State<buildNews> {
 
   Future<void> getNews() async {
     var url = Uri.parse(
-        "https://newsapi.org/v2/everything?q=bitcoin&sortBy=publishedAt&apiKey=be561302ff234a908ac60730ef999db6");
+        "https://newsapi.org/v2/everything?q=bitcoin&sortBy=publishedAt&language=de&apiKey=be561302ff234a908ac60730ef999db6");
     var response = await http.get(url);
     print(response);
     var jsonData = jsonDecode(response.body);
