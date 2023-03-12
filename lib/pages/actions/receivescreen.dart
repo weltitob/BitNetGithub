@@ -5,6 +5,7 @@ import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ReceiveScreen extends StatefulWidget {
   const ReceiveScreen({Key? key}) : super(key: key);
@@ -16,6 +17,8 @@ class ReceiveScreen extends StatefulWidget {
 class _ReceiveScreenState extends State<ReceiveScreen> {
   GlobalKey globalKeyQR = GlobalKey();
   final String _walletAdress = "1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71";
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -126,12 +129,20 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                   glassButton(
                     text: "Kopieren",
                     iconData: Icons.copy_rounded,
-                    onTap: () {},
+                    onTap: () async {
+                      await Clipboard.setData(
+                          ClipboardData(text: _walletAdress));
+                      // copied successfully
+                      displaySnackbar(
+                          context, "Wallet-Adresse in Zwischenablage kopiert");
+                    },
                   ),
                   glassButton(
                     text: "Teilen",
                     iconData: Icons.share_rounded,
-                    onTap: () {},
+                    onTap: () {
+                      Share.share('$_walletAdress');
+                    },
                   ),
                 ],
               ),

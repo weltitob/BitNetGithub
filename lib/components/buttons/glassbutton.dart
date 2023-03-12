@@ -23,12 +23,12 @@ class _glassButtonState extends State<glassButton> {
   @override
   Widget build(BuildContext context) {
     return widget.isSelected == null || widget.isSelected! ?
-      Glassmorphism(
-            blur: 20,
-            opacity: 0.1,
-            radius: 50.0,
-            child: GestureDetector(
-              onTap: widget.onTap,
+      GestureDetector(
+        onTap: widget.onTap,
+        child: Glassmorphism(
+              blur: 20,
+              opacity: 0.1,
+              radius: 50.0,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: AppTheme.elementSpacing * 0.5,
@@ -65,7 +65,7 @@ class _glassButtonState extends State<glassButton> {
                 ),
               ),
             ),
-          )
+      )
         : GestureDetector(
             onTap: widget.onTap,
             child: Container(

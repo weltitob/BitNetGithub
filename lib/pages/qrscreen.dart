@@ -24,6 +24,7 @@ class QRScreen extends StatefulWidget {
 class _QRScreenState extends State<QRScreen> {
   @override
   MobileScannerController cameraController = MobileScannerController();
+  bool isQRScanner = true;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,8 @@ class _QRScreenState extends State<QRScreen> {
                 final String? code = barcode.rawValue;
                 debugPrint('Barcode found! $code');
               }),
-          TextScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)),
+          isQRScanner ? QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)) :
+              TextScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)),
           buildButtons(),
         ],
       ),

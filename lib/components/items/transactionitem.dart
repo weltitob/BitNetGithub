@@ -20,7 +20,7 @@ class _TransactionItemState extends State<TransactionItem> {
   @override
   Widget build(BuildContext context) {
     bool _hasReceived =
-        widget.transaction.tradeDirection == TransactionDirection.receive
+        widget.transaction.transactionDirection == TransactionDirection.receive
             ? true
             : false;
 
@@ -93,7 +93,7 @@ class _TransactionItemState extends State<TransactionItem> {
                     title(),
                     const Spacer(),
                     Text(
-                      widget.transaction.amountString,
+                      widget.transaction.amount,
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
                           color: _hasReceived
                               ? AppTheme.colorBitcoin

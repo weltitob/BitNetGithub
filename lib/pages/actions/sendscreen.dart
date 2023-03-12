@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
@@ -11,6 +14,7 @@ import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';
 import 'package:nexus_wallet/loaders.dart';
+import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/transaction_status.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/theme.dart';
@@ -24,13 +28,15 @@ class SendBTCScreen extends StatefulWidget {
 }
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
+  final User? currentuser = Auth().currentUser;
+
   late FocusNode myFocusNode;
   TextEditingController bitcoinReceiverAdressController =
       TextEditingController();
   TextEditingController moneyController = TextEditingController();
   bool isFinished = false;
   bool _hasReceiver = false;
-  String _bitcoinAdresse = '';
+  String _bitcoinReceiverAdress = '';
   dynamic _moneyineur = '';
   bool _isLoadingExchangeRt = true;
   double bitcoinBalanceWallet = 13.24;
@@ -52,24 +58,30 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     super.dispose();
   }
 
-  Future<TransactionStatus?> sendBitcoin() async {
+  Future<TransactionStatus> sendBitcoin() async {
     try {
       HttpsCallable callable =
-      FirebaseFunctions.instance.httpsCallable('createWallet');
+          FirebaseFunctions.instance.httpsCallable('sendBitcoin');
       final resp = await callable.call(<String, dynamic>{
-        //later pass entire user relevant info then create ION account
-        // and get entire user as mydata back who is then registered
-        'private_key': "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
+        'sender_private_key':
+            "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
         'sender': "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
         'receiver': "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
         'amount_to_send': "${moneyController.text}",
         'feeSize': '$feesSelected',
       });
+      print("Das isch deine response: ${resp.data}");
       final mydata = TransactionStatus.fromJson(resp.data);
+      print(mydata.message);
+      print(mydata.status);
       return mydata;
     } catch (e) {
+      print('EIN FEHLR IST BEIM AUFRUF DER CLOUD FUNKTION AUFGETRETEN');
       print(e);
-      return null;
+      return TransactionStatus(
+        status: 'error',
+        message: 'Wir können aktuell unsere Server nicht erreichen.',
+      );
     }
   }
 
@@ -97,9 +109,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         }
       });
     } else {
-      print('Error ${response.statusCode}: ${response.reasonPhrase}');
+      print(
+          'Error beim Laden des Bitcoin Preises: ${response.statusCode}: ${response.reasonPhrase}');
       setState(() {
-        _moneyineur = "An Error occured";
+        _moneyineur = "Ein Fehler ist aufgetreten";
       });
     }
   }
@@ -120,7 +133,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Bitcoin versenden", style: Theme.of(context).textTheme.titleLarge),
+            Text("Bitcoin versenden",
+                style: Theme.of(context).textTheme.titleLarge),
             Text("${bitcoinBalanceWallet}BTC verfügbar",
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
@@ -170,7 +184,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                   autofocus: false,
                                   onSubmitted: (text) {
                                     setState(() {
-                                      _bitcoinAdresse = text;
+                                      _bitcoinReceiverAdress = text;
                                       _hasReceiver = true;
                                     });
                                   },
@@ -189,7 +203,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                           GestureDetector(
                               onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => const QRScreen(isBottomButtonVisible: true,),
+                                      builder: (context) => const QRScreen(
+                                        isBottomButtonVisible: true,
+                                      ),
                                     ),
                                   ),
                               child: avatarGlow(
@@ -210,7 +226,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             height: AppTheme.cardPadding * 3,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -224,8 +241,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                       width: AppTheme.elementSpacing / 2,
                     ),
                     GestureDetector(
-                      onTap: (){
-                        displaySnackbar(context, "Die Gebührenhöhe bestimmt über "
+                      onTap: () {
+                        displaySnackbar(
+                            context,
+                            "Die Gebührenhöhe bestimmt über "
                             "die Transaktionsgeschwindigkeit. "
                             "Wenn du hohe Gebühren zahlst wird deine "
                             "Transaktion schneller bei dem Empfänger ankommen");
@@ -324,7 +343,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       children: [
         const Icon(Icons.copy_rounded, color: Colors.grey, size: 16),
         Text(
-          _bitcoinAdresse,
+          _bitcoinReceiverAdress,
           style: Theme.of(context).textTheme.caption,
           overflow: TextOverflow.ellipsis,
         ),
@@ -342,7 +361,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             "Wert eingeben",
             style: Theme.of(context).textTheme.headline6,
           ),
-          SizedBox(height: AppTheme.cardPadding,),
+          SizedBox(
+            height: AppTheme.cardPadding,
+          ),
           Container(
               child: Stack(
             alignment: Alignment.centerRight,
@@ -417,66 +438,69 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   Widget glassButtonFees(
-      String fees,
-      ) {
+    String fees,
+  ) {
     return Padding(
       padding:
-      const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
+          const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
       child: fees == feesSelected
           ? Glassmorphism(
-        blur: 20,
-        opacity: 0.1,
-        radius: 50.0,
-        child: TextButton(
-          style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: const Size(50, 30),
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              alignment: Alignment.centerLeft),
-          onPressed: () {},
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppTheme.elementSpacing * 0.5,
-              horizontal: AppTheme.elementSpacing,
-            ),
-            child: Text(
-                fees,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: AppTheme.white90)),
-          ),
-        ),
-      )
+              blur: 20,
+              opacity: 0.1,
+              radius: 50.0,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(50, 30),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    alignment: Alignment.centerLeft),
+                onPressed: () {},
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppTheme.elementSpacing * 0.5,
+                    horizontal: AppTheme.elementSpacing,
+                  ),
+                  child: Text(fees,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(color: AppTheme.white90)),
+                ),
+              ),
+            )
           : TextButton(
-        style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: const Size(50, 20),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            alignment: Alignment.centerLeft),
-        onPressed: () {
-          setState(() {
-            feesSelected = fees;
-            switch (feesSelected) {
-              case "Niedrig":
-                break;
-              case "Mittel":
-                break;
-              case "Hoch":
-                break;
-            }
-          });
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            vertical: AppTheme.elementSpacing * 0.5,
-            horizontal: AppTheme.elementSpacing,
-          ),
-          child: Text(
-            fees,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: AppTheme.white60),
-          ),
-        ),
-      ),
+              style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(50, 20),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  alignment: Alignment.centerLeft),
+              onPressed: () {
+                setState(() {
+                  feesSelected = fees;
+                  switch (feesSelected) {
+                    case "Niedrig":
+                      break;
+                    case "Mittel":
+                      break;
+                    case "Hoch":
+                      break;
+                  }
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppTheme.elementSpacing * 0.5,
+                  horizontal: AppTheme.elementSpacing,
+                ),
+                child: Text(
+                  fees,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: AppTheme.white60),
+                ),
+              ),
+            ),
     );
   }
 
@@ -509,12 +533,29 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             });
           },
           onFinish: () async {
-            await sendBitcoin();
-            print('sendBitcoin function was triggered');
-            await Navigator.push(
-                context,
-                PageTransition(
-                    type: PageTransitionType.fade, child: const BottomNav()));
+            TransactionStatus mydata = await sendBitcoin();
+            if (mydata.status == "success") {
+
+              //when the bitcoin transaction was successfully pushed to the blockchain also add it to firebase
+              final newtransaction = Transaction(
+                  transactionDirection: TransactionDirection.send,
+                  date: DateTime.now().toString(),
+                  transactionSender: "Eigene Bitcoin Adresse",
+                  transactionReceiver: _bitcoinReceiverAdress,
+                  amount: moneyController.text);
+              await transactionCollection.doc(currentuser!.uid).set(newtransaction.toMap());
+
+              await Navigator.push(
+                  context,
+                  PageTransition(
+                      type: PageTransitionType.fade, child: const BottomNav()));
+              displaySnackbar(context, "Deine Bitcoin wurden versendet!"
+                  " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
+            } else {
+              print('Keine success message als status. ${mydata.message}');
+              displaySnackbar(
+                  context, "Ein Fehler ist aufgetreten: ${mydata.message}");
+            }
             setState(() {
               isFinished = false;
             });
