@@ -1,11 +1,7 @@
-import 'dart:convert';
-
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
@@ -33,7 +29,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Text(user?.email ?? 'User email');
   }
 
-  bool _lights = true;
+  bool _improvedsecurity = true;
+  bool _ziehesendschkohl = false;
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +96,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    ChildBuildBoxInternToggleSwich(
-                        Icons.nights_stay_outlined, "Darkmode"),
-                    MyDivider(),
+                    // ChildBuildBoxInternToggleSwich(
+                    //     Icons.nights_stay_outlined, "Darkmode"),
+                    // MyDivider(),
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
@@ -165,6 +162,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: EdgeInsets.only(
           top: AppTheme.cardPadding,
         )),
+        ChildBuildBoxHeader("Easter-Eggs"),
+        Glassmorphism(
+            blur: 20,
+            opacity: 0.1,
+            radius: AppTheme.cardPadding,
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: 10,
+                  left: AppTheme.elementSpacing,
+                  right: AppTheme.elementSpacing,
+                  bottom: 10),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    ChildBuildBoxInternToggleSwich(Icons.help,
+                        "Ziehe sendsch Kohl Modus", _ziehesendschkohl),
+                  ]),
+            )),
+        Padding(
+            padding: EdgeInsets.only(
+          top: AppTheme.cardPadding,
+        )),
         ChildBuildBoxHeader("Authentifizierung"),
         Glassmorphism(
             blur: 20,
@@ -179,6 +198,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    ChildBuildBoxInternToggleSwich(Icons.fingerprint_rounded,
+                        "Erhöhte Sicherheit", _improvedsecurity),
+                    MyDivider(),
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
@@ -193,15 +215,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     MyDivider(),
                     GestureDetector(
                         onTap: () {
-                          // widget tree wieder raus aus auth oder lieber drin bleiben?
-                        },
-                        child: ChildBuildBoxIntern(
-                            Icons.key_rounded, "Passwort zurücksetzen")),
-                    MyDivider(),
-                    GestureDetector(
-                        onTap: () {
-                          //signOut();
-                          getWalletBalance();
+                          signOut();
+                          //getWalletBalance();
                         },
                         child: ChildBuildBoxIntern(
                             Icons.login_rounded, "Abmelden"))
@@ -210,7 +225,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ],
     );
   }
-
 
   Widget ChildBuildBoxHeader(String header) {
     return Padding(
@@ -262,7 +276,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget ChildBuildBoxInternToggleSwich(icon, String text) {
+  Widget ChildBuildBoxInternToggleSwich(icon, String text, bool toggle) {
     return GestureDetector(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -290,10 +304,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Transform.scale(
               scale: 0.8,
               child: CupertinoSwitch(
-                value: _lights,
+                activeColor: AppTheme.colorBitcoin,
+                value: toggle,
                 onChanged: (bool value) {
                   setState(() {
-                    _lights = value;
+                    toggle = value;
                   });
                 },
               ),
@@ -303,7 +318,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       onTap: () {
         setState(() {
-          _lights = !_lights;
+          toggle = !toggle;
         });
       },
     );

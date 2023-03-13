@@ -33,6 +33,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  #on device authentication
+  local_auth: ^2.1.6
+
   rive: ^0.10.0
   mobile_scanner: ^2.1.0
   page_transition: ^2.0.9

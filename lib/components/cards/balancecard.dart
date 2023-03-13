@@ -10,7 +10,7 @@ import 'package:nexus_wallet/backbone/theme.dart';
 class BalanceCardBtc extends StatelessWidget {
   const BalanceCardBtc({Key? key}) : super(key: key);
 
-  final String _walletAdress = "1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71";
+  final String _walletAddress = "1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71";
 
   Widget balanceText(BuildContext context) {
     return Padding(
@@ -29,12 +29,12 @@ class BalanceCardBtc extends StatelessWidget {
             style: Theme.of(context).textTheme.displaySmall),
           const Spacer(),
           Text(
-            'Deine Wallet-Adresse',
+            'Deine Wallet-Adresse:',
             style: Theme.of(context).textTheme.bodySmall,
           ),
           GestureDetector(
             onTap: () async {
-              await Clipboard.setData(ClipboardData(text: _walletAdress));
+              await Clipboard.setData(ClipboardData(text: _walletAddress));
               // copied successfully
               displaySnackbar(context, "Wallet-Adresse in Zwischenablage kopiert");
             },
@@ -43,9 +43,9 @@ class BalanceCardBtc extends StatelessWidget {
                 Icon(Icons.copy_rounded, color: AppTheme.white80, size: 18,),
                 const SizedBox(width: 4,),
                 Container(
-                  width: AppTheme.cardPadding * 5,
+                  width: AppTheme.cardPadding * 10,
                   child: Text(
-                    _walletAdress,
+                    _walletAddress,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
@@ -111,7 +111,6 @@ class BalanceCardBtc extends StatelessWidget {
           children: [
             const BalanceBackground(),
             balanceText(context),
-            profitPercent(context),
             currencyPicture(context)
           ],
         ),
