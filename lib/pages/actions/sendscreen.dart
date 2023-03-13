@@ -15,7 +15,7 @@ import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';
 import 'package:nexus_wallet/loaders.dart';
 import 'package:nexus_wallet/models/transaction.dart';
-import 'package:nexus_wallet/models/transaction_status.dart';
+import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:page_transition/page_transition.dart';
@@ -59,27 +59,25 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     super.dispose();
   }
 
-  Future<TransactionStatus> sendBitcoin() async {
+  Future<CloudfunctionCallback> sendBitcoin() async {
     try {
       HttpsCallable callable =
           FirebaseFunctions.instance.httpsCallable('sendBitcoin');
       final resp = await callable.call(<String, dynamic>{
         'sender_private_key':
             "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
-        'sender': "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
-        'receiver': "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
+        'sender_adress': "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
+        'receiver_adress': "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
         'amount_to_send': "${moneyController.text}",
-        'feeSize': '$feesSelected',
+        'fee_size': '$feesSelected',
       });
       print("Das isch deine response: ${resp.data}");
-      final mydata = TransactionStatus.fromJson(resp.data);
-      print(mydata.message);
-      print(mydata.status);
+      final mydata = CloudfunctionCallback.fromJson(resp.data);
       return mydata;
     } catch (e) {
       print('EIN FEHLR IST BEIM AUFRUF DER CLOUD FUNKTION AUFGETRETEN');
       print(e);
-      return TransactionStatus(
+      return CloudfunctionCallback(
         status: 'error',
         message: 'Wir können aktuell unsere Server nicht erreichen.',
       );
@@ -329,8 +327,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             ),
             subtitle: cardWithNumber(),
             trailing: IconButton(
-                icon:
-                    const Icon(Icons.edit_rounded, color: Colors.grey, size: 18),
+                icon: const Icon(Icons.edit_rounded,
+                    color: Colors.grey, size: 18),
                 onPressed: () {
                   setState(() {
                     _hasReceiver = false;
@@ -547,7 +545,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             });
           },
           onFinish: () async {
-            TransactionStatus mydata = await sendBitcoin();
+            CloudfunctionCallback mydata = await sendBitcoin();
             if (mydata.status == "success") {
               //when the bitcoin transaction was successfully pushed to the blockchain also add it to firebase
               final newtransaction = Transaction(

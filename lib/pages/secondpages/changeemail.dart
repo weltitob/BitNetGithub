@@ -57,9 +57,11 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
       //get userwallet here is fakdata
       final userwallet = UserWallet(
         walletType: 'simple',
-        seedPhrases: 'seedphraselmao',
+        privateKey: 'seedphraselmao',
         email: 'lel',
         walletAdress: 'fakewalletadress',
+        useruid: _auth.currentUser!.uid,
+        walletBalance: '',
       );
       final newuserwallet = userwallet.copyWith(email: _emailController.text);
       await usersCollection.doc(currentuser!.uid).update(newuserwallet.toMap());

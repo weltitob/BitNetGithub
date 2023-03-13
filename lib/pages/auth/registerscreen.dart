@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,7 @@ import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
+import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/auth/background.dart';
 import 'package:nexus_wallet/theme.dart';
@@ -34,17 +36,37 @@ class _RegisterScreenState extends State<RegisterScreen>
       TextEditingController();
   bool _isLoading = false;
 
-  Future<UserWallet?> createWallet() async {
+  dynamic createWallet() async {
+    final User? currentuser = Auth().currentUser;
     try {
+      print('CALL WALLET...');
       HttpsCallable callable =
           FirebaseFunctions.instance.httpsCallable('createWallet');
-      final resp = await callable.call(<String, dynamic>{});
-      print(resp.data);
-      final mydata = UserWallet.fromJson(resp.data);
-      return mydata;
+
+      print("${currentuser!.email.toString()}"
+          " und ${currentuser.uid.toString()} werden createWallet übergeben");
+      final resp = await callable.call(<String, dynamic>{
+        'email': "${currentuser.email.toString()}",
+        'useruid': "${currentuser.uid.toString()}",
+      });
+      print('Response: ${resp.data}');
+      final mydata = CloudfunctionCallback.fromJson(resp.data);
+      if (mydata.status == "success") {
+        print(mydata.message);
+        var encodedString = jsonDecode(mydata.message);
+        final newWallet = UserWallet.fromJson(encodedString);
+        return newWallet;
+      } else {
+        //error in der cloudfunktion aufgetreten aber werte korrekt zurückgekommen
+        print('Die Antowrtnachricht der Cloudfunktion war ein Error.');
+        //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
+      }
+      print(mydata.message);
+      print(mydata.status);
     } catch (e) {
+      //error beim callen der cloudfunktion
       setState(() {
-        errorMessage = "Wir konnten keine neue Wallet für dich erstellen...";
+        print("Wir konnten keine neue Wallet für dich erstellen: ${e}");
       });
       print(e);
       return null;
@@ -57,16 +79,10 @@ class _RegisterScreenState extends State<RegisterScreen>
       _isLoading = true;
     });
     try {
-      final userwalletdata = await createWallet();
-      final userwallet = UserWallet(
-        walletType: 'simple',
-        seedPhrases: 'seedphraselmao',
-        email: _controllerEmail.text,
-        walletAdress: 'fakewalletadress',
-      );
       await createFirebaseUserWithEmailAndPassword();
       final User? currentuser = Auth().currentUser;
-      await usersCollection.doc(currentuser!.uid).set(userwallet.toMap());
+      final userwalletdata = await createWallet();
+      await usersCollection.doc(currentuser!.uid).set(userwalletdata.toMap());
       print('user registered successfully');
     } catch (e) {
       print('error trying to register user');

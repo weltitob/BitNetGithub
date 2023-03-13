@@ -1,22 +1,28 @@
 class UserWallet {
   String walletAdress;
   String walletType;
-  String seedPhrases;
+  String walletBalance;
+  String privateKey;
   String email;
+  String useruid;
 
   UserWallet({
     required this.walletAdress,
     required this.walletType,
-    required this.seedPhrases,
+    required this.walletBalance,
+    required this.privateKey,
     required this.email,
+    required this.useruid,
   });
 
   factory UserWallet.fromJson(Map<String, dynamic> json) {
     return UserWallet(
       walletAdress: json['walletAdress'].toString(),
       walletType: json['walletType'].toString(),
-      seedPhrases: json['seedPhrases'].toString(),
+      walletBalance: json['walletBalance'].toString(),
+      privateKey: json['privateKey'].toString(),
       email: json['email'].toString(),
+      useruid: json['useruid'].toString(),
     );
   }
 
@@ -24,22 +30,28 @@ class UserWallet {
     return {
       'walletAdress': walletAdress,
       'walletType': walletType,
-      'seedPhrases': seedPhrases,
+      'walletBalance': walletBalance,
+      'privateKey': privateKey,
       'email': email,
+      'useruid': useruid,
     };
   }
 
   UserWallet copyWith({
     String? walletAdress,
     String? walletType,
-    String? seedPhrases,
+    String? walletBalance,
+    String? privateKey,
     String? email,
+    String? useruid,
   }) {
     return UserWallet(
       walletAdress: walletAdress ?? this.walletAdress,
       walletType: walletType ?? this.walletType,
-      seedPhrases: seedPhrases ?? this.seedPhrases,
+      walletBalance: walletType ?? this.walletBalance,
+      privateKey: privateKey ?? this.privateKey,
       email: email ?? this.email,
+      useruid: email ?? this.useruid,
     );
   }
 }

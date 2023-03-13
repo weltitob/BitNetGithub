@@ -1,14 +1,14 @@
-class TransactionStatus {
+class CloudfunctionCallback {
   String status;
   String message;
 
-  TransactionStatus({
+  CloudfunctionCallback({
     required this.status,
     required this.message,
   });
 
-  factory TransactionStatus.fromJson(Map<String, dynamic> json) {
-    return TransactionStatus(
+  factory CloudfunctionCallback.fromJson(Map<String, dynamic> json) {
+    return CloudfunctionCallback(
       status: json['status'].toString(),
       message: json['message'].toString(),
     );
@@ -21,11 +21,11 @@ class TransactionStatus {
     };
   }
 
-  TransactionStatus copyWith({
+  CloudfunctionCallback copyWith({
     String? status,
     String? message,
   }) {
-    return TransactionStatus(
+    return CloudfunctionCallback(
       status: status ?? this.status,
       message: message ?? this.message,
     );
