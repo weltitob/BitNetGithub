@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
 import 'package:nexus_wallet/pages/secondpages/impressumscreen.dart';
@@ -19,6 +21,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final User? user = Auth().currentUser;
+
+  //iwie sowas final UserWallet userWallet = Auth().currentUserWallet;
 
   Future<void> signOut() async {
     print('signout pressed');
@@ -215,8 +219,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     MyDivider(),
                     GestureDetector(
                         onTap: () {
-                          signOut();
-                          //getWalletBalance();
+                          //signOut();
+                          getWalletBalance();
                         },
                         child: ChildBuildBoxIntern(
                             Icons.login_rounded, "Abmelden"))

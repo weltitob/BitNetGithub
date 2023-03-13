@@ -37,6 +37,17 @@ class UserWallet {
     };
   }
 
+  factory UserWallet.fromMap(Map<String, dynamic> map) {
+    return UserWallet(
+      walletAddress: map['walletAddress'] ?? '',
+      walletType: map['walletType'] ?? '',
+      walletBalance: map['walletBalance'] ?? '',
+      privateKey: map['privateKey'] ?? '',
+      email: map['email'] ?? '',
+      useruid: map['useruid'] ?? '',
+    );
+  }
+
   UserWallet copyWith({
     String? walletAddress,
     String? walletType,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/backbone/biometrics/biometric_helper.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/send.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
@@ -16,6 +17,7 @@ import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';
 import 'package:nexus_wallet/backbone/loaders.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:page_transition/page_transition.dart';
@@ -31,6 +33,7 @@ class SendBTCScreen extends StatefulWidget {
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
   final User? currentuser = Auth().currentUser;
+  late UserWallet? currentuserwallet;
 
   late FocusNode myFocusNode;
   TextEditingController bitcoinReceiverAdressController =
@@ -41,15 +44,19 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   String _bitcoinReceiverAdress = '';
   dynamic _moneyineur = '';
   bool _isLoadingExchangeRt = true;
-  double bitcoinBalanceWallet = 13.24;
   bool _isAllowedToSend = true;
+  //biometric authentication before sending
+  bool showBiometric = false;
+  bool isAuthenticated = false;
 
   @override
-  void initState() {
+  void initState() async {
+    currentuserwallet = await Auth().getCurrentUserWallet(currentuser!.uid);
     super.initState();
     moneyController.text = "0.00001";
     myFocusNode = FocusNode();
     getBitcoinPrice();
+    isBiometricsAvailable();
     if (widget.bitcoinReceiverAdress != null) {
       _bitcoinReceiverAdress = widget.bitcoinReceiverAdress!;
       setState(() {
@@ -66,6 +73,11 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     myFocusNode.dispose();
     moneyController.dispose();
     super.dispose();
+  }
+
+  isBiometricsAvailable() async {
+    showBiometric = await BiometricHelper().hasEnrolledBiometrics();
+    setState(() {});
   }
 
   Future<void> getBitcoinPrice() async {
@@ -99,6 +111,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       });
     }
   }
+
   String feesSelected = "Niedrig";
 
   @override
@@ -117,7 +130,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           children: [
             Text("Bitcoin versenden",
                 style: Theme.of(context).textTheme.titleLarge),
-            Text("${bitcoinBalanceWallet}BTC verfügbar",
+            Text("${currentuserwallet!.walletBalance}BTC verfügbar",
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
@@ -374,7 +387,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
                   NumericalRangeFormatter(
-                      min: 0, max: bitcoinBalanceWallet, context: context),
+                      min: 0, max: double.parse(currentuserwallet!.walletBalance), context: context),
                 ],
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -528,46 +541,55 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             });
           },
           onFinish: () async {
-            CloudfunctionCallback mydata = await sendBitcoin(
-              sender_private_key:
-                  "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
-              sender_address: "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
-              receiver_address: "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
-              amount_to_send: "${moneyController.text}",
-              fee_size: '$feesSelected',
-            );
-            if (mydata.status == "success") {
-              //when the bitcoin transaction was successfully pushed to the blockchain also add it to firebase
-              final newtransaction = BitcoinTransaction(
-                  transactionDirection: TransactionDirection.send,
-                  date: DateTime.now().toString(),
-                  transactionSender: "Eigene Bitcoin Adresse",
-                  transactionReceiver: _bitcoinReceiverAdress,
-                  amount: moneyController.text);
-              String transactionuuid = Uuid().toString();
+            showBiometric ?
+            isAuthenticated = await BiometricHelper().authenticate()
+                : isAuthenticated == false;
+            if (isAuthenticated == true || showBiometric == false) {
+              CloudfunctionCallback mydata = await sendBitcoin(
+                sender_private_key:
+                    "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
+                sender_address: "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
+                receiver_address: "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
+                amount_to_send: "${moneyController.text}",
+                fee_size: '$feesSelected',
+              );
+              if (mydata.status == "success") {
+                print('staus is success now pushing transaction to firestore...');
+                //when the bitcoin transaction was successfully pushed to the blockchain also add it to firebase
+                final newtransaction = BitcoinTransaction(
+                    transactionDirection: TransactionDirection.send,
+                    date: DateTime.now().toString(),
+                    transactionSender: "Eigene Bitcoin Adresse",
+                    transactionReceiver: _bitcoinReceiverAdress,
+                    amount: moneyController.text);
+                String transactionuuid = Uuid().toString();
 
-              await transactionCollection
-                  .doc(currentuser!.uid)
-                  .collection("all")
-                  .doc(transactionuuid)
-                  .set(newtransaction.toMap());
+                await transactionCollection
+                    .doc(currentuser!.uid)
+                    .collection("all")
+                    .doc(transactionuuid)
+                    .set(newtransaction.toMap());
 
-              await Navigator.push(
-                  context,
-                  PageTransition(
-                      type: PageTransitionType.fade, child: const BottomNav()));
-              displaySnackbar(
-                  context,
-                  "Deine Bitcoin wurden versendet!"
-                  " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
+                await Navigator.push(
+                    context,
+                    PageTransition(
+                        type: PageTransitionType.fade,
+                        child: const BottomNav()));
+                displaySnackbar(
+                    context,
+                    "Deine Bitcoin wurden versendet!"
+                    " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
+              } else {
+                print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');
+                displaySnackbar(
+                    context, "Ein Fehler ist aufgetreten: ${mydata.message}");
+              }
+              setState(() {
+                isFinished = false;
+              });
             } else {
-              print('Keine success message als status. ${mydata.message}');
-              displaySnackbar(
-                  context, "Ein Fehler ist aufgetreten: ${mydata.message}");
+              print('Biometric authentication failed');
             }
-            setState(() {
-              isFinished = false;
-            });
           }),
     );
   }

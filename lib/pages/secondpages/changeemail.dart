@@ -49,19 +49,15 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
     try {
       //update it for firebaseauth
       final user = await _auth.signInWithEmailAndPassword(
-        email: _auth.currentUser!.email!,
+        email: currentuser!.email!,
         password: _passwordController.text,
       );
       await user.user?.updateEmail(_emailController.text);
       //update in our firestoredatabase
-      //get userwallet here is fakdata
-      // final userwallet = UserWallet(
-      //   email: _emailController.text,
-      //   useruid: _auth.currentUser!.uid,
-      //   walletBalance: '',
-      // );
-      // final newuserwallet = userwallet.copyWith(email: _emailController.text);
-      // await usersCollection.doc(currentuser!.uid).set(newuserwallet.toMap());
+      usersCollection.doc(currentuser!.uid).update({
+        'email': _emailController.text,
+      });
+      print('username updated successfully');
       //zurück gehen und bestätigen dass alles richtig gelaufen ist
       Navigator.pop(context);
       displaySnackbar(
