@@ -38,11 +38,8 @@ class _RegisterScreenState extends State<RegisterScreen>
     try {
       HttpsCallable callable =
           FirebaseFunctions.instance.httpsCallable('createWallet');
-      final resp = await callable.call(<String, dynamic>{
-        //later pass entire user relevant info then create ION account
-        // and get entire user as mydata back who is then registered
-        'private_key': "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
-      });
+      final resp = await callable.call(<String, dynamic>{});
+      print(resp.data);
       final mydata = UserWallet.fromJson(resp.data);
       return mydata;
     } catch (e) {

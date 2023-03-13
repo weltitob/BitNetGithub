@@ -18,18 +18,31 @@ class _buildNewsState extends State<buildNews> {
   bool _loading = true;
 
   Future<void> getNews() async {
+    // Define the API endpoint URL for the News API with the required parameters
     var url = Uri.parse(
         "https://newsapi.org/v2/everything?q=bitcoin&sortBy=publishedAt&language=de&apiKey=be561302ff234a908ac60730ef999db6");
+
+    // Send a GET request to the API endpoint URL and wait for the response
     var response = await http.get(url);
+
+    // Print the response to the console (for debugging purposes)
     print(response);
+
+    // Decode the response body from JSON format to a Map object
     var jsonData = jsonDecode(response.body);
+
+    // Check if the response status is "ok"
     if (jsonData['status'] == "ok") {
-      int articleCount = 0;
+      int articleCount = 0; // Keep track of the number of articles added
+      // Loop through each article in the "articles" list
       jsonData["articles"].forEach((element) {
+        // Check if we already have 5 articles, and exit the loop if we do
         if (articleCount >= 5) {
-          return; // exit the loop if we already have 5 articles
+          return;
         }
+        // Check if the article has a title and an image URL
         if (element['urlToImage'] != null && element['description'] != null) {
+          // Create a new Article object using the article data and add it to the newslist
           Article article = Article(
             title: element['title'].toString(),
             content: element['content'].toString(),
@@ -40,15 +53,15 @@ class _buildNewsState extends State<buildNews> {
             publishedAt: DateTime.parse(element['publishedAt'].toString()),
           );
           newslist.add(article);
-          articleCount++;
+          articleCount++; // Increment the article count
         }
       });
     }
+    // loading is complete
     setState(() {
       _loading = false;
     });
   }
-
   @override
   void initState() {
     super.initState();
