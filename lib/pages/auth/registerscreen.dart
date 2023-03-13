@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/createwallet.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
@@ -36,43 +37,6 @@ class _RegisterScreenState extends State<RegisterScreen>
       TextEditingController();
   bool _isLoading = false;
 
-  dynamic createWallet() async {
-    final User? currentuser = Auth().currentUser;
-    try {
-      print('CALL WALLET...');
-      HttpsCallable callable =
-          FirebaseFunctions.instance.httpsCallable('createWallet');
-
-      print("${currentuser!.email.toString()}"
-          " und ${currentuser.uid.toString()} werden createWallet übergeben");
-      final resp = await callable.call(<String, dynamic>{
-        'email': "${currentuser.email.toString()}",
-        'useruid': "${currentuser.uid.toString()}",
-      });
-      print('Response: ${resp.data}');
-      final mydata = CloudfunctionCallback.fromJson(resp.data);
-      if (mydata.status == "success") {
-        print(mydata.message);
-        var encodedString = jsonDecode(mydata.message);
-        final newWallet = UserWallet.fromJson(encodedString);
-        return newWallet;
-      } else {
-        //error in der cloudfunktion aufgetreten aber werte korrekt zurückgekommen
-        print('Die Antowrtnachricht der Cloudfunktion war ein Error.');
-        //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
-      }
-      print(mydata.message);
-      print(mydata.status);
-    } catch (e) {
-      //error beim callen der cloudfunktion
-      setState(() {
-        print("Wir konnten keine neue Wallet für dich erstellen: ${e}");
-      });
-      print(e);
-      return null;
-    }
-  }
-
   Future<void> createUser() async {
     setState(() {
       errorMessage = null;
@@ -82,7 +46,6 @@ class _RegisterScreenState extends State<RegisterScreen>
       await createFirebaseUserWithEmailAndPassword();
       final User? currentuser = Auth().currentUser;
       final userwalletdata = await createWallet();
-      await usersCollection.doc(currentuser!.uid).set(userwalletdata.toMap());
       print('user registered successfully');
     } catch (e) {
       print('error trying to register user');

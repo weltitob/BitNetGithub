@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/send.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/bottomnav.dart';
@@ -22,7 +22,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:uuid/uuid.dart';
 
 class SendBTCScreen extends StatefulWidget {
-  const SendBTCScreen({Key? key}) : super(key: key);
+  final String? bitcoinReceiverAdress;
+  const SendBTCScreen({Key? key, this.bitcoinReceiverAdress}) : super(key: key);
 
   @override
   State<SendBTCScreen> createState() => _SendBTCScreenState();
@@ -49,6 +50,14 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     moneyController.text = "0.00001";
     myFocusNode = FocusNode();
     getBitcoinPrice();
+    if (widget.bitcoinReceiverAdress != null) {
+      _bitcoinReceiverAdress = widget.bitcoinReceiverAdress!;
+      setState(() {
+        _hasReceiver = true;
+      });
+    } else {
+      print("Bisher wurde noch keine Empfängeradresse angegeben");
+    }
   }
 
   @override
@@ -57,31 +66,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     myFocusNode.dispose();
     moneyController.dispose();
     super.dispose();
-  }
-
-  Future<CloudfunctionCallback> sendBitcoin() async {
-    try {
-      HttpsCallable callable =
-          FirebaseFunctions.instance.httpsCallable('sendBitcoin');
-      final resp = await callable.call(<String, dynamic>{
-        'sender_private_key':
-            "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
-        'sender_adress': "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
-        'receiver_adress': "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
-        'amount_to_send': "${moneyController.text}",
-        'fee_size': '$feesSelected',
-      });
-      print("Das isch deine response: ${resp.data}");
-      final mydata = CloudfunctionCallback.fromJson(resp.data);
-      return mydata;
-    } catch (e) {
-      print('EIN FEHLR IST BEIM AUFRUF DER CLOUD FUNKTION AUFGETRETEN');
-      print(e);
-      return CloudfunctionCallback(
-        status: 'error',
-        message: 'Wir können aktuell unsere Server nicht erreichen.',
-      );
-    }
   }
 
   Future<void> getBitcoinPrice() async {
@@ -115,7 +99,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       });
     }
   }
-
   String feesSelected = "Niedrig";
 
   @override
@@ -545,7 +528,14 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             });
           },
           onFinish: () async {
-            CloudfunctionCallback mydata = await sendBitcoin();
+            CloudfunctionCallback mydata = await sendBitcoin(
+              sender_private_key:
+                  "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
+              sender_address: "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
+              receiver_address: "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
+              amount_to_send: "${moneyController.text}",
+              fee_size: '$feesSelected',
+            );
             if (mydata.status == "success") {
               //when the bitcoin transaction was successfully pushed to the blockchain also add it to firebase
               final newtransaction = Transaction(

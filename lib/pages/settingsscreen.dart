@@ -5,10 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
-import 'package:nexus_wallet/components/snackbar/snackbar.dart';
-import 'package:nexus_wallet/models/cloudfunction_callback.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
 import 'package:nexus_wallet/pages/secondpages/impressumscreen.dart';
@@ -202,8 +200,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     MyDivider(),
                     GestureDetector(
                         onTap: () {
-                          signOut();
-                          //getWalletBalance();
+                          //signOut();
+                          getWalletBalance();
                         },
                         child: ChildBuildBoxIntern(
                             Icons.login_rounded, "Abmelden"))
@@ -213,24 +211,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  dynamic getWalletBalance() async {
-    try {
-      print('CALL WALLET...');
-      HttpsCallable callable =
-          FirebaseFunctions.instance.httpsCallable('getWalletBalance');
-      final resp = await callable.call(<String, dynamic>{});
-      print('Response: ${resp.data}');
-      final mydata = CloudfunctionCallback.fromJson(resp.data);
-      print(mydata.message);
-      print(mydata.status);
-    } catch (e) {
-      setState(() {
-        print("Wir konnten keine neue Wallet für dich erstellen: ${e}");
-      });
-      print(e);
-      return null;
-    }
-  }
 
   Widget ChildBuildBoxHeader(String header) {
     return Padding(

@@ -1,5 +1,5 @@
 class UserWallet {
-  String walletAdress;
+  String walletAddress;
   String walletType;
   String walletBalance;
   String privateKey;
@@ -7,7 +7,7 @@ class UserWallet {
   String useruid;
 
   UserWallet({
-    required this.walletAdress,
+    required this.walletAddress,
     required this.walletType,
     required this.walletBalance,
     required this.privateKey,
@@ -17,7 +17,7 @@ class UserWallet {
 
   factory UserWallet.fromJson(Map<String, dynamic> json) {
     return UserWallet(
-      walletAdress: json['walletAdress'].toString(),
+      walletAddress: json['walletAddress'].toString(),
       walletType: json['walletType'].toString(),
       walletBalance: json['walletBalance'].toString(),
       privateKey: json['privateKey'].toString(),
@@ -28,7 +28,7 @@ class UserWallet {
 
   Map<String, dynamic> toMap() {
     return {
-      'walletAdress': walletAdress,
+      'walletAddress': walletAddress,
       'walletType': walletType,
       'walletBalance': walletBalance,
       'privateKey': privateKey,
@@ -38,7 +38,7 @@ class UserWallet {
   }
 
   UserWallet copyWith({
-    String? walletAdress,
+    String? walletAddress,
     String? walletType,
     String? walletBalance,
     String? privateKey,
@@ -46,7 +46,7 @@ class UserWallet {
     String? useruid,
   }) {
     return UserWallet(
-      walletAdress: walletAdress ?? this.walletAdress,
+      walletAddress: walletAddress ?? this.walletAddress,
       walletType: walletType ?? this.walletType,
       walletBalance: walletType ?? this.walletBalance,
       privateKey: privateKey ?? this.privateKey,

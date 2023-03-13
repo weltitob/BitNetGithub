@@ -6,6 +6,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
 import 'package:nexus_wallet/components/buttons/roundedbutton.dart';
 import 'package:nexus_wallet/components/camera/textscanneroverlay.dart';
+import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/theme.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
@@ -34,12 +35,18 @@ class _QRScreenState extends State<QRScreen> {
           MobileScanner(
               allowDuplicates: false,
               controller: cameraController,
-              onDetect: (barcode, args) {
-                final String? code = barcode.rawValue;
-                debugPrint('Barcode found! $code');
+              onDetect: (barcode, args) async {
+                final String code = barcode.rawValue.toString();
+                print('Barcode found! $code');
+                await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      SendBTCScreen(bitcoinReceiverAdress: code),
+                ));
               }),
-          isQRScanner ? QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)) :
-              TextScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)),
+          isQRScanner
+              ? QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5))
+              : TextScannerOverlay(
+                  overlayColour: Colors.black.withOpacity(0.5)),
           buildButtons(),
         ],
       ),
