@@ -4,7 +4,7 @@ import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 
 class TransactionItem extends StatefulWidget {
-  final Transaction transaction;
+  final BitcoinTransaction transaction;
   final BuildContext context;
   const TransactionItem({
     Key? key,
@@ -93,7 +93,7 @@ class _TransactionItemState extends State<TransactionItem> {
                     title(),
                     const Spacer(),
                     Text(
-                      widget.transaction.amount,
+                      widget.transaction.amountString,
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
                           color: _hasReceived
                               ? AppTheme.colorBitcoin
@@ -121,7 +121,7 @@ class _TransactionItemState extends State<TransactionItem> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.transaction.date.toString(),
+          widget.transaction.dateFormatted,
           style: Theme.of(widget.context).textTheme.bodySmall,
         ),
         Text(widget.transaction.transactionSender.toString(),

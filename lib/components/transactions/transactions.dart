@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:buttons_tabbar/buttons_tabbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
+import 'package:nexus_wallet/backbone/loaders.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
 import 'package:nexus_wallet/models/transaction.dart';
@@ -21,21 +23,35 @@ class _TransactionsState extends State<Transactions>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final User? currentuser = Auth().currentUser;
-
+  bool isLoading = true;
   late StreamSubscription<double> _transactionstreamlistener;
 
-  List<Transaction> transactions = [];
+  List<BitcoinTransaction> transactions = [];
 
   void _getTransactions() async {
-
+    try{
+      QuerySnapshot snapshot = await transactionCollection
+          .doc(currentuser!.uid)
+          .collection('all')
+          .orderBy('timestamp', descending: true)
+          .get();
+      transactions = snapshot.docs.map((doc) => BitcoinTransaction.fromDocument(doc)).toList();
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
   void initState() {
-    _getTransactions();
-    final userstransactions = transactionCollection.doc(currentuser!.uid).collection("all");
-    _tabController = TabController(length: 3, vsync: this);
     super.initState();
+    setState(() {
+      isLoading = true;
+      _getTransactions();
+    });
+    _tabController = TabController(length: 3, vsync: this);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -47,7 +63,11 @@ class _TransactionsState extends State<Transactions>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    if (isLoading) {
+      return SizedBox(
+          height: AppTheme.cardPadding * 3,
+          child: dotProgress(context));
+    } return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
@@ -116,7 +136,7 @@ class _TransactionsState extends State<Transactions>
                 child: Column(
                   children: [
                     TransactionItem(
-                        transaction: Transaction(
+                        transaction: BitcoinTransaction(
                             transactionDirection: TransactionDirection.receive,
                             transactionReceiver: "uhadoihasoidahiosd",
                             transactionSender: "jioafojiadpjianodaps",
@@ -125,40 +145,40 @@ class _TransactionsState extends State<Transactions>
                         context: context),
                     SizedBox(height: AppTheme.elementSpacing * 0.75),
                     TransactionItem(
-                        transaction: Transaction(
+                        transaction: BitcoinTransaction(
                             transactionDirection: TransactionDirection.send,
                             transactionReceiver: "uhadoihasoidahiosd",
                             transactionSender: "jioafojiadpjianodaps",
-                            date: "23.03.2022",
+                            date: DateTime.now().toString(),
                             amount: "3402.063"),
                         context: context),
                     SizedBox(height: AppTheme.elementSpacing * 0.75),
                     TransactionItem(
-                        transaction: Transaction(
+                        transaction: BitcoinTransaction(
                             transactionDirection: TransactionDirection.send,
                             transactionReceiver: "uhadoihasoidahiosd",
                             transactionSender: "jioafojiadpjianodaps",
-                            date: "23.03.2022",
+                            date: DateTime.now().toString(),
                             amount: "3402.063"),
                         context: context),
                     SizedBox(height: AppTheme.elementSpacing * 0.75),
                     TransactionItem(
-                        transaction: Transaction(
+                        transaction: BitcoinTransaction(
                             transactionDirection: TransactionDirection.send,
                             transactionReceiver: "uhadoihasoidahiosd",
                             transactionSender: "jioafojiadpjianodaps",
-                            date: "23.03.2022",
+                            date: DateTime.now().toString(),
                             amount: "3402.063"),
                         context: context),
                   ],
                 ),
               ),
               TransactionItem(
-                  transaction: Transaction(
+                  transaction: BitcoinTransaction(
                       transactionDirection: TransactionDirection.send,
                       transactionReceiver: "uhadoihasoidahiosd",
                       transactionSender: "jioafojiadpjianodaps",
-                      date: "23.03.2022",
+                      date: DateTime.now().toString(),
                       amount: "3402.063"),
                   context: context),
               ListView.builder(

@@ -126,7 +126,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       body: ListView(
         children: <Widget>[
           const SizedBox(
-            height: AppTheme.cardPadding,
+            height: AppTheme.cardPadding * 2,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -246,7 +246,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             ),
           ),
           const SizedBox(
-            height: AppTheme.cardPadding * 7,
+            height: AppTheme.cardPadding * 5,
           ),
           Center(child: button()),
         ],
@@ -538,7 +538,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             );
             if (mydata.status == "success") {
               //when the bitcoin transaction was successfully pushed to the blockchain also add it to firebase
-              final newtransaction = Transaction(
+              final newtransaction = BitcoinTransaction(
                   transactionDirection: TransactionDirection.send,
                   date: DateTime.now().toString(),
                   transactionSender: "Eigene Bitcoin Adresse",

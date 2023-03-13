@@ -1,18 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:nexus_wallet/backbone/helpers.dart';
 
 enum TransactionDirection {
   receive,
   send,
 }
 
-class Transaction {
+class BitcoinTransaction {
   final TransactionDirection transactionDirection;
   final String date;
   final String transactionSender;
   final String transactionReceiver;
   final String amount;
 
-  Transaction({
+  BitcoinTransaction({
     required this.transactionDirection,
     required this.date,
     required this.transactionSender,
@@ -21,12 +23,12 @@ class Transaction {
   });
 
   String get dateFormatted =>
-      DateFormat('dd MMMM yyyy').format(DateFormat('yyyy-MM-dd').parse(date));
+      displayTimeAgoFromTimestamp(date);
 
   String get amountString {
     final amountSign =
         transactionDirection == TransactionDirection.receive ? '+' : '-';
-    return '$amountSign${NumberFormat('#,###.####').format(amount)}';
+    return '$amountSign${NumberFormat('#,###.####').format(double.parse(amount))}';
   }
 
   Map<String, dynamic> toMap() {
@@ -39,8 +41,8 @@ class Transaction {
     };
   }
 
-  factory Transaction.fromJson(Map<String, dynamic> json) {
-    return Transaction(
+  factory BitcoinTransaction.fromJson(Map<String, dynamic> json) {
+    return BitcoinTransaction(
       transactionDirection: json['transactionDirection'],
       date: json['date'].toString(),
       transactionReceiver: json['transactionReceiver'].toString(),
@@ -49,13 +51,26 @@ class Transaction {
     );
   }
 
-  factory Transaction.fromMap(Map<String, dynamic> map) {
-    return Transaction(
+  factory BitcoinTransaction.fromMap(Map<String, dynamic> map) {
+    return BitcoinTransaction(
       transactionDirection: map['transactionDirection'],
       date: map['date'].toString(),
       transactionReceiver: map['transactionReceiver'].toString(),
       transactionSender: map['transactionSender'].toString(),
       amount: map['amount'].toString(),
+    );
+  }
+
+  factory BitcoinTransaction.fromDocument(DocumentSnapshot doc) {
+    return BitcoinTransaction(
+      transactionDirection: doc["transactionDirection"],
+      date: doc['date'],
+      transactionReceiver: doc['transactionReceiver'],
+      transactionSender: doc['transactionSender'],
+      amount: doc['amount'],
+      // date: DateTime.fromMillisecondsSinceEpoch(
+      //   (doc['timestamp'] as Timestamp).millisecondsSinceEpoch,
+      // ),
     );
   }
 

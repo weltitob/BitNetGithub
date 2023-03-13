@@ -15,33 +15,33 @@ String displayTimeAgoFromTimestamp(String publishedAt,
   final difference = date2.difference(date);
 
   if ((difference.inDays / 365).floor() >= 2) {
-    return '${(difference.inDays / 365).floor()} years ago';
+    return 'vor ${(difference.inDays / 365).floor()} Jahren';
   } else if ((difference.inDays / 365).floor() >= 1) {
-    return (numericDates) ? '1 year ago' : 'Last year';
+    return (numericDates) ? 'Vor 1 Jahr' : 'Letztes Jahr';
   } else if ((difference.inDays / 30).floor() >= 2) {
-    return '${(difference.inDays / 365).floor()} months ago';
+    return 'vor ${(difference.inDays / 365).floor()} Monaten';
   } else if ((difference.inDays / 30).floor() >= 1) {
-    return (numericDates) ? '1 month ago' : 'Last month';
+    return (numericDates) ? 'Vor 1 Monat' : 'Letzter Monat';
   } else if ((difference.inDays / 7).floor() >= 2) {
-    return '${(difference.inDays / 7).floor()} weeks ago';
+    return 'vor ${(difference.inDays / 7).floor()} Wochen';
   } else if ((difference.inDays / 7).floor() >= 1) {
-    return (numericDates) ? '1 week ago' : 'Last week';
+    return (numericDates) ? 'vor 1 Woche' : 'Letzte Woche';
   } else if (difference.inDays >= 2) {
-    return '${difference.inDays} days ago';
+    return 'vor ${difference.inDays} Tagen';
   } else if (difference.inDays >= 1) {
-    return (numericDates) ? '1 day ago' : 'Yesterday';
+    return (numericDates) ? 'vor 1 Tag' : 'Gestern';
   } else if (difference.inHours >= 2) {
-    return '${difference.inHours} hours ago';
+    return 'vor ${difference.inHours} Stunden';
   } else if (difference.inHours >= 1) {
-    return (numericDates) ? '1 hour ago' : 'An hour ago';
+    return (numericDates) ? 'vor 1 Stunde' : 'vor einer Stunde';
   } else if (difference.inMinutes >= 2) {
-    return '${difference.inMinutes} minutes ago';
+    return 'vor ${difference.inMinutes} Minuten';
   } else if (difference.inMinutes >= 1) {
-    return (numericDates) ? '1 minute ago' : 'A minute ago';
+    return (numericDates) ? 'vor 1 Minute' : 'vor einer Minute';
   } else if (difference.inSeconds >= 3) {
-    return '${difference.inSeconds} seconds ago';
+    return 'vor ${difference.inSeconds} Sekunden';
   } else {
-    return 'Just now';
+    return 'Gerade eben';
   }
 }
 
