@@ -11,7 +11,7 @@ import 'package:nexus_wallet/components/textfield/formtextfield.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/auth/background.dart';
-import 'package:nexus_wallet/theme.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 // ignore: must_be_immutable

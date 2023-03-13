@@ -5,7 +5,7 @@ import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
-import 'package:nexus_wallet/theme.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 
 class BalanceCardBtc extends StatelessWidget {
   const BalanceCardBtc({Key? key}) : super(key: key);

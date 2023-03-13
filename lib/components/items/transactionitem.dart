@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_wallet/models/transaction.dart';
-import 'package:nexus_wallet/theme.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 
 class TransactionItem extends StatefulWidget {
   final Transaction transaction;

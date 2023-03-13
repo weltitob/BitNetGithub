@@ -13,11 +13,11 @@ import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/components/swipebutton/swipeable_button_view.dart';
-import 'package:nexus_wallet/loaders.dart';
+import 'package:nexus_wallet/backbone/loaders.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
-import 'package:nexus_wallet/theme.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:uuid/uuid.dart';
 

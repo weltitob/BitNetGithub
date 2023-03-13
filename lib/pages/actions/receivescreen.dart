@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
-import 'package:nexus_wallet/theme.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 

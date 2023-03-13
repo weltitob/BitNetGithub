@@ -8,7 +8,7 @@ import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
 import 'package:nexus_wallet/models/transaction.dart';
-import 'package:nexus_wallet/theme.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions({Key? key}) : super(key: key);

@@ -11,7 +11,7 @@ import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
 import 'package:nexus_wallet/pages/secondpages/impressumscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/reportissuescreen.dart';
-import 'package:nexus_wallet/theme.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 
 class SettingsScreen extends StatefulWidget {
   final title;

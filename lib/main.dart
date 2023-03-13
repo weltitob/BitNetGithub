@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/routetrees/widgettree.dart';
-import 'package:nexus_wallet/theme.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {

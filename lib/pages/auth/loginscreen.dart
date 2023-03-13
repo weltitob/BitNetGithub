@@ -9,7 +9,7 @@ import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
 import 'package:nexus_wallet/pages/auth/background.dart';
-import '../../theme.dart';
+import '../../backbone/theme.dart';
 import 'dart:math';
 
 Random random = new Random();
