@@ -62,7 +62,7 @@ class UserWallet {
       walletBalance: walletType ?? this.walletBalance,
       privateKey: privateKey ?? this.privateKey,
       email: email ?? this.email,
-      useruid: email ?? this.useruid,
+      useruid: useruid ?? this.useruid,
     );
   }
 }

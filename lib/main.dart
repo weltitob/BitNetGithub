@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/auth/auth_state.dart';
 import 'package:nexus_wallet/backbone/get_it.dart';
 import 'package:nexus_wallet/backbone/routetrees/widgettree.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,11 +20,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Nexus Wallet',
-      theme: AppTheme.standardTheme(),
-      home: const WidgetTree(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthenticationState()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Nexus Wallet',
+        theme: AppTheme.standardTheme(),
+        home: const WidgetTree(),
+      ),
     );
   }
 }

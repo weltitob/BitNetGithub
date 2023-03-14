@@ -6,6 +6,7 @@ import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/createwallet.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/auth/background.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 
@@ -38,9 +39,9 @@ class _RegisterScreenState extends State<RegisterScreen>
       _isLoading = true;
     });
     try {
-      await createFirebaseUserWithEmailAndPassword();
+      final userwalletdata = await createWallet(email: _controllerEmail.text);
+      final UserWallet? currentuserwallet = await createFirebaseUserWithEmailAndPassword(userwalletdata);
       final User? currentuser = Auth().currentUser;
-      final userwalletdata = await createWallet();
       final user = Auth().getCurrentUserWallet(currentuser!.uid);
       print('user registered successfully');
     } catch (e) {
@@ -53,13 +54,14 @@ class _RegisterScreenState extends State<RegisterScreen>
     });
   }
 
-  Future<void> createFirebaseUserWithEmailAndPassword() async {
+  Future<UserWallet?> createFirebaseUserWithEmailAndPassword(UserWallet userWallet) async {
     try {
       //blablabla
-      await Auth().createUserWithEmailAndPassword(
-        email: _controllerEmail.text,
+      final UserWallet currentuserwallet =  await Auth().createUserWithEmailAndPassword(
+        user: userWallet,
         password: _controllerPassword.text,
       );
+      return currentuserwallet;
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = "Etwas ist schief gelaufen: ${e.message}";

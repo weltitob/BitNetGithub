@@ -34,7 +34,6 @@ class SendBTCScreen extends StatefulWidget {
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
   final User? currentuser = Auth().currentUser;
-  //final UserWallet? currentuserwallet = Auth().currentUserNotifier.value;
 
   late FocusNode myFocusNode;
   TextEditingController bitcoinReceiverAdressController =
@@ -49,9 +48,11 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   //biometric authentication before sending
   bool showBiometric = false;
   bool isAuthenticated = false;
+  final userRepo = locate<Auth>();
 
   @override
   void initState() {
+    print("Hey: ${userRepo.currentUserNotifier.value!.toMap()}");
     super.initState();
     moneyController.text = "0.00001";
     myFocusNode = FocusNode();
@@ -116,8 +117,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userRepo = locate<Auth>();
-    final myuser = userRepo.currentUserNotifier.value;
 
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
@@ -133,7 +132,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           children: [
             Text("Bitcoin versenden",
                 style: Theme.of(context).textTheme.titleLarge),
-            Text("${myuser!.walletBalance}BTC verfügbar",
+            Text("${200}BTC verfügbar",
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),

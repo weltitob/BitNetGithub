@@ -85,17 +85,21 @@ class Auth {
     final getCurrentUserData = await getCurrentUserWallet(_firebaseAuth.currentUser!.uid);
   }
 
-  Future<void> createUserWithEmailAndPassword({
-    required String email,
+  Future<UserWallet> createUserWithEmailAndPassword({
+    required UserWallet user,
     required String password,
   }) async {
-    await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
+    final currentuser = await _firebaseAuth.createUserWithEmailAndPassword(
+      email: user.email,
       password: password,
     );
-    //selbst hinzugefügt
-    //final UserWallet? user = await getCurrentUserWallet(_firebaseAuth.currentUser!.uid);
+    final newUser = user.copyWith(useruid: currentuser.user!.uid);
+    await usersCollection.doc(currentuser.user!.uid).set(newUser.toMap());
+    print('Successfully created wallet/user in database: ${newUser.toMap()}');
+    await getCurrentUserWallet(currentuser.user!.uid);
+    return newUser;
   }
+
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
