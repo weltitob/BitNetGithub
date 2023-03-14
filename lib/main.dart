@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/get_it.dart';
 import 'package:nexus_wallet/backbone/routetrees/widgettree.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +7,8 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  GetItService.initializeService();
+
   runApp(const MyApp());
 }
 

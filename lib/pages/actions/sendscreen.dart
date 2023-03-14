@@ -8,6 +8,7 @@ import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/biometrics/biometric_helper.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/send.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
+import 'package:nexus_wallet/backbone/get_it.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
@@ -33,7 +34,7 @@ class SendBTCScreen extends StatefulWidget {
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
   final User? currentuser = Auth().currentUser;
-  late UserWallet? currentuserwallet;
+  //final UserWallet? currentuserwallet = Auth().currentUserNotifier.value;
 
   late FocusNode myFocusNode;
   TextEditingController bitcoinReceiverAdressController =
@@ -50,8 +51,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   bool isAuthenticated = false;
 
   @override
-  void initState() async {
-    currentuserwallet = await Auth().getCurrentUserWallet(currentuser!.uid);
+  void initState() {
     super.initState();
     moneyController.text = "0.00001";
     myFocusNode = FocusNode();
@@ -116,6 +116,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userRepo = locate<Auth>();
+    final myuser = userRepo.currentUserNotifier.value;
+
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
       appBar: AppBar(
@@ -130,7 +133,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           children: [
             Text("Bitcoin versenden",
                 style: Theme.of(context).textTheme.titleLarge),
-            Text("${currentuserwallet!.walletBalance}BTC verfügbar",
+            Text("${myuser!.walletBalance}BTC verfügbar",
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
@@ -387,7 +390,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
                   NumericalRangeFormatter(
-                      min: 0, max: double.parse(currentuserwallet!.walletBalance), context: context),
+                      min: 0, max: double.parse("200.0"), context: context),
                 ],
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -548,7 +551,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
               CloudfunctionCallback mydata = await sendBitcoin(
                 sender_private_key:
                     "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
-                sender_address: "mmb8nD7C9G2oeGTa2s3htSy4HrXWjTteRy",
+                sender_address: "${200.0}",
                 receiver_address: "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
                 amount_to_send: "${moneyController.text}",
                 fee_size: '$feesSelected',

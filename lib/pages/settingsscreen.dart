@@ -219,8 +219,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     MyDivider(),
                     GestureDetector(
                         onTap: () {
-                          //signOut();
-                          getWalletBalance();
+                          signOut();
+                          //getWalletBalance();
                         },
                         child: ChildBuildBoxIntern(
                             Icons.login_rounded, "Abmelden"))

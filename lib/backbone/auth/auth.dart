@@ -1,17 +1,22 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  //  final User? currentuser = Auth().currentUser;
   User? get currentUser => _firebaseAuth.currentUser;
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  //for custom user model
-  //UserWallet? get currentUserWallet => getCurrentUser(currentUser.uid);
-
-
+  //  final UserWallet? currentuserwallet = Auth().currentUserNotifier.value;
+  ValueNotifier<UserWallet?> currentUserNotifier = ValueNotifier<UserWallet?>(null);
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _userStreamSubscriptions;
+  StreamSubscription? _authStreamSubscription;
 
   Future<UserWallet?> getCurrentUserWallet(String uid) async {
     try {
@@ -19,8 +24,8 @@ class Auth {
       if (userSnapshot.exists) {
         final data = userSnapshot.data() as Map<String, dynamic>;
         final UserWallet user = UserWallet.fromMap(data);
-        // setCurrentUser = user;
-        // listenToCurrentUser(user.useruid);
+        setCurrentUser = user;
+        listenToCurrentUser(user.useruid);
         return user;
       } else {
         print('Error user doesnt exist in database');
@@ -30,29 +35,28 @@ class Auth {
     }
   }
 
-  // set setCurrentUser(UserWallet? user) {
-  //   currentUserNotifier.value = user;
-  //   currentUserNotifier.notifyListeners();
-  // }
-  //
-  // Stream<UserWallet?> listenToCurrentUser(String uid) async* {
-  //   try {
-  //     final snapshots = usersCollection.doc(uid).snapshots();
-  //     _userStreamSubscriptions?.cancel();
-  //     _userStreamSubscriptions = null;
-  //     _userStreamSubscriptions = snapshots.listen((document) {
-  //       if (document.exists) {
-  //         final data = document.data() as Map<String, dynamic>;
-  //
-  //         final user = UserWallet.fromMap(data);
-  //         setCurrentUser = user;
-  //       }
-  //     });
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   yield currentUserNotifier.value;
-  // }
+  set setCurrentUser(UserWallet? user) {
+    currentUserNotifier.value = user;
+    currentUserNotifier.notifyListeners();
+  }
+
+  Stream<UserWallet?> listenToCurrentUser(String uid) async* {
+    try {
+      final snapshots = usersCollection.doc(uid).snapshots();
+      _userStreamSubscriptions?.cancel();
+      _userStreamSubscriptions = null;
+      _userStreamSubscriptions = snapshots.listen((document) {
+        if (document.exists) {
+          final data = document.data() as Map<String, dynamic>;
+          final user = UserWallet.fromMap(data);
+          setCurrentUser = user;
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+    yield currentUserNotifier.value;
+  }
   //hier die daten des aktuell users kriegen....
 
   //selnsz
@@ -66,7 +70,7 @@ class Auth {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  Future<void> signInWithEmailAndPassword({
+  Future<UserWallet?> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
@@ -74,6 +78,9 @@ class Auth {
       email: email,
       password: password,
     );
+    //selbst hinzugefügt
+    final getCurrentUserData = await getCurrentUserWallet(_firebaseAuth.currentUser!.uid);
+    return getCurrentUserData;
   }
 
   Future<void> createUserWithEmailAndPassword({
@@ -84,6 +91,8 @@ class Auth {
       email: email,
       password: password,
     );
+    //selbst hinzugefügt
+    //final UserWallet? user = await getCurrentUserWallet(_firebaseAuth.currentUser!.uid);
   }
 
   Future<void> signOut() async {
