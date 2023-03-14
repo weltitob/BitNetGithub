@@ -1,18 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/createwallet.dart';
-import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
-import 'package:nexus_wallet/models/cloudfunction_callback.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/auth/background.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 
 // ignore: must_be_immutable
 class RegisterScreen extends StatefulWidget {
@@ -67,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = "Etwas ist schief gelaufen...";
+        errorMessage = "Etwas ist schief gelaufen: ${e.message}";
         print(e.message);
       });
     }

@@ -19,6 +19,7 @@ class Auth {
   StreamSubscription? _authStreamSubscription;
 
   Future<UserWallet?> getCurrentUserWallet(String uid) async {
+    print('Auth().getCurrentUserWallet has been called');
     try {
       final userSnapshot = await usersCollection.doc(uid).get();
       if (userSnapshot.exists) {
@@ -36,11 +37,13 @@ class Auth {
   }
 
   set setCurrentUser(UserWallet? user) {
+    print('Auth().setCurrentUser has been called');
     currentUserNotifier.value = user;
     currentUserNotifier.notifyListeners();
   }
 
   Stream<UserWallet?> listenToCurrentUser(String uid) async* {
+    print('Auth().listenToCurrentUser has been called');
     try {
       final snapshots = usersCollection.doc(uid).snapshots();
       _userStreamSubscriptions?.cancel();
@@ -80,7 +83,6 @@ class Auth {
     );
     //selbst hinzugefügt
     final getCurrentUserData = await getCurrentUserWallet(_firebaseAuth.currentUser!.uid);
-    return getCurrentUserData;
   }
 
   Future<void> createUserWithEmailAndPassword({
