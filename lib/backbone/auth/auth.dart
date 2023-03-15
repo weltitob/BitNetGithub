@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/auth/auth_state.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
@@ -39,7 +40,11 @@ class Auth {
   set setCurrentUser(UserWallet? user) {
     print('Auth().setCurrentUser has been called');
     currentUserNotifier.value = user;
+    print("user1: ${currentUserNotifier.value!.toMap().toString()}");
     currentUserNotifier.notifyListeners();
+    print("user2: ${AuthenticationState().currentUser}");
+    currentUserNotifier.notifyListeners();
+    print("user2: ${AuthenticationState().currentUser}");
   }
 
   Stream<UserWallet?> listenToCurrentUser(String uid) async* {
@@ -55,6 +60,7 @@ class Auth {
           setCurrentUser = user;
         }
       });
+      print("UserStream: $_userStreamSubscriptions");
     } catch (e) {
       print(e);
     }

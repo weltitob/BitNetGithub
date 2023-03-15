@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/backbone/auth/auth_state.dart';
 import 'package:nexus_wallet/backbone/biometrics/biometric_helper.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/send.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
@@ -22,6 +23,7 @@ import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class SendBTCScreen extends StatefulWidget {
@@ -33,7 +35,6 @@ class SendBTCScreen extends StatefulWidget {
 }
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
-  final User? currentuser = Auth().currentUser;
 
   late FocusNode myFocusNode;
   TextEditingController bitcoinReceiverAdressController =
@@ -48,11 +49,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   //biometric authentication before sending
   bool showBiometric = false;
   bool isAuthenticated = false;
-  final userRepo = locate<Auth>();
+  final User? currentuser = Auth().currentUser;
 
   @override
   void initState() {
-    print("Hey: ${userRepo.currentUserNotifier.value!.toMap()}");
     super.initState();
     moneyController.text = "0.00001";
     myFocusNode = FocusNode();
@@ -84,6 +84,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   Future<void> getBitcoinPrice() async {
     _isLoadingExchangeRt = true;
     final String url = 'https://api.coingecko.com/api/v3/simple/price';
+
     final Map<String, String> params = {
       'ids': 'bitcoin',
       'vs_currencies': 'eur',
@@ -95,7 +96,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     if (response.statusCode == 200) {
       final bitcoinPrice = jsonDecode(response.body)['bitcoin']['eur'];
       print('The current price of Bitcoin in Euro is $bitcoinPrice');
-      ;
       setState(() {
         if (moneyController.text.isNotEmpty) {
           _moneyineur = bitcoinPrice * double.parse(moneyController.text);
@@ -117,6 +117,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<AuthenticationState>();
+    final userRepo = locate<Auth>();
+    final UserWallet? currentuserwallet = userRepo.currentUserNotifier.value;
 
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
@@ -132,7 +135,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           children: [
             Text("Bitcoin versenden",
                 style: Theme.of(context).textTheme.titleLarge),
-            Text("${200}BTC verfügbar",
+            Text("${currentuserwallet!.walletBalance}BTC verfügbar",
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),

@@ -6,40 +6,30 @@ import 'package:nexus_wallet/models/userwallet.dart';
 
 import 'package:flutter/material.dart';
 
-class BaseState extends ChangeNotifier {
-  bool isLoading = false;
-
-  setLoading(bool value) {
-    isLoading = value;
-    //important when i change something one should always notify the listeners this is why
-    //implemented in basestate because he always simply said loading is true and notfiy listeners
-    //and when they would change then loading would stop
-    notifyListeners();
-  }
-}
-
-class AuthenticationState extends BaseState {
+class AuthenticationState extends ChangeNotifier {
   UserWallet? currentUser;
-
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final userRepo = locate<Auth>();
 
   AuthenticationState() {
+    print("Authentication State triggered");
     if (currentUser == null) {
       _userNotifier();
     }
-    Auth().currentUserNotifier.addListener(_userNotifier);
+    userRepo.currentUserNotifier.addListener(_userNotifier);
+    print('Authentication State should have added a listener now');
   }
 
   @override
   void dispose() {
-    Auth().currentUserNotifier.removeListener(_userNotifier);
+    print('Authentication State dispose triggered');
+    userRepo.currentUserNotifier.removeListener(_userNotifier);
     super.dispose();
   }
 
   void _userNotifier() {
-    currentUser = Auth().currentUserNotifier.value;
+    print('Authentication State _userNotifier triggered');
+    currentUser = userRepo.currentUserNotifier.value;
+    print("_userNotifier: ${userRepo.currentUserNotifier.value}");
     notifyListeners();
   }
 }
