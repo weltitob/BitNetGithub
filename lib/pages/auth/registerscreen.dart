@@ -41,8 +41,6 @@ class _RegisterScreenState extends State<RegisterScreen>
     try {
       final userwalletdata = await createWallet(email: _controllerEmail.text);
       final UserWallet? currentuserwallet = await createFirebaseUserWithEmailAndPassword(userwalletdata);
-      final User? currentuser = Auth().currentUser;
-      final user = Auth().getCurrentUserWallet(currentuser!.uid);
       print('user registered successfully');
     } catch (e) {
       print('error trying to register user');

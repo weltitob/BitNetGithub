@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/auth/auth_state.dart';
+import 'package:nexus_wallet/backbone/auth/auth_provider.dart';
 import 'package:nexus_wallet/backbone/biometrics/biometric_helper.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/send.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
@@ -59,9 +59,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     getBitcoinPrice();
     isBiometricsAvailable();
     if (widget.bitcoinReceiverAdress != null) {
-      _bitcoinReceiverAdress = widget.bitcoinReceiverAdress!;
       setState(() {
+        _bitcoinReceiverAdress = widget.bitcoinReceiverAdress!;
         _hasReceiver = true;
+        bitcoinReceiverAdressController.text = widget.bitcoinReceiverAdress!;
       });
     } else {
       print("Bisher wurde noch keine Empfängeradresse angegeben");
@@ -117,9 +118,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AuthenticationState>();
-    final userRepo = locate<Auth>();
-    final UserWallet? currentuserwallet = userRepo.currentUserNotifier.value;
+    // Retrieve the UserProvider from the BuildContext
+    final userWallet = Provider.of<UserWallet>(context);
+    // Access the UserModel from the UserProvider
 
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
@@ -133,9 +134,14 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: userWallet != null
+                  ? Text('Hello ${userWallet.walletBalance}!')
+                  : Text('Not signed in.'),
+            ),
             Text("Bitcoin versenden",
                 style: Theme.of(context).textTheme.titleLarge),
-            Text("${currentuserwallet!.walletBalance}BTC verfügbar",
+            Text("${200}BTC verfügbar",
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
