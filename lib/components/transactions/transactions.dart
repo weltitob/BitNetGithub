@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:buttons_tabbar/buttons_tabbar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
+import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/backbone/loaders.dart';
-import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
@@ -22,52 +22,53 @@ class Transactions extends StatefulWidget {
 class _TransactionsState extends State<Transactions>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late final Future<LottieComposition> _searchforfilesComposition;
   final User? currentuser = Auth().currentUser;
-  bool isLoading = true;
-  late StreamSubscription<double> _transactionstreamlistener;
+  bool _visible = false;
 
-  List<BitcoinTransaction> transactions = [];
-
-  void _getTransactions() async {
-    try{
-      QuerySnapshot snapshot = await transactionCollection
-          .doc(currentuser!.uid)
-          .collection('all')
-          .orderBy('timestamp', descending: true)
-          .get();
-      transactions = snapshot.docs.map((doc) => BitcoinTransaction.fromDocument(doc)).toList();
-    } catch (e) {
-      print(e);
-    }
+  Stream<List<BitcoinTransaction>> getTransactionsStream() {
+    // Create a stream that listens to changes in the transactions collection
+    return transactionCollection
+        .doc(currentuser!.uid)
+        .collection('all')
+        //.orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      // Convert each document in the snapshot to a Transaction object
+      return snapshot.docs
+          .map((doc) => BitcoinTransaction.fromDocument(doc))
+          .toList();
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isLoading = true;
-      _getTransactions();
-    });
+    _searchforfilesComposition = loadComposition('assets/lottiefiles/search_for_files.json');
+    updatevisibility();
     _tabController = TabController(length: 3, vsync: this);
-    setState(() {
-      isLoading = false;
-    });
+  }
+
+  void updatevisibility() async {
+    await _searchforfilesComposition;
+    var timer = Timer(Duration(milliseconds: 50),
+            () {
+          setState(() {
+            _visible = true;
+          });
+        }
+    );
   }
 
   @override
   void dispose() {
-    _transactionstreamlistener.cancel();
     _tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return SizedBox(
-          height: AppTheme.cardPadding * 3,
-          child: dotProgress(context));
-    } return Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
@@ -100,24 +101,21 @@ class _TransactionsState extends State<Transactions>
                   child: Text(
                     "Alle",
                     style: AppTheme.textTheme.bodyMedium!.copyWith(
-                        color: AppTheme.white80,
-                        fontWeight: FontWeight.bold),
+                        color: AppTheme.white80, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Tab(
                   child: Text(
                     "Versendet",
                     style: AppTheme.textTheme.bodyMedium!.copyWith(
-                        color: AppTheme.white80,
-                        fontWeight: FontWeight.bold),
+                        color: AppTheme.white80, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Tab(
                   child: Text(
                     "Erhalten",
                     style: AppTheme.textTheme.bodyMedium!.copyWith(
-                        color: AppTheme.white80,
-                        fontWeight: FontWeight.bold),
+                        color: AppTheme.white80, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -129,71 +127,147 @@ class _TransactionsState extends State<Transactions>
         ),
         Container(
           height: AppTheme.cardPadding * 15,
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              Container(
-                child: Column(
-                  children: [
-                    TransactionItem(
-                        transaction: BitcoinTransaction(
-                            transactionDirection: TransactionDirection.receive,
-                            transactionReceiver: "uhadoihasoidahiosd",
-                            transactionSender: "jioafojiadpjianodaps",
-                            date: DateTime.now().toString(),
-                            amount: "3402.063"),
-                        context: context),
-                    SizedBox(height: AppTheme.elementSpacing * 0.75),
-                    TransactionItem(
-                        transaction: BitcoinTransaction(
-                            transactionDirection: TransactionDirection.send,
-                            transactionReceiver: "uhadoihasoidahiosd",
-                            transactionSender: "jioafojiadpjianodaps",
-                            date: DateTime.now().toString(),
-                            amount: "3402.063"),
-                        context: context),
-                    SizedBox(height: AppTheme.elementSpacing * 0.75),
-                    TransactionItem(
-                        transaction: BitcoinTransaction(
-                            transactionDirection: TransactionDirection.send,
-                            transactionReceiver: "uhadoihasoidahiosd",
-                            transactionSender: "jioafojiadpjianodaps",
-                            date: DateTime.now().toString(),
-                            amount: "3402.063"),
-                        context: context),
-                    SizedBox(height: AppTheme.elementSpacing * 0.75),
-                    TransactionItem(
-                        transaction: BitcoinTransaction(
-                            transactionDirection: TransactionDirection.send,
-                            transactionReceiver: "uhadoihasoidahiosd",
-                            transactionSender: "jioafojiadpjianodaps",
-                            date: DateTime.now().toString(),
-                            amount: "3402.063"),
-                        context: context),
-                  ],
-                ),
-              ),
-              TransactionItem(
-                  transaction: BitcoinTransaction(
-                      transactionDirection: TransactionDirection.send,
-                      transactionReceiver: "uhadoihasoidahiosd",
-                      transactionSender: "jioafojiadpjianodaps",
-                      date: DateTime.now().toString(),
-                      amount: "3402.063"),
-                  context: context),
-              ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return TransactionItem(
-                      transaction: transactions[index],
-                      context: context
-                  );
-                },
-              ),
-            ],
+          child: StreamBuilder<List<BitcoinTransaction>>(
+            stream: getTransactionsStream(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return SizedBox(
+                    height: AppTheme.cardPadding * 3,
+                    child: Center(child: dotProgress(context)));
+              }
+              List<BitcoinTransaction> all_transactions = snapshot.data!;
+              // Filter transactions by transaction type
+              List<BitcoinTransaction> receive_transactions = all_transactions.where((t)
+              => t.transactionDirection == TransactionDirection.receive).toList();
+
+              List<BitcoinTransaction> send_transactions = all_transactions.where((t)
+              => t.transactionDirection == TransactionDirection.send).toList();
+              if(all_transactions.length == 0){
+                return searchForFilesAnimation(_searchforfilesComposition);
+              } //else =>
+              return TabBarView(
+                controller: _tabController,
+                children: [
+                  ListView.builder(
+                    itemCount: all_transactions.length,
+                    itemBuilder: (context, index) {
+                      final _transaction = all_transactions[index];
+                      return TransactionItem(
+                          transaction: _transaction, context: context);
+                    },
+                  ),
+                  ListView.builder(
+                    itemCount: send_transactions.length,
+                    itemBuilder: (context, index) {
+                      final _transaction = send_transactions[index];
+                      return TransactionItem(
+                          transaction: _transaction, context: context);
+                    },
+                  ),
+                  ListView.builder(
+                    itemCount: receive_transactions.length,
+                    itemBuilder: (context, index) {
+                      final _transaction = receive_transactions[index];
+                      return TransactionItem(
+                          transaction: _transaction, context: context);
+                    },
+                  ),
+                //   Container(
+                //     child: Column(
+                //       children: [
+                //         TransactionItem(
+                //             transaction: BitcoinTransaction(
+                //                 transactionDirection:
+                //                     TransactionDirection.receive,
+                //                 transactionReceiver: "uhadoihasoidahiosd",
+                //                 transactionSender: "jioafojiadpjianodaps",
+                //                 date: DateTime.now().toString(),
+                //                 amount: "3402.063"),
+                //             context: context),
+                //         SizedBox(height: AppTheme.elementSpacing * 0.75),
+                //         TransactionItem(
+                //             transaction: BitcoinTransaction(
+                //                 transactionDirection: TransactionDirection.send,
+                //                 transactionReceiver: "uhadoihasoidahiosd",
+                //                 transactionSender: "jioafojiadpjianodaps",
+                //                 date: DateTime.now().toString(),
+                //                 amount: "3402.063"),
+                //             context: context),
+                //         SizedBox(height: AppTheme.elementSpacing * 0.75),
+                //         TransactionItem(
+                //             transaction: BitcoinTransaction(
+                //                 transactionDirection: TransactionDirection.send,
+                //                 transactionReceiver: "uhadoihasoidahiosd",
+                //                 transactionSender: "jioafojiadpjianodaps",
+                //                 date: DateTime.now().toString(),
+                //                 amount: "3402.063"),
+                //             context: context),
+                //         SizedBox(height: AppTheme.elementSpacing * 0.75),
+                //         TransactionItem(
+                //             transaction: BitcoinTransaction(
+                //                 transactionDirection: TransactionDirection.send,
+                //                 transactionReceiver: "uhadoihasoidahiosd",
+                //                 transactionSender: "jioafojiadpjianodaps",
+                //                 date: DateTime.now().toString(),
+                //                 amount: "3402.063"),
+                //             context: context),
+                //       ],
+                //     ),
+                //   ),
+                //   TransactionItem(
+                //       transaction: BitcoinTransaction(
+                //           transactionDirection: TransactionDirection.send,
+                //           transactionReceiver: "uhadoihasoidahiosd",
+                //           transactionSender: "jioafojiadpjianodaps",
+                //           date: DateTime.now().toString(),
+                //           amount: "3402.063"),
+                //       context: context),
+                 ],
+              );
+            },
           ),
         ),
       ],
     );
   }
+
+
+  Widget searchForFilesAnimation(dynamic comp) {
+    return  Column(
+      children: [
+        SizedBox(height: AppTheme.cardPadding * 2,),
+        SizedBox(
+          height: AppTheme.cardPadding * 6,
+          width: AppTheme.cardPadding * 6,
+          child: FutureBuilder(
+            future: comp,
+            builder: (context, snapshot) {
+              dynamic composition = snapshot.data;
+              if (composition != null) {
+                return FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: AnimatedOpacity(
+                    opacity: _visible ? 1.0 : 0.0,
+                    duration: Duration(milliseconds: 1000),
+                    child: Lottie(composition: composition),
+                  ),
+                );
+              } else {
+                return Container(
+                  color: Colors.transparent,
+                );
+              }
+            },
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.all(AppTheme.cardPadding),
+          child: Text("Es scheint, als hättest du bisher noch keine Transaktionshistorie.",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,),
+        ),
+      ],
+    );
+  }
+
 }

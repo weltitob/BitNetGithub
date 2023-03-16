@@ -4,8 +4,10 @@ import 'package:nexus_wallet/backbone/get_it.dart';
 import 'package:nexus_wallet/backbone/routetrees/widgettree.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'backbone/auth/auth.dart';
 
@@ -29,6 +31,10 @@ class MyApp extends StatelessWidget {
           create: (_) => Auth().userWalletStream,
           initialData: null,
         ),
+        // StreamProvider<List<BitcoinTransaction>?>(
+        //   create: (_) => Auth().userWalletStream,
+        //   initialData: null,
+        // ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

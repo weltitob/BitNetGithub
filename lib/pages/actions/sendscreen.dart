@@ -113,14 +113,11 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       });
     }
   }
-
   String feesSelected = "Niedrig";
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve the UserProvider from the BuildContext
     final userWallet = Provider.of<UserWallet>(context);
-    // Access the UserModel from the UserProvider
 
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
@@ -134,14 +131,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: userWallet != null
-                  ? Text('Hello ${userWallet.walletBalance}!')
-                  : Text('Not signed in.'),
-            ),
             Text("Bitcoin versenden",
                 style: Theme.of(context).textTheme.titleLarge),
-            Text("${200}BTC verfügbar",
+            Text("${userWallet.walletBalance}BTC verfügbar",
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
@@ -371,6 +363,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   Widget bitcoinWidget() {
+    final userWallet = Provider.of<UserWallet>(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: Column(
@@ -398,7 +392,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
                   NumericalRangeFormatter(
-                      min: 0, max: double.parse("200.0"), context: context),
+                      min: 0, max: double.parse(userWallet.walletBalance), context: context),
                 ],
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -419,19 +413,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           )),
         ],
       ),
-
-      /*RichText(
-          maxLines: 3,
-          text: TextSpan(
-            text: moneyController.text,
-            style: Theme.of(context).textTheme.displayLarge,
-            children: [
-              if (moneyController.text != '')
-                TextSpan(
-                    text: ' BTC',
-                    style: Theme.of(context).textTheme.displaySmall),
-            ],
-          )),*/
     );
   }
 
@@ -524,6 +505,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   Widget button() {
+    final userWallet = Provider.of<UserWallet>(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SwipeableButtonView(
@@ -558,8 +541,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             if (isAuthenticated == true || showBiometric == false) {
               CloudfunctionCallback mydata = await sendBitcoin(
                 sender_private_key:
-                    "adb88d6ea993c70a203c460a83dc7688a2381747edc9354fe0143343d6f7d246",
-                sender_address: "${200.0}",
+                    "${userWallet.privateKey}",
+                sender_address: "${userWallet.walletAddress}",
                 receiver_address: "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
                 amount_to_send: "${moneyController.text}",
                 fee_size: '$feesSelected',
@@ -570,7 +553,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 final newtransaction = BitcoinTransaction(
                     transactionDirection: TransactionDirection.send,
                     date: DateTime.now().toString(),
-                    transactionSender: "Eigene Bitcoin Adresse",
+                    transactionSender: userWallet.walletAddress,
                     transactionReceiver: _bitcoinReceiverAdress,
                     amount: moneyController.text);
                 String transactionuuid = Uuid().toString();

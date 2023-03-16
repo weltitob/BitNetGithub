@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
+
+Future<LottieComposition> loadComposition(String assetPath) async {
+  var assetData = await rootBundle.load(assetPath);
+  dynamic mycomposition = await LottieComposition.fromByteData(assetData);
+  return mycomposition;
+}
 
 int timeNow() {
   return DateTime.now().millisecondsSinceEpoch;

@@ -4,7 +4,9 @@ import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ReceiveScreen extends StatefulWidget {
@@ -16,12 +18,11 @@ class ReceiveScreen extends StatefulWidget {
 
 class _ReceiveScreenState extends State<ReceiveScreen> {
   GlobalKey globalKeyQR = GlobalKey();
-  final String _walletAdress = "1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71";
-
-
 
   @override
   Widget build(BuildContext context) {
+    final userWallet = Provider.of<UserWallet>(context);
+
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
       appBar: AppBar(
@@ -79,7 +80,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                                     'assets/images/bitcoin.png'),
                                 typeNumber: 3,
                                 size: 200,
-                                data: _walletAdress,
+                                data: userWallet.walletAddress,
                                 errorCorrectLevel: QrErrorCorrectLevel.M,
                                 roundEdges: true,
                               ),
@@ -100,7 +101,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                   GestureDetector(
                     onTap: () async {
                       await Clipboard.setData(
-                          ClipboardData(text: _walletAdress));
+                          ClipboardData(text: userWallet.walletAddress));
                       // copied successfully
                       displaySnackbar(
                           context, "Wallet-Adresse in Zwischenablage kopiert");
@@ -115,7 +116,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                     width: AppTheme.elementSpacing * 0.25,
                   ),
                   Text(
-                    "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy",
+                    "${userWallet.walletAddress}",
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -131,7 +132,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                     iconData: Icons.copy_rounded,
                     onTap: () async {
                       await Clipboard.setData(
-                          ClipboardData(text: _walletAdress));
+                          ClipboardData(text: userWallet.walletAddress));
                       // copied successfully
                       displaySnackbar(
                           context, "Wallet-Adresse in Zwischenablage kopiert");
@@ -141,7 +142,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                     text: "Teilen",
                     iconData: Icons.share_rounded,
                     onTap: () {
-                      Share.share('$_walletAdress');
+                      Share.share('${userWallet.walletAddress}');
                     },
                   ),
                 ],

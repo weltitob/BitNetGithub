@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
+import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/cards/balancecard.dart';
@@ -34,9 +35,9 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   @override
   void initState() {
     super.initState();
-    _compositionRocket = _loadComposition('assets/lottiefiles/rocket.json');
-    _compositionSend = _loadComposition('assets/lottiefiles/senden.json');
-    _compositionReceive = _loadComposition('assets/lottiefiles/erhalten.json');
+    _compositionRocket = loadComposition('assets/lottiefiles/rocket.json');
+    _compositionSend = loadComposition('assets/lottiefiles/senden.json');
+    _compositionReceive = loadComposition('assets/lottiefiles/erhalten.json');
     updatevisibility();
   }
 
@@ -58,11 +59,6 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     super.dispose();
   }
 
-  Future<LottieComposition> _loadComposition(String assetPath) async {
-    var assetData = await rootBundle.load(assetPath);
-    dynamic mycomposition = await LottieComposition.fromByteData(assetData);
-    return mycomposition;
-  }
 
   //die 3 lottiefiles downloaden und anzeigen direkt gespeichert?
   final PageController _controller = PageController();

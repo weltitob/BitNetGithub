@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/routetrees/authtree.dart';
 import 'package:nexus_wallet/bottomnav.dart';
-import 'package:nexus_wallet/pages/auth/loginscreen.dart';
+
 class WidgetTree extends StatefulWidget {
   const WidgetTree({Key? key}) : super(key: key);
 

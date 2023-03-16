@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
+import 'package:nexus_wallet/backbone/security/security.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
@@ -10,6 +11,7 @@ import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
 import 'package:nexus_wallet/pages/secondpages/impressumscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/reportissuescreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   final title;
@@ -21,8 +23,28 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final User? user = Auth().currentUser;
+  bool isSecurityChecked = false;
+
+  @override void initState() {
+    // TODO: implement initState
+    super.initState();
+    awaitSecurityBool();
+  }
+
+  void awaitSecurityBool() async {
+    isSecurityChecked = await SharedPrefSecurityCheck();
+    setState(() {});
+  }
 
   //iwie sowas final UserWallet userWallet = Auth().currentUserWallet;
+
+  void toggleLogin(bool newSecurityChecked) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isSecurityChecked = newSecurityChecked;
+    });
+    await prefs.setBool('isSecurityChecked', isSecurityChecked);
+  }
 
   Future<void> signOut() async {
     print('signout pressed');
@@ -32,8 +54,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _userUid() {
     return Text(user?.email ?? 'User email');
   }
-
-  bool _improvedsecurity = true;
   bool _ziehesendschkohl = false;
 
   @override
@@ -203,7 +223,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ChildBuildBoxInternToggleSwich(Icons.fingerprint_rounded,
-                        "Erhöhte Sicherheit", _improvedsecurity),
+                        "Erhöhte Sicherheit", isSecurityChecked),
                     MyDivider(),
                     GestureDetector(
                       onTap: () {
