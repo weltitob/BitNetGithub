@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/auth/auth_provider.dart';
 import 'package:nexus_wallet/backbone/get_it.dart';
-import 'package:nexus_wallet/backbone/routetrees/widgettree.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
+import 'package:nexus_wallet/pages/routetrees/widgettree.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

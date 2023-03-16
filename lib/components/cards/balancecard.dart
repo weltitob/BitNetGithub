@@ -27,7 +27,6 @@ class BalanceCardBtc extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             "${userWallet.walletBalance} BTC",
-            overflow: TextOverflow.ellipsis,
             // NumberFormat.simpleCurrency().format(MockBalance.data.last),
             style: Theme.of(context).textTheme.displaySmall),
           const Spacer(),
