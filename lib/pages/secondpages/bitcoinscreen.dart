@@ -54,21 +54,21 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           controller: _controller,
           children: <Widget>[
             ChartWidget(),
-            RoundedContainer(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Wallet Statistik",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding,
-                ),
-                BitcoinPrice(),
-                WalletStats(),
-              ],
-            )),
+            // RoundedContainer(
+            //     child: Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: [
+            //     Text(
+            //       "Wallet Statistik",
+            //       style: Theme.of(context).textTheme.titleLarge,
+            //     ),
+            //     SizedBox(
+            //       height: AppTheme.cardPadding,
+            //     ),
+            //     BitcoinPrice(),
+            //     WalletStats(),
+            //   ],
+            // )),
             RoundedContainer(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

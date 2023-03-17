@@ -8,7 +8,7 @@ import 'package:nexus_wallet/components/buttons/roundedbutton.dart';
 import 'package:nexus_wallet/components/camera/textscanneroverlay.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 class QRScreen extends StatefulWidget {
   final bool isBottomButtonVisible;
@@ -36,11 +36,28 @@ class _QRScreenState extends State<QRScreen> {
               allowDuplicates: false,
               controller: cameraController,
               onDetect: (barcode, args) async {
-                final String code = barcode.rawValue.toString();
-                print('Barcode found! $code');
+                final String codeinjson = barcode.rawValue.toString();
+                print('Barcode found! $codeinjson');
+                /// a simple check if its a BTC wallet or not, regardless of its type
+                final bool isValid = isBitcoinWalletValid(codeinjson);
+
+                /// a bit more complicated check which can return the type of
+                /// BTC wallet and return SegWit (Bech32), Regular, or None if
+                /// the string is not a BTC address
+                final walletType = getBitcoinWalletType(codeinjson);
+
+                /// Detailed check, for those who need to get more details
+                /// of the wallet. Returns the address type, the network, and
+                /// the wallet type along with its address.
+                /// It always returns BitcoinWalletDetails object. To check if it's
+                /// valid or not use bitcoinWalletDetails.isValid getter
+                /// IMPORTANT The BitcoinWalletDetails class overrides an
+                /// equality operators so two BitcoinWalletDetails objects can be
+                /// compared simply like this bwd1 == bwd2
+                final walletdetails = getBitcoinWalletDetails(codeinjson);
                 await Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
-                      SendBTCScreen(bitcoinReceiverAdress: code),
+                      SendBTCScreen(bitcoinReceiverAdress: codeinjson),
                 ));
               }),
           isQRScanner

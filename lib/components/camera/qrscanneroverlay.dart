@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 
 class QRScannerOverlay extends StatelessWidget {
   const QRScannerOverlay({Key? key, required this.overlayColour})
@@ -8,10 +9,7 @@ class QRScannerOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double scanArea = (MediaQuery.of(context).size.width < 400 ||
-        MediaQuery.of(context).size.height < 400)
-        ? 240.0
-        : 350.0;
+    double scanArea = MediaQuery.of(context).size.width - AppTheme.cardPadding * 4;
     return Stack(children: [
       ColorFiltered(
         colorFilter: ColorFilter.mode(
@@ -43,8 +41,8 @@ class QRScannerOverlay extends StatelessWidget {
         child: CustomPaint(
           foregroundPainter: BorderPainter(),
           child: SizedBox(
-            width: scanArea + 25,
-            height: scanArea + 25,
+            width: scanArea + AppTheme.cardPadding * 1.25,
+            height: scanArea + AppTheme.cardPadding * 1.25,
           ),
         ),
       ),
@@ -56,8 +54,8 @@ class QRScannerOverlay extends StatelessWidget {
 class BorderPainterSmall extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    const width = 4.0 / 1.5;
-    const radius = 20.0 / 2;
+    const width = 4.0;
+    const radius = AppTheme.cardPadding / 2;
     const tRadius = 3 * radius / 2;
     final rect = Rect.fromLTWH(
       width,
@@ -118,7 +116,7 @@ class BorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     const width = 4.0;
-    const radius = 20.0;
+    const radius = AppTheme.cardPadding;
     const tRadius = 3 * radius;
     final rect = Rect.fromLTWH(
       width,

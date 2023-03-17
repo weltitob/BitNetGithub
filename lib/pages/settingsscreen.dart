@@ -25,7 +25,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final User? user = Auth().currentUser;
   bool isSecurityChecked = false;
 
-  @override void initState() {
+  @override
+  void initState() {
     // TODO: implement initState
     super.initState();
     awaitSecurityBool();
@@ -54,6 +55,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _userUid() {
     return Text(user?.email ?? 'User email');
   }
+
   bool _ziehesendschkohl = false;
 
   @override
@@ -62,7 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         width: MediaQuery.of(context).size.width,
         color: AppTheme.colorBackground,
         child: SafeArea(
-            child: ListView(children: <Widget>[
+            child: Column(children: <Widget>[
           Container(
             margin: EdgeInsets.only(
               top: AppTheme.elementSpacing,
@@ -180,28 +182,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: ChildBuildBoxIntern(
                           Icons.bug_report_outlined, "Fehler melden"),
                     ),
-                  ]),
-            )),
-        Padding(
-            padding: EdgeInsets.only(
-          top: AppTheme.cardPadding,
-        )),
-        ChildBuildBoxHeader("Easter-Eggs"),
-        Glassmorphism(
-            blur: 20,
-            opacity: 0.1,
-            radius: AppTheme.cardPadding,
-            child: Container(
-              padding: EdgeInsets.only(
-                  top: 10,
-                  left: AppTheme.elementSpacing,
-                  right: AppTheme.elementSpacing,
-                  bottom: 10),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    ChildBuildBoxInternToggleSwich(Icons.help,
-                        "Ziehe sendsch Kohl Modus", _ziehesendschkohl),
                   ]),
             )),
         Padding(
