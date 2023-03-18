@@ -78,31 +78,6 @@ class BalanceCardBtc extends StatelessWidget {
     );
   }
 
-  Widget profitPercent(BuildContext context) {
-    return Positioned(
-      right: 28,
-      bottom: 28,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(6, 6, 8, 6),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          color: Theme.of(context).backgroundColor.withOpacity(0.25),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            const Icon(
-              FontAwesomeIcons.caretUp,
-              size: 16,
-            ),
-            const SizedBox(width: 4),
-            Text('+5.2%', style: Theme.of(context).textTheme.bodyMedium,),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(

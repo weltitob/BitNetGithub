@@ -179,10 +179,12 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
               ),
             ),
             SizedBox(height: AppTheme.cardPadding * 2),
-            glassButton(
-                text: "Speichern",
-                iconData: Icons.save,
-                onTap: () => _updateEmail()),
+            Center(
+              child: glassButton(
+                  text: "Speichern",
+                  iconData: Icons.save,
+                  onTap: () => _updateEmail()),
+            ),
           ],
         ),
       ),

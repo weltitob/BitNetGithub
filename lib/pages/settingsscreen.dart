@@ -6,6 +6,7 @@ import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
 import 'package:nexus_wallet/backbone/security/security.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
+import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
 import 'package:nexus_wallet/pages/secondpages/impressumscreen.dart';
@@ -39,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   //iwie sowas final UserWallet userWallet = Auth().currentUserWallet;
 
-  void toggleLogin(bool newSecurityChecked) async {
+  void toggleSecurityChecked(bool newSecurityChecked) async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       isSecurityChecked = newSecurityChecked;
@@ -67,7 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(children: <Widget>[
           Container(
             margin: EdgeInsets.only(
-              top: AppTheme.elementSpacing,
+              top: AppTheme.cardPadding,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -137,15 +138,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           Icons.article_outlined, "Allg. Geschäftsbedingungen"),
                     ),
                     MyDivider(),
-                    ChildBuildBoxIntern(
-                        Icons.payment_rounded, "Spenden & uns unterstützen"),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => SendBTCScreen(
+                              bitcoinReceiverAdress:
+                                  "bc1qefen49mdjzzkxjec4pz5gsl9fq8nk3kuyq05nl",
+                            ),
+                          ),
+                        );
+                      },
+                      child: ChildBuildBoxIntern(
+                          Icons.payment_rounded, "Spenden & uns unterstützen"),
+                    ),
                   ]),
             )),
         Padding(
             padding: EdgeInsets.only(
           top: AppTheme.cardPadding,
         )),
-        ChildBuildBoxHeader("Contact"),
+        ChildBuildBoxHeader("Kontakt"),
         Glassmorphism(
             blur: 20,
             opacity: 0.1,
@@ -202,8 +215,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    ChildBuildBoxInternToggleSwich(Icons.fingerprint_rounded,
-                        "Erhöhte Sicherheit", isSecurityChecked),
+                    ChildBuildBoxInternToggleSwich(
+                      Icons.fingerprint_rounded,
+                      "Erhöhte Sicherheit",
+                    ),
                     MyDivider(),
                     GestureDetector(
                       onTap: () {
@@ -219,8 +234,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     MyDivider(),
                     GestureDetector(
                         onTap: () {
-                          signOut();
-                          //getWalletBalance();
+                          //signOut();
+                          getWalletBalance();
                         },
                         child: ChildBuildBoxIntern(
                             Icons.login_rounded, "Abmelden"))
@@ -280,51 +295,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget ChildBuildBoxInternToggleSwich(icon, String text, bool toggle) {
-    return GestureDetector(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(
-                icon,
-                color: Colors.grey[200],
-                size: 24,
-              ),
-              Padding(
-                  padding: EdgeInsets.only(
-                left: 10,
-              )),
-              Container(
-                child:
-                    Text(text, style: Theme.of(context).textTheme.titleSmall),
-              ),
-            ],
-          ),
-          Container(
-            height: 20,
-            child: Transform.scale(
-              scale: 0.8,
-              child: CupertinoSwitch(
-                activeColor: AppTheme.colorBitcoin,
-                value: toggle,
-                onChanged: (bool value) {
-                  setState(() {
-                    toggle = value;
-                  });
-                },
-              ),
+  Widget ChildBuildBoxInternToggleSwich(
+    icon,
+    String text,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(
+              icon,
+              color: Colors.grey[200],
+              size: 24,
+            ),
+            Padding(
+                padding: EdgeInsets.only(
+              left: 10,
+            )),
+            Container(
+              child: Text(text, style: Theme.of(context).textTheme.titleSmall),
+            ),
+          ],
+        ),
+        Container(
+          height: 20,
+          child: Transform.scale(
+            scale: 0.8,
+            child: CupertinoSwitch(
+              activeColor: AppTheme.colorBitcoin,
+              value: isSecurityChecked,
+              onChanged: (bool value) {
+                setState(() {
+                  isSecurityChecked = value;
+                });
+                toggleSecurityChecked(value);
+              },
             ),
           ),
-        ],
-      ),
-      onTap: () {
-        setState(() {
-          toggle = !toggle;
-        });
-      },
+        ),
+      ],
     );
   }
 }

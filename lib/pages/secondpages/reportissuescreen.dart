@@ -86,13 +86,9 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
               ),
             ),
             SizedBox(height: AppTheme.cardPadding,),
-            Container(
-              width: 100,
-              height: 50,
-              child: Center(
-                child: glassButton(
-                    text: "Melden", iconData: Icons.send, onTap: () => sendIssue()),
-              ),
+            Center(
+              child: glassButton(
+                  text: "Melden", iconData: Icons.send, onTap: () => sendIssue()),
             ),
 
           ],

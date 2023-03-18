@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:nexus_wallet/pages/auth/loginscreen.dart';
 import 'package:nexus_wallet/pages/auth/registerscreen.dart';
 import 'package:nexus_wallet/pages/auth/resetpasswordscreen.dart';
 
-
 class AuthTree extends StatefulWidget {
-  const AuthTree ({Key? key}) : super(key: key);
+  const AuthTree({Key? key}) : super(key: key);
 
   @override
   State<AuthTree> createState() => _AuthTreeState();
@@ -17,7 +17,7 @@ class _AuthTreeState extends State<AuthTree> {
 
   void toggleView() {
     setState(() {
-      if(showSignIn == true)
+      if (showSignIn == true)
         showSignIn = false;
       else {
         showSignIn = true;
@@ -25,9 +25,9 @@ class _AuthTreeState extends State<AuthTree> {
     });
   }
 
-  void toggleresetpassword(){
+  void toggleresetpassword() {
     setState(() {
-      if(resetpassword == true)
+      if (resetpassword == true)
         resetpassword = false;
       else {
         resetpassword = true;
@@ -38,14 +38,20 @@ class _AuthTreeState extends State<AuthTree> {
   @override
   Widget build(BuildContext context) {
     if (resetpassword) {
-      return ResetPasswordScreen(toggleView: toggleView, toggleResetPassword: toggleresetpassword,);
-    }
-    else {
+      return ResetPasswordScreen(
+        toggleView: toggleView,
+        toggleResetPassword: toggleresetpassword,
+      );
+    } else {
       if (showSignIn) {
-        return LoginScreen(toggleView: toggleView, toggleResetPassword: toggleresetpassword,);
-      }
-      else {
-        return RegisterScreen(toggleView: toggleView,);
+        return LoginScreen(
+          toggleView: toggleView,
+          toggleResetPassword: toggleresetpassword,
+        );
+      } else {
+        return RegisterScreen(
+          toggleView: toggleView,
+        );
       }
     }
   }

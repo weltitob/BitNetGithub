@@ -174,7 +174,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     trackBallValuePrice = _lastpriceinit.toString();
     //date
     var datetime = DateTime.fromMillisecondsSinceEpoch(
-        _latesttimeinit.round() + 3600000,
+        _latesttimeinit.round(),
         isUtc: false);
     DateFormat dateFormat = DateFormat("dd.MM.yyyy");
     DateFormat timeFormat = DateFormat("HH:mm");
@@ -305,7 +305,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                   double.parse(args.chartPointInfo.label!).toStringAsFixed(2);
               final pointInfoTime = double.parse(args.chartPointInfo.header!);
               var datetime = DateTime.fromMillisecondsSinceEpoch(
-                  pointInfoTime.round() + 3600000,
+                  pointInfoTime.round(),
                   isUtc: false);
               DateFormat dateFormat = DateFormat("dd.MM.yyyy");
               DateFormat timeFormat = DateFormat("HH:mm");
@@ -332,7 +332,7 @@ class _ChartWidgetState extends State<ChartWidget> {
             key.currentState!.refresh();
             //reset to date of last value
             var datetime = DateTime.fromMillisecondsSinceEpoch(
-                _lastimeeexact.round() + 3600000,
+                _lastimeeexact.round(),
                 isUtc: false);
             DateFormat dateFormat = DateFormat("dd.MM.yyyy");
             DateFormat timeFormat = DateFormat("HH:mm");
@@ -489,7 +489,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                   trackBallValuePricechange = toPercent(priceChange);
                   //update date
                   var datetime = DateTime.fromMillisecondsSinceEpoch(
-                      _lastimeeexact.round() + 3600000,
+                      _lastimeeexact.round(),
                       isUtc: false);
                   DateFormat dateFormat = DateFormat("dd.MM.yyyy");
                   DateFormat timeFormat = DateFormat("HH:mm");

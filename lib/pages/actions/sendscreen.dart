@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/auth/auth_provider.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/send.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
-import 'package:nexus_wallet/backbone/get_it.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/backbone/security/biometrics/biometric_helper.dart';
+import 'package:nexus_wallet/backbone/security/security.dart';
 import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
@@ -45,11 +44,11 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   String _bitcoinReceiverAdress = '';
   dynamic _moneyineur = '';
   bool _isLoadingExchangeRt = true;
-  bool _isAllowedToSend = true;
   //biometric authentication before sending
-  bool showBiometric = false;
-  bool isAuthenticated = false;
+  bool hasBiometrics = true;
+  bool isBioAuthenticated = false;
   final User? currentuser = Auth().currentUser;
+  late bool isSecurityChecked;
 
   @override
   void initState() {
@@ -57,7 +56,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     moneyController.text = "0.00001";
     myFocusNode = FocusNode();
     getBitcoinPrice();
-    isBiometricsAvailable();
     if (widget.bitcoinReceiverAdress != null) {
       setState(() {
         _bitcoinReceiverAdress = widget.bitcoinReceiverAdress!;
@@ -77,9 +75,26 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     super.dispose();
   }
 
+  awaitSecurityBool() async {
+    bool securitybool = await SharedPrefSecurityCheck();
+    return securitybool;
+  }
+
   isBiometricsAvailable() async {
-    showBiometric = await BiometricHelper().hasEnrolledBiometrics();
-    setState(() {});
+    isSecurityChecked = await awaitSecurityBool();
+    //user needs to have enrolled Biometrics and also high security checked in settings to get fingerpint auth request
+    if(isSecurityChecked == true) {
+      hasBiometrics = await BiometricHelper().hasEnrolledBiometrics();
+      if (hasBiometrics == true) {
+        print('trying to check biometrics...');
+        isBioAuthenticated = await BiometricHelper().authenticate();
+      } else {
+        isBioAuthenticated == false;
+      }
+      setState(() {});
+    } else{
+      hasBiometrics = false;
+    }
   }
 
   Future<void> getBitcoinPrice() async {
@@ -139,132 +154,138 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         ),
         backgroundColor: AppTheme.colorBackground,
       ),
-      body: ListView(
-        children: <Widget>[
-          const SizedBox(
-            height: AppTheme.cardPadding * 2,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding),
-                child: Text(
-                  "Empfänger",
-                  style: Theme.of(context).textTheme.headline6,
-                ),
+      body: Stack(
+        children: [
+          ListView(
+            children: <Widget>[
+              const SizedBox(
+                height: AppTheme.cardPadding * 2,
               ),
-              _hasReceiver
-                  ? userTile()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding,
-                          vertical: AppTheme.elementSpacing / 2),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: AppTheme.cardPadding * 11.5,
-                            child: Glassmorphism(
-                              blur: 20,
-                              opacity: 0.1,
-                              radius: 50.0,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: AppTheme.elementSpacing * 1.5),
-                                height: AppTheme.cardPadding * 2,
-                                alignment: Alignment.center,
-                                child: TextField(
-                                  maxLength: 40,
-                                  controller: bitcoinReceiverAdressController,
-                                  autofocus: false,
-                                  onSubmitted: (text) {
-                                    setState(() {
-                                      _bitcoinReceiverAdress = text;
-                                      _hasReceiver = true;
-                                    });
-                                  },
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    counterText: "",
-                                    hintText: "Bitcoin-Adresse hier eingeben",
-                                    hintStyle:
-                                        TextStyle(color: AppTheme.white60),
-                                  ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
+                    child: Text(
+                      "Empfänger",
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),
+                  _hasReceiver
+                      ? userTile()
+                      : Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding,
+                        vertical: AppTheme.elementSpacing / 2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: AppTheme.cardPadding * 11.5,
+                          child: Glassmorphism(
+                            blur: 20,
+                            opacity: 0.1,
+                            radius: 50.0,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: AppTheme.elementSpacing * 1.5),
+                              height: AppTheme.cardPadding * 2,
+                              alignment: Alignment.center,
+                              child: TextField(
+                                maxLength: 40,
+                                controller: bitcoinReceiverAdressController,
+                                autofocus: false,
+                                onSubmitted: (text) {
+                                  setState(() {
+                                    _bitcoinReceiverAdress = text;
+                                    _hasReceiver = true;
+                                  });
+                                },
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  counterText: "",
+                                  hintText: "Bitcoin-Adresse hier eingeben",
+                                  hintStyle:
+                                  TextStyle(color: AppTheme.white60),
                                 ),
                               ),
                             ),
                           ),
-                          GestureDetector(
-                              onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => const QRScreen(
-                                        isBottomButtonVisible: true,
-                                      ),
-                                    ),
-                                  ),
-                              child: avatarGlow(
-                                context,
-                                Icons.circle,
-                              )),
-                        ],
-                      ),
+                        ),
+                        GestureDetector(
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const QRScreen(
+                                  isBottomButtonVisible: true,
+                                ),
+                              ),
+                            ),
+                            child: avatarGlow(
+                              context,
+                              Icons.circle,
+                            )),
+                      ],
                     ),
-            ],
-          ),
-          const SizedBox(
-            height: AppTheme.cardPadding * 1,
-          ),
-          Center(child: bitcoinWidget()),
-          Center(child: bitcoinToMoneyWidget()),
-          const SizedBox(
-            height: AppTheme.cardPadding * 3,
-          ),
-          Padding(
-            padding:
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: AppTheme.cardPadding * 1,
+              ),
+              Center(child: bitcoinWidget()),
+              Center(child: bitcoinToMoneyWidget()),
+              const SizedBox(
+                height: AppTheme.cardPadding * 3,
+              ),
+              Padding(
+                padding:
                 const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      "Gebühren",
-                      style: Theme.of(context).textTheme.headline6,
+                    Row(
+                      children: [
+                        Text(
+                          "Gebühren",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        SizedBox(
+                          width: AppTheme.elementSpacing / 2,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            displaySnackbar(
+                                context,
+                                "Die Gebührenhöhe bestimmt über "
+                                    "die Transaktionsgeschwindigkeit. "
+                                    "Wenn du hohe Gebühren zahlst wird deine "
+                                    "Transaktion schneller bei dem Empfänger ankommen");
+                          },
+                          child: Icon(
+                            Icons.info_outline_rounded,
+                            color: AppTheme.white90,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
-                      width: AppTheme.elementSpacing / 2,
+                      height: AppTheme.cardPadding,
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        displaySnackbar(
-                            context,
-                            "Die Gebührenhöhe bestimmt über "
-                            "die Transaktionsgeschwindigkeit. "
-                            "Wenn du hohe Gebühren zahlst wird deine "
-                            "Transaktion schneller bei dem Empfänger ankommen");
-                      },
-                      child: Icon(
-                        Icons.info_outline_rounded,
-                        color: AppTheme.white90,
-                      ),
-                    ),
+                    buildFeesChooser()
                   ],
                 ),
-                SizedBox(
-                  height: AppTheme.cardPadding,
-                ),
-                buildFeesChooser()
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(
-            height: AppTheme.cardPadding * 5,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+                padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1.5),
+                child: button()),
           ),
-          Center(child: button()),
         ],
       ),
     );
@@ -392,7 +413,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
                   NumericalRangeFormatter(
-                      min: 0, max: double.parse(userWallet.walletBalance), context: context),
+                      min: 0, max: double.parse("2.000"), context: context),
                 ],
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -510,13 +531,13 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SwipeableButtonView(
-          isActive: _isAllowedToSend,
+          isActive: _hasReceiver,
           buttontextstyle: Theme.of(context).textTheme.headline6!.copyWith(
               color: AppTheme.white80, shadows: [AppTheme.boxShadowSmall]),
           buttonText: "JETZT SENDEN!",
           buttonWidget: Container(
             child: Icon(
-              _isAllowedToSend
+              _hasReceiver
                   ? Icons.double_arrow_rounded
                   : Icons.lock_outline_rounded,
               color: AppTheme.white90,
@@ -535,10 +556,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             });
           },
           onFinish: () async {
-            showBiometric ?
-            isAuthenticated = await BiometricHelper().authenticate()
-                : isAuthenticated == false;
-            if (isAuthenticated == true || showBiometric == false) {
+            await isBiometricsAvailable();
+            if (isBioAuthenticated == true || hasBiometrics == false) {
               CloudfunctionCallback mydata = await sendBitcoin(
                 sender_private_key:
                     "${userWallet.privateKey}",

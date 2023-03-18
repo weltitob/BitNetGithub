@@ -58,7 +58,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                 style: Theme.of(context).textTheme.headline5,
               ),
               const SizedBox(
-                height: AppTheme.cardPadding * 3,
+                height: AppTheme.cardPadding * 2,
               ),
               SizedBox(
                 child: Center(
@@ -74,13 +74,13 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                                 color: Colors.white,
                                 borderRadius: AppTheme.cardRadiusSmall),
                             child: Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(AppTheme.cardPadding / 2),
                               child: PrettyQr(
                                 image: const AssetImage(
                                     'assets/images/bitcoin.png'),
-                                typeNumber: 3,
-                                size: 200,
-                                data: "bitcoin: ${userWallet.walletAddress}",
+                                typeNumber: null,
+                                size: AppTheme.cardPadding * 10,
+                                data: "${userWallet.walletAddress}",
                                 errorCorrectLevel: QrErrorCorrectLevel.M,
                                 roundEdges: true,
                               ),

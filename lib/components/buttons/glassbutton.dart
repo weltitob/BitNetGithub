@@ -22,19 +22,21 @@ class glassButton extends StatefulWidget {
 class _glassButtonState extends State<glassButton> {
   @override
   Widget build(BuildContext context) {
-    return widget.isSelected == null || widget.isSelected! ?
-      GestureDetector(
-        onTap: widget.onTap,
-        child: Glassmorphism(
+    return widget.isSelected == null || widget.isSelected!
+        ? GestureDetector(
+            onTap: widget.onTap,
+            child: Glassmorphism(
               blur: 20,
               opacity: 0.1,
               radius: 50.0,
               child: Container(
+                width: AppTheme.cardPadding * 6,
                 padding: const EdgeInsets.symmetric(
-                  vertical: AppTheme.elementSpacing * 0.5,
+                  vertical: AppTheme.elementSpacing * 0.75,
                   horizontal: AppTheme.elementSpacing,
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     widget.iconData == null
                         ? Container()
@@ -48,32 +50,26 @@ class _glassButtonState extends State<glassButton> {
                         : const SizedBox(
                             width: AppTheme.elementSpacing / 2,
                           ),
-                    widget.iconData == null
-                        ? Text(
-                            widget.text,
-                            style: AppTheme.textTheme.bodyMedium!.copyWith(
-                                color: AppTheme.white80,
-                                fontWeight: FontWeight.bold),
-                          )
-                        : Text(
-                            widget.text,
-                            style: AppTheme.textTheme.bodySmall!.copyWith(
-                                color: AppTheme.white80,
-                                fontWeight: FontWeight.bold),
-                          ),
+                    Text(
+                      widget.text,
+                      style: AppTheme.textTheme.bodyMedium!.copyWith(
+                          color: AppTheme.white80, fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
               ),
             ),
-      )
+          )
         : GestureDetector(
             onTap: widget.onTap,
             child: Container(
+              width: AppTheme.cardPadding * 6,
               padding: const EdgeInsets.symmetric(
-                vertical: AppTheme.elementSpacing * 0.5,
+                vertical: AppTheme.elementSpacing * 0.75,
                 horizontal: AppTheme.elementSpacing,
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   widget.iconData == null
                       ? Container()
@@ -87,19 +83,11 @@ class _glassButtonState extends State<glassButton> {
                       : const SizedBox(
                           width: AppTheme.elementSpacing / 2,
                         ),
-                  widget.iconData == null
-                      ? Text(
-                          widget.text,
-                          style: AppTheme.textTheme.bodyMedium!.copyWith(
-                              color: AppTheme.white80,
-                              fontWeight: FontWeight.bold),
-                        )
-                      : Text(
-                          widget.text,
-                          style: AppTheme.textTheme.bodySmall!.copyWith(
-                              color: AppTheme.white80,
-                              fontWeight: FontWeight.bold),
-                        ),
+                  Text(
+                    widget.text,
+                    style: AppTheme.textTheme.bodyMedium!.copyWith(
+                        color: AppTheme.white80, fontWeight: FontWeight.bold),
+                  )
                 ],
               ),
             ),

@@ -9,7 +9,7 @@ class QRScannerOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double scanArea = MediaQuery.of(context).size.width - AppTheme.cardPadding * 4;
+    double scanArea = MediaQuery.of(context).size.width - AppTheme.cardPadding * 5;
     return Stack(children: [
       ColorFiltered(
         colorFilter: ColorFilter.mode(
