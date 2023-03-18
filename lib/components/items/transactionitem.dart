@@ -20,7 +20,7 @@ class _TransactionItemState extends State<TransactionItem> {
   @override
   Widget build(BuildContext context) {
     bool _hasReceived =
-        widget.transaction.transactionDirection == TransactionDirection.receive
+        widget.transaction.transactionDirection == "received"
             ? true
             : false;
 
@@ -83,8 +83,8 @@ class _TransactionItemState extends State<TransactionItem> {
                         child: Icon(
                           size: AppTheme.cardPadding * 1.5,
                           _hasReceived
-                              ? Icons.arrow_upward_rounded
-                              : Icons.arrow_downward,
+                              ? Icons.arrow_downward_rounded
+                              : Icons.arrow_upward_rounded,
                           color: AppTheme.white90,
                         ),
                       ),
@@ -124,8 +124,13 @@ class _TransactionItemState extends State<TransactionItem> {
           widget.transaction.dateFormatted,
           style: Theme.of(widget.context).textTheme.bodySmall,
         ),
-        Text(widget.transaction.transactionSender.toString(),
-            style: Theme.of(widget.context).textTheme.bodyMedium),
+        Container(
+          width: AppTheme.cardPadding * 6,
+          child: Text(widget.transaction.transactionSender.toString(),
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(widget.context).textTheme.bodyMedium,
+          ),
+        ),
       ],
     );
   }

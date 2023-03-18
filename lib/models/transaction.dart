@@ -2,13 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 
-enum TransactionDirection {
-  receive,
-  send,
-}
 
 class BitcoinTransaction {
-  final TransactionDirection transactionDirection;
+  final String transactionDirection;
   final String date;
   final String transactionSender;
   final String transactionReceiver;
@@ -27,8 +23,8 @@ class BitcoinTransaction {
 
   String get amountString {
     final amountSign =
-        transactionDirection == TransactionDirection.receive ? '+' : '-';
-    return '$amountSign${NumberFormat('#,###.####').format(double.parse(amount))}';
+        transactionDirection == "received" ? '+' : '-';
+    return '$amountSign${double.parse(amount)}';
   }
 
   Map<String, dynamic> toMap() {
@@ -43,7 +39,7 @@ class BitcoinTransaction {
 
   factory BitcoinTransaction.fromJson(Map<String, dynamic> json) {
     return BitcoinTransaction(
-      transactionDirection: json['transactionDirection'],
+      transactionDirection: json['transactionDirection'].toString(),
       date: json['date'].toString(),
       transactionReceiver: json['transactionReceiver'].toString(),
       transactionSender: json['transactionSender'].toString(),

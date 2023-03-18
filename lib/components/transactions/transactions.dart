@@ -138,10 +138,10 @@ class _TransactionsState extends State<Transactions>
               List<BitcoinTransaction> all_transactions = snapshot.data!;
               // Filter transactions by transaction type
               List<BitcoinTransaction> receive_transactions = all_transactions.where((t)
-              => t.transactionDirection == TransactionDirection.receive).toList();
+              => t.transactionDirection == "received").toList();
 
               List<BitcoinTransaction> send_transactions = all_transactions.where((t)
-              => t.transactionDirection == TransactionDirection.send).toList();
+              => t.transactionDirection == "send").toList();
               if(all_transactions.length == 0){
                 return searchForFilesAnimation(_searchforfilesComposition);
               } //else =>

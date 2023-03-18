@@ -567,15 +567,16 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 fee_size: '$feesSelected',
               );
               if (mydata.status == "success") {
+                print(mydata.message);
                 print('staus is success now pushing transaction to firestore...');
                 //when the bitcoin transaction was successfully pushed to the blockchain also add it to firebase
                 final newtransaction = BitcoinTransaction(
-                    transactionDirection: TransactionDirection.send,
+                    transactionDirection: "send",
                     date: DateTime.now().toString(),
                     transactionSender: userWallet.walletAddress,
                     transactionReceiver: _bitcoinReceiverAdress,
                     amount: moneyController.text);
-                String transactionuuid = Uuid().toString();
+                String transactionuuid = Uuid().v4().toString();
 
                 await transactionCollection
                     .doc(currentuser!.uid)
