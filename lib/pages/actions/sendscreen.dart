@@ -34,7 +34,6 @@ class SendBTCScreen extends StatefulWidget {
 }
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
-
   late FocusNode myFocusNode;
   TextEditingController bitcoinReceiverAdressController =
       TextEditingController();
@@ -47,7 +46,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   //biometric authentication before sending
   bool hasBiometrics = true;
   bool isBioAuthenticated = false;
-  final User? currentuser = Auth().currentUser;
   late bool isSecurityChecked;
 
   @override
@@ -83,7 +81,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   isBiometricsAvailable() async {
     isSecurityChecked = await awaitSecurityBool();
     //user needs to have enrolled Biometrics and also high security checked in settings to get fingerpint auth request
-    if(isSecurityChecked == true) {
+    if (isSecurityChecked == true) {
       hasBiometrics = await BiometricHelper().hasEnrolledBiometrics();
       if (hasBiometrics == true) {
         print('trying to check biometrics...');
@@ -92,7 +90,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         isBioAuthenticated == false;
       }
       setState(() {});
-    } else{
+    } else {
       hasBiometrics = false;
     }
   }
@@ -128,6 +126,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       });
     }
   }
+
   String feesSelected = "Niedrig";
 
   @override
@@ -176,60 +175,65 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   _hasReceiver
                       ? userTile()
                       : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.cardPadding,
-                        vertical: AppTheme.elementSpacing / 2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: AppTheme.cardPadding * 11.5,
-                          child: Glassmorphism(
-                            blur: 20,
-                            opacity: 0.1,
-                            radius: 50.0,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: AppTheme.elementSpacing * 1.5),
-                              height: AppTheme.cardPadding * 2,
-                              alignment: Alignment.center,
-                              child: TextField(
-                                maxLength: 40,
-                                controller: bitcoinReceiverAdressController,
-                                autofocus: false,
-                                onSubmitted: (text) {
-                                  setState(() {
-                                    _bitcoinReceiverAdress = text;
-                                    _hasReceiver = true;
-                                  });
-                                },
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  counterText: "",
-                                  hintText: "Bitcoin-Adresse hier eingeben",
-                                  hintStyle:
-                                  TextStyle(color: AppTheme.white60),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding,
+                              vertical: AppTheme.elementSpacing / 2),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: AppTheme.cardPadding * 11.5,
+                                child: Glassmorphism(
+                                  blur: 20,
+                                  opacity: 0.1,
+                                  radius: 50.0,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal:
+                                            AppTheme.elementSpacing * 1.5),
+                                    height: AppTheme.cardPadding * 2,
+                                    alignment: Alignment.center,
+                                    child: TextField(
+                                      maxLength: 40,
+                                      controller:
+                                          bitcoinReceiverAdressController,
+                                      autofocus: false,
+                                      onSubmitted: (text) {
+                                        setState(() {
+                                          _bitcoinReceiverAdress = text;
+                                          _hasReceiver = true;
+                                        });
+                                      },
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        counterText: "",
+                                        hintText:
+                                            "Bitcoin-Adresse hier eingeben",
+                                        hintStyle:
+                                            TextStyle(color: AppTheme.white60),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              GestureDetector(
+                                  onTap: () => Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => const QRScreen(
+                                            isBottomButtonVisible: true,
+                                          ),
+                                        ),
+                                      ),
+                                  child: avatarGlow(
+                                    context,
+                                    Icons.circle,
+                                  )),
+                            ],
                           ),
                         ),
-                        GestureDetector(
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const QRScreen(
-                                  isBottomButtonVisible: true,
-                                ),
-                              ),
-                            ),
-                            child: avatarGlow(
-                              context,
-                              Icons.circle,
-                            )),
-                      ],
-                    ),
-                  ),
                 ],
               ),
               const SizedBox(
@@ -241,8 +245,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 height: AppTheme.cardPadding * 3,
               ),
               Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -260,9 +264,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                             displaySnackbar(
                                 context,
                                 "Die Gebührenhöhe bestimmt über "
-                                    "die Transaktionsgeschwindigkeit. "
-                                    "Wenn du hohe Gebühren zahlst wird deine "
-                                    "Transaktion schneller bei dem Empfänger ankommen");
+                                "die Transaktionsgeschwindigkeit. "
+                                "Wenn du hohe Gebühren zahlst wird deine "
+                                "Transaktion schneller bei dem Empfänger ankommen");
                           },
                           child: Icon(
                             Icons.info_outline_rounded,
@@ -558,49 +562,37 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           onFinish: () async {
             await isBiometricsAvailable();
             if (isBioAuthenticated == true || hasBiometrics == false) {
-              CloudfunctionCallback mydata = await sendBitcoin(
-                sender_private_key:
-                    "${userWallet.privateKey}",
-                sender_address: "${userWallet.walletAddress}",
-                receiver_address: "mrfSHGMTYmiVy4dw5quywNqef5t1LhGfWB",
-                amount_to_send: "${moneyController.text}",
-                fee_size: '$feesSelected',
-              );
-              if (mydata.status == "success") {
-                print(mydata.message);
-                print('staus is success now pushing transaction to firestore...');
-                //when the bitcoin transaction was successfully pushed to the blockchain also add it to firebase
-                final newtransaction = BitcoinTransaction(
-                    transactionDirection: "send",
-                    date: DateTime.now().toString(),
-                    transactionSender: userWallet.walletAddress,
-                    transactionReceiver: _bitcoinReceiverAdress,
-                    amount: moneyController.text);
+              try {
+                BitcoinTransaction mytransaction = await sendBitcoin(
+                  sender_private_key: "${userWallet.privateKey}",
+                  sender_address: "${userWallet.walletAddress}",
+                  receiver_address: "${_bitcoinReceiverAdress}",
+                  amount_to_send: "${moneyController.text}",
+                  fee_size: '$feesSelected',
+                );
+                print('Now pushing transaction to firestore... $mytransaction');
                 String transactionuuid = Uuid().v4().toString();
-
                 await transactionCollection
-                    .doc(currentuser!.uid)
+                    .doc(userWallet.useruid)
                     .collection("all")
                     .doc(transactionuuid)
-                    .set(newtransaction.toMap());
-
+                    .set(mytransaction.toMap());
+                displaySnackbar(
+                    context,
+                    "Deine Bitcoin wurden versendet!"
+                        " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
                 await Navigator.push(
                     context,
                     PageTransition(
                         type: PageTransitionType.fade,
                         child: const BottomNav()));
-                displaySnackbar(
-                    context,
-                    "Deine Bitcoin wurden versendet!"
-                    " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
-              } else {
-                print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');
-                displaySnackbar(
-                    context, "Ein Fehler ist aufgetreten: ${mydata.message}");
+              } catch (e) {
+                print(e);
+                displaySnackbar(context, "Ein Fehler ist aufgetreten");
+                setState(() {
+                  isFinished = false;
+                });
               }
-              setState(() {
-                isFinished = false;
-              });
             } else {
               print('Biometric authentication failed');
             }

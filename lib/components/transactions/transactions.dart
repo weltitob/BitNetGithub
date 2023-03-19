@@ -122,9 +122,6 @@ class _TransactionsState extends State<Transactions>
             ),
           ),
         ),
-        SizedBox(
-          height: AppTheme.elementSpacing,
-        ),
         Container(
           height: AppTheme.cardPadding * 15,
           child: StreamBuilder<List<BitcoinTransaction>>(
@@ -141,14 +138,15 @@ class _TransactionsState extends State<Transactions>
               => t.transactionDirection == "received").toList();
 
               List<BitcoinTransaction> send_transactions = all_transactions.where((t)
-              => t.transactionDirection == "send").toList();
-              if(all_transactions.length == 0){
-                return searchForFilesAnimation(_searchforfilesComposition);
-              } //else =>
+              => t.transactionDirection == "sent").toList();
+              // if(all_transactions.length == 0){
+              //   return searchForFilesAnimation(_searchforfilesComposition);
+              // } //else =>
               return TabBarView(
                 controller: _tabController,
                 children: [
                   ListView.builder(
+                    shrinkWrap: true,
                     itemCount: all_transactions.length,
                     itemBuilder: (context, index) {
                       final _transaction = all_transactions[index];
@@ -157,6 +155,7 @@ class _TransactionsState extends State<Transactions>
                     },
                   ),
                   ListView.builder(
+                    shrinkWrap: true,
                     itemCount: send_transactions.length,
                     itemBuilder: (context, index) {
                       final _transaction = send_transactions[index];
@@ -165,6 +164,7 @@ class _TransactionsState extends State<Transactions>
                     },
                   ),
                   ListView.builder(
+                    shrinkWrap: true,
                     itemCount: receive_transactions.length,
                     itemBuilder: (context, index) {
                       final _transaction = receive_transactions[index];
@@ -172,56 +172,55 @@ class _TransactionsState extends State<Transactions>
                           transaction: _transaction, context: context);
                     },
                   ),
-                //   Container(
-                //     child: Column(
-                //       children: [
-                //         TransactionItem(
-                //             transaction: BitcoinTransaction(
-                //                 transactionDirection:
-                //                     TransactionDirection.receive,
-                //                 transactionReceiver: "uhadoihasoidahiosd",
-                //                 transactionSender: "jioafojiadpjianodaps",
-                //                 date: DateTime.now().toString(),
-                //                 amount: "3402.063"),
-                //             context: context),
-                //         SizedBox(height: AppTheme.elementSpacing * 0.75),
-                //         TransactionItem(
-                //             transaction: BitcoinTransaction(
-                //                 transactionDirection: TransactionDirection.send,
-                //                 transactionReceiver: "uhadoihasoidahiosd",
-                //                 transactionSender: "jioafojiadpjianodaps",
-                //                 date: DateTime.now().toString(),
-                //                 amount: "3402.063"),
-                //             context: context),
-                //         SizedBox(height: AppTheme.elementSpacing * 0.75),
-                //         TransactionItem(
-                //             transaction: BitcoinTransaction(
-                //                 transactionDirection: TransactionDirection.send,
-                //                 transactionReceiver: "uhadoihasoidahiosd",
-                //                 transactionSender: "jioafojiadpjianodaps",
-                //                 date: DateTime.now().toString(),
-                //                 amount: "3402.063"),
-                //             context: context),
-                //         SizedBox(height: AppTheme.elementSpacing * 0.75),
-                //         TransactionItem(
-                //             transaction: BitcoinTransaction(
-                //                 transactionDirection: TransactionDirection.send,
-                //                 transactionReceiver: "uhadoihasoidahiosd",
-                //                 transactionSender: "jioafojiadpjianodaps",
-                //                 date: DateTime.now().toString(),
-                //                 amount: "3402.063"),
-                //             context: context),
-                //       ],
-                //     ),
-                //   ),
-                //   TransactionItem(
-                //       transaction: BitcoinTransaction(
-                //           transactionDirection: TransactionDirection.send,
-                //           transactionReceiver: "uhadoihasoidahiosd",
-                //           transactionSender: "jioafojiadpjianodaps",
-                //           date: DateTime.now().toString(),
-                //           amount: "3402.063"),
-                //       context: context),
+                  // Container(
+                  //   child: Column(
+                  //     children: [
+                  //       TransactionItem(
+                  //           transaction: BitcoinTransaction(
+                  //               transactionDirection: "sent",
+                  //               transactionReceiver: "uhadoihasoidahiosd",
+                  //               transactionSender: "jioafojiadpjianodaps",
+                  //               timestampSent: DateTime.now().millisecondsSinceEpoch.toString(),
+                  //               timestampConfirmed: DateTime.now().millisecondsSinceEpoch.toString(),
+                  //               transactionStatus: "confirmed",
+                  //               amount: "3402.063"),
+                  //           context: context),
+                  //       SizedBox(height: AppTheme.elementSpacing * 0.75),
+                  //       TransactionItem(
+                  //           transaction: BitcoinTransaction(
+                  //               transactionDirection: "received",
+                  //               transactionReceiver: "uhadoihasoidahiosd",
+                  //               transactionSender: "jioafojiadpjianodaps",
+                  //               timestampSent: DateTime.now().millisecondsSinceEpoch.toString(),
+                  //               timestampConfirmed: DateTime.now().millisecondsSinceEpoch.toString(),
+                  //               transactionStatus: "confirmed",
+                  //               amount: "3402.063"),
+                  //           context: context),
+                  //       SizedBox(height: AppTheme.elementSpacing * 0.75),
+                  //       TransactionItem(
+                  //           transaction: BitcoinTransaction(
+                  //               transactionDirection: "sent",
+                  //               transactionReceiver: "uhadoihasoidahiosd",
+                  //               transactionSender: "jioafojiadpjianodaps",
+                  //               timestampSent: DateTime.now().millisecondsSinceEpoch.toString(),
+                  //               timestampConfirmed: DateTime.now().millisecondsSinceEpoch.toString(),
+                  //               transactionStatus: "confirmed",
+                  //               amount: "3402.063"),
+                  //           context: context),
+                  //       SizedBox(height: AppTheme.elementSpacing * 0.75),
+                  //       TransactionItem(
+                  //           transaction: BitcoinTransaction(
+                  //               transactionDirection: "sent",
+                  //               transactionReceiver: "uhadoihasoidahiosd",
+                  //               transactionSender: "jioafojiadpjianodaps",
+                  //               timestampSent: DateTime.now().millisecondsSinceEpoch.toString(),
+                  //               timestampConfirmed: DateTime.now().millisecondsSinceEpoch.toString(),
+                  //               transactionStatus: "confirmed",
+                  //               amount: "3402.063"),
+                  //           context: context),
+                  //     ],
+                  //   ),
+                  // ),
                  ],
               );
             },

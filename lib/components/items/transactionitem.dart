@@ -25,7 +25,7 @@ class _TransactionItemState extends State<TransactionItem> {
             : false;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding,),
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing / 2),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppTheme.cardPadding,),
         child: Container(
@@ -92,12 +92,30 @@ class _TransactionItemState extends State<TransactionItem> {
                     const SizedBox(width: AppTheme.elementSpacing),
                     title(),
                     const Spacer(),
-                    Text(
-                      widget.transaction.amountString,
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: _hasReceived
-                              ? AppTheme.colorBitcoin
-                              : AppTheme.white90),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: AppTheme.elementSpacing / 2.5),
+                              child: Icon(Icons.refresh_rounded, color: AppTheme.errorColor, size: AppTheme.elementSpacing,),
+                            ),
+                            Text(
+                              widget.transaction.transactionStatus,
+                              style: Theme.of(widget.context).textTheme.bodySmall!.copyWith(color: AppTheme.errorColor),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          widget.transaction.amountString,
+                          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              color: _hasReceived
+                                  ? AppTheme.colorBitcoin
+                                  : AppTheme.white90),
+                        ),
+                      ],
                     ),
                   ],
                 ),

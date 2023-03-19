@@ -12,7 +12,7 @@ class Auth {
 
   //  final UserWallet? currentuserwallet = Auth().currentUserNotifier.value;
 
-  Stream<UserWallet?> get userWalletStream =>
+  Stream<UserWallet?> get userWalletStreamForAuthChanges =>
       authStateChanges.asyncMap<UserWallet?>((firebaseUser) async {
         if (firebaseUser == null) {
           return null;
@@ -25,14 +25,22 @@ class Auth {
         final data = snapshot.data()!;
         final UserWallet user = UserWallet.fromMap(data);
         return user;
+      }
+      );
+
+  Stream<UserWallet?> get userWalletStream =>
+      usersCollection.doc(_firebaseAuth.currentUser!.uid).snapshots().map<UserWallet?>((snapshot) {
+        if (!snapshot.exists) {
+          return null;
+        }
+        final data = snapshot.data()!;
+        final UserWallet user = UserWallet.fromMap(data);
+        return user;
       });
 
-  Future<void> _createUserDocument(User user) async {
+  Future<void> _createUserDocument(UserWallet userWallet) async {
     //just can use
-    await usersCollection.doc(user.uid).set({
-      'email': user.email,
-      'wallet_balance': 0,
-    });
+    await usersCollection.doc(userWallet.useruid).update(userWallet.toMap());
   }
 
   Future<void> sendPasswordResetEmail({

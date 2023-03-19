@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/gettransactions.dart';
+import 'package:nexus_wallet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:nexus_wallet/backbone/security/security.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
@@ -12,6 +14,7 @@ import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
 import 'package:nexus_wallet/pages/secondpages/impressumscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/reportissuescreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -25,6 +28,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final User? user = Auth().currentUser;
   bool isSecurityChecked = false;
+  bool hasBiometrics = false;
 
   @override
   void initState() {
@@ -34,9 +38,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void awaitSecurityBool() async {
-    isSecurityChecked = await SharedPrefSecurityCheck();
+    hasBiometrics = await BiometricHelper().hasEnrolledBiometrics();
+    if(hasBiometrics) {
+      isSecurityChecked = await SharedPrefSecurityCheck();
+      setState(() {});
+    }
+    toggleSecurityChecked(false);
     setState(() {});
   }
+
 
   //iwie sowas final UserWallet userWallet = Auth().currentUserWallet;
 
@@ -234,8 +244,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     MyDivider(),
                     GestureDetector(
                         onTap: () {
-                          //signOut();
-                          getWalletBalance();
+                          //muss noch provider entfernen damit es geht vom settingssreen
+                          signOut();
                         },
                         child: ChildBuildBoxIntern(
                             Icons.login_rounded, "Abmelden"))
@@ -327,10 +337,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               activeColor: AppTheme.colorBitcoin,
               value: isSecurityChecked,
               onChanged: (bool value) {
-                setState(() {
-                  isSecurityChecked = value;
-                });
-                toggleSecurityChecked(value);
+                if(hasBiometrics){
+                  setState(() {
+                    isSecurityChecked = value;
+                  });
+                  toggleSecurityChecked(value);
+                } else {
+                  isSecurityChecked = false;
+                }
               },
             ),
           ),

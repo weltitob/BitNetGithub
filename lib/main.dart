@@ -26,6 +26,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         StreamProvider<UserWallet?>(
+          create: (_) => Auth().userWalletStreamForAuthChanges,
+          initialData: null,
+        ),
+        StreamProvider<UserWallet?>(
           create: (_) => Auth().userWalletStream,
           initialData: null,
         ),

@@ -2,72 +2,81 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 
-
 class BitcoinTransaction {
   final String transactionDirection;
-  final String date;
+  final String timestampSent;
+  final String timestampConfirmed;
   final String transactionSender;
   final String transactionReceiver;
   final String amount;
+  final String transactionStatus;
 
   BitcoinTransaction({
     required this.transactionDirection,
-    required this.date,
+    required this.timestampSent,
+    required this.timestampConfirmed,
     required this.transactionSender,
     required this.transactionReceiver,
     required this.amount,
+    required this.transactionStatus,
   });
 
-  String get dateFormatted =>
-      displayTimeAgoFromTimestamp(date);
+  String get dateFormatted => displayTimeAgoFromTimestamp(
+      DateTime.fromMillisecondsSinceEpoch(int.parse(timestampSent)).toString());
 
   String get amountString {
-    final amountSign =
-        transactionDirection == "received" ? '+' : '-';
+    final amountSign = transactionDirection == "received" ? '+' : '-';
     return '$amountSign${double.parse(amount)}';
   }
 
   Map<String, dynamic> toMap() {
     return {
       'transactionDirection': transactionDirection,
-      'date': date,
+      'timestampSent': timestampSent,
+      'timestampConfirmed': timestampConfirmed,
       'transactionReceiver': transactionReceiver,
       'transactionSender': transactionSender,
       'amount': amount,
+      'transactionStatus': transactionStatus,
     };
   }
 
   factory BitcoinTransaction.fromJson(Map<String, dynamic> json) {
     return BitcoinTransaction(
       transactionDirection: json['transactionDirection'].toString(),
-      date: json['date'].toString(),
+      timestampConfirmed: json['timestampConfirmed'].toString(),
+      timestampSent: json['timestampSent'].toString(),
       transactionReceiver: json['transactionReceiver'].toString(),
       transactionSender: json['transactionSender'].toString(),
       amount: json['amount'].toString(),
+      transactionStatus: json['transactionStatus'].toString(),
     );
   }
 
   factory BitcoinTransaction.fromMap(Map<String, dynamic> map) {
     return BitcoinTransaction(
       transactionDirection: map['transactionDirection'],
-      date: map['date'].toString(),
+      timestampSent: map['timestampSent'].toString(),
+      timestampConfirmed: map['timestampConfirmed'].toString(),
       transactionReceiver: map['transactionReceiver'].toString(),
       transactionSender: map['transactionSender'].toString(),
       amount: map['amount'].toString(),
+      transactionStatus: map['transactionStatus'].toString(),
     );
   }
 
   factory BitcoinTransaction.fromDocument(DocumentSnapshot doc) {
     return BitcoinTransaction(
       transactionDirection: doc["transactionDirection"],
-      date: doc['date'],
+      timestampConfirmed: doc['timestampConfirmed'],
+      timestampSent: doc['timestampSent'],
       transactionReceiver: doc['transactionReceiver'],
       transactionSender: doc['transactionSender'],
       amount: doc['amount'],
+      transactionStatus: doc['transactionStatus'],
       // date: DateTime.fromMillisecondsSinceEpoch(
       //   (doc['timestamp'] as Timestamp).millisecondsSinceEpoch,
       // ),
     );
   }
-
 }

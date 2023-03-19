@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/bottomnav.dart';
 import 'package:nexus_wallet/components/cards/balancecard.dart';
 import 'package:nexus_wallet/components/transactions/transactions.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/actions/receivescreen.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/components/items/cryptoitem.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   late final Future<LottieComposition> _compositionSend;
   late final Future<LottieComposition> _compositionReceive;
   bool _visible = false;
-  final _transactionindex = 0;
 
   @override
   void initState() {
@@ -65,8 +68,11 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     ));
   }
 
+
   @override
   Widget build(BuildContext context) {
+    final userWallet = Provider.of<UserWallet>(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: LiquidPullToRefresh(
@@ -244,11 +250,15 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                         const BackgroundGradientPurple()),
                   ),
                   GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const ReceiveScreen(),
-                      ),
-                    ),
+                    onTap: () {
+                      getTransactions(userWallet.walletAddress);
+                      getBalance(userWallet);
+                    },
+                      //   Navigator.of(context).push(
+                      // MaterialPageRoute(
+                      //   builder: (context) => const ReceiveScreen(),
+                      // ),
+                      //),
                     child: circButtonWidget(
                         "Erhalten",
                         _compositionReceive,
