@@ -139,9 +139,9 @@ class _TransactionsState extends State<Transactions>
 
               List<BitcoinTransaction> send_transactions = all_transactions.where((t)
               => t.transactionDirection == "sent").toList();
-              // if(all_transactions.length == 0){
-              //   return searchForFilesAnimation(_searchforfilesComposition);
-              // } //else =>
+              if(all_transactions.length == 0){
+                return searchForFilesAnimation(_searchforfilesComposition);
+              } //else =>
               return TabBarView(
                 controller: _tabController,
                 children: [

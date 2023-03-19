@@ -11,11 +11,16 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
 
+var datetime = DateTime.now();
+DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+DateFormat timeFormat = DateFormat("HH:mm");
+String inital_date = dateFormat.format(datetime);
+String inital_time = timeFormat.format(datetime);
 GlobalKey<_CustomWidgetState> key = GlobalKey<_CustomWidgetState>();
-String trackBallValuePrice = "";
-String trackBallValueTime = "0";
-String trackBallValueDate = "0";
-String trackBallValuePricechange = "-";
+String trackBallValuePrice = "-----.--";
+String trackBallValueTime = "${inital_time}";
+String trackBallValueDate = "${inital_date}";
+String trackBallValuePricechange = "+0";
 
 class ChartLine {
   final double time;
@@ -395,7 +400,7 @@ class _ChartWidgetState extends State<ChartWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           glassButton(
-            "1D",
+            "1T",
           ),
           glassButton(
             "1W",
@@ -404,7 +409,7 @@ class _ChartWidgetState extends State<ChartWidget> {
             "1M",
           ),
           glassButton(
-            "1Y",
+            "1J",
           ),
           glassButton(
             "Max",

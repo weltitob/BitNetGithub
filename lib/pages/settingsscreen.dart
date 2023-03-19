@@ -40,12 +40,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void awaitSecurityBool() async {
     hasBiometrics = await BiometricHelper().hasEnrolledBiometrics();
+    print(hasBiometrics);
     if(hasBiometrics) {
       isSecurityChecked = await SharedPrefSecurityCheck();
       setState(() {});
+    } else {
+      print("doesnt have enrolled biometrics");
+      toggleSecurityChecked(false);
+      setState(() {});
     }
-    toggleSecurityChecked(false);
-    setState(() {});
     //displaySnackbar(context, "Dein Gerät hat leider nicht die nötigen Spezifikationen für diese Funktion");
   }
 
@@ -342,8 +345,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 if(hasBiometrics){
                   setState(() {
                     isSecurityChecked = value;
+                    toggleSecurityChecked(value);
                   });
-                  toggleSecurityChecked(value);
                 } else {
                   isSecurityChecked = false;
                 }
