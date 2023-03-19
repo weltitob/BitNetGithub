@@ -25,7 +25,10 @@ class _TransactionItemState extends State<TransactionItem> {
             : false;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing / 2),
+      padding: const EdgeInsets.only(
+          left: AppTheme.cardPadding,
+          right: AppTheme.cardPadding,
+          bottom: AppTheme.elementSpacing),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppTheme.cardPadding,),
         child: Container(

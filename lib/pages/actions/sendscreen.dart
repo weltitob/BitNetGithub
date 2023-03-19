@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/send.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
@@ -577,6 +578,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                     .collection("all")
                     .doc(transactionuuid)
                     .set(mytransaction.toMap());
+                getBalance(userWallet);
                 displaySnackbar(
                     context,
                     "Deine Bitcoin wurden versendet!"

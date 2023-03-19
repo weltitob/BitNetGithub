@@ -252,13 +252,11 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                   GestureDetector(
                     onTap: () {
                       getTransactions(userWallet.walletAddress);
-                      getBalance(userWallet);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ReceiveScreen(),
+                        ));
                     },
-                      //   Navigator.of(context).push(
-                      // MaterialPageRoute(
-                      //   builder: (context) => const ReceiveScreen(),
-                      // ),
-                      //),
                     child: circButtonWidget(
                         "Erhalten",
                         _compositionReceive,

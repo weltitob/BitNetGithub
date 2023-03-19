@@ -146,6 +146,7 @@ class _TransactionsState extends State<Transactions>
                 controller: _tabController,
                 children: [
                   ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: all_transactions.length,
                     itemBuilder: (context, index) {
@@ -155,6 +156,7 @@ class _TransactionsState extends State<Transactions>
                     },
                   ),
                   ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: send_transactions.length,
                     itemBuilder: (context, index) {
@@ -164,6 +166,7 @@ class _TransactionsState extends State<Transactions>
                     },
                   ),
                   ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: receive_transactions.length,
                     itemBuilder: (context, index) {

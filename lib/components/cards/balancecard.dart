@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
@@ -14,6 +15,7 @@ class BalanceCardBtc extends StatelessWidget {
 
   Widget balanceText(BuildContext context) {
     final userWallet = Provider.of<UserWallet>(context);
+    getBalance(userWallet);
 
     return Padding(
       padding: const EdgeInsets.all(AppTheme.cardPadding * 1.5),
@@ -28,7 +30,7 @@ class BalanceCardBtc extends StatelessWidget {
           Text(
             "${userWallet.walletBalance} BTC",
             // NumberFormat.simpleCurrency().format(MockBalance.data.last),
-            style: Theme.of(context).textTheme.displaySmall),
+            style: Theme.of(context).textTheme.headlineMedium),
           const Spacer(),
           Text(
             'Deine Wallet-Adresse:',
