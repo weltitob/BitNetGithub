@@ -64,7 +64,7 @@ dependencies:
 
   #authentication
   firebase_auth: ^4.2.3
-  uuid: ^3.0.5
+  uuid: ^3.0.7
   google_sign_in: ^5.4.0
 
   #effects and animations

@@ -576,20 +576,11 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             if (isBioAuthenticated == true || hasBiometrics == false) {
               try {
                 BitcoinTransaction mytransaction = await sendBitcoin(
-                  sender_private_key: "${userWallet.privateKey}",
-                  sender_address: "${userWallet.walletAddress}",
                   receiver_address: "${_bitcoinReceiverAdress}",
                   amount_to_send: "${moneyController.text}",
                   fee_size: '$feesSelected',
+                  userWallet: userWallet,
                 );
-                print('Now pushing transaction to firestore... $mytransaction');
-                String transactionuuid = Uuid().v4().toString();
-                await transactionCollection
-                    .doc(userWallet.useruid)
-                    .collection("all")
-                    .doc(transactionuuid)
-                    .set(mytransaction.toMap());
-                getBalance(userWallet);
                 displaySnackbar(
                     context,
                     "Deine Bitcoin wurden versendet!"

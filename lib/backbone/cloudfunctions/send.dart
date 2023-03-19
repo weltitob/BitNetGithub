@@ -1,13 +1,14 @@
 import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
+import 'package:nexus_wallet/backbone/databaserefs.dart';
+import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/transaction.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 
 dynamic sendBitcoin({
-    required String sender_private_key,
-    required String sender_address,
+    required UserWallet userWallet,
     required String receiver_address,
     required String amount_to_send,
     required String fee_size}) async {
@@ -15,8 +16,8 @@ dynamic sendBitcoin({
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('sendBitcoin');
     final resp = await callable.call(<String, dynamic>{
-      'sender_private_key': sender_private_key,
-      'sender_address': sender_address,
+      'sender_private_key': userWallet.privateKey,
+      'sender_address': userWallet.walletAddress,
       'receiver_address': receiver_address,
       'amount_to_send': amount_to_send,
       'fee_size': fee_size,
@@ -31,7 +32,17 @@ dynamic sendBitcoin({
       var encodedString = jsonDecode(mydata.message);
       print(encodedString);
       final newTransaction = BitcoinTransaction.fromJson(encodedString);
-      return newTransaction;
+
+      print('Now pushing transaction to firestore... $newTransaction');
+      String transactionuuid = uuid.v5(userWallet.walletAddress, newTransaction.timestampSent).toString();
+
+      await transactionCollection
+          .doc(userWallet.useruid)
+          .collection("all")
+          .doc(transactionuuid)
+          .set(newTransaction.toMap());
+      getBalance(userWallet);
+
     } else {
       print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');
       //error in der cloudfunktion aufgetreten aber werte korrekt zurückgekommen

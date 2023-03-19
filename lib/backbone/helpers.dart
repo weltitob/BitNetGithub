@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
 
 Future<LottieComposition> loadComposition(String assetPath) async {
   var assetData = await rootBundle.load(assetPath);
