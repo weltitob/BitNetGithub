@@ -7,6 +7,7 @@ import 'package:nexus_wallet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:nexus_wallet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:nexus_wallet/backbone/security/security.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
+import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
@@ -45,6 +46,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     toggleSecurityChecked(false);
     setState(() {});
+    //displaySnackbar(context, "Dein Gerät hat leider nicht die nötigen Spezifikationen für diese Funktion");
   }
 
 

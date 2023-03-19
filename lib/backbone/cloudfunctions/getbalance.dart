@@ -12,6 +12,7 @@ bool _canCallFunction = true;
 
 dynamic getBalance(UserWallet userWallet) async {
   if (!_canCallFunction) {
+    print("CALL GET BALANCE CAN'T BE CALLED BECAUSE OF 10S TIMER");
     return; // exit if the function can't be called yet
   } else{
     try {
@@ -34,7 +35,7 @@ dynamic getBalance(UserWallet userWallet) async {
   }
   _canCallFunction = false;
   // start a Timer that will set the flag back to true after 5 seconds
-  Timer(Duration(seconds: 5), () {
+  Timer(Duration(seconds: 10), () {
     _canCallFunction = true;
   });
 }

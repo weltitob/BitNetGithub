@@ -8,6 +8,7 @@ displaySnackbar(BuildContext context, String text) {
     elevation: 0.0,
     backgroundColor: Colors.white,
     behavior: SnackBarBehavior.floating,
+    margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(AppTheme.elementSpacing * 1.5)),
     ),
