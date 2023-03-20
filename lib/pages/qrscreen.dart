@@ -67,7 +67,7 @@ class _QRScreenState extends State<QRScreen> {
                 if(isValid){
                   await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
-                        SendBTCScreen(bitcoinReceiverAdress: codeinjson),
+                        SendBTCScreen(bitcoinReceiverAdress: currentqr.bitcoinAddress),
                   ));
                 } else {
                   print("Error beim einscannen des QR Codes");

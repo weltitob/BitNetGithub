@@ -13,41 +13,39 @@ import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
-
 bool _canCallFunction = true;
 
 dynamic getTransactions(UserWallet userWallet) async {
   if (!_canCallFunction) {
     print("CALL GET BALANCE CAN'T BE CALLED BECAUSE OF 10S TIMER");
     return; // exit if the function can't be called yet
-  } else{
+  } else {
     try {
       print('CALL GET TRANSACTIONS...');
       HttpsCallable callable =
-      FirebaseFunctions.instance.httpsCallable('getTransactions');
+          FirebaseFunctions.instance.httpsCallable('getTransactions');
       final resp = await callable.call(<String, dynamic>{
         'address': userWallet.walletAddress,
       });
       final mydata = CloudfunctionCallback.fromJson(resp.data);
-      print(mydata.message);
-      print(mydata.status);
       if (mydata.status == "success") {
         var encodedString = jsonDecode(mydata.message);
         print(encodedString);
-        final newTransaction = BitcoinTransaction.fromJson(encodedString);
-        //final List<BitcoinTransaction> transactions = mydata.message;
 
-        String transactionuid = uuid.v5(userWallet.walletAddress, newTransaction.timestampSent).toString();
-        //pushing to firebase
-        await transactionCollection.doc(userWallet.useruid).collection("all").doc(transactionuid).set(
-            {
-
-            }
-        );
+        encodedString.forEach((element) async {
+          final newTransaction = BitcoinTransaction.fromJson(element);
+          //pushing to firebase
+          await transactionCollection
+              .doc(userWallet.useruid)
+              .collection("all")
+              .doc(newTransaction.transactionUid)
+              .set(newTransaction.toMap());
+        });
       } else {
+        //mydata.status == error
         print('Die Antwortnachricht der Cloudfunktion war ein Error.');
-        print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');
-        //error in der cloudfunktion aufgetreten aber werte korrekt zurückgekommen
+        print(
+            'Error: Keine success message wurde als Status angegeben: ${mydata.message}');
         //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
       }
     } catch (e) {

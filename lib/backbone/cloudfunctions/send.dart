@@ -40,6 +40,7 @@ dynamic sendBitcoin({
           .collection("all")
           .doc(newTransaction.transactionUid)
           .set(newTransaction.toMap());
+
       getBalance(userWallet);
 
     } else {

@@ -207,8 +207,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                               _bitcoinReceiverAdress = value;
                                               _hasReceiver = true;
                                             });
-                                          }
-                                          displaySnackbar(context, "Hmm. Diese Walletadresse scheint nicht zu existieren"); //to indicate the input is valid
+                                          } else{
+                                            displaySnackbar(context, "Hmm. Diese Walletadresse scheint nicht zu existieren");
+                                          }//to indicate the input is valid
                                         },
                                         autofocus: false,
                                         style: Theme.of(context)

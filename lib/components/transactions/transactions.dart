@@ -5,12 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/backbone/loaders.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
+import 'package:provider/provider.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions({Key? key}) : super(key: key);
@@ -31,7 +34,7 @@ class _TransactionsState extends State<Transactions>
     return transactionCollection
         .doc(currentuser!.uid)
         .collection('all')
-        //.orderBy('timestamp', descending: true)
+        .orderBy('timestampSent', descending: true)
         .snapshots()
         .map((snapshot) {
       // Convert each document in the snapshot to a Transaction object
@@ -68,6 +71,9 @@ class _TransactionsState extends State<Transactions>
 
   @override
   Widget build(BuildContext context) {
+    final userWallet = Provider.of<UserWallet>(context);
+    getTransactions(userWallet);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -175,55 +181,6 @@ class _TransactionsState extends State<Transactions>
                           transaction: _transaction, context: context);
                     },
                   ),
-                  // Container(
-                  //   child: Column(
-                  //     children: [
-                  //       TransactionItem(
-                  //           transaction: BitcoinTransaction(
-                  //               transactionDirection: "sent",
-                  //               transactionReceiver: "uhadoihasoidahiosd",
-                  //               transactionSender: "jioafojiadpjianodaps",
-                  //               timestampSent: DateTime.now().millisecondsSinceEpoch.toString(),
-                  //               timestampConfirmed: DateTime.now().millisecondsSinceEpoch.toString(),
-                  //               transactionStatus: "confirmed",
-                  //               amount: "3402.063"),
-                  //           context: context),
-                  //       SizedBox(height: AppTheme.elementSpacing * 0.75),
-                  //       TransactionItem(
-                  //           transaction: BitcoinTransaction(
-                  //               transactionDirection: "received",
-                  //               transactionReceiver: "uhadoihasoidahiosd",
-                  //               transactionSender: "jioafojiadpjianodaps",
-                  //               timestampSent: DateTime.now().millisecondsSinceEpoch.toString(),
-                  //               timestampConfirmed: DateTime.now().millisecondsSinceEpoch.toString(),
-                  //               transactionStatus: "confirmed",
-                  //               amount: "3402.063"),
-                  //           context: context),
-                  //       SizedBox(height: AppTheme.elementSpacing * 0.75),
-                  //       TransactionItem(
-                  //           transaction: BitcoinTransaction(
-                  //               transactionDirection: "sent",
-                  //               transactionReceiver: "uhadoihasoidahiosd",
-                  //               transactionSender: "jioafojiadpjianodaps",
-                  //               timestampSent: DateTime.now().millisecondsSinceEpoch.toString(),
-                  //               timestampConfirmed: DateTime.now().millisecondsSinceEpoch.toString(),
-                  //               transactionStatus: "confirmed",
-                  //               amount: "3402.063"),
-                  //           context: context),
-                  //       SizedBox(height: AppTheme.elementSpacing * 0.75),
-                  //       TransactionItem(
-                  //           transaction: BitcoinTransaction(
-                  //               transactionDirection: "sent",
-                  //               transactionReceiver: "uhadoihasoidahiosd",
-                  //               transactionSender: "jioafojiadpjianodaps",
-                  //               timestampSent: DateTime.now().millisecondsSinceEpoch.toString(),
-                  //               timestampConfirmed: DateTime.now().millisecondsSinceEpoch.toString(),
-                  //               transactionStatus: "confirmed",
-                  //               amount: "3402.063"),
-                  //           context: context),
-                  //     ],
-                  //   ),
-                  // ),
                  ],
               );
             },
