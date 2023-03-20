@@ -113,7 +113,7 @@ class _ChartWidgetState extends State<ChartWidget> {
   late double _latesttimeinit;
 
   StreamController<ChartLine> _priceStreamController = StreamController<ChartLine>();
-  String timespan = "1D";
+  String timespan = "1T";
   // Initialized the global variable
   ChartSeriesController? _chartSeriesController;
 
@@ -464,7 +464,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                   timespan = timeperiod;
                   //update price widget
                   switch (timespan) {
-                    case "1D":
+                    case "1T":
                       currentline = onedaychart;
                       break;
                     case "1W":
@@ -473,7 +473,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                     case "1M":
                       currentline = onemonthchart;
                       break;
-                    case "1Y":
+                    case "1J":
                       currentline = oneyearchart;
                       break;
                     case "Max":

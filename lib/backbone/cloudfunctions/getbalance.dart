@@ -27,7 +27,6 @@ dynamic getBalance(UserWallet userWallet) async {
       await usersCollection.doc(userWallet.useruid).update({
         "walletBalance": "${mydata.message}",
       });
-      final test = Auth().currentUser;
       print('You successfully updatet the userbalance: ${mydata.message}');
     } catch (e) {
       print("Wir konnten die Balance nicht aktualisieren: ${e}");

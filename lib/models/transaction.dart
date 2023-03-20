@@ -10,6 +10,7 @@ class BitcoinTransaction {
   final String transactionReceiver;
   final String amount;
   final String transactionStatus;
+  final String transactionUid;
 
   BitcoinTransaction({
     required this.transactionDirection,
@@ -19,6 +20,7 @@ class BitcoinTransaction {
     required this.transactionReceiver,
     required this.amount,
     required this.transactionStatus,
+    required this.transactionUid,
   });
 
   String get dateFormatted => displayTimeAgoFromTimestamp(
@@ -38,6 +40,7 @@ class BitcoinTransaction {
       'transactionSender': transactionSender,
       'amount': amount,
       'transactionStatus': transactionStatus,
+      'transactionUid': transactionUid,
     };
   }
 
@@ -50,6 +53,7 @@ class BitcoinTransaction {
       transactionSender: json['transactionSender'].toString(),
       amount: json['amount'].toString(),
       transactionStatus: json['transactionStatus'].toString(),
+      transactionUid: json['transactionUid'].toString(),
     );
   }
 
@@ -62,6 +66,7 @@ class BitcoinTransaction {
       transactionSender: map['transactionSender'].toString(),
       amount: map['amount'].toString(),
       transactionStatus: map['transactionStatus'].toString(),
+      transactionUid: map['transactionUid'].toString(),
     );
   }
 
@@ -74,6 +79,7 @@ class BitcoinTransaction {
       transactionSender: doc['transactionSender'],
       amount: doc['amount'],
       transactionStatus: doc['transactionStatus'],
+      transactionUid: doc['transactionUid'],
       // date: DateTime.fromMillisecondsSinceEpoch(
       //   (doc['timestamp'] as Timestamp).millisecondsSinceEpoch,
       // ),

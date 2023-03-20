@@ -34,12 +34,11 @@ dynamic sendBitcoin({
       final newTransaction = BitcoinTransaction.fromJson(encodedString);
 
       print('Now pushing transaction to firestore... $newTransaction');
-      String transactionuuid = uuid.v5(userWallet.walletAddress, newTransaction.timestampSent).toString();
 
       await transactionCollection
           .doc(userWallet.useruid)
           .collection("all")
-          .doc(transactionuuid)
+          .doc(newTransaction.transactionUid)
           .set(newTransaction.toMap());
       getBalance(userWallet);
 

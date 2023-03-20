@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:avatar_glow/avatar_glow.dart';
@@ -6,6 +7,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
 import 'package:nexus_wallet/components/buttons/roundedbutton.dart';
 import 'package:nexus_wallet/components/camera/textscanneroverlay.dart';
+import 'package:nexus_wallet/components/snackbar/snackbar.dart';
+import 'package:nexus_wallet/models/qrcodebitcoin.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -37,14 +40,18 @@ class _QRScreenState extends State<QRScreen> {
               controller: cameraController,
               onDetect: (barcode, args) async {
                 final String codeinjson = barcode.rawValue.toString();
-                print('Barcode found! $codeinjson');
+                var encodedString = jsonDecode(codeinjson);
+                final currentqr = QRCodeBitcoin.fromJson(encodedString);
+
                 /// a simple check if its a BTC wallet or not, regardless of its type
-                final bool isValid = isBitcoinWalletValid(codeinjson);
+                final bool isValid = isBitcoinWalletValid(currentqr.bitcoinAddress);
+                print(isValid);
 
                 /// a bit more complicated check which can return the type of
                 /// BTC wallet and return SegWit (Bech32), Regular, or None if
                 /// the string is not a BTC address
-                final walletType = getBitcoinWalletType(codeinjson);
+                final walletType = getBitcoinWalletType(currentqr.bitcoinAddress);
+                print(walletType);
 
                 /// Detailed check, for those who need to get more details
                 /// of the wallet. Returns the address type, the network, and
@@ -54,11 +61,18 @@ class _QRScreenState extends State<QRScreen> {
                 /// IMPORTANT The BitcoinWalletDetails class overrides an
                 /// equality operators so two BitcoinWalletDetails objects can be
                 /// compared simply like this bwd1 == bwd2
-                final walletdetails = getBitcoinWalletDetails(codeinjson);
-                await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      SendBTCScreen(bitcoinReceiverAdress: codeinjson),
-                ));
+                final walletdetails = getBitcoinWalletDetails(currentqr.bitcoinAddress);
+                print(walletdetails);
+
+                if(isValid){
+                  await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        SendBTCScreen(bitcoinReceiverAdress: codeinjson),
+                  ));
+                } else {
+                  print("Error beim einscannen des QR Codes");
+                  displaySnackbar(context, "Der eingescannte QR-Code hat kein zugelassenes Format");
+                }
               }),
           isQRScanner
               ? QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5))
