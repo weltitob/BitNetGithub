@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
@@ -284,6 +283,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
         borderRadius: AppTheme.cardRadiusBig,
       ),
       child: Stack(
+        fit: StackFit.expand,
         children: [
           background,
           Positioned(

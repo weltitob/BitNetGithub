@@ -51,10 +51,11 @@ class _CryptoItemState extends State<CryptoItem>
     with SingleTickerProviderStateMixin {
   late List<ChartLine> onedaychart;
   bool _loading = true;
-  Color _animationColor = Colors.blue;
+  Color _animationColor = Colors.transparent;
   late String _currentPriceString;
   late String _priceChangeString;
 
+  late double _firstPrice;
   late double _currentPrice;
   late double _priceBeforeUpdated;
   late double priceChange;
@@ -81,9 +82,9 @@ class _CryptoItemState extends State<CryptoItem>
     _currentPrice = chartClassDayMin.chartLine.last.price;
     _currentPriceString = _currentPrice.toStringAsFixed(2) + "€";
     _priceBeforeUpdated = double.parse(_currentPrice.toStringAsFixed(2));
-    final double firstprice = chartClassDayMin.chartLine.first.price;
+    _firstPrice = chartClassDayMin.chartLine.first.price;
 
-    priceChange = (_currentPrice - firstprice) / firstprice;
+    priceChange = (_currentPrice - _firstPrice) / _firstPrice;
     _priceChangeString = toPercent(priceChange);
 
     setState(() {
@@ -124,8 +125,11 @@ class _CryptoItemState extends State<CryptoItem>
         _currentPrice = newChartLine.price;
         print("Preis nach update: $_currentPrice");
         _currentPriceString = newChartLine.price.toStringAsFixed(2) + "€";
+        //auch prozentanzeige updaten
+        priceChange = (_currentPrice - _firstPrice) / _firstPrice;
+        _priceChangeString = toPercent(priceChange);
+        colorUpdater();
       });
-      colorUpdater();
       _controller.forward();
     });
     getChartLine();
