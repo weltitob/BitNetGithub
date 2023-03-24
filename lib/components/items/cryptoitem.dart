@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
+import 'package:nexus_wallet/backbone/streams/bitcoinpricestream.dart';
 import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/components/currencypicture.dart';
 import 'package:nexus_wallet/backbone/loaders.dart';
@@ -7,6 +8,7 @@ import 'package:nexus_wallet/pages/secondpages/bitcoinscreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Currency {
@@ -45,11 +47,16 @@ class CryptoItem extends StatefulWidget {
   State<CryptoItem> createState() => _CryptoItemState();
 }
 
-class _CryptoItemState extends State<CryptoItem> {
+class _CryptoItemState extends State<CryptoItem>
+    with SingleTickerProviderStateMixin {
   late List<ChartLine> onedaychart;
   bool _loading = true;
+  Color _animationColor = Colors.blue;
   late String _currentPriceString;
   late String _priceChangeString;
+
+  late double _currentPrice;
+  late double _priceBeforeUpdated;
   late double priceChange;
 
   getChartLine() async {
@@ -71,11 +78,12 @@ class _CryptoItemState extends State<CryptoItem> {
 
     onedaychart = chartClassDay.chartLine;
 
-    final double lastprice = chartClassDayMin.chartLine.last.price;
-    _currentPriceString = lastprice.toStringAsFixed(2) + "€";
+    _currentPrice = chartClassDayMin.chartLine.last.price;
+    _currentPriceString = _currentPrice.toStringAsFixed(2) + "€";
+    _priceBeforeUpdated = double.parse(_currentPrice.toStringAsFixed(2));
     final double firstprice = chartClassDayMin.chartLine.first.price;
 
-    priceChange = (lastprice - firstprice) / firstprice;
+    priceChange = (_currentPrice - firstprice) / firstprice;
     _priceChangeString = toPercent(priceChange);
 
     setState(() {
@@ -83,10 +91,63 @@ class _CryptoItemState extends State<CryptoItem> {
     });
   }
 
+  late AnimationController _controller;
+  late Animation<Color?> _animation;
+  bool _isBlinking = false;
+
+  BitcoinPriceStream _priceStream = BitcoinPriceStream();
+
+  void colorUpdater() {
+    //update animation color
+    if (_currentPrice < _priceBeforeUpdated) {
+      _animationColor = AppTheme.errorColor;
+    }
+    else if (_currentPrice > _priceBeforeUpdated) {
+      _animationColor = AppTheme.successColor;
+    }
+    else {
+      _animationColor = Colors.transparent;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _priceStream.start();
+    _priceStream.priceStream.listen((newChartLine) {
+      setState(() {
+        _isBlinking = true;
+        //vor dem updaten preis erstmal speichern
+        _priceBeforeUpdated = _currentPrice;
+        print("Preis vor update: $_priceBeforeUpdated");
+        //neuen preis anzeigen lassen
+        _currentPrice = newChartLine.price;
+        print("Preis nach update: $_currentPrice");
+        _currentPriceString = newChartLine.price.toStringAsFixed(2) + "€";
+      });
+      colorUpdater();
+      _controller.forward();
+    });
     getChartLine();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 1000));
+    _animation = ColorTween(
+        begin: _animationColor, end: Colors.transparent)
+        .animate(_controller)
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          setState(() {
+            _isBlinking = false;
+          });
+          _controller.reverse();
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    _priceStream.stop();
+    super.dispose();
   }
 
   @override
@@ -95,13 +156,15 @@ class _CryptoItemState extends State<CryptoItem> {
         ? ClipRRect(
             borderRadius: BorderRadius.circular(AppTheme.cardPadding),
             child: Container(
-                height: AppTheme.cardPadding * 3,
-                color: lighten(Theme.of(context).backgroundColor, 10,),
+              height: AppTheme.cardPadding * 3,
+              color: lighten(
+                Theme.of(context).backgroundColor,
+                10,
+              ),
               child: Center(
                 child: dotProgress(context),
               ),
-            )
-    )
+            ))
         : ClipRRect(
             borderRadius: BorderRadius.circular(AppTheme.cardPadding),
             child: Container(
@@ -156,13 +219,48 @@ class _CryptoItemState extends State<CryptoItem> {
   }
 
   Widget price() {
+    final ChartLine? bitcoinPrice = Provider.of<ChartLine?>(context);
+    print(bitcoinPrice);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          _currentPriceString,
-          style: AppTheme.textTheme.bodyMedium,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: AppTheme.elementSpacing * 0.75,
+                  width: AppTheme.elementSpacing * 0.75,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(500.0),
+                    color: Colors.white10,
+                  ),
+                ),
+                if (_isBlinking)
+                  Positioned.fill(
+                    child:  AnimatedBuilder(
+                      animation: _animation,
+                      builder: (context, child) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(500.0),
+                            color: _animation.value,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(width: AppTheme.elementSpacing / 2),
+            Text(
+              _currentPriceString,
+              style: AppTheme.textTheme.bodyMedium,
+            ),
+          ],
         ),
         const SizedBox(height: 4),
         Row(
@@ -176,7 +274,7 @@ class _CryptoItemState extends State<CryptoItem> {
                   ? AppTheme.successColor
                   : AppTheme.errorColor,
             ),
-            const SizedBox(width: 3),
+            const SizedBox(width: AppTheme.elementSpacing / 4),
             Text(
               _priceChangeString,
               style: TextStyle(

@@ -8,7 +8,7 @@ class BitcoinPriceStream {
   final String _url = 'https://api.coingecko.com/api/v3/simple/price';
   StreamController<ChartLine> _priceController = StreamController<ChartLine>();
   late Timer _timer;
-  Duration _updateInterval = Duration(seconds: 5);
+  Duration _updateInterval = Duration(seconds: 60);
 
   Stream<ChartLine> get priceStream => _priceController.stream;
 
@@ -23,16 +23,21 @@ class BitcoinPriceStream {
         final response = await get(
             Uri.parse(_url).replace(queryParameters: params),
             headers: {});
-        final data = jsonDecode(response.body);
-        String price = data['bitcoin']['eur'].toString();
-        final time = data['bitcoin']['last_updated_at'].toString();
-        print('The current price of Bitcoin in Euro is $price');
-        double priceasdouble = double.parse(price);
-        double timeasdouble = double.parse(time);
-        final ChartLine latestchart =
-            ChartLine(time: timeasdouble, price: priceasdouble);
-        print(latestchart);
-        _priceController.add(latestchart);
+        if (response.statusCode == 200) {
+          print('Getting BTC price...');
+          String price = jsonDecode(response.body)['bitcoin']['eur'].toString();
+          final time = jsonDecode(response.body)['bitcoin']['last_updated_at']
+              .toString();
+          double priceasdouble = double.parse(price);
+          double timeasdouble = double.parse(time);
+          final ChartLine latestchart =
+              ChartLine(time: timeasdouble, price: priceasdouble);
+          _priceController.add(latestchart);
+          print('The current price of Bitcoin in Euro is $price');
+        } else {
+          print("An Error occured trying to livefetch the bitcoinprice");
+          print('Error ${response.statusCode}: ${response.reasonPhrase}');
+        }
       } catch (e) {
         print('Error fetching Bitcoin price: $e');
       }

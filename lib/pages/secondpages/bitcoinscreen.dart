@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/components/container/buildroundedbox.dart';
-import 'package:nexus_wallet/components/walletstats/walletstats.dart';
-import 'package:nexus_wallet/pages/secondpages/bitcoinlivepricetest.dart';
 import 'package:nexus_wallet/pages/secondpages/newsscreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 

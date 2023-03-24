@@ -35,10 +35,6 @@ class MyApp extends StatelessWidget {
           create: (_) => Auth().userWalletStream,
           initialData: null,
         ),
-        StreamProvider<ChartLine?>(
-          create: (_) => BitcoinPriceStream().priceStream,
-          initialData: null,
-        ),
         // StreamProvider<List<BitcoinTransaction>?>(
         //   create: (_) => Auth().userWalletStream,
         //   initialData: null,
