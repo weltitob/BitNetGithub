@@ -14,7 +14,7 @@ dynamic getFees({
   required String fee_size}) async {
   try {
     HttpsCallable callable =
-    FirebaseFunctions.instance.httpsCallable('sendBitcoinOrGetFees');
+    FirebaseFunctions.instance.httpsCallable('sendBitcoin');
     final resp = await callable.call(<String, dynamic>{
       'sender_private_key': userWallet.privateKey,
       'sender_address': userWallet.walletAddress,
@@ -32,8 +32,6 @@ dynamic getFees({
       print('success message was awnser');
       var encodedString = jsonDecode(mydata.message);
       print(encodedString);
-
-
 
     } else {
       print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');

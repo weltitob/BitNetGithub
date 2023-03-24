@@ -1,30 +1,29 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:nexus_wallet/main.dart';
+import 'package:nexus_wallet/pages/routetrees/widgettree.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui';
 
+//Test for the main
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('MyApp', () {
+    testWidgets('Renders the app correctly', (WidgetTester tester) async {
+      // Create a mock SharedPreferences instance
+      SharedPreferences.setMockInitialValues({});
+      final sharedPreferences = await SharedPreferences.getInstance();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      // Build the app and trigger a frame
+      await tester.pumpWidget(MyApp());
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      // Verify that the app title is correct
+      expect(find.text('Nexus Wallet'), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      // Verify that the WidgetTree page is displayed
+      expect(find.byType(WidgetTree), findsOneWidget);
+
+      // Verify that the SharedPreferences instance is initialized
+      expect(sharedPreferences, isNotNull);
+    });
   });
 }
+

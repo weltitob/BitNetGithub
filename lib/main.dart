@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/get_it.dart';
+import 'package:nexus_wallet/backbone/streams/bitcoinpricestream.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/routetrees/widgettree.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +33,10 @@ class MyApp extends StatelessWidget {
         ),
         StreamProvider<UserWallet?>(
           create: (_) => Auth().userWalletStream,
+          initialData: null,
+        ),
+        StreamProvider<ChartLine?>(
+          create: (_) => BitcoinPriceStream().priceStream,
           initialData: null,
         ),
         // StreamProvider<List<BitcoinTransaction>?>(
