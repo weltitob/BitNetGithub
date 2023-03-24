@@ -62,17 +62,14 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   final PageController _controller = PageController();
 
   Future<void> _handleRefresh() async {
-    Navigator.pop(context); // pop current page
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const BottomNav(),
-    ));
+    final userWallet = Provider.of<UserWallet>(context);
+    await getBalance(userWallet);
+    await getTransactions(userWallet);
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final userWallet = Provider.of<UserWallet>(context);
-
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: LiquidPullToRefresh(
@@ -82,11 +79,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
         backgroundColor: lighten(AppTheme.colorBackground, 20),
         onRefresh: _handleRefresh,
         child: ListView(
-          padding: const EdgeInsets.only(
-              top: AppTheme.cardPadding * 3,
-              bottom: AppTheme.cardPadding),
           children: [
-            const SizedBox(height: 36),
+            const SizedBox(height: AppTheme.cardPadding * 2),
             SizedBox(
               height: 200,
               child: PageView(
@@ -251,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                   ),
                   GestureDetector(
                     onTap: () {
-                      getTransactions(userWallet);
+                      //getTransactions(userWallet);
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const ReceiveScreen(),

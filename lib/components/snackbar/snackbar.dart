@@ -15,6 +15,7 @@ displaySnackbar(BuildContext context, String text) {
     action: SnackBarAction(
       label: 'Ok',
       onPressed: () {
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
       },
     ),

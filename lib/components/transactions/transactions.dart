@@ -129,7 +129,8 @@ class _TransactionsState extends State<Transactions>
           ),
         ),
         Container(
-          height: AppTheme.cardPadding * 15,
+          margin: EdgeInsets.only(top: AppTheme.elementSpacing),
+          height: AppTheme.cardPadding * 20,
           child: StreamBuilder<List<BitcoinTransaction>>(
             stream: getTransactionsStream(),
             builder: (context, snapshot) {

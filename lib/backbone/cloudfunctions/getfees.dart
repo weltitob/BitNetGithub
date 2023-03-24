@@ -7,21 +7,21 @@ import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
-dynamic sendBitcoin({
-    required UserWallet userWallet,
-    required String receiver_address,
-    required String amount_to_send,
-    required String fee_size}) async {
+dynamic getFees({
+  required UserWallet userWallet,
+  required String receiver_address,
+  required String amount_to_send,
+  required String fee_size}) async {
   try {
     HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('sendBitcoinOrGetFees');
+    FirebaseFunctions.instance.httpsCallable('sendBitcoinOrGetFees');
     final resp = await callable.call(<String, dynamic>{
       'sender_private_key': userWallet.privateKey,
       'sender_address': userWallet.walletAddress,
       'receiver_address': receiver_address,
       'amount_to_send': amount_to_send,
       'fee_size': fee_size,
-      'get_fees_only': false,
+      'get_fees_only': true,
     });
     print("Das isch deine response: ${resp.data}");
     print("noch ist alles gut 1...");
@@ -32,19 +32,8 @@ dynamic sendBitcoin({
       print('success message was awnser');
       var encodedString = jsonDecode(mydata.message);
       print(encodedString);
-      final newTransaction = BitcoinTransaction.fromJson(encodedString);
 
-      print('Now pushing transaction to firestore... $newTransaction');
 
-      await transactionCollection
-          .doc(userWallet.useruid)
-          .collection("all")
-          .doc(newTransaction.transactionUid)
-          .set(newTransaction.toMap());
-
-      await getBalance(userWallet);
-
-      print("Bitcoin senden ist alles erfolgreich durchgelaufen");
 
     } else {
       print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');

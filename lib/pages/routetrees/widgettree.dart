@@ -25,6 +25,7 @@ class _WidgetTreeState extends State<WidgetTree> {
 
   @override
   initState() {
+    super.initState();
     isBiometricsAvailable();
   }
 

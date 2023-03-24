@@ -106,27 +106,27 @@ class _TransactionItemState extends State<TransactionItem> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            children: [
-                              Text(
-                                widget.transaction.dateFormatted,
-                                style: Theme.of(widget.context).textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: AppTheme.elementSpacing / 4,),
-                          Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Container(
-                                width: AppTheme.cardPadding * 6,
+                                width: AppTheme.cardPadding * 5,
                                 child: Text(
                                   _hasReceived ?
                                   widget.transaction.transactionSender.toString()
                                       : widget.transaction.transactionReceiver,
                                   overflow: TextOverflow.ellipsis,
                                   style:
-                                  Theme.of(widget.context).textTheme.bodyMedium,
+                                  Theme.of(widget.context).textTheme.titleSmall,
                                 ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: AppTheme.elementSpacing / 4,),
+                          Row(
+                            children: [
+                              Text(
+                                widget.transaction.dateFormatted,
+                                style: Theme.of(widget.context).textTheme.bodySmall,
                               ),
                             ],
                           ),
@@ -154,7 +154,7 @@ class _TransactionItemState extends State<TransactionItem> {
                             radius: 50.0,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: AppTheme.elementSpacing / 4,
+                                  horizontal: AppTheme.elementSpacing / 3,
                                   vertical: AppTheme.elementSpacing / 15),
                               child: Row(
                                 children: [
@@ -167,7 +167,7 @@ class _TransactionItemState extends State<TransactionItem> {
                                         : AppTheme.errorColor,
                                     size: AppTheme.elementSpacing,
                                   ),
-                                  SizedBox(width: AppTheme.elementSpacing / 3),
+                                  SizedBox(width: AppTheme.elementSpacing / 4),
                                   Text(
                                     "${widget.transaction.transactionStatus} ",
                                     style: _isConfirmed
