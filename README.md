@@ -1,16 +1,20 @@
 # Nexus Wallet für Versenden und Erhalten von Bitcoin
 
-**Eine moderne Wallet, um Ihre Bitcoin zu lagern, versenden oder erhalten.**
-__________________________________________________________
+**Eine moderne, visuell ansprechende Wallet, um Ihre Bitcoin zu lagern, versenden oder erhalten.**
 
 ## Inhalt
 * [Installation](#installation)
+  * [Installation von Android Studio](#installation-von-android-studio)
+  * [Erstellen eines Android-Emulators](#erstellen-eines-android-emulators-in-android-studio)
+  * [Abhängigkeiten](#abhängigkeiten)
 * [Benutzung](#benutzung)
-* [Section 3](#section-3)
+* [Beitrag zum Projekt](#beitragen)
+* [Lizenzen](#lizenzen)
+* [Kontakt](#kontakt)
 
 ## Installation {#installation}
 
-Zurzeit muss die App über den eingebauten Android-Emulator in Android Studio ausgeführt werden.
+Zurzeit muss die App über den eingebauten Android-Emulator in Android Studio ausgeführt werden. Deswegen wird Android Studio und ein Android Emulator benötigt.
 
 ### Installation von Android Studio
 
@@ -40,7 +44,7 @@ Nach der Installation können Sie Android Studio starten und mit der Konfigurati
 4. Wählen Sie "Configure" und "Settings" aus dem Hauptmenü von Android Studio, um die Einstellungen anzupassen.
 
 
-### Erstellen eines Android Emulators in Android Studio
+### Erstellen eines Android Emulators (in Android Studio)
 
 Ein Android Emulator ist eine Software, die Android auf Ihrem Computer simuliert.
 
@@ -60,12 +64,70 @@ Wählen Sie ein System-Image für den Emulator aus, indem Sie auf "Download" neb
 
 Geben Sie dem Emulator einen Namen und konfigurieren Sie die Emulator-Einstellungen wie gewünscht, z.B. Größe des internen Speichers, RAM usw.
 
+### Abhängigkeiten
 
-#### warum
-Sehr geehrte Nutzerinnen und Nutzer von Nexus Wallet,
-Wir möchten Sie darüber informieren, dass die Aktualisierung der Bitcoinpreise in unserer App derzeit alle 60 Sekunden stattfindet. Wir haben uns für diesen Zeitrahmen entschieden, um die Anzahl der Anfragen bei Coingecko zu reduzieren, da wir derzeit die kostenlose Version nutzen.
-Wir möchten betonen, dass wir stets bemüht sind, die beste Nutzererfahrung zu bieten und gleichzeitig sicherzustellen, dass unsere App reibungslos funktioniert. Wir hoffen, dass Sie trotz dieser Einschränkung weiterhin von Nexus Wallet begeistert sind und wir uns weiterhin auf Ihre Unterstützung verlassen können.
-Vielen Dank für Ihr Verständnis.
+Die Nexus Wallet benutzt das Flutter-Framework für sämtliche UI-Komponenten. Flutter muss auf dem Gerät installiert sein und mit Android Studio verknüpft sein.
 
-Mit freundlichen Grüßen,
-Das Nexus Wallet-Team
+#### Installation von Flutter:
+
+1. Flutter SDK herunterladen
+
+Laden Sie die neueste Version des Flutter SDK von der offiziellen Flutter-Website herunter: https://flutter.dev/docs/get-started/install/windows#get-the-flutter-sdk
+
+2. Flutter SDK extrahieren
+
+Entpacken Sie das heruntergeladene Flutter-SDK in einem Ordner auf Ihrem Computer. Zum Beispiel können Sie es unter C:\flutter extrahieren.
+
+3. Flutter-Pfad konfigurieren
+
+Fügen Sie den Pfad zum Flutter SDK in die PATH-Umgebungsvariablen ein. So wird Flutter von der Kommandozeile aus zugänglich gemacht.
+
+4. Flutter-Tools installieren
+
+Flutter benötigt bestimmte Tools und Abhängigkeiten, um auf Ihrem System zu funktionieren. Führen Sie das folgende Kommando in einer Eingabeaufforderung aus, um diese Tools zu installieren:
+
+    flutter doctor
+
+5. Flutter-Plugin in Android Studio installieren
+
+Starten Sie Android Studio und öffnen Sie die Einstellungen. Navigieren Sie zu "Plugins" und suchen Sie nach dem "Flutter"-Plugin. Installieren Sie das Plugin und starten Sie Android Studio neu.
+
+6. Android-SDK konfigurieren
+
+Öffnen Sie Android Studio und wählen Sie "Configure" und dann "SDK Manager" aus. Wählen Sie die Registerkarte "SDK Platforms" aus und stellen Sie sicher, dass das Android SDK installiert ist, das Sie für die Entwicklung Ihrer App benötigen. Wählen Sie dann die Registerkarte "SDK Tools" aus und wählen Sie die neuesten Versionen von "Android SDK Build-Tools" und "Android SDK Platform-Tools" aus.
+
+## Benutzung {#benutzung}
+
+Um die Nexus Wallet-App zu starten, führen Sie folgende Schritte aus:
+1. Entpacken Sie die Projekt-Datei auf Ihrem Computer.
+2. Öffnen Sie die Das Projekt in Android Studio und starten Sie einen Android-Emulator.
+3. Öffnen Sie ein Terminal in der obersten Ebene des Projekts und führen Sie diesen Befehl aus:
+
+        flutter run
+
+Die Nexus Wallet enthält Funktionalitäten für:
+- Erstellen eines Kontos, das direkt mit einer Bitcoin-Wallet verknüpft ist
+- Abrufen des Kontostands der Wallet
+- Senden von Bitcoin an eine andere Wallet
+- Empfangen von Bitcoin auf die eigene Wallet
+- Anzeigen des Kursverlaufs von Bitcoin
+- Anzeigen von Nachrichten zu Bitcoin
+  
+Details zur Benutzung der App finden Sie im Benutzerhandbuch.
+
+Aktuelle Einschränkungen bei der App-Benutzung:
+- Die Aktualisierung der Bitcoinkurses findet nur alle 60 Sekunden statt, weil dafür die Coingecko-API verwendet wird, die mit der kostenlosen Version nur eine begrenzte Anzahl von Anfragen annnimmt. Da die Nexus Wallet ein Studienprojekt ist, fehlen dem Team die nötigen finanziellen Mittel, ein bezahltes Abbonement für die Coingecko-API abzuschließen.
+- Beim Abruf der aktuellen Nachrichten zu Bitcoin kann es zu Verzögerungen kommen. Diese sind durch die kostenlose Version der News-API begründet, ähnlich wie beim obigen Punkt.
+
+## Beitrag zum Projekt {#beitragen}
+
+Derzeit gibt es keine Möglichkeiten, Beiträge zum Projekt zu leisten. Dazu zählen Bug-Reports, Feature-Requests etc.
+
+## Lizenzen {#lizenzen}
+
+Da die Nexus Wallet bisher nicht vertrieben wird, unterliegt sie auch keinen Lizenzen.
+
+## Kontakt {#kontakt}
+
+Bei Fragen können Sie den Product Owner Andreas Holzapfel unter folgender e-Mail-Adresse erreichen:
+holzapfel.andreas-it21@it.dhbw-ravensburg.de
