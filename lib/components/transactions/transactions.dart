@@ -47,20 +47,19 @@ class _TransactionsState extends State<Transactions>
   @override
   void initState() {
     super.initState();
-    _searchforfilesComposition = loadComposition('assets/lottiefiles/search_for_files.json');
+    _searchforfilesComposition =
+        loadComposition('assets/lottiefiles/search_for_files.json');
     updatevisibility();
     _tabController = TabController(length: 3, vsync: this);
   }
 
   void updatevisibility() async {
     await _searchforfilesComposition;
-    var timer = Timer(Duration(milliseconds: 50),
-            () {
-          setState(() {
-            _visible = true;
-          });
-        }
-    );
+    var timer = Timer(Duration(milliseconds: 50), () {
+      setState(() {
+        _visible = true;
+      });
+    });
   }
 
   @override
@@ -128,74 +127,102 @@ class _TransactionsState extends State<Transactions>
             ),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(top: AppTheme.elementSpacing),
-          height: AppTheme.cardPadding * 20,
-          child: StreamBuilder<List<BitcoinTransaction>>(
-            stream: getTransactionsStream(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return SizedBox(
-                    height: AppTheme.cardPadding * 3,
-                    child: Center(child: dotProgress(context)));
-              }
-              List<BitcoinTransaction> all_transactions = snapshot.data!;
-              // Filter transactions by transaction type
-              List<BitcoinTransaction> receive_transactions = all_transactions.where((t)
-              => t.transactionDirection == "received").toList();
+        Padding(
+          padding: EdgeInsets.only(top: AppTheme.elementSpacing),
+          child: Stack(
+            children: [
+              Container(
+                height: AppTheme.cardPadding * 20,
+                child: StreamBuilder<List<BitcoinTransaction>>(
+                  stream: getTransactionsStream(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return SizedBox(
+                          height: AppTheme.cardPadding * 3,
+                          child: Center(child: dotProgress(context)));
+                    }
+                    List<BitcoinTransaction> all_transactions = snapshot.data!;
+                    // Filter transactions by transaction type
+                    List<BitcoinTransaction> receive_transactions = all_transactions
+                        .where((t) => t.transactionDirection == "received")
+                        .toList();
 
-              List<BitcoinTransaction> send_transactions = all_transactions.where((t)
-              => t.transactionDirection == "sent").toList();
-              if(all_transactions.length == 0){
-                return searchForFilesAnimation(_searchforfilesComposition);
-              } //else =>
-              return TabBarView(
-                controller: _tabController,
-                children: [
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: all_transactions.length,
-                    itemBuilder: (context, index) {
-                      final _transaction = all_transactions[index];
-                      return TransactionItem(
-                          transaction: _transaction, context: context);
-                    },
-                  ),
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: send_transactions.length,
-                    itemBuilder: (context, index) {
-                      final _transaction = send_transactions[index];
-                      return TransactionItem(
-                          transaction: _transaction, context: context);
-                    },
-                  ),
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: receive_transactions.length,
-                    itemBuilder: (context, index) {
-                      final _transaction = receive_transactions[index];
-                      return TransactionItem(
-                          transaction: _transaction, context: context);
-                    },
-                  ),
-                 ],
-              );
-            },
+                    List<BitcoinTransaction> send_transactions = all_transactions
+                        .where((t) => t.transactionDirection == "sent")
+                        .toList();
+                    if (all_transactions.length == 0) {
+                      return searchForFilesAnimation(_searchforfilesComposition);
+                    } //else =>
+                    return TabBarView(
+                      controller: _tabController,
+                      children: [
+                        ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: all_transactions.length,
+                          itemBuilder: (context, index) {
+                            final _transaction = all_transactions[index];
+                            return TransactionItem(
+                                transaction: _transaction, context: context);
+                          },
+                        ),
+                        ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: send_transactions.length,
+                          itemBuilder: (context, index) {
+                            final _transaction = send_transactions[index];
+                            return TransactionItem(
+                                transaction: _transaction, context: context);
+                          },
+                        ),
+                        ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: receive_transactions.length,
+                          itemBuilder: (context, index) {
+                            final _transaction = receive_transactions[index];
+                            return TransactionItem(
+                                transaction: _transaction, context: context);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: <Widget>[
+                    IgnorePointer(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: AppTheme.cardPadding * 12),
+                        child: Container(
+                          height: AppTheme.cardPadding * 8,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [Colors.transparent, AppTheme.colorBackground],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ])
+            ],
           ),
         ),
       ],
     );
   }
 
-
   Widget searchForFilesAnimation(dynamic comp) {
-    return  Column(
+    return Column(
       children: [
-        SizedBox(height: AppTheme.cardPadding * 2,),
+        SizedBox(
+          height: AppTheme.cardPadding * 2,
+        ),
         SizedBox(
           height: AppTheme.cardPadding * 6,
           width: AppTheme.cardPadding * 6,
@@ -222,12 +249,13 @@ class _TransactionsState extends State<Transactions>
         ),
         Container(
           margin: EdgeInsets.all(AppTheme.cardPadding),
-          child: Text("Es scheint, als hättest du bisher noch keine Transaktionshistorie.",
+          child: Text(
+            "Es scheint, als hättest du bisher noch keine Transaktionshistorie.",
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
         ),
       ],
     );
   }
-
 }
