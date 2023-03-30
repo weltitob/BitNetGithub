@@ -171,9 +171,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       ),
       body: Form(
         key: _formKey,
-        child: Stack(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ListView(
+            Column(
               children: <Widget>[
                 const SizedBox(
                   height: AppTheme.cardPadding * 2,
@@ -308,7 +309,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                  padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1.5),
+                  padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 2),
                   child: button()),
             ),
           ],
