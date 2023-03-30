@@ -267,7 +267,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                       ],
                     ),
                     const SizedBox(
-                      height: AppTheme.cardPadding * 1,
+                      height: AppTheme.cardPadding * 2,
                     ),
                     Center(child: bitcoinWidget()),
                     Center(child: bitcoinToMoneyWidget()),
@@ -275,8 +275,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                       height: AppTheme.cardPadding * 3,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding),
+                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -310,11 +309,12 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                           ),
                           buildFeesChooser(),
                           SizedBox(
-                            height: AppTheme.cardPadding,
+                            height: AppTheme.elementSpacing,
                           ),
                           Text(
                             "≈ 5,64 Euro",
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.left,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                         ],
                       ),
@@ -367,7 +367,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         ? dotProgress(context)
         : Text(
             "= ${_moneyineur.toStringAsFixed(2)}€",
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.bodyLarge,
           );
   }
 
