@@ -31,6 +31,7 @@ class Auth {
   Stream<UserWallet?> get userWalletStream =>
       usersCollection.doc(_firebaseAuth.currentUser!.uid).snapshots().map<UserWallet?>((snapshot) {
         if (!snapshot.exists) {
+          print("Hier ist ein error aufgetreten (auth.dart)!");
           return null;
         }
         final data = snapshot.data()!;

@@ -8,7 +8,7 @@ class BitcoinPriceStream {
   final String _url = 'https://api.coingecko.com/api/v3/simple/price';
   StreamController<ChartLine> _priceController = StreamController<ChartLine>();
   late Timer _timer;
-  Duration _updateInterval = Duration(seconds: 60);
+  Duration _updateInterval = Duration(seconds: 12);
 
   Stream<ChartLine> get priceStream => _priceController.stream;
 
@@ -31,7 +31,7 @@ class BitcoinPriceStream {
           double priceasdouble = double.parse(price);
           double timeasdouble = double.parse(time);
           final ChartLine latestchart =
-              ChartLine(time: timeasdouble, price: priceasdouble);
+          ChartLine(time: timeasdouble, price: priceasdouble);
           _priceController.add(latestchart);
           print('The current price of Bitcoin in Euro is $price');
         } else {

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
+import 'package:nexus_wallet/backbone/streams/bitcoinpricestream.dart';
 import 'package:nexus_wallet/components/currencypicture.dart';
 import 'package:nexus_wallet/components/glassmorph.dart';
 import 'package:nexus_wallet/backbone/loaders.dart';
@@ -21,6 +22,7 @@ String trackBallValuePrice = "-----.--";
 String trackBallValueTime = "${inital_time}";
 String trackBallValueDate = "${inital_date}";
 String trackBallValuePricechange = "+0";
+Color initAnimationColor = Colors.blue;
 
 class ChartLine {
   final double time;
@@ -198,34 +200,6 @@ class _ChartWidgetState extends State<ChartWidget> {
     });
   }
 
-  // void _getBitcoinPrice() async {
-  //   final String url = 'https://api.coingecko.com/api/v3/simple/price';
-  //   final Map<String, String> params = {
-  //     'ids': 'bitcoin',
-  //     'vs_currencies': 'eur',
-  //     'include_last_updated_at': 'true'
-  //   };
-  //
-  //   final response =
-  //   await get(Uri.parse(url).replace(queryParameters: params), headers: {});
-  //
-  //   if (response.statusCode == 200) {
-  //     final price = jsonDecode(response.body)['bitcoin']['eur'].toString();
-  //     final time = jsonDecode(response.body)['bitcoin']['last_updated_at'].toString();
-  //     ChartLine chartData = ChartLine(
-  //       time: double.parse(time),
-  //       price: double.parse(price),
-  //     );
-  //     _priceStreamController.add(chartData);
-  //     setState(() {});
-  //   } else {
-  //     print('Error ${response.statusCode}: ${response.reasonPhrase}');
-  //     setState(() {
-  //       print("An Error occured trying to livefetch the bitcoinprice");
-  //     });
-  //   }
-  // }
-
   // updateChart when new data arrives
   void updateChart() {
     ChartLine newdata = onedaychart.last;
@@ -235,12 +209,19 @@ class _ChartWidgetState extends State<ChartWidget> {
     });
   }
 
+  BitcoinPriceStream _priceStream = BitcoinPriceStream();
+
   @override
   void initState() {
     super.initState();
-    _loading = true;
     getChartLine();
-    // _getBitcoinPrice();
+    _loading = true;
+    _priceStream.start();
+    print('Bitcoin pricestream started');
+    _priceStream.priceStream.listen((newChartLine) {
+      print('pricestream changes detected...');
+      key.currentState!.blinkAnimation();
+    });
     _trackballBehavior = TrackballBehavior(
       lineColor: Colors.grey[400],
       enable: true,
@@ -267,22 +248,22 @@ class _ChartWidgetState extends State<ChartWidget> {
       children: [
         Container(
             margin:
-                const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: CustomWidget(key: key)),
         Column(
           children: [
             Container(
               child: _loading
                   ? Center(
-                      child: Container(
-                        color: AppTheme.colorBackground,
-                        height: AppTheme.cardPadding * 16,
-                        child: avatarGlow(
-                          context,
-                          Icons.currency_bitcoin,
-                        ),
-                      ),
-                    )
+                child: Container(
+                  color: AppTheme.colorBackground,
+                  height: AppTheme.cardPadding * 16,
+                  child: avatarGlow(
+                    context,
+                    Icons.currency_bitcoin,
+                  ),
+                ),
+              )
                   : buildChart(),
             ),
           ],
@@ -296,7 +277,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     double _lastpriceexact = currentline.last.price;
     double _lastimeeexact = currentline.last.time;
     double _lastpricerounded =
-        double.parse((_lastpriceexact).toStringAsFixed(2));
+    double.parse((_lastpriceexact).toStringAsFixed(2));
     double _firstpriceexact = currentline.first.price;
 
     return SizedBox(
@@ -307,7 +288,7 @@ class _ChartWidgetState extends State<ChartWidget> {
             // Print the y-value of the first series in the trackball.
             if (args.chartPointInfo.yPosition != null) {
               final pointInfoPrice =
-                  double.parse(args.chartPointInfo.label!).toStringAsFixed(2);
+              double.parse(args.chartPointInfo.label!).toStringAsFixed(2);
               final pointInfoTime = double.parse(args.chartPointInfo.header!);
               var datetime = DateTime.fromMillisecondsSinceEpoch(
                   pointInfoTime.round(),
@@ -349,7 +330,7 @@ class _ChartWidgetState extends State<ChartWidget> {
           enableAxisAnimation: true,
           plotAreaBorderWidth: 0,
           primaryXAxis: NumericAxis(
-              //labelPlacement: LabelPlacement.onTicks,
+            //labelPlacement: LabelPlacement.onTicks,
               edgeLabelPlacement: EdgeLabelPlacement.none,
               isVisible: false,
               majorGridLines: const MajorGridLines(width: 0),
@@ -385,7 +366,7 @@ class _ChartWidgetState extends State<ChartWidget> {
               xValueMapper: (ChartLine crypto, _) => crypto.time,
               yValueMapper: (ChartLine crypto, _) => crypto.price,
               color: currentline[0].price <
-                      currentline[currentline.length - 1].price
+                  currentline[currentline.length - 1].price
                   ? AppTheme.successColor
                   : AppTheme.errorColor,
             )
@@ -420,109 +401,109 @@ class _ChartWidgetState extends State<ChartWidget> {
   }
 
   Widget glassButton(
-    String timeperiod,
-  ) {
+      String timeperiod,
+      ) {
     return Padding(
       padding:
-          const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
+      const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
       child: timespan == timeperiod
           ? Glassmorphism(
-              blur: 20,
-              opacity: 0.1,
-              radius: 50.0,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: const Size(50, 30),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    alignment: Alignment.centerLeft),
-                onPressed: () {},
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppTheme.elementSpacing * 0.5,
-                    horizontal: AppTheme.elementSpacing,
-                  ),
-                  child: Text(timeperiod,
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          color: timespan == timeperiod
-                              ? Theme.of(context).colorScheme.onPrimaryContainer
-                              : Theme.of(context)
-                                  .colorScheme
-                                  .onPrimaryContainer
-                                  .withOpacity(0.6))),
-                ),
-              ),
-            )
-          : TextButton(
-              style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: const Size(50, 20),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  alignment: Alignment.centerLeft),
-              onPressed: () {
-                setState(() {
-                  timespan = timeperiod;
-                  //update price widget
-                  switch (timespan) {
-                    case "1T":
-                      currentline = onedaychart;
-                      break;
-                    case "1W":
-                      currentline = oneweekchart;
-                      break;
-                    case "1M":
-                      currentline = onemonthchart;
-                      break;
-                    case "1J":
-                      currentline = oneyearchart;
-                      break;
-                    case "Max":
-                      currentline = maxchart;
-                      break;
-                  }
-                  //define for currentline
-                  double _lastpriceexact = currentline.last.price;
-                  double _lastpricerounded =
-                      double.parse((_lastpriceexact).toStringAsFixed(2));
-                  double _firstpriceexact = currentline.first.price;
-                  double _lastimeeexact = currentline.last.time;
-                  //update last price
-                  trackBallValuePrice = _lastpricerounded.toString();
-                  //update percent
-                  double priceChange =
-                      (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
-                  trackBallValuePricechange = toPercent(priceChange);
-                  //update date
-                  var datetime = DateTime.fromMillisecondsSinceEpoch(
-                      _lastimeeexact.round(),
-                      isUtc: false);
-                  DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-                  DateFormat timeFormat = DateFormat("HH:mm");
-                  String date = dateFormat.format(datetime);
-                  String time = timeFormat.format(datetime);
-                  trackBallValueTime = time.toString();
-                  trackBallValueDate = date.toString();
-                  //update the entire information widget
-                  key.currentState!.refresh();
-                });
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppTheme.elementSpacing * 0.5,
-                  horizontal: AppTheme.elementSpacing,
-                ),
-                child: Text(
-                  timeperiod,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: timespan == timeperiod
-                          ? Theme.of(context).colorScheme.onPrimaryContainer
-                          : Theme.of(context)
-                              .colorScheme
-                              .onPrimaryContainer
-                              .withOpacity(0.6)),
-                ),
-              ),
+        blur: 20,
+        opacity: 0.1,
+        radius: 50.0,
+        child: TextButton(
+          style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(50, 30),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              alignment: Alignment.centerLeft),
+          onPressed: () {},
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppTheme.elementSpacing * 0.5,
+              horizontal: AppTheme.elementSpacing,
             ),
+            child: Text(timeperiod,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: timespan == timeperiod
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : Theme.of(context)
+                        .colorScheme
+                        .onPrimaryContainer
+                        .withOpacity(0.6))),
+          ),
+        ),
+      )
+          : TextButton(
+        style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(50, 20),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            alignment: Alignment.centerLeft),
+        onPressed: () {
+          setState(() {
+            timespan = timeperiod;
+            //update price widget
+            switch (timespan) {
+              case "1T":
+                currentline = onedaychart;
+                break;
+              case "1W":
+                currentline = oneweekchart;
+                break;
+              case "1M":
+                currentline = onemonthchart;
+                break;
+              case "1J":
+                currentline = oneyearchart;
+                break;
+              case "Max":
+                currentline = maxchart;
+                break;
+            }
+            //define for currentline
+            double _lastpriceexact = currentline.last.price;
+            double _lastpricerounded =
+            double.parse((_lastpriceexact).toStringAsFixed(2));
+            double _firstpriceexact = currentline.first.price;
+            double _lastimeeexact = currentline.last.time;
+            //update last price
+            trackBallValuePrice = _lastpricerounded.toString();
+            //update percent
+            double priceChange =
+                (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
+            trackBallValuePricechange = toPercent(priceChange);
+            //update date
+            var datetime = DateTime.fromMillisecondsSinceEpoch(
+                _lastimeeexact.round(),
+                isUtc: false);
+            DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+            DateFormat timeFormat = DateFormat("HH:mm");
+            String date = dateFormat.format(datetime);
+            String time = timeFormat.format(datetime);
+            trackBallValueTime = time.toString();
+            trackBallValueDate = date.toString();
+            //update the entire information widget
+            key.currentState!.refresh();
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: AppTheme.elementSpacing * 0.5,
+            horizontal: AppTheme.elementSpacing,
+          ),
+          child: Text(
+            timeperiod,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: timespan == timeperiod
+                    ? Theme.of(context).colorScheme.onPrimaryContainer
+                    : Theme.of(context)
+                    .colorScheme
+                    .onPrimaryContainer
+                    .withOpacity(0.6)),
+          ),
+        ),
+      ),
     );
   }
 
@@ -530,7 +511,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     return GestureDetector(
       child: Padding(
         padding:
-            const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+        const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
         child: Container(
           decoration: BoxDecoration(
             color: timespan == timeperiod
@@ -540,15 +521,15 @@ class _ChartWidgetState extends State<ChartWidget> {
           ),
           child: Padding(
             padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
+            const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
             child: Text(timeperiod,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: timespan == timeperiod
                         ? Theme.of(context).colorScheme.onPrimaryContainer
                         : Theme.of(context)
-                            .colorScheme
-                            .onPrimaryContainer
-                            .withOpacity(0.6))),
+                        .colorScheme
+                        .onPrimaryContainer
+                        .withOpacity(0.6))),
           ),
         ),
       ),
@@ -567,10 +548,35 @@ class CustomWidget extends StatefulWidget {
   State<CustomWidget> createState() => _CustomWidgetState();
 }
 
-class _CustomWidgetState extends State<CustomWidget> {
+class _CustomWidgetState extends State<CustomWidget> with SingleTickerProviderStateMixin{
   void refresh() {
     if (mounted) {
       setState(() {});
+    }
+  }
+
+  late AnimationController _controller;
+  late Animation<Color?> _animation;
+  bool _isBlinking = false;
+
+  void blinkAnimation() {
+    if (mounted) {
+      _controller =
+          AnimationController(vsync: this, duration: Duration(milliseconds: 1000));
+      _animation = ColorTween(
+          begin: initAnimationColor, end: Colors.transparent)
+          .animate(_controller)
+        ..addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            setState(() {
+              _isBlinking = false;
+            });
+            _controller.reverse();
+          }
+        });
+      setState(() {
+        print("Blink animation in Custom widget tiggered");
+      });
     }
   }
 
@@ -624,9 +630,41 @@ class _CustomWidgetState extends State<CustomWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(
-              "${trackBallValuePrice}€",
-              style: Theme.of(context).textTheme.displaySmall,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: AppTheme.elementSpacing * 0.75,
+                      width: AppTheme.elementSpacing * 0.75,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(500.0),
+                        color: Colors.white10,
+                      ),
+                    ),
+                    if (_isBlinking)
+                      Positioned.fill(
+                        child:  AnimatedBuilder(
+                          animation: _animation,
+                          builder: (context, child) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(500.0),
+                                color: _animation.value,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+                SizedBox(width: AppTheme.elementSpacing,),
+                Text(
+                  "${trackBallValuePrice}€",
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
+              ],
             ),
             Container(
               margin: const EdgeInsets.only(top: 15, bottom: 15),
@@ -635,7 +673,7 @@ class _CustomWidgetState extends State<CustomWidget> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                         borderRadius:
-                            BorderRadius.circular(AppTheme.cardPadding * 2),
+                        BorderRadius.circular(AppTheme.cardPadding * 2),
                         color: trackBallValuePricechange.contains("-")
                             ? AppTheme.errorColor.withOpacity(0.625)
                             : AppTheme.successColor.withOpacity(0.625)),

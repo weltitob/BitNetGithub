@@ -57,7 +57,7 @@ class _CryptoItemState extends State<CryptoItem>
 
   late double _firstPrice;
   late double _currentPrice;
-  late double _priceBeforeUpdated;
+  late double _priceOneTimestampAgo;
   late double priceChange;
 
   getChartLine() async {
@@ -81,7 +81,7 @@ class _CryptoItemState extends State<CryptoItem>
 
     _currentPrice = chartClassDayMin.chartLine.last.price;
     _currentPriceString = _currentPrice.toStringAsFixed(2) + "€";
-    _priceBeforeUpdated = double.parse(_currentPrice.toStringAsFixed(2));
+    _priceOneTimestampAgo = double.parse(_currentPrice.toStringAsFixed(2));
     _firstPrice = chartClassDayMin.chartLine.first.price;
 
     priceChange = (_currentPrice - _firstPrice) / _firstPrice;
@@ -99,42 +99,27 @@ class _CryptoItemState extends State<CryptoItem>
   BitcoinPriceStream _priceStream = BitcoinPriceStream();
 
   void colorUpdater() {
+    setState(() {
+      if (_currentPrice < _priceOneTimestampAgo) {
+        _animationColor = AppTheme.errorColor;
+      }
+      else if (_currentPrice > _priceOneTimestampAgo) {
+        _animationColor = AppTheme.successColor;
+      }
+      else {
+        _animationColor = Colors.transparent;
+      }
+    });
     //update animation color
-    if (_currentPrice < _priceBeforeUpdated) {
-      _animationColor = AppTheme.errorColor;
-    }
-    else if (_currentPrice > _priceBeforeUpdated) {
-      _animationColor = AppTheme.successColor;
-    }
-    else {
-      _animationColor = Colors.transparent;
-    }
   }
 
   @override
   void initState() {
     super.initState();
-    _priceStream.start();
-    _priceStream.priceStream.listen((newChartLine) {
-      setState(() {
-        _isBlinking = true;
-        //vor dem updaten preis erstmal speichern
-        _priceBeforeUpdated = _currentPrice;
-        print("Preis vor update: $_priceBeforeUpdated");
-        //neuen preis anzeigen lassen
-        _currentPrice = newChartLine.price;
-        print("Preis nach update: $_currentPrice");
-        _currentPriceString = newChartLine.price.toStringAsFixed(2) + "€";
-        //auch prozentanzeige updaten
-        priceChange = (_currentPrice - _firstPrice) / _firstPrice;
-        _priceChangeString = toPercent(priceChange);
-        colorUpdater();
-      });
-      _controller.forward();
-    });
     getChartLine();
+    _priceStream.start();
     _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 1000));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
     _animation = ColorTween(
         begin: _animationColor, end: Colors.transparent)
         .animate(_controller)
@@ -144,8 +129,31 @@ class _CryptoItemState extends State<CryptoItem>
             _isBlinking = false;
           });
           _controller.reverse();
+          setState(() {
+            _animation = ColorTween(begin: _animationColor, end: Colors.transparent)
+                .animate(_controller);
+            _controller.reset();
+          });
         }
       });
+    _priceStream.priceStream.listen((newChartLine) {
+      setState(() {
+        //vor dem updaten preis erstmal speichern
+        _priceOneTimestampAgo = _currentPrice;
+        print("Preis vor update: $_priceOneTimestampAgo");
+        //neuen preis anzeigen lassen
+        _currentPrice = newChartLine.price;
+        print("Preis nach update: $_currentPrice");
+        _currentPriceString = newChartLine.price.toStringAsFixed(2) + "€";
+        //auch prozentanzeige updaten
+        priceChange = (_currentPrice - _firstPrice) / _firstPrice;
+        _priceChangeString = toPercent(priceChange);
+        //blinken
+        colorUpdater();
+        _isBlinking = true;
+      });
+      _controller.forward();
+    });
   }
 
   @override

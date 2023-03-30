@@ -30,7 +30,7 @@ dynamic getTransactions(UserWallet userWallet) async {
       final mydata = CloudfunctionCallback.fromJson(resp.data);
       if (mydata.status == "success") {
         var encodedString = jsonDecode(mydata.message);
-        print(encodedString);
+        print("Encoded get Transactions response: $encodedString");
 
         encodedString.forEach((element) async {
           final newTransaction = BitcoinTransaction.fromJson(element);
