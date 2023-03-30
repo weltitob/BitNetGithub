@@ -32,7 +32,8 @@ class SendBTCScreen extends StatefulWidget {
 }
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
-  late FocusNode myFocusNode;
+  late FocusNode myFocusNodeMoney;
+  late FocusNode myFocusNodeAdress;
   TextEditingController bitcoinReceiverAdressController =
       TextEditingController();
   TextEditingController moneyController = TextEditingController();
@@ -51,7 +52,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   void initState() {
     super.initState();
     moneyController.text = "0.00001";
-    myFocusNode = FocusNode();
+    myFocusNodeMoney = FocusNode();
+    myFocusNodeAdress = FocusNode();
     getBitcoinPrice();
     if (widget.bitcoinReceiverAdress != null) {
       setState(() {
@@ -67,7 +69,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   @override
   void dispose() {
     // Clean up the focus node when the Form is disposed.
-    myFocusNode.dispose();
+    myFocusNodeAdress.dispose();
+    myFocusNodeMoney.dispose();
     moneyController.dispose();
     super.dispose();
   }
@@ -124,6 +127,22 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         _moneyineur = "Ein Fehler ist aufgetreten";
       });
     }
+  }
+
+  void validateAdress(String value) {
+    myFocusNodeAdress.unfocus();
+    if (value == null || value.isEmpty) {
+      displaySnackbar(context, "Hmm. Diese Walletadresse scheint nicht zu existieren");
+    }
+    final isValid = isBitcoinWalletValid(value);
+    if (isValid) {
+      setState(() {
+        _bitcoinReceiverAdress = value;
+        _hasReceiver = true;
+      });
+    } else{
+      displaySnackbar(context, "Hmm. Diese Walletadresse scheint nicht zu existieren");
+    }//to indicate the input is valid
   }
 
   String feesSelected = "Niedrig";
@@ -195,21 +214,14 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                       height: AppTheme.cardPadding * 2,
                                       alignment: Alignment.center,
                                       child: TextFormField(
+                                        onTapOutside: (value) {
+                                          validateAdress(bitcoinReceiverAdressController.text);
+                                        },
                                         maxLength: 40,
+                                        focusNode: myFocusNodeAdress,
                                         controller: bitcoinReceiverAdressController,
                                         onFieldSubmitted: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            displaySnackbar(context, "Hmm. Diese Walletadresse scheint nicht zu existieren");
-                                          }
-                                          final isValid = isBitcoinWalletValid(value);
-                                          if (isValid) {
-                                            setState(() {
-                                              _bitcoinReceiverAdress = value;
-                                              _hasReceiver = true;
-                                            });
-                                          } else{
-                                            displaySnackbar(context, "Hmm. Diese Walletadresse scheint nicht zu existieren");
-                                          }//to indicate the input is valid
+                                          validateAdress(value);
                                         },
                                         autofocus: false,
                                         style: Theme.of(context)
@@ -421,6 +433,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   getBitcoinPrice();
                   setState(() {});
                 },
+                onTapOutside: (value){
+                  myFocusNodeMoney.dispose();
+                },
                 maxLength: 10,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
@@ -434,7 +449,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   hintText: "0.0",
                   hintStyle: TextStyle(color: AppTheme.white60),
                 ),
-                focusNode: myFocusNode,
+                focusNode: myFocusNodeMoney,
                 controller: moneyController,
                 autofocus: false,
                 style: Theme.of(context).textTheme.displayLarge,
