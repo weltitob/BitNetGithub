@@ -8,13 +8,14 @@ import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
 Future<CloudfunctionCallback> sendBitcoin({
-    required UserWallet userWallet,
-    required String receiver_address,
-    required String amount_to_send,
-    required String fee_size}) async {
+  required UserWallet userWallet,
+  required String receiver_address,
+  required String amount_to_send,
+  required String fee_size}) async {
   try {
     HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('sendBitcoin');
+    FirebaseFunctions.instance.httpsCallable('sendBitcoin');
+
     final resp = await callable.call(<String, dynamic>{
       'sender_private_key': userWallet.privateKey,
       'sender_address': userWallet.walletAddress,
@@ -23,36 +24,47 @@ Future<CloudfunctionCallback> sendBitcoin({
       'fee_size': fee_size,
       'get_fees_only': false,
     });
+
+    // print response data
     print("Das isch deine response: ${resp.data}");
     print("noch ist alles gut 1...");
+
+    // parse response data into CloudfunctionCallback object
     final mydata = CloudfunctionCallback.fromJson(resp.data);
+
+    // print status of CloudfunctionCallback object
     print("noch ist alles gut 2...");
     print(mydata.status);
+
     if (mydata.status == "success") {
       print('success message was awnser');
+
+      // decode message field of CloudfunctionCallback object into BitcoinTransaction object
       var encodedString = jsonDecode(mydata.message);
       print(encodedString);
       final newTransaction = BitcoinTransaction.fromJson(encodedString);
 
+      // push transaction to firestore
       print('Now pushing transaction to firestore... $newTransaction');
-
       await transactionCollection
           .doc(userWallet.useruid)
           .collection("all")
           .doc(newTransaction.transactionUid)
           .set(newTransaction.toMap());
 
+      // update user's balance after transaction is complete
       await getBalance(userWallet);
+
       print("Bitcoin senden ist alles erfolgreich durchgelaufen");
       return mydata;
     } else {
+      // error in cloudfuntion occurred, but values returned correctly
       print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');
-      //error in der cloudfunktion aufgetreten aber werte korrekt zurückgekommen
       print('Die Antwortnachricht der Cloudfunktion war ein Error.');
       return mydata;
-      //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
     }
   } catch (e) {
+    // error occurred while calling cloud function
     print('EIN FEHLR IST BEIM AUFRUF DER CLOUD FUNKTION AUFGETRETEN');
     print(e);
     return CloudfunctionCallback(status: "error", message: 'Ein interer Fehler ist aufgetreten, bitte versuche es später erneut');

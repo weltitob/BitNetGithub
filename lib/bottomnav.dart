@@ -5,13 +5,15 @@ import 'package:nexus_wallet/pages/homescreen.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/pages/settingsscreen.dart';
 
+// This widget is a [StatefulWidget] that creates a bottom navigation bar with a [CurvedNavigationBar] that has 3 items/icons.
+// The widget receives no arguments and creates a state object of [_BottomNavState].
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
 
   @override
   State<BottomNav> createState() => _BottomNavState();
 }
-
+// This is the state object of the [BottomNav] widget.
 class _BottomNavState extends State<BottomNav> {
   int _index = 0;
 

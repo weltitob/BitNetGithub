@@ -7,9 +7,12 @@ dynamic getFees({
   required UserWallet userWallet,
   required String receiver_address,
   required String amount_to_send,
-  required String fee_size}) async {
+  required String fee_size
+}) async {
   print("GET FEES WAS TRIGGERED!");
+
   try {
+    // Call the Firebase Cloud Function 'sendBitcoin'
     HttpsCallable callable =
     FirebaseFunctions.instance.httpsCallable('sendBitcoin');
     final resp = await callable.call(<String, dynamic>{
@@ -20,19 +23,23 @@ dynamic getFees({
       'fee_size': fee_size,
       'get_fees_only': true,
     });
-    print("Das isch deine response: ${resp.data}");
+
+    // Parse the response from the Cloud Function
     final mydata = CloudfunctionCallback.fromJson(resp.data);
     print(mydata.status);
     if (mydata.status == "success") {
       print('success message was awnser from getfees');
+
+      // Decode the encoded JSON message in the response
       var encodedString = jsonDecode(mydata.message);
       print(encodedString);
-
     } else {
+      // Handle error message from Cloud Function
       print('Error: Keine success message wurde als Status von getFees angegeben: ${mydata.message}');
       //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
     }
   } catch (e) {
+    // Handle errors when calling the Cloud Function
     print('EIN FEHLR IST BEIM AUFRUF DER GETFEES CLOUD FUNKTION AUFGETRETEN');
     print("Der aufgetretene Error: $e");
   }

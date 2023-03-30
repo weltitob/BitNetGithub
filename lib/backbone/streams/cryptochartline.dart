@@ -1,9 +1,11 @@
-
 import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:nexus_wallet/components/chart.dart';
 
+/*
+This class represents a chart line for a given cryptocurrency and allows fetching its chart data from the Coingecko API.
+ */
 class CryptoChartLine {
   final String crypto;
   final String interval;
@@ -17,14 +19,17 @@ class CryptoChartLine {
     required this.currency,
   });
 
-  //fetch chartdatas from coingecko api
+  // List to store the chart data
   List<ChartLine> chartLine = [];
+
+  // Function to fetch chart data from Coingecko API
   Future<void> getChartData() async {
     var url =
         "https://api.coingecko.com/api/v3/coins/$crypto/market_chart?vs_currency=$currency&days=$days&interval=$interval";
     Response res = await get(Uri.parse(url));
     var jsonData = jsonDecode(res.body);
     if (res.statusCode == 200) {
+      // If 'days' is 'max', get data for every 15th element, otherwise get data for every 4th element
       if (days == "max") {
         for (var i = 0; i < jsonData["prices"].length; i += 15) {
           dynamic element = jsonData["prices"][i];
@@ -48,6 +53,7 @@ class CryptoChartLine {
           chartLine.add(chartData);
         }
       } else {
+        // Get all the chart data
         jsonData["prices"].forEach((element) {
           double time = element[0].toDouble();
           double price = element[1].toDouble();
@@ -59,6 +65,7 @@ class CryptoChartLine {
         });
       }
     } else {
+      // Throw an error if unable to retrieve chart data from Coingecko
       throw "Unable to retrieve chart data from Coingecko.";
     }
   }

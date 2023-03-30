@@ -8,29 +8,37 @@ import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/routetrees/widgettree.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'backbone/auth/auth.dart';
 
+// Main function to start the application
 Future<void> main() async {
+  // Ensure that Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
   await Firebase.initializeApp();
+
+  // Initialize the GetIt service
   GetItService.initializeService();
 
+  // Run the app
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  // This widget is the root of the application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // Provide a stream of user wallet data for authentication changes
         StreamProvider<UserWallet?>(
           create: (_) => Auth().userWalletStreamForAuthChanges,
           initialData: null,
         ),
+        // Provide a stream of user wallet data
         StreamProvider<UserWallet?>(
           create: (_) => Auth().userWalletStream,
           initialData: null,
@@ -45,4 +53,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

@@ -7,21 +7,25 @@ import 'package:uuid/uuid.dart';
 
 var uuid = Uuid();
 
+// Load Lottie composition from an asset file
 Future<LottieComposition> loadComposition(String assetPath) async {
   var assetData = await rootBundle.load(assetPath);
   dynamic mycomposition = await LottieComposition.fromByteData(assetData);
   return mycomposition;
 }
 
+// Get the current time in milliseconds
 int timeNow() {
   return DateTime.now().millisecondsSinceEpoch;
 }
 
+// Get the average price of a list of items
 getaverage(dynamic currentline) {
   return currentline.map((m) => m.price).reduce((a, b) => a + b) /
       currentline.length;
 }
 
+// Display the time ago from a timestamp
 String displayTimeAgoFromTimestamp(String publishedAt,
     {bool numericDates = true}) {
   DateTime date = DateTime.parse(publishedAt);
@@ -59,12 +63,16 @@ String displayTimeAgoFromTimestamp(String publishedAt,
   }
 }
 
+// Format a double value as a percentage string
 String toPercent(double value) => NumberFormat('+#.##%; -#.##%').format(value);
 
+// Format the input value within a specified numerical range, and display a snackbar if the value exceeds the maximum
+// This class formats a numerical input value within a specified range, and displays a snackbar if the value exceeds the maximum
+// It extends the TextInputFormatter class, which is used to modify the text being entered into a text field
 class NumericalRangeFormatter extends TextInputFormatter {
-  final double min;
-  final double max;
-  final BuildContext context;
+  final double min; // The minimum value allowed
+  final double max; // The maximum value allowed
+  final BuildContext context; // The context of the widget where the formatter is being used
 
   NumericalRangeFormatter({
     required this.min,
@@ -74,21 +82,30 @@ class NumericalRangeFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    // If the new value is empty, return it without any modifications
     if (newValue.text == '') {
       return newValue;
-    } else if (double.parse(newValue.text) < min) {
+    }
+    // If the new value is less than the minimum allowed, set it to the minimum value
+    else if (double.parse(newValue.text) < min) {
       return TextEditingValue().copyWith(text: min.toString());
-    } else if (double.parse(newValue.text) > max) {
+    }
+    // If the new value is greater than the maximum allowed, display a snackbar and set the value to the old value
+    else if (double.parse(newValue.text) > max) {
       displaySnackbar(context, "You dont have enough Bitcoin");
       return oldValue;
-    } else
+    }
+    // Otherwise, return the new value without any modifications
+    else {
       return newValue;
+    }
   }
 }
 
+// This class formats a numerical input value to allow only one decimal point
 class DotFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -99,16 +116,25 @@ class DotFormatter extends TextInputFormatter {
     int newDots = RegExp(r"\.").allMatches(newValue.toString()).length;
     print("The string '$newValue' contains $newDots dots.");
 
-    //flutter thinks there are two more dots then there really are
+    // If the old value already contains 3 or more decimal points, return the old value without any modifications
     if (numDots >= 3) {
       return oldValue;
-    } else if (newDots == 2) {
+    }
+    // If the new value has exactly 2 decimal points, return it without any modifications
+    else if (newDots == 2) {
       return newValue;
-    } else if (newDots == 3) {
+    }
+    // If the new value has exactly 3 decimal points, return it without any modifications
+    else if (newDots == 3) {
       return newValue;
-    } else if (newDots > 3) {
+    }
+    // If the new value has more than 3 decimal points, return the old value without any modifications
+    else if (newDots > 3) {
       return oldValue;
-    } else
+    }
+    // Otherwise, return the new value without any modifications
+    else {
       return newValue;
+    }
   }
 }
