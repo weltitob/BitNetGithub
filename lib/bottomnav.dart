@@ -21,7 +21,6 @@ class _BottomNavState extends State<BottomNav> {
       const HomeScreen(),
       const QRScreen(isBottomButtonVisible: false,),
       SettingsScreen(),
-      //BitcoinScreen(),
     ];
 
     return Scaffold(
