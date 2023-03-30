@@ -6,6 +6,7 @@ class UserWallet {
   String email;
   String useruid;
 
+  // constructor
   UserWallet({
     required this.walletAddress,
     required this.walletType,

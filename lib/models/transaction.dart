@@ -12,6 +12,7 @@ class BitcoinTransaction {
   final String transactionStatus;
   final String transactionUid;
 
+  // constructor
   BitcoinTransaction({
     required this.transactionDirection,
     required this.timestampSent,

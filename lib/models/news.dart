@@ -9,6 +9,7 @@ class Article {
   String urlToImage;
   String content;
 
+  // Constructor
   Article({
     required this.title,
     required this.description,
