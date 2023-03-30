@@ -1,11 +1,12 @@
 # Nexus Wallet für Versenden und Erhalten von Bitcoin
 
-**Eine moderne, visuell ansprechende Wallet, um Ihre Bitcoin zu lagern, versenden oder erhalten.**
+**Eine moderne, visuell ansprechende Wallet, um Ihre Bitcoin zu lagern, versenden oder zu erhalten.**
 
 ## Inhalt
 * [Installation](#installation)
   * [Installation von Android Studio](#installation-von-android-studio)
   * [Erstellen eines Android-Emulators](#erstellen-eines-android-emulators-in-android-studio)
+  * [Benutzung eines eigenen Android-Geräts](#benutzung-eines-eigenen-android-geräts)
   * [Abhängigkeiten](#abhängigkeiten)
 * [Benutzung](#benutzung)
 * [Beitrag zum Projekt](#beitragen)
@@ -64,6 +65,22 @@ Wählen Sie ein System-Image für den Emulator aus, indem Sie auf "Download" neb
 
 Geben Sie dem Emulator einen Namen und konfigurieren Sie die Emulator-Einstellungen wie gewünscht, z.B. Größe des internen Speichers, RAM usw.
 
+### Benutzung eines eigenen Android-Geräts
+
+Um Ihr privates Android-Handy mit Android Studio zu verbinden, müssen Sie zunächst sicherstellen, dass die Entwickleroptionen auf Ihrem Handy aktiviert sind. Hier sind die Schritte, um die Entwickleroptionen zu aktivieren:
+
+1. Gehen Sie zu "Einstellungen" auf Ihrem Handy.
+2. Suchen Sie nach "Telefoninfo" oder "Über das Telefon" und tippen Sie darauf.
+3. Finden Sie die "Build-Nummer" und tippen Sie sie sieben Mal schnell hintereinander an. Es wird eine Meldung angezeigt, dass Sie nun ein Entwickler sind.
+4. Gehen Sie zurück zu den Einstellungen und Sie sollten die Entwickleroptionen sehen.
+
+Sobald Sie die Entwickleroptionen aktiviert haben, gehen Sie wie folgt vor, um Ihr Handy mit Android Studio zu verbinden:
+
+1. Verbinden Sie Ihr Handy über ein USB-Kabel mit Ihrem Computer.
+2. Starten Sie Android Studio.
+3. Klicken Sie auf das Dropdown-Menü in der Symbolleiste von Android Studio und wählen Sie Ihr Handy aus der Liste der angeschlossenen Geräte aus. Wenn Ihr Handy nicht angezeigt wird, überprüfen Sie, ob USB-Debugging aktiviert ist.
+4. Android Studio wird Ihr Handy nun mit ADB (Android Debug Bridge) verbinden, und Sie sollten in der Lage sein, Ihr Handy für Tests und Debugging in Android Studio zu verwenden.
+
 ### Abhängigkeiten
 
 Die Nexus Wallet benutzt das Flutter-Framework für sämtliche UI-Komponenten. Flutter muss auf dem Gerät installiert sein und mit Android Studio verknüpft sein.
@@ -98,6 +115,7 @@ Starten Sie Android Studio und öffnen Sie die Einstellungen. Navigieren Sie zu 
 
 ## Benutzung {#benutzung}
 
+Wir empfehlen einen leistungsstarken Rechner mit min. 32 GB RAM, um die App mit einem Android-Studio-Emulator reibungslos ausführen zu können. Es ist ebenfalls möglich, ein privates Android-Handy mit Android-Studio zu verknüpfen, und die App direkt auf dem Handy auszuführen. Hierbei muss das private Andriod-Handy mindestens die Android-Version 13 haben.
 Um die Nexus Wallet-App zu starten, führen Sie folgende Schritte aus:
 1. Entpacken Sie die Projekt-Datei auf Ihrem Computer.
 2. Öffnen Sie die Das Projekt in Android Studio und starten Sie einen Android-Emulator.
