@@ -132,7 +132,7 @@ class _TransactionsState extends State<Transactions>
           child: Stack(
             children: [
               Container(
-                height: AppTheme.cardPadding * 20,
+                height: AppTheme.cardPadding * 18,
                 child: StreamBuilder<List<BitcoinTransaction>>(
                   stream: getTransactionsStream(),
                   builder: (context, snapshot) {
@@ -196,9 +196,9 @@ class _TransactionsState extends State<Transactions>
                   children: <Widget>[
                     IgnorePointer(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: AppTheme.cardPadding * 12),
+                        padding: const EdgeInsets.only(top: AppTheme.cardPadding * 8),
                         child: Container(
-                          height: AppTheme.cardPadding * 8,
+                          height: AppTheme.cardPadding * 10,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
