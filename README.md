@@ -97,7 +97,7 @@ Entpacken Sie das heruntergeladene Flutter-SDK in einem Ordner auf Ihrem Compute
 
 3. Flutter-Pfad konfigurieren
 
-Fügen Sie den Pfad zum Flutter SDK in die PATH-Umgebungsvariablen ein. So wird Flutter von der Kommandozeile aus zugänglich gemacht.
+Fügen Sie den Pfad zum Flutter/bin Ordner in die PATH-Umgebungsvariablen ein. So wird Flutter von der Kommandozeile aus zugänglich gemacht.
 
 4. Flutter-Tools installieren
 
