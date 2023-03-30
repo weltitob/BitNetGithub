@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:nexus_wallet/backbone/helpers.dart';
+import 'package:nexus_wallet/backbone/helper/helpers.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'dart:async';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/databaserefs.dart';
+import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/userwallet.dart';

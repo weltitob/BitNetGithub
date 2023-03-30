@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/helpers.dart';
-import 'package:nexus_wallet/components/glassmorph.dart';
+import 'package:nexus_wallet/backbone/helper/helpers.dart';
+import 'package:nexus_wallet/components/container/glassmorph.dart';
 import 'package:nexus_wallet/pages/secondpages/newsscreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 

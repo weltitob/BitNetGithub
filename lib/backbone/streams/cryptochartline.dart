@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:nexus_wallet/components/chart.dart';
+import 'package:nexus_wallet/components/chart/chart.dart';
 
 /*
 This class represents a chart line for a given cryptocurrency and allows fetching its chart data from the Coingecko API.

@@ -4,7 +4,7 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/gettransactions.dart';
-import 'package:nexus_wallet/backbone/helpers.dart';
+import 'package:nexus_wallet/backbone/helper/helpers.dart';
 import 'package:nexus_wallet/components/cards/balancecard.dart';
 import 'package:nexus_wallet/components/transactions/transactions.dart';
 import 'package:nexus_wallet/models/userwallet.dart';

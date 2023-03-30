@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nexus_wallet/backbone/helpers.dart';
+import 'package:nexus_wallet/backbone/helper/helpers.dart';
 import 'package:nexus_wallet/backbone/streams/bitcoinpricestream.dart';
 import 'package:nexus_wallet/backbone/streams/cryptochartline.dart';
-import 'package:nexus_wallet/components/currencypicture.dart';
-import 'package:nexus_wallet/components/glassmorph.dart';
-import 'package:nexus_wallet/backbone/loaders.dart';
+import 'package:nexus_wallet/components/container/currencypicture.dart';
+import 'package:nexus_wallet/components/container/glassmorph.dart';
+import 'package:nexus_wallet/backbone/helper/loaders.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:convert';

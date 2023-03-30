@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:nexus_wallet/components/chart.dart';
+import 'package:nexus_wallet/components/chart/chart.dart';
 
 /*
 This class represents a stream that periodically fetches the current price of Bitcoin in Euro from a REST API.

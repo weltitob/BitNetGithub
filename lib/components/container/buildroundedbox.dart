@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/components/glassmorph.dart';
+import 'package:nexus_wallet/components/container/glassmorph.dart';
 import '../../backbone/theme.dart';
 
 class RoundedContainer extends StatefulWidget {

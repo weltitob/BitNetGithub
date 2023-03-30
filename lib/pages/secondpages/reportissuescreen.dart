@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
-import 'package:nexus_wallet/components/glassmorph.dart';
+import 'package:nexus_wallet/components/container/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/pages/settingsscreen.dart';
 import 'package:nexus_wallet/backbone/theme.dart';

@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/databaserefs.dart';
+import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
-import 'package:nexus_wallet/components/glassmorph.dart';
+import 'package:nexus_wallet/components/container/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/settingsscreen.dart';

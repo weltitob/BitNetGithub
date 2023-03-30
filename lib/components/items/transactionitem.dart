@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/gettransactions.dart';
-import 'package:nexus_wallet/components/glassmorph.dart';
+import 'package:nexus_wallet/components/container/glassmorph.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:nexus_wallet/models/userwallet.dart';

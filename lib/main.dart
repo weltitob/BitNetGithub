@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/get_it.dart';
 import 'package:nexus_wallet/backbone/streams/bitcoinpricestream.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:nexus_wallet/components/chart.dart';
+import 'package:nexus_wallet/components/chart/chart.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/routetrees/widgettree.dart';
 import 'package:provider/provider.dart';
@@ -17,9 +16,6 @@ Future<void> main() async {
 
   // Initialize Firebase
   await Firebase.initializeApp();
-
-  // Initialize the GetIt service
-  GetItService.initializeService();
 
   // Run the app
   runApp(const MyApp());
