@@ -586,18 +586,18 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   fee_size: '$feesSelected',
                   userWallet: userWallet,
                 );
-                displaySnackbar(
-                    context,
-                    "Deine Bitcoin wurden versendet!"
-                        " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
                 await Navigator.push(
                     context,
                     PageTransition(
                         type: PageTransitionType.fade,
                         child: const BottomNav()));
+                displaySnackbar(
+                    context,
+                    "Deine Bitcoin wurden versendet!"
+                        " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
               } catch (e) {
                 print(e);
-                displaySnackbar(context, "Ein Fehler ist aufgetreten");
+                displaySnackbar(context, "Ein Fehler ist aufgetreten: $e");
                 setState(() {
                   isFinished = false;
                 });
