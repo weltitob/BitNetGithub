@@ -5,28 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:mockito/mockito.dart';
 
-class MockHttpsCallableResult extends HttpsCallableResult<dynamic> {
-  @override
-  dynamic get data => {
-    "status": "success",
-    "message": jsonEncode([
-      {
-        "transactionUid": "example_uid",
-        "timestamp": "2022-03-24 10:00:00",
-        "value": 0.001,
-        "senderAddress": "sender_address",
-        "recipientAddress": "recipient_address",
-      }
-    ]),
-  };
-}
-
-class MockHttpsCallable extends HttpsCallable {
-  @override
-  Future<HttpsCallableResult> call([dynamic parameters]) async {
-    return MockHttpsCallableResult();
-  }
-}
+import 'createwallet_test.dart';
 
 void main() {
   group('getTransactions function', () {

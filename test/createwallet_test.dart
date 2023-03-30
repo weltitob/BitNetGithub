@@ -9,15 +9,6 @@ import 'package:mockito/mockito.dart';
 
 class MockHttpsCallable extends Mock implements HttpsCallable {}
 
-class MockHttpsCallableResult<T> extends HttpsCallableResult<T> {
-  final T _data;
-
-  MockHttpsCallableResult(this._data) : super(data: _data);
-
-  @override
-  T get data => _data;
-}
-
 void main() {
   group('createWallet', () {
     late HttpsCallable callable;
@@ -35,9 +26,6 @@ void main() {
           'privateKey': 'example_private_key',
         }),
       };
-      final response = MockHttpsCallableResult<Map<String, dynamic>>(data);
-
-      when(callable.call(any)).thenAnswer((_) async => response);
 
       final result = await createWallet(email: email);
 
@@ -51,10 +39,6 @@ void main() {
         'status': 'error',
         'message': 'An error occurred.',
       };
-      final response = MockHttpsCallableResult<Map<String, dynamic>>(data);
-
-      when(callable.call(any)).thenAnswer((_) async => response);
-
       final result = await createWallet(email: email);
 
       expect(result, isNull);

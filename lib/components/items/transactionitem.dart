@@ -169,7 +169,7 @@ class _TransactionItemState extends State<TransactionItem> {
                                   ),
                                   SizedBox(width: AppTheme.elementSpacing / 4),
                                   Text(
-                                    _isConfirmed ? "erhalten" : "ausstehend",
+                                    _isConfirmed ? "erhalten" : "ausstehend ",
                                     style: _isConfirmed
                                         ? Theme.of(widget.context)
                                         .textTheme
