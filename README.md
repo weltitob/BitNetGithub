@@ -15,13 +15,13 @@
 
 ## Installation {#installation}
 
-Zurzeit muss die App über den eingebauten Android-Emulator in Android Studio ausgeführt werden. Deswegen wird Android Studio und ein Android Emulator benötigt.
+Zurzeit muss die App über Android Studio ausgeführt werden. Deswegen wird Android Studio und entweder ein Android Emulator oder ein Android-Gerät, welches als Emulator genutzt werden kann, benötigt.
 
 ### Installation von Android Studio
 
 #### Schritt 1: Herunterladen von Android Studio
 
-Als erstes laden Sie die neueste Version von Android Studio von der offiziellen Website herunter: https://developer.android.com/studio/
+Als Erstes laden Sie die neueste Version von Android Studio von der offiziellen Website herunter: https://developer.android.com/studio/
 
 #### Schritt 2: Installieren von Android Studio
 
@@ -40,7 +40,7 @@ Die Installation kann einige Minuten dauern, abhängig von der Geschwindigkeit I
 Nach der Installation können Sie Android Studio starten und mit der Konfiguration beginnen. Befolgen Sie dazu die folgenden Schritte:
 
 1. Starten Sie Android Studio durch Doppelklicken auf das Symbol auf Ihrem Desktop oder in Ihrem Startmenü.
-2. Wählen Sie "Configure" im Begrüßungsbildschirm und wählen Sie "SDK Manager".
+2. Wählen Sie "Configure"(Die drei Punkte oben rechts) im Begrüßungsbildschirm und wählen Sie "SDK Manager".
 3. Wählen Sie die Android-Version "Tiramisu" oder höher aus und klicken Sie auf "Install Packages", um die erforderlichen Pakete herunterzuladen und zu installieren.
 4. Wählen Sie "Configure" und "Settings" aus dem Hauptmenü von Android Studio, um die Einstellungen anzupassen.
 
@@ -130,11 +130,18 @@ Die Nexus Wallet enthält Funktionalitäten für:
 - Empfangen von Bitcoin auf die eigene Wallet
 - Anzeigen des Kursverlaufs von Bitcoin
 - Anzeigen von Nachrichten zu Bitcoin
+
+#### Bitcoin Testnet-faucet
+
+Um Transaktionen tätigen zu können, werden logischerweise Bitcoin benötigt. Diese können im Testnetz über sogenannte faucets ausgeliehen werden:
+1. Nachdem Sie Ihr Konto erstellt und somit eine Wallet-Adresse erhalten haben, besuchen Sie die Seite https://coinfaucet.eu/en/btc-testnet/ .
+2. Geben Sie Ihre Wallet-Adresse in das Eingabefeld ein und klicken Sie auf die Schaltfläche "Get Bitcoins".
+3. Es wird eine kleine Menge Bitcoin auf Ihre Adresse überwiesen. Bitte beachten Sie, dass empfangene Transaktionen nicht direkt weiterverwendet werden können, da sie erst bestätigt werden müssen, was etwas Zeit beansprechen kann.
   
 Details zur Benutzung der App finden Sie im Benutzerhandbuch.
 
 Aktuelle Einschränkungen bei der App-Benutzung:
-- Die Aktualisierung der Bitcoinkurses findet nur alle 60 Sekunden statt, weil dafür die Coingecko-API verwendet wird, die mit der kostenlosen Version nur eine begrenzte Anzahl von Anfragen annnimmt. Da die Nexus Wallet ein Studienprojekt ist, fehlen dem Team die nötigen finanziellen Mittel, ein bezahltes Abbonement für die Coingecko-API abzuschließen.
+- Die Aktualisierung der Bitcoinkurses findet nur alle 60 Sekunden statt, weil dafür die Coingecko-API verwendet wird, die mit der kostenlosen Version nur eine begrenzte Anzahl von Anfragen annnimmt. Da die Nexus Wallet ein Studienprojekt ist, fehlen dem Team die nötigen finanziellen Mittel, ein bezahltes Abonnement für die Coingecko-API abzuschließen.
 - Beim Abruf der aktuellen Nachrichten zu Bitcoin kann es zu Verzögerungen kommen. Diese sind durch die kostenlose Version der News-API begründet, ähnlich wie beim obigen Punkt.
 
 ## Beitrag zum Projekt {#beitragen}
