@@ -28,16 +28,24 @@ class Auth {
       }
       );
 
-  Stream<UserWallet?> get userWalletStream =>
-      usersCollection.doc(_firebaseAuth.currentUser!.uid).snapshots().map<UserWallet?>((snapshot) {
-        if (!snapshot.exists) {
-          print("Hier ist ein error aufgetreten (auth.dart)!");
-          return null;
-        }
-        final data = snapshot.data()!;
-        final UserWallet user = UserWallet.fromMap(data);
-        return user;
-      });
+  Stream<UserWallet?> get userWalletStream {
+    if (_firebaseAuth.currentUser == null) {
+      // Return an empty stream if currentUser is null
+      return Stream.empty();
+    }
+    return usersCollection
+        .doc(_firebaseAuth.currentUser!.uid)
+        .snapshots()
+        .map<UserWallet?>((snapshot) {
+      if (!snapshot.exists) {
+        print("Hier ist ein error aufgetreten (auth.dart)!");
+        return null;
+      }
+      final data = snapshot.data()!;
+      final UserWallet user = UserWallet.fromMap(data);
+      return user;
+    });
+  }
 
   Future<void> _createUserDocument(UserWallet userWallet) async {
     //just can use
