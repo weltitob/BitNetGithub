@@ -53,7 +53,7 @@ class _WidgetTreeState extends State<WidgetTree> {
   @override
   Widget build(BuildContext context) {
     //hier schon das erste mal aufrufen aber noch mit Fragezeichen >> daruch kann noch nicht null sein
-    final userWallet = Provider.of<UserWallet?>(context);
+    final UserWallet? userWallet = Provider.of<UserWallet?>(context);
 
     return StreamBuilder(
       stream: Auth().authStateChanges,
