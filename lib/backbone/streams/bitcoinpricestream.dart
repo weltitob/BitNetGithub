@@ -5,12 +5,13 @@ import 'package:http/http.dart';
 import 'package:nexus_wallet/components/chart.dart';
 
 /*
- This class represents a stream that periodically fetches the current price of Bitcoin in Euro from a REST API.
- It uses a StreamController to emit ChartLine objects, which contain the timestamp and the price of the fetched data.
- The price is fetched every 12 seconds using a Timer, and the result is sent to the StreamController.
- The start() method starts the timer and begins the stream, while the stop() method cancels the timer and closes the stream.
- If there is an error fetching the price, it is caught and printed to the console.
- */
+This class represents a stream that periodically fetches the current price of Bitcoin in Euro from a REST API.
+It uses a StreamController to emit ChartLine objects, which contain the timestamp and the price of the fetched data.
+The price is fetched every 12 seconds using a Timer, and the result is sent to the StreamController.
+The start() method starts the timer and begins the stream, while the stop() method cancels the timer and closes the stream.
+If there is an error fetching the price, it is caught and printed to the console.
+*/
+
 class BitcoinPriceStream {
   final String _url = 'https://api.coingecko.com/api/v3/simple/price';
   StreamController<ChartLine> _priceController = StreamController<ChartLine>();

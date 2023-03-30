@@ -9,6 +9,7 @@ import 'package:nexus_wallet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:nexus_wallet/backbone/databaserefs.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/backbone/loaders.dart';
+import 'package:nexus_wallet/backbone/streams/gettransactionsstream.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/backbone/theme.dart';
@@ -26,23 +27,9 @@ class _TransactionsState extends State<Transactions>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late final Future<LottieComposition> _searchforfilesComposition;
-  final User? currentuser = Auth().currentUser;
   bool _visible = false;
 
-  Stream<List<BitcoinTransaction>> getTransactionsStream() {
-    // Create a stream that listens to changes in the transactions collection
-    return transactionCollection
-        .doc(currentuser!.uid)
-        .collection('all')
-        .orderBy('timestampSent', descending: true)
-        .snapshots()
-        .map((snapshot) {
-      // Convert each document in the snapshot to a Transaction object
-      return snapshot.docs
-          .map((doc) => BitcoinTransaction.fromDocument(doc))
-          .toList();
-    });
-  }
+  TransactionsStream transactionsStream = TransactionsStream();
 
   @override
   void initState() {
@@ -132,7 +119,7 @@ class _TransactionsState extends State<Transactions>
           child: Container(
             height: AppTheme.cardPadding * 18,
             child: StreamBuilder<List<BitcoinTransaction>>(
-              stream: getTransactionsStream(),
+              stream: transactionsStream.getTransactionsStream(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return SizedBox(
