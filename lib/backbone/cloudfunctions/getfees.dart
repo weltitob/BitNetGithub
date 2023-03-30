@@ -1,10 +1,6 @@
 import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:nexus_wallet/backbone/cloudfunctions/getbalance.dart';
-import 'package:nexus_wallet/backbone/databaserefs.dart';
-import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
-import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
 dynamic getFees({
@@ -12,6 +8,7 @@ dynamic getFees({
   required String receiver_address,
   required String amount_to_send,
   required String fee_size}) async {
+  print("GET FEES WAS TRIGGERED!");
   try {
     HttpsCallable callable =
     FirebaseFunctions.instance.httpsCallable('sendBitcoin');
@@ -24,23 +21,19 @@ dynamic getFees({
       'get_fees_only': true,
     });
     print("Das isch deine response: ${resp.data}");
-    print("noch ist alles gut 1...");
     final mydata = CloudfunctionCallback.fromJson(resp.data);
-    print("noch ist alles gut 2...");
     print(mydata.status);
     if (mydata.status == "success") {
-      print('success message was awnser');
+      print('success message was awnser from getfees');
       var encodedString = jsonDecode(mydata.message);
       print(encodedString);
 
     } else {
-      print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');
-      //error in der cloudfunktion aufgetreten aber werte korrekt zurückgekommen
-      print('Die Antwortnachricht der Cloudfunktion war ein Error.');
+      print('Error: Keine success message wurde als Status von getFees angegeben: ${mydata.message}');
       //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
     }
   } catch (e) {
-    print('EIN FEHLR IST BEIM AUFRUF DER CLOUD FUNKTION AUFGETRETEN');
-    print(e);
+    print('EIN FEHLR IST BEIM AUFRUF DER GETFEES CLOUD FUNKTION AUFGETRETEN');
+    print("Der aufgetretene Error: $e");
   }
 }

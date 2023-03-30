@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:http/http.dart';
+import 'package:nexus_wallet/backbone/cloudfunctions/getfees.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/sendbitcoin.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/backbone/security/biometrics/biometric_helper.dart';
@@ -146,6 +147,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   @override
   Widget build(BuildContext context) {
     final userWallet = Provider.of<UserWallet>(context);
+    getFees(userWallet: userWallet, receiver_address: '', amount_to_send: '', fee_size: 'Niedrig');
 
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
@@ -582,21 +584,29 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             await isBiometricsAvailable();
             if (isBioAuthenticated == true || hasBiometrics == false) {
               try {
-                await sendBitcoin(
+                CloudfunctionCallback callback = await sendBitcoin(
                   receiver_address: "${_bitcoinReceiverAdress}",
                   amount_to_send: "${moneyController.text}",
                   fee_size: '$feesSelected',
                   userWallet: userWallet,
                 );
-                await Navigator.push(
-                    context,
-                    PageTransition(
-                        type: PageTransitionType.fade,
-                        child: const BottomNav()));
-                displaySnackbar(
-                    context,
-                    "Deine Bitcoin wurden versendet!"
-                        " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
+                if(callback.status == "success"){
+                  displaySnackbar(
+                      context,
+                      "Deine Bitcoin wurden versendet!"
+                          " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
+                  await Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.fade,
+                          child: const BottomNav()));
+                } else {
+                  print("Fehler in der Cloudfunktion augetreten: ${callback.message}");
+                  displaySnackbar(context, "Ein Fehler ist aufgetreten: ${callback.message}");
+                  setState(() {
+                    isFinished = false;
+                  });
+                }
               } catch (e) {
                 print(e);
                 displaySnackbar(context, "Ein Fehler ist aufgetreten: $e");

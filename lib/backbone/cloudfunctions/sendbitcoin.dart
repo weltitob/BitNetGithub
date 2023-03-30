@@ -7,7 +7,7 @@ import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
-dynamic sendBitcoin({
+Future<CloudfunctionCallback> sendBitcoin({
     required UserWallet userWallet,
     required String receiver_address,
     required String amount_to_send,
@@ -43,17 +43,18 @@ dynamic sendBitcoin({
           .set(newTransaction.toMap());
 
       await getBalance(userWallet);
-
       print("Bitcoin senden ist alles erfolgreich durchgelaufen");
-
+      return mydata;
     } else {
       print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');
       //error in der cloudfunktion aufgetreten aber werte korrekt zurückgekommen
       print('Die Antwortnachricht der Cloudfunktion war ein Error.');
+      return mydata;
       //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
     }
   } catch (e) {
     print('EIN FEHLR IST BEIM AUFRUF DER CLOUD FUNKTION AUFGETRETEN');
     print(e);
+    return CloudfunctionCallback(status: "error", message: 'Ein interer Fehler ist aufgetreten, bitte versuche es später erneut');
   }
 }
