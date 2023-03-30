@@ -33,9 +33,9 @@ class _BottomNavState extends State<BottomNav> {
               children: <Widget>[
                 IgnorePointer(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 25),
+                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 28),
                     child: Container(
-                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 25,
+                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 28,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
