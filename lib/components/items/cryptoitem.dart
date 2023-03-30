@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/helpers.dart';
 import 'package:nexus_wallet/backbone/streams/bitcoinpricestream.dart';
+import 'package:nexus_wallet/backbone/streams/cryptochartline.dart';
 import 'package:nexus_wallet/components/chart.dart';
 import 'package:nexus_wallet/components/currencypicture.dart';
 import 'package:nexus_wallet/backbone/loaders.dart';

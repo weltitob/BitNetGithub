@@ -35,10 +35,6 @@ class MyApp extends StatelessWidget {
           create: (_) => Auth().userWalletStream,
           initialData: null,
         ),
-        // StreamProvider<List<BitcoinTransaction>?>(
-        //   create: (_) => Auth().userWalletStream,
-        //   initialData: null,
-        // ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
