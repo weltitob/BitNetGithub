@@ -82,6 +82,11 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   isBiometricsAvailable() async {
+    //only check for biometrics if user wants to send more than 0.1 bitcoin
+    if(double.parse(moneyController.text) < 0.1){
+      hasBiometrics = false;
+      return;
+    }
     isSecurityChecked = await awaitSecurityBool();
     //user needs to have enrolled Biometrics and also high security checked in settings to get fingerpint auth request
     if (isSecurityChecked == true) {
