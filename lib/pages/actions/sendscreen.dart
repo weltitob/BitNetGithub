@@ -602,7 +602,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                           child: const BottomNav()));
                 } else {
                   print("Fehler in der Cloudfunktion augetreten: ${callback.message}");
-                  displaySnackbar(context, "Ein Fehler ist aufgetreten: ${callback.message}");
+                  displaySnackbar(context, "${callback.message}");
                   setState(() {
                     isFinished = false;
                   });
