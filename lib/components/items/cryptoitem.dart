@@ -117,43 +117,43 @@ class _CryptoItemState extends State<CryptoItem>
   void initState() {
     super.initState();
     getChartLine();
-    _priceStream.start();
-    _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
-    _animation = ColorTween(
-        begin: _animationColor, end: Colors.transparent)
-        .animate(_controller)
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          setState(() {
-            _isBlinking = false;
-          });
-          _controller.reverse();
-          setState(() {
-            _animation = ColorTween(begin: _animationColor, end: Colors.transparent)
-                .animate(_controller);
-            _controller.reset();
-          });
-        }
-      });
-    _priceStream.priceStream.listen((newChartLine) {
-      setState(() {
-        //vor dem updaten preis erstmal speichern
-        _priceOneTimestampAgo = _currentPrice;
-        print("Preis vor update: $_priceOneTimestampAgo");
-        //neuen preis anzeigen lassen
-        _currentPrice = newChartLine.price;
-        print("Preis nach update: $_currentPrice");
-        _currentPriceString = newChartLine.price.toStringAsFixed(2) + "€";
-        //auch prozentanzeige updaten
-        priceChange = (_currentPrice - _firstPrice) / _firstPrice;
-        _priceChangeString = toPercent(priceChange);
-        //blinken
-        colorUpdater();
-        _isBlinking = true;
-      });
-      _controller.forward();
-    });
+    // _priceStream.start();
+    // _controller =
+    //     AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
+    // _animation = ColorTween(
+    //     begin: _animationColor, end: Colors.transparent)
+    //     .animate(_controller)
+    //   ..addStatusListener((status) {
+    //     if (status == AnimationStatus.completed) {
+    //       setState(() {
+    //         _isBlinking = false;
+    //       });
+    //       _controller.reverse();
+    //       setState(() {
+    //         _animation = ColorTween(begin: _animationColor, end: Colors.transparent)
+    //             .animate(_controller);
+    //         _controller.reset();
+    //       });
+    //     }
+    //   });
+    // _priceStream.priceStream.listen((newChartLine) {
+    //   setState(() {
+    //     //vor dem updaten preis erstmal speichern
+    //     _priceOneTimestampAgo = _currentPrice;
+    //     print("Preis vor update: $_priceOneTimestampAgo");
+    //     //neuen preis anzeigen lassen
+    //     _currentPrice = newChartLine.price;
+    //     print("Preis nach update: $_currentPrice");
+    //     _currentPriceString = newChartLine.price.toStringAsFixed(2) + "€";
+    //     //auch prozentanzeige updaten
+    //     priceChange = (_currentPrice - _firstPrice) / _firstPrice;
+    //     _priceChangeString = toPercent(priceChange);
+    //     //blinken
+    //     colorUpdater();
+    //     _isBlinking = true;
+    //   });
+    //   _controller.forward();
+    // });
   }
 
   @override
@@ -241,33 +241,33 @@ class _CryptoItemState extends State<CryptoItem>
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Stack(
-              children: [
-                Container(
-                  height: AppTheme.elementSpacing * 0.75,
-                  width: AppTheme.elementSpacing * 0.75,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(500.0),
-                    color: Colors.white10,
-                  ),
-                ),
-                if (_isBlinking)
-                  Positioned.fill(
-                    child:  AnimatedBuilder(
-                      animation: _animation,
-                      builder: (context, child) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(500.0),
-                            color: _animation.value,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(width: AppTheme.elementSpacing / 2),
+            // Stack(
+            //   children: [
+            //     Container(
+            //       height: AppTheme.elementSpacing * 0.75,
+            //       width: AppTheme.elementSpacing * 0.75,
+            //       decoration: BoxDecoration(
+            //         borderRadius: BorderRadius.circular(500.0),
+            //         color: Colors.white10,
+            //       ),
+            //     ),
+            //     if (_isBlinking)
+            //       Positioned.fill(
+            //         child:  AnimatedBuilder(
+            //           animation: _animation,
+            //           builder: (context, child) {
+            //             return Container(
+            //               decoration: BoxDecoration(
+            //                 borderRadius: BorderRadius.circular(500.0),
+            //                 color: _animation.value,
+            //               ),
+            //             );
+            //           },
+            //         ),
+            //       ),
+            //   ],
+            // ),
+            // const SizedBox(width: AppTheme.elementSpacing / 2),
             Text(
               _currentPriceString,
               style: AppTheme.textTheme.bodyMedium,

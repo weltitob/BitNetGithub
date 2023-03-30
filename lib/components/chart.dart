@@ -209,19 +209,19 @@ class _ChartWidgetState extends State<ChartWidget> {
     });
   }
 
-  BitcoinPriceStream _priceStream = BitcoinPriceStream();
+  //BitcoinPriceStream _priceStream = BitcoinPriceStream();
 
   @override
   void initState() {
     super.initState();
     getChartLine();
     _loading = true;
-    _priceStream.start();
-    print('Bitcoin pricestream started');
-    _priceStream.priceStream.listen((newChartLine) {
-      print('pricestream changes detected...');
-      key.currentState!.blinkAnimation();
-    });
+    // _priceStream.start();
+    // print('Bitcoin pricestream started');
+    // _priceStream.priceStream.listen((newChartLine) {
+    //   print('pricestream changes detected...');
+    //   key.currentState!.blinkAnimation();
+    // });
     _trackballBehavior = TrackballBehavior(
       lineColor: Colors.grey[400],
       enable: true,
@@ -633,33 +633,33 @@ class _CustomWidgetState extends State<CustomWidget> with SingleTickerProviderSt
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Stack(
-                  children: [
-                    Container(
-                      height: AppTheme.elementSpacing * 0.75,
-                      width: AppTheme.elementSpacing * 0.75,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(500.0),
-                        color: Colors.white10,
-                      ),
-                    ),
-                    if (_isBlinking)
-                      Positioned.fill(
-                        child:  AnimatedBuilder(
-                          animation: _animation,
-                          builder: (context, child) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(500.0),
-                                color: _animation.value,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                  ],
-                ),
-                SizedBox(width: AppTheme.elementSpacing,),
+                // Stack(
+                //   children: [
+                //     Container(
+                //       height: AppTheme.elementSpacing * 0.75,
+                //       width: AppTheme.elementSpacing * 0.75,
+                //       decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.circular(500.0),
+                //         color: Colors.white10,
+                //       ),
+                //     ),
+                //     if (_isBlinking)
+                //       Positioned.fill(
+                //         child:  AnimatedBuilder(
+                //           animation: _animation,
+                //           builder: (context, child) {
+                //             return Container(
+                //               decoration: BoxDecoration(
+                //                 borderRadius: BorderRadius.circular(500.0),
+                //                 color: _animation.value,
+                //               ),
+                //             );
+                //           },
+                //         ),
+                //       ),
+                //   ],
+                // ),
+                // SizedBox(width: AppTheme.elementSpacing,),
                 Text(
                   "${trackBallValuePrice}€",
                   style: Theme.of(context).textTheme.displaySmall,

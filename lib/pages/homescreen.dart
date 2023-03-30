@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
   final PageController _controller = PageController();
 
   Future<void> _handleRefresh() async {
-    final userWallet = Provider.of<UserWallet>(context);
+    final userWallet = Provider.of<UserWallet>(context, listen: false);
     await getBalance(userWallet);
     await getTransactions(userWallet);
   }
