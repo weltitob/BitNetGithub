@@ -129,88 +129,65 @@ class _TransactionsState extends State<Transactions>
         ),
         Padding(
           padding: EdgeInsets.only(top: AppTheme.elementSpacing),
-          child: Stack(
-            children: [
-              Container(
-                height: AppTheme.cardPadding * 18,
-                child: StreamBuilder<List<BitcoinTransaction>>(
-                  stream: getTransactionsStream(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return SizedBox(
-                          height: AppTheme.cardPadding * 3,
-                          child: Center(child: dotProgress(context)));
-                    }
-                    List<BitcoinTransaction> all_transactions = snapshot.data!;
-                    // Filter transactions by transaction type
-                    List<BitcoinTransaction> receive_transactions = all_transactions
-                        .where((t) => t.transactionDirection == "received")
-                        .toList();
+          child: Container(
+            height: AppTheme.cardPadding * 18,
+            child: StreamBuilder<List<BitcoinTransaction>>(
+              stream: getTransactionsStream(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return SizedBox(
+                      height: AppTheme.cardPadding * 3,
+                      child: Center(child: dotProgress(context)));
+                }
+                List<BitcoinTransaction> all_transactions = snapshot.data!;
+                // Filter transactions by transaction type
+                List<BitcoinTransaction> receive_transactions = all_transactions
+                    .where((t) => t.transactionDirection == "received")
+                    .toList();
 
-                    List<BitcoinTransaction> send_transactions = all_transactions
-                        .where((t) => t.transactionDirection == "sent")
-                        .toList();
-                    if (all_transactions.length == 0) {
-                      return searchForFilesAnimation(_searchforfilesComposition);
-                    } //else =>
-                    return TabBarView(
-                      controller: _tabController,
-                      children: [
-                        ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: all_transactions.length,
-                          itemBuilder: (context, index) {
-                            final _transaction = all_transactions[index];
-                            return TransactionItem(
-                                transaction: _transaction, context: context);
-                          },
-                        ),
-                        ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: send_transactions.length,
-                          itemBuilder: (context, index) {
-                            final _transaction = send_transactions[index];
-                            return TransactionItem(
-                                transaction: _transaction, context: context);
-                          },
-                        ),
-                        ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: receive_transactions.length,
-                          itemBuilder: (context, index) {
-                            final _transaction = receive_transactions[index];
-                            return TransactionItem(
-                                transaction: _transaction, context: context);
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-              Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: <Widget>[
-                    IgnorePointer(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: AppTheme.cardPadding * 8),
-                        child: Container(
-                          height: AppTheme.cardPadding * 10,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [Colors.transparent, AppTheme.colorBackground],
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ])
-            ],
+                List<BitcoinTransaction> send_transactions = all_transactions
+                    .where((t) => t.transactionDirection == "sent")
+                    .toList();
+                if (all_transactions.length == 0) {
+                  return searchForFilesAnimation(_searchforfilesComposition);
+                } //else =>
+                return TabBarView(
+                  controller: _tabController,
+                  children: [
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: all_transactions.length,
+                      itemBuilder: (context, index) {
+                        final _transaction = all_transactions[index];
+                        return TransactionItem(
+                            transaction: _transaction, context: context);
+                      },
+                    ),
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: send_transactions.length,
+                      itemBuilder: (context, index) {
+                        final _transaction = send_transactions[index];
+                        return TransactionItem(
+                            transaction: _transaction, context: context);
+                      },
+                    ),
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: receive_transactions.length,
+                      itemBuilder: (context, index) {
+                        final _transaction = receive_transactions[index];
+                        return TransactionItem(
+                            transaction: _transaction, context: context);
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ],

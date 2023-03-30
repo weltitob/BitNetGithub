@@ -308,7 +308,14 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                           SizedBox(
                             height: AppTheme.cardPadding,
                           ),
-                          buildFeesChooser()
+                          buildFeesChooser(),
+                          SizedBox(
+                            height: AppTheme.cardPadding,
+                          ),
+                          Text(
+                            "≈ 5,64 Euro",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ],
                       ),
                     ),

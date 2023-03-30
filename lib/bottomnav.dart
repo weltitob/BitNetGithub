@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/theme.dart';
 import 'package:nexus_wallet/pages/homescreen.dart';
 import 'package:nexus_wallet/pages/qrscreen.dart';
 import 'package:nexus_wallet/pages/settingsscreen.dart';
@@ -24,7 +25,30 @@ class _BottomNavState extends State<BottomNav> {
     ];
 
     return Scaffold(
-      body: screens[_index],
+      body: Stack(
+        children: [
+          screens[_index],
+          Stack(
+              alignment: Alignment.bottomCenter,
+              children: <Widget>[
+                IgnorePointer(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 25),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 25,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.transparent, AppTheme.colorBackground],
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ]),
+        ],
+      ),
       bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: Theme.of(context).backgroundColor,
           color: Colors.purple.shade800,
