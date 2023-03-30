@@ -127,7 +127,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   void validateAdress(String value) {
-    myFocusNodeAdress.unfocus();
     if (value == null || value.isEmpty) {
       displaySnackbar(context, "Hmm. Diese Walletadresse scheint nicht zu existieren");
     }
@@ -212,7 +211,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                       alignment: Alignment.center,
                                       child: TextFormField(
                                         onTapOutside: (value) {
-                                          validateAdress(bitcoinReceiverAdressController.text);
+                                          if(myFocusNodeAdress.hasFocus){
+                                            myFocusNodeAdress.unfocus();
+                                            validateAdress(bitcoinReceiverAdressController.text);
+                                          }
                                         },
                                         maxLength: 40,
                                         focusNode: myFocusNodeAdress,
@@ -580,7 +582,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             await isBiometricsAvailable();
             if (isBioAuthenticated == true || hasBiometrics == false) {
               try {
-                BitcoinTransaction mytransaction = await sendBitcoin(
+                await sendBitcoin(
                   receiver_address: "${_bitcoinReceiverAdress}",
                   amount_to_send: "${moneyController.text}",
                   fee_size: '$feesSelected',
