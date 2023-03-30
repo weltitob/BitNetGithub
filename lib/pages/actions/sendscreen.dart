@@ -34,6 +34,7 @@ class SendBTCScreen extends StatefulWidget {
 
 class _SendBTCScreenState extends State<SendBTCScreen> {
   late FocusNode myFocusNodeAdress;
+  late FocusNode myFocusNodeMoney;
   TextEditingController bitcoinReceiverAdressController =
       TextEditingController();
   TextEditingController moneyController = TextEditingController();
@@ -53,6 +54,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     super.initState();
     moneyController.text = "0.00001";
     myFocusNodeAdress = FocusNode();
+    myFocusNodeMoney = FocusNode();
     getBitcoinPrice();
     if (widget.bitcoinReceiverAdress != null) {
       setState(() {
@@ -69,6 +71,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   void dispose() {
     // Clean up the focus node when the Form is disposed.
     myFocusNodeAdress.dispose();
+    myFocusNodeMoney.dispose();
     moneyController.dispose();
     super.dispose();
   }
@@ -434,6 +437,15 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             alignment: Alignment.centerRight,
             children: [
               TextField(
+                focusNode: myFocusNodeMoney,
+                onTap: (){
+                  validateAdress(bitcoinReceiverAdressController.text);
+                },
+                onTapOutside: (value){
+                  if(myFocusNodeMoney.hasFocus){
+                    myFocusNodeMoney.unfocus();
+                  }
+                },
                 textAlign: TextAlign.center,
                 onChanged: (text) {
                   getBitcoinPrice();
