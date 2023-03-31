@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/container/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
+import 'package:nexus_wallet/models/issuereport.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/settingsscreen.dart';
 import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:provider/provider.dart';
 
 class ReportIssueScreen extends StatefulWidget {
   const ReportIssueScreen({Key? key}) : super(key: key);
@@ -17,11 +21,15 @@ class ReportIssueScreen extends StatefulWidget {
 class _ReportIssueScreenState extends State<ReportIssueScreen> {
   TextEditingController _issueController = TextEditingController();
 
-  sendIssue() {
+  sendIssue(UserWallet userWallet) {
     print('Issue commited');
-    if(_issueController.text.isNotEmpty) {
+    if (_issueController.text.isNotEmpty) {
       _issueController.text = "";
       displaySnackbar(context, "Deine Fehlermeldung wurde weitergeleitet");
+      final issuereport = IssueReport(
+          useremail: userWallet.email, issue: _issueController.text);
+      // Push issuereport object to Firebase Realtime Database
+      issueCollection.doc(userWallet.useruid).set(issuereport.toMap());
     } else {
       displaySnackbar(context, "Bitte geben Sie erst einen Fehlertext an");
     }
@@ -29,12 +37,15 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final UserWallet userWallet = Provider.of<UserWallet>(context);
+
     return Scaffold(
       backgroundColor: AppTheme.colorBackground,
       body: Container(
         padding: EdgeInsets.only(top: AppTheme.cardPadding * 2),
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
+          padding: EdgeInsets.symmetric(
+              horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -43,13 +54,19 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                   Icons.email_outlined,
                   color: Colors.white,
                 ),
-                SizedBox(width: AppTheme.elementSpacing / 2,),
-                Text("Fehler melden",
-                  style: Theme.of(context).textTheme.headlineMedium,),
+                SizedBox(
+                  width: AppTheme.elementSpacing / 2,
+                ),
+                Text(
+                  "Fehler melden",
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ],
             ),
             MyDivider(),
-            SizedBox(height: AppTheme.cardPadding,),
+            SizedBox(
+              height: AppTheme.cardPadding,
+            ),
             Container(
               width: AppTheme.cardPadding * 11.5,
               child: Glassmorphism(
@@ -69,7 +86,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                     onSubmitted: (text) {
                       setState(() {
                         print('pressed');
-                        sendIssue();
+                        sendIssue(userWallet);
                       });
                       ;
                     },
@@ -77,20 +94,23 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       counterText: "",
-                      hintText: "Bitte teile uns mit was schief gelaufen ist...",
-                      hintStyle:
-                      TextStyle(color: AppTheme.white60),
+                      hintText:
+                          "Bitte teile uns mit was schief gelaufen ist...",
+                      hintStyle: TextStyle(color: AppTheme.white60),
                     ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: AppTheme.cardPadding,),
+            SizedBox(
+              height: AppTheme.cardPadding,
+            ),
             Center(
               child: glassButton(
-                  text: "Melden", iconData: Icons.send, onTap: () => sendIssue()),
+                  text: "Melden",
+                  iconData: Icons.send,
+                  onTap: () => sendIssue(userWallet)),
             ),
-
           ],
         ),
       ),
