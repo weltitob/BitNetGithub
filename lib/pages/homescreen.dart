@@ -68,6 +68,8 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
 
   @override
   Widget build(BuildContext context) {
+    final UserWallet userWallet = Provider.of<UserWallet>(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: LiquidPullToRefresh(
@@ -235,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
                   GestureDetector(
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const SendBTCScreen(),
+                        builder: (context) => SendBTCScreen(bitcoinSenderAdress: userWallet.walletAddress,),
                       ),
                     ),
                     child: circButtonWidget("Senden", _compositionSend,

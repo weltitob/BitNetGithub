@@ -16,10 +16,7 @@ void main() {
 
     // Call getFees with test parameters
     dynamic fees = await getFees(
-      userWallet: userWallet,
-      receiver_address: 'test_receiver_address',
-      amount_to_send: '0.02',
-      fee_size: 'Mittel',
+      sender_address: '',
     );
 
     // Verify that fees is not null

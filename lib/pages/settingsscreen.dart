@@ -118,6 +118,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget buildBox() {
+
+    final userWallet = Provider.of<UserWallet>(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -154,6 +157,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             builder: (context) => SendBTCScreen(
                               bitcoinReceiverAdress:
                                   "bc1qefen49mdjzzkxjec4pz5gsl9fq8nk3kuyq05nl",
+                              bitcoinSenderAdress: userWallet.walletAddress,
                             ),
                           ),
                         );

@@ -9,9 +9,11 @@ import 'package:nexus_wallet/components/buttons/roundedbutton.dart';
 import 'package:nexus_wallet/components/camera/textscanneroverlay.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/models/qrcodebitcoin.dart';
+import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/components/theme/theme.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:provider/provider.dart';
 
 class QRScreen extends StatefulWidget {
   final bool isBottomButtonVisible;
@@ -32,6 +34,8 @@ class _QRScreenState extends State<QRScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userWallet = Provider.of<UserWallet>(context);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -67,7 +71,9 @@ class _QRScreenState extends State<QRScreen> {
                 if(isValid){
                   await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
-                        SendBTCScreen(bitcoinReceiverAdress: currentqr.bitcoinAddress),
+                        SendBTCScreen(
+                          bitcoinReceiverAdress: currentqr.bitcoinAddress,
+                          bitcoinSenderAdress: userWallet.walletAddress,),
                   ));
                 } else {
                   print("Error beim einscannen des QR Codes");

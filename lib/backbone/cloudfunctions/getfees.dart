@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
+import 'package:nexus_wallet/models/fees.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
 // function to get the fees for the transaction
 dynamic getFees({
-  required UserWallet userWallet,
-  required String receiver_address,
-  required String amount_to_send,
-  required String fee_size
+  required String sender_address,
 }) async {
   print("GET FEES WAS TRIGGERED!");
 
@@ -17,11 +15,11 @@ dynamic getFees({
     HttpsCallable callable =
     FirebaseFunctions.instance.httpsCallable('sendBitcoin');
     final resp = await callable.call(<String, dynamic>{
-      'sender_private_key': userWallet.privateKey,
-      'sender_address': userWallet.walletAddress,
-      'receiver_address': receiver_address,
-      'amount_to_send': amount_to_send,
-      'fee_size': fee_size,
+      'sender_private_key': "",
+      'sender_address': sender_address,
+      'receiver_address': "",
+      'amount_to_send': "",
+      'fee_size': "",
       'get_fees_only': true,
     });
 
@@ -30,20 +28,21 @@ dynamic getFees({
     print(mydata.status);
     if (mydata.status == "success") {
       print('success message was awnser from getfees');
-
       // Decode the encoded JSON message in the response
       var encodedString = jsonDecode(mydata.message);
       print(encodedString);
+      final fees = Fees.fromJson(encodedString);
+      return fees;
     } else {
       // Handle error message from Cloud Function
       print(
-          'Error: Keine success message wurde als Status von getFees angegeben: ${mydata
-              .message}');
-      //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
+          'Error: Keine success message wurde als Status von getFees angegeben: ${mydata.message}');
+      return null;
     }
   } catch (e) {
     // Handle errors when calling the Cloud Function
     print('EIN FEHLR IST BEIM AUFRUF DER GETFEES CLOUD FUNKTION AUFGETRETEN');
     print("Der aufgetretene Error: $e");
+    return null;
   }
 }
