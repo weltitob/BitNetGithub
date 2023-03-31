@@ -21,15 +21,16 @@ class ReportIssueScreen extends StatefulWidget {
 class _ReportIssueScreenState extends State<ReportIssueScreen> {
   TextEditingController _issueController = TextEditingController();
 
-  sendIssue(UserWallet userWallet) {
+  sendIssue(UserWallet userWallet) async {
     print('Issue commited');
     if (_issueController.text.isNotEmpty) {
       _issueController.text = "";
-      displaySnackbar(context, "Deine Fehlermeldung wurde weitergeleitet");
       final issuereport = IssueReport(
           useremail: userWallet.email, issue: _issueController.text);
       // Push issuereport object to Firebase Realtime Database
-      issueCollection.doc(userWallet.useruid).set(issuereport.toMap());
+      await issueCollection.doc(userWallet.useruid).set(issuereport.toMap());
+      displaySnackbar(context, "Deine Fehlermeldung wurde weitergeleitet");
+      Navigator.of(context).pop();
     } else {
       displaySnackbar(context, "Bitte geben Sie erst einen Fehlertext an");
     }
