@@ -29,16 +29,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        StreamProvider<UserWallet?>(
+          create: (_) => Auth().userWalletStream,
+          initialData: null,
+        ),
         // Provide a stream of user wallet data for authentication changes
         StreamProvider<UserWallet?>(
           create: (_) => Auth().userWalletStreamForAuthChanges,
           initialData: null,
         ),
         // Provide a stream of user wallet data
-        StreamProvider<UserWallet?>(
-          create: (_) => Auth().userWalletStream,
-          initialData: null,
-        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

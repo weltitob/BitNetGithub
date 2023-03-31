@@ -43,8 +43,11 @@ class Auth {
   operator is used to transform the DocumentSnapshot to a UserWallet object.
    */
   Stream<UserWallet?> get userWalletStream =>
-      usersCollection.doc(_firebaseAuth.currentUser!.uid).snapshots().map<
+      usersCollection.doc(_firebaseAuth.currentUser?.uid).snapshots().map<
           UserWallet?>((snapshot) {
+        if (_firebaseAuth.currentUser?.uid == null) {
+          return null;
+        }
         if (!snapshot.exists) {
           print("Hier ist ein error aufgetreten (auth.dart)!");
           return null;
