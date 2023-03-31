@@ -16,7 +16,9 @@ Random random = new Random();
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
+  // function to toggle between login and register screens
   Function() toggleView;
+  // function to toggle between login and reset password screens
   Function() toggleResetPassword;
 
   LoginScreen({
@@ -32,24 +34,33 @@ class LoginScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
+  // composition of the lottie animation
   late final Future<LottieComposition> _composition;
+  // error message if sign in fails
   String? errorMessage = null;
+  // user's email
   String? email = '';
+  // user's password
   String? password = '';
 
+  // key for the form validation
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
+  // controllers for email and password fields
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
+  // loading status
   bool _isLoading = false;
 
+  // function to load the lottie animation
   Future<LottieComposition> _loadComposition() async {
     var assetData = await rootBundle.load('assets/lottiefiles/background.json');
     dynamic mycomposition = await LottieComposition.fromByteData(assetData);
     return mycomposition;
   }
 
+  // function to sign in with email and password
   Future<void> signInWithEmailAndPassword() async {
     setState(() {
       _isLoading = true;
@@ -191,7 +202,7 @@ class _SignupScreenState extends State<LoginScreen>
                       ),
                       GestureDetector(
                         onTap: () {
-                          //sollte resetpasswordscreen switchen
+                          // switch to passwordscreen
                           print('switch to reset password in authtree');
                           widget.toggleResetPassword();
                         },
