@@ -24,38 +24,41 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+// Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
 class SendBTCScreen extends StatefulWidget {
-  final String? bitcoinReceiverAdress;
+  final String? bitcoinReceiverAdress; // the Bitcoin receiver address, can be null
   const SendBTCScreen({Key? key, this.bitcoinReceiverAdress}) : super(key: key);
 
+  // Create a state object for SendBTCScreen
   @override
   State<SendBTCScreen> createState() => _SendBTCScreenState();
 }
 
+// Define a state object called _SendBTCScreenState for SendBTCScreen
 class _SendBTCScreenState extends State<SendBTCScreen> {
   late FocusNode myFocusNodeAdress;
   late FocusNode myFocusNodeMoney;
   TextEditingController bitcoinReceiverAdressController =
-      TextEditingController();
-  TextEditingController moneyController = TextEditingController();
-  bool isFinished = false;
-  bool _hasReceiver = false;
-  String _bitcoinReceiverAdress = '';
-  dynamic _moneyineur = '';
-  bool _isLoadingExchangeRt = true;
-  //biometric authentication before sending
-  bool hasBiometrics = true;
-  bool isBioAuthenticated = false;
-  late bool isSecurityChecked;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController(); // the controller for the Bitcoin receiver address text field
+  TextEditingController moneyController = TextEditingController(); // the controller for the amount text field
+  bool isFinished = false; // a flag indicating whether the send process is finished
+  bool _hasReceiver = false; // a flag indicating whether a receiver address is present
+  String _bitcoinReceiverAdress = ''; // the Bitcoin receiver address
+  dynamic _moneyineur = ''; // the amount in Euro, stored as dynamic type
+  bool _isLoadingExchangeRt = true; // a flag indicating whether the exchange rate is loading
+  // Biometric authentication before sending
+  bool hasBiometrics = true; // a flag indicating whether biometrics is supported on the device
+  bool isBioAuthenticated = false; // a flag indicating whether the user has successfully authenticated via biometrics
+  late bool isSecurityChecked; // a flag indicating whether the security has been checked
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // a key for the form widget
 
   @override
   void initState() {
     super.initState();
-    moneyController.text = "0.00001";
+    moneyController.text = "0.00001"; // set the initial amount to 0.00001
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
-    getBitcoinPrice();
+    getBitcoinPrice(); // retrieve the Bitcoin exchange rate
     if (widget.bitcoinReceiverAdress != null) {
       setState(() {
         _bitcoinReceiverAdress = widget.bitcoinReceiverAdress!;
@@ -63,24 +66,26 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         bitcoinReceiverAdressController.text = widget.bitcoinReceiverAdress!;
       });
     } else {
-      print("Bisher wurde noch keine Empfängeradresse angegeben");
+      print("Bisher wurde noch keine Empfängeradresse angegeben"); // print a message if no receiver address is provided
     }
   }
 
+  // This method is called when the widget is being disposed.
   @override
   void dispose() {
-    // Clean up the focus node when the Form is disposed.
+  // Clean up the focus node when the Form is disposed.
     myFocusNodeAdress.dispose();
     myFocusNodeMoney.dispose();
     moneyController.dispose();
     super.dispose();
   }
-
+  // This method is used to get the security check value from the shared preferences.
   awaitSecurityBool() async {
     bool securitybool = await SharedPrefSecurityCheck();
     return securitybool;
   }
 
+  // This method is used to check if the biometrics feature is available on the device.
   isBiometricsAvailable() async {
     //only check for biometrics if user wants to send more than 0.1 bitcoin
     if(double.parse(moneyController.text) < 0.1){
@@ -103,6 +108,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     }
   }
 
+  // This method is used to fetch the current Bitcoin price from the CoinGecko API.
   Future<void> getBitcoinPrice() async {
     _isLoadingExchangeRt = true;
     final String url = 'https://api.coingecko.com/api/v3/simple/price';
@@ -135,6 +141,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     }
   }
 
+  // This function is used to validate a Bitcoin wallet address. If the input value is null or empty,
+  // it displays a Snackbar with an error message. If the input value is a valid Bitcoin wallet address,
+  // it sets the state variables _bitcoinReceiverAdress and _hasReceiver to the input value and true, respectively.
+  // If the input value is not a valid Bitcoin wallet address, it displays a Snackbar with an error message.
   void validateAdress(String value) {
     if (value == null || value.isEmpty) {
       displaySnackbar(context, "Hmm. Diese Walletadresse scheint nicht zu existieren");
@@ -152,15 +162,22 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
 
   String feesSelected = "Niedrig";
 
+// The following function builds the widget tree for the screen
   @override
   Widget build(BuildContext context) {
+    // Retrieves userWallet using the Provider
     final userWallet = Provider.of<UserWallet>(context);
+
+    // Calls the getFees function to retrieve fee information
     getFees(userWallet: userWallet, receiver_address: '', amount_to_send: '', fee_size: 'Niedrig');
 
+    // Builds the screen scaffold
     return Scaffold(
+      // Disables resizing when the keyboard is shown
       resizeToAvoidBottomInset: false,
       backgroundColor: AppTheme.colorBackground,
       appBar: AppBar(
+        // Adds a back button to the appbar
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -170,8 +187,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Adds a title for the screen
             Text("Bitcoin versenden",
                 style: Theme.of(context).textTheme.titleLarge),
+            // Displays the user's wallet balance
             Text("${userWallet.walletBalance}BTC verfügbar",
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
@@ -213,6 +232,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
+                                    // Adds a text input for the Bitcoin receiver address
                                     Container(
                                       width: AppTheme.cardPadding * 11.5,
                                       child: Glassmorphism(
@@ -226,15 +246,20 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                           height: AppTheme.cardPadding * 2,
                                           alignment: Alignment.center,
                                           child: TextFormField(
+                                            // Unfocuses the input field when tapped outside of it
                                             onTapOutside: (value) {
                                               if(myFocusNodeAdress.hasFocus){
                                                 myFocusNodeAdress.unfocus();
                                                 validateAdress(bitcoinReceiverAdressController.text);
                                               }
                                             },
+                                            // Limits the length of the input to 40 characters
                                             maxLength: 40,
+                                            // Adds a focus node for the input field
                                             focusNode: myFocusNodeAdress,
+                                            // Binds the controller to the text input
                                             controller: bitcoinReceiverAdressController,
+                                            // Validates the address when the text input is submitted
                                             onFieldSubmitted: (value) {
                                               validateAdress(value);
                                             },
@@ -254,6 +279,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                         ),
                                       ),
                                     ),
+                                    // A GestureDetector widget that navigates to a new page when tapped
                                     GestureDetector(
                                         onTap: () => Navigator.of(context).push(
                                               MaterialPageRoute(
@@ -271,19 +297,29 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                               ),
                       ],
                     ),
+                // A SizedBox widget with a height of AppTheme.cardPadding * 2
                     const SizedBox(
                       height: AppTheme.cardPadding * 2,
                     ),
+
+                // A Center widget with a child of bitcoinWidget()
                     Center(child: bitcoinWidget()),
+
+                // A Center widget with a child of bitcoinToMoneyWidget()
                     Center(child: bitcoinToMoneyWidget()),
+
+                // A SizedBox widget with a height of AppTheme.cardPadding * 3
                     const SizedBox(
                       height: AppTheme.cardPadding * 3,
-                    ),
+                ),
+
+                // A Padding widget that contains a Column widget with a few children
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                      // A Row widget with a Text widget, a SizedBox widget, and a GestureDetector widget
                           Row(
                             children: [
                               Text(
@@ -295,6 +331,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                               ),
                               GestureDetector(
                                 onTap: () {
+                              // Displays a snackbar message when tapped
                                   displaySnackbar(
                                       context,
                                       "Die Gebührenhöhe bestimmt über "
@@ -312,6 +349,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                           SizedBox(
                             height: AppTheme.cardPadding,
                           ),
+                      // A function that returns a widget for choosing fees
                           buildFeesChooser(),
                           SizedBox(
                             height: AppTheme.elementSpacing,
@@ -326,6 +364,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                     ),
                   ],
                 ),
+                // A Padding widget that contains a button widget
                 Padding(
                     padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 2),
                     child: button()),
@@ -337,6 +376,14 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     );
   }
 
+  /// Returns a widget that displays an animated icon with a glowing effect.
+  ///
+  /// The icon is wrapped in a [AvatarGlow] widget, which adds the glowing effect.
+  /// The icon itself is a [CustomPaint] widget that draws a border around an [Icon].
+  /// The icon's [IconData] is passed as a parameter to this function.
+  /// The [glowColor] parameter is used to set the color of the glow effect.
+  /// The [endRadius] parameter is used to set the size of the glow effect.
+  /// The animation duration and pause duration are also set.
   Widget avatarGlow(BuildContext context, IconData icon) {
     return Center(
       child: Column(
@@ -368,30 +415,36 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   Widget bitcoinToMoneyWidget() {
-    return _isLoadingExchangeRt
-        ? dotProgress(context)
+    return _isLoadingExchangeRt   // if exchange rate is still loading
+        ? dotProgress(context)   // show a loading indicator
         : Text(
-            "= ${_moneyineur.toStringAsFixed(2)}€",
-            style: Theme.of(context).textTheme.bodyLarge,
-          );
+      "= ${_moneyineur.toStringAsFixed(2)}€",   // show the converted value of Bitcoin to Euro with 2 decimal places
+      style: Theme.of(context).textTheme.bodyLarge,  // use the bodyLarge text theme style from the current theme
+    );
   }
 
+  // This widget represents a user tile with an avatar, title, subtitle, and edit button.
   Widget userTile() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // The ListTile widget is used to display the user tile.
           ListTile(
+            // The leading widget is a circle avatar that displays an image.
             leading: const CircleAvatar(
               backgroundImage: NetworkImage(
                   "https://bitfalls.com/wp-content/uploads/2017/09/header-5.png"),
             ),
+            // The title displays the user's name.
             title: Text(
               "Unbekannte Walletadresse",
               style: Theme.of(context).textTheme.subtitle2,
             ),
+            // The subtitle displays a card number.
             subtitle: cardWithNumber(),
+            // The trailing widget is an icon button that is used to edit the user's information.
             trailing: IconButton(
                 icon: const Icon(Icons.edit_rounded,
                     color: Colors.grey, size: 18),
@@ -406,19 +459,22 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     );
   }
 
+// A widget to display the bitcoin receiver address in a row with an icon for copying it to the clipboard
   Widget cardWithNumber() {
     return GestureDetector(
+      // On tap, copies the receiver address to the clipboard and displays a snackbar
       onTap: () async {
         await Clipboard.setData(ClipboardData(text: _bitcoinReceiverAdress));
-        // copied successfully
         displaySnackbar(context, "Wallet-Adresse in Zwischenablage kopiert");
       },
       child: Row(
         children: [
+          // Icon for copying the receiver address to clipboard
           const Icon(Icons.copy_rounded, color: Colors.grey, size: 16),
           SizedBox(
             width: AppTheme.cardPadding * 8,
             child: Text(
+              // The receiver address to be displayed
               _bitcoinReceiverAdress,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.caption,
@@ -430,6 +486,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   Widget bitcoinWidget() {
+    // Accessing the user wallet object from Provider
     final userWallet = Provider.of<UserWallet>(context);
 
     return Padding(
@@ -437,6 +494,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Title of the widget
           Text(
             "Wert eingeben",
             style: Theme.of(context).textTheme.headline6,
@@ -448,25 +506,31 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
               child: Stack(
             alignment: Alignment.centerRight,
             children: [
+            // Text field to enter Bitcoin value
               TextField(
                 focusNode: myFocusNodeMoney,
                 onTap: (){
+                  // Validate Bitcoin address when the text field is tapped
                   validateAdress(bitcoinReceiverAdressController.text);
                 },
                 onTapOutside: (value){
+                  // Unfocus the text field when tapped outside
                   if(myFocusNodeMoney.hasFocus){
                     myFocusNodeMoney.unfocus();
                   }
                 },
                 textAlign: TextAlign.center,
                 onChanged: (text) {
+                  // Get the current Bitcoin price and update the UI
                   getBitcoinPrice();
                   setState(() {});
                 },
                 maxLength: 10,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
+                  // Only allow numerical values with a decimal point
                   FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
+                  // Restrict the range of input to be within 0 and 2000
                   NumericalRangeFormatter(
                       min: 0, max: double.parse("2.000"), context: context),
                 ],
@@ -480,30 +544,36 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 autofocus: false,
                 style: Theme.of(context).textTheme.displayLarge,
               ),
+              // Icon for Bitcoin currency
               Icon(
                 Icons.currency_bitcoin_rounded,
                 size: AppTheme.cardPadding * 1.5,
               )
             ],
-          )),
+          ),
+        ),
         ],
       ),
     );
   }
 
-  //test
   Widget buildFeesChooser() {
+    // create a container with top and bottom padding
     return Container(
       padding: const EdgeInsets.only(top: 15.0, bottom: 10),
+      // create a row with evenly distributed children buttons
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          // create a button for "Niedrig" fees
           glassButtonFees(
             "Niedrig",
           ),
+          // create a button for "Mittel" fees
           glassButtonFees(
             "Mittel",
           ),
+          // create a button for "Hoch" fees
           glassButtonFees(
             "Hoch",
           ),
@@ -512,14 +582,12 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     );
   }
 
-  Widget glassButtonFees(
-    String fees,
-  ) {
+  Widget glassButtonFees(String fees) { // defines a function that takes a string parameter called "fees"
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
-      child: fees == feesSelected
-          ? Glassmorphism(
+            child: fees == feesSelected // if the fees parameter equals the selected fees
+                ? Glassmorphism( // render a button with glassmorphism effect
               blur: 20,
               opacity: 0.1,
               radius: 50.0,
@@ -543,14 +611,14 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 ),
               ),
             )
-          : TextButton(
+                : TextButton( // if the fees parameter is not selected
               style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   minimumSize: const Size(50, 20),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   alignment: Alignment.centerLeft),
               onPressed: () {
-                setState(() {
+                setState(() { // update the state with the new selected fees
                   feesSelected = fees;
                   switch (feesSelected) {
                     case "Niedrig":
@@ -580,23 +648,31 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   Widget button() {
+    // Get the user wallet from the context using Provider
     final userWallet = Provider.of<UserWallet>(context);
 
+    // Return a Padding widget containing a SwipeableButtonView
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SwipeableButtonView(
+        // Determine if the button should be active based on whether a receiver has been selected
           isActive: _hasReceiver,
+          // Set the text style for the button text
           buttontextstyle: Theme.of(context).textTheme.headline6!.copyWith(
               color: AppTheme.white80, shadows: [AppTheme.boxShadowSmall]),
+          // Set the text to display on the button
           buttonText: "JETZT SENDEN!",
+          // Set the widget to display inside the button
           buttonWidget: Container(
             child: GestureDetector(
               onTap: () {
+                // If a receiver has not been selected, display an error message
                 if(!_hasReceiver){
                   displaySnackbar(context, "Deine Eingaben sind noch nicht valide.");
                 }
               },
               child: Icon(
+                // Set the icon to display based on whether a receiver has been selected
                 _hasReceiver
                     ? Icons.double_arrow_rounded
                     : Icons.lock_outline_rounded,
@@ -606,20 +682,27 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
               ),
             ),
           ),
+          // Set the active and disabled colors for the button
           activeColor: Colors.purple.shade800,
           disableColor: Colors.purple.shade800,
+          // Determine whether the button has finished its operation
           isFinished: isFinished,
+          // Define the function to execute while the button is in a waiting state
           onWaitingProcess: () {
+            // Wait for 2 seconds, then set isFinished to true
             Future.delayed(const Duration(seconds: 2), () {
               setState(() {
                 isFinished = true;
               });
             });
           },
+          // Define the function to execute when the button is finished
           onFinish: () async {
+            // Check if biometric authentication is available
             await isBiometricsAvailable();
             if (isBioAuthenticated == true || hasBiometrics == false) {
               try {
+                // Send bitcoin to the selected receiver using the user's wallet
                 CloudfunctionCallback callback = await sendBitcoin(
                   receiver_address: "${_bitcoinReceiverAdress}",
                   amount_to_send: "${moneyController.text}",
@@ -627,6 +710,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   userWallet: userWallet,
                 );
                 if(callback.status == "success"){
+                  // Display a success message and navigate to the bottom navigation bar
                   displaySnackbar(
                       context,
                       "Deine Bitcoin wurden versendet!"
@@ -637,6 +721,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                           type: PageTransitionType.fade,
                           child: const BottomNav()));
                 } else {
+                  // Display an error message if the cloud function failed and set isFinished to false
                   print("Fehler in der Cloudfunktion augetreten: ${callback.message}");
                   displaySnackbar(context, "${callback.message}");
                   setState(() {
@@ -644,6 +729,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   });
                 }
               } catch (e) {
+                // Display an error message if an error occurred and set isFinished to false
                 print(e);
                 displaySnackbar(context, "Ein Fehler ist aufgetreten: $e");
                 setState(() {
@@ -651,6 +737,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                 });
               }
             } else {
+              // Display an error message if biometric authentication failed
               print('Biometric authentication failed');
             }
           }),
