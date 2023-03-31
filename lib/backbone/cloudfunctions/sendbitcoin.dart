@@ -63,7 +63,8 @@ Future<CloudfunctionCallback> sendBitcoin({
       return mydata;
     } else {
       // error in cloudfuntion occurred, but values returned correctly
-      print('Error: Keine success message wurde als Status angegeben: ${mydata.message}');
+      print('Error: Keine success message wurde als Status angegeben: ${mydata
+          .message}');
       print('Die Antwortnachricht der Cloudfunktion war ein Error.');
       return mydata;
     }
@@ -71,6 +72,7 @@ Future<CloudfunctionCallback> sendBitcoin({
     // error occurred while calling cloud function
     print('EIN FEHLR IST BEIM AUFRUF DER CLOUD FUNKTION AUFGETRETEN');
     print(e);
-    return CloudfunctionCallback(status: "error", message: 'Ein interer Fehler ist aufgetreten, bitte versuche es später erneut');
+    return CloudfunctionCallback(status: "error",
+        message: 'Ein interer Fehler ist aufgetreten, bitte versuche es später erneut');
   }
 }

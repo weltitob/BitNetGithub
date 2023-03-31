@@ -16,7 +16,7 @@ dynamic getBalance(UserWallet userWallet) async {
     // if the function can't be called yet, exit the function
     print("CALL GET BALANCE CAN'T BE CALLED BECAUSE OF 10S TIMER");
     return;
-  } else{
+  } else {
     try {
       // call the cloud function
       print('CALL GET BALANCE...');

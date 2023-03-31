@@ -46,7 +46,8 @@ dynamic getTransactions(UserWallet userWallet) async {
         //mydata.status == error
         print('Die Antwortnachricht der Cloudfunktion war ein Error.');
         print(
-            'Error: Keine success message wurde als Status angegeben: ${mydata.message}');
+            'Error: Keine success message wurde als Status angegeben: ${mydata
+                .message}');
         //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
       }
     } catch (e) {

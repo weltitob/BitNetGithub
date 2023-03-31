@@ -13,12 +13,13 @@ class Auth {
 
   // currentUser getter returns the current authentical user
   User? get currentUser => _firebaseAuth.currentUser;
+
   // authSateChanges getter returns a stream of authentication state changes
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
   /*
   The userWalletStreamForAuthChanges getter returns a stream of the authenticated user's wallet data.
-The authStateChanges stream is used as the source stream, and the asyncMap operator is used to map the stream of User objects to UserWallet objects.
+  The authStateChanges stream is used as the source stream, and the asyncMap operator is used to map the stream of User objects to UserWallet objects.
    */
   Stream<UserWallet?> get userWalletStreamForAuthChanges =>
       authStateChanges.asyncMap<UserWallet?>((firebaseUser) async {
@@ -35,13 +36,15 @@ The authStateChanges stream is used as the source stream, and the asyncMap opera
         return user;
       }
       );
+
   /*
   The userWalletStream getter returns a stream of the current user's wallet data.
   The snapshots() method is used to listen to changes in the document, and the map
   operator is used to transform the DocumentSnapshot to a UserWallet object.
    */
   Stream<UserWallet?> get userWalletStream =>
-      usersCollection.doc(_firebaseAuth.currentUser!.uid).snapshots().map<UserWallet?>((snapshot) {
+      usersCollection.doc(_firebaseAuth.currentUser!.uid).snapshots().map<
+          UserWallet?>((snapshot) {
         if (!snapshot.exists) {
           print("Hier ist ein error aufgetreten (auth.dart)!");
           return null;
@@ -50,13 +53,14 @@ The authStateChanges stream is used as the source stream, and the asyncMap opera
         final UserWallet user = UserWallet.fromMap(data);
         return user;
       });
+
   /*
   The _createUserDocument method is used to update the user's wallet data in the Firestore database.
    */
   Future<void> _createUserDocument(UserWallet userWallet) async {
-
     await usersCollection.doc(userWallet.useruid).update(userWallet.toMap());
   }
+
   /*
   The sendPasswordResetEmail method sends a password reset email to the given email address.
    */
@@ -65,9 +69,10 @@ The authStateChanges stream is used as the source stream, and the asyncMap opera
   }) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
+
   /*
   The signInWithEmailAndPassword method signs in the user with the given email address and password.
-The method returns a UserWallet object for the signed-in user.
+  The method returns a UserWallet object for the signed-in user.
    */
   Future<UserWallet?> signInWithEmailAndPassword({
     required String email,
@@ -78,6 +83,7 @@ The method returns a UserWallet object for the signed-in user.
       password: password,
     );
   }
+
   /*
   createUserWithEmailAndPassword creates a new user with the specified email and password, and creates a new document in the users collection with the user's information. It takes two required parameters: user (a UserWallet object) and password. It returns a Future that completes with the newly created UserWallet object.
    */
@@ -94,6 +100,7 @@ The method returns a UserWallet object for the signed-in user.
     print('Successfully created wallet/user in database: ${newUser.toMap()}');
     return newUser;
   }
+
   /*
   This method signs out the currently logged in user. It returns a Future that completes with no value when the user is signed out.
    */

@@ -36,7 +36,9 @@ dynamic getFees({
       print(encodedString);
     } else {
       // Handle error message from Cloud Function
-      print('Error: Keine success message wurde als Status von getFees angegeben: ${mydata.message}');
+      print(
+          'Error: Keine success message wurde als Status von getFees angegeben: ${mydata
+              .message}');
       //displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
     }
   } catch (e) {

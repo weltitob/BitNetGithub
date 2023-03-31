@@ -11,7 +11,6 @@ import 'dart:math';
 
 Random random = new Random();
 
-// ignore: must_be_immutable
 class ResetPasswordScreen extends StatefulWidget {
   Function() toggleView;
   Function() toggleResetPassword;
@@ -63,7 +62,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
         email: _controllerEmail.text,
       );
       print('Passwort rücksetzen angefragt');
-      //success iwas anzeigen
       displaySnackbar(context, "Wir haben Ihnen eine E-Mail gesendet!");
     } on FirebaseAuthException catch (e) {
       setState(() {

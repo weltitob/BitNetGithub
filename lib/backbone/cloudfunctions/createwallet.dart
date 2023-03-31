@@ -4,8 +4,10 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
-// Creates a new Bitcoin wallet for the given email address by calling a cloud function.
-// Returns the new UserWallet object if successful, or null if an error occurs.
+/*
+Creates a new Bitcoin wallet for the given email address by calling a cloud function.
+Returns the new UserWallet object if successful, or null if an error occurs.
+ */
 dynamic createWallet({required String email,}) async {
   try {
     // Set up the Cloud Function call
@@ -26,7 +28,6 @@ dynamic createWallet({required String email,}) async {
     } else {
       // Error occurred in the Cloud Function, but valid data was returned
       print('Die Antwortnachricht der Cloudfunktion war ein Error.');
-      // displaySnackbar(context, "Ein Fehler bei der Erstellung deiner Bitcoin Wallet ist aufgetreten");
     }
   } catch (e) {
     // Error occurred when calling the Cloud Function

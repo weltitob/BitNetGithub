@@ -16,7 +16,9 @@ Future<LottieComposition> loadComposition(String assetPath) async {
 
 // Get the current time in milliseconds
 int timeNow() {
-  return DateTime.now().millisecondsSinceEpoch;
+  return DateTime
+      .now()
+      .millisecondsSinceEpoch;
 }
 
 // Get the average price of a list of items
@@ -81,10 +83,8 @@ class NumericalRangeFormatter extends TextInputFormatter {
   });
 
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
+      TextEditingValue newValue,) {
     // If the new value is empty, return it without any modifications
     if (newValue.text == '') {
       return newValue;
@@ -108,12 +108,16 @@ class NumericalRangeFormatter extends TextInputFormatter {
 // This class formats a numerical input value to allow only one decimal point
 class DotFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    int numDots = RegExp(r"\.").allMatches(oldValue.toString()).length;
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
+      TextEditingValue newValue) {
+    int numDots = RegExp(r"\.")
+        .allMatches(oldValue.toString())
+        .length;
     print("The string '$oldValue' contains $numDots dots.");
 
-    int newDots = RegExp(r"\.").allMatches(newValue.toString()).length;
+    int newDots = RegExp(r"\.")
+        .allMatches(newValue.toString())
+        .length;
     print("The string '$newValue' contains $newDots dots.");
 
     // If the old value already contains 3 or more decimal points, return the old value without any modifications
