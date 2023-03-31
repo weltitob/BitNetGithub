@@ -13,7 +13,7 @@
 * [Lizenzen](#lizenzen)
 * [Kontakt](#kontakt)
 
-## Installation {#installation}
+## Installation
 
 Zurzeit muss die App über Android Studio ausgeführt werden. Deswegen wird Android Studio und entweder ein Android Emulator oder ein Android-Gerät, welches als Emulator genutzt werden kann, benötigt.
 
@@ -119,7 +119,7 @@ Starten Sie Android Studio und öffnen Sie die Einstellungen. Navigieren Sie zu 
 
 Öffnen Sie Android Studio und wählen Sie "Configure" und dann "SDK Manager" aus. Wählen Sie die Registerkarte "SDK Platforms" aus und stellen Sie sicher, dass das Android SDK installiert ist, das Sie für die Entwicklung Ihrer App benötigen. Wählen Sie dann die Registerkarte "SDK Tools" aus und wählen Sie die neuesten Versionen von "Android SDK Build-Tools" und "Android SDK Platform-Tools" aus.
 
-## Benutzung {#benutzung}
+## Benutzung
 
 Wir empfehlen einen leistungsstarken Rechner mit min. 32 GB RAM, um die App mit einem Android-Studio-Emulator reibungslos ausführen zu können. Es ist ebenfalls möglich, ein privates Android-Handy mit Android-Studio zu verknüpfen, und die App direkt auf dem Handy auszuführen. Hierbei muss das private Android-Handy mindestens die Android-Version 13 haben.
 Um die Nexus Wallet-App zu starten, führen Sie folgende Schritte aus:
@@ -152,15 +152,15 @@ Aktuelle Einschränkungen bei der App-Benutzung:
 - Die Aktualisierung der Bitcoinkurses findet nur alle 60 Sekunden statt, weil dafür die Coingecko-API verwendet wird, die mit der kostenlosen Version nur eine begrenzte Anzahl von Anfragen annnimmt. Da die Nexus Wallet ein Studienprojekt ist, fehlen dem Team die nötigen finanziellen Mittel, ein bezahltes Abonnement für die Coingecko-API abzuschließen.
 - Beim Abruf der aktuellen Nachrichten zu Bitcoin kann es zu Verzögerungen kommen. Diese sind durch die kostenlose Version der News-API begründet, ähnlich wie beim obigen Punkt.
 
-## Beitrag zum Projekt {#beitragen}
+## Beitrag zum Projekt
 
 Bugs können in den Einstellungen bei "Fehler melden" gemeldet werden.
 
-## Lizenzen {#lizenzen}
+## Lizenzen
 
 Da die Nexus Wallet bisher nicht vertrieben wird, unterliegt sie auch keinen Lizenzen.
 
-## Kontakt {#kontakt}
+## Kontakt
 
 Bei Fragen können Sie den Product Owner Andreas Holzapfel unter folgender e-Mail-Adresse erreichen:
 holzapfel.andreas-it21@it.dhbw-ravensburg.de
