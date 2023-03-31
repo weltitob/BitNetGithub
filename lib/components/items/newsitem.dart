@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/helper/helpers.dart';
 import 'package:nexus_wallet/components/container/glassmorph.dart';
 import 'package:nexus_wallet/pages/secondpages/newsscreen.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 
 class NewsTile extends StatelessWidget {
   final String imgUrl, title, desc, content, posturl, author, publishedAt;

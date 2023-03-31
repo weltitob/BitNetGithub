@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image/image.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 
 enum ButtonState { idle, loading, disabled }
 

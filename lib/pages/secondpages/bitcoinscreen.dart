@@ -3,7 +3,7 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:nexus_wallet/components/chart/chart.dart';
 import 'package:nexus_wallet/components/container/buildroundedbox.dart';
 import 'package:nexus_wallet/pages/secondpages/newsscreen.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 
 class BitcoinScreen extends StatefulWidget {
   const BitcoinScreen({

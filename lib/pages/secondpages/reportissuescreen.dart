@@ -5,7 +5,7 @@ import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/container/glassmorph.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/pages/settingsscreen.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 
 class ReportIssueScreen extends StatefulWidget {
   const ReportIssueScreen({Key? key}) : super(key: key);

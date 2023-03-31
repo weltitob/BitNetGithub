@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 
 displaySnackbar(BuildContext context, String text) {
   final snackBar = SnackBar(

@@ -6,7 +6,7 @@ import 'package:nexus_wallet/components/chart/chart.dart';
 import 'package:nexus_wallet/components/container/currencypicture.dart';
 import 'package:nexus_wallet/backbone/helper/loaders.dart';
 import 'package:nexus_wallet/pages/secondpages/bitcoinscreen.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

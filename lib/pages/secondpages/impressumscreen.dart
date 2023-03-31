@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/pages/settingsscreen.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 
 class ImpressumScreen extends StatelessWidget {
   const ImpressumScreen({Key? key}) : super(key: key);

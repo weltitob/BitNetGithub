@@ -14,7 +14,7 @@ import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
 import 'package:nexus_wallet/pages/secondpages/impressumscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/reportissuescreen.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,9 +51,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     //displaySnackbar(context, "Dein Gerät hat leider nicht die nötigen Spezifikationen für diese Funktion");
   }
-
-
-  //iwie sowas final UserWallet userWallet = Auth().currentUserWallet;
 
   void toggleSecurityChecked(bool newSecurityChecked) async {
     final prefs = await SharedPreferences.getInstance();
@@ -138,9 +135,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    // ChildBuildBoxInternToggleSwich(
-                    //     Icons.nights_stay_outlined, "Darkmode"),
-                    // MyDivider(),
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(

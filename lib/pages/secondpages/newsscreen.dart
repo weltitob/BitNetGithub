@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nexus_wallet/components/items/newsitem.dart';
 import 'package:nexus_wallet/models/news.dart';
 import 'package:nexus_wallet/backbone/helper/loaders.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

@@ -8,7 +8,7 @@ import 'package:nexus_wallet/backbone/streams/cryptochartline.dart';
 import 'package:nexus_wallet/components/container/currencypicture.dart';
 import 'package:nexus_wallet/components/container/glassmorph.dart';
 import 'package:nexus_wallet/backbone/helper/loaders.dart';
-import 'package:nexus_wallet/backbone/theme.dart';
+import 'package:nexus_wallet/components/theme/theme.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
