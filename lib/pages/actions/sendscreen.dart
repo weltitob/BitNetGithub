@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:nexus_wallet/backbone/cloudfunctions/sendbitcoin.dart';
 import 'package:nexus_wallet/backbone/helper/helpers.dart';
 import 'package:nexus_wallet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:nexus_wallet/backbone/security/security.dart';
-import 'package:nexus_wallet/models/fees.dart';
 import 'package:nexus_wallet/pages/bottomnav.dart';
 import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
 import 'package:nexus_wallet/components/container/glassmorph.dart';
@@ -42,6 +42,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   late double feesInEur_medium;
   late double feesInEur_high;
   late double feesInEur_low;
+  String feesSelected = "Niedrig";
+  late double feesInEur;
   TextEditingController bitcoinReceiverAdressController =
       TextEditingController(); // the controller for the Bitcoin receiver address text field
   TextEditingController moneyController =
@@ -52,7 +54,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       false; // a flag indicating whether a receiver address is present
   String _bitcoinReceiverAdress = ''; // the Bitcoin receiver address
   dynamic _moneyineur = ''; // the amount in Euro, stored as dynamic type
-  double bitcoinprice = 1.0;
+  double bitcoinprice = 0.0;
   bool _isLoadingExchangeRt =
       true; // a flag indicating whether the exchange rate is loading
   bool _isLoadingFees =
@@ -73,7 +75,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     moneyController.text = "0.00001"; // set the initial amount to 0.00001
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
-    getBitcoinPrice(); // retrieve the Bitcoin exchange rate
     getFeesLocal(widget.bitcoinSenderAdress);
     if (widget.bitcoinReceiverAdress != null) {
       setState(() {
@@ -182,24 +183,33 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   void getFeesLocal(String bitcoinaddress) async {
+    await getBitcoinPrice();
     _isLoadingFees = true;
-    // Calls the getFees function to retrieve fee information
-    Fees feesInBtc = await getFees(
-     sender_address: widget.bitcoinSenderAdress,
-    );
-    if (feesInBtc == null){
-      return;
-    }
-    feesInEur_medium = bitcoinprice * double.parse(feesInBtc.fees_medium);
-    feesInEur_low = bitcoinprice * double.parse(feesInBtc.fees_low);
-    feesInEur_high = bitcoinprice * double.parse(feesInBtc.fees_high);
-    feesInEur = feesInEur_low;
-    _isLoadingFees = false;
-    setState(() {});
-  }
+    try{
+      // Calls the getFees function to retrieve fee information
+      dynamic feesInBtc = await getFees(
+        sender_address: widget.bitcoinSenderAdress,
+      );
+      if(feesInBtc == null){
+        //try it again in 5 seconds
+        Future.delayed(Duration(seconds: 10), () {
+          getFeesLocal(bitcoinaddress);
+        });
+        return;
+      }
+      setState(() {
+        feesInEur_medium = bitcoinprice * double.parse(feesInBtc.fees_medium);
+        feesInEur_low = bitcoinprice * double.parse(feesInBtc.fees_low);
+        feesInEur_high = bitcoinprice * double.parse(feesInBtc.fees_high);
+        feesInEur = feesInEur_low;
+        _isLoadingFees = false;
+      });
+    } catch(e){
+      _isLoadingFees = true;
+      print("error local getfees $e");
 
-  String feesSelected = "Niedrig";
-  late double feesInEur;
+    }
+  }
 
 // The following function builds the widget tree for the screen
   @override
@@ -451,7 +461,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   }
 
   Widget bitcoinToMoneyWidget() {
-    return _isLoadingFees == true // if exchange rate is still loading
+    return _isLoadingExchangeRt == true // if exchange rate is still loading
         ? dotProgress(context) // show a loading indicator
         : Text(
             "≈ ${_moneyineur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
@@ -623,10 +633,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         SizedBox(
           height: AppTheme.elementSpacing,
         ),
-        _isLoadingExchangeRt // if exchange rate is still loading
+        _isLoadingFees // if exchange rate is still loading
             ? dotProgress(context) // show a loading indicator
             : Text(
-                "= ${feesInEur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
+                "≈ ${feesInEur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge, // use the bodyLarge text theme style from the current theme

@@ -19,7 +19,7 @@ dynamic getFees({
       'sender_address': sender_address,
       'receiver_address': "",
       'amount_to_send': "",
-      'fee_size': "",
+      'fee_size': "Niedrig",
       'get_fees_only': true,
     });
 
