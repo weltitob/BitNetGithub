@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
 import 'package:nexus_wallet/components/buttons/glassbutton.dart';
 import 'package:nexus_wallet/components/container/glassmorph.dart';
@@ -19,21 +21,30 @@ class ReportIssueScreen extends StatefulWidget {
 }
 
 class _ReportIssueScreenState extends State<ReportIssueScreen> {
-  TextEditingController _issueController = TextEditingController();
+  TextEditingController issueController = TextEditingController();
+  final User? user = Auth().currentUser;
 
-  sendIssue(UserWallet userWallet) async {
+  void sendIssue() async {
     print('Issue commited');
-    if (_issueController.text.isNotEmpty) {
-      _issueController.text = "";
+    if (issueController.text.isNotEmpty) {
+      issueController.text = "";
+      String uid = user!.uid ?? "";
+      String mail = user!.email ?? "";
       final issuereport = IssueReport(
-          useremail: userWallet.email, issue: _issueController.text);
+          useremail: mail, issue: issueController.text);
       // Push issuereport object to Firebase Realtime Database
-      await issueCollection.doc(userWallet.useruid).set(issuereport.toMap());
+      await issueCollection.doc(uid).set(issuereport.toMap());
       displaySnackbar(context, "Deine Fehlermeldung wurde weitergeleitet");
       Navigator.of(context).pop();
     } else {
       displaySnackbar(context, "Bitte geben Sie erst einen Fehlertext an");
     }
+  }
+
+  @override void dispose() {
+    issueController.dispose();
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -82,12 +93,12 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                   child: TextField(
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    controller: _issueController,
+                    controller: issueController,
                     autofocus: false,
                     onSubmitted: (text) {
                       setState(() {
                         print('pressed');
-                        sendIssue(userWallet);
+                        sendIssue();
                       });
                       ;
                     },
@@ -110,7 +121,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
               child: glassButton(
                   text: "Melden",
                   iconData: Icons.send,
-                  onTap: () => sendIssue(userWallet)),
+                  onTap: () => sendIssue()),
             ),
           ],
         ),
