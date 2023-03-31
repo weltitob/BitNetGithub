@@ -3,8 +3,12 @@ import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 
+/*
+This class provides a stream of transaction data for the currently authenticated user.
+ */
 class TransactionsStream {
 
+  // Get the currently authenticated user
   final User? currentuser = Auth().currentUser;
 
   Stream<List<BitcoinTransaction>> getTransactionsStream() {

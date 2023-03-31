@@ -7,6 +7,10 @@ import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/transaction.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
+/*
+The function takes in four required parameters: userWallet, receiver_address, amount_to_send, and fee_size.
+If everything is valid it sends Bitcoin to the receiver_address.
+ */
 Future<CloudfunctionCallback> sendBitcoin({
   required UserWallet userWallet,
   required String receiver_address,

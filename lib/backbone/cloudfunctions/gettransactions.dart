@@ -15,6 +15,7 @@ import 'package:nexus_wallet/models/userwallet.dart';
 
 bool _canCallFunction = true; // Flag to check whether function can be called or not
 
+// function that gets the transaction
 dynamic getTransactions(UserWallet userWallet) async {
   if (!_canCallFunction) { // Check if function can be called
     print("CALL GET BALANCE CAN'T BE CALLED BECAUSE OF 10S TIMER");

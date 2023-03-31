@@ -3,6 +3,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:nexus_wallet/models/cloudfunction_callback.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 
+// function to get the fees for the transaction
 dynamic getFees({
   required UserWallet userWallet,
   required String receiver_address,
