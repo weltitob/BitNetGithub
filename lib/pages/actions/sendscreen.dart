@@ -26,9 +26,12 @@ import 'package:uuid/uuid.dart';
 
 // Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
 class SendBTCScreen extends StatefulWidget {
-  final String? bitcoinReceiverAdress; // the Bitcoin receiver address, can be null
+  final String?
+      bitcoinReceiverAdress; // the Bitcoin receiver address, can be null
   final String bitcoinSenderAdress; // the Bitcoin receiver address, can be null
-  const SendBTCScreen({Key? key, this.bitcoinReceiverAdress, required this.bitcoinSenderAdress}) : super(key: key);
+  const SendBTCScreen(
+      {Key? key, this.bitcoinReceiverAdress, required this.bitcoinSenderAdress})
+      : super(key: key);
 
   // Create a state object for SendBTCScreen
   @override
@@ -58,7 +61,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   bool _isLoadingExchangeRt =
       true; // a flag indicating whether the exchange rate is loading
   bool _isLoadingFees =
-  true; // a flag indicating whether the exchange rate is loading
+      true; // a flag indicating whether the exchange rate is loading
   // Biometric authentication before sending
   bool hasBiometrics =
       true; // a flag indicating whether biometrics is supported on the device
@@ -185,12 +188,12 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   void getFeesLocal(String bitcoinaddress) async {
     await getBitcoinPrice();
     _isLoadingFees = true;
-    try{
+    try {
       // Calls the getFees function to retrieve fee information
       dynamic feesInBtc = await getFees(
         sender_address: widget.bitcoinSenderAdress,
       );
-      if(feesInBtc == null){
+      if (feesInBtc == null) {
         //try it again in 5 seconds
         Future.delayed(Duration(seconds: 10), () {
           getFeesLocal(bitcoinaddress);
@@ -204,10 +207,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         feesInEur = feesInEur_low;
         _isLoadingFees = false;
       });
-    } catch(e){
+    } catch (e) {
       _isLoadingFees = true;
       print("error local getfees $e");
-
     }
   }
 
@@ -735,23 +737,14 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           buttonText: "JETZT SENDEN!",
           // Set the widget to display inside the button
           buttonWidget: Container(
-            child: GestureDetector(
-              onTap: () {
-                // If a receiver has not been selected, display an error message
-                if (!_hasReceiver) {
-                  displaySnackbar(
-                      context, "Deine Eingaben sind noch nicht valide.");
-                }
-              },
-              child: Icon(
-                // Set the icon to display based on whether a receiver has been selected
-                _hasReceiver
-                    ? Icons.double_arrow_rounded
-                    : Icons.lock_outline_rounded,
-                color: AppTheme.white90,
-                size: 33,
-                shadows: [AppTheme.boxShadowProfile],
-              ),
+            child: Icon(
+              // Set the icon to display based on whether a receiver has been selected
+              _hasReceiver
+                  ? Icons.double_arrow_rounded
+                  : Icons.lock_outline_rounded,
+              color: AppTheme.white90,
+              size: 33,
+              shadows: [AppTheme.boxShadowProfile],
             ),
           ),
           // Set the active and disabled colors for the button
@@ -762,7 +755,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           // Define the function to execute while the button is in a waiting state
           onWaitingProcess: () {
             // Wait for 2 seconds, then set isFinished to true
-            Future.delayed(const Duration(seconds: 2), () {
+            Future.delayed(const Duration(seconds: 1), () {
               setState(() {
                 isFinished = true;
               });
