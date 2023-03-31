@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
           initialData: null,
         ),
         // Provide a stream of user wallet data for authentication changes
+        //this has to be below in order to overwrite the null when not authenticated yet from above stream
         StreamProvider<UserWallet?>(
           create: (_) => Auth().userWalletStreamForAuthChanges,
           initialData: null,
