@@ -62,7 +62,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
         email: _controllerEmail.text,
       );
       print('Passwort rücksetzen angefragt');
-      displaySnackbar(context, "Wir haben Ihnen eine E-Mail gesendet!");
+      widget.toggleResetPassword();
+      displaySnackbar(context, "Wir haben dir eine Anfrage per E-Mail gesendet!");
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = 'Bitte geb eine gültige E-Mail Adresse an!';
