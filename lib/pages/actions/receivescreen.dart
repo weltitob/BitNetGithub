@@ -75,6 +75,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                                 borderRadius: AppTheme.cardRadiusSmall),
                             child: Padding(
                               padding: const EdgeInsets.all(AppTheme.cardPadding / 2),
+
+
                               child: PrettyQr(
                                 image: const AssetImage(
                                     'assets/images/bitcoin.png'),
