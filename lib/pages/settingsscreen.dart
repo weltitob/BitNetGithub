@@ -14,7 +14,7 @@ import 'package:nexus_wallet/pages/secondpages/agbscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/changeemail.dart';
 import 'package:nexus_wallet/pages/secondpages/impressumscreen.dart';
 import 'package:nexus_wallet/pages/secondpages/reportissuescreen.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

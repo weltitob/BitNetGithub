@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_wallet/backbone/streams/bitcoinpricestream.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:nexus_wallet/components/chart/chart.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/routetrees/widgettree.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'backbone/auth/auth.dart';
 
 // Main function to start the application
@@ -43,7 +42,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Nexus Wallet',
+        title: 'BitNet',
         theme: AppTheme.standardTheme(),
         home: const WidgetTree(),
       ),

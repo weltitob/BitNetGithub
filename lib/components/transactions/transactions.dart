@@ -12,7 +12,7 @@ import 'package:nexus_wallet/backbone/helper/loaders.dart';
 import 'package:nexus_wallet/backbone/streams/gettransactionsstream.dart';
 import 'package:nexus_wallet/components/items/transactionitem.dart';
 import 'package:nexus_wallet/models/transaction.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:provider/provider.dart';
 

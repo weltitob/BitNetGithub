@@ -10,7 +10,7 @@ import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/models/issuereport.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/settingsscreen.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'package:provider/provider.dart';
 
 class ReportIssueScreen extends StatefulWidget {

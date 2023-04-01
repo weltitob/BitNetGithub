@@ -11,7 +11,7 @@ import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/actions/receivescreen.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
 import 'package:nexus_wallet/components/items/cryptoitem.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -64,7 +64,6 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
     await getBalance(userWallet);
     await getTransactions(userWallet);
   }
-
 
   @override
   Widget build(BuildContext context) {

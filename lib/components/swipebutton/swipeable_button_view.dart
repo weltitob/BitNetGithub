@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'swipeable_widget.dart';
 
 class SwipeableButtonView extends StatefulWidget {

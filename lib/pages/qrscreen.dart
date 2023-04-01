@@ -11,7 +11,7 @@ import 'package:nexus_wallet/components/snackbar/snackbar.dart';
 import 'package:nexus_wallet/models/qrcodebitcoin.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/actions/sendscreen.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:provider/provider.dart';
 

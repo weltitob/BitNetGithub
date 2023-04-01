@@ -1,15 +1,18 @@
 import 'dart:async';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/components/appstandards/BitNetAppBar.dart';
+import 'package:nexus_wallet/components/appstandards/BitNetScaffold.dart';
+import 'package:nexus_wallet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
-import 'package:nexus_wallet/pages/auth/background.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'dart:math';
 
 Random random = new Random();
@@ -18,11 +21,13 @@ Random random = new Random();
 class LoginScreen extends StatefulWidget {
   // function to toggle between login and register screens
   Function() toggleView;
+  Function() toggleGetStarted;
   // function to toggle between login and reset password screens
   Function() toggleResetPassword;
 
   LoginScreen({
     required this.toggleView,
+    required this.toggleGetStarted,
     required this.toggleResetPassword,
   });
 
@@ -84,186 +89,188 @@ class _SignupScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Stack(
-          children: <Widget>[
-            BackgroundAuth(),
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Colors.black.withOpacity(0.35),
-            ),
-            Form(
-              key: _form,
-              child: ListView(
-                padding: EdgeInsets.only(
-                    left: AppTheme.cardPadding * 2,
-                    right: AppTheme.cardPadding * 2,
-                    top: AppTheme.cardPadding * 6),
-                physics: BouncingScrollPhysics(),
-                children: [
-                  Center(
-                    child: Text(
-                      "Willkommen zurück!",
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayLarge!
-                          .copyWith(color: AppTheme.white90),
+    return BitNetScaffold(
+      gradientColor: Colors.black,
+      appBar: BitNetAppBar(text: "Restore Wallet", context: context,
+      onTap: (){
+        widget.toggleGetStarted();
+      }),
+      body: BackgroundWithContent(
+        opacity: 0.8,
+        child: Form(
+          key: _form,
+          child: ListView(
+            padding: EdgeInsets.only(
+                left: AppTheme.cardPadding * 2,
+                right: AppTheme.cardPadding * 2,
+                top: AppTheme.cardPadding * 6),
+            physics: BouncingScrollPhysics(),
+            children: [
+              Container(
+                height: AppTheme.cardPadding * 4.5,
+                child: AnimatedTextKit(
+                  animatedTexts: [
+                    TypewriterAnimatedText(
+                    "Willkommen zurück!",
+                      textStyle: Theme.of(context).textTheme.displayLarge,
+                      textAlign: TextAlign.left,
+                      speed: const Duration(milliseconds: 100),
                     ),
+                  ],
+                  totalRepeatCount: 1,
+                  displayFullTextOnTap: false,
+                  stopPauseOnTap: false,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Powered with decentralized IDs by",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Wir haben deine Bitcoin sicher aufbewahrt!",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: AppTheme.white70),
-                      ),
-                      Container(
-                        margin:
-                            EdgeInsets.only(left: AppTheme.elementSpacing / 2),
-                        height: AppTheme.cardPadding * 1.5,
-                        child: Image.asset("assets/images/logotransparent.png"),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: AppTheme.cardPadding,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      FormTextField(
-                        title: "E-Mail",
-                        controller: _controllerEmail,
-                        isObscure: false,
-                        validator: (val) => val!.isEmpty
-                            ? 'Bitte geben Sie eine gültige Email an'
-                            : null,
-                        onChanged: (val) {
-                          setState(() {
-                            email = val;
-                          });
-                        },
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: AppTheme.cardPadding),
-                        child: FormTextField(
-                          validator: (val) {
-                            if (val!.isEmpty) {
-                              return "Bitte geben Sie ihr Passwort ein";
-                            } else if (val.length < 6) {
-                              return "Das Passwort muss mindestens 6 Zeichen enthalten";
-                            } else {
-                              return null;
-                            }
-                          },
-                          onChanged: (val) {
-                            setState(() {
-                              password = val;
-                            });
-                          },
-                          title: "Passwort",
-                          controller: _controllerPassword,
-                          isObscure: true,
-                        ),
-                      ),
-                      LongButtonWidget(
-                        title: 'Anmelden',
-                        onTap: () {
-                          print('Sign up pressed');
-                          if (_form.currentState!.validate()) {
-                            signInWithEmailAndPassword();
-                          }
-                        },
-                        state:
-                            _isLoading ? ButtonState.loading : ButtonState.idle,
-                      ),
-                      errorMessage == null
-                          ? Container()
-                          : Padding(
-                              padding: const EdgeInsets.only(
-                                  top: AppTheme.cardPadding),
-                              child: Text(
-                                errorMessage!,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(color: AppTheme.errorColor),
-                              ),
-                            ),
-                      SizedBox(
-                        height: AppTheme.cardPadding,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          // switch to passwordscreen
-                          print('switch to reset password in authtree');
-                          widget.toggleResetPassword();
-                        },
-                        child: Text(
-                          'Passwort vergessen',
-                          style: GoogleFonts.manrope(
-                            color: AppTheme.colorBitcoin,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin:
-                            EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
-                        child: Text(
-                          "Du hast noch kein Konto?",
-                          style: GoogleFonts.manrope(
-                            color: AppTheme.white70,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 28),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: AppTheme.white60,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: SizedBox(
-                          height: 0,
-                          width: 65,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 22, bottom: 22),
-                        child: GestureDetector(
-                          onTap: () {
-                            print('should toggle View');
-                            widget.toggleView();
-                          },
-                          child: Text(
-                            'Registieren',
-                            style: GoogleFonts.manrope(
-                              color: AppTheme.white70,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  Container(
+                    margin:
+                    EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                    height: AppTheme.cardPadding * 1.5,
+                    child: Image.asset("assets/images/ion.png"),
                   ),
                 ],
               ),
-            ),
-          ],
+              SizedBox(
+                height: AppTheme.cardPadding,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  FormTextField(
+                    title: "Public ION Key",
+                    controller: _controllerEmail,
+                    isObscure: false,
+                    validator: (val) => val!.isEmpty
+                        ? 'Bitte geben Sie eine gültige Email an'
+                        : null,
+                    onChanged: (val) {
+                      setState(() {
+                        email = val;
+                      });
+                    },
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: AppTheme.cardPadding),
+                    child: FormTextField(
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "Bitte geben Sie ihr Passwort ein";
+                        } else if (val.length < 6) {
+                          return "Das Passwort muss mindestens 6 Zeichen enthalten";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onChanged: (val) {
+                        setState(() {
+                          password = val;
+                        });
+                      },
+                      title: "Private Key",
+                      controller: _controllerPassword,
+                      isObscure: true,
+                    ),
+                  ),
+                  LongButtonWidget(
+                    title: 'Anmelden',
+                    onTap: () {
+                      print('Sign up pressed');
+                      if (_form.currentState!.validate()) {
+                        signInWithEmailAndPassword();
+                      }
+                    },
+                    state:
+                        _isLoading ? ButtonState.loading : ButtonState.idle,
+                  ),
+                  errorMessage == null
+                      ? Container()
+                      : Padding(
+                          padding: const EdgeInsets.only(
+                              top: AppTheme.cardPadding),
+                          child: Text(
+                            errorMessage!,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(color: AppTheme.errorColor),
+                          ),
+                        ),
+                  SizedBox(
+                    height: AppTheme.cardPadding,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // switch to passwordscreen
+                      print('switch to reset password in authtree');
+                      widget.toggleResetPassword();
+                    },
+                    child: Text(
+                      'Sign in with 24 words',
+                      style: GoogleFonts.manrope(
+                        color: AppTheme.colorBitcoin,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
+                    child: Text(
+                      "Du hast noch kein Konto?",
+                      style: GoogleFonts.manrope(
+                        color: AppTheme.white70,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 28),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppTheme.white60,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: SizedBox(
+                      height: 0,
+                      width: 65,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 22, bottom: 22),
+                    child: GestureDetector(
+                      onTap: () {
+                        print('should toggle View');
+                        widget.toggleView();
+                      },
+                      child: Text(
+                        'Registieren',
+                        style: GoogleFonts.manrope(
+                          color: AppTheme.white70,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:nexus_wallet/components/container/glassmorph.dart';
 import 'package:nexus_wallet/models/transaction.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:provider/provider.dart';
 

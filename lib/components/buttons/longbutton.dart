@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image/image.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 
 enum ButtonState { idle, loading, disabled }
 
-class LongButtonWidget extends StatefulWidget {
+class LongButtonWidget extends StatelessWidget {
   final String title;
   final TextStyle? titleStyle;
   final ButtonState state;
@@ -17,7 +17,6 @@ class LongButtonWidget extends StatefulWidget {
   LongButtonWidget({
     required this.title,
     required this.onTap,
-
     this.titleStyle,
     this.buttonColor,
     this.textColor,
@@ -26,17 +25,12 @@ class LongButtonWidget extends StatefulWidget {
   });
 
   @override
-  State<LongButtonWidget> createState() => _LongButtonWidgetState();
-}
-
-class _LongButtonWidgetState extends State<LongButtonWidget> {
-
-  @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return Container(
       decoration: BoxDecoration(
+        color: buttonColor != null ? buttonColor : AppTheme.colorBitcoin,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.4),
@@ -45,49 +39,48 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
             spreadRadius: -18,
           ),
         ],
+        borderRadius: AppTheme.cardRadiusBig,
       ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: widget.buttonColor != null ? widget.buttonColor : AppTheme.colorBitcoin,
-          shadowColor: widget.buttonColor != null ? widget.buttonColor : AppTheme.colorPrimaryGradient,
-          shape: RoundedRectangleBorder(borderRadius: AppTheme.cardRadiusBig,),
-        ),
-        onPressed: widget.onTap,
-        child: Container(
-          width: size.width - AppTheme.cardPadding * 2,
-          height: 60,
-          alignment: Alignment.center,
-          child: widget.state == ButtonState.loading
-              ? Center(
-              child: Transform.scale(
-                  scale: 0.6,
-                  child: const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(AppTheme.white100),
-                  )))
-              : Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (widget.leadingIcon != null)
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: AppTheme.elementSpacing),
-                  child: widget.leadingIcon,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: AppTheme.cardRadiusBig,
+          onTap: onTap,
+          child: Container(
+            width: size.width - AppTheme.cardPadding * 2,
+            height: 60,
+            alignment: Alignment.center,
+            child: state == ButtonState.loading
+                ? Center(
+                child: Transform.scale(
+                    scale: 0.6,
+                    child: const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(AppTheme.white100),
+                    )))
+                : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (leadingIcon != null)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: AppTheme.elementSpacing),
+                    child: leadingIcon,
+                  ),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.button?.copyWith(
+                      color: textColor != null ? textColor : AppTheme.white90,
+                      fontSize: 17
+                  ),
                 ),
-              Text(
-                widget.title,
-                style: Theme.of(context).textTheme.button?.copyWith(
-                    color: widget.textColor != null ? widget.textColor : AppTheme.white90,
-                    fontSize: 17
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
 
 class LongButtonWidgetTransparent extends StatefulWidget {
   final String title;
@@ -130,45 +123,48 @@ class _LongButtonWidgetTransparentState extends State<LongButtonWidgetTransparen
           ),
         ],
       ),
-      child: ElevatedButton(
-        onPressed: widget.onTap,
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.transparent),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            side: BorderSide(
-              color: AppTheme.white100,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: AppTheme.cardRadiusBig,
+          onTap: widget.onTap,
+          child: Ink(
+            decoration: BoxDecoration(
+              border: Border.all(color: AppTheme.white100),
+              borderRadius: AppTheme.cardRadiusBig,
             ),
-            borderRadius: AppTheme.cardRadiusBig,
-          ),),
-        ),
-        child: Container(
-          width: size.width - AppTheme.cardPadding * 2,
-          height: 60,
-          alignment: Alignment.center,
-          child: widget.state == ButtonState.loading
-              ? Center(
-              child: Transform.scale(
-                  scale: 0.6,
-                  child: const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(AppTheme.white100),
-                  )))
-              : Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (widget.leadingIcon != null)
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: AppTheme.elementSpacing),
-                  child: widget.leadingIcon,
+            height: 60,
+            width: size.width - AppTheme.cardPadding * 2,
+            child: Center(
+              child: widget.state == ButtonState.loading
+                  ? Transform.scale(
+                scale: 0.6,
+                child: const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(AppTheme.white100),
                 ),
-              Text(
-                widget.title,
-                style: Theme.of(context).textTheme.button?.copyWith(
-                    color: widget.textColor != null ? widget.textColor : AppTheme.white90,
-                    fontSize: 17
-                ),
+              )
+                  : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (widget.leadingIcon != null)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          right: AppTheme.elementSpacing),
+                      child: widget.leadingIcon,
+                    ),
+                  Text(
+                    widget.title,
+                    style:
+                    Theme.of(context).textTheme.button?.copyWith(
+                      color: widget.textColor != null
+                          ? widget.textColor
+                          : AppTheme.white90,
+                      fontSize: 17,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

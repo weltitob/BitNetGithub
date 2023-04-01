@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nexus_wallet/components/theme/theme.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
 
 class FormTextField extends StatelessWidget {
   final String title;
@@ -25,10 +25,7 @@ class FormTextField extends StatelessWidget {
         validator: validator,
         controller: controller,
         textAlign: TextAlign.center,
-        style: GoogleFonts.manrope(
-          fontWeight: FontWeight.w400,
-          fontSize: 14,
-        ),
+        style: Theme.of(context).textTheme.bodyMedium,
         obscureText: isObscure,
         decoration: InputDecoration(
           hintText: title,

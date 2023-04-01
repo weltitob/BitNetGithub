@@ -1,0 +1,97 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:nexus_wallet/backbone/helper/helpers.dart';
+import 'package:nexus_wallet/components/appstandards/BitNetScaffold.dart';
+import 'package:nexus_wallet/components/buttons/longbutton.dart';
+import 'package:nexus_wallet/backbone/helper/theme.dart';
+
+class GetStartedScreen extends StatefulWidget {
+  Function() toggleView;
+  // function to toggle between login and reset password screens
+  Function() toggleGetStarted;
+
+  GetStartedScreen({
+    required this.toggleView,
+    required this.toggleGetStarted,
+  });
+
+
+  @override
+  _GetStartedScreenState createState() => _GetStartedScreenState();
+}
+
+class _GetStartedScreenState extends State<GetStartedScreen> {
+  late final Future<LottieComposition> _compostionBitcoin;
+
+  @override
+  void initState() {
+    super.initState();
+    _compostionBitcoin = loadComposition('assets/lottiefiles/bitcoinanimation.json');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BitNetScaffold(
+      backgroundColor: Colors.black,
+      gradientColor: Colors.black,
+      margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      body: Container(
+        margin: EdgeInsets.only(
+            top: AppTheme.cardPadding * 6,
+            bottom: AppTheme.cardPadding * 2,
+            left: AppTheme.cardPadding,
+            right: AppTheme.cardPadding),
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          // even space distribution
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              child: FutureBuilder(
+                future: _compostionBitcoin,
+                builder: (context, snapshot) {
+                  var composition = snapshot.data;
+                  if (composition != null) {
+                    return FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: Lottie(composition: composition,
+                      repeat: false,),
+                    );
+                  } else {
+                    return Container(
+                      color: Colors.transparent,
+                    );
+                  }
+                },
+              ),
+            ),
+            SizedBox(
+              height: AppTheme.cardPadding * 6,
+            ),
+            LongButtonWidgetTransparent(
+              title: "Restore Wallet",
+              onTap: () {
+                widget.toggleGetStarted();
+              },
+            ),
+            // creating the signup button
+            SizedBox(height: AppTheme.cardPadding),
+            LongButtonWidget(
+                title: "Registieren",
+                onTap: () {
+                  widget.toggleGetStarted();
+                })
+          ],
+        ),
+      ),
+    );
+  }
+}//

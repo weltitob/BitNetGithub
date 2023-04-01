@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/security/biometrics/biometric_helper.dart';
+import 'package:nexus_wallet/pages/auth/getstartedscreen.dart';
 import 'package:nexus_wallet/pages/auth/loginscreen.dart';
+import 'package:nexus_wallet/pages/auth/pinverificationscreen.dart';
 import 'package:nexus_wallet/pages/auth/registerscreen.dart';
-import 'package:nexus_wallet/pages/auth/resetpasswordscreen.dart';
+import 'package:nexus_wallet/pages/auth/usephrasesscreen.dart';
 
 /*
  This Flutter widget displays either a login screen, a registration screen,
@@ -20,6 +21,7 @@ class _AuthTreeState extends State<AuthTree> {
   // boolean variables to track which screen to show
   bool showSignIn = true;
   bool resetpassword = false;
+  bool getStarted = true;
 
   // callback function to switch between sign-in and registration screens
   void toggleView() {
@@ -43,6 +45,22 @@ class _AuthTreeState extends State<AuthTree> {
     });
   }
 
+  void toggleGetStarted() {
+    setState(() {
+      if (getStarted == true)
+        if(showSignIn){
+          showSignIn = false;
+          getStarted = false;
+        } else{
+          showSignIn = true;
+          getStarted = false;
+        }
+      else {
+        getStarted = true;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // show the reset password screen if the resetpassword variable is true
@@ -52,17 +70,26 @@ class _AuthTreeState extends State<AuthTree> {
         toggleResetPassword: toggleresetpassword,
       );
     } else {
-      // show the sign-in screen if the showSignIn variable is true
-      if (showSignIn) {
-        return LoginScreen(
+      if(getStarted){
+        return GetStartedScreen(
           toggleView: toggleView,
-          toggleResetPassword: toggleresetpassword,
+          toggleGetStarted: toggleGetStarted,
         );
-      } else {
-        // show the registration screen if both variables are false
-        return RegisterScreen(
-          toggleView: toggleView,
-        );
+      } else{
+        // show the sign-in screen if the showSignIn variable is true
+        if (showSignIn) {
+          return LoginScreen(
+            toggleGetStarted: toggleGetStarted,
+            toggleView: toggleView,
+            toggleResetPassword: toggleresetpassword,
+          );
+        } else {
+          // show the registration screen if both variables are false
+          return PinVerificationScreen(
+            toggleView: toggleView,
+            toggleGetStarted: toggleGetStarted,
+          );
+        }
       }
     }
   }
