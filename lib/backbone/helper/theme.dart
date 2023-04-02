@@ -103,11 +103,21 @@ class AppTheme {
 
   static ThemeData standardTheme() => ThemeData(
     //later change seed to the one selected
-    colorSchemeSeed: AppTheme.colorBitcoin,
-    backgroundColor: AppTheme.colorBackground,
     useMaterial3: true,
     brightness: Brightness.dark,
     textTheme: textThemeDarkMode,
+    colorScheme: ColorScheme(
+        background: AppTheme.colorBackground,
+        brightness: Brightness.dark,
+        primary: AppTheme.colorBitcoin,
+        secondary: AppTheme.colorBitcoin,
+        onBackground: AppTheme.white90,
+        surface: AppTheme.colorBitcoin,
+        onPrimary: AppTheme.colorBitcoin,
+        error: AppTheme.colorPrimaryGradient,
+        onSecondary: AppTheme.white90,
+        onError: AppTheme.errorColor,
+        onSurface: AppTheme.colorPrimaryGradient),
   );
 
   static final textTheme = TextTheme(
