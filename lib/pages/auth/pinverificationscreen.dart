@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lottie/lottie.dart';
 import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
 import 'package:nexus_wallet/backbone/helper/loaders.dart';
 import 'package:nexus_wallet/backbone/helper/theme.dart';

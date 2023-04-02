@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexus_wallet/models/verificationcode.dart';
 import 'package:nexus_wallet/pages/auth/getstartedscreen.dart';
 import 'package:nexus_wallet/pages/auth/loginscreen.dart';
 import 'package:nexus_wallet/pages/auth/pinverificationscreen.dart';
@@ -85,10 +86,17 @@ class _AuthTreeState extends State<AuthTree> {
           );
         } else {
           // show the registration screen if both variables are false
-          return PinVerificationScreen(
-            toggleView: toggleView,
-            toggleGetStarted: toggleGetStarted,
-          );
+          return RegisterScreen(
+              toggleView: toggleView,
+              code: VerificationCode(
+                  used: false,
+                  code: "ABCDE",
+                  issuer: "Ich",
+                  receiver: "Du",));
+          // return PinVerificationScreen(
+          //   toggleView: toggleView,
+          //   toggleGetStarted: toggleGetStarted,
+          // );
         }
       }
     }
