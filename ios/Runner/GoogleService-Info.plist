@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>204856789338-jjomlun99ab1tgm694ak6l92tef63omd.apps.googleusercontent.com</string>
+	<string>466393582939-5oojl5k0rtbihnqvl8veigdk1856d92t.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.204856789338-jjomlun99ab1tgm694ak6l92tef63omd</string>
+	<string>com.googleusercontent.apps.466393582939-5oojl5k0rtbihnqvl8veigdk1856d92t</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDy7HBaeExsk72O6MH6EHoRhiXNjfmwr6w</string>
+	<string>AIzaSyBYhqrYYCi4TijmyhWIPhvZVxoHcMvGiZU</string>
 	<key>GCM_SENDER_ID</key>
-	<string>204856789338</string>
+	<string>466393582939</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.nexusWallet</string>
+	<string>com.bitnet</string>
 	<key>PROJECT_ID</key>
-	<string>nexus-4c28d</string>
+	<string>bitnet-cb34f</string>
 	<key>STORAGE_BUCKET</key>
-	<string>nexus-4c28d.appspot.com</string>
+	<string>bitnet-cb34f.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:204856789338:ios:7a9ebf9b459cec6ad18b63</string>
+	<string>1:466393582939:ios:40dbd73473dd9d25d8de7e</string>
 </dict>
 </plist>
