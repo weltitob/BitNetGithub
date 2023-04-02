@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
 import 'package:nexus_wallet/backbone/cloudfunctions/createwallet.dart';
+import 'package:nexus_wallet/components/appstandards/BitNetAppBar.dart';
+import 'package:nexus_wallet/components/appstandards/BitNetScaffold.dart';
 import 'package:nexus_wallet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/textfield/formtextfield.dart';
@@ -76,7 +78,14 @@ class _RegisterScreenState extends State<RegisterScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+      child: BitNetScaffold(
+        gradientColor: Colors.black,
+        appBar: BitNetAppBar(
+            text: "Register",
+            context: context,
+            onTap: () {
+              widget.toggleView();
+            }),
         body: BackgroundWithContent(
           opacity: 0.8,
           child: Form(
@@ -90,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               children: [
                 Center(
                   child: Text(
-                    "Wir sind deine Nexte Wallet!",
+                    "Power to the people!",
                     style: Theme.of(context)
                         .textTheme
                         .displayLarge!
@@ -101,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      "Sichere deine Zukunft, mit NexusWallet!",
+                      "Every small step is a big one",
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall!
@@ -194,8 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             ),
                           ),
                     Container(
-                      margin:
-                          EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
+                      margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
                       child: Text(
                         'Du hast bereits ein Konto?',
                         style: GoogleFonts.manrope(
