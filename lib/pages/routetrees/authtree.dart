@@ -28,6 +28,11 @@ class _AuthTreeState extends State<AuthTree> {
   // boolean variables to track which screen to show
   bool resetpassword = false;
   bool getStarted = true;
+  bool isInvited = false;
+
+  void toggleIsInvited(){
+
+  }
 
   // callback function to switch between sign-in and registration screens
   void toggleView() {
@@ -69,18 +74,21 @@ class _AuthTreeState extends State<AuthTree> {
           }
         } else {
           // show the registration screen if both variables are false
-          return RegisterScreen(
-              toggleGetStarted: widget.toggleGetStarted,
-              toggleView: toggleView,
-              code: VerificationCode(
+          if (isInvited) {
+            return RegisterScreen(
+                toggleGetStarted: widget.toggleGetStarted,
+                toggleView: toggleView,
+                code: VerificationCode(
                   used: false,
                   code: "ABCDE",
                   issuer: "Ich",
                   receiver: "Du",));
-          // return PinVerificationScreen(
-          //   toggleView: toggleView,
-          //   toggleGetStarted: toggleGetStarted,
-          // );
+          } else {
+            return PinVerificationScreen(
+              toggleGetStarted: widget.toggleGetStarted,
+              toggleView: toggleView,
+            );
+          }
     }
   }
 }

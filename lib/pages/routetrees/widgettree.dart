@@ -36,7 +36,7 @@ class _WidgetTreeState extends State<WidgetTree> {
   isBiometricsAvailable() async {
     isSecurityChecked = await awaitSecurityBool();
     //user needs to have enrolled Biometrics and also high security checked in settings to get fingerpint auth request
-    if(isSecurityChecked == true) {
+    if (isSecurityChecked == true) {
       hasBiometrics = await BiometricHelper().hasEnrolledBiometrics();
       if (hasBiometrics == true) {
         isBioAuthenticated = await BiometricHelper().authenticate();
@@ -44,7 +44,7 @@ class _WidgetTreeState extends State<WidgetTree> {
         isBioAuthenticated == false;
       }
       setState(() {});
-    } else{
+    } else {
       hasBiometrics = false;
     }
   }
@@ -73,6 +73,8 @@ class _WidgetTreeState extends State<WidgetTree> {
           }
           return Container(
             color: AppTheme.colorBackground,
+            child: Center(
+                child: Text("There is an issue please contact the support")),
           );
         } else {
           return GetStartedTree();
