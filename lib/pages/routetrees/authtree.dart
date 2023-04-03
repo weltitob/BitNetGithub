@@ -12,7 +12,13 @@ import 'package:nexus_wallet/pages/auth/usephrasesscreen.dart';
  It contains two callback functions to toggle the values of these variables.
  */
 class AuthTree extends StatefulWidget {
-  const AuthTree({Key? key}) : super(key: key);
+  Function() toggleGetStarted;
+  bool showSignIn;
+
+  AuthTree({
+    required this.toggleGetStarted,
+    required this.showSignIn,
+    Key? key}) : super(key: key);
 
   @override
   State<AuthTree> createState() => _AuthTreeState();
@@ -20,17 +26,16 @@ class AuthTree extends StatefulWidget {
 
 class _AuthTreeState extends State<AuthTree> {
   // boolean variables to track which screen to show
-  bool showSignIn = true;
   bool resetpassword = false;
   bool getStarted = true;
 
   // callback function to switch between sign-in and registration screens
   void toggleView() {
     setState(() {
-      if (showSignIn == true)
-        showSignIn = false;
+      if (widget.showSignIn == true)
+        widget.showSignIn = false;
       else {
-        showSignIn = true;
+        widget.showSignIn = true;
       }
     });
   }
@@ -46,47 +51,26 @@ class _AuthTreeState extends State<AuthTree> {
     });
   }
 
-  void toggleGetStarted() {
-    setState(() {
-      if (getStarted == true)
-        if(showSignIn){
-          showSignIn = false;
-          getStarted = false;
-        } else{
-          showSignIn = true;
-          getStarted = false;
-        }
-      else {
-        getStarted = true;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // show the reset password screen if the resetpassword variable is true
-    if (resetpassword) {
-      return ResetPasswordScreen(
-        toggleView: toggleView,
-        toggleResetPassword: toggleresetpassword,
-      );
-    } else {
-      if(getStarted){
-        return GetStartedScreen(
-          toggleView: toggleView,
-          toggleGetStarted: toggleGetStarted,
-        );
-      } else{
-        // show the sign-in screen if the showSignIn variable is true
-        if (showSignIn) {
-          return LoginScreen(
-            toggleGetStarted: toggleGetStarted,
-            toggleView: toggleView,
-            toggleResetPassword: toggleresetpassword,
-          );
+    // show the reset password screen if the resetpassword variable is true else {
+        if (widget.showSignIn) {
+          if (resetpassword) {
+            return UsePhrasesScreen(
+              toggleView: toggleView,
+              toggleResetPassword: toggleresetpassword,
+            );
+          } else {
+            return LoginScreen(
+              toggleGetStarted: widget.toggleGetStarted,
+              toggleView: toggleView,
+              toggleResetPassword: toggleresetpassword,
+            );
+          }
         } else {
           // show the registration screen if both variables are false
           return RegisterScreen(
+              toggleGetStarted: widget.toggleGetStarted,
               toggleView: toggleView,
               code: VerificationCode(
                   used: false,
@@ -97,8 +81,6 @@ class _AuthTreeState extends State<AuthTree> {
           //   toggleView: toggleView,
           //   toggleGetStarted: toggleGetStarted,
           // );
-        }
-      }
     }
   }
 }

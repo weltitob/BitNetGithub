@@ -8,13 +8,13 @@ import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/backbone/helper/theme.dart';
 
 class GetStartedScreen extends StatefulWidget {
-  Function() toggleView;
   // function to toggle between login and reset password screens
-  Function() toggleGetStarted;
+  Function() pushToRegister;
+  Function() pushToLogin;
 
   GetStartedScreen({
-    required this.toggleView,
-    required this.toggleGetStarted,
+    required this.pushToRegister,
+    required this.pushToLogin,
   });
 
 
@@ -79,7 +79,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             LongButtonWidgetTransparent(
               title: "Restore Wallet",
               onTap: () {
-                widget.toggleGetStarted();
+                widget.pushToLogin();
               },
             ),
             // creating the signup button
@@ -87,7 +87,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             LongButtonWidget(
                 title: "Registieren",
                 onTap: () {
-                  widget.toggleGetStarted();
+                  widget.pushToRegister();
                 })
           ],
         ),

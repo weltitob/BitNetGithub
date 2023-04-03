@@ -7,6 +7,7 @@ import 'package:nexus_wallet/backbone/helper/theme.dart';
 import 'package:nexus_wallet/pages/bottomnav.dart';
 import 'package:nexus_wallet/models/userwallet.dart';
 import 'package:nexus_wallet/pages/routetrees/authtree.dart';
+import 'package:nexus_wallet/pages/routetrees/getstartedtree.dart';
 import 'package:provider/provider.dart';
 
 class WidgetTree extends StatefulWidget {
@@ -74,7 +75,7 @@ class _WidgetTreeState extends State<WidgetTree> {
             color: AppTheme.colorBackground,
           );
         } else {
-          return AuthTree();
+          return GetStartedTree();
         }
       },
     );

@@ -88,6 +88,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => RegisterScreen(
+                      toggleGetStarted: widget.toggleGetStarted,
                       code: code,
                       toggleView: widget.toggleView,
                     )));

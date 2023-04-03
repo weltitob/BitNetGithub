@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus_wallet/backbone/auth/auth.dart';
+import 'package:nexus_wallet/components/appstandards/BitNetAppBar.dart';
+import 'package:nexus_wallet/components/appstandards/BitNetScaffold.dart';
 import 'package:nexus_wallet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:nexus_wallet/components/buttons/longbutton.dart';
 import 'package:nexus_wallet/components/snackbar/snackbar.dart';
@@ -11,22 +13,22 @@ import 'dart:math';
 
 Random random = new Random();
 
-class ResetPasswordScreen extends StatefulWidget {
+class UsePhrasesScreen extends StatefulWidget {
   Function() toggleView;
   Function() toggleResetPassword;
 
-  ResetPasswordScreen({
+  UsePhrasesScreen({
     required this.toggleView,
     required this.toggleResetPassword,
   });
 
   @override
-  _ResetPasswordScreenState createState() {
-    return _ResetPasswordScreenState();
+  _UsePhrasesScreenState createState() {
+    return _UsePhrasesScreenState();
   }
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen>
+class _UsePhrasesScreenState extends State<UsePhrasesScreen>
     with TickerProviderStateMixin {
   String? lottiefile = '';
   String? errorMessage = null;
@@ -89,7 +91,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+      child: BitNetScaffold(
+        gradientColor: Colors.black,
+        appBar: BitNetAppBar(text: "Reset Password", context: context, onTap: (){
+          widget.toggleResetPassword();
+        }),
         body: BackgroundWithContent(
           opacity: 0.8,
           child: Form(

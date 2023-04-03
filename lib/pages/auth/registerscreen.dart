@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,7 +18,11 @@ import 'package:nexus_wallet/backbone/helper/theme.dart';
 class RegisterScreen extends StatefulWidget {
   VerificationCode code;
   Function() toggleView;
-  RegisterScreen({required this.toggleView, required this.code});
+  Function() toggleGetStarted;
+  RegisterScreen({
+    required this.toggleGetStarted,
+    required this.toggleView,
+    required this.code});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -84,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             text: "Register",
             context: context,
             onTap: () {
-              widget.toggleView();
+              widget.toggleGetStarted();
             }),
         body: BackgroundWithContent(
           opacity: 0.8,
@@ -97,30 +102,36 @@ class _RegisterScreenState extends State<RegisterScreen>
                   top: AppTheme.cardPadding * 5),
               physics: BouncingScrollPhysics(),
               children: [
-                Center(
-                  child: Text(
-                    "Power to the people!",
-                    style: Theme.of(context)
-                        .textTheme
-                        .displayLarge!
-                        .copyWith(color: AppTheme.white90),
+                Container(
+                  height: AppTheme.cardPadding * 4.5,
+                  child: AnimatedTextKit(
+                    animatedTexts: [
+                      TypewriterAnimatedText(
+                        "Power to the people!",
+                        textStyle: Theme.of(context).textTheme.displayLarge,
+                        textAlign: TextAlign.left,
+                        speed: const Duration(milliseconds: 100),
+                      ),
+                    ],
+                    totalRepeatCount: 1,
+                    displayFullTextOnTap: false,
+                    stopPauseOnTap: false,
                   ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      "Every small step is a big one",
+                      "Powered with decentralized IDs by",
                       style: Theme.of(context)
                           .textTheme
-                          .bodySmall!
-                          .copyWith(color: AppTheme.white70),
+                          .bodySmall,
                     ),
                     Container(
                       margin:
-                          EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                      EdgeInsets.only(left: AppTheme.elementSpacing / 2),
                       height: AppTheme.cardPadding * 1.5,
-                      child: Image.asset("assets/images/logotransparent.png"),
+                      child: Image.asset("assets/images/ion.png"),
                     ),
                   ],
                 ),
