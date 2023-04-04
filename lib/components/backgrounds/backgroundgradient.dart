@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 
 // Create a StatefulWidget for the background animation
 class BackgroundGradient extends StatefulWidget {

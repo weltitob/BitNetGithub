@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
+import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/models/userwallet.dart';
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase

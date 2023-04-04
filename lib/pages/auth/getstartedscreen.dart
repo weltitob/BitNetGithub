@@ -1,11 +1,12 @@
 import 'dart:ui';
+import 'package:BitNet/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nexus_wallet/backbone/helper/helpers.dart';
-import 'package:nexus_wallet/components/appstandards/BitNetScaffold.dart';
-import 'package:nexus_wallet/components/buttons/longbutton.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/helpers.dart';
+import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
+import 'package:BitNet/components/buttons/longbutton.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 
 class GetStartedScreen extends StatefulWidget {
   // function to toggle between login and reset password screens
@@ -77,7 +78,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               height: AppTheme.cardPadding * 6,
             ),
             LongButtonWidgetTransparent(
-              title: "Restore Wallet",
+              title: S.of(context).restoreWallet,
               onTap: () {
                 widget.pushToLogin();
               },
@@ -85,7 +86,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             // creating the signup button
             SizedBox(height: AppTheme.cardPadding),
             LongButtonWidget(
-                title: "Registieren",
+                title: S.of(context).register,
                 onTap: () {
                   widget.pushToRegister();
                 })

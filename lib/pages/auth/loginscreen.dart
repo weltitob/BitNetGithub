@@ -1,18 +1,19 @@
 import 'dart:async';
 
+import 'package:BitNet/generated/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/components/appstandards/BitNetAppBar.dart';
-import 'package:nexus_wallet/components/appstandards/BitNetScaffold.dart';
-import 'package:nexus_wallet/components/backgrounds/backgroundwithcontent.dart';
-import 'package:nexus_wallet/components/buttons/longbutton.dart';
-import 'package:nexus_wallet/components/textfield/formtextfield.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
+import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
+import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:BitNet/components/buttons/longbutton.dart';
+import 'package:BitNet/components/textfield/formtextfield.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 import 'dart:math';
 
 Random random = new Random();
@@ -91,7 +92,7 @@ class _SignupScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     return BitNetScaffold(
       gradientColor: Colors.black,
-      appBar: BitNetAppBar(text: "Restore Wallet", context: context,
+      appBar: BitNetAppBar(text: S.of(context).restoreWallet, context: context,
       onTap: (){
         widget.toggleGetStarted();
       }),
@@ -111,10 +112,10 @@ class _SignupScreenState extends State<LoginScreen>
                 child: AnimatedTextKit(
                   animatedTexts: [
                     TypewriterAnimatedText(
-                    "Willkommen zurück!",
+                    S.of(context).welcomeBack,
                       textStyle: Theme.of(context).textTheme.displayLarge,
                       textAlign: TextAlign.left,
-                      speed: const Duration(milliseconds: 100),
+                      speed: const Duration(milliseconds: 120),
                     ),
                   ],
                   totalRepeatCount: 1,
@@ -126,7 +127,7 @@ class _SignupScreenState extends State<LoginScreen>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "Powered with decentralized IDs by",
+                    S.of(context).poweredByDIDs,
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall,
@@ -147,11 +148,12 @@ class _SignupScreenState extends State<LoginScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   FormTextField(
-                    title: "Public ION Key",
+                    title: S.of(context).publicIONKey,
                     controller: _controllerEmail,
                     isObscure: false,
+                    //das muss eh noch geändert werden gibt ja keine email
                     validator: (val) => val!.isEmpty
-                        ? 'Bitte geben Sie eine gültige Email an'
+                        ? "Iwas geht nicht"
                         : null,
                     onChanged: (val) {
                       setState(() {
@@ -177,15 +179,14 @@ class _SignupScreenState extends State<LoginScreen>
                           password = val;
                         });
                       },
-                      title: "Private Key",
+                      title: S.of(context).privateKey,
                       controller: _controllerPassword,
                       isObscure: true,
                     ),
                   ),
                   LongButtonWidget(
-                    title: 'Anmelden',
+                    title: S.of(context).restoreWallet,
                     onTap: () {
-                      print('Sign up pressed');
                       if (_form.currentState!.validate()) {
                         signInWithEmailAndPassword();
                       }
@@ -216,24 +217,18 @@ class _SignupScreenState extends State<LoginScreen>
                       widget.toggleResetPassword();
                     },
                     child: Text(
-                      'Sign in with 24 words',
-                      style: GoogleFonts.manrope(
-                        color: AppTheme.colorBitcoin,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      S.of(context).restoreWith24words,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: AppTheme.colorBitcoin
+                      )
                     ),
                   ),
                   Container(
                     margin:
                         EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
                     child: Text(
-                      "Du hast noch kein Konto?",
-                      style: GoogleFonts.manrope(
-                        color: AppTheme.white70,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      S.of(context).noAccountYet,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
                   Container(
@@ -254,16 +249,11 @@ class _SignupScreenState extends State<LoginScreen>
                     margin: EdgeInsets.only(top: 22, bottom: 22),
                     child: GestureDetector(
                       onTap: () {
-                        print('should toggle View');
                         widget.toggleView();
                       },
                       child: Text(
-                        'Registieren',
-                        style: GoogleFonts.manrope(
-                          color: AppTheme.white70,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        S.of(context).register,
+                        style: Theme.of(context).textTheme.bodyMedium
                       ),
                     ),
                   ),

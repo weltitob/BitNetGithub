@@ -1,18 +1,18 @@
 import 'dart:async';
+import 'package:BitNet/generated/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/cloudfunctions/createwallet.dart';
-import 'package:nexus_wallet/components/appstandards/BitNetAppBar.dart';
-import 'package:nexus_wallet/components/appstandards/BitNetScaffold.dart';
-import 'package:nexus_wallet/components/backgrounds/backgroundwithcontent.dart';
-import 'package:nexus_wallet/components/buttons/longbutton.dart';
-import 'package:nexus_wallet/components/textfield/formtextfield.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
-import 'package:nexus_wallet/models/verificationcode.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/backbone/cloudfunctions/createwallet.dart';
+import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
+import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
+import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:BitNet/components/buttons/longbutton.dart';
+import 'package:BitNet/components/textfield/formtextfield.dart';
+import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/verificationcode.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 
 // ignore: must_be_immutable
 class RegisterScreen extends StatefulWidget {
@@ -74,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       return currentuserwallet;
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = "Etwas ist schief gelaufen: ${e.message}";
+        errorMessage = "${S.of(context).errorSomethingWrong}: ${e.message}";
         print(e.message);
       });
     }
@@ -107,10 +107,10 @@ class _RegisterScreenState extends State<RegisterScreen>
                   child: AnimatedTextKit(
                     animatedTexts: [
                       TypewriterAnimatedText(
-                        "Power to the people!",
+                        S.of(context).powerToThePeople,
                         textStyle: Theme.of(context).textTheme.displayLarge,
                         textAlign: TextAlign.left,
-                        speed: const Duration(milliseconds: 100),
+                        speed: const Duration(milliseconds: 120),
                       ),
                     ],
                     totalRepeatCount: 1,
@@ -122,7 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      "Powered with decentralized IDs by",
+                      S.of(context).poweredByDIDs,
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall,
@@ -190,9 +190,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                           }),
                     ),
                     LongButtonWidget(
-                      title: 'Registieren',
+                      title: S.of(context).register,
                       onTap: () {
-                        print('Sign up pressed');
                         if (_form.currentState!.validate()) {
                           createUser();
                         }
@@ -216,12 +215,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                     Container(
                       margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
                       child: Text(
-                        'Du hast bereits ein Konto?',
-                        style: GoogleFonts.manrope(
-                          color: AppTheme.white70,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        S.of(context).alreadyHaveAccount,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                     Container(
@@ -242,16 +237,11 @@ class _RegisterScreenState extends State<RegisterScreen>
                       margin: EdgeInsets.only(top: 22, bottom: 22),
                       child: GestureDetector(
                         onTap: () {
-                          print('should toggle View');
                           widget.toggleView();
                         },
                         child: Text(
-                          'Anmelden',
-                          style: GoogleFonts.manrope(
-                            color: AppTheme.white70,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
+                          S.of(context).restoreWallet,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     ),

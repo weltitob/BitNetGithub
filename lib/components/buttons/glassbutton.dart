@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/components/container/glassmorph.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/components/container/glassmorph.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 
 class glassButton extends StatefulWidget {
   final String text;

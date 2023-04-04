@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 
 class RoundedButtonWidget extends StatelessWidget {
   final IconData iconData;

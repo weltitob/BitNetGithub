@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/helper/loaders.dart';
-import 'package:nexus_wallet/backbone/security/biometrics/biometric_helper.dart';
-import 'package:nexus_wallet/backbone/security/security.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
-import 'package:nexus_wallet/pages/bottomnav.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
-import 'package:nexus_wallet/pages/routetrees/authtree.dart';
-import 'package:nexus_wallet/pages/routetrees/getstartedtree.dart';
+import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
+import 'package:BitNet/backbone/security/security.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/pages/bottomnav.dart';
+import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/pages/routetrees/authtree.dart';
+import 'package:BitNet/pages/routetrees/getstartedtree.dart';
 import 'package:provider/provider.dart';
 
 class WidgetTree extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
-import 'package:nexus_wallet/components/backgrounds/backgroundgradient.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/components/backgrounds/backgroundgradient.dart';
 
 AppBar BitNetAppBar({
   required String text,

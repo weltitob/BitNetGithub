@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nexus_wallet/components/snackbar/snackbar.dart';
+import 'package:BitNet/components/snackbar/snackbar.dart';
 import 'package:uuid/uuid.dart';
 
 var uuid = Uuid();

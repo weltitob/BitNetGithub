@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:nexus_wallet/components/chart/chart.dart';
-import 'package:nexus_wallet/components/container/buildroundedbox.dart';
-import 'package:nexus_wallet/pages/secondpages/newsscreen.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/components/chart/chart.dart';
+import 'package:BitNet/components/container/buildroundedbox.dart';
+import 'package:BitNet/pages/secondpages/newsscreen.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 
 class BitcoinScreen extends StatefulWidget {
   const BitcoinScreen({

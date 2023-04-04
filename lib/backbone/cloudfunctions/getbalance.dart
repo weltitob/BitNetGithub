@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
-import 'package:nexus_wallet/models/cloudfunction_callback.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
+import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/models/cloudfunction_callback.dart';
+import 'package:BitNet/models/userwallet.dart';
 import 'package:provider/provider.dart';
 
 bool _canCallFunction = true;

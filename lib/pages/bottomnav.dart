@@ -1,9 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
-import 'package:nexus_wallet/pages/homescreen.dart';
-import 'package:nexus_wallet/pages/qrscreen.dart';
-import 'package:nexus_wallet/pages/settingsscreen.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/pages/homescreen.dart';
+import 'package:BitNet/pages/qrscreen.dart';
+import 'package:BitNet/pages/settingsscreen.dart';
 
 // This widget is a [StatefulWidget] that creates a bottom navigation bar with a [CurvedNavigationBar] that has 3 items/icons.
 // The widget receives no arguments and creates a state object of [_BottomNavState].

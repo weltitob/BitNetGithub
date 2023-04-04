@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nexus_wallet/main.dart';
-import 'package:nexus_wallet/pages/routetrees/widgettree.dart';
+import 'package:BitNet/main.dart';
+import 'package:BitNet/pages/routetrees/widgettree.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 

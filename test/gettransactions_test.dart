@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
+import 'package:BitNet/models/userwallet.dart';
 import 'package:mockito/mockito.dart';
 
 import 'createwallet_test.dart';

@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
+import 'package:http/http.dart' as http;
+import 'package:BitNet/models/openai_image.dart';
 
 // Create a StatefulWidget for the background animation
 class BackgroundWithContent extends StatefulWidget {
@@ -16,13 +19,15 @@ class BackgroundWithContent extends StatefulWidget {
 // Create a State class for the background animation
 class _BackgroundWithContentState extends State<BackgroundWithContent> {
   bool _visible = false; // Set initial visibility to false
-  late final Future<LottieComposition> _composition; // Future to hold the Lottie animation
+  late final Future<LottieComposition> _composition;
+  late final Future<NetworkImage> _networkimage;// Future to hold the Lottie animation
 
   @override
   void initState() {
     super.initState();
-    _composition = _loadComposition(); // Load the Lottie animation
-    updatevisibility(); // Update visibility
+    _networkimage = _callOpenAiApi();
+    //_composition = _loadComposition(); // Load the Lottie animation
+    updatevisibility();
   }
 
   @override
@@ -32,13 +37,53 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
 
   // Update the visibility of the animation after a delay
   void updatevisibility() async {
-    await _composition; // Wait for the animation to load
-    Timer(Duration(seconds: 1), () {
+    await _networkimage;
+    setState(() {});
+    //await _composition; // Wait for the animation to load
+    Timer(Duration(seconds: 3), () {
       setState(() {
         _visible = true; // Set visibility to true
       });
     });
   }
+
+  Future<NetworkImage> _callOpenAiApi() async {
+    print('START CALLING OPENAI...');
+    try{
+      const openAiApiKey = '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';
+      final url = 'https://api.openai.com/v1/images/generations';
+      final prompt = 'hyperrealistic, hacker, dark, orange, epic, landscape, cyberpunk';
+
+      // final response = await http.post(
+      //   Uri.parse(url),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Authorization': 'Bearer $openAiApiKey',
+      //   },
+      //   body: json.encode({
+      //     'prompt': '$prompt',
+      //     'size': '1024x1024',
+      //     'n': 1,
+      //   }),
+      // );
+
+      dynamic response = 200;
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final generatedimg = OpenAiCallback.fromJson(responseData);
+        final networkimage = NetworkImage(generatedimg.imageurl);
+        setState(() {});
+        return networkimage;
+      } else {
+        return NetworkImage("https://media.discordapp.net/attachments/1085698180991156299/1092843693670678528/Mind-blowing_ai_art_A_dramatic_sci-fi_battle_scene_with_spacesh_fbb3bbc5-b304-4341-a1cd-a7ced9f34037.png?width=415&height=740");
+      }
+    } catch(e){
+      print("An error occured at api request to openai $e");
+      return NetworkImage("https://media.discordapp.net/attachments/1085698180991156299/1092843693670678528/Mind-blowing_ai_art_A_dramatic_sci-fi_battle_scene_with_spacesh_fbb3bbc5-b304-4341-a1cd-a7ced9f34037.png?width=415&height=740");
+    }
+  }
+
 
   // Load the Lottie animation from the asset file
   Future<LottieComposition> _loadComposition() async {
@@ -56,26 +101,29 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
           width: double.infinity,
           color: Colors.black,
           child: FutureBuilder(
-            future: _composition,
-            builder: (context, snapshot) {
-              var composition = snapshot.data;
-              if (composition != null) {
-                // If the composition has loaded, display the animation with an opacity animation
-                return FittedBox(
-                  fit: BoxFit.fitHeight,
-                  child: AnimatedOpacity(
-                    opacity: _visible ? 1.0 : 0.0, // Set opacity based on visibility
-                    duration: Duration(milliseconds: 3000),
-                    child: Image.network("https://oaidalleapiprodscus.blob.core.windows.net/private/org-Fip5i7zvX4hTwo8q95niXIJ7/user-AhyKulKVCXAe0zeqCFQlMhMS/img-M7BqZhIhFIhl6lTwhUXQSU1B.png?st=2023-04-04T09%3A12%3A09Z&se=2023-04-04T11%3A12%3A09Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-04T08%3A35%3A56Z&ske=2023-04-05T08%3A35%3A56Z&sks=b&skv=2021-08-06&sig=uvvwY4FuWniGmSWvGWkrP6ZH9xr2KO2qLvQLNek5tEU%3D"),
-                    //Lottie(composition: composition)
-                  ),
-                );
-              } else {
-                // If the composition has not yet loaded, display a black container
-                return Container(
-                  color: Colors.black,
-                );
-              }
+            future: _networkimage,
+              builder: (BuildContext context, AsyncSnapshot<NetworkImage> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    color: Colors.black,
+                  );
+                } else if (snapshot.hasError) {
+                  return Container(
+                    color: Colors.black,
+                  );
+                } else {
+                  return FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: AnimatedOpacity(
+                      opacity: _visible ? 1.0 : 0.0, // Set opacity based on visibility
+                      duration: Duration(milliseconds: 3000),
+                      child: Image(
+                        image: snapshot.data!,
+                      ),
+                      //Lottie(composition: composition)
+                    ),
+                  );
+                }
             },
           ),
         ),

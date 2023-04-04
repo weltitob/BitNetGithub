@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nexus_wallet/backbone/cloudfunctions/getfees.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
+import 'package:BitNet/backbone/cloudfunctions/getfees.dart';
+import 'package:BitNet/models/userwallet.dart';
 
 void main() {
   test('getFees returns fees', () async {

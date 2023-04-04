@@ -1,17 +1,18 @@
 import 'dart:async';
+import 'package:BitNet/generated/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
-import 'package:nexus_wallet/backbone/helper/loaders.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
-import 'package:nexus_wallet/components/appstandards/BitNetAppBar.dart';
-import 'package:nexus_wallet/components/appstandards/BitNetScaffold.dart';
-import 'package:nexus_wallet/components/backgrounds/backgroundwithcontent.dart';
-import 'package:nexus_wallet/models/verificationcode.dart';
-import 'package:nexus_wallet/pages/auth/registerscreen.dart';
+import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
+import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
+import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:BitNet/models/verificationcode.dart';
+import 'package:BitNet/pages/auth/registerscreen.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class PinVerificationScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   String currentText = "";
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
-  String _error = "Something went wrong";
+  String _error = "";
   String? _textValueClipboard = '';
   bool wanttocopy = true;
 
@@ -65,7 +66,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         textEditingController.text = data.text!;
       });
     } else {
-      print('no code in users clipboard could be found');
+      throw Exception('no code in users clipboard could be found');
     }
   }
 
@@ -95,15 +96,14 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       } else {
         errorController
             .add(ErrorAnimationType.shake); // Triggering error shake animation
-        _error = "It seems like this code has already been used";
+        _error = S.of(context).codeAlreadyUsed;
         setState(() {
           _loading = false;
           hasError = true;
         });
       }
     } catch (error) {
-      print('Something went wrong: $error');
-      _error = "Code is not valid.";
+      _error = S.of(context).codeNotValid;
       errorController
           .add(ErrorAnimationType.shake); // Triggering error shake animation
       setState(() {
@@ -118,10 +118,9 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
     return BitNetScaffold(
       appBar: BitNetAppBar(
         onTap: () {
-          print("Back button pressed");
           widget.toggleGetStarted();
         },
-        text: "Pin Code Verification",
+        text: S.of(context).pinCodeVerification,
         context: context,
       ),
       gradientColor: Colors.black,
@@ -137,11 +136,6 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     SizedBox(
                       height: AppTheme.cardPadding * 3,
                     ),
-                    // Container(
-                    //   height: MediaQuery.of(context).size.height / 2.5,
-                    //   child: LottieBuilder.network(
-                    //       "https://assets2.lottiefiles.com/packages/lf20_ccvekmzu.json"),
-                    // ),
                     Center(
                         child: Container(
                       margin: EdgeInsets.symmetric(
@@ -149,19 +143,19 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       child: AnimatedTextKit(
                         animatedTexts: [
                           TypewriterAnimatedText(
-                            "We're thrilled to see such a high demand for the platform! However, at the moment user numbers had to be limited to invited users.",
+                            S.of(context).platformDemandText,
                             textStyle: Theme.of(context).textTheme.titleMedium,
                             textAlign: TextAlign.center,
                             speed: const Duration(milliseconds: 50),
                           ),
                           TypewriterAnimatedText(
-                            "We encourage users to maintain the exclusivity and security of the platform by sharing Invitation Codes with individuals who you believe will contribute positively to our culture of trust and collaboration.",
+                            S.of(context).platformExlusivityText,
                             textStyle: Theme.of(context).textTheme.titleMedium,
                             textAlign: TextAlign.center,
                             speed: const Duration(milliseconds: 50),
                           ),
                           TypewriterAnimatedText(
-                            "Thanks for your patience as we work to expand our capacity and accommodate the growing demand. We appreciate your support and remain committed to enhancing the overall experience for everyone!",
+                            S.of(context).platformExpandCapacityText,
                             textStyle: Theme.of(context).textTheme.titleMedium,
                             textAlign: TextAlign.center,
                             speed: const Duration(milliseconds: 50),
@@ -211,7 +205,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                   height: AppTheme.cardPadding,
                 ),
                 Text(
-                  'Invitation Code',
+                  S.of(context).invitationCode,
                   style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.left,
                 ),
@@ -259,7 +253,6 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       });
                     },
                     beforeTextPaste: (text) {
-                      print("Allowing to paste $text");
                       return true;
                     },
                   ),

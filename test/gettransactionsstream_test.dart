@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nexus_wallet/backbone/streams/gettransactionsstream.dart';
-import 'package:nexus_wallet/models/transaction.dart';
+import 'package:BitNet/backbone/streams/gettransactionsstream.dart';
+import 'package:BitNet/models/transaction.dart';
 
 // Mock FirebaseAuth and User objects
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nexus_wallet/backbone/streams/cryptochartline.dart';
-import 'package:nexus_wallet/components/chart/chart.dart';
+import 'package:BitNet/backbone/streams/cryptochartline.dart';
+import 'package:BitNet/components/chart/chart.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 

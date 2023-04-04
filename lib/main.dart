@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/streams/bitcoinpricestream.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/streams/bitcoinpricestream.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:nexus_wallet/components/chart/chart.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
-import 'package:nexus_wallet/pages/routetrees/widgettree.dart';
+import 'package:BitNet/components/chart/chart.dart';
+import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/pages/routetrees/widgettree.dart';
 import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'generated/l10n.dart';
 
 // Main function to start the application
 Future<void> main() async {
@@ -41,6 +43,15 @@ class MyApp extends StatelessWidget {
         // Provide a stream of user wallet data
       ],
       child: MaterialApp(
+        //multilanguage support
+        localizationsDelegates: [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales, // Add this line
+        // Other properties like theme, home, etc.
         debugShowCheckedModeBanner: false,
         title: 'BitNet',
         theme: AppTheme.standardTheme(),

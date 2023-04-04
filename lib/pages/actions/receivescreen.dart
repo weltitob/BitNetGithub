@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nexus_wallet/components/buttons/glassbutton.dart';
-import 'package:nexus_wallet/components/camera/qrscanneroverlay.dart';
-import 'package:nexus_wallet/components/snackbar/snackbar.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
+import 'package:BitNet/components/buttons/glassbutton.dart';
+import 'package:BitNet/components/camera/qrscanneroverlay.dart';
+import 'package:BitNet/components/snackbar/snackbar.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/models/userwallet.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';

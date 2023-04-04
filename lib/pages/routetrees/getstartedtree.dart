@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/models/verificationcode.dart';
-import 'package:nexus_wallet/pages/auth/getstartedscreen.dart';
-import 'package:nexus_wallet/pages/auth/loginscreen.dart';
-import 'package:nexus_wallet/pages/auth/pinverificationscreen.dart';
-import 'package:nexus_wallet/pages/auth/registerscreen.dart';
-import 'package:nexus_wallet/pages/auth/usephrasesscreen.dart';
-import 'package:nexus_wallet/pages/routetrees/authtree.dart';
+import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/models/verificationcode.dart';
+import 'package:BitNet/pages/auth/getstartedscreen.dart';
+import 'package:BitNet/pages/auth/loginscreen.dart';
+import 'package:BitNet/pages/auth/pinverificationscreen.dart';
+import 'package:BitNet/pages/auth/registerscreen.dart';
+import 'package:BitNet/pages/auth/usephrasesscreen.dart';
+import 'package:BitNet/pages/routetrees/authtree.dart';
 
 /*
  This Flutter widget displays either a login screen, a registration screen,

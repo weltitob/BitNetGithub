@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/pages/settingsscreen.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/pages/settingsscreen.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 
 class AGBScreen extends StatefulWidget {
   const AGBScreen({Key? key}) : super(key: key);

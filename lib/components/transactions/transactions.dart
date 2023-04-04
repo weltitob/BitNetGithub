@@ -4,16 +4,16 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/cloudfunctions/gettransactions.dart';
-import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
-import 'package:nexus_wallet/backbone/helper/helpers.dart';
-import 'package:nexus_wallet/backbone/helper/loaders.dart';
-import 'package:nexus_wallet/backbone/streams/gettransactionsstream.dart';
-import 'package:nexus_wallet/components/items/transactionitem.dart';
-import 'package:nexus_wallet/models/transaction.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
+import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
+import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/backbone/helper/helpers.dart';
+import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/backbone/streams/gettransactionsstream.dart';
+import 'package:BitNet/components/items/transactionitem.dart';
+import 'package:BitNet/models/transaction.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/models/userwallet.dart';
 import 'package:provider/provider.dart';
 
 class Transactions extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:nexus_wallet/backbone/security/biometrics/biometric_helper.dart';
+import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
 
 void main() {
   group('BiometricHelper', () {

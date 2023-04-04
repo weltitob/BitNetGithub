@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nexus_wallet/backbone/auth/auth.dart';
-import 'package:nexus_wallet/backbone/helper/databaserefs.dart';
-import 'package:nexus_wallet/components/buttons/glassbutton.dart';
-import 'package:nexus_wallet/components/container/glassmorph.dart';
-import 'package:nexus_wallet/components/snackbar/snackbar.dart';
-import 'package:nexus_wallet/models/userwallet.dart';
-import 'package:nexus_wallet/pages/settingsscreen.dart';
-import 'package:nexus_wallet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/components/buttons/glassbutton.dart';
+import 'package:BitNet/components/container/glassmorph.dart';
+import 'package:BitNet/components/snackbar/snackbar.dart';
+import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/pages/settingsscreen.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
 
 class ChangeEmailScreen extends StatefulWidget {
   const ChangeEmailScreen({Key? key}) : super(key: key);

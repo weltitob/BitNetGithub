@@ -1,4 +1,4 @@
-package com.example.nexus_wallet
+package com.bitnet
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

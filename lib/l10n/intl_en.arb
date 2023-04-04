@@ -1,0 +1,24 @@
+{
+  "@@locale": "en",
+  "helloWorld": "Hello World!",
+  "restoreWallet": "Restore Wallet",
+  "register": "Create Account",
+  "welcomeBack": "Welcome back!",
+  "poweredByDIDs": "Powered with decentralized IDs by",
+  "publicIONKey": "Public ION Key",
+  "privateKey": "Private Key",
+  "restoreWith24words": "Restore Account with 24 words",
+  "pinCodeVerification": "Pin Code Verification",
+  "invitationCode": "Invitation Code",
+  "noAccountYet": "You don't have an account yet?",
+  "alreadyHaveAccount": "You already have an registered Account?",
+  "codeAlreadyUsed": "It seems like this code has already been used",
+  "codeNotValid": "Code is not valid.",
+  "errorSomethingWrong": "Something went wrong",
+  "powerToThePeople": "Power to the people!",
+  "platformDemandText": "We're thrilled to see such a high demand for the platform! However, at the moment user numbers had to be limited to invited users.",
+  "platformExlusivityText": "We encourage users to maintain the exclusivity and security of the platform by sharing Invitation Codes with individuals who you believe will contribute positively to our culture of trust and collaboration.",
+  "platformExpandCapacityText": "Thanks for your patience as we work to expand our capacity and accommodate the growing demand. We appreciate your support and remain committed to enhancing the overall experience for everyone!"
+
+
+}
