@@ -201,6 +201,7 @@ class _SignupScreenState extends State<LoginScreen>
                               top: AppTheme.cardPadding),
                           child: Text(
                             errorMessage!,
+                            textAlign: TextAlign.center,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!

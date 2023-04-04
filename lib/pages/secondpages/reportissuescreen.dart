@@ -28,7 +28,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
     print('Issue commited');
     if (issueController.text.isNotEmpty) {
       issueController.text = "";
-      String uid = user!.uid ?? "";
+      String uid = user!.uid;
       String mail = user!.email ?? "";
       final issuereport = IssueReport(
           useremail: mail, issue: issueController.text);

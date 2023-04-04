@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:BitNet/backbone/helper/helpers.dart';
+import 'package:BitNet/models/verificationcode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/models/userwallet.dart';
@@ -93,7 +95,34 @@ class Auth {
   Future<UserWallet> createUserWithEmailAndPassword({
     required UserWallet user,
     required String password,
+    required VerificationCode code,
   }) async {
+
+    //check and validate data the user put in
+    //final validate = formKey.currentState?.validate();
+    //final iondata = await authION();
+
+    // Set desired number of codes and code length
+    const numCodes = 4;
+    const codeLength = 5;
+
+    // Generate list of codes
+    List<String> codes = [];
+    for (var i = 0; i < numCodes; i++) {
+      String code = getRandomString(codeLength);
+      codes.add(code);
+    }
+
+    codes.forEach((element) async {
+      final code = VerificationCode(
+        used: false,
+        code: element,
+        issuer: "",
+        receiver: '',
+      );
+      await codesCollection.doc(element).set(code.toJson());
+    });
+
     final currentuser = await _firebaseAuth.createUserWithEmailAndPassword(
       email: user.email,
       password: password,
@@ -101,6 +130,9 @@ class Auth {
     final newUser = user.copyWith(useruid: currentuser.user!.uid);
     await usersCollection.doc(currentuser.user!.uid).set(newUser.toMap());
     print('Successfully created wallet/user in database: ${newUser.toMap()}');
+
+
+
     return newUser;
   }
 

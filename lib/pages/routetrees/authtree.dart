@@ -3,7 +3,7 @@ import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/pages/auth/getstartedscreen.dart';
 import 'package:BitNet/pages/auth/loginscreen.dart';
 import 'package:BitNet/pages/auth/pinverificationscreen.dart';
-import 'package:BitNet/pages/auth/registerscreen.dart';
+import 'package:BitNet/pages/auth/createaccountscreen.dart';
 import 'package:BitNet/pages/auth/usephrasesscreen.dart';
 
 /*
@@ -28,7 +28,7 @@ class _AuthTreeState extends State<AuthTree> {
   // boolean variables to track which screen to show
   bool resetpassword = false;
   bool getStarted = true;
-  bool isInvited = false;
+  bool isInvited = true;
 
   void toggleIsInvited(){
 
@@ -75,7 +75,7 @@ class _AuthTreeState extends State<AuthTree> {
         } else {
           // show the registration screen if both variables are false
           if (isInvited) {
-            return RegisterScreen(
+            return CreateAccountScreen(
                 toggleGetStarted: widget.toggleGetStarted,
                 toggleView: toggleView,
                 code: VerificationCode(

@@ -14,21 +14,20 @@ import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 
-// ignore: must_be_immutable
-class RegisterScreen extends StatefulWidget {
+class CreateAccountScreen extends StatefulWidget {
   VerificationCode code;
   Function() toggleView;
   Function() toggleGetStarted;
-  RegisterScreen({
+  CreateAccountScreen({
     required this.toggleGetStarted,
     required this.toggleView,
     required this.code});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<CreateAccountScreen> createState() => _CreateAccountScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen>
+class _CreateAccountScreenState extends State<CreateAccountScreen>
     with TickerProviderStateMixin {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
@@ -48,9 +47,14 @@ class _RegisterScreenState extends State<RegisterScreen>
       _isLoading = true;
     });
     try {
-      final userwalletdata = await createWallet(email: _controllerEmail.text);
+      //final userwalletdata = await createWallet(email: _controllerEmail.text);
+
+      final userwalletdata = UserWallet(walletAddress: "abcde", walletType: "walletType", walletBalance: "0.0", privateKey: "privateKey", email: "hallo@gmail.com", useruid: "useruid");
+      print('Alles gut 1');
       final UserWallet? currentuserwallet =
-          await createFirebaseUserWithEmailAndPassword(userwalletdata);
+          await createFirebaseUserWithEmailAndPassword(userwalletdata,
+          VerificationCode(used: false, code: "ABCDE", issuer: "", receiver: "")
+          );
     } catch (e) {
       throw Exception(e);
     }
@@ -60,13 +64,14 @@ class _RegisterScreenState extends State<RegisterScreen>
   }
 
   Future<UserWallet?> createFirebaseUserWithEmailAndPassword(
-      UserWallet userWallet) async {
+      UserWallet userWallet, VerificationCode code) async {
     try {
       //blablabla
       final UserWallet currentuserwallet =
           await Auth().createUserWithEmailAndPassword(
         user: userWallet,
         password: _controllerPassword.text,
+        code: code,
       );
       return currentuserwallet;
     } on FirebaseAuthException catch (e) {
@@ -203,6 +208,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 top: AppTheme.cardPadding),
                             child: Text(
                               errorMessage!,
+                              textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
