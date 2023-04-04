@@ -51,13 +51,10 @@ class _RegisterScreenState extends State<RegisterScreen>
       final userwalletdata = await createWallet(email: _controllerEmail.text);
       final UserWallet? currentuserwallet =
           await createFirebaseUserWithEmailAndPassword(userwalletdata);
-      print('user registered successfully');
     } catch (e) {
-      print('error trying to register user');
-      print(e);
+      throw Exception(e);
     }
     setState(() {
-      //error text will also be updated
       _isLoading = false;
     });
   }
@@ -86,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       child: BitNetScaffold(
         gradientColor: Colors.black,
         appBar: BitNetAppBar(
-            text: "Register",
+            text: S.of(context).register,
             context: context,
             onTap: () {
               widget.toggleGetStarted();
