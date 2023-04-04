@@ -168,7 +168,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                           ),
                         ],
                         repeatForever: true,
-                        pause: const Duration(milliseconds: 4000),
+                        pause: const Duration(milliseconds: 2000),
                         displayFullTextOnTap: true,
                         stopPauseOnTap: true,
                       ),
