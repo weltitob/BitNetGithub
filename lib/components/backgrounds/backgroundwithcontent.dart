@@ -66,7 +66,7 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                   child: AnimatedOpacity(
                     opacity: _visible ? 1.0 : 0.0, // Set opacity based on visibility
                     duration: Duration(milliseconds: 3000),
-                    child: Image.network("https://as1.ftcdn.net/v2/jpg/05/62/07/96/1000_F_562079606_kgNe47wru5YKpyrGW9ErWTcjXOOaLhc1.jpg"),
+                    child: Image.network("https://oaidalleapiprodscus.blob.core.windows.net/private/org-Fip5i7zvX4hTwo8q95niXIJ7/user-AhyKulKVCXAe0zeqCFQlMhMS/img-M7BqZhIhFIhl6lTwhUXQSU1B.png?st=2023-04-04T09%3A12%3A09Z&se=2023-04-04T11%3A12%3A09Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-04T08%3A35%3A56Z&ske=2023-04-05T08%3A35%3A56Z&sks=b&skv=2021-08-06&sig=uvvwY4FuWniGmSWvGWkrP6ZH9xr2KO2qLvQLNek5tEU%3D"),
                     //Lottie(composition: composition)
                   ),
                 );
