@@ -18,10 +18,12 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 class PinVerificationScreen extends StatefulWidget {
   Function() toggleView;
   Function() toggleGetStarted;
+  Function() toggleIsInvited;
 
   PinVerificationScreen({
     required this.toggleView,
     required this.toggleGetStarted,
+    required this.toggleIsInvited,
   });
   @override
   _PinVerificationScreenState createState() => _PinVerificationScreenState();
@@ -85,14 +87,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       if (code.used == false) {
         _loading = false;
         //passing code to SignUp that it can be flagged as used later on
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CreateAccountScreen(
-                      toggleGetStarted: widget.toggleGetStarted,
-                      code: code,
-                      toggleView: widget.toggleView,
-                    )));
+        widget.toggleIsInvited();
       } else {
         errorController
             .add(ErrorAnimationType.shake); // Triggering error shake animation

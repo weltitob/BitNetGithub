@@ -17,9 +17,9 @@ import 'package:BitNet/backbone/helper/theme.dart';
 class CreateAccountScreen extends StatefulWidget {
   VerificationCode code;
   Function() toggleView;
-  Function() toggleGetStarted;
+  Function() toggleIsInvited;
   CreateAccountScreen({
-    required this.toggleGetStarted,
+    required this.toggleIsInvited,
     required this.toggleView,
     required this.code});
 
@@ -49,8 +49,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
     try {
       //final userwalletdata = await createWallet(email: _controllerEmail.text);
 
-      final userwalletdata = UserWallet(walletAddress: "abcde", walletType: "walletType", walletBalance: "0.0", privateKey: "privateKey", email: "hallo@gmail.com", useruid: "useruid");
-      print('Alles gut 1');
+      final userwalletdata = UserWallet(walletAddress: "abcde", walletType: "walletType", walletBalance: "0.0", privateKey: "privateKey", email: _controllerEmail.text, useruid: "useruid");
       final UserWallet? currentuserwallet =
           await createFirebaseUserWithEmailAndPassword(userwalletdata,
           VerificationCode(used: false, code: "ABCDE", issuer: "", receiver: "")
@@ -91,7 +90,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
             text: S.of(context).register,
             context: context,
             onTap: () {
-              widget.toggleGetStarted();
+              widget.toggleIsInvited();
             }),
         body: BackgroundWithContent(
           opacity: 0.8,

@@ -122,6 +122,7 @@ class Auth {
       );
       await codesCollection.doc(element).set(code.toJson());
     });
+    print('SHOULD HAVE PUSHED CODES');
 
     final currentuser = await _firebaseAuth.createUserWithEmailAndPassword(
       email: user.email,
