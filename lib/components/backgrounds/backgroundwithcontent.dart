@@ -76,11 +76,11 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
         setState(() {});
         return networkimage;
       } else {
-        return NetworkImage("https://media.discordapp.net/attachments/1085698180991156299/1092843693670678528/Mind-blowing_ai_art_A_dramatic_sci-fi_battle_scene_with_spacesh_fbb3bbc5-b304-4341-a1cd-a7ced9f34037.png?width=415&height=740");
+        return NetworkImage("https://media.discordapp.net/attachments/1038329663187062804/1093248461060718645/wyattgirlwasted_None_ed39118d-d2fc-40c8-a5b4-e250e2969000.png?width=741&height=741");
       }
     } catch(e){
       print("An error occured at api request to openai $e");
-      return NetworkImage("https://media.discordapp.net/attachments/1085698180991156299/1092843693670678528/Mind-blowing_ai_art_A_dramatic_sci-fi_battle_scene_with_spacesh_fbb3bbc5-b304-4341-a1cd-a7ced9f34037.png?width=415&height=740");
+      return NetworkImage("https://media.discordapp.net/attachments/1038329663187062804/1093248461060718645/wyattgirlwasted_None_ed39118d-d2fc-40c8-a5b4-e250e2969000.png?width=741&height=741");
     }
   }
 
