@@ -10,6 +10,7 @@ import 'backbone/auth/auth.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'generated/l10n.dart';
 
+
 // Main function to start the application
 Future<void> main() async {
   // Ensure that Flutter binding is initialized

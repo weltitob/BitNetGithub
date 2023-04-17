@@ -8,6 +8,7 @@ import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 
+
 class GetStartedScreen extends StatefulWidget {
   // function to toggle between login and reset password screens
   Function() pushToRegister;
@@ -87,7 +88,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             SizedBox(height: AppTheme.cardPadding),
             LongButtonWidget(
                 title: S.of(context).register,
-                onTap: () {
+                onTap: () async {
+                  //final mnemonic = await Mnemonic.create(WordCount.Words12);
+                  //final descriptorSecretKey = await DescriptorSecretKey.create( network: Network.Testnet,
+                  //    mnemonic: mnemonic );
+                  //print(descriptorSecretKey);
                   widget.pushToRegister();
                 })
           ],

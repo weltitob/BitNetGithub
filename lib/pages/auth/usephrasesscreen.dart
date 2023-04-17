@@ -90,90 +90,119 @@ class _UsePhrasesScreenState extends State<UsePhrasesScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: BitNetScaffold(
-        gradientColor: Colors.black,
-        appBar: BitNetAppBar(text: "Reset Password", context: context, onTap: (){
-          widget.toggleResetPassword();
-        }),
-        body: BackgroundWithContent(
-          opacity: 0.8,
-          child: Form(
-            key: _form,
-            child: ListView(
-              padding: EdgeInsets.only(
-                  left: AppTheme.cardPadding * 2,
-                  right: AppTheme.cardPadding * 2,
-                  top: AppTheme.cardPadding * 8),
-              physics: BouncingScrollPhysics(),
-              children: [
-                Center(
-                  child: Text(
-                    "Passwort zurücksetzen",
-                    style: Theme.of(context)
-                        .textTheme
-                        .displayLarge!
-                        .copyWith(color: AppTheme.white90),
+    return BitNetScaffold(
+      gradientColor: Colors.black,
+      appBar: BitNetAppBar(text: "Reset Password", context: context, onTap: (){
+        widget.toggleResetPassword();
+      }),
+      body: BackgroundWithContent(
+        opacity: 0.8,
+        child: Form(
+          key: _form,
+          child: ListView(
+            padding: EdgeInsets.only(
+                left: AppTheme.cardPadding * 2,
+                right: AppTheme.cardPadding * 2,
+                top: AppTheme.cardPadding * 8),
+            physics: BouncingScrollPhysics(),
+            children: [
+              Center(
+                child: Text(
+                  "Passwort zurücksetzen",
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayLarge!
+                      .copyWith(color: AppTheme.white90),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
+                child: Text(
+                  "Keine Panik! Wir senden dir einen Link per E-Mail.",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(color: AppTheme.white70),
+                ),
+              ),
+              SizedBox(
+                height: AppTheme.cardPadding,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  FormTextField(
+                    title: "E-Mail",
+                    controller: _controllerEmail,
+                    isObscure: false,
+                    validator: (val) => val!.isEmpty
+                        ? 'Bitte geben Sie Ihre E-Mail Adresse an'
+                        : null,
+                    onChanged: (val) {
+                      setState(() {
+                        email = val;
+                      });
+                    },
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
-                  child: Text(
-                    "Keine Panik! Wir senden dir einen Link per E-Mail.",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(color: AppTheme.white70),
+                  SizedBox(height: AppTheme.cardPadding,),
+                  LongButtonWidget(
+                    title: 'Anfrage senden',
+                    onTap: () {
+                      if (_form.currentState!.validate()) {
+                        //passwortz zurücksetzen email versenden
+                        resetPassword();
+                      }
+                    },
+                    state:
+                    _isLoading ? ButtonState.loading : ButtonState.idle,
                   ),
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FormTextField(
-                      title: "E-Mail",
-                      controller: _controllerEmail,
-                      isObscure: false,
-                      validator: (val) => val!.isEmpty
-                          ? 'Bitte geben Sie Ihre E-Mail Adresse an'
-                          : null,
-                      onChanged: (val) {
-                        setState(() {
-                          email = val;
-                        });
-                      },
+                  errorMessage == null
+                      ? Container()
+                      : Padding(
+                    padding: const EdgeInsets.only(top: AppTheme.cardPadding),
+                    child: Text(
+                      errorMessage!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: AppTheme.errorColor),
                     ),
-                    SizedBox(height: AppTheme.cardPadding,),
-                    LongButtonWidget(
-                      title: 'Anfrage senden',
-                      onTap: () {
-                        if (_form.currentState!.validate()) {
-                          //passwortz zurücksetzen email versenden
-                          resetPassword();
-                        }
-                      },
-                      state:
-                      _isLoading ? ButtonState.loading : ButtonState.idle,
-                    ),
-                    errorMessage == null
-                        ? Container()
-                        : Padding(
-                      padding: const EdgeInsets.only(top: AppTheme.cardPadding),
-                      child: Text(
-                        errorMessage!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: AppTheme.errorColor),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
+                    child: Text(
+                      "Du erinnert dich an dein Passwort?",
+                      style: GoogleFonts.manrope(
+                        color: AppTheme.white70,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 28),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppTheme.white60,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: SizedBox(
+                      height: 0,
+                      width: 65,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 22, bottom: 22),
+                    child: GestureDetector(
+                      onTap: () {
+                        print('should toggle back to Login');
+                        widget.toggleResetPassword();
+                      },
                       child: Text(
-                        "Du erinnert dich an dein Passwort?",
+                        'Anmelden',
                         style: GoogleFonts.manrope(
                           color: AppTheme.white70,
                           fontSize: 14,
@@ -181,41 +210,10 @@ class _UsePhrasesScreenState extends State<UsePhrasesScreen>
                         ),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 28),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppTheme.white60,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: SizedBox(
-                        height: 0,
-                        width: 65,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 22, bottom: 22),
-                      child: GestureDetector(
-                        onTap: () {
-                          print('should toggle back to Login');
-                          widget.toggleResetPassword();
-                        },
-                        child: Text(
-                          'Anmelden',
-                          style: GoogleFonts.manrope(
-                            color: AppTheme.white70,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
