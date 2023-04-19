@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'generated/l10n.dart';
+import 'package:firebase_core/firebase_core.dart';
+//import 'firebase_options.dart';
 
 
 // Main function to start the application
@@ -17,7 +19,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    //options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // Run the app
   runApp(const MyApp());

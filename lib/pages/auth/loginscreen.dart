@@ -67,15 +67,14 @@ class _SignupScreenState extends State<LoginScreen>
   }
 
   // function to sign in with email and password
-  Future<void> signInWithEmailAndPassword() async {
+  Future<void> signIn() async {
     setState(() {
       _isLoading = true;
       errorMessage = null;
     });
     try {
-      await Auth().signInWithEmailAndPassword(
-        email: _controllerEmail.text,
-        password: _controllerPassword.text,
+      await Auth().signInWithToken(
+        customToken: ''
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -188,7 +187,7 @@ class _SignupScreenState extends State<LoginScreen>
                     title: S.of(context).restoreWallet,
                     onTap: () {
                       if (_form.currentState!.validate()) {
-                        signInWithEmailAndPassword();
+                        signIn();
                       }
                     },
                     state:

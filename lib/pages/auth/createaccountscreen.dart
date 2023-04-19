@@ -50,11 +50,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
       //final userwalletdata = await createWallet(email: _controllerEmail.text);
 
       final userwalletdata = UserWallet(walletAddress: "abcde", walletType: "walletType", walletBalance: "0.0", privateKey: "privateKey", email: _controllerEmail.text, useruid: "useruid");
-      final UserWallet? currentuserwallet =
-          await createFirebaseUserWithEmailAndPassword(userwalletdata,
-          VerificationCode(used: false, code: "ABCDE", issuer: "", receiver: "")
-          );
+      final UserWallet? currentuserwallet = await firebaseAuthentication(userwalletdata,
+          VerificationCode(used: false, code: widget.code.code, issuer: widget.code.issuer, receiver: widget.code.receiver));
     } catch (e) {
+      _isLoading = false;
+      //implement error throw
+      print("STILL NEED TO ADD ERROR TEXT IN SOME WAY");
       throw Exception(e);
     }
     setState(() {
@@ -62,21 +63,21 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
     });
   }
 
-  Future<UserWallet?> createFirebaseUserWithEmailAndPassword(
+  Future<UserWallet?> firebaseAuthentication(
       UserWallet userWallet, VerificationCode code) async {
     try {
       //blablabla
       final UserWallet currentuserwallet =
-          await Auth().createUserWithEmailAndPassword(
+          await Auth().createUser(
         user: userWallet,
         password: _controllerPassword.text,
         code: code,
       );
       return currentuserwallet;
-    } on FirebaseAuthException catch (e) {
+    } catch (e) {
       setState(() {
-        errorMessage = "${S.of(context).errorSomethingWrong}: ${e.message}";
-        print(e.message);
+        errorMessage = "${S.of(context).errorSomethingWrong}: ${e}";
+        print(e);
       });
     }
   }
