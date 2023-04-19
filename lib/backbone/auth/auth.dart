@@ -92,10 +92,8 @@ class Auth {
     // );
   }
 
-
-
   Future<createDIDCallback> createDID(String username) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('authION');
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createDID');
     final resp = await callable.call(<String, dynamic>{
       //later pass entire user relevant info then create ION account
       // and get entire user as mydata back who is then registered
@@ -104,7 +102,6 @@ class Auth {
     final mydata = createDIDCallback.fromJson(resp.data);
     return mydata;
   }
-
 
     /*
   createUserWithEmailAndPassword creates a new user with the specified email and password, and creates a new document in the users collection with the user's information. It takes two required parameters: user (a UserWallet object) and password. It returns a Future that completes with the newly created UserWallet object.
@@ -120,6 +117,12 @@ class Auth {
     //final validate = formKey.currentState?.validate();
     final iondata = await createDID(user.useruid);
     print("IONDATA RECEIVED: $iondata");
+
+    final currentuser = await signInWithToken(customToken: iondata.customToken);
+
+    final newUser = user.copyWith(useruid: currentuser?.user!.uid);
+    await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
+    print('Successfully created wallet/user in database: ${newUser.toMap()}');
 
     // Set desired number of codes and code length
     const numCodes = 4;
@@ -145,20 +148,12 @@ class Auth {
       final code = VerificationCode(
         used: false,
         code: element,
-        issuer: "",
+        issuer: user.useruid,
         receiver: '',
       );
       await codesCollection.doc(element).set(code.toJson());
     });
     print('SHOULD HAVE PUSHED CODES');
-
-    final currentuser = await signInWithToken(customToken: iondata.customToken);
-
-    final newUser = user.copyWith(useruid: currentuser?.user!.uid);
-    await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    print('Successfully created wallet/user in database: ${newUser.toMap()}');
-
-
 
     return newUser;
   }

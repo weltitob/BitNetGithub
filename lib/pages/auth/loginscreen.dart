@@ -76,10 +76,10 @@ class _SignupScreenState extends State<LoginScreen>
       await Auth().signInWithToken(
         customToken: ''
       );
-    } on FirebaseAuthException catch (e) {
+    } catch (e) {
       setState(() {
-        errorMessage = 'Hmm. Hier stimmt etwas nicht!';
-        print(e.message);
+        errorMessage = S.of(context).errorSomethingWrong;
+        print(e);
       });
     }
     setState(() {
