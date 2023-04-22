@@ -1,19 +1,16 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/pages/homescreen.dart';
 import 'package:BitNet/pages/qrscreen.dart';
 import 'package:BitNet/pages/settingsscreen.dart';
 
-// This widget is a [StatefulWidget] that creates a bottom navigation bar with a [CurvedNavigationBar] that has 3 items/icons.
-// The widget receives no arguments and creates a state object of [_BottomNavState].
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
 
   @override
   State<BottomNav> createState() => _BottomNavState();
 }
-// This is the state object of the [BottomNav] widget.
+
 class _BottomNavState extends State<BottomNav> {
   int _index = 0;
 
@@ -23,56 +20,78 @@ class _BottomNavState extends State<BottomNav> {
       const HomeScreen(),
       const QRScreen(isBottomButtonVisible: false,),
       SettingsScreen(),
+      SettingsScreen(),
     ];
+
+    final navItems = [
+      Icons.currency_bitcoin,
+      Icons.camera,
+      Icons.chat,
+      Icons.account_balance,
+    ];
+
+    void onTabTapped(int index) {
+      setState(() {
+        _index = index;
+      });
+    }
 
     return Scaffold(
       body: Stack(
         children: [
           screens[_index],
-          Stack(
-              alignment: Alignment.bottomCenter,
-              children: <Widget>[
-                IgnorePointer(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 28),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 28,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, AppTheme.colorBackground],
+          Positioned(
+            bottom: AppTheme.cardPadding,
+            left: AppTheme.cardPadding * 1.5,
+            right: AppTheme.cardPadding * 1.5,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100.0),
+                color: Colors.purple.shade800,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
+                child: Stack(
+                  children: [
+                    AnimatedPositioned(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      left: MediaQuery.of(context).size.width / navItems.length * _index + (MediaQuery.of(context).size.width / navItems.length) / 2 - 40,
+                      bottom: 0,
+                      child: Container(
+                        width: AppTheme.elementSpacing,
+                        height: AppTheme.elementSpacing / 2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(AppTheme.elementSpacing),
+                          color: Colors.orange,
                         ),
                       ),
                     ),
-                  ),
-                )
-              ]),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        for (var i = 0; i < navItems.length; i++)
+                          InkWell(
+                            onTap: () => onTabTapped(i),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  navItems[i],
+                                  color: _index == i ? Colors.white : Colors.white.withOpacity(0.4),
+                                  size: AppTheme.cardPadding,
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-          backgroundColor: Theme.of(context).backgroundColor,
-          color: Colors.purple.shade800,
-          animationDuration: const Duration(milliseconds: 300),
-          onTap: (index){
-            setState(() {
-              _index = index;
-            });
-          },
-          items: const [
-            Icon(
-              Icons.currency_bitcoin,
-              color: Colors.white,
-            ),
-            Icon(
-              Icons.qr_code_rounded,
-              color: Colors.white,
-            ),
-            Icon(
-              Icons.settings,
-              color: Colors.white,
-            ),
-          ]),
     );
   }
 }
