@@ -51,7 +51,7 @@ Future<CloudfunctionCallback> sendBitcoin({
       // push transaction to firestore
       print('Now pushing transaction to firestore... $newTransaction');
       await transactionCollection
-          .doc(userWallet.useruid)
+          .doc(userWallet.userdid)
           .collection("all")
           .doc(newTransaction.transactionUid)
           .set(newTransaction.toMap());

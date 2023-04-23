@@ -6,7 +6,7 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/components/buttons/glassbutton.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
-import 'package:BitNet/components/snackbar/snackbar.dart';
+import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/models/issuereport.dart';
 import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/pages/settingsscreen.dart';

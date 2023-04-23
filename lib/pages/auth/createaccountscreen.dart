@@ -49,7 +49,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
     try {
       //final userwalletdata = await createWallet(email: _controllerEmail.text);
 
-      final userwalletdata = UserWallet(walletAddress: "abcde", walletType: "walletType", walletBalance: "0.0", privateKey: "privateKey", email: _controllerEmail.text, useruid: "useruid");
+      final userwalletdata = UserWallet(walletAddress: "abcde", walletType: "walletType", walletBalance: "0.0", privateKey: "privateKey", userdid: "useruid");
       final UserWallet? currentuserwallet = await firebaseAuthentication(userwalletdata,
           VerificationCode(used: false, code: widget.code.code, issuer: widget.code.issuer, receiver: widget.code.receiver));
     } catch (e) {

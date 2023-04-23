@@ -1,0 +1,183 @@
+import 'dart:convert';
+import 'package:BitNet/models/userwallet.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+
+//User dataclass
+
+@immutable
+class UserData extends Equatable {
+  //use decentralized user identity (dids instead of uids)
+  final String did;
+  final String displayName;
+  final String bio;
+  final String customToken;
+  final String username;
+  final String walletAdress;
+  final String profileImageUrl;
+  final String backgroundImageUrl;
+  final bool isPrivate;
+  final bool showFollowers;
+  // final List<String> codes;
+  //maybe ude Timestamp from cloud_firestore instead of Datetime if it causes issues
+  final Timestamp createdAt;
+  final Timestamp updatedAt;
+  final bool isActive;
+  final int dob;
+  final List<UserWallet> wallets;
+
+  const UserData({
+    required this.backgroundImageUrl,
+    required this.isPrivate,
+    required this.showFollowers,
+    required this.did,
+    required this.displayName,
+    required this.bio,
+    required this.customToken,
+    required this.username,
+    required this.walletAdress,
+    required this.profileImageUrl,
+    // required this.codes,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isActive,
+    required this.dob,
+    required this.wallets,
+  });
+
+  @override
+  List<Object> get props {
+    return [
+      isPrivate,
+      showFollowers,
+      backgroundImageUrl,
+      did,
+      displayName,
+      bio,
+      customToken,
+      username,
+      walletAdress,
+      profileImageUrl,
+      // codes,
+      createdAt,
+      updatedAt,
+      isActive,
+      dob,
+      wallets
+    ];
+  }
+
+  UserData copyWith({
+    String? did,
+    String? customToken,
+    String? username,
+    String? bio,
+    String? displayName,
+    String? walletAdress,
+    String? profileImageUrl,
+    String? backgroundImageUrl,
+    List<String>? codes,
+    Timestamp? createdAt,
+    Timestamp? updatedAt,
+    bool? isActive,
+    bool? isPrivate,
+    bool? showFollowers,
+    int? dob,
+    List<UserWallet>? wallets,
+  }) {
+    return UserData(
+      did: did ?? this.did,
+      customToken: customToken ?? this.customToken,
+      username: username ?? this.username,
+      displayName: username ?? this.displayName,
+      bio: username ?? this.bio,
+      walletAdress: walletAdress ?? this.walletAdress,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+      backgroundImageUrl: backgroundImageUrl ?? this.backgroundImageUrl,
+      isPrivate: isPrivate ?? this.isPrivate,
+      showFollowers: showFollowers ?? this.showFollowers,
+      // codes: codes ?? this.codes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      dob: dob ?? this.dob,
+      wallets: wallets ?? this.wallets,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'did': did,
+      'customToken': customToken,
+      'username': username,
+      'displayName': displayName,
+      'bio': bio,
+      'walletAdress': walletAdress,
+      'profileImageUrl': profileImageUrl,
+      'backgroundImageUrl': backgroundImageUrl,
+      'isPrivate': isPrivate,
+      'showFollowers': showFollowers,
+      // 'codes': codes,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'isActive': isActive,
+      'dob': dob,
+      'wallets': wallets.map((x) => x.toMap()).toList(),
+    };
+  }
+
+  factory UserData.fromMap(Map<String, dynamic> map) {
+    return UserData(
+      did: map['did'] ?? '',
+      customToken: map['customToken'] ?? '',
+      username: map['username'] ?? '',
+      displayName: map['displayName'] ?? '',
+      bio: map['bio'] ?? '',
+      walletAdress: map['walletAdress'] ?? '',
+      profileImageUrl: map['profileImageUrl'] ?? '',
+      backgroundImageUrl: map['backgroundImageUrl'] ?? '',
+      // codes: List<String>.from(map['codes']),
+      createdAt: map['createdAt'] ?? 0,
+      updatedAt: map['updatedAt'] ?? 0,
+      isActive: map['isActive'] ?? false,
+      showFollowers: map['showFollowers'] ?? false,
+      isPrivate: map['isPrivate'] ?? false,
+      dob: map['dob']?.toInt() ?? 0,
+      wallets: List<UserWallet>.from(
+      map['wallets']?.map((x) => UserWallet.fromMap(x))),
+    );
+  }
+
+  factory UserData.fromDocument(DocumentSnapshot doc) {
+    return UserData(
+      did: doc['did'].toString(),
+      username: doc['username'].toString(),
+      displayName: doc['displayName'].toString(),
+      bio: doc['bio'].toString(),
+      customToken: doc['customToken'].toString(),
+      walletAdress: doc['walletAdress'].toString(),
+      profileImageUrl: doc['profileImageUrl'].toString(),
+      backgroundImageUrl: doc['backgroundImageUrl'].toString(),
+      // codes: List<String>.from(doc['codes']),
+      createdAt: doc['createdAt'],
+      updatedAt: doc['updatedAt'],
+      isActive: doc['isActive'],
+      showFollowers: doc['showFollowers'],
+      isPrivate: doc['isPrivate'],
+      dob: doc['dob'],
+      wallets: List<UserWallet>.from(
+          doc['wallets'].map((x) => UserWallet.fromMap(x))),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory UserData.fromJson(String source) => UserData.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'User(did: $did, displayName: $displayName, bio: $bio, backgroundImageUrl: $backgroundImageUrl, customToken: $customToken, username: $username, walletAdress: $walletAdress, profileImageUrl: $profileImageUrl, wallets: $wallets, createdAt: $createdAt, updatedAt: $updatedAt, isPrivate: $isPrivate, showFollowers: $showFollowers, isActive: $isActive, dob: $dob)';
+  }
+
+}

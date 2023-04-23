@@ -65,7 +65,7 @@ class Auth {
   The _createUserDocument method is used to update the user's wallet data in the Firestore database.
    */
   Future<void> _createUserDocument(UserWallet userWallet) async {
-    await usersCollection.doc(userWallet.useruid).update(userWallet.toMap());
+    await usersCollection.doc(userWallet.userdid).update(userWallet.toMap());
   }
 
   /*
@@ -115,12 +115,12 @@ class Auth {
     print('Calling Cloudfunction with Microsoft ION now...');
     //check and validate data the user put in
     //final validate = formKey.currentState?.validate();
-    final iondata = await createDID(user.useruid);
+    final iondata = await createDID(user.userdid);
     print("IONDATA RECEIVED: $iondata");
 
     final currentuser = await signInWithToken(customToken: iondata.customToken);
 
-    final newUser = user.copyWith(useruid: currentuser?.user!.uid);
+    final newUser = user.copyWith(userdid: currentuser?.user!.uid);
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
     print('Successfully created wallet/user in database: ${newUser.toMap()}');
 
@@ -148,7 +148,7 @@ class Auth {
       final code = VerificationCode(
         used: false,
         code: element,
-        issuer: user.useruid,
+        issuer: user.userdid,
         receiver: '',
       );
       await codesCollection.doc(element).set(code.toJson());

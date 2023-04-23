@@ -13,7 +13,7 @@ import 'package:BitNet/backbone/security/security.dart';
 import 'package:BitNet/pages/bottomnav.dart';
 import 'package:BitNet/components/camera/qrscanneroverlay.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
-import 'package:BitNet/components/snackbar/snackbar.dart';
+import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/components/swipebutton/swipeable_button_view.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';

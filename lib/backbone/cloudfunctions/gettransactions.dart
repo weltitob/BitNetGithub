@@ -37,7 +37,7 @@ dynamic getTransactions(UserWallet userWallet) async {
           final newTransaction = BitcoinTransaction.fromJson(element);
           //pushing to firebase
           await transactionCollection
-              .doc(userWallet.useruid)
+              .doc(userWallet.userdid)
               .collection("all")
               .doc(newTransaction.transactionUid)
               .set(newTransaction.toMap());

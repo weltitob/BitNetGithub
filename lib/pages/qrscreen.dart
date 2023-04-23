@@ -7,7 +7,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:BitNet/components/camera/qrscanneroverlay.dart';
 import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/camera/textscanneroverlay.dart';
-import 'package:BitNet/components/snackbar/snackbar.dart';
+import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/models/qrcodebitcoin.dart';
 import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/pages/actions/sendscreen.dart';

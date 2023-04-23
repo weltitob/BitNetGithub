@@ -7,7 +7,7 @@ import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:BitNet/backbone/security/security.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
-import 'package:BitNet/components/snackbar/snackbar.dart';
+import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/pages/actions/sendscreen.dart';
 import 'package:BitNet/pages/secondpages/agbscreen.dart';

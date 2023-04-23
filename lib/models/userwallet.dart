@@ -3,8 +3,7 @@ class UserWallet {
   String walletType;
   String walletBalance;
   String privateKey;
-  String email;
-  String useruid;
+  String userdid;
 
   // constructor
   UserWallet({
@@ -12,8 +11,7 @@ class UserWallet {
     required this.walletType,
     required this.walletBalance,
     required this.privateKey,
-    required this.email,
-    required this.useruid,
+    required this.userdid,
   });
 
   factory UserWallet.fromJson(Map<String, dynamic> json) {
@@ -22,8 +20,7 @@ class UserWallet {
       walletType: json['walletType'].toString(),
       walletBalance: json['walletBalance'].toString(),
       privateKey: json['privateKey'].toString(),
-      email: json['email'].toString(),
-      useruid: json['useruid'].toString(),
+      userdid: json['userdid'].toString(),
     );
   }
 
@@ -33,8 +30,7 @@ class UserWallet {
       'walletType': walletType,
       'walletBalance': walletBalance,
       'privateKey': privateKey,
-      'email': email,
-      'useruid': useruid,
+      'userdid': userdid,
     };
   }
 
@@ -44,8 +40,7 @@ class UserWallet {
       walletType: map['walletType'] ?? '',
       walletBalance: map['walletBalance'] ?? '',
       privateKey: map['privateKey'] ?? '',
-      email: map['email'] ?? '',
-      useruid: map['useruid'] ?? '',
+      userdid: map['userdid'] ?? '',
     );
   }
 
@@ -54,16 +49,14 @@ class UserWallet {
     String? walletType,
     String? walletBalance,
     String? privateKey,
-    String? email,
-    String? useruid,
+    String? userdid,
   }) {
     return UserWallet(
       walletAddress: walletAddress ?? this.walletAddress,
       walletType: walletType ?? this.walletType,
       walletBalance: walletType ?? this.walletBalance,
       privateKey: privateKey ?? this.privateKey,
-      email: email ?? this.email,
-      useruid: useruid ?? this.useruid,
+      userdid: userdid ?? this.userdid,
     );
   }
 }

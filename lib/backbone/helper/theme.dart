@@ -101,6 +101,15 @@ class AppTheme {
     ),
   );
 
+  static ThemeData customColorTheme(Color color, Brightness brightness) =>
+      ThemeData(
+        //later change seed to the one selected
+        colorSchemeSeed: color,
+        useMaterial3: true,
+        brightness: brightness,
+        textTheme: (brightness == Brightness.light) ? textTheme : textThemeDarkMode,
+      );
+
   static ThemeData standardTheme() => ThemeData(
     //later change seed to the one selected
     useMaterial3: true,

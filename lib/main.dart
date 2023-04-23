@@ -13,6 +13,21 @@ import 'package:firebase_core/firebase_core.dart';
 //import 'firebase_options.dart';
 
 
+
+late ThemeData activeTheme;
+late Brightness brightness;
+
+class ThemeNotifier extends ChangeNotifier {
+  ThemeData _themeData;
+  ThemeNotifier(this._themeData);
+  ThemeData get getTheme => _themeData;
+
+  setTheme(ThemeData themeData) {
+    _themeData = themeData;
+    notifyListeners();
+  }
+}
+
 // Main function to start the application
 Future<void> main() async {
   // Ensure that Flutter binding is initialized

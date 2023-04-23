@@ -29,7 +29,7 @@ dynamic getBalance(UserWallet userWallet) async {
       final mydata = CloudfunctionCallback.fromJson(resp.data);
 
       // update the user's wallet balance in Firebase
-      await usersCollection.doc(userWallet.useruid).update({
+      await usersCollection.doc(userWallet.userdid).update({
         "walletBalance": "${mydata.message}",
       });
       // log that the balance has been updated

@@ -6,7 +6,7 @@ import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
-import 'package:BitNet/components/snackbar/snackbar.dart';
+import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/components/textfield/formtextfield.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'dart:math';

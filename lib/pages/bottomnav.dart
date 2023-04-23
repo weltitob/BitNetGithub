@@ -56,14 +56,14 @@ class _BottomNavState extends State<BottomNav> {
                     AnimatedPositioned(
                       duration: Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
-                      left: MediaQuery.of(context).size.width / navItems.length * _index + (MediaQuery.of(context).size.width / navItems.length) / 2 - 40,
+                      left: (MediaQuery.of(context).size.width - AppTheme.cardPadding * 2) / navItems.length * _index + (MediaQuery.of(context).size.width / navItems.length) / 2 - AppTheme.elementSpacing / 2,
                       bottom: 0,
                       child: Container(
                         width: AppTheme.elementSpacing,
                         height: AppTheme.elementSpacing / 2,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(AppTheme.elementSpacing),
-                          color: Colors.orange,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -77,7 +77,7 @@ class _BottomNavState extends State<BottomNav> {
                               children: [
                                 Icon(
                                   navItems[i],
-                                  color: _index == i ? Colors.white : Colors.white.withOpacity(0.4),
+                                  color: _index == i ? Colors.orange : Colors.white.withOpacity(0.4),
                                   size: AppTheme.cardPadding,
                                 ),
                               ],
