@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/generated/l10n.dart';
+import 'package:BitNet/models/userdata.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +35,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
 
   String? errorMessage = null;
   String? email = '';
-  String? password = '';
 
   final TextEditingController _controllerEmail = TextEditingController();
-  final TextEditingController _controllerPassword = TextEditingController();
-  final TextEditingController _controllerPasswordconfirm =
-      TextEditingController();
   bool _isLoading = false;
 
   Future<void> createUser() async {
@@ -49,8 +47,35 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
     try {
       //final userwalletdata = await createWallet(email: _controllerEmail.text);
 
-      final userwalletdata = UserWallet(walletAddress: "abcde", walletType: "walletType", walletBalance: "0.0", privateKey: "privateKey", userdid: "useruid");
-      final UserWallet? currentuserwallet = await firebaseAuthentication(userwalletdata,
+      //create ION wallet for the user with all abilities
+      final userwalletdata = UserWallet(
+          walletAddress: "abcde",
+          walletType: "walletType",
+          walletBalance: "0.0",
+          privateKey: "privateKey",
+          userdid: "userdid");
+
+      final List<UserWallet> walletlist = [userwalletdata];
+
+      final userdata = UserData(
+          backgroundImageUrl: "backgroundImageUrl",
+          isPrivate: false,
+          showFollowers: false,
+          did: "",
+          displayName: "displayName",
+          bio: "bio",
+          customToken: "customToken",
+          username: "username",
+          walletAdress: "walletAdress",
+          profileImageUrl: "profileImageUrl",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isActive: true,
+          dob: 0,
+          wallets: walletlist);
+
+      final UserData? currentuserwallet =
+      await firebaseAuthentication(userdata,
           VerificationCode(used: false, code: widget.code.code, issuer: widget.code.issuer, receiver: widget.code.receiver));
     } catch (e) {
       _isLoading = false;
@@ -63,14 +88,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
     });
   }
 
-  Future<UserWallet?> firebaseAuthentication(
-      UserWallet userWallet, VerificationCode code) async {
+  Future<UserData?> firebaseAuthentication(
+      UserData userData, VerificationCode code) async {
     try {
       //blablabla
-      final UserWallet currentuserwallet =
+      final UserData currentuserwallet =
           await Auth().createUser(
-        user: userWallet,
-        password: _controllerPassword.text,
+        user: userData,
         code: code,
       );
       return currentuserwallet;
@@ -145,9 +169,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     FormTextField(
-                      title: "E-Mail",
+                      title: "Username",
                       validator: (val) => val!.isEmpty
-                          ? 'Bitte geben Sie eine gültige E-Mail an'
+                          ? 'The username you entered is not valid'
                           : null,
                       onChanged: (val) {
                         setState(() {
@@ -157,40 +181,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
                       controller: _controllerEmail,
                       isObscure: false,
                     ),
-                    FormTextField(
-                      title: "Passwort",
-                      controller: _controllerPassword,
-                      isObscure: true,
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "Bitte geben Sie ein Passwort an";
-                        } else if (val.length < 6) {
-                          return "Das Passwort muss mindestens 6 Zeichen enthalten";
-                        } else {
-                          return null;
-                        }
-                      },
-                      onChanged: (val) {
-                        setState(() {
-                          password = val;
-                        });
-                      },
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: AppTheme.cardPadding),
-                      child: FormTextField(
-                          title: "Passwort wiederholen",
-                          controller: _controllerPasswordconfirm,
-                          isObscure: true,
-                          validator: (val) {
-                            if (val.isEmpty)
-                              return "Bitte geben Sie ein das Passwort erneut an";
-                            if (val != _controllerPassword.text)
-                              return 'Das Passwort stimmt nicht überein';
-                            return null;
-                          }),
-                    ),
+                    SizedBox(height: AppTheme.cardPadding,),
                     LongButtonWidget(
                       title: S.of(context).register,
                       onTap: () {

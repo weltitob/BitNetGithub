@@ -25,7 +25,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late List<Widget> pages;
   int currentview = 0;
-  bool isUserLoading = false;
+  bool isUserLoading = true;
   late UserData userData;
 
   late bool _isPrivate;
@@ -100,25 +100,25 @@ class _ProfileState extends State<Profile> {
     UserData user = UserData.fromDocument(doc);
 
     //displayName
-    displayNameController.text = user!.displayName;
-    _validDisplayName = user!.displayName;
+    displayNameController.text = user.displayName;
+    _validDisplayName = user.displayName;
 
     //username
-    userNameController.text = user!.username;
-    _validUserName = user!.username;
+    userNameController.text = user.username;
+    _validUserName = user.username;
 
     //lol später zu bio ändern
-    bioController.text = user!.profileImageUrl;
-    _validBio = user!.profileImageUrl;
+    bioController.text = user.profileImageUrl;
+    _validBio = user.profileImageUrl;
 
     //should show followers
-    _showFollwers = user!.showFollowers;
+    _showFollwers = user.showFollowers;
 
     //isprivateprofile?
 
     //should always be valid otherweise will throw error before and not get uploaded
-    _backgroundImage = user!.backgroundImageUrl;
-    _profileImage = user!.profileImageUrl;
+    _backgroundImage = user.backgroundImageUrl;
+    _profileImage = user.profileImageUrl;
 
     setState(() {
       isUserLoading = false;
@@ -376,7 +376,7 @@ class _ProfileState extends State<Profile> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           currentview == 2 ? buildCountColumn(
-                              context, followingCount, 'Following') : userData!.showFollowers ? buildCountColumn(
+                              context, followingCount, 'Following') : userData.showFollowers ? buildCountColumn(
                               context, followingCount, 'Following') : Container(width: 100,),
                           SizedBox(
                             width: AppTheme.elementSpacing,
@@ -403,7 +403,7 @@ class _ProfileState extends State<Profile> {
                               },
                               child: Stack(
                                 children: [
-                                  buildImage(userData!.profileImageUrl),
+                                  buildImage(userData.profileImageUrl),
                                   Positioned(
                                     bottom: 0,
                                     right: 4,
@@ -417,14 +417,14 @@ class _ProfileState extends State<Profile> {
                             width: AppTheme.elementSpacing,
                           ),
                           currentview == 2 ? buildCountColumn(
-                              context, followerCount, 'Followers') : userData!.showFollowers ? buildCountColumn(
+                              context, followerCount, 'Followers') : userData.showFollowers ? buildCountColumn(
                               context, followerCount, 'Followers') : Container(width: 100,),
                         ],
                       ),
                       const SizedBox(height: AppTheme.elementSpacing),
                       buildUserInformation(
-                        userData!.username,
-                        userData!.displayName,
+                        userData.username,
+                        userData.displayName,
                       ),
                       const SizedBox(height: AppTheme.cardPadding * 2),
                     ],
@@ -598,10 +598,10 @@ class _ProfileState extends State<Profile> {
 
   Widget buildCenterWidget() {
 
-    final userWallet = Provider.of<UserWallet>(context, listen: false);
+    final userData = Provider.of<UserData>(context, listen: false);
     final String currentUserId = widget.profileId;
 
-    bool isProfileOwner = currentUserId == userWallet.userdid;
+    bool isProfileOwner = currentUserId == userData.did;
 
     return Positioned(
       bottom: 20,

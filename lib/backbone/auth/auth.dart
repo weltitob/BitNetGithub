@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/models/authION.dart';
+import 'package:BitNet/models/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,8 +26,8 @@ class Auth {
   The userWalletStreamForAuthChanges getter returns a stream of the authenticated user's wallet data.
   The authStateChanges stream is used as the source stream, and the asyncMap operator is used to map the stream of User objects to UserWallet objects.
    */
-  Stream<UserWallet?> get userWalletStreamForAuthChanges =>
-      authStateChanges.asyncMap<UserWallet?>((firebaseUser) async {
+  Stream<UserData?> get userWalletStreamForAuthChanges =>
+      authStateChanges.asyncMap<UserData?>((firebaseUser) async {
         if (firebaseUser == null) {
           return null;
         }
@@ -36,7 +37,7 @@ class Auth {
           return null;
         }
         final data = snapshot.data()!;
-        final UserWallet user = UserWallet.fromMap(data);
+        final UserData user = UserData.fromMap(data);
         return user;
       }
       );
@@ -46,9 +47,9 @@ class Auth {
   The snapshots() method is used to listen to changes in the document, and the map
   operator is used to transform the DocumentSnapshot to a UserWallet object.
    */
-  Stream<UserWallet?> get userWalletStream =>
+  Stream<UserData?> get userWalletStream =>
       usersCollection.doc(_firebaseAuth.currentUser?.uid).snapshots().map<
-          UserWallet?>((snapshot) {
+          UserData?>((snapshot) {
         if (_firebaseAuth.currentUser?.uid == null) {
           return null;
         }
@@ -57,15 +58,15 @@ class Auth {
           return null;
         }
         final data = snapshot.data()!;
-        final UserWallet user = UserWallet.fromMap(data);
+        final UserData user = UserData.fromMap(data);
         return user;
       });
 
   /*
   The _createUserDocument method is used to update the user's wallet data in the Firestore database.
    */
-  Future<void> _createUserDocument(UserWallet userWallet) async {
-    await usersCollection.doc(userWallet.userdid).update(userWallet.toMap());
+  Future<void> updateUserData(UserData userData) async {
+    await usersCollection.doc(userData.did).update(userData.toMap());
   }
 
   /*
@@ -107,20 +108,19 @@ class Auth {
   createUserWithEmailAndPassword creates a new user with the specified email and password, and creates a new document in the users collection with the user's information. It takes two required parameters: user (a UserWallet object) and password. It returns a Future that completes with the newly created UserWallet object.
    */
 
-  Future<UserWallet> createUser({
-    required UserWallet user,
-    required String password,
+  Future<UserData> createUser({
+    required UserData user,
     required VerificationCode code,
   }) async {
     print('Calling Cloudfunction with Microsoft ION now...');
     //check and validate data the user put in
     //final validate = formKey.currentState?.validate();
-    final iondata = await createDID(user.userdid);
+    final iondata = await createDID(user.did);
     print("IONDATA RECEIVED: $iondata");
 
     final currentuser = await signInWithToken(customToken: iondata.customToken);
 
-    final newUser = user.copyWith(userdid: currentuser?.user!.uid);
+    final newUser = user.copyWith(did: currentuser?.user!.uid);
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
     print('Successfully created wallet/user in database: ${newUser.toMap()}');
 
@@ -148,7 +148,7 @@ class Auth {
       final code = VerificationCode(
         used: false,
         code: element,
-        issuer: user.userdid,
+        issuer: user.did,
         receiver: '',
       );
       await codesCollection.doc(element).set(code.toJson());

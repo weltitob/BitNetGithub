@@ -1,10 +1,14 @@
 import 'package:BitNet/pages/auth/usephrasesscreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:uuid/uuid.dart';
+
+final datetime = DateTime.now();
+Timestamp timestamp = Timestamp.fromDate(datetime); //To TimeStamp
 
 String getRandomString(int length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

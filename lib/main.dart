@@ -1,3 +1,4 @@
+import 'package:BitNet/models/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/streams/bitcoinpricestream.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
@@ -50,13 +51,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        StreamProvider<UserWallet?>(
+        StreamProvider<UserData?>(
           create: (_) => Auth().userWalletStream,
           initialData: null,
         ),
         // Provide a stream of user wallet data for authentication changes
         //this has to be below in order to overwrite the null when not authenticated yet from above stream
-        StreamProvider<UserWallet?>(
+        StreamProvider<UserData?>(
           create: (_) => Auth().userWalletStreamForAuthChanges,
           initialData: null,
         ),

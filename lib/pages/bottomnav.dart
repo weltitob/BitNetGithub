@@ -1,8 +1,11 @@
+import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/pages/homescreen.dart';
 import 'package:BitNet/pages/qrscreen.dart';
 import 'package:BitNet/pages/settingsscreen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -13,21 +16,24 @@ class BottomNav extends StatefulWidget {
 
 class _BottomNavState extends State<BottomNav> {
   int _index = 0;
+  final userdid = Auth().currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const HomeScreen(),
       const QRScreen(isBottomButtonVisible: false,),
       SettingsScreen(),
       SettingsScreen(),
+      const HomeScreen(),
+      Profile(profileId: userdid)
     ];
 
     final navItems = [
-      Icons.currency_bitcoin,
-      Icons.camera,
-      Icons.chat,
-      Icons.account_balance,
+      FontAwesomeIcons.fire,
+      FontAwesomeIcons.rocketchat,
+      FontAwesomeIcons.upload,
+      FontAwesomeIcons.wallet,
+      FontAwesomeIcons.userAstronaut,
     ];
 
     void onTabTapped(int index) {
@@ -40,6 +46,25 @@ class _BottomNavState extends State<BottomNav> {
       body: Stack(
         children: [
           screens[_index],
+          Stack(
+              alignment: Alignment.bottomCenter,
+              children: <Widget>[
+                IgnorePointer(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 28),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 28,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.transparent, AppTheme.colorBackground],
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ]),
           Positioned(
             bottom: AppTheme.cardPadding,
             left: AppTheme.cardPadding * 1.5,
@@ -50,41 +75,23 @@ class _BottomNavState extends State<BottomNav> {
                 color: Colors.purple.shade800,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
-                child: Stack(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1.25, vertical: AppTheme.elementSpacing * 1.25),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    AnimatedPositioned(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      left: (MediaQuery.of(context).size.width - AppTheme.cardPadding * 2) / navItems.length * _index + (MediaQuery.of(context).size.width / navItems.length) / 2 - AppTheme.elementSpacing / 2,
-                      bottom: 0,
-                      child: Container(
-                        width: AppTheme.elementSpacing,
-                        height: AppTheme.elementSpacing / 2,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(AppTheme.elementSpacing),
-                          color: Colors.white,
+                    for (var i = 0; i < navItems.length; i++)
+                      InkWell(
+                        onTap: () => onTabTapped(i),
+                        child: Column(
+                          children: [
+                            Icon(
+                              navItems[i],
+                              color: _index == i ? Colors.orange : Colors.white.withOpacity(0.4),
+                              size: AppTheme.cardPadding,
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        for (var i = 0; i < navItems.length; i++)
-                          InkWell(
-                            onTap: () => onTabTapped(i),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  navItems[i],
-                                  color: _index == i ? Colors.orange : Colors.white.withOpacity(0.4),
-                                  size: AppTheme.cardPadding,
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
                   ],
                 ),
               ),
