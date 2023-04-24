@@ -24,7 +24,7 @@ class _BottomNavState extends State<BottomNav> {
       const QRScreen(isBottomButtonVisible: false,),
       SettingsScreen(),
       SettingsScreen(),
-      const HomeScreen(),
+      const WalletScreen(),
       Profile(profileId: userdid)
     ];
 

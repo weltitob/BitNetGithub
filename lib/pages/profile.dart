@@ -57,7 +57,6 @@ class _ProfileState extends State<Profile> {
   final _focusNodeUsername = FocusNode();
   final _focusNodeBio = FocusNode();
 
-
   @override
   void initState() {
     super.initState();
@@ -70,17 +69,22 @@ class _ProfileState extends State<Profile> {
     addFocusNodeListenerAndUpdate(_focusNodeBio, updateBio);
 
     pages = [
-      //PostsProfileTab(profileId: widget.profileId,),
+      //PostsProfileTab(
+        //profileId: widget.profileId,
+      //),
       //WalletTab(),
       //den nur wenn eigenes profil also abfrage ob eignes profil anonszten was anders zeigen
       //EditProfileTab(),
     ];
   }
 
-  addFocusNodeListenerAndUpdate(FocusNode focusNode, Function() func,){
+  addFocusNodeListenerAndUpdate(
+    FocusNode focusNode,
+    Function() func,
+  ) {
     focusNode.addListener(() {
       print("$focusNode has focus: ${focusNode.hasFocus}");
-      if(focusNode.hasFocus == false){
+      if (focusNode.hasFocus == false) {
         print("lost focus");
         //final String currentusername = userNameController.text;
         //print(currentusername);
@@ -125,7 +129,7 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  void updateProfilepic(){
+  void updateProfilepic() {
     if (true == true) {
       usersCollection.doc(widget.profileId).update({
         'profileImageUrl': _profileImage,
@@ -134,17 +138,17 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  void updateUsername(){
+  void updateUsername() {
     usersCollection.doc(widget.profileId).update({
       'username': userNameController.text,
     });
     print('username updated successfully');
   }
 
-  void updateDisplayName(){
+  void updateDisplayName() {
     setState(() {
       displayNameController.text.trim().length < 3 ||
-          displayNameController.text.isEmpty
+              displayNameController.text.isEmpty
           ? _displayNameValid = false
           : _displayNameValid = true;
     });
@@ -156,7 +160,7 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  void updateBackgroundpic(){
+  void updateBackgroundpic() {
     if (true == true) {
       usersCollection.doc(widget.profileId).update({
         'backgroundImageUrl': _backgroundImage,
@@ -165,7 +169,7 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  void updateBio(){
+  void updateBio() {
     //on unselectbio
     setState(() {
       bioController.text.trim().length > 40
@@ -180,7 +184,7 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  void updateShowFollowers(bool showFollowers){
+  void updateShowFollowers(bool showFollowers) {
     if (true == true) {
       usersCollection.doc(widget.profileId).update({
         'showFollowers': showFollowers,
@@ -327,119 +331,130 @@ class _ProfileState extends State<Profile> {
         child: currentview != 2
             ? CoinLogoWidgetSmall(coinid: 1)
             : Container(
-          width: 30.0,
-          height: 30.0,
-          color: Theme.of(context).colorScheme.primary,
-          child: Center(
-            child: Icon(
-              Icons.edit,
-              size: 20.0,
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-          ),
-        ),
+                width: 30.0,
+                height: 30.0,
+                color: Theme.of(context).colorScheme.primary,
+                child: Center(
+                  child: Icon(
+                    Icons.edit,
+                    size: 20.0,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              ),
       ),
     );
   }
 
   Widget buildProfileHeader(context) {
-    //FEHLER
-    final currentUserId = widget.profileId; //DAS IST DER FEHLER
-
-    return isUserLoading ? dotProgress(context) : Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(alignment: Alignment.center, children: <Widget>[
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    boxShadow: [AppTheme.boxShadowProfile],
-                    image: DecorationImage(
-                      image: NetworkImage(
-                          'https://crops.giga.de/ed/5d/94/f19c187e579eefbff80498fcc1_YyAzMTU4eDE3NzcrMjErODMCcmUgMTYwMCAxMjAwA2VkZmM3N2VmMDhj.jpg'),
-                      fit: BoxFit.fitHeight,
-                      colorFilter: ColorFilter.mode(
-                          Colors.black.withOpacity(0.3),
-                          BlendMode.dstATop),
-                    ),
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: AppTheme.cornerRadiusBig,
-                        bottomRight: AppTheme.cornerRadiusBig),
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: AppTheme.cardPadding * 3),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          currentview == 2 ? buildCountColumn(
-                              context, followingCount, 'Following') : userData.showFollowers ? buildCountColumn(
-                              context, followingCount, 'Following') : Container(width: 100,),
-                          SizedBox(
-                            width: AppTheme.elementSpacing,
+    return isUserLoading
+        ? dotProgress(context)
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(alignment: Alignment.center, children: <Widget>[
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          boxShadow: [AppTheme.boxShadowProfile],
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                'https://crops.giga.de/ed/5d/94/f19c187e579eefbff80498fcc1_YyAzMTU4eDE3NzcrMjErODMCcmUgMTYwMCAxMjAwA2VkZmM3N2VmMDhj.jpg'),
+                            fit: BoxFit.fitHeight,
+                            colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.3),
+                                BlendMode.dstATop),
                           ),
-                          Center(
-                            child: GestureDetector(
-                              onTap: currentview != 2
-                                  ? () {
-                                print('follow dagelassen lol');
-                              }
-                                  : () {
-                                print('wtf');
-                                showDialogueMultipleOptions(
-                                  image1: '',
-                                  image2: '',
-                                  image3: '',
-                                  image4: '',
-                                  text1: 'Profilepic',
-                                  text2: 'Background',
-                                  text3: 'Porfile NFT',
-                                  text4: 'Backgr. NFT',
-                                  context: context,
-                                );
-                              },
-                              child: Stack(
-                                children: [
-                                  buildImage(userData.profileImageUrl),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 4,
-                                    child: buildProfileButton(),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: AppTheme.cornerRadiusBig,
+                              bottomRight: AppTheme.cornerRadiusBig),
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: AppTheme.cardPadding * 3),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                currentview == 2
+                                    ? buildCountColumn(
+                                        context, followingCount, 'Following')
+                                    : userData.showFollowers
+                                        ? buildCountColumn(context,
+                                            followingCount, 'Following')
+                                        : Container(
+                                            width: 100,
+                                          ),
+                                SizedBox(
+                                  width: AppTheme.elementSpacing,
+                                ),
+                                Center(
+                                  child: GestureDetector(
+                                    onTap: currentview != 2
+                                        ? () {
+                                            print('follow dagelassen lol');
+                                          }
+                                        : () {
+                                            print('wtf');
+                                            showDialogueMultipleOptions(
+                                              image1: '',
+                                              image2: '',
+                                              image3: '',
+                                              image4: '',
+                                              text1: 'Profilepic',
+                                              text2: 'Background',
+                                              text3: 'Porfile NFT',
+                                              text4: 'Backgr. NFT',
+                                              context: context,
+                                            );
+                                          },
+                                    child: Stack(
+                                      children: [
+                                        buildImage(userData.profileImageUrl),
+                                        Positioned(
+                                          bottom: 0,
+                                          right: 4,
+                                          child: buildProfileButton(),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
+                                ),
+                                SizedBox(
+                                  width: AppTheme.elementSpacing,
+                                ),
+                                currentview == 2
+                                    ? buildCountColumn(
+                                        context, followerCount, 'Followers')
+                                    : userData.showFollowers
+                                        ? buildCountColumn(
+                                            context, followerCount, 'Followers')
+                                        : Container(
+                                            width: 100,
+                                          ),
+                              ],
                             ),
-                          ),
-                          SizedBox(
-                            width: AppTheme.elementSpacing,
-                          ),
-                          currentview == 2 ? buildCountColumn(
-                              context, followerCount, 'Followers') : userData.showFollowers ? buildCountColumn(
-                              context, followerCount, 'Followers') : Container(width: 100,),
-                        ],
+                            const SizedBox(height: AppTheme.elementSpacing),
+                            buildUserInformation(
+                              userData.username,
+                              userData.displayName,
+                            ),
+                            const SizedBox(height: AppTheme.cardPadding * 2),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: AppTheme.elementSpacing),
-                      buildUserInformation(
-                        userData.username,
-                        userData.displayName,
-                      ),
-                      const SizedBox(height: AppTheme.cardPadding * 2),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 40),
+                      const SizedBox(height: 40),
+                    ]),
+                buildSettingsButton(),
+                buildQRButton(),
+                buildEditEyeLeft(),
+                buildEditEyeRight(),
+                buildCenterWidget(),
               ]),
-          buildSettingsButton(),
-          buildQRButton(),
-          buildEditEyeLeft(),
-          buildEditEyeRight(),
-          buildCenterWidget(),
-        ]),
-      ],
-    );
+            ],
+          );
   }
 
   Widget buildEditEyeRight() {
@@ -448,19 +463,18 @@ class _ProfileState extends State<Profile> {
       right: 57,
       child: currentview == 2
           ? Align(
-        child: IconButton(
-            color: AppTheme.white90,
-            onPressed: () {
-              setState(() {
-                _showFollwers =! _showFollwers;
-                updateShowFollowers(_showFollwers);
-              });
-            },
-            icon: Icon(
-              _showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
+              child: IconButton(
+                  color: AppTheme.white90,
+                  onPressed: () {
+                    setState(() {
+                      _showFollwers = !_showFollwers;
+                      updateShowFollowers(_showFollwers);
+                    });
+                  },
+                  icon: Icon(
+                    _showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
+                  )),
             )
-        ),
-      )
           : Container(),
     );
   }
@@ -471,18 +485,18 @@ class _ProfileState extends State<Profile> {
       left: 57,
       child: currentview == 2
           ? Align(
-        child: IconButton(
-            color: AppTheme.white90,
-            onPressed: () {
-              setState(() {
-                _showFollwers =! _showFollwers;
-                updateShowFollowers(_showFollwers);
-              });
-            },
-            icon: Icon(
-              _showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
-            )),
-      )
+              child: IconButton(
+                  color: AppTheme.white90,
+                  onPressed: () {
+                    setState(() {
+                      _showFollwers = !_showFollwers;
+                      updateShowFollowers(_showFollwers);
+                    });
+                  },
+                  icon: Icon(
+                    _showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
+                  )),
+            )
           : Container(),
     );
   }
@@ -589,15 +603,14 @@ class _ProfileState extends State<Profile> {
             color: currentview == index
                 ? Theme.of(context).colorScheme.onSecondaryContainer
                 : Theme.of(context)
-                .colorScheme
-                .onSecondaryContainer
-                .withOpacity(0.3),
+                    .colorScheme
+                    .onSecondaryContainer
+                    .withOpacity(0.3),
           ),
         ));
   }
 
   Widget buildCenterWidget() {
-
     final userData = Provider.of<UserData>(context, listen: false);
     final String currentUserId = widget.profileId;
 
@@ -639,11 +652,11 @@ class _ProfileState extends State<Profile> {
             ),
             GestureDetector(
                 onTap: () => setState(() {
-                  currentview = 2;
-                }),
+                      currentview = 2;
+                    }),
                 child: Container(
                   decoration: BoxDecoration(
-                    // color: Colors.greenAccent[700],
+                      // color: Colors.greenAccent[700],
                       borderRadius: BorderRadius.all(Radius.circular(20))),
                   child: Icon(
                     isProfileOwner ? Icons.edit : Icons.person_add_rounded,
@@ -651,9 +664,9 @@ class _ProfileState extends State<Profile> {
                     color: currentview == 2
                         ? Theme.of(context).colorScheme.onSecondaryContainer
                         : Theme.of(context)
-                        .colorScheme
-                        .onSecondaryContainer
-                        .withOpacity(0.3),
+                            .colorScheme
+                            .onSecondaryContainer
+                            .withOpacity(0.3),
                   ),
                 )),
           ],
@@ -669,13 +682,13 @@ class _ProfileState extends State<Profile> {
       decoration: BoxDecoration(
         gradient: currentview != 2
             ? LinearGradient(colors: [
-          Color.fromRGBO(199, 77, 77, 1.0),
-          Color.fromRGBO(242, 169, 0, 1.0),
-        ])
+                Color.fromRGBO(199, 77, 77, 1.0),
+                Color.fromRGBO(242, 169, 0, 1.0),
+              ])
             : LinearGradient(colors: [
-          Theme.of(context).colorScheme.primary,
-          Theme.of(context).colorScheme.primary
-        ]),
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.primary
+              ]),
         borderRadius: BorderRadius.circular(50.0),
       ),
       child: Padding(
@@ -704,96 +717,98 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget buildCountColumn(BuildContext context, int count, String label) =>
-      isUserLoading? Container() : MaterialButton(
-        shape: RoundedRectangleBorder(borderRadius: AppTheme.cardRadiusMid),
-        onPressed: () {},
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      isUserLoading
+          ? Container()
+          : MaterialButton(
+              shape:
+                  RoundedRectangleBorder(borderRadius: AppTheme.cardRadiusMid),
+              onPressed: () {},
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: AppTheme.elementSpacing / 4,
+                  ),
+                  Text(
+                    count.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4!
+                        .copyWith(color: AppTheme.white90),
+                  ),
+                  SizedBox(
+                    height: AppTheme.elementSpacing / 4,
+                  ),
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.caption!.copyWith(
+                        color: AppTheme.white70, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    height: AppTheme.elementSpacing / 4,
+                  ),
+                ],
+              ),
+            );
+
+  Widget buildUserInformation(String username, String displayName) => Padding(
+        padding:
+            const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              height: AppTheme.elementSpacing / 4,
+          children: [
+            TextField(
+              focusNode: _focusNodeDisplayName,
+              readOnly: currentview == 2 ? false : true,
+              textAlign: TextAlign.center,
+              textAlignVertical: TextAlignVertical.center,
+              decoration: InputDecoration(
+                  isDense: true,
+                  border: InputBorder.none,
+                  //changeup!!
+                  errorText: _displayNameValid ? null : 'Bad characters'),
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    color: AppTheme.white70,
+                  ),
+              controller: displayNameController,
             ),
-            Text(
-              count.toString(),
+            const SizedBox(height: AppTheme.elementSpacing),
+            TextField(
+              focusNode: _focusNodeUsername,
+              readOnly: currentview == 2 ? false : true,
+              textAlign: TextAlign.center,
+              textAlignVertical: TextAlignVertical.center,
+              decoration: InputDecoration(
+                  isDense: true,
+                  border: InputBorder.none,
+                  errorText:
+                      _displayNameValid ? null : "Couldn't change username"),
               style: Theme.of(context)
                   .textTheme
-                  .headline4!
+                  .headlineMedium!
                   .copyWith(color: AppTheme.white90),
+              controller: userNameController,
             ),
-            SizedBox(
-              height: AppTheme.elementSpacing / 4,
+            TextField(
+              focusNode: _focusNodeBio,
+              readOnly: currentview == 2 ? false : true,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              textAlign: TextAlign.center,
+              textAlignVertical: TextAlignVertical.center,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                isDense: true,
+              ),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2!
+                  .copyWith(color: AppTheme.white70),
+              controller: bioController,
             ),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.caption!.copyWith(
-                  color: AppTheme.white70, fontWeight: FontWeight.w500),
-            ),
-            SizedBox(
-              height: AppTheme.elementSpacing / 4,
-            ),
+            const SizedBox(height: AppTheme.elementSpacing / 2),
           ],
         ),
       );
-
-  Widget buildUserInformation(String username, String displayName) => Padding(
-    padding:
-    const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
-    child: Column(
-      children: [
-        TextField(
-          focusNode: _focusNodeDisplayName,
-          readOnly: currentview == 2 ? false : true,
-          textAlign: TextAlign.center,
-          textAlignVertical: TextAlignVertical.center,
-          decoration: InputDecoration(
-              isDense: true,
-              border: InputBorder.none,
-              //changeup!!
-              errorText: _displayNameValid ? null : 'Bad characters'
-          ),
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(
-            color: AppTheme.white70,
-          ),
-          controller: displayNameController,
-        ),
-        const SizedBox(height: AppTheme.elementSpacing),
-        TextField(
-          focusNode: _focusNodeUsername,
-          readOnly: currentview == 2 ? false : true,
-          textAlign: TextAlign.center,
-          textAlignVertical: TextAlignVertical.center,
-          decoration: InputDecoration(
-              isDense: true,
-              border: InputBorder.none,
-              errorText: _displayNameValid ? null : "Couldn't change username"
-          ),
-          style: Theme.of(context)
-              .textTheme
-              .headline4!
-              .copyWith(color: AppTheme.white90),
-          controller: userNameController,
-        ),
-        TextField(
-          focusNode: _focusNodeBio,
-          readOnly: currentview == 2 ? false : true,
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          textAlign: TextAlign.center,
-          textAlignVertical: TextAlignVertical.center,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            isDense: true,
-          ),
-          style: Theme.of(context)
-              .textTheme
-              .bodyText2!
-              .copyWith(color: AppTheme.white70),
-          controller: bioController,
-        ),
-        const SizedBox(height: AppTheme.elementSpacing / 2),
-      ],
-    ),
-  );
 }

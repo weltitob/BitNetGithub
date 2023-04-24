@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:BitNet/models/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
@@ -15,14 +16,14 @@ import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class WalletScreen extends StatefulWidget {
+  const WalletScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<WalletScreen> createState() => _WalletScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin{
+class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClientMixin{
   late final Future<LottieComposition> _compositionRocket;
   late final Future<LottieComposition> _compositionSend;
   late final Future<LottieComposition> _compositionReceive;

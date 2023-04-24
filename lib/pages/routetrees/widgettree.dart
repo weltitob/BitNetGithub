@@ -1,3 +1,4 @@
+import 'package:BitNet/models/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
@@ -52,17 +53,17 @@ class _WidgetTreeState extends State<WidgetTree> {
   @override
   Widget build(BuildContext context) {
     //hier schon das erste mal aufrufen aber noch mit Fragezeichen >> daruch kann noch nicht null sein
-    final userWallet = Provider.of<UserWallet?>(context);
+    final userData = Provider.of<UserData?>(context);
 
     return StreamBuilder(
       stream: Auth().authStateChanges,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if (userWallet == null) {
+          if (userData == null) {
             return Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(context).colorScheme.background,
               child: Center(
                 child: dotProgress(context),
               ),
