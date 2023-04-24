@@ -6,6 +6,8 @@ import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/container/coinlogo.dart';
 import 'package:BitNet/components/dialogsandsheets/bottomsheet.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
+import 'package:BitNet/components/tabs/editprofile.dart';
+import 'package:BitNet/components/tabs/wallettab.dart';
 import 'package:BitNet/models/userdata.dart';
 import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/pages/settings/settings.dart';
@@ -72,9 +74,9 @@ class _ProfileState extends State<Profile> {
       //PostsProfileTab(
         //profileId: widget.profileId,
       //),
-      //WalletTab(),
+      WalletTab(),
       //den nur wenn eigenes profil also abfrage ob eignes profil anonszten was anders zeigen
-      //EditProfileTab(),
+      EditProfileTab(),
     ];
   }
 
@@ -101,28 +103,28 @@ class _ProfileState extends State<Profile> {
     });
 
     DocumentSnapshot? doc = await usersCollection.doc(widget.profileId).get();
-    UserData user = UserData.fromDocument(doc);
+    userData = UserData.fromDocument(doc);
 
     //displayName
-    displayNameController.text = user.displayName;
-    _validDisplayName = user.displayName;
+    displayNameController.text = userData.displayName;
+    _validDisplayName = userData.displayName;
 
     //username
-    userNameController.text = user.username;
-    _validUserName = user.username;
+    userNameController.text = userData.username;
+    _validUserName = userData.username;
 
     //lol später zu bio ändern
-    bioController.text = user.profileImageUrl;
-    _validBio = user.profileImageUrl;
+    bioController.text = userData.profileImageUrl;
+    _validBio = userData.profileImageUrl;
 
     //should show followers
-    _showFollwers = user.showFollowers;
+    _showFollwers = userData.showFollowers;
 
     //isprivateprofile?
 
     //should always be valid otherweise will throw error before and not get uploaded
-    _backgroundImage = user.backgroundImageUrl;
-    _profileImage = user.profileImageUrl;
+    _backgroundImage = userData.backgroundImageUrl;
+    _profileImage = userData.profileImageUrl;
 
     setState(() {
       isUserLoading = false;

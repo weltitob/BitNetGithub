@@ -3,13 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:BitNet/backbone/cloudfunctions/getbalance.dart';
-import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:BitNet/backbone/security/security.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
-import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
-import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/pages/actions/sendscreen.dart';
 import 'package:BitNet/pages/secondpages/agbscreen.dart';
 import 'package:BitNet/pages/secondpages/changeemail.dart';
@@ -69,8 +65,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _userUid() {
     return Text(user?.email ?? 'User email');
   }
-
-  bool _ziehesendschkohl = false;
 
   @override
   Widget build(BuildContext context) {

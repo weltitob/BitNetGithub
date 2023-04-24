@@ -8,3 +8,4 @@ final settingsCollection = FirebaseFirestore.instance.collection("settings");
 final followersRef = FirebaseFirestore.instance.collection("followers");
 final followingRef = FirebaseFirestore.instance.collection("following");
 final activityFeedRef = FirebaseFirestore.instance.collection("activityFeed");
+final postsCollection = FirebaseFirestore.instance.collection("posts");

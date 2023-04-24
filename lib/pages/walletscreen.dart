@@ -61,14 +61,15 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
   final PageController _controller = PageController();
 
   Future<void> _handleRefresh() async {
-    final userWallet = Provider.of<UserWallet>(context, listen: false);
+    final userData = Provider.of<UserData>(context, listen: false);
+    final userWallet = userData.mainWallet;
     await getBalance(userWallet);
     await getTransactions(userWallet);
   }
 
   @override
   Widget build(BuildContext context) {
-    final UserWallet userWallet = Provider.of<UserWallet>(context);
+    final UserData userData = Provider.of<UserData>(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -237,7 +238,7 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                   GestureDetector(
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => SendBTCScreen(bitcoinSenderAdress: userWallet.walletAddress,),
+                        builder: (context) => SendBTCScreen(bitcoinSenderAdress: userData.mainWallet.walletAddress,),
                       ),
                     ),
                     child: circButtonWidget("Senden", _compositionSend,

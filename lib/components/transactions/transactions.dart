@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:BitNet/models/userdata.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,9 @@ class _TransactionsState extends State<Transactions>
 
   @override
   Widget build(BuildContext context) {
-    final userWallet = Provider.of<UserWallet>(context);
+    final userData = Provider.of<UserData>(context);
+    final userWallet = userData.mainWallet;
+
     getTransactions(userWallet);
 
     return Column(

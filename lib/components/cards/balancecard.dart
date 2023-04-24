@@ -1,3 +1,4 @@
+import 'package:BitNet/models/userdata.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,8 @@ class BalanceCardBtc extends StatelessWidget {
   const BalanceCardBtc({Key? key}) : super(key: key);
 
   Widget balanceText(BuildContext context) {
-    final userWallet = Provider.of<UserWallet>(context);
+    final userData = Provider.of<UserData>(context);
+    final userWallet = userData.mainWallet;
     getBalance(userWallet);
 
     return Padding(

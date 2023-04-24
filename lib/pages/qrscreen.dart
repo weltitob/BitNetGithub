@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:BitNet/models/userdata.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -34,7 +35,7 @@ class _QRScreenState extends State<QRScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userWallet = Provider.of<UserWallet>(context);
+    final userData = Provider.of<UserData>(context);
 
     return Scaffold(
       body: Stack(
@@ -73,7 +74,7 @@ class _QRScreenState extends State<QRScreen> {
                     builder: (context) =>
                         SendBTCScreen(
                           bitcoinReceiverAdress: currentqr.bitcoinAddress,
-                          bitcoinSenderAdress: userWallet.walletAddress,),
+                          bitcoinSenderAdress: userData.mainWallet.walletAddress,),
                   ));
                 } else {
                   print("Error beim einscannen des QR Codes");

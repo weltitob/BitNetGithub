@@ -1,8 +1,8 @@
 import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/pages/profile.dart';
+import 'package:BitNet/pages/profilescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
-import 'package:BitNet/pages/homescreen.dart';
+import 'package:BitNet/pages/walletscreen.dart';
 import 'package:BitNet/pages/qrscreen.dart';
 import 'package:BitNet/pages/settingsscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
