@@ -29,7 +29,7 @@ dynamic getTransactions(UserWallet userWallet) async {
         'address': userWallet.walletAddress,
       });
       final mydata = CloudfunctionCallback.fromJson(resp.data);
-      if (mydata.status == "success") { // Check if response was successful
+      if (mydata.statusCode == "success") { // Check if response was successful
         var encodedString = jsonDecode(mydata.message);
         print("Encoded get Transactions response: $encodedString");
 

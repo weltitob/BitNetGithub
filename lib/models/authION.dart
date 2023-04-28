@@ -1,11 +1,11 @@
-class createDIDCallback {
+class IONData {
   String did;
   String username;
   String publicIONKey;
   String privateIONKey;
   String customToken;
 
-  createDIDCallback({
+  IONData({
     required this.did,
     required this.username,
     required this.customToken,
@@ -13,8 +13,8 @@ class createDIDCallback {
     required this.privateIONKey,
   });
 
-  factory createDIDCallback.fromJson(Map<String, dynamic> json) {
-    return createDIDCallback(
+  factory IONData.fromJson(Map<String, dynamic> json) {
+    return IONData(
       did: json['did'].toString(),
       username: json['username'].toString(),
       privateIONKey: json['privateKey'].toString(),

@@ -48,11 +48,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "poweredByDIDs": MessageLookupByLibrary.simpleMessage(
             "Powered with decentralized IDs by"),
         "privateKey": MessageLookupByLibrary.simpleMessage("Private Key"),
-        "publicIONKey": MessageLookupByLibrary.simpleMessage("Public ION Key"),
         "register": MessageLookupByLibrary.simpleMessage("Create Account"),
-        "restoreWallet": MessageLookupByLibrary.simpleMessage("Restore Wallet"),
-        "restoreWith24words": MessageLookupByLibrary.simpleMessage(
-            "Restore Account with 24 words"),
+        "restoreAccount":
+            MessageLookupByLibrary.simpleMessage("Restore Account"),
+        "restoreWithSocialRecovery": MessageLookupByLibrary.simpleMessage(
+            "Restore with social recovery"),
+        "usernameOrDID":
+            MessageLookupByLibrary.simpleMessage("Username or DID"),
         "welcomeBack": MessageLookupByLibrary.simpleMessage("Welcome back!")
       };
 }

@@ -91,7 +91,7 @@ class _SignupScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     return BitNetScaffold(
       gradientColor: Colors.black,
-      appBar: BitNetAppBar(text: S.of(context).restoreWallet, context: context,
+      appBar: BitNetAppBar(text: S.of(context).restoreAccount, context: context,
       onTap: (){
         widget.toggleGetStarted();
       }),
@@ -147,7 +147,7 @@ class _SignupScreenState extends State<LoginScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   FormTextField(
-                    title: S.of(context).publicIONKey,
+                    title: S.of(context).usernameOrDID,
                     controller: _controllerEmail,
                     isObscure: false,
                     //das muss eh noch geändert werden gibt ja keine email
@@ -184,7 +184,7 @@ class _SignupScreenState extends State<LoginScreen>
                     ),
                   ),
                   LongButtonWidget(
-                    title: S.of(context).restoreWallet,
+                    title: S.of(context).restoreAccount,
                     onTap: () {
                       if (_form.currentState!.validate()) {
                         signIn();
@@ -217,7 +217,7 @@ class _SignupScreenState extends State<LoginScreen>
                       widget.toggleResetPassword();
                     },
                     child: Text(
-                      S.of(context).restoreWith24words,
+                      S.of(context).restoreWithSocialRecovery,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: AppTheme.colorBitcoin
                       )

@@ -776,7 +776,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   fee_size: '$feesSelected',
                   userWallet: userWallet,
                 );
-                if (callback.status == "success") {
+                if (callback.statusCode == "success") {
                   // Display a success message and navigate to the bottom navigation bar
                   displaySnackbar(
                       context,

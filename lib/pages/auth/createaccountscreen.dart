@@ -234,7 +234,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
                           widget.toggleView();
                         },
                         child: Text(
-                          S.of(context).restoreWallet,
+                          S.of(context).restoreAccount,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),

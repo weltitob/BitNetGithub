@@ -60,11 +60,11 @@ class S {
     );
   }
 
-  /// `Restore Wallet`
-  String get restoreWallet {
+  /// `Restore Account`
+  String get restoreAccount {
     return Intl.message(
-      'Restore Wallet',
-      name: 'restoreWallet',
+      'Restore Account',
+      name: 'restoreAccount',
       desc: '',
       args: [],
     );
@@ -100,11 +100,11 @@ class S {
     );
   }
 
-  /// `Public ION Key`
-  String get publicIONKey {
+  /// `Username or DID`
+  String get usernameOrDID {
     return Intl.message(
-      'Public ION Key',
-      name: 'publicIONKey',
+      'Username or DID',
+      name: 'usernameOrDID',
       desc: '',
       args: [],
     );
@@ -120,11 +120,11 @@ class S {
     );
   }
 
-  /// `Restore Account with 24 words`
-  String get restoreWith24words {
+  /// `Restore with social recovery`
+  String get restoreWithSocialRecovery {
     return Intl.message(
-      'Restore Account with 24 words',
-      name: 'restoreWith24words',
+      'Restore with social recovery',
+      name: 'restoreWithSocialRecovery',
       desc: '',
       args: [],
     );

@@ -79,7 +79,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               height: AppTheme.cardPadding * 6,
             ),
             LongButtonWidgetTransparent(
-              title: S.of(context).restoreWallet,
+              title: S.of(context).restoreAccount,
               onTap: () {
                 widget.pushToLogin();
               },

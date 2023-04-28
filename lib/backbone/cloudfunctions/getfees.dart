@@ -25,8 +25,8 @@ dynamic getFees({
 
     // Parse the response from the Cloud Function
     final mydata = CloudfunctionCallback.fromJson(resp.data);
-    print(mydata.status);
-    if (mydata.status == "success") {
+    print(mydata.statusCode);
+    if (mydata.statusCode == "success") {
       print('success message was awnser from getfees');
       // Decode the encoded JSON message in the response
       var encodedString = jsonDecode(mydata.message);

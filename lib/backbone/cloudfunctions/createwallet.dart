@@ -21,7 +21,7 @@ dynamic createWallet({required String email,}) async {
     });
     // Parse the response and return the new UserWallet object
     final mydata = CloudfunctionCallback.fromJson(resp.data);
-    if (mydata.status == "success") {
+    if (mydata.statusCode == "success") {
       var encodedString = jsonDecode(mydata.message);
       final newWallet = UserWallet.fromJson(encodedString);
       return newWallet;
