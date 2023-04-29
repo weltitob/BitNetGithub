@@ -10,6 +10,11 @@ import 'package:uuid/uuid.dart';
 final datetime = DateTime.now();
 Timestamp timestamp = Timestamp.fromDate(datetime); //To TimeStamp
 
+bool isStringaDID(String input) {
+  RegExp didPattern = RegExp(r'^did:[a-z0-9]+:[A-Za-z0-9.-]{22,}$');
+  return didPattern.hasMatch(input);
+}
+
 String getRandomString(int length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   return String.fromCharCodes(Iterable.generate(

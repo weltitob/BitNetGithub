@@ -1,5 +1,5 @@
 import 'package:BitNet/backbone/helper/deepmapcast.dart';
-import 'package:BitNet/models/authION.dart';
+import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 createDID(String username) async {

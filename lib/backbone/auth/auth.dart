@@ -1,34 +1,21 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
 import 'package:BitNet/backbone/auth/storeIONdata.dart';
 import 'package:BitNet/backbone/auth/uniqueloginmessage.dart';
 import 'package:BitNet/backbone/auth/verificationcodes.dart';
 import 'package:BitNet/backbone/cloudfunctions/createdid.dart';
 import 'package:BitNet/backbone/cloudfunctions/loginion.dart';
 import 'package:BitNet/backbone/cloudfunctions/signmessage.dart';
-import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/models/authION.dart';
+import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/models/userwallet.dart';
-import 'package:jose/jose.dart';
-import 'package:pointycastle/pointycastle.dart';
-import 'package:pointycastle/random/fortuna_random.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:pointycastle/api.dart';
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
 Authentication and Cloud Firestore.
  */
+
 class Auth {
   // initialzie FirebaseAuth instance
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -141,28 +128,35 @@ class Auth {
     return newUser;
   }
 
-  Future<void> signIn(String username) async {
+  Future<void> signIn(String usernameOrDID) async {
     // Retrieve the user's DID, private key, and public key from the local storage or any other secure storage
     // Replace "shared_preferences" with your preferred storage method
-    final prefs = await SharedPreferences.getInstance();
-    final did = prefs.getString('did')!;
-    final privateKey = json.decode(prefs.getString('privateKey')!);
-    final publicKey = json.decode(prefs.getString('publicKey')!);
-
-    Map<String, dynamic> privateKeyJwk = {'your': privateKey};
+    //multiple users later on needs to take username or did and then match it
+    final IONData dataOnDevice = await getIonData(usernameOrDID);
 
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
-    final message = generateUniqueLoginMessage(did);
-    final signedMessage =
-        await signMessageFunction(did, privateKeyJwk, message);
+    final message = generateUniqueLoginMessage(dataOnDevice.did);
+
+    final signedMessage =  await signMessageFunction(
+        dataOnDevice.did,
+        dataOnDevice.privateIONKey,
+        message
+    );
 
     //signed message gets verified from loginION function which logs in the user if successful
-    final IONData? data = await loginION(username, did, signedMessage, message);
+    final IONData? data = await loginION(
+        dataOnDevice.username,
+        dataOnDevice.did,
+        signedMessage,
+        message
+    );
+
     final currentuser = await signInWithToken(customToken: data!.customToken);
   }
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
+
 }

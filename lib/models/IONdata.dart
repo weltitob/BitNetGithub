@@ -22,4 +22,24 @@ class IONData {
       customToken: json['customToken'].toString(),
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'did': did,
+      'username': username,
+      'publicKey': publicIONKey,
+      'privateKey': privateIONKey,
+      'customToken': customToken,
+    };
+  }
+
+  factory IONData.fromMap(Map<String, dynamic> map) {
+    return IONData(
+      did: map['did'],
+      username: map['username'],
+      publicIONKey: map['publicKey'],
+      privateIONKey: map['privateKey'],
+      customToken: map['customToken'],
+    );
+  }
 }
