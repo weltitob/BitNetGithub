@@ -6,28 +6,29 @@ import 'package:flutter/material.dart';
 class ProfilePictureSmall extends StatelessWidget {
   final String profileImageURL;
   final String profileId;
+  final VoidCallback? onTap;
 
   const ProfilePictureSmall(
-      {Key? key, required this.profileImageURL, required this.profileId})
+      {Key? key, required this.profileImageURL, required this.profileId, this.onTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => showProfile(context, profileId: profileId),
+      onTap: onTap ?? () => showProfile(context, profileId: profileId),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppTheme.cardRadiusSmall,
         ),
         constraints: BoxConstraints.expand(
-          height: 40.0,
-          width: 40.0,
+          height: AppTheme.cardPadding * 1.75,
+          width: AppTheme.cardPadding * 1.75,
         ),
         child: ClipRRect(
           borderRadius: AppTheme.cardRadiusSmall,
           child: CachedNetworkImage(
-              imageUrl: profileImageURL == ''
+              imageUrl: profileImageURL != ''
                   ? 'http://ev-evgym.at/wp-content/uploads/2018/12/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'
                   : profileImageURL),
         ),

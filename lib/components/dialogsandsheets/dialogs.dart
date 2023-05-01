@@ -1,4 +1,6 @@
 import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/components/container/glassmorph.dart';
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
@@ -153,23 +155,24 @@ Future<bool?> showDialogueMultipleOptions({
           mainAxisSize: MainAxisSize.min,
           children: [
             (title != null) ? Padding(
-              padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-              child: Text(title, style: Theme.of(context).textTheme.headline3),
+              padding: const EdgeInsets.only(top: AppTheme.elementSpacing / 2,
+                  bottom: AppTheme.elementSpacing / 2),
+              child: Text(title, style: Theme.of(context).textTheme.displaySmall),
             ) : Container(),
             Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    OptionContainer(context, image1, text1, action1),
-                    OptionContainer(context, image2, text2, action2),
+                    OptionContainer(context, text1, action1, image: image1),
+                    OptionContainer(context, text2, action2, image: image2),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    OptionContainer(context, image3, text3, action3),
-                    OptionContainer(context, image4, text4, action4),
+                    OptionContainer(context, text3, action3, image: image3,),
+                    OptionContainer(context, text4, action4, image: image4),
                   ],
                 ),
                 ElevatedButton(
@@ -190,41 +193,4 @@ Future<bool?> showDialogueMultipleOptions({
       );
     },
   );
-}
-
-Widget OptionContainer(BuildContext context, String image, String text, action) {
-  return Container(
-      margin: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 5.0, right: 5.0),
-      width: 100,
-      height: 100,
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: AppTheme.cardRadiusMid,
-        boxShadow: [
-          AppTheme.boxShadowProfile
-        ],
-      ),
-      child: Material(
-          color: Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: AppTheme.cardRadiusMid,
-          child: InkWell(
-            onTap: () {print('TEST');},
-            borderRadius: AppTheme.cardRadiusMid,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  height: 50,
-                  width: 50,
-                  child: Image.asset(image),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: AppTheme.elementSpacing),
-                  child: Text(text,
-                      style: Theme.of(context).textTheme.caption),
-                )
-              ],
-            ),
-          )));
 }

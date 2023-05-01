@@ -34,8 +34,8 @@ showModalBottomSheetWidget({
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 goBack ? Icon(
-                  Icons.arrow_back_ios,
-                  size: 18,
+                  Icons.arrow_back_rounded,
+                  size: AppTheme.cardPadding,
                   color: AppTheme.white70,
                 ) : Container(width: 20,),
                 Row(
@@ -44,20 +44,20 @@ showModalBottomSheetWidget({
                       padding: const EdgeInsets.only(right: AppTheme.elementSpacing * 0.5),
                       child: Icon(
                         iconData,
-                        size: 18,
+                        size: AppTheme.cardPadding,
                         color: AppTheme.white70,
                       ),
                     ) : Container(),
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.subtitle2,
+                      style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ],
                 ),
                 GestureDetector(
                   child: Icon(
                     Icons.clear_rounded,
-                    size: 20,
+                    size: AppTheme.cardPadding,
                     color: AppTheme.white70,
                   ),
                   onTap: () => Navigator.pop(context),

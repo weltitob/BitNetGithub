@@ -1,11 +1,11 @@
 import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/backbone/cloudfunctions/loginion.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/backbone/routes/showprofile.dart';
-import 'package:BitNet/components/container/profilepicture.dart';
+import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/userdata.dart';
-import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -98,6 +98,7 @@ class _KeyItemState extends State<_KeyItem> {
 
   @override
   initState() {
+    super.initState();
     getUser(widget.verificationkey.receiver);
   }
 
@@ -167,24 +168,9 @@ class _KeyItemState extends State<_KeyItem> {
             return dotProgress(context);
           } else {
             UserData user = UserData.fromDocument(snapshot.data);
-            UserResult result = UserResult(user: user);
+            UserResult result = UserResult(userData: user, onTap: (){},);
             return result;
           }
         });
-  }
-}
-
-class UserResult extends StatelessWidget {
-  final UserData user;
-  UserResult({required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: ProfilePictureSmall(
-        profileId: user.did,
-        profileImageURL: user.profileImageUrl,
-      ),
-    );
   }
 }

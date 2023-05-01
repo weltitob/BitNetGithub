@@ -1,13 +1,13 @@
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-signMessageFunction(String did, Map<String, dynamic> privateKeyJwk, String message) async {
+signMessageFunction(String did, String privateIONKey, String message) async {
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('signMessageFunction');
   print("Signing message...");
 
   final HttpsCallableResult<dynamic> response = await callable.call(<String, dynamic>{
     'did': did,
-    'privateKeyJwk': privateKeyJwk,
+    'privateIONKey': privateIONKey,
     'message': message,
   });
 

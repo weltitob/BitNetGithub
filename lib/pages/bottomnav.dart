@@ -1,4 +1,5 @@
 import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/pages/homescreen.dart';
 import 'package:BitNet/pages/profilescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
@@ -21,7 +22,7 @@ class _BottomNavState extends State<BottomNav> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const QRScreen(isBottomButtonVisible: false,),
+      HomeScreen(),
       SettingsScreen(),
       SettingsScreen(),
       const WalletScreen(),

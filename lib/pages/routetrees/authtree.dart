@@ -1,3 +1,4 @@
+import 'package:BitNet/pages/auth/chooserestorescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/pages/auth/getstartedscreen.dart';
@@ -72,7 +73,8 @@ class _AuthTreeState extends State<AuthTree> {
               toggleResetPassword: toggleresetpassword,
             );
           } else {
-            return LoginScreen(
+            //return ChooseRestoreScreen();
+            return ChooseRestoreScreen(
               toggleGetStarted: widget.toggleGetStarted,
               toggleView: toggleView,
               toggleResetPassword: toggleresetpassword,

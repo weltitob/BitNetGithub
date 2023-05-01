@@ -128,26 +128,22 @@ class Auth {
     return newUser;
   }
 
-  Future<void> signIn(String usernameOrDID) async {
-    // Retrieve the user's DID, private key, and public key from the local storage or any other secure storage
-    // Replace "shared_preferences" with your preferred storage method
-    //multiple users later on needs to take username or did and then match it
-    final IONData dataOnDevice = await getIonData(usernameOrDID);
+  Future<void> signIn(String did, String privateIONKey, String username) async {
 
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
-    final message = generateUniqueLoginMessage(dataOnDevice.did);
+    final message = generateUniqueLoginMessage(did);
 
     final signedMessage =  await signMessageFunction(
-        dataOnDevice.did,
-        dataOnDevice.privateIONKey,
+        did,
+        privateIONKey,
         message
     );
 
     //signed message gets verified from loginION function which logs in the user if successful
     final IONData? data = await loginION(
-        dataOnDevice.username,
-        dataOnDevice.did,
+        username,
+        did,
         signedMessage,
         message
     );

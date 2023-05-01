@@ -691,20 +691,20 @@ class _ProfileState extends State<Profile> {
                 Theme.of(context).colorScheme.primary,
                 Theme.of(context).colorScheme.primary
               ]),
-        borderRadius: BorderRadius.circular(50.0),
+        borderRadius: AppTheme.cardRadiusBigger * 1.5,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(AppTheme.elementSpacing / 4),
         child: ClipRRect(
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(45.0),
+              borderRadius: AppTheme.cardRadiusBigger * 1.5,
               child: Ink(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(45.0),
+                  borderRadius: AppTheme.cardRadiusBigger * 1.5,
                   image: DecorationImage(
-                    image: NetworkImage(imagePath == ''
+                    image: NetworkImage(imagePath != ''
                         ? 'http://ev-evgym.at/wp-content/uploads/2018/12/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'
                         : imagePath),
                     fit: BoxFit.fill,

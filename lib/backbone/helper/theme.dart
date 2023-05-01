@@ -22,8 +22,8 @@ Color lighten(Color c, [int percent = 10]) {
 
 class AppTheme {
   //borderradius
-  static BorderRadius cardRadiusSuperSmall = BorderRadius.circular(8);
-  static BorderRadius cardRadiusSmall = BorderRadius.circular(14);
+  static BorderRadius cardRadiusSuperSmall = BorderRadius.circular(10);
+  static BorderRadius cardRadiusSmall = BorderRadius.circular(16);
   static BorderRadius cardRadiusMid = BorderRadius.circular(20);
   static BorderRadius cardRadiusBig = BorderRadius.circular(24);
   static BorderRadius cardRadiusBigger = BorderRadius.circular(32);

@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 
 class Glassmorphism extends StatelessWidget {
   final double blur;
@@ -18,22 +20,31 @@ class Glassmorphism extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(opacity),
-            borderRadius: BorderRadius.all(Radius.circular(radius)),
-            border: Border.all(
-              width: 1.5,
-              color: Colors.white.withOpacity(0.2),
-            ),
-          ),
-          child: child,
-        ),
+    return GlassmorphicFlexContainer(
+      borderRadius: radius,
+      blur: blur,
+      alignment: Alignment.bottomCenter,
+      border: 1.2,
+      linearGradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFFffffff).withOpacity(opacity),
+            Color(0xFFFFFFFF).withOpacity(opacity / 4),
+          ],
+          stops: [
+            0.1,
+            1,
+          ]),
+      borderGradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Color(0xFFffffff).withOpacity(0.125),
+          Color((0xFFFFFFFF)).withOpacity(0.125),
+        ],
       ),
+      child: Center(child: child),
     );
   }
 }

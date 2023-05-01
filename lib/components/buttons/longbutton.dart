@@ -68,9 +68,12 @@ class LongButtonWidget extends StatelessWidget {
                   ),
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.button?.copyWith(
-                      color: textColor != null ? textColor : AppTheme.white90,
-                      fontSize: 17
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: textColor != null ? textColor : AppTheme.white100,
+                      fontSize: 17,
+                    shadows: [
+                      AppTheme.boxShadowProfile
+                    ],
                   ),
                 ),
               ],
