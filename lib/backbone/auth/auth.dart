@@ -136,7 +136,7 @@ class Auth {
 
     final signedMessage =  await signMessageFunction(
         did,
-        privateIONKey,
+        privateIONKey.toString(),
         message
     );
 
