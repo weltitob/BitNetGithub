@@ -118,6 +118,7 @@ class _UsersListState extends State<UsersList>
                           onTap: () {
                             Auth().signIn(
                               userData.did,
+                              ionData.publicIONKey,
                               ionData.privateIONKey,
                               userData.username,
                             );

@@ -1,8 +1,9 @@
+import 'package:BitNet/backbone/helper/deepmapcast.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-Future<IONData?> loginION(String username, String did, String signedMessage, String message) async {
+loginION(String username, String did, String signedMessage, String standardMessage) async {
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('loginION');
   print("Logging in with ION...");
 
@@ -10,18 +11,21 @@ Future<IONData?> loginION(String username, String did, String signedMessage, Str
     'username': username,
     'did': did,
     'signedMessage': signedMessage,
-    'message': message,
+    'standardMessage': standardMessage,
   });
 
   print("Response: ${response.data}");
 
-  final CloudfunctionCallback callback = CloudfunctionCallback.fromJson(response.data);
+
+  final Map<String, dynamic> responseData = deepMapCast(response.data as Map<Object?, Object?>);
+  final CloudfunctionCallback callback = CloudfunctionCallback.fromJson(responseData);
   print("CloudfunctionCallback: ${callback.toString()}");
+
 
   if (callback.statusCode == "200") {
     print(callback.message);
-    final mydata = IONData.fromJson(callback.data);
-    return mydata;
+    String customToken = callback.data['customToken']; // Extracting the signed message // Extracting the signed message
+    return customToken;
   } else {
     return null;
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:BitNet/backbone/auth/storeIONdata.dart';
 import 'package:BitNet/backbone/auth/uniqueloginmessage.dart';
 import 'package:BitNet/backbone/auth/verificationcodes.dart';
@@ -98,7 +99,7 @@ class Auth {
     required VerificationCode code,
   }) async {
     print('Calling Cloudfunction with Microsoft ION now...');
-    final IONData iondata = await createDID(user.did);
+    final IONData iondata = await createDID(user.username);
     print("IONDATA RECEIVED: $iondata");
 
     // Call the function to store ION data in secure storage
@@ -106,29 +107,30 @@ class Auth {
 
     final currentuser = await signInWithToken(customToken: iondata.customToken);
 
-    final newUser = user.copyWith(did: currentuser?.user!.uid);
+    final newUser = user.copyWith(did: iondata.did);
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
+
     print('Successfully created wallet/user in database: ${newUser.toMap()}');
 
     // Call the function to generate and store verification codes
     await generateAndStoreVerificationCodes(
       numCodes: 4,
       codeLength: 5,
-      issuer: user.did,
+      issuer: newUser.did,
       codesCollection: codesCollection,
     );
 
     // Call the function to mark the verification code as used
     await markVerificationCodeAsUsed(
       code: code,
-      receiver: iondata.did,
+      receiver: newUser.did,
       codesCollection: codesCollection,
     );
 
     return newUser;
   }
 
-  Future<void> signIn(String did, String privateIONKey, String username) async {
+  Future<void> signIn(String did, dynamic publicIONKey, dynamic privateIONKey, String username) async {
 
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
@@ -136,19 +138,27 @@ class Auth {
 
     final signedMessage =  await signMessageFunction(
         did,
-        privateIONKey.toString(),
+        publicIONKey,
+        privateIONKey,  // Convert the private key object to a JSON string
         message
     );
 
     //signed message gets verified from loginION function which logs in the user if successful
-    final IONData? data = await loginION(
-        username,
-        did,
-        signedMessage,
-        message
+    if (signedMessage == null) {
+      print("Failed to sign the message");
+      return;
+    }
+
+    print("Message signed... $signedMessage");
+
+    final String customToken = await loginION(
+        username.toString(),
+        did.toString(),
+        signedMessage.toString(),
+        message.toString()
     );
 
-    final currentuser = await signInWithToken(customToken: data!.customToken);
+    final currentuser = await signInWithToken(customToken: customToken);
   }
 
   Future<void> signOut() async {
