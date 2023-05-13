@@ -139,6 +139,7 @@ class _UsersListState extends State<UsersList>
                                         ionData.privateIONKey,
                                         userData.username,
                                       );
+                                      Navigator.pushNamed(context, '/ionLoadingScreen');
                                     },
                                     userData: userData,
                                     onDelete: () async {

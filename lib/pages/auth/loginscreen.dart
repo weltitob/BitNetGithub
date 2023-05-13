@@ -90,6 +90,7 @@ class _SignupScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
+      context: context,
       gradientColor: Colors.black,
       appBar: BitNetAppBar(text: S.of(context).restoreAccount, context: context,
       onTap: (){

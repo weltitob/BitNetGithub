@@ -1,4 +1,10 @@
+import 'package:BitNet/backbone/helper/helpers.dart';
+import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
+import 'package:BitNet/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class IONLoadingScreen extends StatefulWidget {
   const IONLoadingScreen({Key? key}) : super(key: key);
@@ -8,14 +14,85 @@ class IONLoadingScreen extends StatefulWidget {
 }
 
 class _IONLoadingScreenState extends State<IONLoadingScreen> {
+  late final Future<LottieComposition> comp;
+
+  @override void initState() {
+    // TODO: implement initState
+    comp = loadComposition('assets/lottiefiles/blockchain_loader.json');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(child:
-    Center(
-      child: Column(
-
-
+    return BitNetScaffold(
+      body: Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                //Please stay by while we're checking your profile with the blockchain
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+                  child: Text(
+                    "Please wait while we check for your account on the blockchain...",
+                    style: Theme.of(context).textTheme.titleSmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(height: AppTheme.elementSpacing),
+                Container(
+                  color: Colors.transparent,
+                  height: AppTheme.cardPadding * 10,
+                  child: FutureBuilder(
+                    future: comp,
+                    builder: (context, snapshot) {
+                      dynamic composition = snapshot.data;
+                      if (composition != null) {
+                        return FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: Lottie(composition: composition),
+                        );
+                      } else {
+                        return Container(
+                          color: Colors.transparent,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: AppTheme.cardPadding * 2,
+            child: Container(
+              width: MediaQuery.of(context).size.width, // full width
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    S.of(context).poweredByDIDs,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium,
+                  ),
+                  Container(
+                    margin:
+                    EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                    height: AppTheme.cardPadding * 2,
+                    child: Image.asset("assets/images/ion.png"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
-    ));
+      context: context,
+    );
   }
 }

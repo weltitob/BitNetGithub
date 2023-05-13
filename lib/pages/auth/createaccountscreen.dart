@@ -19,9 +19,7 @@ import 'package:BitNet/backbone/helper/theme.dart';
 class CreateAccountScreen extends StatefulWidget {
   VerificationCode code;
   Function() toggleView;
-  Function() toggleIsInvited;
   CreateAccountScreen({
-    required this.toggleIsInvited,
     required this.toggleView,
     required this.code});
 
@@ -110,12 +108,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
   Widget build(BuildContext context) {
     return SafeArea(
       child: BitNetScaffold(
+        context: context,
         gradientColor: Colors.black,
         appBar: BitNetAppBar(
             text: S.of(context).register,
             context: context,
             onTap: () {
-              widget.toggleIsInvited();
+              widget.toggleView();
             }),
         body: BackgroundWithContent(
           opacity: 0.8,

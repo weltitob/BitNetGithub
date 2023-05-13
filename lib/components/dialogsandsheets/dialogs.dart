@@ -83,20 +83,22 @@ Future<bool?> showDialogue({
     context: context,
     builder: (context) {
       return AlertDialog(
+        elevation: AppTheme.cardPadding,
+        backgroundColor: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(
-          borderRadius: AppTheme.cardRadiusBig,
+          borderRadius: AppTheme.cardRadiusBigger,
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               title,
-              style: Theme.of(context).textTheme.displaySmall,
+              style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
             Container(
                 padding: EdgeInsets.only(
-                    top: AppTheme.cardPadding, bottom: AppTheme.elementSpacing),
+                    top: AppTheme.elementSpacing * 1.5, bottom: AppTheme.elementSpacing),
                 height: AppTheme.elementSpacing * 12,
                 width: AppTheme.elementSpacing * 12,
                 child: Image.asset(image)),
@@ -132,15 +134,13 @@ Future<bool?> showDialogue({
                   ),
                   child: Icon(
                     FontAwesomeIcons.check,
-                    color: AppTheme.white70,
+                    color: AppTheme.white90,
                   ),
                 )
               ],
             ),
           ],
         ),
-        elevation: AppTheme.cardPadding,
-        backgroundColor: AppTheme.white90,
       );
     },
   );

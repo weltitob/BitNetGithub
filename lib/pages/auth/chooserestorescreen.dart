@@ -30,7 +30,9 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
     return BitNetScaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
         appBar: BitNetAppBar(
-            text: "Choose Restore Option", context: context, onTap: (){
+            text: "Choose Restore Option",
+            context: context,
+            onTap: (){
           widget.toggleGetStarted();
         }),
         body: ListView(
@@ -74,6 +76,6 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             //list accounts
             UsersList()
           ],
-        ));
+        ), context: context,);
   }
 }

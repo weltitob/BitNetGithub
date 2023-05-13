@@ -29,6 +29,22 @@ class VerificationCode {
     );
   }
 
+  VerificationCode copyWith({
+    String? docId,
+    bool? used,
+    String? code,
+    String? issuer,
+    String? receiver,
+  }) {
+    return VerificationCode(
+      docId: docId ?? this.docId,
+      used: used ?? this.used,
+      code: code ?? this.code,
+      issuer: issuer ?? this.issuer,
+      receiver: receiver ?? this.receiver,
+    );
+  }
+
   factory VerificationCode.fromMap(Map<String, dynamic> map, String docId) {
     return VerificationCode(
       docId: docId,

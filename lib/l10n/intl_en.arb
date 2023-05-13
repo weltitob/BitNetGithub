@@ -4,7 +4,7 @@
   "restoreAccount": "Restore Account",
   "register": "Create Account",
   "welcomeBack": "Welcome back!",
-  "poweredByDIDs": "Powered with decentralized IDs by",
+  "poweredByDIDs": "Powered with DIDs by",
   "usernameOrDID": "Username or DID",
   "privateKey": "Private Key",
   "restoreWithSocialRecovery": "Restore with social recovery",

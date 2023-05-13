@@ -91,6 +91,7 @@ class _UsePhrasesScreenState extends State<UsePhrasesScreen>
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
+      context: context,
       gradientColor: Colors.black,
       appBar: BitNetAppBar(text: "Reset Password", context: context, onTap: (){
         widget.toggleResetPassword();

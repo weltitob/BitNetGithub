@@ -41,8 +41,8 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
-      backgroundColor: Colors.black,
-      gradientColor: Colors.black,
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.background,
       margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       body: Container(
         margin: EdgeInsets.only(

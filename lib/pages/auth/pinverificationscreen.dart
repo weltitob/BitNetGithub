@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:BitNet/generated/l10n.dart';
+import 'package:BitNet/pages/routetrees/onpinverificationsuccess.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
@@ -18,12 +19,9 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 class PinVerificationScreen extends StatefulWidget {
   Function() toggleView;
   Function() toggleGetStarted;
-  Function() toggleIsInvited;
-
   PinVerificationScreen({
     required this.toggleView,
     required this.toggleGetStarted,
-    required this.toggleIsInvited,
   });
   @override
   _PinVerificationScreenState createState() => _PinVerificationScreenState();
@@ -87,7 +85,11 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       if (code.used == false) {
         _loading = false;
         //passing code to SignUp that it can be flagged as used later on
-        widget.toggleIsInvited();
+        onPinVerificationSuccess(
+          code: code,
+          context: context,
+          toggleView: widget.toggleView
+        );
       } else {
         errorController
             .add(ErrorAnimationType.shake); // Triggering error shake animation
@@ -111,6 +113,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
+      context: context,
       appBar: BitNetAppBar(
         onTap: () {
           widget.toggleGetStarted();
