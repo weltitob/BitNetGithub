@@ -6,11 +6,11 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 
 // Widget to display a spinning animation with three bouncing dots
-Container dotProgress(BuildContext context) {
+Container dotProgress(BuildContext context, {Color? color}) {
   return Container(
     child: Center(
       child: SpinKitThreeBounce(
-        color: AppTheme.colorBitcoin, // Set the color of the dots
+        color: color ?? AppTheme.colorBitcoin, // Set the color of the dots
         size: AppTheme.iconSize, // Set the size of the dots
       ),
     ),

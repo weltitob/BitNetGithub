@@ -3,12 +3,13 @@ import 'dart:ui';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
-
 class Glassmorphism extends StatelessWidget {
   final double blur;
   final double opacity;
   final double radius;
   final Widget child;
+  final Alignment gradientBegin;
+  final Alignment gradientEnd;
 
   const Glassmorphism({
     Key? key,
@@ -16,6 +17,8 @@ class Glassmorphism extends StatelessWidget {
     required this.opacity,
     required this.radius,
     required this.child,
+    this.gradientBegin = Alignment.topLeft,
+    this.gradientEnd = Alignment.bottomRight,
   }) : super(key: key);
 
   @override
@@ -26,8 +29,8 @@ class Glassmorphism extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       border: 1.2,
       linearGradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: gradientBegin,
+          end: gradientEnd,
           colors: [
             Color(0xFFffffff).withOpacity(opacity),
             Color(0xFFFFFFFF).withOpacity(opacity / 4),
@@ -37,8 +40,8 @@ class Glassmorphism extends StatelessWidget {
             1,
           ]),
       borderGradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
+        begin: gradientBegin,
+        end: gradientEnd,
         colors: [
           Color(0xFFffffff).withOpacity(0.125),
           Color((0xFFFFFFFF)).withOpacity(0.125),

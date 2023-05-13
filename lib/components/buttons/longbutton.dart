@@ -1,24 +1,27 @@
+import 'dart:ui';
+
+import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/components/container/glassmorph.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image/image.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 
 enum ButtonState { idle, loading, disabled }
-
 class LongButtonWidget extends StatelessWidget {
   final String title;
   final TextStyle? titleStyle;
   final ButtonState state;
   final Widget? leadingIcon;
   final Function()? onTap;
-  dynamic buttonColor;
+  final Gradient? buttonGradient; // Gradient property
   dynamic textColor;
 
   LongButtonWidget({
     required this.title,
     required this.onTap,
     this.titleStyle,
-    this.buttonColor,
+    this.buttonGradient, // initialize gradient in constructor
     this.textColor,
     this.state = ButtonState.idle,
     this.leadingIcon,
@@ -30,7 +33,14 @@ class LongButtonWidget extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: buttonColor != null ? buttonColor : AppTheme.colorBitcoin,
+        gradient: buttonGradient ?? LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppTheme.colorBitcoin,
+            AppTheme.colorPrimaryGradient, // Change this to the second color you want
+          ],
+        ), // Use gradient property
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.4),
@@ -39,24 +49,23 @@ class LongButtonWidget extends StatelessWidget {
             spreadRadius: -18,
           ),
         ],
-        borderRadius: AppTheme.cardRadiusBig,
+        borderRadius: AppTheme.cardRadiusMid,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: AppTheme.cardRadiusBig,
+          borderRadius: AppTheme.cardRadiusMid,
           onTap: onTap,
           child: Container(
             width: size.width - AppTheme.cardPadding * 2,
-            height: 60,
+            height: AppTheme.cardPadding * 2.5,
             alignment: Alignment.center,
             child: state == ButtonState.loading
                 ? Center(
                 child: Transform.scale(
                     scale: 0.6,
-                    child: const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(AppTheme.white100),
-                    )))
+                    child: dotProgress(context, color: AppTheme.white90)
+                ))
                 : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -69,8 +78,8 @@ class LongButtonWidget extends StatelessWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: textColor != null ? textColor : AppTheme.white100,
-                      fontSize: 17,
+                    color: textColor != null ? textColor : AppTheme.white100,
+                    fontSize: 17,
                     shadows: [
                       AppTheme.boxShadowProfile
                     ],
@@ -84,6 +93,7 @@ class LongButtonWidget extends StatelessWidget {
     );
   }
 }
+
 
 class LongButtonWidgetTransparent extends StatefulWidget {
   final String title;
@@ -116,57 +126,37 @@ class _LongButtonWidgetTransparentState extends State<LongButtonWidgetTransparen
     final Size size = MediaQuery.of(context).size;
 
     return Container(
+      height: AppTheme.cardPadding * 2.5,
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.4),
-            offset: Offset(0, 24),
-            blurRadius: 50,
-            spreadRadius: -18,
-          ),
-        ],
+        borderRadius: AppTheme.cardRadiusMid
       ),
-      child: Material(
-        color: Colors.transparent,
+      child: Glassmorphism(
+        gradientBegin: Alignment.topCenter,
+        gradientEnd: Alignment.bottomCenter,
+        blur: 50,
+        opacity: 0.15,
+        radius: AppTheme.cardPadding,
         child: InkWell(
-          borderRadius: AppTheme.cardRadiusBig,
+          borderRadius: AppTheme.cardRadiusMid,
           onTap: widget.onTap,
-          child: Ink(
-            decoration: BoxDecoration(
-              border: Border.all(color: AppTheme.white100),
-              borderRadius: AppTheme.cardRadiusBig,
-            ),
-            height: 60,
-            width: size.width - AppTheme.cardPadding * 2,
-            child: Center(
-              child: widget.state == ButtonState.loading
-                  ? Transform.scale(
-                scale: 0.6,
-                child: const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(AppTheme.white100),
-                ),
-              )
-                  : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (widget.leadingIcon != null)
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          right: AppTheme.elementSpacing),
-                      child: widget.leadingIcon,
-                    ),
-                  Text(
-                    widget.title,
-                    style:
-                    Theme.of(context).textTheme.button?.copyWith(
-                      color: widget.textColor != null
-                          ? widget.textColor
-                          : AppTheme.white90,
-                      fontSize: 17,
-                    ),
+          child: Container(
+            width: size.width - 20 * 2,
+            height: AppTheme.cardPadding * 2.5,
+            alignment: Alignment.center,
+            child: widget.state == ButtonState.loading
+                ? Center(child: CircularProgressIndicator())
+                : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (widget.leadingIcon != null) widget.leadingIcon!,
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

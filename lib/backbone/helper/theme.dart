@@ -24,10 +24,11 @@ class AppTheme {
   //borderradius
   static BorderRadius cardRadiusSuperSmall = BorderRadius.circular(10);
   static BorderRadius cardRadiusSmall = BorderRadius.circular(16);
-  static BorderRadius cardRadiusMid = BorderRadius.circular(20);
-  static BorderRadius cardRadiusBig = BorderRadius.circular(24);
+  static BorderRadius cardRadiusMid = BorderRadius.circular(24);
+  static BorderRadius cardRadiusBig = BorderRadius.circular(28);
   static BorderRadius cardRadiusBigger = BorderRadius.circular(32);
-  static Radius cornerRadiusBig = const Radius.circular(24);
+  static Radius cornerRadiusBig = const Radius.circular(28);
+  static Radius cornerRadiusMid = const Radius.circular(24);
   static BorderRadius cardRadiusCircular = BorderRadius.circular(500);
 
   //Boxshadows
@@ -51,6 +52,7 @@ class AppTheme {
   //spaces
   static const double cardPadding = 24;
   static const double cardPaddingBig = 28;
+  static const double cardPaddingBigger = 32;
   static const double elementSpacing = cardPadding * 0.5;
   static const double bottomNavBarHeight = 64;
 
