@@ -13,33 +13,46 @@ import 'package:BitNet/pages/routetrees/authtree.dart';
  or a reset password screen based on the values of two boolean variables: showSignIn and resetpassword.
  It contains two callback functions to toggle the values of these variables.
  */
+
 class GetStartedTree extends StatefulWidget {
-  const GetStartedTree({Key? key}) : super(key: key);
+  final bool getStarted;
+  final bool showSignIn;
+
+  const GetStartedTree({
+    this.getStarted = true,
+    this.showSignIn = false,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<GetStartedTree> createState() => _GetStartedTreeState();
 }
 
 class _GetStartedTreeState extends State<GetStartedTree> {
-  // boolean variables to track which screen to show
-  bool resetpassword = false;
-  bool getStarted = true;
-  bool showSignIn = false;
+  late bool getStarted;
+  late bool showSignIn;
+
+  @override
+  void initState() {
+    super.initState();
+    getStarted = widget.getStarted;
+    showSignIn = widget.showSignIn;
+  }
 
   void toggleView() {
     setState(() {
-      showSignIn != showSignIn;
+      showSignIn = !showSignIn;
     });
   }
 
-  void pushToRegister(){
+  void pushToRegister() {
     setState(() {
       getStarted = false;
       showSignIn = false;
     });
   }
 
-  void pushToLogin(){
+  void pushToLogin() {
     setState(() {
       getStarted = false;
       showSignIn = true;
@@ -48,28 +61,22 @@ class _GetStartedTreeState extends State<GetStartedTree> {
 
   void toggleGetStarted() {
     setState(() {
-      if (getStarted == true)
-        getStarted = false;
-      else {
-        getStarted = true;
-      }
+      getStarted = !getStarted;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // show the reset password screen if the resetpassword variable is true
-      if(getStarted){
-        return GetStartedScreen(
-          pushToLogin: pushToLogin,
-          pushToRegister: pushToRegister,
-        );
-      } else{
-        // show the sign-in screen if the showSignIn variable is true
-          return AuthTree(
-            showSignIn: showSignIn,
-            toggleGetStarted: toggleGetStarted
-          );
-        }
-      }
+    if (getStarted) {
+      return GetStartedScreen(
+        pushToLogin: pushToLogin,
+        pushToRegister: pushToRegister,
+      );
+    } else {
+      return AuthTree(
+        showSignIn: showSignIn,
+        toggleGetStarted: toggleGetStarted,
+      );
+    }
+  }
 }

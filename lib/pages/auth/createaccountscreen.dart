@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/generated/l10n.dart';
 import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/pages/routetrees/authtree.dart';
+import 'package:BitNet/pages/routetrees/getstartedtree.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +20,7 @@ import 'package:BitNet/backbone/helper/theme.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   VerificationCode code;
-  Function() toggleView;
   CreateAccountScreen({
-    required this.toggleView,
     required this.code});
 
   @override
@@ -104,143 +104,168 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
     }
   }
 
+  void navigateToGetStartedTree(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => GetStartedTree()),
+          (Route<dynamic> route) => false,
+    );
+  }
+
+  void navigateToLogin(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => GetStartedTree(
+        showSignIn: true,
+        getStarted: false,
+      )),
+          (Route<dynamic> route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: BitNetScaffold(
-        context: context,
-        gradientColor: Colors.black,
-        appBar: BitNetAppBar(
-            text: S.of(context).register,
-            context: context,
-            onTap: () {
-              widget.toggleView();
-            }),
-        body: BackgroundWithContent(
-          opacity: 0.8,
-          child: Form(
-            key: _form,
-            child: ListView(
-              padding: EdgeInsets.only(
-                  left: AppTheme.cardPadding * 2,
-                  right: AppTheme.cardPadding * 2,
-                  top: AppTheme.cardPadding * 5),
-              physics: BouncingScrollPhysics(),
-              children: [
-                Container(
-                  height: AppTheme.cardPadding * 4.5,
-                  child: AnimatedTextKit(
-                    animatedTexts: [
-                      TypewriterAnimatedText(
-                        S.of(context).powerToThePeople,
-                        textStyle: Theme.of(context).textTheme.displayLarge,
-                        textAlign: TextAlign.left,
-                        speed: const Duration(milliseconds: 120),
+    return WillPopScope(
+      onWillPop: () async {
+        navigateToGetStartedTree(context);
+        return false; // Prevent the system from popping the current route.
+      },
+      child: SafeArea(
+        child: BitNetScaffold(
+          context: context,
+          gradientColor: Colors.black,
+          appBar: BitNetAppBar(
+              text: S.of(context).register,
+              context: context,
+              onTap: () {
+                navigateToGetStartedTree(context);
+              }),
+          body: BackgroundWithContent(
+            opacity: 0.8,
+            child: Form(
+              key: _form,
+              child: ListView(
+                padding: EdgeInsets.only(
+                    left: AppTheme.cardPadding * 2,
+                    right: AppTheme.cardPadding * 2,
+                    top: AppTheme.cardPadding * 5),
+                physics: BouncingScrollPhysics(),
+                children: [
+                  Container(
+                    height: AppTheme.cardPadding * 4.5,
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        TypewriterAnimatedText(
+                          S.of(context).powerToThePeople,
+                          textStyle: Theme.of(context).textTheme.displayLarge,
+                          textAlign: TextAlign.left,
+                          speed: const Duration(milliseconds: 120),
+                        ),
+                      ],
+                      totalRepeatCount: 1,
+                      displayFullTextOnTap: false,
+                      stopPauseOnTap: false,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        S.of(context).poweredByDIDs,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall,
+                      ),
+                      Container(
+                        margin:
+                        EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                        height: AppTheme.cardPadding * 1.5,
+                        child: Image.asset("assets/images/ion.png"),
                       ),
                     ],
-                    totalRepeatCount: 1,
-                    displayFullTextOnTap: false,
-                    stopPauseOnTap: false,
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      S.of(context).poweredByDIDs,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall,
-                    ),
-                    Container(
-                      margin:
-                      EdgeInsets.only(left: AppTheme.elementSpacing / 2),
-                      height: AppTheme.cardPadding * 1.5,
-                      child: Image.asset("assets/images/ion.png"),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FormTextField(
-                      title: "Username",
-                      validator: (val) => val!.isEmpty
-                          ? 'The username you entered is not valid'
-                          : null,
-                      onChanged: (val) {
-                        setState(() {
-                          email = val;
-                        });
-                      },
-                      controller: _controllerEmail,
-                      isObscure: false,
-                    ),
-                    SizedBox(height: AppTheme.cardPadding,),
-                    LongButtonWidget(
-                      title: S.of(context).register,
-                      onTap: () {
-                        if (_form.currentState!.validate()) {
-                          createUser();
-                        }
-                      },
-                      state:
-                          _isLoading ? ButtonState.loading : ButtonState.idle,
-                    ),
-                    errorMessage == null
-                        ? Container()
-                        : Padding(
-                            padding: const EdgeInsets.only(
-                                top: AppTheme.cardPadding),
-                            child: Text(
-                              errorMessage!,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(color: AppTheme.errorColor),
-                            ),
-                          ),
-                    Container(
-                      margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
-                      child: Text(
-                        S.of(context).alreadyHaveAccount,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 28),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppTheme.white60,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: SizedBox(
-                        height: 0,
-                        width: 65,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 22, bottom: 22),
-                      child: GestureDetector(
-                        onTap: () {
-                          widget.toggleView();
+                  SizedBox(
+                    height: AppTheme.cardPadding,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      FormTextField(
+                        title: "Username",
+                        validator: (val) => val!.isEmpty
+                            ? 'The username you entered is not valid'
+                            : null,
+                        onChanged: (val) {
+                          setState(() {
+                            email = val;
+                          });
                         },
+                        controller: _controllerEmail,
+                        isObscure: false,
+                      ),
+                      SizedBox(height: AppTheme.cardPadding,),
+                      LongButtonWidget(
+                        title: S.of(context).register,
+                        onTap: () {
+                          if (_form.currentState!.validate()) {
+                            createUser();
+                          }
+                        },
+                        state:
+                            _isLoading ? ButtonState.loading : ButtonState.idle,
+                      ),
+                      errorMessage == null
+                          ? Container()
+                          : Padding(
+                              padding: const EdgeInsets.only(
+                                  top: AppTheme.cardPadding),
+                              child: Text(
+                                errorMessage!,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(color: AppTheme.errorColor),
+                              ),
+                            ),
+                      Container(
+                        margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
                         child: Text(
-                          S.of(context).restoreAccount,
+                          S.of(context).alreadyHaveAccount,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      Container(
+                        margin: EdgeInsets.only(top: 28),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: AppTheme.white60,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SizedBox(
+                          height: 0,
+                          width: 65,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 22, bottom: 22),
+                        child: GestureDetector(
+                          onTap: () {
+                            navigateToLogin(context);
+                          },
+                          child: Text(
+                            S.of(context).restoreAccount,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

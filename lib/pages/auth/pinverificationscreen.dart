@@ -88,7 +88,6 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         onPinVerificationSuccess(
           code: code,
           context: context,
-          toggleView: widget.toggleView
         );
       } else {
         errorController
