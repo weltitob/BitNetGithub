@@ -90,7 +90,8 @@ class _AuthTreeState extends State<AuthTree> {
                   used: false,
                   code: "ABCDE",
                   issuer: "Ich",
-                  receiver: "Du",));
+                  receiver: "Du",),
+            );
           } else {
             return PinVerificationScreen(
               toggleIsInvited: toggleIsInvited,

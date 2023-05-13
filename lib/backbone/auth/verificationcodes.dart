@@ -9,24 +9,28 @@ Future<void> generateAndStoreVerificationCodes({
   required String issuer,
   required CollectionReference codesCollection,
 }) async {
-  List<String> codes = [];
+  try{
+    List<String> codes = [];
 
-  for (var i = 0; i < numCodes; i++) {
-    String code = getRandomString(codeLength);
-    codes.add(code);
+    for (var i = 0; i < numCodes; i++) {
+      String code = getRandomString(codeLength);
+      codes.add(code);
+    }
+
+    codes.forEach((element) async {
+      final code = VerificationCode(
+        used: false,
+        code: element,
+        issuer: issuer,
+        receiver: '',
+      );
+      await codesCollection.doc(element).set(code.toJson());
+    });
+
+    print('Generated and stored verification codes');
+  } catch (e){
+    print("Error trying to generate new verification codes: $e");
   }
-
-  codes.forEach((element) async {
-    final code = VerificationCode(
-      used: false,
-      code: element,
-      issuer: issuer,
-      receiver: '',
-    );
-    await codesCollection.doc(element).set(code.toJson());
-  });
-
-  print('Generated and stored verification codes');
 }
 
 // Function to mark a verification code as used and update the data
@@ -35,12 +39,19 @@ Future<void> markVerificationCodeAsUsed({
   required String receiver,
   required CollectionReference codesCollection,
 }) async {
-  VerificationCode newCode = VerificationCode(
-    issuer: code.issuer,
-    used: true,
-    code: code.code,
-    receiver: receiver,
-  );
-  await codesCollection.doc(code.code).update(newCode.toJson());
-  print('Marked verification code as used');
+  try{
+    print("Marking verification code as used...");
+    VerificationCode newCode = VerificationCode(
+      issuer: code.issuer,
+      used: true,
+      code: code.code,
+      receiver: receiver,
+    );
+
+    print("Code being used: ${code.code}");
+    await codesCollection.doc(code.code).update(newCode.toJson());
+    print('Marked verification code as used');
+  } catch (e){
+    print("Error trying to mark verification code: $e");
+  }
 }

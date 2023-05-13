@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //All diffrent dialogs go here, they should have a consistent design
 
 //ErrorDialog
@@ -38,19 +39,22 @@ Future<bool?> showErrorDialog({
                     //add a issue sucessfully reported thing or smth like this
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(AppTheme.errorColor),
+                    backgroundColor:
+                        MaterialStateProperty.all(AppTheme.errorColor),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
                   ),
-                  child: Text("REPORT", style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold
-                  ),),
+                  child: Text(
+                    "REPORT",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 ElevatedButton(
-                  onPressed: () =>
-                      Navigator.pop(context),
+                  onPressed: () => Navigator.pop(context),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(AppTheme.errorColor),
+                    backgroundColor:
+                        MaterialStateProperty.all(AppTheme.errorColor),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
                   ),
@@ -68,65 +72,80 @@ Future<bool?> showErrorDialog({
 }
 
 // Classic dialog 2 options
-
 Future<bool?> showDialogue({
   required BuildContext context,
   required String title,
-  required bool isfunction,
   required String image,
-  dynamic actionleft,
-  String? action2Text,
-  required dynamic actionright,
+  required VoidCallback leftAction,
+  required VoidCallback rightAction,
 }) {
   return showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: AppTheme.cardRadiusBig,
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(title, style: Theme.of(context).textTheme.headline3),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.displaySmall,
+              textAlign: TextAlign.center,
+            ),
             Container(
-                padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                height: 140,
-                width: 140,
+                padding: EdgeInsets.only(
+                    top: AppTheme.cardPadding, bottom: AppTheme.elementSpacing),
+                height: AppTheme.elementSpacing * 12,
+                width: AppTheme.elementSpacing * 12,
                 child: Image.asset(image)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  onPressed: isfunction ? (){actionleft;
-                  Navigator.pop(context);} : actionleft,
+                  onPressed: () {
+                    leftAction();
+                    Navigator.pop(context);
+                  },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(AppTheme.errorColor),
+                    backgroundColor:
+                    MaterialStateProperty.all(AppTheme.errorColor),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
                   ),
-                  child: Icon(Icons.stop_rounded),
+                  child: Icon(
+                    FontAwesomeIcons.cancel,
+                    color: AppTheme.white70,
+                  ),
                 ),
                 ElevatedButton(
-                  onPressed: isfunction ? (){actionright;
-                  Navigator.pop(context);} : actionright,
+                  onPressed: () {
+                    rightAction();
+                    Navigator.pop(context);
+                  },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(AppTheme.successColor),
+                    backgroundColor:
+                    MaterialStateProperty.all(AppTheme.successColor),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
                   ),
-                  child: Icon(Icons.done_rounded),
+                  child: Icon(
+                    FontAwesomeIcons.check,
+                    color: AppTheme.white70,
+                  ),
                 )
               ],
             ),
           ],
         ),
-        elevation: 20.0,
-        backgroundColor: Theme.of(context).bottomAppBarColor,
+        elevation: AppTheme.cardPadding,
+        backgroundColor: AppTheme.white90,
       );
     },
   );
 }
+
 
 Future<bool?> showDialogueMultipleOptions({
   required BuildContext context,
@@ -154,11 +173,15 @@ Future<bool?> showDialogueMultipleOptions({
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            (title != null) ? Padding(
-              padding: const EdgeInsets.only(top: AppTheme.elementSpacing / 2,
-                  bottom: AppTheme.elementSpacing / 2),
-              child: Text(title, style: Theme.of(context).textTheme.displaySmall),
-            ) : Container(),
+            (title != null)
+                ? Padding(
+                    padding: const EdgeInsets.only(
+                        top: AppTheme.elementSpacing / 2,
+                        bottom: AppTheme.elementSpacing / 2),
+                    child: Text(title,
+                        style: Theme.of(context).textTheme.displaySmall),
+                  )
+                : Container(),
             Column(
               children: [
                 Row(
@@ -171,14 +194,20 @@ Future<bool?> showDialogueMultipleOptions({
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    OptionContainer(context, text3, action3, image: image3,),
+                    OptionContainer(
+                      context,
+                      text3,
+                      action3,
+                      image: image3,
+                    ),
                     OptionContainer(context, text4, action4, image: image4),
                   ],
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(AppTheme.errorColor),
+                    backgroundColor:
+                        MaterialStateProperty.all(AppTheme.errorColor),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
                   ),

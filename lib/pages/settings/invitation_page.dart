@@ -168,7 +168,7 @@ class _KeyItemState extends State<_KeyItem> {
             return dotProgress(context);
           } else {
             UserData user = UserData.fromDocument(snapshot.data);
-            UserResult result = UserResult(userData: user, onTap: (){},);
+            UserResult result = UserResult(userData: user, onTap: (){}, onDelete: () {  },);
             return result;
           }
         });

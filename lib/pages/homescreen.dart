@@ -1,9 +1,6 @@
-
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
-import 'package:BitNet/backbone/routes/showprofile.dart';
-import 'package:BitNet/components/container/profilepicture.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -267,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         List<UserResult> searchresults = [];
         snapshot.data.docs.forEach((doc) {
           UserData user = UserData.fromDocument(doc);
-          UserResult searchResult = UserResult(userData: user, onTap: () {  },);
+          UserResult searchResult = UserResult(userData: user, onTap: () {  }, onDelete: () {  },);
           searchresults.add(searchResult);
         });
         return ListView(

@@ -49,7 +49,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  OptionContainer(context, "Word recovery", (){}, image: "assets/images/paper_wallet.png"),
+                  OptionContainer(context, "Word recovery", (){}, image: "assets/images/wallet.png"),
                   OptionContainer(context, "Connect with other device", (){}, image: "assets/images/qr_btc.png"),
                 ],
               ),

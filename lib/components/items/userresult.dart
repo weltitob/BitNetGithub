@@ -1,6 +1,8 @@
+import 'package:BitNet/backbone/auth/storeIONdata.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
 import 'package:BitNet/components/container/profilepicture.dart';
+import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/models/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,24 +10,27 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class UserResult extends StatelessWidget {
   final UserData userData;
   final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   UserResult({
     required this.userData,
-    required this.onTap});
+    required this.onTap,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Material(
       borderRadius: AppTheme.cardRadiusBig,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing / 2),
+        margin: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing / 2),
         height: AppTheme.cardPadding * 2.75,
         child: Glassmorphism(
           blur: 75,
           opacity: 0.125,
           radius: AppTheme.cardPadding,
           child: InkWell(
-            onTap: onTap,
+            onTap: (){},
             borderRadius: AppTheme.cardRadiusBig,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -40,7 +45,7 @@ class UserResult extends StatelessWidget {
                     ),
                     SizedBox(width: AppTheme.elementSpacing),
                     Container(
-                      width: AppTheme.cardPadding * 8,
+                      width: AppTheme.cardPadding * 5,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -60,20 +65,53 @@ class UserResult extends StatelessWidget {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                  child: Container(
-                    height: AppTheme.cardPadding * 1.5,
-                    width: AppTheme.cardPadding * 1.5,
-                    child: Glassmorphism(
-                      blur: 75,
-                      opacity: 0.125,
-                      radius: AppTheme.cardPadding * 10,
-                      child: Icon(
-                        FontAwesomeIcons.arrowRight,
-                      color: AppTheme.white70,),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: (){
+                        showDialogue(context: context,
+                          title: 'Delte saved account from device?',
+                          image: 'assets/images/trash.png',
+                          leftAction: (){},
+                          rightAction: (){
+                            onDelete();
+                          },
+                        );
+                      },
+                      child: Container(
+                        height: AppTheme.cardPadding * 1.5,
+                        width: AppTheme.cardPadding * 1.5,
+                        child: Glassmorphism(
+                          blur: 75,
+                          opacity: 0.125,
+                          radius: AppTheme.cardPadding * 10,
+                          child: Icon(
+                            FontAwesomeIcons.remove,
+                          size: AppTheme.elementSpacing * 1.5,
+                          color: AppTheme.white70,),
+                        ),
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      child: InkWell(
+                        onTap: onTap,
+                        child: Container(
+                          height: AppTheme.cardPadding * 1.5,
+                          width: AppTheme.cardPadding * 1.5,
+                          child: Glassmorphism(
+                            blur: 75,
+                            opacity: 0.125,
+                            radius: AppTheme.cardPadding * 10,
+                            child: Icon(
+                              FontAwesomeIcons.key,
+                              size: AppTheme.elementSpacing * 1.5,
+                              color: AppTheme.white70,),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

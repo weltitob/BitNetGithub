@@ -120,6 +120,7 @@ class Auth {
       codesCollection: codesCollection,
     );
 
+
     // Call the function to mark the verification code as used
     await markVerificationCodeAsUsed(
       code: code,

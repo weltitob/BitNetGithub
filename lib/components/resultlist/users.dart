@@ -1,22 +1,17 @@
 import 'dart:async';
-
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/auth/storeIONdata.dart';
-import 'package:BitNet/backbone/cloudfunctions/loginion.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/userdata.dart';
-import 'package:BitNet/pages/settings/invitation_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
-import 'package:BitNet/backbone/streams/gettransactionsstream.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class UsersList extends StatefulWidget {
   const UsersList({Key? key}) : super(key: key);
@@ -29,6 +24,7 @@ class _UsersListState extends State<UsersList>
     with SingleTickerProviderStateMixin {
   late final Future<LottieComposition> _searchforfilesComposition;
   bool _visible = false;
+  var _selectedindex = 0;
 
   @override
   void initState() {
@@ -75,6 +71,7 @@ class _UsersListState extends State<UsersList>
     return userDataList;
   }
 
+  PageController pageController = PageController(viewportFraction: 0.8);
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +81,7 @@ class _UsersListState extends State<UsersList>
         Padding(
           padding: EdgeInsets.only(top: AppTheme.cardPadding * 0.75),
           child: Container(
-            height: AppTheme.cardPadding * 10,
+            height: AppTheme.cardPadding * 5,
             child: FutureBuilder<List<IONData>>(
               future: getIONDatafromLocalStorage(),
               builder: (context, ionSnapshot) {
@@ -107,25 +104,67 @@ class _UsersListState extends State<UsersList>
                     if (all_userresults.length == 0) {
                       return searchForFilesAnimation(_searchforfilesComposition);
                     }
-                    return ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: all_userresults.length,
-                      itemBuilder: (context, index) {
-                        final userData = all_userresults[index];
-                        final ionData = ionSnapshot.data!.firstWhere((ionData) => ionData.did == userData.did);
-                        return UserResult(
-                          onTap: () {
-                            Auth().signIn(
-                              userData.did,
-                              ionData.publicIONKey,
-                              ionData.privateIONKey,
-                              userData.username,
-                            );
-                          },
-                          userData: userData,
-                        );
-                      },
+                    return Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: PageView.builder(
+                            controller: pageController,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _selectedindex = index;
+                              });
+                            },
+                            itemCount: all_userresults.length,
+                            itemBuilder: (context, index) {
+                              final userData = all_userresults[index];
+                              var _scale = _selectedindex == index ? 1.0 : 0.85;
+
+                              final ionData = ionSnapshot.data!.firstWhere((ionData) => ionData.did == userData.did);
+                              return TweenAnimationBuilder<double>(
+                                tween: Tween<double>(begin: _scale, end: _scale),
+                                curve: Curves.ease,
+                                duration: Duration(milliseconds: 350),
+                                builder: (context, value, child) {
+                                  return Transform.scale(
+                                    scale: value,
+                                    child: child,
+                                  );
+                                },
+                                child: Center(
+                                  child: UserResult(
+                                    onTap: () {
+                                      Auth().signIn(
+                                        userData.did,
+                                        ionData.publicIONKey,
+                                        ionData.privateIONKey,
+                                        userData.username,
+                                      );
+                                    },
+                                    userData: userData,
+                                    onDelete: () async {
+                                    await deleteUserFromStoredIONData(userData.did);
+                                    setState(() {
+                                      all_userresults.removeAt(index);
+                                    });
+                                  },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(height: AppTheme.elementSpacing,),
+                        Center(
+                          child: SmoothPageIndicator(
+                            controller: pageController,
+                            count: all_userresults.length,
+                            effect: ExpandingDotsEffect(
+                              activeDotColor: AppTheme.colorBitcoin,
+                              dotColor: AppTheme.glassMorphColorLight,
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   },
                 );

@@ -8,7 +8,6 @@ import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/pages/routetrees/widgettree.dart';
 import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'generated/l10n.dart';
 import 'package:firebase_core/firebase_core.dart';
 //import 'firebase_options.dart';
@@ -65,9 +64,6 @@ class MyApp extends StatelessWidget {
         //multilanguage support
         localizationsDelegates: [
           S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales, // Add this line
         // Other properties like theme, home, etc.

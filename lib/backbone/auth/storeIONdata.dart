@@ -70,3 +70,27 @@ Future<List<IONData>> getAllStoredIonData() async {
 
   return usersStored;
 }
+
+Future<void> deleteUserFromStoredIONData(String did) async {
+  // Read the stored data
+  final ionDataJson = await secureStorage.read(key: 'usersInLocalStorage');
+
+  if (ionDataJson == null) {
+    throw Exception('Failed to retrieve IONData from secure storage');
+  }
+
+  // Decode the JSON data and map it to a list of IONData objects
+  List<IONData> usersStored = (jsonDecode(ionDataJson) as List)
+      .map((json) => IONData.fromMap(json))
+      .toList();
+
+  // Filter out the user with the provided DID
+  usersStored = usersStored.where((user) => user.did != did).toList();
+
+  // Store the updated list back in the storage
+  await secureStorage.write(
+      key: 'usersInLocalStorage',
+      value: json.encode(usersStored.map((ionData) => ionData.toMap()).toList())
+  );
+}
+
