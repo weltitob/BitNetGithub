@@ -28,54 +28,52 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
-        appBar: BitNetAppBar(text: "Choose Restore Option", context: context, onTap: (){
+      backgroundColor: Theme.of(context).colorScheme.background,
+        appBar: BitNetAppBar(
+            text: "Choose Restore Option", context: context, onTap: (){
           widget.toggleGetStarted();
         }),
-        body: Container(
-          color: Theme.of(context).colorScheme.background,
-          child:  ListView(
-            children: [
-              SizedBox(height: AppTheme.cardPadding * 2 ,),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding),
-                child: Text(
-                  "Restore options",
-                  textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+        body: ListView(
+          children: [
+            SizedBox(height: AppTheme.cardPadding * 2 ,),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.cardPadding),
+              child: Text(
+                "Restore options",
+                textAlign: TextAlign.left,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(height: AppTheme.cardPadding,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  OptionContainer(context, "Word recovery", (){}, image: "assets/images/wallet.png"),
-                  OptionContainer(context, "Connect with other device", (){}, image: "assets/images/qr_btc.png"),
-                ],
+            ),
+            SizedBox(height: AppTheme.cardPadding,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                OptionContainer(context, "Word recovery", (){}, image: "assets/images/wallet.png"),
+                OptionContainer(context, "Connect with other device", (){}, image: "assets/images/scan_qr_device.png"),
+              ],
+            ),
+            SizedBox(height: AppTheme.cardPadding,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                OptionContainer(context, "Social recovery", (){}, image: "assets/images/friends.png"),
+                OptionContainer(context, "Use DID and Private Key", (){}, image: "assets/images/key_removed_bck.png"),
+              ],
+            ),
+            SizedBox(height: AppTheme.cardPadding * 2,),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.cardPadding),
+              child: Text(
+                "Locally saved accounts",
+                textAlign: TextAlign.left,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(height: AppTheme.cardPadding,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  OptionContainer(context, "Social recovery", (){}, image: "assets/images/friends.png"),
-                  OptionContainer(context, "Use DID and Private Key", (){}, image: "assets/images/key_removed_bck.png"),
-                ],
-              ),
-              SizedBox(height: AppTheme.cardPadding * 2,),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding),
-                child: Text(
-                  "Locally saved accounts",
-                  textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              //list accounts
-              UsersList()
-            ],
-          ),
-
+            ),
+            //list accounts
+            UsersList()
+          ],
         ));
   }
 }

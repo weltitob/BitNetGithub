@@ -18,7 +18,6 @@ class ProfilePictureSmall extends StatelessWidget {
       onTap: onTap ?? () => showProfile(context, profileId: profileId),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppTheme.cardRadiusSmall,
         ),
         constraints: BoxConstraints.expand(
