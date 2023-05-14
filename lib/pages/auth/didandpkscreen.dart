@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/generated/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,12 +31,10 @@ class DidAndPrivateKeyScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<DidAndPrivateKeyScreen>
     with TickerProviderStateMixin {
-  // composition of the lottie animation
-  late final Future<LottieComposition> _composition;
   // error message if sign in fails
   String? errorMessage = null;
   // user's email
-  String? email = '';
+  String? username = '';
   // user's password
   String? password = '';
 
@@ -43,18 +42,11 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
   // controllers for email and password fields
-  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerUsername = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
   // loading status
   bool _isLoading = false;
-
-  // function to load the lottie animation
-  Future<LottieComposition> _loadComposition() async {
-    var assetData = await rootBundle.load('assets/lottiefiles/background.json');
-    dynamic mycomposition = await LottieComposition.fromByteData(assetData);
-    return mycomposition;
-  }
 
   // function to sign in with email and password
   Future<void> signIn() async {
@@ -63,9 +55,19 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       errorMessage = null;
     });
     try {
-      await Auth().signInWithToken(
-        customToken: ''
-      );
+      final bool isDID = isStringaDID(_controllerUsername.text);
+      late String did;
+      late String myusername;
+      if (isDID) {
+        did = _controllerUsername.text;
+        myusername = await Auth().getUserUsername(_controllerUsername.text);
+      } else {
+        did = await Auth().getUserDID(_controllerUsername.text);
+        myusername = _controllerUsername.text;
+      }
+      //call login
+      Auth().signIn(did, _controllerPassword.text, myusername);
+
     } catch (e) {
       setState(() {
         errorMessage = S.of(context).errorSomethingWrong;
@@ -139,7 +141,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                 children: [
                   FormTextField(
                     title: S.of(context).usernameOrDID,
-                    controller: _controllerEmail,
+                    controller: _controllerUsername,
                     isObscure: false,
                     //das muss eh noch geändert werden gibt ja keine email
                     validator: (val) => val!.isEmpty
@@ -147,7 +149,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                         : null,
                     onChanged: (val) {
                       setState(() {
-                        email = val;
+                        username = val;
                       });
                     },
                   ),

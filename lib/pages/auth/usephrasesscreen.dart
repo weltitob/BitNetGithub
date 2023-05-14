@@ -60,9 +60,6 @@ class _UsePhrasesScreenState extends State<UsePhrasesScreen>
       errorMessage = null;
     });
     try {
-      await Auth().sendPasswordResetEmail(
-        email: _controllerEmail.text,
-      );
       print('Passwort rücksetzen angefragt');
       widget.toggleResetPassword();
       displaySnackbar(context, "Wir haben dir eine Anfrage per E-Mail gesendet!");

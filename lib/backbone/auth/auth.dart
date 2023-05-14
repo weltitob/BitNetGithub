@@ -75,15 +75,6 @@ class Auth {
   }
 
   /*
-  The sendPasswordResetEmail method sends a password reset email to the given email address.
-   */
-  Future<void> sendPasswordResetEmail({
-    required String email,
-  }) async {
-    await _firebaseAuth.sendPasswordResetEmail(email: email);
-  }
-
-  /*
   The signInWithEmailAndPassword method signs in the user with the given email address and password.
   The method returns a UserWallet object for the signed-in user.
    */
@@ -132,7 +123,33 @@ class Auth {
     return newUser;
   }
 
-  Future<void> signIn(String did, dynamic publicIONKey, dynamic privateIONKey, String username) async {
+  Future<String> getUserUsername(String did) async {
+    QuerySnapshot snapshot = await usersCollection
+        .where('did', isEqualTo: did)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      throw Exception('No user found with the provided username');
+    } else {
+      // assuming that 'username' is the field name that holds the DID in the document
+      return snapshot.docs.first.get('username');
+    }
+  }
+
+  Future<String> getUserDID(String username) async {
+    QuerySnapshot snapshot = await usersCollection
+        .where('username', isEqualTo: username)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      throw Exception('No user found with the provided username');
+    } else {
+      // assuming that 'did' is the field name that holds the DID in the document
+      return snapshot.docs.first.get('did');
+    }
+  }
+
+  Future<void> signIn(String did, dynamic privateIONKey, String username,) async {
 
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
@@ -141,7 +158,6 @@ class Auth {
 
       final signedMessage =  await signMessageFunction(
           did,
-          publicIONKey,
           privateIONKey,  // Convert the private key object to a JSON string
           message
       );

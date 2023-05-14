@@ -6,12 +6,11 @@ import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:BitNet/models/privateionkey.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-signMessageFunction(String did, String publicIONKey, String privateIONKey, String message) async {
+signMessageFunction(String did, String privateIONKey, String message,) async {
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('signMessageFunction');
   print("Signing message...");
 
   print(privateIONKey);
-  print(publicIONKey);
   print(did);
   print(message);
 

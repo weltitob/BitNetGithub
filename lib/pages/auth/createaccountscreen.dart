@@ -102,7 +102,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
     } on FirebaseException catch (e) {
       print("Firebase Exception: $e");
       throw Exception(
-          "We currently have troubles reaching our servers which connect with the blockchain. Please try again later.");
+          "We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");
     } catch (e) {
       //implement error throw
       print("STILL NEED TO ADD ERROR TEXT IN SOME WAY");

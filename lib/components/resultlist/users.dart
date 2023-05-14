@@ -145,9 +145,8 @@ class _UsersListState extends State<UsersList>
                                         widget.loadingION();
                                         await Auth().signIn(
                                           userData.did,
-                                          ionData.publicIONKey,
                                           ionData.privateIONKey,
-                                          userData.username,
+                                          ionData.username,
                                         );
                                       } catch(e){
                                         print("Second widgetloading should be called...");
