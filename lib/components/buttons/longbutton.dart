@@ -2,12 +2,14 @@ import 'dart:ui';
 
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
+import 'package:BitNet/components/container/solidcolorcontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image/image.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 
 enum ButtonState { idle, loading, disabled }
+
 class LongButtonWidget extends StatelessWidget {
   final String title;
   final TextStyle? titleStyle;
@@ -33,67 +35,52 @@ class LongButtonWidget extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: buttonGradient ?? LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppTheme.colorBitcoin,
-            AppTheme.colorPrimaryGradient, // Change this to the second color you want
-          ],
-        ), // Use gradient property
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.4),
-            offset: Offset(0, 24),
-            blurRadius: 50,
-            spreadRadius: -18,
-          ),
+          AppTheme.boxShadowProfile
         ],
         borderRadius: AppTheme.cardRadiusMid,
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: AppTheme.cardRadiusMid,
-          onTap: onTap,
-          child: Container(
-            width: size.width - AppTheme.cardPadding * 2,
-            height: AppTheme.cardPadding * 2.5,
-            alignment: Alignment.center,
-            child: state == ButtonState.loading
-                ? Center(
+      child: solidContainer(
+        gradientBegin: Alignment.topCenter,
+        gradientEnd: Alignment.bottomCenter,
+        context: context,
+        borderRadius: AppTheme.cardRadiusMid,
+        onPressed: () => onTap,
+        width: size.width - AppTheme.cardPadding * 2,
+        height: AppTheme.cardPadding * 2.5,
+        child: state == ButtonState.loading
+            ? Center(
                 child: Transform.scale(
                     scale: 0.6,
-                    child: dotProgress(context, color: AppTheme.white90)
-                ))
-                : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (leadingIcon != null)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        right: AppTheme.elementSpacing),
-                    child: leadingIcon,
-                  ),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: textColor != null ? textColor : AppTheme.white100,
-                    fontSize: 17,
-                    shadows: [
-                      AppTheme.boxShadowProfile
-                    ],
-                  ),
+                    child: dotProgress(context, color: AppTheme.white90)))
+            : Center(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (leadingIcon != null)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: AppTheme.elementSpacing),
+                        child: leadingIcon,
+                      ),
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color:
+                            textColor != null ? textColor : AppTheme.white100,
+                        fontSize: 17,
+                        shadows: [
+                          AppTheme.boxShadowSmall
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
             ),
-          ),
-        ),
       ),
     );
   }
 }
-
 
 class LongButtonWidgetTransparent extends StatefulWidget {
   final String title;
@@ -107,7 +94,6 @@ class LongButtonWidgetTransparent extends StatefulWidget {
   LongButtonWidgetTransparent({
     required this.title,
     required this.onTap,
-
     this.titleStyle,
     this.buttonColor,
     this.textColor,
@@ -116,11 +102,12 @@ class LongButtonWidgetTransparent extends StatefulWidget {
   });
 
   @override
-  State<LongButtonWidgetTransparent> createState() => _LongButtonWidgetTransparentState();
+  State<LongButtonWidgetTransparent> createState() =>
+      _LongButtonWidgetTransparentState();
 }
 
-class _LongButtonWidgetTransparentState extends State<LongButtonWidgetTransparent> {
-
+class _LongButtonWidgetTransparentState
+    extends State<LongButtonWidgetTransparent> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -128,7 +115,10 @@ class _LongButtonWidgetTransparentState extends State<LongButtonWidgetTransparen
     return Container(
       height: AppTheme.cardPadding * 2.5,
       decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusMid
+          borderRadius: AppTheme.cardRadiusMid,
+        boxShadow: [
+          AppTheme.boxShadowProfile
+        ],
       ),
       child: Glassmorphism(
         gradientBegin: Alignment.topCenter,
@@ -144,20 +134,23 @@ class _LongButtonWidgetTransparentState extends State<LongButtonWidgetTransparen
             height: AppTheme.cardPadding * 2.5,
             alignment: Alignment.center,
             child: widget.state == ButtonState.loading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: dotProgress(context, color: AppTheme.white90))
                 : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (widget.leadingIcon != null) widget.leadingIcon!,
-                Text(
-                  widget.title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (widget.leadingIcon != null) widget.leadingIcon!,
+                      Text(
+                        widget.title,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color:
+                          widget.textColor != null ? widget.textColor : AppTheme.white90,
+                          fontSize: 17,
+                          shadows: [
+                            AppTheme.boxShadowSmall
+                          ],
+                      ),
+                      )],
                   ),
-                ),
-              ],
-            ),
           ),
         ),
       ),

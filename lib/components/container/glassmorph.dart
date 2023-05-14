@@ -43,8 +43,8 @@ class Glassmorphism extends StatelessWidget {
         begin: gradientBegin,
         end: gradientEnd,
         colors: [
-          Color(0xFFffffff).withOpacity(0.125),
-          Color((0xFFFFFFFF)).withOpacity(0.125),
+          Color(0xFFffffff).withOpacity(0.15),
+          Color((0xFFFFFFFF)).withOpacity(0.15),
         ],
       ),
       child: Center(child: child),

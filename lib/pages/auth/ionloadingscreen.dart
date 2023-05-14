@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class IONLoadingScreen extends StatefulWidget {
-  const IONLoadingScreen({Key? key}) : super(key: key);
+  final String loadingText;
+
+  const IONLoadingScreen({Key? key, required this.loadingText}) : super(key: key);
 
   @override
   State<IONLoadingScreen> createState() => _IONLoadingScreenState();
@@ -33,11 +35,10 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                //Please stay by while we're checking your profile with the blockchain
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
                   child: Text(
-                    "Please wait while we check for your account on the blockchain...",
+                    widget.loadingText,
                     style: Theme.of(context).textTheme.titleSmall,
                     textAlign: TextAlign.center,
                   ),

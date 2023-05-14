@@ -91,7 +91,9 @@ class AppTheme {
   //
   //green and red
   static const Color errorColor = Color(0xFFFF6363);
+  static const Color errorColorGradient = Color(0xFFC52C2C);
   static const Color successColor = Color(0xFF5DE165);
+  static const Color successColorGradient = Color(0xFF148C1A);
 
 
   static InputDecoration textfieldDecoration(String hintText, BuildContext context) => InputDecoration(

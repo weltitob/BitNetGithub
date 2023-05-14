@@ -19,14 +19,14 @@ import 'dart:math';
 Random random = new Random();
 
 // ignore: must_be_immutable
-class LoginScreen extends StatefulWidget {
+class DidAndPrivateKeyScreen extends StatefulWidget {
   // function to toggle between login and register screens
   Function() toggleView;
   Function() toggleGetStarted;
   // function to toggle between login and reset password screens
   Function() toggleResetPassword;
 
-  LoginScreen({
+  DidAndPrivateKeyScreen({
     required this.toggleView,
     required this.toggleGetStarted,
     required this.toggleResetPassword,
@@ -38,7 +38,7 @@ class LoginScreen extends StatefulWidget {
   }
 }
 
-class _SignupScreenState extends State<LoginScreen>
+class _SignupScreenState extends State<DidAndPrivateKeyScreen>
     with TickerProviderStateMixin {
   // composition of the lottie animation
   late final Future<LottieComposition> _composition;

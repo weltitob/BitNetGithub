@@ -6,6 +6,7 @@ import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/components/resultlist/users.dart';
 import 'package:BitNet/generated/l10n.dart';
+import 'package:BitNet/pages/auth/ionloadingscreen.dart';
 import 'package:flutter/material.dart';
 
 class ChooseRestoreScreen extends StatefulWidget {
@@ -25,9 +26,32 @@ class ChooseRestoreScreen extends StatefulWidget {
 }
 
 class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
+
+  bool loading = false;
+
+  void toggleLoading() {
+    setState(() {
+      if (loading == true)
+        loading = false;
+      else {
+        loading = true;
+      }
+    });
+  }
+
+  void showError(){
+    showErrorDialog(
+        image: 'assets/images/error_character.png',
+        title: "An error occured, please try again later.",
+        context: context,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return loading ? IONLoadingScreen(
+        loadingText: "Patience, please. We're validating "
+            "your account on the blockchain...") : BitNetScaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
         appBar: BitNetAppBar(
             text: "Choose Restore Option",
@@ -74,7 +98,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               ),
             ),
             //list accounts
-            UsersList()
+            UsersList(loadingION: toggleLoading, showError: showError,)
           ],
         ), context: context,);
   }

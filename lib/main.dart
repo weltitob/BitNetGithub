@@ -62,10 +62,6 @@ class MyApp extends StatelessWidget {
         // Provide a stream of user wallet data
       ],
       child: MaterialApp(
-        routes: {
-          '/ionLoadingScreen': (context) => IONLoadingScreen(),
-          // other routes...
-        },
         //multilanguage support
         localizationsDelegates: [
           S.delegate,

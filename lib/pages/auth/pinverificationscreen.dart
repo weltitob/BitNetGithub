@@ -13,7 +13,6 @@ import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:BitNet/models/verificationcode.dart';
-import 'package:BitNet/pages/auth/createaccountscreen.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class PinVerificationScreen extends StatefulWidget {

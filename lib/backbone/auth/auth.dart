@@ -135,31 +135,34 @@ class Auth {
 
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
-    final message = generateUniqueLoginMessage(did);
+    try{
+      final message = generateUniqueLoginMessage(did);
 
-    final signedMessage =  await signMessageFunction(
-        did,
-        publicIONKey,
-        privateIONKey,  // Convert the private key object to a JSON string
-        message
-    );
+      final signedMessage =  await signMessageFunction(
+          did,
+          publicIONKey,
+          privateIONKey,  // Convert the private key object to a JSON string
+          message
+      );
 
-    //signed message gets verified from loginION function which logs in the user if successful
-    if (signedMessage == null) {
-      print("Failed to sign the message");
-      return;
+      //signed message gets verified from loginION function which logs in the user if successful
+      if (signedMessage == null) {
+        throw Exception("Failed to sign message");
+      }
+
+      print("Message signed... $signedMessage");
+
+      final String customToken = await loginION(
+          username.toString(),
+          did.toString(),
+          signedMessage.toString(),
+          message.toString()
+      );
+
+      await signInWithToken(customToken: customToken);
+    } catch(e){
+      throw Exception("signIn user failed $e");
     }
-
-    print("Message signed... $signedMessage");
-
-    final String customToken = await loginION(
-        username.toString(),
-        did.toString(),
-        signedMessage.toString(),
-        message.toString()
-    );
-
-    final currentuser = await signInWithToken(customToken: customToken);
   }
 
   Future<void> signOut() async {

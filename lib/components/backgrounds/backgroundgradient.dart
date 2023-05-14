@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 
 // Create a StatefulWidget for the background animation
@@ -7,7 +6,12 @@ class BackgroundGradient extends StatefulWidget {
   final Widget child;
   final Color colorprimary;
   final Color colorsecondary;
-  const BackgroundGradient({Key? key, required this.child, required this.colorprimary, required this.colorsecondary}) : super(key: key);
+  const BackgroundGradient({
+    Key? key,
+    required this.child,
+    required this.colorprimary,
+    required this.colorsecondary
+  }) : super(key: key);
 
   @override
   State<BackgroundGradient> createState() => _BackgroundGradientState();

@@ -54,12 +54,9 @@ signMessageFunction(String did, String publicIONKey, String privateIONKey, Strin
       return signedMessage;
     } else {
       print("ELSE STATEMENT TRIGGERED");
-      print(callback.statusCode);
-      print(callback.data);
-      return null;
+      throw Exception("${callback.statusCode}: ${callback.message}");
     }
   } catch (error) {
-    print("Error calling signMessageFunction: $error");
-    return null;
+    throw Exception("Error calling signMessageFunction: $error");
   }
 }

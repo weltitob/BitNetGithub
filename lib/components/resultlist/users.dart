@@ -2,9 +2,11 @@ import 'dart:async';
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/auth/storeIONdata.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/pages/auth/ionloadingscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -14,7 +16,13 @@ import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class UsersList extends StatefulWidget {
-  const UsersList({Key? key}) : super(key: key);
+  final Function() loadingION;
+  final Function() showError;
+
+  const UsersList({Key? key,
+    required this.loadingION,
+    required this.showError,
+  }) : super(key: key);
 
   @override
   State<UsersList> createState() => _UsersListState();
@@ -132,14 +140,21 @@ class _UsersListState extends State<UsersList>
                                 },
                                 child: Center(
                                   child: UserResult(
-                                    onTap: () {
-                                      Auth().signIn(
-                                        userData.did,
-                                        ionData.publicIONKey,
-                                        ionData.privateIONKey,
-                                        userData.username,
-                                      );
-                                      Navigator.pushNamed(context, '/ionLoadingScreen');
+                                    onTap: () async {
+                                      try{
+                                        widget.loadingION();
+                                        await Auth().signIn(
+                                          userData.did,
+                                          ionData.publicIONKey,
+                                          ionData.privateIONKey,
+                                          userData.username,
+                                        );
+                                      } catch(e){
+                                        print("Second widgetloading should be called...");
+                                        widget.loadingION();
+                                        widget.showError();
+                                        throw Exception("Error trying to sign in: $e");
+                                      }
                                     },
                                     userData: userData,
                                     onDelete: () async {
