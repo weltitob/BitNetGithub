@@ -89,13 +89,13 @@ class _UsersListState extends State<UsersList>
         Padding(
           padding: EdgeInsets.only(top: AppTheme.cardPadding * 0.75),
           child: Container(
-            height: AppTheme.cardPadding * 5,
+            height: AppTheme.cardPadding * 8,
             child: FutureBuilder<List<IONData>>(
               future: getIONDatafromLocalStorage(),
               builder: (context, ionSnapshot) {
                 if (!ionSnapshot.hasData) {
                   return SizedBox(
-                      height: AppTheme.cardPadding * 3,
+                      height: AppTheme.cardPadding * 5,
                       child: Center(child: dotProgress(context)));
                 }
                 List<String> dids = ionSnapshot.data!.map((ionData) => ionData.did).toList();
@@ -105,7 +105,7 @@ class _UsersListState extends State<UsersList>
                   builder: (context, userDataSnapshot) {
                     if (!userDataSnapshot.hasData) {
                       return SizedBox(
-                          height: AppTheme.cardPadding * 3,
+                          height: AppTheme.cardPadding * 5,
                           child: Center(child: dotProgress(context)));
                     }
                     List<UserData> all_userresults = userDataSnapshot.data!;
@@ -194,44 +194,45 @@ class _UsersListState extends State<UsersList>
 
 
   Widget searchForFilesAnimation(dynamic comp) {
-    return Column(
-      children: [
-        SizedBox(
-          height: AppTheme.cardPadding * 2,
-        ),
-        SizedBox(
-          height: AppTheme.cardPadding * 6,
-          width: AppTheme.cardPadding * 6,
-          child: FutureBuilder(
-            future: comp,
-            builder: (context, snapshot) {
-              dynamic composition = snapshot.data;
-              if (composition != null) {
-                return FittedBox(
-                  fit: BoxFit.fitHeight,
-                  child: AnimatedOpacity(
-                    opacity: _visible ? 1.0 : 0.0,
-                    duration: Duration(milliseconds: 1000),
-                    child: Lottie(composition: composition),
-                  ),
-                );
-              } else {
-                return Container(
-                  color: Colors.transparent,
-                );
-              }
-            },
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: AppTheme.cardPadding * 6,
+            width: AppTheme.cardPadding * 6,
+            child: FutureBuilder(
+              future: comp,
+              builder: (context, snapshot) {
+                dynamic composition = snapshot.data;
+                if (composition != null) {
+                  return FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: AnimatedOpacity(
+                      opacity: _visible ? 1.0 : 0.0,
+                      duration: Duration(milliseconds: 1000),
+                      child: Lottie(composition: composition),
+                    ),
+                  );
+                } else {
+                  return Container(
+                    color: Colors.transparent,
+                  );
+                }
+              },
+            ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.all(AppTheme.cardPadding),
-          child: Text(
-            "Es scheint, als hättest du bisher noch keine User auf deinem Gerät angemeldet.",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
+          SizedBox(height: AppTheme.elementSpacing,),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 3),
+            child: Text(
+              "It appears that you haven't added any users to your device yet.",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

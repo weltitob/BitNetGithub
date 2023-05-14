@@ -122,7 +122,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       gradientColor: Colors.black,
       key: scaffoldKey,
       body: BackgroundWithContent(
-        opacity: 0.8,
+        opacity: 0.7,
         child: Column(
           children: <Widget>[
             Expanded(
@@ -140,19 +140,31 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                         animatedTexts: [
                           TypewriterAnimatedText(
                             S.of(context).platformDemandText,
-                            textStyle: Theme.of(context).textTheme.titleMedium,
+                            textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
+                              shadows: [
+                                AppTheme.boxShadowSmall,
+                              ]
+                            ),
                             textAlign: TextAlign.center,
                             speed: const Duration(milliseconds: 50),
                           ),
                           TypewriterAnimatedText(
                             S.of(context).platformExlusivityText,
-                            textStyle: Theme.of(context).textTheme.titleMedium,
+                            textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                shadows: [
+                                  AppTheme.boxShadowSmall,
+                                ]
+                            ),
                             textAlign: TextAlign.center,
                             speed: const Duration(milliseconds: 50),
                           ),
                           TypewriterAnimatedText(
                             S.of(context).platformExpandCapacityText,
-                            textStyle: Theme.of(context).textTheme.titleMedium,
+                            textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                shadows: [
+                                  AppTheme.boxShadowSmall,
+                                ]
+                            ),
                             textAlign: TextAlign.center,
                             speed: const Duration(milliseconds: 50),
                           ),
@@ -213,7 +225,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                   child: PinCodeTextField(
                     appContext: context,
                     pastedTextStyle: TextStyle(
-                      color: Colors.white,
+                      color: AppTheme.white90,
                       fontWeight: FontWeight.bold,
                     ),
                     length: 5,
@@ -221,18 +233,17 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     animationType: AnimationType.fade,
                     pinTheme: PinTheme(
                       selectedColor: Colors.orange,
-                      inactiveColor: AppTheme.white90,
+                      inactiveColor: AppTheme.white60,
                       activeColor: Colors.orange,
                       shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(16),
-                      fieldHeight: 50,
-                      fieldWidth: 42,
+                      borderRadius: AppTheme.cardRadiusSmall,
+                      fieldHeight: AppTheme.cardPaddingBig * 2,
+                      fieldWidth: AppTheme.cardPadding * 2,
                       borderWidth: 2,
-                      activeFillColor: Colors.black,
                     ),
                     cursorColor: Colors.white,
                     animationDuration: Duration(milliseconds: 300),
-                    textStyle: TextStyle(fontSize: 20, height: 1.6),
+                    textStyle: Theme.of(context).textTheme.titleLarge,
                     backgroundColor: Colors.transparent,
                     enableActiveFill: false,
                     errorAnimationController: errorController,

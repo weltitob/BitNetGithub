@@ -45,7 +45,7 @@ class LongButtonWidget extends StatelessWidget {
         gradientEnd: Alignment.bottomCenter,
         context: context,
         borderRadius: AppTheme.cardRadiusMid,
-        onPressed: () => onTap,
+        onPressed: onTap ?? (){},
         width: size.width - AppTheme.cardPadding * 2,
         height: AppTheme.cardPadding * 2.5,
         child: state == ButtonState.loading
@@ -114,6 +114,7 @@ class _LongButtonWidgetTransparentState
 
     return Container(
       height: AppTheme.cardPadding * 2.5,
+      width: size.width - AppTheme.cardPadding * 2,
       decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusMid,
         boxShadow: [
@@ -130,7 +131,6 @@ class _LongButtonWidgetTransparentState
           borderRadius: AppTheme.cardRadiusMid,
           onTap: widget.onTap,
           child: Container(
-            width: size.width - 20 * 2,
             height: AppTheme.cardPadding * 2.5,
             alignment: Alignment.center,
             child: widget.state == ButtonState.loading

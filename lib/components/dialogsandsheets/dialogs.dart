@@ -19,6 +19,7 @@ Future<bool?> showErrorDialog({
     context: context,
     builder: (context) {
       return Dialog(
+        surfaceTintColor: Colors.red.withOpacity(0.25),
         backgroundColor: Colors.transparent,
         elevation: 20.0,
         insetPadding: EdgeInsets.all(0),
@@ -41,9 +42,15 @@ Future<bool?> showErrorDialog({
                   ),
                   Container(
                       padding: EdgeInsets.only(
-                          top: AppTheme.elementSpacing * 1.5, bottom: AppTheme.elementSpacing),
+                          top: AppTheme.elementSpacing * 2, bottom: AppTheme.elementSpacing * 2),
                       height: AppTheme.elementSpacing * 12,
                       width: AppTheme.elementSpacing * 12,
+                      decoration: BoxDecoration(
+                        borderRadius: AppTheme.cardRadiusBigger,
+                        boxShadow: [
+                          AppTheme.boxShadowSmall
+                        ],
+                      ),
                       child: Image.asset(image)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -54,15 +61,9 @@ Future<bool?> showErrorDialog({
                             Navigator.pop(context);
                             //add a issue successfully reported thing or smth like this
                           },
-                          iconData: Icons.report,
-                          gradientColors: [AppTheme.errorColor, Colors.red]
+                          iconData: FontAwesomeIcons.check,
+                          gradientColors: [AppTheme.errorColor, AppTheme.errorColorGradient]
                       ),
-                      personalActionButton(
-                          context: context,
-                          onPressed: () => Navigator.pop(context),
-                          iconData: FontAwesomeIcons.cancel,
-                          gradientColors: [AppTheme.successColor, Colors.green]
-                      )
                     ],
                   ),
                 ],
@@ -88,6 +89,7 @@ Future<bool?> showDialogue({
     context: context,
     builder: (context) {
       return Dialog(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: Colors.transparent,
         elevation: 20.0,
         insetPadding: EdgeInsets.all(0),
@@ -120,7 +122,7 @@ Future<bool?> showDialogue({
                       personalActionButton(
                           context: context,
                           onPressed: () {
-                            rightAction();
+                            leftAction();
                             Navigator.pop(context);
                           },
                           iconData: FontAwesomeIcons.cancel,
@@ -167,6 +169,7 @@ Future<bool?> showDialogueMultipleOptions({
     context: context,
     builder: (context) {
       return AlertDialog(
+        elevation: 20.0,
         shape: RoundedRectangleBorder(
           borderRadius: AppTheme.cardRadiusBig,
         ),
@@ -217,8 +220,6 @@ Future<bool?> showDialogueMultipleOptions({
             ),
           ],
         ),
-        elevation: 20.0,
-        backgroundColor: Theme.of(context).colorScheme.background,
       );
     },
   );

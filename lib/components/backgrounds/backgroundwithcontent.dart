@@ -21,7 +21,7 @@ class BackgroundWithContent extends StatefulWidget {
 class _BackgroundWithContentState extends State<BackgroundWithContent> {
   bool _visible = false; // Set initial visibility to false
   late final Future<LottieComposition> _composition;
-  late final Future<NetworkImage> _networkimage;// Future to hold the Lottie animation
+  late final Future<dynamic> _networkimage;// Future to hold the Lottie animation
 
   @override
   void initState() {
@@ -50,13 +50,6 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
   }
 
 
-  // Load the Lottie animation from the asset file
-  Future<LottieComposition> _loadComposition() async {
-    var assetData = await rootBundle.load('assets/lottiefiles/background.json');
-    dynamic mycomposition = await LottieComposition.fromByteData(assetData);
-    return mycomposition;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -67,7 +60,7 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
           color: Colors.black,
           child: FutureBuilder(
             future: _networkimage,
-              builder: (BuildContext context, AsyncSnapshot<NetworkImage> snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
                     color: Colors.black,

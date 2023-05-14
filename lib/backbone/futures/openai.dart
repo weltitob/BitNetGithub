@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:BitNet/models/openai_image.dart';
 import 'package:flutter/material.dart';
 
-Future<NetworkImage> callOpenAiApiPicture() async {
+callOpenAiApiPicture() async {
   print('START CALLING OPENAI...');
   try{
     const openAiApiKey = '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';
@@ -31,10 +31,10 @@ Future<NetworkImage> callOpenAiApiPicture() async {
       final networkimage = NetworkImage(generatedimg.imageurl);
       return networkimage;
     } else {
-      return NetworkImage("https://media.discordapp.net/attachments/1038329663187062804/1093248461060718645/wyattgirlwasted_None_ed39118d-d2fc-40c8-a5b4-e250e2969000.png?width=741&height=741");
+      return AssetImage("assets/images/prison_background.png");
     }
   } catch(e){
     print("An error occured at api request to openai $e");
-    return NetworkImage("https://media.discordapp.net/attachments/1038329663187062804/1093248461060718645/wyattgirlwasted_None_ed39118d-d2fc-40c8-a5b4-e250e2969000.png?width=741&height=741");
+    return AssetImage("assets/images/prison_background.png");
   }
 }

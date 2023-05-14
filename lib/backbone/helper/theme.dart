@@ -221,7 +221,7 @@ class AppTheme {
       color: AppTheme.white90,
     ),
     titleMedium: textTheme.titleMedium!.copyWith(
-      color: AppTheme.white70,
+      color: AppTheme.white80,
     ),
     titleSmall: textTheme.titleSmall!.copyWith(
       color: AppTheme.white70,
