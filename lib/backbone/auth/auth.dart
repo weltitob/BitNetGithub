@@ -9,6 +9,7 @@ import 'package:BitNet/backbone/cloudfunctions/signmessage.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 
@@ -164,6 +165,14 @@ class Auth {
       throw Exception("signIn user failed $e");
     }
   }
+
+  Future<bool> doesUsernameExist(String username) async {
+    final QuerySnapshot snapshot = await usersCollection
+        .where('username', isEqualTo: username)
+        .get();
+    return snapshot.docs.isNotEmpty;
+  }
+
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();

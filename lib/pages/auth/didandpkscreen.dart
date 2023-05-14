@@ -21,16 +21,6 @@ Random random = new Random();
 // ignore: must_be_immutable
 class DidAndPrivateKeyScreen extends StatefulWidget {
   // function to toggle between login and register screens
-  Function() toggleView;
-  Function() toggleGetStarted;
-  // function to toggle between login and reset password screens
-  Function() toggleResetPassword;
-
-  DidAndPrivateKeyScreen({
-    required this.toggleView,
-    required this.toggleGetStarted,
-    required this.toggleResetPassword,
-  });
 
   @override
   _SignupScreenState createState() {
@@ -94,7 +84,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       gradientColor: Colors.black,
       appBar: BitNetAppBar(text: S.of(context).restoreAccount, context: context,
       onTap: (){
-        widget.toggleGetStarted();
+        Navigator.of(context).pop();
       }),
       body: BackgroundWithContent(
         opacity: 0.8,
@@ -130,7 +120,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     S.of(context).poweredByDIDs,
                     style: Theme.of(context)
                         .textTheme
-                        .bodySmall,
+                        .bodyMedium,
                   ),
                   Container(
                     margin:
@@ -208,38 +198,21 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                                 .copyWith(color: AppTheme.errorColor),
                           ),
                         ),
-                  SizedBox(
-                    height: AppTheme.cardPadding,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // switch to passwordscreen
-                      print('switch to reset password in authtree');
-                      widget.toggleResetPassword();
-                    },
-                    child: Text(
-                      S.of(context).restoreWithSocialRecovery,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: AppTheme.colorBitcoin
-                      )
-                    ),
-                  ),
                   Container(
-                    margin:
-                        EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
                     child: Text(
                       S.of(context).noAccountYet,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 28),
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: AppTheme.white60,
                         width: 2,
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppTheme.cardRadiusCircular,
                     ),
                     child: SizedBox(
                       height: 0,
@@ -247,14 +220,14 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 22, bottom: 22),
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding, bottom: AppTheme.cardPadding),
                     child: GestureDetector(
                       onTap: () {
-                        widget.toggleView();
+                        print("Implement push to verification screen...");
                       },
                       child: Text(
                         S.of(context).register,
-                        style: Theme.of(context).textTheme.bodyMedium
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                   ),

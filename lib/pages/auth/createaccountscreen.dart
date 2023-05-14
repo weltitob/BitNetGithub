@@ -20,8 +20,7 @@ import 'package:BitNet/backbone/helper/theme.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   VerificationCode code;
-  CreateAccountScreen({
-    required this.code});
+  CreateAccountScreen({required this.code});
 
   @override
   State<CreateAccountScreen> createState() => _CreateAccountScreenState();
@@ -32,19 +31,39 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
   String? errorMessage = null;
-  String? email = '';
+  String? username = '';
 
-  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerUsername = TextEditingController();
   bool _isLoading = false;
 
-  Future<void> createUser() async {
+  createAccountPressed() async {
     setState(() {
       errorMessage = null;
       _isLoading = true;
     });
+    try{
+      bool usernameExists =
+      await Auth().doesUsernameExist(_controllerUsername.text);
+
+      if (!usernameExists) {
+        // You can create the user here since they don't exist yet.
+        print("Username is still available");
+        await createUser();
+      } else {
+        // The username already exists.
+        print("Username already exists.");
+      }
+    } catch(e) {
+      print("Error: $e");
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> createUser() async {
     try {
       //final userwalletdata = await createWallet(email: _controllerEmail.text);
-
       //create ION wallet for the user with all abilities
       final userwalletdata = UserWallet(
           walletAddress: "abcde",
@@ -61,10 +80,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
           showFollowers: false,
           did: "",
           mainWallet: userwalletdata,
-          displayName: _controllerEmail.text,
+          displayName: _controllerUsername.text,
           bio: "Hey there Bitcoiners! I joined the revolution!",
           customToken: "customToken",
-          username: _controllerEmail.text,
+          username: _controllerUsername.text,
           profileImageUrl: "profileImageUrl",
           createdAt: timestamp,
           updatedAt: timestamp,
@@ -72,35 +91,47 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
           dob: 0,
           wallets: walletlist);
 
-      final UserData? currentuserwallet =
-      await firebaseAuthentication(userdata,
-          VerificationCode(used: false, code: widget.code.code, issuer: widget.code.issuer, receiver: widget.code.receiver));
+      final UserData? currentuserwallet = await firebaseAuthentication(
+          userdata,
+          VerificationCode(
+              used: false,
+              code: widget.code.code,
+              issuer: widget.code.issuer,
+              receiver: widget.code.receiver));
+
+    } on FirebaseException catch (e) {
+      print("Firebase Exception: $e");
+      throw Exception(
+          "We currently have troubles reaching our servers which connect with the blockchain. Please try again later.");
     } catch (e) {
-      _isLoading = false;
       //implement error throw
       print("STILL NEED TO ADD ERROR TEXT IN SOME WAY");
       throw Exception(e);
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   Future<UserData?> firebaseAuthentication(
       UserData userData, VerificationCode code) async {
     try {
       //blablabla
-      final UserData currentuserwallet =
-          await Auth().createUser(
+      final UserData currentuserwallet = await Auth().createUser(
         user: userData,
         code: code,
       );
       return currentuserwallet;
-    } catch (e) {
+    }on FirebaseException catch (e) {
+      print("Firebase Exception: $e");
+      setState(() {
+        errorMessage =
+        "We currently have troubles reaching our servers which connect with the blockchain. Please try again later.";
+        throw Exception("Error: $e");
+      });
+    }
+    catch (e) {
       setState(() {
         errorMessage = "${S.of(context).errorSomethingWrong}: ${e}";
-        print(e);
       });
+      throw Exception("Error: $e");
     }
   }
 
@@ -108,18 +139,19 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => GetStartedTree()),
-          (Route<dynamic> route) => false,
+      (Route<dynamic> route) => false,
     );
   }
 
   void navigateToLogin(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => GetStartedTree(
-        showSignIn: true,
-        getStarted: false,
-      )),
-          (Route<dynamic> route) => false,
+      MaterialPageRoute(
+          builder: (context) => GetStartedTree(
+                showSignIn: true,
+                getStarted: false,
+              )),
+      (Route<dynamic> route) => false,
     );
   }
 
@@ -127,145 +159,154 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        navigateToGetStartedTree(context);
+        if (!_isLoading) {
+          navigateToGetStartedTree(context);
+        }
         return false; // Prevent the system from popping the current route.
       },
-      child: SafeArea(
-        child: BitNetScaffold(
-          context: context,
-          gradientColor: Colors.black,
-          appBar: BitNetAppBar(
-              text: S.of(context).register,
-              context: context,
-              onTap: () {
+      child: BitNetScaffold(
+        context: context,
+        gradientColor: Colors.black,
+        appBar: BitNetAppBar(
+            text: S.of(context).register,
+            context: context,
+            onTap: () {
+              if (!_isLoading) {
                 navigateToGetStartedTree(context);
-              }),
-          body: BackgroundWithContent(
-            opacity: 0.8,
-            child: Form(
-              key: _form,
-              child: ListView(
-                padding: EdgeInsets.only(
-                    left: AppTheme.cardPadding * 2,
-                    right: AppTheme.cardPadding * 2,
-                    top: AppTheme.cardPadding * 5),
-                physics: BouncingScrollPhysics(),
-                children: [
-                  Container(
-                    height: AppTheme.cardPadding * 4.5,
-                    child: AnimatedTextKit(
-                      animatedTexts: [
-                        TypewriterAnimatedText(
-                          S.of(context).powerToThePeople,
-                          textStyle: Theme.of(context).textTheme.displayLarge,
-                          textAlign: TextAlign.left,
-                          speed: const Duration(milliseconds: 120),
-                        ),
-                      ],
-                      totalRepeatCount: 1,
-                      displayFullTextOnTap: false,
-                      stopPauseOnTap: false,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        S.of(context).poweredByDIDs,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall,
-                      ),
-                      Container(
-                        margin:
-                        EdgeInsets.only(left: AppTheme.elementSpacing / 2),
-                        height: AppTheme.cardPadding * 1.5,
-                        child: Image.asset("assets/images/ion.png"),
+              }
+            }),
+        body: BackgroundWithContent(
+          opacity: 0.8,
+          child: Form(
+            key: _form,
+            child: ListView(
+              padding: EdgeInsets.only(
+                  left: AppTheme.cardPadding * 2,
+                  right: AppTheme.cardPadding * 2,
+                  top: AppTheme.cardPadding * 5),
+              physics: BouncingScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: AppTheme.cardPadding * 4,
+                ),
+                Container(
+                  height: AppTheme.cardPadding * 4.5,
+                  child: AnimatedTextKit(
+                    animatedTexts: [
+                      TypewriterAnimatedText(
+                        S.of(context).powerToThePeople,
+                        textStyle: Theme.of(context).textTheme.displayLarge,
+                        textAlign: TextAlign.left,
+                        speed: const Duration(milliseconds: 120),
                       ),
                     ],
+                    totalRepeatCount: 1,
+                    displayFullTextOnTap: false,
+                    stopPauseOnTap: false,
                   ),
-                  SizedBox(
-                    height: AppTheme.cardPadding,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      FormTextField(
-                        title: "Username",
-                        validator: (val) => val!.isEmpty
-                            ? 'The username you entered is not valid'
-                            : null,
-                        onChanged: (val) {
-                          setState(() {
-                            email = val;
-                          });
-                        },
-                        controller: _controllerEmail,
-                        isObscure: false,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      S.of(context).poweredByDIDs,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Container(
+                      margin:
+                          EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                      height: AppTheme.cardPadding * 1.5,
+                      child: Image.asset("assets/images/ion.png"),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    FormTextField(
+                      title: "Username",
+                      validator: (val) => val!.isEmpty
+                          ? 'The username you entered is not valid'
+                          : null,
+                      onChanged: (val) {
+                        setState(() {
+                          username = val;
+                        });
+                      },
+                      controller: _controllerUsername,
+                      isObscure: false,
+                    ),
+                    SizedBox(
+                      height: AppTheme.cardPadding,
+                    ),
+                    LongButtonWidget(
+                      title: S.of(context).register,
+                      onTap: () {
+                        if (_form.currentState!.validate()) {
+                          createAccountPressed();
+                        }
+                      },
+                      state:
+                          _isLoading ? ButtonState.loading : ButtonState.idle,
+                    ),
+                    errorMessage == null
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.only(
+                                top: AppTheme.cardPadding),
+                            child: Text(
+                              errorMessage!,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(color: AppTheme.errorColor),
+                            ),
+                          ),
+                    Container(
+                      margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
+                      child: Text(
+                        S.of(context).alreadyHaveAccount,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      SizedBox(height: AppTheme.cardPadding,),
-                      LongButtonWidget(
-                        title: S.of(context).register,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: AppTheme.cardPadding),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppTheme.white60,
+                          width: 2,
+                        ),
+                        borderRadius: AppTheme.cardRadiusCircular,
+                      ),
+                      child: SizedBox(
+                        height: 0,
+                        width: 65,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppTheme.cardPadding,
+                          bottom: AppTheme.cardPadding),
+                      child: GestureDetector(
                         onTap: () {
-                          if (_form.currentState!.validate()) {
-                            createUser();
+                          if (!_isLoading) {
+                            navigateToLogin(context);
                           }
                         },
-                        state:
-                            _isLoading ? ButtonState.loading : ButtonState.idle,
-                      ),
-                      errorMessage == null
-                          ? Container()
-                          : Padding(
-                              padding: const EdgeInsets.only(
-                                  top: AppTheme.cardPadding),
-                              child: Text(
-                                errorMessage!,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(color: AppTheme.errorColor),
-                              ),
-                            ),
-                      Container(
-                        margin: EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
                         child: Text(
-                          S.of(context).alreadyHaveAccount,
+                          S.of(context).restoreAccount,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 28),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: AppTheme.white60,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: SizedBox(
-                          height: 0,
-                          width: 65,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 22, bottom: 22),
-                        child: GestureDetector(
-                          onTap: () {
-                            navigateToLogin(context);
-                          },
-                          child: Text(
-                            S.of(context).restoreAccount,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),

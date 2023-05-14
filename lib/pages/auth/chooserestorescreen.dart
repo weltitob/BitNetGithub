@@ -6,6 +6,7 @@ import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/components/resultlist/users.dart';
 import 'package:BitNet/generated/l10n.dart';
+import 'package:BitNet/pages/auth/didandpkscreen.dart';
 import 'package:BitNet/pages/auth/ionloadingscreen.dart';
 import 'package:flutter/material.dart';
 
@@ -84,7 +85,12 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 OptionContainer(context, "Social recovery", (){}, image: "assets/images/friends.png"),
-                OptionContainer(context, "Use DID and Private Key", (){}, image: "assets/images/key_removed_bck.png"),
+                OptionContainer(context, "Use DID and Private Key", (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DidAndPrivateKeyScreen()),
+                  );
+                }, image: "assets/images/key_removed_bck.png"),
               ],
             ),
             SizedBox(height: AppTheme.cardPadding * 2,),
