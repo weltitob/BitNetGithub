@@ -84,7 +84,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
     return BitNetScaffold(
       context: context,
       gradientColor: Colors.black,
-      appBar: BitNetAppBar(text: S.of(context).restoreAccount, context: context,
+      appBar: BitNetAppBar(text: "DID and Private Key Login", context: context,
       onTap: (){
         Navigator.of(context).pop();
       }),
