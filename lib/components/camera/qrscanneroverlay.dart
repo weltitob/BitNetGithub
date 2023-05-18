@@ -1,3 +1,4 @@
+import 'package:BitNet/components/container/randombubblecontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 
@@ -46,6 +47,19 @@ class QRScannerOverlay extends StatelessWidget {
           ),
         ),
       ),
+      Align(
+        alignment: Alignment.center,
+        child: Center(
+          child: Container(
+            width: scanArea - AppTheme.cardPadding,
+            height: scanArea - AppTheme.cardPadding,
+            child: BubbleWidget(
+              width: scanArea - AppTheme.cardPadding,
+              height: scanArea - AppTheme.cardPadding,
+            ),
+          ),
+        ),
+      )
     ]);
   }
 }

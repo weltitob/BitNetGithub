@@ -95,7 +95,7 @@ class _UsersListState extends State<UsersList>
               builder: (context, ionSnapshot) {
                 if (!ionSnapshot.hasData) {
                   return SizedBox(
-                      height: AppTheme.cardPadding * 5,
+                      height: AppTheme.cardPadding * 4,
                       child: Center(child: dotProgress(context)));
                 }
                 List<String> dids = ionSnapshot.data!.map((ionData) => ionData.did).toList();
@@ -105,7 +105,7 @@ class _UsersListState extends State<UsersList>
                   builder: (context, userDataSnapshot) {
                     if (!userDataSnapshot.hasData) {
                       return SizedBox(
-                          height: AppTheme.cardPadding * 5,
+                          height: AppTheme.cardPadding * 4,
                           child: Center(child: dotProgress(context)));
                     }
                     List<UserData> all_userresults = userDataSnapshot.data!;
@@ -114,61 +114,64 @@ class _UsersListState extends State<UsersList>
                     }
                     return Column(
                       children: <Widget>[
-                        Expanded(
-                          child: PageView.builder(
-                            controller: pageController,
-                            onPageChanged: (index) {
-                              setState(() {
-                                _selectedindex = index;
-                              });
-                            },
-                            itemCount: all_userresults.length,
-                            itemBuilder: (context, index) {
-                              final userData = all_userresults[index];
-                              var _scale = _selectedindex == index ? 1.0 : 0.85;
+                        Container(
+                          height: AppTheme.cardPadding * 3.5,
+                          child: Expanded(
+                            child: PageView.builder(
+                              controller: pageController,
+                              onPageChanged: (index) {
+                                setState(() {
+                                  _selectedindex = index;
+                                });
+                              },
+                              itemCount: all_userresults.length,
+                              itemBuilder: (context, index) {
+                                final userData = all_userresults[index];
+                                var _scale = _selectedindex == index ? 1.0 : 0.85;
 
-                              final ionData = ionSnapshot.data!.firstWhere((ionData) => ionData.did == userData.did);
-                              return TweenAnimationBuilder<double>(
-                                tween: Tween<double>(begin: _scale, end: _scale),
-                                curve: Curves.ease,
-                                duration: Duration(milliseconds: 350),
-                                builder: (context, value, child) {
-                                  return Transform.scale(
-                                    scale: value,
-                                    child: child,
-                                  );
-                                },
-                                child: Center(
-                                  child: UserResult(
-                                    onTap: () async {
-                                      try{
-                                        widget.loadingION();
-                                        await Auth().signIn(
-                                          userData.did,
-                                          ionData.privateIONKey,
-                                          ionData.username,
-                                        );
-                                      } catch(e){
-                                        print("Second widgetloading should be called...");
-                                        widget.loadingION();
-                                        widget.showError();
-                                        throw Exception("Error trying to sign in: $e");
-                                      }
-                                    },
-                                    userData: userData,
-                                    onDelete: () async {
-                                    await deleteUserFromStoredIONData(userData.did);
-                                    setState(() {
-                                      all_userresults.removeAt(index);
-                                    });
+                                final ionData = ionSnapshot.data!.firstWhere((ionData) => ionData.did == userData.did);
+                                return TweenAnimationBuilder<double>(
+                                  tween: Tween<double>(begin: _scale, end: _scale),
+                                  curve: Curves.ease,
+                                  duration: Duration(milliseconds: 350),
+                                  builder: (context, value, child) {
+                                    return Transform.scale(
+                                      scale: value,
+                                      child: child,
+                                    );
                                   },
+                                  child: Center(
+                                    child: UserResult(
+                                      onTap: () async {
+                                        try{
+                                          widget.loadingION();
+                                          await Auth().signIn(
+                                            userData.did,
+                                            ionData.privateIONKey,
+                                            ionData.username,
+                                          );
+                                        } catch(e){
+                                          print("Second widgetloading should be called...");
+                                          widget.loadingION();
+                                          widget.showError();
+                                          throw Exception("Error trying to sign in: $e");
+                                        }
+                                      },
+                                      userData: userData,
+                                      onDelete: () async {
+                                      await deleteUserFromStoredIONData(userData.did);
+                                      setState(() {
+                                        all_userresults.removeAt(index);
+                                      });
+                                    },
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ),
-                        SizedBox(height: AppTheme.elementSpacing,),
+                        SizedBox(height: AppTheme.cardPadding,),
                         Center(
                           child: SmoothPageIndicator(
                             controller: pageController,

@@ -1,12 +1,9 @@
 import 'dart:async';
 
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:BitNet/models/userwallet.dart';
-import 'package:provider/provider.dart';
 
 bool _canCallFunction = true;
 

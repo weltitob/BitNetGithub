@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:BitNet/pages/settingsscreen.dart';
+import 'package:BitNet/pages/settings/settingsscreen.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 
 class ImpressumScreen extends StatelessWidget {

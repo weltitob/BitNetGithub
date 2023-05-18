@@ -3,20 +3,14 @@ import 'dart:ui';
 
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/models/userdata.dart';
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:BitNet/components/camera/qrscanneroverlay.dart';
-import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/camera/textscanneroverlay.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/models/qrcodebitcoin.dart';
-import 'package:BitNet/models/userwallet.dart';
-import 'package:BitNet/pages/actions/sendscreen.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
-import 'package:provider/provider.dart';
 
 class QROtherDeviceScreen extends StatefulWidget {
   final bool isBottomButtonVisible;
@@ -170,35 +164,6 @@ class _QROtherDeviceScreenState extends State<QROtherDeviceScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Visibility(
-                visible: widget.isBottomButtonVisible,
-                child: RoundedButtonWidget(
-                  iconData: Icons.arrow_back_rounded,
-                  onTap: () => Navigator.pop(context),
-                  isGlassmorph: true,
-                ),
-              ),
-              const SizedBox(
-                width: AppTheme.cardPadding,
-              ),
-              Container(
-                width: AppTheme.cardPadding * 3.5,
-                height: AppTheme.cardPadding * 3.5,
-                decoration: BoxDecoration(
-                    borderRadius: AppTheme.cardRadiusBigger,
-                    border: Border.all(width: 5, color: AppTheme.white90)),
-              ),
-              const SizedBox(
-                width: AppTheme.cardPadding,
-              ),
-              Visibility(
-                visible: widget.isBottomButtonVisible,
-                child: RoundedButtonWidget(
-                  iconData: Icons.text_fields_rounded,
-                  onTap: () => setState(() {}),
-                  isGlassmorph: true,
-                ),
-              ),
             ],
           )
         ],

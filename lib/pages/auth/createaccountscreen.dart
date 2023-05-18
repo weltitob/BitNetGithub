@@ -50,8 +50,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
         print("Username is still available");
         await createUser();
       } else {
-        // The username already exists.
         print("Username already exists.");
+        errorMessage = "This username is already taken.";
+        // The username already exists.
       }
     } catch(e) {
       print("Error: $e");

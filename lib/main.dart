@@ -1,16 +1,11 @@
 import 'package:BitNet/models/userdata.dart';
-import 'package:BitNet/pages/auth/ionloadingscreen.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/streams/bitcoinpricestream.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:BitNet/components/chart/chart.dart';
-import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/pages/routetrees/widgettree.dart';
 import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
 import 'generated/l10n.dart';
-import 'package:firebase_core/firebase_core.dart';
 //import 'firebase_options.dart';
 
 late ThemeData activeTheme;

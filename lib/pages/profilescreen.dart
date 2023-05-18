@@ -570,7 +570,7 @@ class _ProfileState extends State<Profile> {
                       color: Colors.white,
                       borderRadius: AppTheme.cardRadiusSmall),
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(AppTheme.elementSpacing),
                     child: PrettyQr(
                       image: AssetImage('assets/images/ion_baw.png'),
                       typeNumber: 3,
@@ -584,7 +584,8 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-        ));
+        )
+    );
   }
 
   buildCenterWidgetIcon({
@@ -756,8 +757,7 @@ class _ProfileState extends State<Profile> {
             );
 
   Widget buildUserInformation(String username, String displayName) => Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
         child: Column(
           children: [
             TextField(
@@ -768,9 +768,8 @@ class _ProfileState extends State<Profile> {
               decoration: InputDecoration(
                   isDense: true,
                   border: InputBorder.none,
-                  //changeup!!
                   errorText: _displayNameValid ? null : 'Bad characters'),
-              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: AppTheme.white70,
                   ),
               controller: displayNameController,
@@ -805,7 +804,7 @@ class _ProfileState extends State<Profile> {
               ),
               style: Theme.of(context)
                   .textTheme
-                  .bodyText2!
+                  .bodyMedium!
                   .copyWith(color: AppTheme.white70),
               controller: bioController,
             ),
