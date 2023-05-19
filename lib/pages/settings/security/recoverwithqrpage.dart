@@ -1,5 +1,6 @@
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class RecoverWithQRPage extends StatefulWidget {
@@ -21,6 +22,8 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
           key: globalKeyQR,
           child: Column(
             children: [
+              SizedBox(height: AppTheme.cardPadding,),
+
               Container(
                 margin: EdgeInsets.all(AppTheme.cardPadding),
                 decoration: BoxDecoration(
@@ -37,6 +40,14 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
                     roundEdges: true,
                   ),
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(FontAwesomeIcons.solidEyeSlash, size: AppTheme.elementSpacing,),
+                  SizedBox(width: AppTheme.elementSpacing / 2,),
+                  Text("DON'T SHARE THIS QR CODE TO ANYONE!", style: Theme.of(context).textTheme.button,),
+                ],
               ),
             ],
           ),
