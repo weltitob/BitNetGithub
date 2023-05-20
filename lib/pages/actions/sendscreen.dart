@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:BitNet/backbone/security/biometrics/biometric_check.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,13 +63,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
       true; // a flag indicating whether the exchange rate is loading
   bool _isLoadingFees =
       true; // a flag indicating whether the exchange rate is loading
-  // Biometric authentication before sending
-  bool hasBiometrics =
-      true; // a flag indicating whether biometrics is supported on the device
-  bool isBioAuthenticated =
-      false; // a flag indicating whether the user has successfully authenticated via biometrics
-  late bool
-      isSecurityChecked; // a flag indicating whether the security has been checked
+  // Biometric authentication before sending// a flag indicating whether the security has been checked
   final GlobalKey<FormState> _formKey =
       GlobalKey<FormState>(); // a key for the form widget
 
@@ -99,35 +94,6 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     myFocusNodeMoney.dispose();
     moneyController.dispose();
     super.dispose();
-  }
-
-  // This method is used to get the security check value from the shared preferences.
-  awaitSecurityBool() async {
-    bool securitybool = await SharedPrefSecurityCheck();
-    return securitybool;
-  }
-
-  // This method is used to check if the biometrics feature is available on the device.
-  isBiometricsAvailable() async {
-    //only check for biometrics if user wants to send more than 0.1 bitcoin
-    if (double.parse(moneyController.text) < 0.1) {
-      hasBiometrics = false;
-      return;
-    }
-    isSecurityChecked = await awaitSecurityBool();
-    //user needs to have enrolled Biometrics and also high security checked in settings to get fingerpint auth request
-    if (isSecurityChecked == true) {
-      hasBiometrics = await BiometricHelper().hasEnrolledBiometrics();
-      if (hasBiometrics == true) {
-        print('trying to check biometrics...');
-        isBioAuthenticated = await BiometricHelper().authenticate();
-      } else {
-        isBioAuthenticated == false;
-      }
-      setState(() {});
-    } else {
-      hasBiometrics = false;
-    }
   }
 
   // This method is used to fetch the current Bitcoin price from the CoinGecko API.
@@ -767,6 +733,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           onFinish: () async {
             // Check if biometric authentication is available
             await isBiometricsAvailable();
+            setState(() {});
             if (isBioAuthenticated == true || hasBiometrics == false) {
               try {
                 // Send bitcoin to the selected receiver using the user's wallet

@@ -1,4 +1,5 @@
 import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/security/biometrics/biometric_check.dart';
 import 'package:BitNet/models/settingsmodel.dart';
 import 'package:BitNet/pages/settings/security/recoverwithqrpage.dart';
 import 'package:BitNet/pages/settings/settings.dart';
@@ -20,7 +21,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
 
 
   @override
-  void initState() {
+  Future<void> initState() async {
     pages = [
       SettingsPageModel(
         widget: buildSettings(),
@@ -53,6 +54,13 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         title: 'Invitation Keys',
       ),
     ];
+    await isBiometricsAvailable();
+    setState(() {});
+    if (isBioAuthenticated == true || hasBiometrics == false) {
+      print("Biometrics successfull");
+    } else {
+      print("Biometrics unsuccessfull");
+    }
     super.initState();
   }
 
@@ -69,55 +77,6 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       ),
       child: Column(
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-                left: AppTheme.cardPadding,
-                right: AppTheme.cardPadding,
-                top: AppTheme.elementSpacing),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                pages[currentview].goBack
-                    ? GestureDetector(
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      size: 18,
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                    onTap: () => setState(() {
-                      currentview = 0;
-                    }))
-                    : Container(
-                  width: 18,
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          right: AppTheme.elementSpacing * 0.5),
-                      child: Icon(
-                        pages[currentview].iconData,
-                        size: 18,
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ),
-                    ),
-                    Text(
-                      pages[currentview].title,
-                      style: Theme.of(context).textTheme.subtitle2,
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  child: Icon(
-                    Icons.clear_rounded,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.onBackground,
-                  ),
-                  onTap: () => Navigator.pop(context),
-                )
-              ],
-            ),
-          ),
           Expanded(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
