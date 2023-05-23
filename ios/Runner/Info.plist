@@ -49,5 +49,23 @@
 	<true/>
 	<key>FirebaseApiKey</key>
     <string>AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY</string>
+
+    <!-- start of added keys -->
+	<key>CFBundleURLTypes</key>
+	<array>
+	    <dict>
+	        <key>CFBundleTypeRole</key>
+	        <string>Editor</string>
+	        <key>CFBundleURLName</key>
+	        <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	        <!-- replace with actual IDENTIFIER -->
+	        <key>CFBundleURLSchemes</key>
+	        <array>
+	            <string>nexuswallet</string>
+	            <!-- replace with actual CFBUNFLESCHEME -->
+	        </array>
+	    </dict>
+	</array>
+    <!-- end of added keys -->
 </dict>
 </plist>

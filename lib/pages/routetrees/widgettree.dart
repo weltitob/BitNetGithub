@@ -1,4 +1,5 @@
 import 'package:BitNet/models/userdata.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
@@ -23,10 +24,27 @@ class _WidgetTreeState extends State<WidgetTree> {
   late bool isSecurityChecked;
   bool isBioAuthenticated = false;
 
+  //add applinks later on to make transactions even easier where all qrs are involved
+  //send and receive bitcoin applinks (deeplinks)
+  //also restore account applinks
+  late final AppLinks _appLinks;
+
   @override
   initState() {
     super.initState();
     isBiometricsAvailable();
+    _appLinks = AppLinks(
+      onAppLink: (Uri uri, String string) {
+        // Handle the deep link here. You can push to a new page, or perform
+        // some action based on the data in the URI.
+        print('Got deep link: $uri');
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   awaitSecurityBool() async {

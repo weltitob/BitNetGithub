@@ -1,4 +1,5 @@
 import 'package:BitNet/models/userdata.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,6 +25,11 @@ class ThemeNotifier extends ChangeNotifier {
 
 // Main function to start the application
 Future<void> main() async {
+
+  void onAppLink(){
+    print("APPLINK WAS TRIGGERED");
+  }
+
   // Ensure that Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
 
