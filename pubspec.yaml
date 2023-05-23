@@ -33,6 +33,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  app_links: ^2.0.0
   animated_text_kit: ^4.2.2
   glassmorphism: ^3.0.0
   flutter_secure_storage: ^5.0.2

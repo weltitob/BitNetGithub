@@ -72,7 +72,7 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.5),
                       child: PrettyQr(
-                        image: AssetImage('assets/images/key_removed_bck.png'),
+                        //image: AssetImage('assets/images/key_removed_bck.png'),
                         typeNumber: 12,
                         size: AppTheme.cardPadding * 10,
                         data: snapshot.data,
