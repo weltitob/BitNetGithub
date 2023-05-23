@@ -18,16 +18,29 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
 
   int currentview = 0;
   late List<SettingsPageModel> pages;
+  bool isVerified = false;
+
+  void authenticated() async {
+    dynamic whatever = await isBiometricsAvailable();
+    if (isBioAuthenticated == true || hasBiometrics == false) {
+      isVerified = true;
+      setState(() {});
+    } else {
+      isVerified = false;
+      print("Biometrics unsuccessfull");
+    }
+  }
 
 
   @override
-  Future<void> initState() async {
+  void initState() {
+    authenticated();
     pages = [
       SettingsPageModel(
         widget: buildSettings(),
         goBack: false,
         iconData: Icons.settings,
-        title: 'Settings',
+        title: 'Plain Key and DID',
       ),
       SettingsPageModel(
         widget: RecoverWithQRPage(),
@@ -39,34 +52,29 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         widget: Container(),
         goBack: true,
         iconData: Icons.color_lens_rounded,
-        title: 'Theme',
+        title: 'Recovery phrases',
       ),
       SettingsPageModel(
         widget: Container(),
         goBack: true,
         iconData: Icons.live_help_rounded,
-        title: 'Help & Support',
+        title: 'Social recovery',
       ),
       SettingsPageModel(
         widget: Container(),
         goBack: true,
         iconData: Icons.key_rounded,
-        title: 'Invitation Keys',
+        title: 'Human Identity',
       ),
     ];
-    await isBiometricsAvailable();
-    setState(() {});
-    if (isBioAuthenticated == true || hasBiometrics == false) {
-      print("Biometrics successfull");
-    } else {
-      print("Biometrics unsuccessfull");
-    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return
+      isVerified ?
+      Container(
       height: AppTheme.cardPadding * 19,
       decoration: new BoxDecoration(
         color: Theme.of(context).colorScheme.background,
@@ -95,7 +103,23 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
         ],
       ),
-    );
+    ) : Container(
+        child: Expanded(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  FontAwesomeIcons.lock,
+                  size: AppTheme.cardPadding * 2,
+                ),
+                SizedBox(height: AppTheme.elementSpacing,),
+                Text("Verify your identity"),
+              ],
+            ),
+          ),
+        ),
+      );
   }
 
   Widget buildSettings() {
@@ -106,7 +130,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         children: <Widget>[
           SettingsListItem(
             icon: FontAwesomeIcons.buildingLock,
-            text: 'ION information',
+            text: 'DID and private key',
             onTap: () {
               setState(() {
                 currentview = 2;
@@ -115,7 +139,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
           SettingsListItem(
             icon: FontAwesomeIcons.book,
-            text: '12 Word recovery sentence',
+            text: '12 Word recovery',
             onTap: () {
               setState(() {
                 currentview = 3;
@@ -124,15 +148,15 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
           SettingsListItem(
               icon: FontAwesomeIcons.qrcode,
-              text: 'Scan QR-Code for recovery',
+              text: 'Recover with QR Code',
               onTap: () {
                 setState(() {
                   currentview = 1;
                 });
               }),
           SettingsListItem(
-            icon: FontAwesomeIcons.wallet,
-            text: 'Wallet...',
+            icon: FontAwesomeIcons.person,
+            text: 'Social Recovery',
             onTap: () {
               setState(() {
                 currentview = 4;
@@ -146,7 +170,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
           SettingsListItem(
             icon: FontAwesomeIcons.trash,
-            text: 'Delete account & all data',
+            text: 'Delete account',
             hasNavigation: false,
             onTap: () {},
           ),

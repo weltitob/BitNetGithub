@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class IONData {
   String did;
   String username;
@@ -41,5 +43,11 @@ class IONData {
       privateIONKey: map['privateKey'],
       customToken: map['customToken'],
     );
+  }
+
+  // Add this method
+  @override
+  String toString() {
+    return jsonEncode(toMap());
   }
 }
