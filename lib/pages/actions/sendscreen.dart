@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:BitNet/backbone/security/biometrics/biometric_check.dart';
+import 'package:BitNet/pages/scan_qr_screen.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,7 @@ import 'package:BitNet/components/swipebutton/swipeable_button_view.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:BitNet/models/userwallet.dart';
-import 'package:BitNet/pages/qrscreen.dart';
+import 'package:BitNet/pages/scan_qr_screen.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';

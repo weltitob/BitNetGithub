@@ -6,27 +6,31 @@ import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
+import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/pages/actions/sendscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:BitNet/components/camera/qrscanneroverlay.dart';
 import 'package:BitNet/components/camera/textscanneroverlay.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:provider/provider.dart';
 
-class QROtherDeviceScreen extends StatefulWidget {
+class QRScreen extends StatefulWidget {
   final bool isBottomButtonVisible;
 
-  const QROtherDeviceScreen({
+  const QRScreen({
     Key? key,
     required this.isBottomButtonVisible,
   }) : super(key: key);
 
   @override
-  State<QROtherDeviceScreen> createState() => _QROtherDeviceScreenState();
+  State<QRScreen> createState() => _QRScreenState();
 }
 
-class _QROtherDeviceScreenState extends State<QROtherDeviceScreen> {
+class _QRScreenState extends State<QRScreen> {
   @override
   MobileScannerController cameraController = MobileScannerController();
   bool isQRScanner = true;
@@ -47,6 +51,46 @@ class _QROtherDeviceScreenState extends State<QROtherDeviceScreen> {
       privateData.did,
       signedMessage
     );
+  }
+
+  void onScannedForSendingBitcoin(dynamic encodedString) async {
+
+    final userData = Provider.of<UserData>(context);
+
+    final currentqr = QR_BitcoinAddress.fromJson(encodedString);
+
+    /// a simple check if its a BTC wallet or not, regardless of its type
+    final bool isValid = isBitcoinWalletValid(currentqr.bitcoinAddress);
+    print(isValid);
+
+    /// a bit more complicated check which can return the type of
+    /// BTC wallet and return SegWit (Bech32), Regular, or None if
+    /// the string is not a BTC address
+    final walletType = getBitcoinWalletType(currentqr.bitcoinAddress);
+    print(walletType);
+
+    /// Detailed check, for those who need to get more details
+    /// of the wallet. Returns the address type, the network, and
+    /// the wallet type along with its address.
+    /// It always returns BitcoinWalletDetails object. To check if it's
+    /// valid or not use bitcoinWalletDetails.isValid getter
+    /// IMPORTANT The BitcoinWalletDetails class overrides an
+    /// equality operators so two BitcoinWalletDetails objects can be
+    /// compared simply like this bwd1 == bwd2
+    final walletdetails = getBitcoinWalletDetails(currentqr.bitcoinAddress);
+    print(walletdetails);
+
+    if(isValid){
+      await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            SendBTCScreen(
+              bitcoinReceiverAdress: currentqr.bitcoinAddress,
+              bitcoinSenderAdress: userData.mainWallet.walletAddress,),
+      ));
+    } else {
+      print("Error beim einscannen des QR Codes");
+      displaySnackbar(context, "Der eingescannte QR-Code hat kein zugelassenes Format");
+    }
   }
 
   @override
