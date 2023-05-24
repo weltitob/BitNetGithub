@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:BitNet/backbone/auth/storeIONdata.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/models/IONdata.dart';
@@ -37,20 +38,21 @@ class _QRScreenState extends State<QRScreen> {
 
   void onScannedForSignIn(dynamic encodedString) async {
     try{
-      Auth().signOut();
+      //Auth().signOut();
+      final privateData = PrivateData.fromJson(encodedString);
+      final signedMessage = await Auth().signMessageAuth(
+          privateData.did,
+          privateData.privateKey
+      );
+      //login
+      await Auth().signIn(
+          privateData.did,
+          signedMessage
+      );
+      setState(() {});
     } catch(e){
       print("onScannedForSignIn: $e");
     }
-    final privateData = QR_PrivateKey.fromJson(encodedString);
-    final signedMessage = await Auth().signMessageAuth(
-        privateData.did,
-        privateData.privateKey
-    );
-    //login
-    await Auth().signIn(
-      privateData.did,
-      signedMessage
-    );
   }
 
   void onScannedForSendingBitcoin(dynamic encodedString) async {
@@ -112,6 +114,8 @@ class _QRScreenState extends State<QRScreen> {
               onDetect: (barcode, args) async {
                 final String codeinjson = barcode.rawValue.toString();
                 var encodedString = jsonDecode(codeinjson);
+                //check what type we scanned somehow and then call the according functions
+
                 onScannedForSignIn(encodedString);
               }),
           isQRScanner

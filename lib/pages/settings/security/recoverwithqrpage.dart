@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/auth/storeIONdata.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/models/IONdata.dart';
+import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
@@ -34,15 +37,13 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
   }
 
   getPrivateKey() async {
-    IONData privateuserdata = await getIonData(myuserdid);
+    PrivateData privateuserdata = await getIonData(myuserdid);
     //jz alles iwie so in qrcode json format packen dass man es auslesen kann und dann checkt auf der anderen seite
-    final userdata = privateuserdata.toString();
     final userdid = privateuserdata.did;
-    final privatekey = privateuserdata.privateIONKey;
-    final userdatanew = "${userdid}, ${privatekey}";
-    print(userdata.length);
-    print("UserdataJSON: $userdata");
-    return userdatanew;
+    final privatekey = privateuserdata.privateKey;
+    final userdata = PrivateData(did: userdid, privateKey: privatekey);
+    final userdataJsonString = json.encode(userdata.toMap());
+    return userdataJsonString;
   }
 
   GlobalKey globalKeyQR = new GlobalKey();

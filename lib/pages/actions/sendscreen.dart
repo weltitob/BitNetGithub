@@ -10,8 +10,6 @@ import 'package:http/http.dart';
 import 'package:BitNet/backbone/cloudfunctions/getfees.dart';
 import 'package:BitNet/backbone/cloudfunctions/sendbitcoin.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
-import 'package:BitNet/backbone/security/security.dart';
 import 'package:BitNet/pages/bottomnav.dart';
 import 'package:BitNet/components/camera/qrscanneroverlay.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
@@ -20,11 +18,9 @@ import 'package:BitNet/components/swipebutton/swipeable_button_view.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:BitNet/models/userwallet.dart';
-import 'package:BitNet/pages/scan_qr_screen.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 // Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
 class SendBTCScreen extends StatefulWidget {

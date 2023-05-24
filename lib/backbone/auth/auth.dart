@@ -6,6 +6,7 @@ import 'package:BitNet/backbone/cloudfunctions/createdid.dart';
 import 'package:BitNet/backbone/cloudfunctions/loginion.dart';
 import 'package:BitNet/backbone/cloudfunctions/signmessage.dart';
 import 'package:BitNet/models/IONdata.dart';
+import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
 import 'package:BitNet/models/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -91,10 +92,13 @@ class Auth {
   }) async {
     print('Calling Cloudfunction with Microsoft ION now...');
     final IONData iondata = await createDID(user.username);
+
+    final PrivateData privateData = PrivateData(
+        did: iondata.did, privateKey: iondata.privateIONKey);
     print("IONDATA RECEIVED: $iondata");
 
     // Call the function to store ION data in secure storage
-    await storeIonData(iondata);
+    await storePrivateData(privateData);
 
     final currentuser = await signInWithToken(customToken: iondata.customToken);
 
@@ -177,6 +181,7 @@ class Auth {
       );
 
       await signInWithToken(customToken: customToken);
+
     } catch(e){
       throw Exception("signIn user failed $e");
     }

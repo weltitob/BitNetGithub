@@ -5,6 +5,7 @@ import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/IONdata.dart';
+import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
 import 'package:BitNet/models/userdata.dart';
 import 'package:BitNet/pages/auth/ionloadingscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,7 +59,7 @@ class _UsersListState extends State<UsersList>
 
   List userdids = [];
 
-  Future<List<IONData>> getIONDatafromLocalStorage() async {
+  Future<List<PrivateData>> getIONDatafromLocalStorage() async {
     // Assuming you have a method to get all stored IONData from secure storage
     print("GetIONdataFromLocalStorage...");
     return await getAllStoredIonData();
@@ -90,7 +91,7 @@ class _UsersListState extends State<UsersList>
           padding: EdgeInsets.only(top: AppTheme.cardPadding * 0.75),
           child: Container(
             height: AppTheme.cardPadding * 8,
-            child: FutureBuilder<List<IONData>>(
+            child: FutureBuilder<List<PrivateData>>(
               future: getIONDatafromLocalStorage(),
               builder: (context, ionSnapshot) {
                 if (!ionSnapshot.hasData) {
@@ -145,7 +146,7 @@ class _UsersListState extends State<UsersList>
                                       onTap: () async {
                                         try{
                                           widget.loadingION();
-                                          final signedMessage = await Auth().signMessageAuth(ionData.did, ionData.privateIONKey);
+                                          final signedMessage = await Auth().signMessageAuth(ionData.did, ionData.privateKey);
                                           await Auth().signIn(
                                             ionData.did,
                                             signedMessage,
