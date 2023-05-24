@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/generated/l10n.dart';
 import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/pages/routetrees/authroutes.dart';
 import 'package:BitNet/pages/routetrees/authtree.dart';
 import 'package:BitNet/pages/routetrees/getstartedtree.dart';
+import 'package:BitNet/pages/routetrees/widgettree.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -100,6 +102,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
               issuer: widget.code.issuer,
               receiver: widget.code.receiver));
 
+      print("Should navigate to homescreen now...");
+      navigateToHomeScreenAfterLogin(context);
+      setState(() {});
+
     } on FirebaseException catch (e) {
       print("Firebase Exception: $e");
       throw Exception(
@@ -134,26 +140,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
       });
       throw Exception("Error: $e");
     }
-  }
-
-  void navigateToGetStartedTree(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => GetStartedTree()),
-      (Route<dynamic> route) => false,
-    );
-  }
-
-  void navigateToLogin(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-          builder: (context) => GetStartedTree(
-                showSignIn: true,
-                getStarted: false,
-              )),
-      (Route<dynamic> route) => false,
-    );
   }
 
   @override

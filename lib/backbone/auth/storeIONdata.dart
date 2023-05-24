@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,11 +8,11 @@ final secureStorage = FlutterSecureStorage();
 
 Future<void> storePrivateData(PrivateData privateData) async {
   print("Reading secure storage now...");
-  final ionDataJson = await secureStorage.read(key: 'usersInSecureStorage');
+  final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
 
   // Decode the JSON data and map it to a list of IONData objects
-  List<PrivateData> usersStored = ionDataJson != null
-      ? (jsonDecode(ionDataJson) as List)
+  List<PrivateData> usersStored = privateDataJson != null
+      ? (jsonDecode(privateDataJson) as List)
       .map((json) => PrivateData.fromMap(json))
       .toList()
       : [];
@@ -26,7 +27,7 @@ Future<void> storePrivateData(PrivateData privateData) async {
     print("Users getting stored in secure storage now...");
     await secureStorage.write(
       key: 'usersInSecureStorage',
-      value: json.encode(usersStored.map((ionData) => ionData.toMap()).toList()),
+      value: json.encode(usersStored.map((privateData) => privateData.toMap()).toList()),
     );
   } else {
     print("Error trying to write User to local device...");
@@ -35,17 +36,20 @@ Future<void> storePrivateData(PrivateData privateData) async {
 }
 
 
-Future<PrivateData> getIonData(String DidOrUsername) async {
+Future<PrivateData> getPrivateData(String DidOrUsername) async {
   final bool isDID = isStringaDID(DidOrUsername);
   late String did;
+  //late String username;
+
+  print(isDID);
 
   if (isDID) {
     did = DidOrUsername;
+    //username = await Auth().getUserUsername(did);
   } else {
     //getdid for username in database
     final String username = DidOrUsername;
-
-    did = "test";
+    did = await Auth().getUserDID(username);
   }
 
   final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
@@ -60,24 +64,24 @@ Future<PrivateData> getIonData(String DidOrUsername) async {
       .toList();
 
   // Find the IONData object with the matching DID
-  final matchingIonData = usersStored.firstWhere((user) => user.did == did);
+  final matchingPrivateData = usersStored.firstWhere((user) => user.did == did);
 
-  if (matchingIonData == null) {
+  if (matchingPrivateData == null) {
     throw Exception('Failed to find IONData with the specified DID or username');
   }
 
-  return matchingIonData;
+  return matchingPrivateData;
 }
 
 Future<List<PrivateData>> getAllStoredIonData() async {
-  final ionDataJson = await secureStorage.read(key: 'usersInSecureStorage');
+  final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
 
-  if (ionDataJson == null) {
+  if (privateDataJson == null) {
     throw Exception('Failed to retrieve IONData from secure storage');
   }
 
   // Decode the JSON data and map it to a list of IONData objects
-  List<PrivateData> usersStored = (jsonDecode(ionDataJson) as List)
+  List<PrivateData> usersStored = (jsonDecode(privateDataJson) as List)
       .map((json) => PrivateData.fromMap(json))
       .toList();
 
@@ -86,14 +90,14 @@ Future<List<PrivateData>> getAllStoredIonData() async {
 
 Future<void> deleteUserFromStoredIONData(String did) async {
   // Read the stored data
-  final ionDataJson = await secureStorage.read(key: 'usersInSecureStorage');
+  final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
 
-  if (ionDataJson == null) {
+  if (privateDataJson == null) {
     throw Exception('Failed to retrieve IONData from secure storage');
   }
 
   // Decode the JSON data and map it to a list of IONData objects
-  List<PrivateData> usersStored = (jsonDecode(ionDataJson) as List)
+  List<PrivateData> usersStored = (jsonDecode(privateDataJson) as List)
       .map((json) => PrivateData.fromMap(json))
       .toList();
 
@@ -103,7 +107,7 @@ Future<void> deleteUserFromStoredIONData(String did) async {
   // Store the updated list back in the storage
   await secureStorage.write(
       key: 'usersInSecureStorage',
-      value: json.encode(usersStored.map((ionData) => ionData.toMap()).toList())
+      value: json.encode(usersStored.map((privateData) => privateData.toMap()).toList())
   );
 }
 

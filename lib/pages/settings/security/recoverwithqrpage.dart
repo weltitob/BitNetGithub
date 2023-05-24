@@ -37,12 +37,10 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
   }
 
   getPrivateKey() async {
-    PrivateData privateuserdata = await getIonData(myuserdid);
-    //jz alles iwie so in qrcode json format packen dass man es auslesen kann und dann checkt auf der anderen seite
-    final userdid = privateuserdata.did;
-    final privatekey = privateuserdata.privateKey;
-    final userdata = PrivateData(did: userdid, privateKey: privatekey);
-    final userdataJsonString = json.encode(userdata.toMap());
+    print("Trying to read data from secure storage(QR)...");
+    print(myuserdid);
+    PrivateData privateuserdata = await getPrivateData(myuserdid);
+    final userdataJsonString = json.encode(privateuserdata.toMap());
     return userdataJsonString;
   }
 

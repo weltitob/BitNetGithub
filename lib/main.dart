@@ -7,6 +7,8 @@ import 'package:BitNet/pages/routetrees/widgettree.dart';
 import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
 import 'generated/l10n.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
 //import 'firebase_options.dart';
 
 late ThemeData activeTheme;
@@ -32,6 +34,9 @@ Future<void> main() async {
 
   // Ensure that Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Date Formatting
+  await initializeDateFormatting();
 
   // Initialize Firebase
   await Firebase.initializeApp(
