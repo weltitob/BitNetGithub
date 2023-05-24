@@ -148,31 +148,32 @@ class Auth {
     }
   }
 
-  Future<void> signIn(String did, dynamic privateIONKey, String username,) async {
+  signMessageAuth(did, privateIONKey) async{
+    final message = generateUniqueLoginMessage(did);
+
+    final signedMessage =  await signMessageFunction(
+        did,
+        privateIONKey,  // Convert the private key object to a JSON string
+        message
+    );
+
+    //signed message gets verified from loginION function which logs in the user if successful
+    if (signedMessage == null) {
+      throw Exception("Failed to sign message for Auth");
+    }
+
+    print("Message signed... $signedMessage");
+    return signedMessage;
+  }
+
+  Future<void> signIn(String did, dynamic signedAuthMessage,) async {
 
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
     try{
-      final message = generateUniqueLoginMessage(did);
-
-      final signedMessage =  await signMessageFunction(
-          did,
-          privateIONKey,  // Convert the private key object to a JSON string
-          message
-      );
-
-      //signed message gets verified from loginION function which logs in the user if successful
-      if (signedMessage == null) {
-        throw Exception("Failed to sign message");
-      }
-
-      print("Message signed... $signedMessage");
-
       final String customToken = await loginION(
-          username.toString(),
           did.toString(),
-          signedMessage.toString(),
-          message.toString()
+          signedAuthMessage.toString(),
       );
 
       await signInWithToken(customToken: customToken);

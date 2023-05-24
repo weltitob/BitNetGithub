@@ -1,5 +1,6 @@
 class PrivateIONKey {
   String kty;
+  //only d here holds the true private key
   String d;
   String crv;
   String x;

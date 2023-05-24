@@ -9,7 +9,7 @@ import 'package:BitNet/components/camera/qrscanneroverlay.dart';
 import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/camera/textscanneroverlay.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
-import 'package:BitNet/models/qrcodebitcoin.dart';
+import 'package:BitNet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:BitNet/models/userwallet.dart';
 import 'package:BitNet/pages/actions/sendscreen.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
@@ -46,7 +46,7 @@ class _QRScreenState extends State<QRScreen> {
               onDetect: (barcode, args) async {
                 final String codeinjson = barcode.rawValue.toString();
                 var encodedString = jsonDecode(codeinjson);
-                final currentqr = QRCodeBitcoin.fromJson(encodedString);
+                final currentqr = QR_BitcoinAddress.fromJson(encodedString);
 
                 /// a simple check if its a BTC wallet or not, regardless of its type
                 final bool isValid = isBitcoinWalletValid(currentqr.bitcoinAddress);

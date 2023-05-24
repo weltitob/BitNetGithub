@@ -145,10 +145,10 @@ class _UsersListState extends State<UsersList>
                                       onTap: () async {
                                         try{
                                           widget.loadingION();
+                                          final signedMessage = await Auth().signMessageAuth(ionData.did, ionData.privateIONKey);
                                           await Auth().signIn(
-                                            userData.did,
-                                            ionData.privateIONKey,
-                                            ionData.username,
+                                            ionData.did,
+                                            signedMessage,
                                           );
                                         } catch(e){
                                           print("Second widgetloading should be called...");

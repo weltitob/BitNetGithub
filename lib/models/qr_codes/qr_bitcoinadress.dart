@@ -1,15 +1,15 @@
 // This class represents a QR code for a Bitcoin address.
-class QRCodeBitcoin {
+class QR_BitcoinAddress {
   String bitcoinAddress; // The Bitcoin address encoded in the QR code.
 
   // Constructor that creates a [QRCodeBitcoin] instance.
-  QRCodeBitcoin({
+  QR_BitcoinAddress({
     required this.bitcoinAddress,
   });
 
   // Factory method that creates a [QRCodeBitcoin] instance from a JSON map.
-  factory QRCodeBitcoin.fromJson(Map<String, dynamic> json) {
-    return QRCodeBitcoin(
+  factory QR_BitcoinAddress.fromJson(Map<String, dynamic> json) {
+    return QR_BitcoinAddress(
       bitcoinAddress: json['bitcoinAddress'].toString(),
     );
   }
@@ -22,17 +22,17 @@ class QRCodeBitcoin {
   }
 
   // Factory method that creates a [QRCodeBitcoin] instance from a map.
-  factory QRCodeBitcoin.fromMap(Map<String, dynamic> map) {
-    return QRCodeBitcoin(
+  factory QR_BitcoinAddress.fromMap(Map<String, dynamic> map) {
+    return QR_BitcoinAddress(
       bitcoinAddress: map['bitcoinAddress'] ?? '',
     );
   }
 
   // Method that creates a copy of a [QRCodeBitcoin] instance with new values.
-  QRCodeBitcoin copyWith({
+  QR_BitcoinAddress copyWith({
     String? bitcoinAddress,
   }) {
-    return QRCodeBitcoin(
+    return QR_BitcoinAddress(
       bitcoinAddress: bitcoinAddress ?? this.bitcoinAddress,
     );
   }

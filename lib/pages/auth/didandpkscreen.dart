@@ -65,8 +65,8 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
         did = await Auth().getUserDID(_controllerUsername.text);
         myusername = _controllerUsername.text;
       }
-      //call login
-      Auth().signIn(did, _controllerPassword.text, myusername);
+      //call login with signed message and then store the iondata in the privatestorage of new device!
+      //Auth().signIn(did, _controllerPassword.text, myusername);
 
     } catch (e) {
       setState(() {
