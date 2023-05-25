@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:BitNet/generated/l10n.dart';
-import 'package:BitNet/pages/routetrees/onpinverificationsuccess.dart';
+import 'package:BitNet/pages/routetrees/authroutes.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';

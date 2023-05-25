@@ -1,4 +1,4 @@
-import 'package:BitNet/backbone/auth/storeIONdata.dart';
+import 'package:BitNet/backbone/auth/storePrivateData.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
 import 'package:BitNet/components/container/profilepicture.dart';

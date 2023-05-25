@@ -11,24 +11,24 @@ import 'package:flutter/material.dart';
 showSettingsBottomSheet({
   required BuildContext context,
 }) {
-  //diffrent screen states as on the search page and then switch them according to press
-  //settingscreen
-
-  IconData iconData = Icons.settings;
-  bool goBack = false;
-  String title = "Settings";
-
   return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setModalState) {
-              return SettingsPage();
-            });
-      });
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setModalState) {
+          return Container(
+            // Set the desired height
+            height: MediaQuery.of(context).size.height * 0.7,  // 80% of screen height
+            child: SettingsPage(),
+          );
+        },
+      );
+    },
+  );
 }
+
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -70,6 +70,12 @@ class _SettingsPageState extends State<SettingsPage>
         goBack: true,
         iconData: Icons.live_help_rounded,
         title: 'Help & Support',
+      ),
+      SettingsPageModel(
+        widget: InvitationSettingsPage(),
+        goBack: true,
+        iconData: Icons.key_rounded,
+        title: 'Invitation Keys',
       ),
       SettingsPageModel(
         widget: InvitationSettingsPage(),
@@ -211,10 +217,25 @@ class _SettingsPageState extends State<SettingsPage>
             },
           ),
           SettingsListItem(
+            icon: Icons.key,
+            text: 'Invitation keys',
+            onTap: () {
+              setState(() {
+                currentview = 4;
+              });
+              // Navigator.of(context).push(_createSettingsRoute());
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => InvitationSettingsPage()));
+            },
+          ),
+          SettingsListItem(
             icon: Icons.login_rounded,
             text: 'Logout',
             hasNavigation: false,
             onTap: () async {
+              Navigator.of(context).pop();
               await Auth().signOut();
             },
           ),

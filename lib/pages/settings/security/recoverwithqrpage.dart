@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/auth/storeIONdata.dart';
+import 'package:BitNet/backbone/auth/storePrivateData.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
-import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -73,7 +71,7 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
                       child: PrettyQr(
                         //image: AssetImage('assets/images/key_removed_bck.png'),
                         typeNumber: 12,
-                        size: AppTheme.cardPadding * 10,
+                        size: AppTheme.cardPadding * 11,
                         data: snapshot.data,
                         errorCorrectLevel: QrErrorCorrectLevel.M,
                         roundEdges: true,

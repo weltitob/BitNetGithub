@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class OtherDeviceScreen extends StatefulWidget {
+
+
   const OtherDeviceScreen({Key? key}) : super(key: key);
 
   @override
@@ -46,10 +48,10 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
             Navigator.of(context).pop();
           }),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5),
         child: ListView(
           children: [
-            SizedBox(height: AppTheme.cardPadding * 2,),
+            SizedBox(height: AppTheme.cardPadding * 1.5,),
             Text(
               "Step 1: Open the app on a different device.",
               textAlign: TextAlign.left,
@@ -91,8 +93,8 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                    height: AppTheme.cardPadding * 4.5,
-                    width: AppTheme.cardPadding * 4.5,
+                    height: AppTheme.cardPadding * 6,
+                    width: AppTheme.cardPadding * 6,
                     color: Colors.transparent,
                     child: buildFutureLottie(verify_user_composition, true)
                 ),
@@ -126,8 +128,8 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                   ),
                 ),
                 Container(
-                    height: AppTheme.cardPadding * 6,
-                    width: AppTheme.cardPadding * 6,
+                    height: AppTheme.cardPadding * 7,
+                    width: AppTheme.cardPadding * 7,
                     color: Colors.transparent,
                     child: buildFutureLottie(scan_qr_composition, true)
                 ),
@@ -143,7 +145,8 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                   ),
                 ),
               );
-            })
+            }),
+            SizedBox(height: AppTheme.cardPadding * 2,)
           ],
         ),
       ),

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:BitNet/backbone/auth/storeIONdata.dart';
+import 'package:BitNet/backbone/auth/storePrivateData.dart';
 import 'package:BitNet/backbone/auth/uniqueloginmessage.dart';
 import 'package:BitNet/backbone/auth/verificationcodes.dart';
 import 'package:BitNet/backbone/cloudfunctions/createdid.dart';
@@ -9,9 +9,11 @@ import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
 import 'package:BitNet/models/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
+import 'package:BitNet/pages/routetrees/authroutes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:flutter/cupertino.dart';
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
@@ -97,7 +99,7 @@ class Auth {
         did: iondata.did, privateKey: iondata.privateIONKey);
     print("IONDATA RECEIVED: $iondata");
 
-    // Call the function to store ION data in secure storage
+    // Call the function to store Private data in secure storage
     await storePrivateData(privateData);
 
     final currentuser = await signInWithToken(customToken: iondata.customToken);
@@ -170,19 +172,35 @@ class Auth {
     return signedMessage;
   }
 
-  Future<void> signIn(String did, dynamic signedAuthMessage,) async {
 
+  Future<void> signIn(String did, dynamic signedAuthMessage, BuildContext context) async {
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
+
+    //showLoadingScreen
+    navigateToIONLoadingScreen(context);
+
     try{
       final String customToken = await loginION(
-          did.toString(),
-          signedAuthMessage.toString(),
+        did.toString(),
+        signedAuthMessage.toString(),
       );
 
-      await signInWithToken(customToken: customToken);
+      final currentuser = await signInWithToken(customToken: customToken);
+
+      if(currentuser == null){
+        // Remove the loading screen
+        //maybe add error
+        Navigator.pop(context);
+        throw Exception("User couldnt be signed in with custom Token!");
+      } else {
+        //if successfull push back to homescreen
+        navigateToHomeScreenAfterLogin(context);
+      }
 
     } catch(e){
+      // Also pop the loading screen when an error occurs
+      Navigator.pop(context);
       throw Exception("signIn user failed $e");
     }
   }

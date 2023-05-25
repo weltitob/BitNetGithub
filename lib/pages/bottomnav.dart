@@ -68,12 +68,12 @@ class _BottomNavState extends State<BottomNav> {
               ]),
           Positioned(
             bottom: AppTheme.cardPadding,
-            left: AppTheme.cardPadding * 1.5,
-            right: AppTheme.cardPadding * 1.5,
+            left: AppTheme.cardPadding * 1.25,
+            right: AppTheme.cardPadding * 1.25,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100.0),
-                color: Colors.purple.shade800,
+                color: lighten(AppTheme.colorBackground, 17)
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1.25, vertical: AppTheme.elementSpacing * 1.25),

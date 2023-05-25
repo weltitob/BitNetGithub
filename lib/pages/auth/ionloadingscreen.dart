@@ -25,75 +25,78 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
-      body: Stack(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
-                  child: Text(
-                    widget.loadingText,
-                    style: Theme.of(context).textTheme.titleSmall,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(height: AppTheme.elementSpacing),
-                Container(
-                  color: Colors.transparent,
-                  height: AppTheme.cardPadding * 10,
-                  child: FutureBuilder(
-                    future: comp,
-                    builder: (context, snapshot) {
-                      dynamic composition = snapshot.data;
-                      if (composition != null) {
-                        return FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: Lottie(composition: composition),
-                        );
-                      } else {
-                        return Container(
-                          color: Colors.transparent,
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: AppTheme.cardPadding * 2,
-            child: Container(
-              width: MediaQuery.of(context).size.width, // full width
-              child: Row(
+    return WillPopScope(
+      onWillPop: () async => false, // prevent the user from going back
+      child: BitNetScaffold(
+        body: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    S.of(context).poweredByDIDs,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+                    child: Text(
+                      widget.loadingText,
+                      style: Theme.of(context).textTheme.titleSmall,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
+                  SizedBox(height: AppTheme.elementSpacing),
                   Container(
-                    margin:
-                    EdgeInsets.only(left: AppTheme.elementSpacing / 2),
-                    height: AppTheme.cardPadding * 2,
-                    child: Image.asset("assets/images/ion.png"),
+                    color: Colors.transparent,
+                    height: AppTheme.cardPadding * 10,
+                    child: FutureBuilder(
+                      future: comp,
+                      builder: (context, snapshot) {
+                        dynamic composition = snapshot.data;
+                        if (composition != null) {
+                          return FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: Lottie(composition: composition),
+                          );
+                        } else {
+                          return Container(
+                            color: Colors.transparent,
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: AppTheme.cardPadding * 2,
+              child: Container(
+                width: MediaQuery.of(context).size.width, // full width
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      S.of(context).poweredByDIDs,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium,
+                    ),
+                    Container(
+                      margin:
+                      EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                      height: AppTheme.cardPadding * 2,
+                      child: Image.asset("assets/images/ion.png"),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        context: context,
       ),
-      context: context,
     );
   }
 }

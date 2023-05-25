@@ -27,17 +27,6 @@ class ChooseRestoreScreen extends StatefulWidget {
 }
 
 class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
-  bool loading = false;
-
-  void toggleLoading() {
-    setState(() {
-      if (loading == true)
-        loading = false;
-      else {
-        loading = true;
-      }
-    });
-  }
 
   void showError() {
     showErrorDialog(
@@ -49,11 +38,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return loading
-        ? IONLoadingScreen(
-            loadingText: "Patience, please. We're validating "
-                "your account on the blockchain...")
-        : BitNetScaffold(
+    return BitNetScaffold(
             backgroundColor: Theme.of(context).colorScheme.background,
             appBar: BitNetAppBar(
                 text: S.of(context).restoreAccount,
@@ -123,7 +108,6 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                 ),
                 //list accounts
                 UsersList(
-                  loadingION: toggleLoading,
                   showError: showError,
                 )
               ],

@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/auth/storeIONdata.dart';
+import 'package:BitNet/backbone/auth/storePrivateData.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/components/items/userresult.dart';
-import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
 import 'package:BitNet/models/userdata.dart';
-import 'package:BitNet/pages/auth/ionloadingscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -17,11 +14,9 @@ import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class UsersList extends StatefulWidget {
-  final Function() loadingION;
   final Function() showError;
 
   const UsersList({Key? key,
-    required this.loadingION,
     required this.showError,
   }) : super(key: key);
 
@@ -61,8 +56,9 @@ class _UsersListState extends State<UsersList>
 
   Future<List<PrivateData>> getIONDatafromLocalStorage() async {
     // Assuming you have a method to get all stored IONData from secure storage
-    print("GetIONdataFromLocalStorage...");
-    return await getAllStoredIonData();
+    print("Get Private Data from secure storage...");
+    dynamic storeddata = await getAllStoredIonData();
+    return storeddata;
   }
 
   Future<List<UserData>> getUserDatafromFirebase(List<String> dids) async {
@@ -145,15 +141,14 @@ class _UsersListState extends State<UsersList>
                                     child: UserResult(
                                       onTap: () async {
                                         try{
-                                          widget.loadingION();
                                           final signedMessage = await Auth().signMessageAuth(ionData.did, ionData.privateKey);
                                           await Auth().signIn(
                                             ionData.did,
                                             signedMessage,
+                                            context
                                           );
                                         } catch(e){
                                           print("Second widgetloading should be called...");
-                                          widget.loadingION();
                                           widget.showError();
                                           throw Exception("Error trying to sign in: $e");
                                         }

@@ -7,34 +7,40 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final secureStorage = FlutterSecureStorage();
 
 Future<void> storePrivateData(PrivateData privateData) async {
-  print("Reading secure storage now...");
-  final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
+  try {
+    print("Reading secure storage now...");
+    final privateDataJson =
+        await secureStorage.read(key: 'usersInSecureStorage');
 
-  // Decode the JSON data and map it to a list of IONData objects
-  List<PrivateData> usersStored = privateDataJson != null
-      ? (jsonDecode(privateDataJson) as List)
-      .map((json) => PrivateData.fromMap(json))
-      .toList()
-      : [];
+    // Decode the JSON data and map it to a list of IONData objects
+    List<PrivateData> usersStored = privateDataJson != null
+        ? (jsonDecode(privateDataJson) as List)
+            .map((json) => PrivateData.fromMap(json))
+            .toList()
+        : [];
 
-  // Check if the user is already stored based on their DID
-  bool isUserStored = usersStored.any((user) => user.did == privateData.did);
+    // Check if the user is already stored based on their DID
+    bool isUserStored = usersStored.any((user) => user.did == privateData.did);
 
-  if (!isUserStored) {
-    // Add the new user to the list
-    usersStored.add(privateData);
+    if (!isUserStored) {
+      // Add the new user to the list
+      usersStored.add(privateData);
 
-    print("Users getting stored in secure storage now...");
-    await secureStorage.write(
-      key: 'usersInSecureStorage',
-      value: json.encode(usersStored.map((privateData) => privateData.toMap()).toList()),
-    );
-  } else {
+      print("Users getting stored in secure storage now...");
+      await secureStorage.write(
+        key: 'usersInSecureStorage',
+        value: json.encode(
+            usersStored.map((privateData) => privateData.toMap()).toList()),
+      );
+    } else {
+      print("User with the same DID already exists in secure storage.");
+    }
+  } catch (e) {
     print("Error trying to write User to local device...");
-    throw Exception("User with the same DID already exists in secure storage.");
+    throw Exception(
+        "An error occured trying to write to local secure storage: $e");
   }
 }
-
 
 Future<PrivateData> getPrivateData(String DidOrUsername) async {
   final bool isDID = isStringaDID(DidOrUsername);
@@ -67,7 +73,8 @@ Future<PrivateData> getPrivateData(String DidOrUsername) async {
   final matchingPrivateData = usersStored.firstWhere((user) => user.did == did);
 
   if (matchingPrivateData == null) {
-    throw Exception('Failed to find IONData with the specified DID or username');
+    throw Exception(
+        'Failed to find IONData with the specified DID or username');
   }
 
   return matchingPrivateData;
@@ -77,7 +84,9 @@ Future<List<PrivateData>> getAllStoredIonData() async {
   final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
 
   if (privateDataJson == null) {
-    throw Exception('Failed to retrieve IONData from secure storage');
+    print('Failed to retrieve IONData from secure storage');
+    //return empty list
+    return [];
   }
 
   // Decode the JSON data and map it to a list of IONData objects
@@ -107,7 +116,6 @@ Future<void> deleteUserFromStoredIONData(String did) async {
   // Store the updated list back in the storage
   await secureStorage.write(
       key: 'usersInSecureStorage',
-      value: json.encode(usersStored.map((privateData) => privateData.toMap()).toList())
-  );
+      value: json.encode(
+          usersStored.map((privateData) => privateData.toMap()).toList()));
 }
-

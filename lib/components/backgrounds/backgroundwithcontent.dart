@@ -52,46 +52,49 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          height: double.infinity,
-          width: double.infinity,
-          color: Colors.black,
-          child: FutureBuilder(
-            future: _networkimage,
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Container(
-                    color: Colors.black,
-                  );
-                } else if (snapshot.hasError) {
-                  return Container(
-                    color: Colors.black,
-                  );
-                } else {
-                  return FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: AnimatedOpacity(
-                      opacity: _visible ? 1.0 : 0.0, // Set opacity based on visibility
-                      duration: Duration(milliseconds: 3000),
-                      child: Image(
-                        image: snapshot.data!,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            color: Colors.black,
+            child: FutureBuilder(
+              future: _networkimage,
+                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(
+                      color: Colors.black,
+                    );
+                  } else if (snapshot.hasError) {
+                    return Container(
+                      color: Colors.black,
+                    );
+                  } else {
+                    return FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: AnimatedOpacity(
+                        opacity: _visible ? 1.0 : 0.0, // Set opacity based on visibility
+                        duration: Duration(milliseconds: 3000),
+                        child: Image(
+                          image: snapshot.data!,
+                        ),
+                        //Lottie(composition: composition)
                       ),
-                      //Lottie(composition: composition)
-                    ),
-                  );
-                }
-            },
+                    );
+                  }
+              },
+            ),
           ),
-        ),
-        Container(
-          height: double.infinity,
-          width: double.infinity,
-          color: Colors.black.withOpacity(widget.opacity),
-        ),
-        widget.child,
-      ],
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            color: Colors.black.withOpacity(widget.opacity),
+          ),
+          widget.child,
+        ],
+      ),
     );
   }
 }

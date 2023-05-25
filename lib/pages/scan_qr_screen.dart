@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/auth/storeIONdata.dart';
+import 'package:BitNet/backbone/auth/storePrivateData.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/models/IONdata.dart';
@@ -35,20 +35,29 @@ class _QRScreenState extends State<QRScreen> {
   @override
   MobileScannerController cameraController = MobileScannerController();
   bool isQRScanner = true;
+  bool isLoading = false;
 
   void onScannedForSignIn(dynamic encodedString) async {
     try{
       //Auth().signOut();
+
       final privateData = PrivateData.fromJson(encodedString);
+
       final signedMessage = await Auth().signMessageAuth(
           privateData.did,
           privateData.privateKey
       );
       //login
+
+      // Call the function to store Private data in secure storage
+      await storePrivateData(privateData);
+
       await Auth().signIn(
           privateData.did,
-          signedMessage
+          signedMessage,
+          context
       );
+
       setState(() {});
     } catch(e){
       print("onScannedForSignIn: $e");
