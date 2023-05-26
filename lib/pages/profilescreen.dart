@@ -72,7 +72,7 @@ class _ProfileState extends State<Profile> {
 
     pages = [
       //PostsProfileTab(
-        //profileId: widget.profileId,
+      //profileId: widget.profileId,
       //),
       WalletTab(),
       //den nur wenn eigenes profil also abfrage ob eignes profil anonszten was anders zeigen
@@ -364,8 +364,8 @@ class _ProfileState extends State<Profile> {
                           boxShadow: [AppTheme.boxShadowProfile],
                           image: DecorationImage(
                             image: NetworkImage(
-                                'https://crops.giga.de/ed/5d/94/f19c187e579eefbff80498fcc1_YyAzMTU4eDE3NzcrMjErODMCcmUgMTYwMCAxMjAwA2VkZmM3N2VmMDhj.jpg'),
-                            fit: BoxFit.fitHeight,
+                                'https://media.discordapp.net/attachments/1077885354608177222/1111142365340635206/weltitob_a_corud_of_people_holding_their_fist_up_recolution_str_c5102adf-bf30-4478-aacf-acdd5d618e83.png?width=548&height=548'),
+                            fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(
                                 Colors.black.withOpacity(0.3),
                                 BlendMode.dstATop),
@@ -584,8 +584,7 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-        )
-    );
+        ));
   }
 
   buildCenterWidgetIcon({
@@ -757,7 +756,8 @@ class _ProfileState extends State<Profile> {
             );
 
   Widget buildUserInformation(String username, String displayName) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+        padding:
+            const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
         child: Column(
           children: [
             TextField(
