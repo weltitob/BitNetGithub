@@ -1,3 +1,4 @@
+import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
@@ -66,7 +67,8 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    OptionContainer(context, "Word recovery", () {},
+                    OptionContainer(context, "Word recovery", () {
+                    },
                         image: "assets/images/wallet.png"),
                     OptionContainer(context, "Connect with other device", () {
                       Navigator.push(

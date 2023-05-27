@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/generated/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -67,6 +68,12 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       }
       //call login with signed message and then store the iondata in the privatestorage of new device!
       //Auth().signIn(did, _controllerPassword.text, myusername);
+
+      final recoveredprivatkey = await recoverKey(did, _controllerPassword.text);
+
+      final signedMessage =
+      await Auth().signMessageAuth(did, recoveredprivatkey);
+      await Auth().signIn(did, signedMessage, context);
 
     } catch (e) {
       setState(() {

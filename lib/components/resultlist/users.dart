@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/auth/storePrivateData.dart';
+import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/components/items/userresult.dart';
+import 'package:BitNet/models/keys/privateionkey.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
 import 'package:BitNet/models/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,7 +18,8 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class UsersList extends StatefulWidget {
   final Function() showError;
 
-  const UsersList({Key? key,
+  const UsersList({
+    Key? key,
     required this.showError,
   }) : super(key: key);
 
@@ -45,6 +48,29 @@ class _UsersListState extends State<UsersList>
         _visible = true;
       });
     });
+  }
+
+  void loginButtonPressed(PrivateData privateData) async {
+    try {
+      print("Login for user ${privateData.did} pressed");
+      print("Privatekey: ${privateData.privateKey}");
+
+      String keyString = privateData.privateKey.trim();
+      PrivateIONKey key = PrivateIONKey.fromString(keyString);
+
+      print(key.toString());
+
+      print("Calling recoverkey for user now...");
+      final recoveredprivatkey = await recoverKey(privateData.did, key.d);
+
+      final signedMessage =
+          await Auth().signMessageAuth(privateData.did, privateData.privateKey);
+      await Auth().signIn(privateData.did, signedMessage, context);
+    } catch (e) {
+      print("Second widgetloading should be called...");
+      widget.showError();
+      throw Exception("Error trying to sign in: $e");
+    }
   }
 
   @override
@@ -95,7 +121,8 @@ class _UsersListState extends State<UsersList>
                       height: AppTheme.cardPadding * 4,
                       child: Center(child: dotProgress(context)));
                 }
-                List<String> dids = ionSnapshot.data!.map((ionData) => ionData.did).toList();
+                List<String> dids =
+                    ionSnapshot.data!.map((ionData) => ionData.did).toList();
 
                 return FutureBuilder<List<UserData>>(
                   future: getUserDatafromFirebase(dids),
@@ -107,7 +134,8 @@ class _UsersListState extends State<UsersList>
                     }
                     List<UserData> all_userresults = userDataSnapshot.data!;
                     if (all_userresults.length == 0) {
-                      return searchForFilesAnimation(_searchforfilesComposition);
+                      return searchForFilesAnimation(
+                          _searchforfilesComposition);
                     }
                     return Column(
                       children: <Widget>[
@@ -124,11 +152,15 @@ class _UsersListState extends State<UsersList>
                               itemCount: all_userresults.length,
                               itemBuilder: (context, index) {
                                 final userData = all_userresults[index];
-                                var _scale = _selectedindex == index ? 1.0 : 0.85;
+                                var _scale =
+                                    _selectedindex == index ? 1.0 : 0.85;
 
-                                final ionData = ionSnapshot.data!.firstWhere((ionData) => ionData.did == userData.did);
+                                final privateData = ionSnapshot.data!
+                                    .firstWhere((ionData) =>
+                                        ionData.did == userData.did);
                                 return TweenAnimationBuilder<double>(
-                                  tween: Tween<double>(begin: _scale, end: _scale),
+                                  tween:
+                                      Tween<double>(begin: _scale, end: _scale),
                                   curve: Curves.ease,
                                   duration: Duration(milliseconds: 350),
                                   builder: (context, value, child) {
@@ -139,27 +171,17 @@ class _UsersListState extends State<UsersList>
                                   },
                                   child: Center(
                                     child: UserResult(
-                                      onTap: () async {
-                                        try{
-                                          final signedMessage = await Auth().signMessageAuth(ionData.did, ionData.privateKey);
-                                          await Auth().signIn(
-                                            ionData.did,
-                                            signedMessage,
-                                            context
-                                          );
-                                        } catch(e){
-                                          print("Second widgetloading should be called...");
-                                          widget.showError();
-                                          throw Exception("Error trying to sign in: $e");
-                                        }
+                                      onTap: () {
+                                        loginButtonPressed(privateData);
                                       },
                                       userData: userData,
                                       onDelete: () async {
-                                      await deleteUserFromStoredIONData(userData.did);
-                                      setState(() {
-                                        all_userresults.removeAt(index);
-                                      });
-                                    },
+                                        await deleteUserFromStoredIONData(
+                                            userData.did);
+                                        setState(() {
+                                          all_userresults.removeAt(index);
+                                        });
+                                      },
                                     ),
                                   ),
                                 );
@@ -167,7 +189,9 @@ class _UsersListState extends State<UsersList>
                             ),
                           ),
                         ),
-                        SizedBox(height: AppTheme.cardPadding,),
+                        SizedBox(
+                          height: AppTheme.cardPadding,
+                        ),
                         Center(
                           child: SmoothPageIndicator(
                             controller: pageController,
@@ -189,7 +213,6 @@ class _UsersListState extends State<UsersList>
       ],
     );
   }
-
 
   Widget searchForFilesAnimation(dynamic comp) {
     return Center(
@@ -220,7 +243,9 @@ class _UsersListState extends State<UsersList>
               },
             ),
           ),
-          SizedBox(height: AppTheme.elementSpacing,),
+          SizedBox(
+            height: AppTheme.elementSpacing,
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 3),
             child: Text(

@@ -3,7 +3,7 @@ import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-Future<Map<String, dynamic>> recoverKey(String did, String d) async {
+recoverKey(String did, String d) async {
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('recoverKeyFunction');
   print("Recovering key...");
 
@@ -21,7 +21,7 @@ Future<Map<String, dynamic>> recoverKey(String did, String d) async {
   if (callback.statusCode == "200") {
     print(callback.message);
     Map<String, dynamic> recoveredKey = callback.data['recoveredKey']; // Extracting the recovered key
-    return recoveredKey;
+    return recoveredKey.toString();
   } else {
     throw Exception(callback.message);
   }

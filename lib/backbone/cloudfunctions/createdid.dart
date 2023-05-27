@@ -2,6 +2,7 @@ import 'package:BitNet/backbone/helper/deepmapcast.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+
 createDID(String username) async {
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createDID');
   print("Creating did...");
@@ -23,6 +24,7 @@ createDID(String username) async {
   if (callback.statusCode == "200"){
     print("Cloudfunction Callbackmessage: ${callback.message}");
     final mydata = IONData.fromJson(callback.data);
+    print("Mnemonic: ${mydata.mnemonic}");
     return mydata;
   } else{
     return;
