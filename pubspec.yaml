@@ -163,6 +163,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/lottiefiles/
+    - assets/textfiles/
 
   generate: true
 

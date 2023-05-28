@@ -3,6 +3,7 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/auth/storePrivateData.dart';
 import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/components/indicators/smoothpageindicator.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/keys/privateionkey.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
@@ -193,14 +194,9 @@ class _UsersListState extends State<UsersList>
                           height: AppTheme.cardPadding,
                         ),
                         Center(
-                          child: SmoothPageIndicator(
-                            controller: pageController,
-                            count: all_userresults.length,
-                            effect: ExpandingDotsEffect(
-                              activeDotColor: AppTheme.colorBitcoin,
-                              dotColor: AppTheme.glassMorphColorLight,
-                            ),
-                          ),
+                          child: buildIndicator(
+                              pageController,
+                              all_userresults.length)
                         ),
                       ],
                     );

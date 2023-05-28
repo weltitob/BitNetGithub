@@ -1,11 +1,6 @@
-import 'package:BitNet/pages/auth/chooserestorescreen.dart';
-import 'package:flutter/material.dart';
-import 'package:BitNet/models/verificationcode.dart';
-import 'package:BitNet/pages/auth/getstartedscreen.dart';
-import 'package:BitNet/pages/auth/didandpkscreen.dart';
 import 'package:BitNet/pages/auth/pinverificationscreen.dart';
-import 'package:BitNet/pages/auth/createaccountscreen.dart';
-import 'package:BitNet/pages/auth/usephrasesscreen.dart';
+import 'package:BitNet/pages/auth/restore/chooserestorescreen.dart';
+import 'package:flutter/material.dart';
 
 /*
  This Flutter widget displays either a login screen, a registration screen,
@@ -27,7 +22,6 @@ class AuthTree extends StatefulWidget {
 
 class _AuthTreeState extends State<AuthTree> {
   // boolean variables to track which screen to show
-  bool resetpassword = false;
   bool getStarted = true;
   bool isInvited = false;
 
@@ -42,34 +36,16 @@ class _AuthTreeState extends State<AuthTree> {
     });
   }
 
-  // callback function to switch between sign-in and reset password screens
-  void toggleresetpassword() {
-    setState(() {
-      if (resetpassword == true)
-        resetpassword = false;
-      else {
-        resetpassword = true;
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     // show the reset password screen if the resetpassword variable is true else {
         if (widget.showSignIn) {
-          if (resetpassword) {
-            return UsePhrasesScreen(
-              toggleView: toggleView,
-              toggleResetPassword: toggleresetpassword,
-            );
-          } else {
             //return ChooseRestoreScreen();
             return ChooseRestoreScreen(
               toggleGetStarted: widget.toggleGetStarted,
               toggleView: toggleView,
-              toggleResetPassword: toggleresetpassword,
             );
-          }
         } else {
           return PinVerificationScreen(
             toggleGetStarted: widget.toggleGetStarted,

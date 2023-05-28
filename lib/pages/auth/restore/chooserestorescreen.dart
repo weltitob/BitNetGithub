@@ -6,21 +6,21 @@ import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/components/resultlist/users.dart';
 import 'package:BitNet/generated/l10n.dart';
-import 'package:BitNet/pages/auth/didandpkscreen.dart';
 import 'package:BitNet/pages/auth/ionloadingscreen.dart';
-import 'package:BitNet/pages/auth/otherdevicescreen.dart';
+import 'package:BitNet/pages/auth/restore/didandpkscreen.dart';
+import 'package:BitNet/pages/auth/restore/otherdevicescreen.dart';
+import 'package:BitNet/pages/auth/restore/socialrecoveryscreen.dart';
+import 'package:BitNet/pages/auth/restore/wordrecoveryscreen.dart';
 import 'package:flutter/material.dart';
 
 class ChooseRestoreScreen extends StatefulWidget {
   final Function() toggleView;
   final Function() toggleGetStarted;
-  final Function() toggleResetPassword;
 
   ChooseRestoreScreen({
     Key? key,
     required this.toggleView,
     required this.toggleGetStarted,
-    required this.toggleResetPassword,
   }) : super(key: key);
 
   @override
@@ -68,6 +68,11 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     OptionContainer(context, "Word recovery", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WordRecoveryScreen()),
+                      );
                     },
                         image: "assets/images/wallet.png"),
                     OptionContainer(context, "Connect with other device", () {
@@ -85,7 +90,13 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    OptionContainer(context, "Social recovery", () {},
+                    OptionContainer(context, "Social recovery", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SocialRecoveryScreen()),
+                      );
+                    },
                         image: "assets/images/friends.png"),
                     OptionContainer(context, "Use DID and Private Key", () {
                       Navigator.push(
