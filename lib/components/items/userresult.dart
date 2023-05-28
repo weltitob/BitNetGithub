@@ -10,7 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class UserResult extends StatefulWidget {
   final UserData userData;
-  final VoidCallback onTap;
+  final Future<void> Function() onTap;
   final VoidCallback onDelete;
 
   UserResult({
@@ -112,17 +112,19 @@ class _UserResultState extends State<UserResult> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: AppTheme.elementSpacing),
                           child: InkWell(
-                            onTap: () {
+                            onTap: () async {
                               setState(() {
                                 _loading = true;
-                                try{
-                                  widget.onTap();
-                                } catch(e){
-                                  print(e);
-                                  _loading = false;
-                                }
                               });
-
+                              try {
+                                await widget.onTap();
+                              } catch(e) {
+                                print(e);
+                              } finally {
+                                setState(() {
+                                  _loading = false;
+                                });
+                              }
                             },
                             child: Container(
                               height: AppTheme.cardPadding * 1.5,

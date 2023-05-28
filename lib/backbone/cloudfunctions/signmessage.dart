@@ -32,7 +32,7 @@ signMessageFunction(String did, String privateIONKey, String message,) async {
 // Create the model instance
   PrivateIONKey privateKey = PrivateIONKey.fromJson(privateKeyMap);
 
-  print(json.encode(privateKeyMap));
+  print("This is what I give the cloud: ${json.encode(privateKeyMap)}");
 
   try {
     final HttpsCallableResult<dynamic> response = await callable.call(<String, dynamic>{

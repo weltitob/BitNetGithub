@@ -264,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         List<UserResult> searchresults = [];
         snapshot.data.docs.forEach((doc) {
           UserData user = UserData.fromDocument(doc);
-          UserResult searchResult = UserResult(userData: user, onTap: () {  }, onDelete: () {  },);
+          UserResult searchResult = UserResult(userData: user, onTap: () async {  }, onDelete: () {  },);
           searchresults.add(searchResult);
         });
         return ListView(

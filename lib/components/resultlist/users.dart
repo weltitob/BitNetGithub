@@ -51,7 +51,7 @@ class _UsersListState extends State<UsersList>
     });
   }
 
-  void loginButtonPressed(PrivateData privateData) async {
+  loginButtonPressed(PrivateData privateData) async {
     try {
       print("Login for user ${privateData.did} pressed");
       print("Privatekey: ${privateData.privateKey}");
@@ -61,12 +61,12 @@ class _UsersListState extends State<UsersList>
 
       print(key.toString());
 
-      print("Calling recoverkey for user now...");
-      final recoveredprivatkey = await recoverKey(privateData.did, key.d);
+      //print("Calling recoverkey for user now...");
+      //final recoveredprivatkey = await recoverKey(privateData.did, key.d);
 
-      final signedMessage =
-          await Auth().signMessageAuth(privateData.did, privateData.privateKey);
+      final signedMessage = await Auth().signMessageAuth(privateData.did, privateData.privateKey);
       await Auth().signIn(privateData.did, signedMessage, context);
+
     } catch (e) {
       print("Second widgetloading should be called...");
       widget.showError();
@@ -152,7 +152,7 @@ class _UsersListState extends State<UsersList>
                               },
                               itemCount: all_userresults.length,
                               itemBuilder: (context, index) {
-                                final userData = all_userresults[index];
+                                final userData = all_userresults.reversed.toList()[index];
                                 var _scale =
                                     _selectedindex == index ? 1.0 : 0.85;
 
@@ -172,15 +172,14 @@ class _UsersListState extends State<UsersList>
                                   },
                                   child: Center(
                                     child: UserResult(
-                                      onTap: () {
-                                        loginButtonPressed(privateData);
+                                      onTap: () async {
+                                        await loginButtonPressed(privateData);
                                       },
                                       userData: userData,
                                       onDelete: () async {
-                                        await deleteUserFromStoredIONData(
-                                            userData.did);
+                                        await deleteUserFromStoredIONData(userData.did);
                                         setState(() {
-                                          all_userresults.removeAt(index);
+                                          all_userresults.removeAt(all_userresults.length - 1 - index); // calculate original index
                                         });
                                       },
                                     ),

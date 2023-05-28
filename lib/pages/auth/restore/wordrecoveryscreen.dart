@@ -1,9 +1,11 @@
+import 'package:BitNet/backbone/cloudfunctions/recoverKeyWithMnemonic.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/components/indicators/smoothpageindicator.dart';
 import 'package:BitNet/components/textfield/formtextfield.dart';
+import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -71,10 +73,13 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
     splittedbipwords = bipwords.split(" ");
   }
 
-  void onSignInPressesd(){
+  void onSignInPressesd() async {
     final String mnemonic = textControllers.map((controller) => controller.text).join(' ');
     print(mnemonic);
     //call the cloudfunction that recovers privatekey and did
+    print("reover Key should be triggered!!!");
+    final PrivateData privateData = await recoverKeyWithMnemonic(mnemonic);
+    print("Privatedata succesfully recovered: $privateData");
 
     //use privatekey and did to sign the message and authenticate afterwards
   }

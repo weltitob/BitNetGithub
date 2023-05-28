@@ -93,7 +93,10 @@ class Auth {
     required VerificationCode code,
   }) async {
     print('Calling Cloudfunction with Microsoft ION now...');
-    final IONData iondata = await createDID(user.username);
+
+    final String challange = generateChallenge(user.did);
+
+    final IONData iondata = await createDID(user.username, challange);
 
     final PrivateData privateData = PrivateData(
         did: iondata.did, privateKey: iondata.privateIONKey);
@@ -155,21 +158,25 @@ class Auth {
   }
 
   signMessageAuth(did, privateIONKey) async{
-    final message = generateUniqueLoginMessage(did);
+    try{
+      final message = generateChallenge(did);
 
-    final signedMessage =  await signMessageFunction(
-        did,
-        privateIONKey,  // Convert the private key object to a JSON string
-        message
-    );
+      final signedMessage =  await signMessageFunction(
+          did,
+          privateIONKey,  // Convert the private key object to a JSON string
+          message
+      );
 
-    //signed message gets verified from loginION function which logs in the user if successful
-    if (signedMessage == null) {
-      throw Exception("Failed to sign message for Auth");
+      //signed message gets verified from loginION function which logs in the user if successful
+      if (signedMessage == null) {
+        throw Exception("Failed to sign message for Auth");
+      }
+
+      print("Message signed... $signedMessage");
+      return signedMessage;
+    } catch(e){
+      throw Exception("Error signing message: $e");
     }
-
-    print("Message signed... $signedMessage");
-    return signedMessage;
   }
 
 
@@ -177,10 +184,10 @@ class Auth {
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
 
-    //showLoadingScreen
-    navigateToIONLoadingScreen(context);
-
     try{
+      //showLoadingScreen
+      navigateToIONLoadingScreen(context);
+
       final String customToken = await loginION(
         did.toString(),
         signedAuthMessage.toString(),

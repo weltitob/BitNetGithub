@@ -68,8 +68,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                       repeat: false,),
                     );
                   } else {
-                    return Container(
-                      color: Colors.transparent,
+                    return FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: Container(
+                        color: Colors.transparent,
+                      ),
                     );
                   }
                 },
