@@ -146,23 +146,28 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
                 child: PageView(
                   onPageChanged: (val) {
                     setState(() {
-                      onLastPage = (val == 2);
+                      onLastPage = (val == 3);
                     });
                   },
                   controller: _pageController,
                   children: [
-                    FormTextField(
-                      title: S.of(context).usernameOrDID,
-                      controller: _usernameController,
-                      isObscure: false,
-                      //das muss eh noch geändert werden gibt ja keine email
-                      validator: (val) =>
-                          val!.isEmpty ? "Iwas geht nicht" : null,
-                      onChanged: (val) {
-                        setState(() {
-                          username = val;
-                        });
-                      },
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+                        child: FormTextField(
+                          title: S.of(context).usernameOrDID,
+                          controller: _usernameController,
+                          isObscure: false,
+                          //das muss eh noch geändert werden gibt ja keine email
+                          validator: (val) =>
+                              val!.isEmpty ? "Iwas geht nicht" : null,
+                          onChanged: (val) {
+                            setState(() {
+                              username = val;
+                            });
+                          },
+                        ),
+                      ),
                     ),
                     buildInputFields(
                         "1.",
@@ -212,7 +217,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
               SizedBox(
                 height: AppTheme.cardPadding,
               ),
-              buildIndicator(_pageController, 3),
+              buildIndicator(_pageController, 4),
               SizedBox(
                 height: AppTheme.cardPadding * 2,
               ),
