@@ -1,3 +1,4 @@
+import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/cloudfunctions/recoverKeyWithMnemonic.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
@@ -18,6 +19,7 @@ class WordRecoveryScreen extends StatefulWidget {
 class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   PageController _pageController = PageController();
   bool onLastPage = false;
+  bool _isLoading = false;
 
   String bipwords = '';
   List<String> splittedbipwords = [];
@@ -74,12 +76,26 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   }
 
   void onSignInPressesd() async {
-    final String mnemonic = textControllers.map((controller) => controller.text).join(' ');
-    print(mnemonic);
-    //call the cloudfunction that recovers privatekey and did
-    print("reover Key should be triggered!!!");
-    final PrivateData privateData = await recoverKeyWithMnemonic(mnemonic);
-    print("Privatedata succesfully recovered: $privateData");
+    try{
+      setState(() {
+        _isLoading = true;
+      });
+      final String mnemonic = textControllers.map((controller) => controller.text).join(' ');
+      print(mnemonic);
+      //call the cloudfunction that recovers privatekey and did
+      print("reover Key should be triggered!!!");
+      final PrivateData privateData = await recoverKeyWithMnemonic(mnemonic);
+      print("Privatedata succesfully recovered: $privateData");
+      final signedMessage =
+      await Auth().signMessageAuth(privateData.did, privateData.privateKey);
+      await Auth().signIn(privateData.did, signedMessage, context);
+
+    } catch(e){
+      setState(() {
+        _isLoading = false;
+      });
+      throw Exception("Irgendeine error message lel");
+    }
 
     //use privatekey and did to sign the message and authenticate afterwards
   }
@@ -129,7 +145,9 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
                 child: LongButtonWidget(
-                    title: onLastPage ? "Sign In" : "Next", onTap: onLastPage ? onSignInPressesd : nextPageFunction
+                    title: onLastPage ? "Sign In" : "Next", onTap: onLastPage ? onSignInPressesd : nextPageFunction,
+                  state:
+                  _isLoading ? ButtonState.loading : ButtonState.idle,
                 ),
               ),
             ],
