@@ -7,7 +7,7 @@ import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/pages/actions/sendscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';

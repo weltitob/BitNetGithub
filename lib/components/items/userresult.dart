@@ -4,7 +4,7 @@ import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
 import 'package:BitNet/components/container/profilepicture.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

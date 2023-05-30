@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ import 'package:BitNet/backbone/streams/gettransactionsstream.dart';
 import 'package:BitNet/components/items/transactionitem.dart';
 import 'package:BitNet/models/transaction.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 import 'package:provider/provider.dart';
 
 class Transactions extends StatefulWidget {

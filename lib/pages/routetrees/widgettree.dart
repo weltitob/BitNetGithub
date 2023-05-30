@@ -1,4 +1,5 @@
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/components/buttons/longbutton.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/auth/auth.dart';
@@ -7,8 +8,6 @@ import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:BitNet/backbone/security/security.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/pages/bottomnav.dart';
-import 'package:BitNet/models/userwallet.dart';
-import 'package:BitNet/pages/routetrees/authtree.dart';
 import 'package:BitNet/pages/routetrees/getstartedtree.dart';
 import 'package:provider/provider.dart';
 
@@ -78,15 +77,48 @@ class _WidgetTreeState extends State<WidgetTree> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (userData == null) {
-            return Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              color: Theme.of(context).colorScheme.background,
-              child: Center(
-                child: dotProgress(context),
-              ),
+            return FutureBuilder(
+              future: Future.delayed(Duration(seconds: 20)),
+              builder: (context, snapshot) {
+                // If Future is still running, show the loading progress
+                //while retriving userData
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    color: Theme.of(context).colorScheme.background,
+                    child: Center(
+                      child: dotProgress(context),
+                    ),
+                  );
+                }
+                // If Future is completed, show the error message and a log out button
+                //this is when the user is somehow logged in in the firebaseauth but we cant retrive the UserData correctly
+                return Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  color: Theme.of(context).colorScheme.background,
+                  child: Center(
+                    child: Container(
+                      margin: EdgeInsets.all(AppTheme.cardPadding * 2),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("Something went wrong, please check your connection and try again later.",
+                          style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
+                          SizedBox(height: AppTheme.cardPadding,),
+                          LongButtonWidgetTransparent(title: "Sign out", onTap:
+                          (){
+                            Auth().signOut();}
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             );
-          } //when userdata isnt null anymore (listening to Stream)
+        } //when userdata isnt null anymore (listening to Stream)
           if (isBioAuthenticated == true || hasBiometrics == false) {
             return BottomNav();
           }

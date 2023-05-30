@@ -5,7 +5,7 @@ import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:BitNet/models/transaction.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 
 /*
 The function takes in four required parameters: userWallet, receiver_address, amount_to_send, and fee_size.

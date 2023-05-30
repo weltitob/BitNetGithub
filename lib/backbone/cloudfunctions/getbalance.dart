@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 
 bool _canCallFunction = true;
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 
 /*
 Creates a new Bitcoin wallet for the given email address by calling a cloud function.

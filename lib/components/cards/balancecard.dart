@@ -1,4 +1,4 @@
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:BitNet/backbone/cloudfunctions/getbalance.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 import 'package:provider/provider.dart';
 
 class BalanceCardBtc extends StatelessWidget {

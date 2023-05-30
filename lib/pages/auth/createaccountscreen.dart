@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/generated/l10n.dart';
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/pages/routetrees/authroutes.dart';
 import 'package:BitNet/pages/routetrees/authtree.dart';
 import 'package:BitNet/pages/routetrees/getstartedtree.dart';
@@ -16,7 +16,7 @@ import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/components/textfield/formtextfield.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 
@@ -78,7 +78,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
       final List<UserWallet> walletlist = [userwalletdata];
 
       final userdata = UserData(
-          backgroundImageUrl: "backgroundImageUrl",
+          backgroundImageUrl: "https://media.discordapp.net/attachments/1077885354608177222/1111142365340635206/weltitob_a_corud_of_people_holding_their_fist_up_recolution_str_c5102adf-bf30-4478-aacf-acdd5d618e83.png?width=548&height=548",
           isPrivate: false,
           showFollowers: false,
           did: "",
@@ -87,7 +87,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
           bio: "Hey there Bitcoiners! I joined the revolution!",
           customToken: "customToken",
           username: _controllerUsername.text,
-          profileImageUrl: "profileImageUrl",
+          profileImageUrl: "https://marketplace.canva.com/EAFEits4-uw/1/0/1600w/canva-boy-cartoon-gamer-animated-twitch-profile-photo-oEqs2yqaL8s.jpg",
           createdAt: timestamp,
           updatedAt: timestamp,
           isActive: true,

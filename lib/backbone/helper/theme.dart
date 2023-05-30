@@ -51,6 +51,7 @@ class AppTheme {
 
   //spaces
   static const double cardPadding = 24;
+  static const double cardPaddingSmall = 16;
   static const double cardPaddingBig = 28;
   static const double cardPaddingBigger = 32;
   static const double elementSpacing = cardPadding * 0.5;

@@ -4,12 +4,12 @@ import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/container/coinlogo.dart';
+import 'package:BitNet/components/container/glassmorph.dart';
 import 'package:BitNet/components/dialogsandsheets/bottomsheet.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/components/tabs/editprofile.dart';
 import 'package:BitNet/components/tabs/wallettab.dart';
-import 'package:BitNet/models/userdata.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/pages/settings/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +74,7 @@ class _ProfileState extends State<Profile> {
       //PostsProfileTab(
       //profileId: widget.profileId,
       //),
+      Container(),
       WalletTab(),
       //den nur wenn eigenes profil also abfrage ob eignes profil anonszten was anders zeigen
       EditProfileTab(),
@@ -114,8 +115,8 @@ class _ProfileState extends State<Profile> {
     _validUserName = userData.username;
 
     //lol später zu bio ändern
-    bioController.text = userData.profileImageUrl;
-    _validBio = userData.profileImageUrl;
+    bioController.text = userData.bio;
+    _validBio = userData.bio;
 
     //should show followers
     _showFollwers = userData.showFollowers;
@@ -315,7 +316,9 @@ class _ProfileState extends State<Profile> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: ListView(
+      body: isUserLoading
+          ? Center(child: dotProgress(context))
+          : ListView(
         children: [
           buildProfileHeader(context),
           pages[currentview],
@@ -349,9 +352,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget buildProfileHeader(context) {
-    return isUserLoading
-        ? dotProgress(context)
-        : Column(
+    return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Stack(alignment: Alignment.center, children: <Widget>[
@@ -364,10 +365,10 @@ class _ProfileState extends State<Profile> {
                           boxShadow: [AppTheme.boxShadowProfile],
                           image: DecorationImage(
                             image: NetworkImage(
-                                'https://media.discordapp.net/attachments/1077885354608177222/1111142365340635206/weltitob_a_corud_of_people_holding_their_fist_up_recolution_str_c5102adf-bf30-4478-aacf-acdd5d618e83.png?width=548&height=548'),
+                                userData.backgroundImageUrl),
                             fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.3),
+                                Colors.black.withOpacity(0.25),
                                 BlendMode.dstATop),
                           ),
                           borderRadius: BorderRadius.only(
@@ -401,10 +402,10 @@ class _ProfileState extends State<Profile> {
                                         : () {
                                             print('wtf');
                                             showDialogueMultipleOptions(
-                                              image1: '',
-                                              image2: '',
-                                              image3: '',
-                                              image4: '',
+                                              image1: 'assets/images/bitcoin.png',
+                                              image2: 'assets/images/bitcoin.png',
+                                              image3: 'assets/images/bitcoin.png',
+                                              image4: 'assets/images/bitcoin.png',
                                               text1: 'Profilepic',
                                               text2: 'Background',
                                               text3: 'Porfile NFT',
@@ -438,7 +439,7 @@ class _ProfileState extends State<Profile> {
                                           ),
                               ],
                             ),
-                            const SizedBox(height: AppTheme.elementSpacing),
+                            const SizedBox(height: AppTheme.elementSpacing / 2),
                             buildUserInformation(
                               userData.username,
                               userData.displayName,
@@ -514,7 +515,7 @@ class _ProfileState extends State<Profile> {
               top: AppTheme.cardPadding,
             ),
             child: RoundedButtonWidget(
-              isGlassmorph: false,
+              isGlassmorph: true,
               iconData: Icons.brightness_low_rounded,
               onTap: () {
                 showSettingsBottomSheet(context: context);
@@ -545,7 +546,7 @@ class _ProfileState extends State<Profile> {
               //   },
               // ));
             },
-            isGlassmorph: false,
+            isGlassmorph: true,
           ),
         ),
       ),
@@ -572,10 +573,9 @@ class _ProfileState extends State<Profile> {
                   child: Padding(
                     padding: const EdgeInsets.all(AppTheme.elementSpacing),
                     child: PrettyQr(
-                      image: AssetImage('assets/images/ion_baw.png'),
-                      typeNumber: 3,
-                      size: 240,
-                      data: 'test',
+                      typeNumber: 5,
+                      size: AppTheme.cardPadding * 10,
+                      data: 'did: ${userData.did}',
                       errorCorrectLevel: QrErrorCorrectLevel.M,
                       roundEdges: true,
                     ),
@@ -619,14 +619,12 @@ class _ProfileState extends State<Profile> {
     bool isProfileOwner = currentUserId == userData.did;
 
     return Positioned(
-      bottom: 20,
+      bottom: 17,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.0),
-        height: 40,
-        width: 220,
+        height: AppTheme.cardPadding * 2,
+        width: AppTheme.cardPadding * 10,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: BorderRadius.all(Radius.circular(50)),
+          borderRadius: AppTheme.cardRadiusBigger,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -635,43 +633,50 @@ class _ProfileState extends State<Profile> {
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            buildCenterWidgetIcon(
-              iconData: Icons.table_rows_rounded,
-              index: 0,
-              onTap: () => setState(() {
-                currentview = 0;
-              }),
-            ),
-            buildCenterWidgetIcon(
-              iconData: Icons.wallet,
-              index: 1,
-              onTap: () => setState(() {
-                currentview = 1;
-              }),
-            ),
-            GestureDetector(
+        child: Glassmorphism(
+          gradientBegin: Alignment.topCenter,
+          gradientEnd: Alignment.bottomCenter,
+          blur: 50,
+          opacity: 0.15,
+          radius: AppTheme.cardPaddingBigger,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildCenterWidgetIcon(
+                iconData: Icons.table_rows_rounded,
+                index: 0,
                 onTap: () => setState(() {
-                      currentview = 2;
-                    }),
-                child: Container(
-                  decoration: BoxDecoration(
-                      // color: Colors.greenAccent[700],
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  child: Icon(
-                    isProfileOwner ? Icons.edit : Icons.person_add_rounded,
-                    size: AppTheme.iconSize,
-                    color: currentview == 2
-                        ? Theme.of(context).colorScheme.onSecondaryContainer
-                        : Theme.of(context)
-                            .colorScheme
-                            .onSecondaryContainer
-                            .withOpacity(0.3),
-                  ),
-                )),
-          ],
+                  currentview = 0;
+                }),
+              ),
+              buildCenterWidgetIcon(
+                iconData: Icons.wallet,
+                index: 1,
+                onTap: () => setState(() {
+                  currentview = 1;
+                }),
+              ),
+              GestureDetector(
+                  onTap: () => setState(() {
+                        currentview = 2;
+                      }),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        // color: Colors.greenAccent[700],
+                        borderRadius: AppTheme.cardRadiusSmall),
+                    child: Icon(
+                      isProfileOwner ? Icons.edit : Icons.person_add_rounded,
+                      size: AppTheme.iconSize,
+                      color: currentview == 2
+                          ? Theme.of(context).colorScheme.onSecondaryContainer
+                          : Theme.of(context)
+                              .colorScheme
+                              .onSecondaryContainer
+                              .withOpacity(0.3),
+                    ),
+                  )),
+            ],
+          ),
         ),
       ),
     );
@@ -704,7 +709,7 @@ class _ProfileState extends State<Profile> {
                 decoration: BoxDecoration(
                   borderRadius: AppTheme.cardRadiusBigger * 1.5,
                   image: DecorationImage(
-                    image: NetworkImage(imagePath != ''
+                    image: NetworkImage(imagePath == ''
                         ? 'http://ev-evgym.at/wp-content/uploads/2018/12/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'
                         : imagePath),
                     fit: BoxFit.fill,
@@ -761,22 +766,24 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             TextField(
-              focusNode: _focusNodeDisplayName,
+              focusNode: _focusNodeUsername,
               readOnly: currentview == 2 ? false : true,
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
-                  isDense: true,
-                  border: InputBorder.none,
-                  errorText: _displayNameValid ? null : 'Bad characters'),
+                isDense: true,
+                border: InputBorder.none,
+                errorText: _displayNameValid ? null : 'Bad characters', // Add this line
+              ),
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: AppTheme.white70,
-                  ),
-              controller: displayNameController,
+                color: AppTheme.white70,
+              ),
+              controller: userNameController,
             ),
-            const SizedBox(height: AppTheme.elementSpacing),
+
+            const SizedBox(height: AppTheme.cardPadding),
             TextField(
-              focusNode: _focusNodeUsername,
+              focusNode: _focusNodeDisplayName,
               readOnly: currentview == 2 ? false : true,
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
@@ -787,9 +794,9 @@ class _ProfileState extends State<Profile> {
                       _displayNameValid ? null : "Couldn't change username"),
               style: Theme.of(context)
                   .textTheme
-                  .headlineMedium!
+                  .headlineSmall!
                   .copyWith(color: AppTheme.white90),
-              controller: userNameController,
+              controller: displayNameController,
             ),
             TextField(
               focusNode: _focusNodeBio,

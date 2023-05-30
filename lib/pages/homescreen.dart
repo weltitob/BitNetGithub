@@ -2,7 +2,8 @@ import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/items/userresult.dart';
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/components/items/usersearchresult.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -13,7 +14,11 @@ class WalletCategory {
   final String text;
   final String header;
 
-  WalletCategory(this.imageURL, this.text, this.header,);
+  WalletCategory(
+    this.imageURL,
+    this.text,
+    this.header,
+  );
 }
 
 class HomeScreen extends StatefulWidget {
@@ -21,7 +26,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   bool get wantKeepAlive => true;
 
   final TextFieldController = TextEditingController();
@@ -29,11 +35,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Future<QuerySnapshot>? searchResultsFuture;
 
   handleSearch(String query) {
-    Future<QuerySnapshot> users =
-    usersCollection.where("username", isGreaterThanOrEqualTo: query).get();
-    setState(() {
-      searchResultsFuture = users;
-    });
+    try{
+      Future<QuerySnapshot> users =
+      usersCollection.where("username", isGreaterThanOrEqualTo: query).get();
+
+      setState(() {
+        searchResultsFuture = users;
+      });
+
+      print(searchResultsFuture);
+    } catch(e){
+      searchResultsFuture = null;
+      print("Error searching for user: $e");
+    }
   }
 
   final List<Widget> myTabs = [
@@ -43,9 +57,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   ];
 
   final List<WalletCategory> walletcategorys = [
-    WalletCategory('assets/images/gorilla.png', 'People', 'People'),
+    WalletCategory('assets/images/bitcoin.png', 'People', 'People'),
     WalletCategory(
-      'assets/images/fire.png',
+      'assets/images/bitcoin.png',
       'Trending',
       'Trending',
     ),
@@ -54,8 +68,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       'Crypto',
       'Crypto',
     ),
-    WalletCategory('assets/images/bookmark.png', 'Watchlist', 'Watchlist'),
-    WalletCategory('assets/images/money.png', 'NFTS', 'NFTS'),
+    WalletCategory('assets/images/bitcoin.png', 'Watchlist', 'Watchlist'),
+    WalletCategory('assets/images/bitcoin.png', 'NFTS', 'NFTS'),
   ];
 
   late TabController _tabController;
@@ -115,8 +129,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: AppTheme.elementSpacing,
-          vertical: AppTheme.elementSpacing
-      ),
+          vertical: AppTheme.elementSpacing),
       color: Colors.transparent,
       child: Container(
         height: 45,
@@ -133,26 +146,28 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(0.25),
               hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
-              ),
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                  ),
               hintText: 'Search',
-              prefixIcon:
-              Icon(Icons.search,
-                color: Theme.of(context).colorScheme.primary,),
+              prefixIcon: Icon(
+                Icons.search,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               suffixIcon: TextFieldController.text.isEmpty
                   ? Container(width: 0)
                   : IconButton(
-                icon: Icon(Icons.cancel,
-                  color: Theme.of(context).colorScheme.primary,),
-                onPressed: () => TextFieldController.clear(),
-                color: Theme.of(context).primaryColorDark,
-              ),
+                      icon: Icon(
+                        Icons.cancel,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () => TextFieldController.clear(),
+                      color: Theme.of(context).primaryColorDark,
+                    ),
               fillColor: Theme.of(context).colorScheme.onSecondary,
               filled: true,
               border: OutlineInputBorder(
                   borderSide: BorderSide(width: 0, style: BorderStyle.none),
-                  borderRadius: AppTheme.cardRadiusMid)
-          ),
+                  borderRadius: AppTheme.cardRadiusMid)),
         ),
       ),
     );
@@ -191,11 +206,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           },
           body: searchResultsFuture == null
               ? TabBarView(
-            controller: _tabController,
-            children: <Widget>[
-              Container(color: Colors.green,),
-            ],
-          )
+                  controller: _tabController,
+                  children: <Widget>[
+                    Container(
+                      child: Center(
+                          child: Text(
+                        "No users found.",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      )),
+                    ),
+                  ],
+                )
               : buildSearchResults(),
         ),
       ),
@@ -241,8 +262,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 5),
-                    child: Text(text,
-                        style: Theme.of(context).textTheme.button),
+                    child:
+                        Text(text, style: Theme.of(context).textTheme.button),
                   )
                 ],
               ),
@@ -261,15 +282,28 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         if (!snapshot.hasData) {
           return dotProgress(context);
         }
-        List<UserResult> searchresults = [];
+        List<UserSearchResult> searchresults = [];
         snapshot.data.docs.forEach((doc) {
           UserData user = UserData.fromDocument(doc);
-          UserResult searchResult = UserResult(userData: user, onTap: () async {  }, onDelete: () {  },);
+          UserSearchResult searchResult = UserSearchResult(
+            onTap: () async {  },
+            userData: user,);
           searchresults.add(searchResult);
         });
-        return ListView(
-          children: searchresults,
-        );
+        if (searchresults.isEmpty) {
+          return Center(
+            child: Text('No users could be found'),
+          );
+        } else {
+          return Padding(
+            padding: const EdgeInsets.only(
+                left: AppTheme.cardPadding,right: AppTheme.cardPadding,
+            top: AppTheme.elementSpacing),
+            child: ListView(
+              children: searchresults,
+            ),
+          );
+        }
       },
     );
   }

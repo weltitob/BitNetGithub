@@ -4,7 +4,7 @@ import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/components/dialogsandsheets/colorpicker.dart';
 import 'package:BitNet/main.dart';
-import 'package:BitNet/models/usertheme.dart';
+import 'package:BitNet/models/user/usertheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
@@ -153,19 +153,22 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         SizedBox(
           height: AppTheme.cardPadding * 2,
         ),
-        LongButtonWidget(title: "Change Custom Color", onTap:
-            () => showColorPickerDialouge(
-          actionright: () {
-            Navigator.of(context, rootNavigator: true).pop();
-            onThemeChange(pickerColor, Theme.of(context).brightness);
-          },
-          actionleft: () {
-            Navigator.of(context, rootNavigator: true).pop();
-          },
-          pickerColor: pickerColor,
-          context: context,
-          onColorChanged: changeColor,
-        ),)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+          child: LongButtonWidgetTransparent(title: "Change Custom Color", onTap:
+              () => showColorPickerDialouge(
+            actionright: () {
+              Navigator.of(context, rootNavigator: true).pop();
+              onThemeChange(pickerColor, Theme.of(context).brightness);
+            },
+            actionleft: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+            pickerColor: pickerColor,
+            context: context,
+            onColorChanged: changeColor,
+          ),),
+        )
       ],
     );
   }

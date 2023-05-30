@@ -5,7 +5,7 @@ import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/pages/routetrees/showprofile.dart';
 import 'package:BitNet/components/items/userresult.dart';
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

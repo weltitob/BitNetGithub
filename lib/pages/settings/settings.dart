@@ -1,5 +1,6 @@
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/models/settingsmodel.dart';
 import 'package:BitNet/pages/settings/invitation_page.dart';
 import 'package:BitNet/pages/settings/security/security_page.dart';
@@ -240,60 +241,6 @@ class _SettingsPageState extends State<SettingsPage>
             },
           ),
         ],
-      ),
-    );
-  }
-}
-
-class SettingsListItem extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final bool hasNavigation;
-  final Function() onTap;
-
-  const SettingsListItem({
-    required this.icon,
-    required this.text,
-    required this.onTap,
-    this.hasNavigation = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: AppTheme.cardPadding * 2,
-        margin: EdgeInsets.symmetric(
-          horizontal: AppTheme.cardPadding * 1.5,
-        ).copyWith(
-          bottom: AppTheme.cardPadding,
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: AppTheme.cardPadding,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: AppTheme.cardRadiusMid,
-          color: Theme.of(context).colorScheme.secondaryContainer,
-        ),
-        child: Row(
-          children: <Widget>[
-            Icon(
-              this.icon,
-              color: Theme.of(context).colorScheme.onSecondaryContainer,
-              size: AppTheme.iconSize,
-            ),
-            SizedBox(width: AppTheme.cardPadding),
-            Text(this.text, style: Theme.of(context).textTheme.subtitle2),
-            Spacer(),
-            if (this.hasNavigation)
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
-                color: Theme.of(context).colorScheme.onSecondaryContainer,
-              ),
-          ],
-        ),
       ),
     );
   }

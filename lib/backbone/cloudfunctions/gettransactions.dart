@@ -11,7 +11,7 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:BitNet/models/transaction.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 
 bool _canCallFunction = true; // Flag to check whether function can be called or not
 

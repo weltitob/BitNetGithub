@@ -112,45 +112,47 @@ class _LongButtonWidgetTransparentState
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return Container(
-      height: AppTheme.cardPadding * 2.5,
-      width: size.width - AppTheme.cardPadding * 2,
-      decoration: BoxDecoration(
-          borderRadius: AppTheme.cardRadiusMid,
-        boxShadow: [
-          AppTheme.boxShadowProfile
-        ],
-      ),
-      child: Glassmorphism(
-        gradientBegin: Alignment.topCenter,
-        gradientEnd: Alignment.bottomCenter,
-        blur: 50,
-        opacity: 0.15,
-        radius: AppTheme.cardPadding,
-        child: InkWell(
-          borderRadius: AppTheme.cardRadiusMid,
-          onTap: widget.onTap,
-          child: Container(
-            height: AppTheme.cardPadding * 2.5,
-            alignment: Alignment.center,
-            child: widget.state == ButtonState.loading
-                ? Center(child: dotProgress(context, color: AppTheme.white90))
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (widget.leadingIcon != null) widget.leadingIcon!,
-                      Text(
-                        widget.title,
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color:
-                          widget.textColor != null ? widget.textColor : AppTheme.white90,
-                          fontSize: 17,
-                          shadows: [
-                            AppTheme.boxShadowSmall
-                          ],
-                      ),
-                      )],
-                  ),
+    return Material(
+      child: Container(
+        height: AppTheme.cardPadding * 2.5,
+        width: size.width - AppTheme.cardPadding * 2,
+        decoration: BoxDecoration(
+            borderRadius: AppTheme.cardRadiusMid,
+          boxShadow: [
+            AppTheme.boxShadowProfile
+          ],
+        ),
+        child: Glassmorphism(
+          gradientBegin: Alignment.topCenter,
+          gradientEnd: Alignment.bottomCenter,
+          blur: 50,
+          opacity: 0.15,
+          radius: AppTheme.cardPadding,
+          child: InkWell(
+            borderRadius: AppTheme.cardRadiusMid,
+            onTap: widget.onTap,
+            child: Container(
+              height: AppTheme.cardPadding * 2.5,
+              alignment: Alignment.center,
+              child: widget.state == ButtonState.loading
+                  ? Center(child: dotProgress(context, color: AppTheme.white90))
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (widget.leadingIcon != null) widget.leadingIcon!,
+                        Text(
+                          widget.title,
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            color:
+                            widget.textColor != null ? widget.textColor : AppTheme.white90,
+                            fontSize: 17,
+                            shadows: [
+                              AppTheme.boxShadowSmall
+                            ],
+                        ),
+                        )],
+                    ),
+            ),
           ),
         ),
       ),

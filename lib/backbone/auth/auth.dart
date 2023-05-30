@@ -7,7 +7,7 @@ import 'package:BitNet/backbone/cloudfunctions/loginion.dart';
 import 'package:BitNet/backbone/cloudfunctions/signmessage.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/pages/routetrees/authroutes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

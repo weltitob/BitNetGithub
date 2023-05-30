@@ -17,7 +17,7 @@ import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/components/swipebutton/swipeable_button_view.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';

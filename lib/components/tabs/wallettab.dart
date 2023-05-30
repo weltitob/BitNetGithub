@@ -42,14 +42,7 @@ class _WalletTabState extends State<WalletTab>
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            buildWalletButtons(Icons.upload_rounded, 'SEND'),
-            buildWalletButtons(Icons.get_app_rounded, 'REQ'),
-            buildWalletButtons(Icons.flash_on_rounded, 'OPEN'),
-          ],
-        ),
+
         Padding(
           padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
           child: Container(
@@ -159,7 +152,10 @@ class _WalletTabState extends State<WalletTab>
               Padding(padding: EdgeInsets.symmetric(horizontal: 5.0)),
               Text(
                 text,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyText2,
               ),
             ],
           ),
@@ -168,49 +164,15 @@ class _WalletTabState extends State<WalletTab>
             children: [
               Text(
                 '$balance SATS',
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .subtitle2,
               ),
             ],
           ),
         ],
       ),
     );
-  }
-
-  Widget buildWalletButtons(IconData iconData, String text) {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-        width: 80,
-        height: 35,
-        decoration: BoxDecoration(
-          borderRadius: AppTheme.cardRadiusCircular,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              offset: Offset(0, 2.5),
-              blurRadius: 10,
-            ),
-          ],
-        ),
-        child: Material(
-            color: Theme.of(context).colorScheme.onSecondaryContainer,
-            borderRadius: AppTheme.cardRadiusCircular,
-            child: InkWell(
-                borderRadius: AppTheme.cardRadiusCircular,
-                child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          iconData,
-                          color: Theme.of(context).colorScheme.onSecondary,
-                        ),
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 2.5)),
-                        Text(text, style: Theme.of(context).textTheme.button!.copyWith(
-                            color: Theme.of(context).colorScheme.onSecondary
-                        )),
-                      ],
-                    )),
-                onTap: () {})));
   }
 }

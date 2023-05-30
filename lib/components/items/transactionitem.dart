@@ -4,7 +4,7 @@ import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
 import 'package:BitNet/models/transaction.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 import 'package:provider/provider.dart';
 
 class TransactionItem extends StatefulWidget {

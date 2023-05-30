@@ -7,7 +7,7 @@ import 'package:BitNet/components/indicators/smoothpageindicator.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/keys/privateionkey.dart';
 import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
-import 'package:BitNet/models/userdata.dart';
+import 'package:BitNet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';

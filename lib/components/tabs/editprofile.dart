@@ -23,8 +23,7 @@ class _EditProfileTabState extends State<EditProfileTab> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("Private Profile:",
-                style: Theme.of(context).textTheme.subtitle1,),
+              Text("Private Profile:", style: Theme.of(context).textTheme.titleMedium,),
               SizedBox(width: AppTheme.cardPadding,),
               Switcher(
                 value: false,

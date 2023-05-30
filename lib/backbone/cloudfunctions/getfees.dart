@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:BitNet/models/fees.dart';
-import 'package:BitNet/models/userwallet.dart';
+import 'package:BitNet/models/user/userwallet.dart';
 
 // function to get the fees for the transaction
 dynamic getFees({
