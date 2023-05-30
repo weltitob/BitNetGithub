@@ -6,7 +6,7 @@ import 'package:BitNet/backbone/cloudfunctions/createdid.dart';
 import 'package:BitNet/backbone/cloudfunctions/loginion.dart';
 import 'package:BitNet/backbone/cloudfunctions/signmessage.dart';
 import 'package:BitNet/models/IONdata.dart';
-import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
+import 'package:BitNet/models/keys/privatedata.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/pages/routetrees/authroutes.dart';
@@ -99,7 +99,7 @@ class Auth {
     final IONData iondata = await createDID(user.username, challange);
 
     final PrivateData privateData = PrivateData(
-        did: iondata.did, privateKey: iondata.privateIONKey);
+        did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
     print("IONDATA RECEIVED: $iondata");
 
     // Call the function to store Private data in secure storage

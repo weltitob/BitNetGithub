@@ -8,7 +8,7 @@ import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/components/indicators/smoothpageindicator.dart';
 import 'package:BitNet/components/textfield/formtextfield.dart';
 import 'package:BitNet/generated/l10n.dart';
-import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
+import 'package:BitNet/models/keys/privatedata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

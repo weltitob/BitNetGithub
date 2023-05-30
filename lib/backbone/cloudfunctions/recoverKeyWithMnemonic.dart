@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:BitNet/backbone/helper/deepmapcast.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
-import 'package:BitNet/models/qr_codes/qr_privatekey.dart';
+import 'package:BitNet/models/keys/privatedata.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 recoverKeyWithMnemonic(String mnemonic, String did) async {

@@ -23,31 +23,35 @@ class Glassmorphism extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassmorphicFlexContainer(
-      borderRadius: radius,
-      blur: blur,
-      alignment: Alignment.bottomCenter,
-      border: 1.2,
-      linearGradient: LinearGradient(
-          begin: gradientBegin,
-          end: gradientEnd,
-          colors: [
-            Color(0xFFffffff).withOpacity(opacity),
-            Color(0xFFFFFFFF).withOpacity(opacity / 4),
-          ],
-          stops: [
-            0.1,
-            1,
-          ]),
-      borderGradient: LinearGradient(
-        begin: gradientBegin,
-        end: gradientEnd,
-        colors: [
-          Color(0xFFffffff).withOpacity(0.15),
-          Color((0xFFFFFFFF)).withOpacity(0.15),
-        ],
-      ),
-      child: Center(child: child),
+    return Column(
+      children: [
+        GlassmorphicFlexContainer(
+          borderRadius: radius,
+          blur: blur,
+          alignment: Alignment.bottomCenter,
+          border: 1.2,
+          linearGradient: LinearGradient(
+              begin: gradientBegin,
+              end: gradientEnd,
+              colors: [
+                Color(0xFFffffff).withOpacity(opacity),
+                Color(0xFFFFFFFF).withOpacity(opacity / 4),
+              ],
+              stops: [
+                0.1,
+                1,
+              ]),
+          borderGradient: LinearGradient(
+            begin: gradientBegin,
+            end: gradientEnd,
+            colors: [
+              Color(0xFFffffff).withOpacity(0.15),
+              Color((0xFFFFFFFF)).withOpacity(0.15),
+            ],
+          ),
+          child: Center(child: child),
+        ),
+      ],
     );
   }
 }
