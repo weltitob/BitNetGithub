@@ -56,6 +56,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
+              color: Colors.transparent,
               width: double.infinity,
               child: FutureBuilder(
                 future: _compostionBitcoin,
@@ -68,12 +69,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                       repeat: false,),
                     );
                   } else {
-                    return FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: Container(
-                        color: Colors.transparent,
-                      ),
-                    );
+                    return Container();
                   }
                 },
               ),

@@ -38,6 +38,8 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
     print("Trying to read data from secure storage(QR)...");
     print(myuserdid);
     PrivateData privateuserdata = await getPrivateData(myuserdid);
+
+
     final userdataJsonString = json.encode(privateuserdata.toMap());
     return userdataJsonString;
   }
@@ -70,7 +72,7 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
                       padding: const EdgeInsets.all(AppTheme.elementSpacing * 1.5),
                       child: PrettyQr(
                         //image: AssetImage('assets/images/key_removed_bck.png'),
-                        typeNumber: 12,
+                        typeNumber: 14,
                         size: AppTheme.cardPadding * 11,
                         data: snapshot.data,
                         errorCorrectLevel: QrErrorCorrectLevel.M,

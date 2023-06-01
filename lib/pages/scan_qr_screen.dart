@@ -5,7 +5,6 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/auth/storePrivateData.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/keys/privatedata.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/pages/actions/sendscreen.dart';
@@ -36,6 +35,12 @@ class _QRScreenState extends State<QRScreen> {
   MobileScannerController cameraController = MobileScannerController();
   bool isQRScanner = true;
   bool isLoading = false;
+
+  //so unterscheiden was es ist:
+  //bitcoin: >> Transaktion
+  //did: >> Nutzerprofil teilen
+  //mnemonic: >> Den privatekey teilen
+  //invoice: ... usw (da halt standards folgen)
 
   void onScannedForSignIn(dynamic encodedString) async {
     try{

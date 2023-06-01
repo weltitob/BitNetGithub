@@ -2,6 +2,7 @@ import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/pages/routetrees/showprofile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfilePictureSmall extends StatelessWidget {
   final String profileImageURL;
@@ -27,13 +28,22 @@ class ProfilePictureSmall extends StatelessWidget {
         child: ClipRRect(
           borderRadius: AppTheme.cardRadiusSmall,
           child: CachedNetworkImage(
-              imageUrl: profileImageURL != ''
-                  ? 'http://ev-evgym.at/wp-content/uploads/2018/12/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'
-                  : profileImageURL),
+            imageUrl: profileImageURL == ''
+                ? 'http://ev-evgym.at/wp-content/uploads/2018/12/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'
+                : profileImageURL,
+            placeholder: (context, url) => CircularProgressIndicator(), // Loading indicator
+            errorWidget: (context, url, error) => Container(color: Colors.grey,
+            child: Center(
+              child: Icon(
+                FontAwesomeIcons.sadCry,
+              )
+            ),), // Fallback when image loading fails
+          ),
         ),
       ),
     );
   }
+
 
   buildProfilePicture2(BuildContext context) {
     return Container(
