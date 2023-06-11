@@ -1,13 +1,25 @@
 import 'package:BitNet/models/user/userdata.dart';
-import 'package:app_links/app_links.dart';
+import 'package:BitNet/pages/matrix/utils/other/background_push.dart';
+import 'package:BitNet/pages/secondpages/lock_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:BitNet/pages/routetrees/widgettree.dart';
+import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
-import 'generated/l10n.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'dart:html' as html;
+import 'package:BitNet/pages/matrix/utils/other/client_manager.dart';
+import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
+import 'package:matrix/matrix.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+//import 'package:BitNet/generated/l10n.dart';
+//import 'package:BitNet/.dart_tool/flutter_gen/gen_l10n/l10n.dart';
+
+
+
 
 //import 'firebase_options.dart';
 
@@ -27,14 +39,12 @@ class ThemeNotifier extends ChangeNotifier {
 
 // Main function to start the application
 Future<void> main() async {
-
-  void onAppLink(){
+  void onAppLink() {
     print("APPLINK WAS TRIGGERED");
   }
 
   // Ensure that Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
-
   // Initialize Date Formatting
   await initializeDateFormatting();
 
@@ -43,8 +53,35 @@ Future<void> main() async {
     //options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  Logs().nativeColors = !PlatformInfos.isIOS;
+  final clients = await ClientManager.getClients();
+  // Preload first client
+  final firstClient = clients.firstOrNull;
+  await firstClient?.roomsLoading;
+  await firstClient?.accountDataLoading;
+
+  if (PlatformInfos.isMobile) {
+    BackgroundPush.clientOnly(clients.first);
+  }
+
+  final queryParameters = <String, String>{};
+  if (kIsWeb) {
+    queryParameters
+        .addAll(Uri.parse(html.window.location.href).queryParameters);
+  }
+
   // Run the app
-  runApp(const MyApp());
+  runApp(
+    PlatformInfos.isMobile
+        ? AppLock(
+            builder: (args) =>
+                //fluffy_chat_app.dart apply later
+                const MyApp(),
+            lockScreen: const LockScreen(),
+            enabled: false,
+          )
+        : const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
