@@ -80,7 +80,7 @@ dependencies:
   tor_detector_web: ^1.1.0
   uni_links: ^0.5.1
   unifiedpush: ^4.0.3
-  universal_html: ^2.0.8
+  universal_html: ^2.2.3
   url_launcher: ^6.0.20
   vibration: ^1.7.4-nullsafety.0
   video_compress: ^3.1.1
@@ -186,7 +186,6 @@ dependencies:
   extended_image: ^6.2.1
   font_awesome_flutter: ^10.2.1
   floating_frosted_bottom_bar: ^0.0.1
-  flutter_gen: ^5.3.1
 
 dev_dependencies:
   flutter_test:
@@ -228,7 +227,18 @@ flutter:
     - assets/lottiefiles/
     - assets/textfiles/
 
-
+msix_config:
+  display_name: BitNet
+  publisher_display_name: BitNet
+  publisher: CN=BitNet, O=Head of bad integration tests, L=Matrix, S=Internet, C=EU
+  identity_name: net.bit.bitnet
+  logo_path: assets\bitcoin.png
+  capabilities: internetClient, location, microphone, webcam
+  protocol_activation: https
+  app_uri_handler_hosts: bitnet.im, matrix.to
+  execution_alias: bitnet
+  sign_msix: false
+  install_certificate: false
 
 dependency_overrides:
   # fake secure storage plugin for Windows

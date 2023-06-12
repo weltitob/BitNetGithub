@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:BitNet/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -78,7 +78,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               height: AppTheme.cardPadding * 6,
             ),
             LongButtonWidgetTransparent(
-              title: S.of(context).restoreAccount,
+              title: L10n.of(context)!.restoreAccount,
               onTap: () {
                 widget.pushToLogin();
               },
@@ -86,7 +86,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             // creating the signup button
             SizedBox(height: AppTheme.cardPadding),
             LongButtonWidget(
-                title: S.of(context).register,
+                title: L10n.of(context)!.register,
                 onTap: () async {
                   //final mnemonic = await Mnemonic.create(WordCount.Words12);
                   //final descriptorSecretKey = await DescriptorSecretKey.create( network: Network.Testnet,

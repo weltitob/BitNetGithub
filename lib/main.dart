@@ -10,16 +10,13 @@ import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html; // Changed from 'dart:html'
 import 'package:BitNet/pages/matrix/utils/other/client_manager.dart';
 import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:matrix/matrix.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 //import 'package:BitNet/generated/l10n.dart';
 //import 'package:BitNet/.dart_tool/flutter_gen/gen_l10n/l10n.dart';
-
-
-
 
 //import 'firebase_options.dart';
 
@@ -50,26 +47,10 @@ Future<void> main() async {
 
   // Initialize Firebase
   await Firebase.initializeApp(
-    //options: DefaultFirebaseOptions.currentPlatform,
-  );
+      //options: DefaultFirebaseOptions.currentPlatform,
+      );
 
   Logs().nativeColors = !PlatformInfos.isIOS;
-  final clients = await ClientManager.getClients();
-  // Preload first client
-  final firstClient = clients.firstOrNull;
-  await firstClient?.roomsLoading;
-  await firstClient?.accountDataLoading;
-
-  if (PlatformInfos.isMobile) {
-    BackgroundPush.clientOnly(clients.first);
-  }
-
-  final queryParameters = <String, String>{};
-  if (kIsWeb) {
-    queryParameters
-        .addAll(Uri.parse(html.window.location.href).queryParameters);
-  }
-
   // Run the app
   runApp(
     PlatformInfos.isMobile
@@ -106,10 +87,8 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         //multilanguage support
-        localizationsDelegates: [
-          S.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales, // Add this line
+        localizationsDelegates: L10n.localizationsDelegates,
+        supportedLocales: L10n.supportedLocales,
         // Other properties like theme, home, etc.
         debugShowCheckedModeBanner: false,
         title: 'BitNet',

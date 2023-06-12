@@ -5,7 +5,7 @@ import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/components/resultlist/users.dart';
-import 'package:BitNet/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:BitNet/pages/auth/ionloadingscreen.dart';
 import 'package:BitNet/pages/auth/restore/didandpkscreen.dart';
 import 'package:BitNet/pages/auth/restore/otherdevicescreen.dart';
@@ -42,7 +42,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
     return BitNetScaffold(
             backgroundColor: Theme.of(context).colorScheme.background,
             appBar: BitNetAppBar(
-                text: S.of(context).restoreAccount,
+                text: L10n.of(context)!.restoreAccount,
                 context: context,
                 onTap: () {
                   widget.toggleGetStarted();

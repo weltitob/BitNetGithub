@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +77,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
 
     } catch (e) {
       setState(() {
-        errorMessage = S.of(context).errorSomethingWrong;
+        errorMessage = L10n.of(context)!.errorSomethingWrong;
         print(e);
       });
     }
@@ -111,7 +111,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                 child: AnimatedTextKit(
                   animatedTexts: [
                     TypewriterAnimatedText(
-                    S.of(context).welcomeBack,
+                    L10n.of(context)!.welcomeBack,
                       textStyle: Theme.of(context).textTheme.displayLarge,
                       textAlign: TextAlign.left,
                       speed: const Duration(milliseconds: 120),
@@ -126,7 +126,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    S.of(context).poweredByDIDs,
+                    L10n.of(context)!.poweredByDIDs,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium,
@@ -147,7 +147,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   FormTextField(
-                    title: S.of(context).usernameOrDID,
+                    title: L10n.of(context)!.usernameOrDID,
                     controller: _controllerUsername,
                     isObscure: false,
                     //das muss eh noch geändert werden gibt ja keine email
@@ -178,13 +178,13 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                           password = val;
                         });
                       },
-                      title: S.of(context).privateKey,
+                      title: L10n.of(context)!.privateKey,
                       controller: _controllerPassword,
                       isObscure: true,
                     ),
                   ),
                   LongButtonWidget(
-                    title: S.of(context).restoreAccount,
+                    title: L10n.of(context)!.restoreAccount,
                     onTap: () {
                       if (_form.currentState!.validate()) {
                         signIn();
@@ -210,7 +210,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                   Container(
                     margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
                     child: Text(
-                      S.of(context).noAccountYet,
+                      L10n.of(context)!.noAccountYet,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
@@ -235,7 +235,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                         print("Implement push to verification screen...");
                       },
                       child: Text(
-                        S.of(context).register,
+                        L10n.of(context)!.register,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/generated/l10n.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/pages/routetrees/authroutes.dart';
 import 'package:BitNet/pages/routetrees/authtree.dart';
@@ -19,6 +18,7 @@ import 'package:BitNet/components/textfield/formtextfield.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   VerificationCode code;
@@ -136,7 +136,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
     }
     catch (e) {
       setState(() {
-        errorMessage = "${S.of(context).errorSomethingWrong}: ${e}";
+        errorMessage = "${L10n.of(context)!.errorSomethingWrong}: ${e}";
       });
       throw Exception("Error: $e");
     }
@@ -155,7 +155,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
         context: context,
         gradientColor: Colors.black,
         appBar: BitNetAppBar(
-            text: S.of(context).register,
+            text:L10n.of(context)!.register,
             context: context,
             onTap: () {
               if (!_isLoading) {
@@ -181,7 +181,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
                   child: AnimatedTextKit(
                     animatedTexts: [
                       TypewriterAnimatedText(
-                        S.of(context).powerToThePeople,
+                        L10n.of(context)!.powerToThePeople,
                         textStyle: Theme.of(context).textTheme.displayLarge,
                         textAlign: TextAlign.left,
                         speed: const Duration(milliseconds: 120),
@@ -196,7 +196,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      S.of(context).poweredByDIDs,
+                      L10n.of(context)!.poweredByDIDs,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     Container(
@@ -231,7 +231,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
                       height: AppTheme.cardPadding,
                     ),
                     LongButtonWidget(
-                      title: S.of(context).register,
+                      title: L10n.of(context)!.register,
                       onTap: () {
                         if (_form.currentState!.validate()) {
                           createAccountPressed();
@@ -257,7 +257,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
                     Container(
                       margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
                       child: Text(
-                        S.of(context).alreadyHaveAccount,
+                        L10n.of(context)!.alreadyHaveAccount,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
@@ -286,7 +286,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
                           }
                         },
                         child: Text(
-                          S.of(context).restoreAccount,
+                          L10n.of(context)!.restoreAccount,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),

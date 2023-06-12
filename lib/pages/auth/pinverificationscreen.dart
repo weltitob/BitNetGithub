@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:BitNet/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:BitNet/pages/routetrees/authroutes.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -91,14 +91,14 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       } else {
         errorController
             .add(ErrorAnimationType.shake); // Triggering error shake animation
-        _error = S.of(context).codeAlreadyUsed;
+        _error = L10n.of(context)!.codeAlreadyUsed;
         setState(() {
           _loading = false;
           hasError = true;
         });
       }
     } catch (error) {
-      _error = S.of(context).codeNotValid;
+      _error = L10n.of(context)!.codeNotValid;
       errorController
           .add(ErrorAnimationType.shake); // Triggering error shake animation
       setState(() {
@@ -116,7 +116,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         onTap: () {
           widget.toggleGetStarted();
         },
-        text: S.of(context).pinCodeVerification,
+        text: L10n.of(context)!.pinCodeVerification,
         context: context,
       ),
       gradientColor: Colors.black,
@@ -139,7 +139,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       child: AnimatedTextKit(
                         animatedTexts: [
                           TypewriterAnimatedText(
-                            S.of(context).platformDemandText,
+                            L10n.of(context)!.platformDemandText,
                             textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
                               shadows: [
                                 AppTheme.boxShadowSmall,
@@ -149,7 +149,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                             speed: const Duration(milliseconds: 50),
                           ),
                           TypewriterAnimatedText(
-                            S.of(context).platformExlusivityText,
+                            L10n.of(context)!.platformExlusivityText,
                             textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
                                 shadows: [
                                   AppTheme.boxShadowSmall,
@@ -159,7 +159,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                             speed: const Duration(milliseconds: 50),
                           ),
                           TypewriterAnimatedText(
-                            S.of(context).platformExpandCapacityText,
+                            L10n.of(context)!.platformExpandCapacityText,
                             textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
                                 shadows: [
                                   AppTheme.boxShadowSmall,
@@ -213,7 +213,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                   height: AppTheme.cardPadding,
                 ),
                 Text(
-                  S.of(context).invitationCode,
+                  L10n.of(context)!.invitationCode,
                   style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.left,
                 ),

@@ -7,7 +7,7 @@ import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/components/indicators/smoothpageindicator.dart';
 import 'package:BitNet/components/textfield/formtextfield.dart';
-import 'package:BitNet/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:BitNet/models/keys/privatedata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -155,7 +155,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
                         child: FormTextField(
-                          title: S.of(context).usernameOrDID,
+                          title: L10n.of(context)!.usernameOrDID,
                           controller: _usernameController,
                           isObscure: false,
                           //das muss eh noch geändert werden gibt ja keine email

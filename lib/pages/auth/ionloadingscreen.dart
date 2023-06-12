@@ -2,7 +2,7 @@ import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -78,7 +78,7 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      S.of(context).poweredByDIDs,
+                      L10n.of(context)!.poweredByDIDs,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium,
