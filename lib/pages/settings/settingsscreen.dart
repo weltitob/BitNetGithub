@@ -11,7 +11,7 @@ import 'package:BitNet/pages/secondpages/agbscreen.dart';
 import 'package:BitNet/pages/secondpages/changeemail.dart';
 import 'package:BitNet/pages/secondpages/impressumscreen.dart';
 import 'package:BitNet/pages/secondpages/reportissuescreen.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

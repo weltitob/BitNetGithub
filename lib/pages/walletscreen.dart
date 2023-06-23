@@ -12,7 +12,7 @@ import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/pages/actions/receivescreen.dart';
 import 'package:BitNet/pages/actions/sendscreen.dart';
 import 'package:BitNet/components/items/cryptoitem.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

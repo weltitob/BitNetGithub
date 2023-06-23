@@ -2,7 +2,7 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/cloudfunctions/loginion.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/pages/routetrees/showprofile.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/user/userdata.dart';

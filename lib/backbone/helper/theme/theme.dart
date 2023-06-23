@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:vrouter/vrouter.dart';
+import '../../../pages/matrix/config/app_config.dart';
+
 
 /// Darken a color by [percent] amount (100 = black)
 Color darken(Color c, [int percent = 10]) {
@@ -12,6 +19,7 @@ Color darken(Color c, [int percent = 10]) {
 /// Lighten a color by [percent] amount (100 = white)
 Color lighten(Color c, [int percent = 10]) {
   assert(1 <= percent && percent <= 100);
+  assert(1 <= percent && percent <= 100);
   var p = percent / 100;
   return Color.fromARGB(
       c.alpha,
@@ -20,7 +28,7 @@ Color lighten(Color c, [int percent = 10]) {
       c.blue + ((255 - c.blue) * p).round());
 }
 
-class AppTheme {
+abstract class AppTheme {
   //borderradius
   static BorderRadius cardRadiusSuperSmall = BorderRadius.circular(10);
   static BorderRadius cardRadiusSmall = BorderRadius.circular(16);
@@ -49,6 +57,8 @@ class AppTheme {
     blurRadius: 10,
   );
 
+  static const double columnWidth = 15 * cardPadding;
+  static const double navRailWidth = 2 * cardPadding + elementSpacing;
   //spaces
   static const double cardPadding = 24;
   static const double cardPaddingSmall = 16;
@@ -263,4 +273,111 @@ class AppTheme {
       showUnselectedLabels: true,
     ),
   );
+
+
+  static bool isColumnModeByWidth(double width) =>
+      width > columnWidth * 2 + navRailWidth;
+
+  static bool isColumnMode(BuildContext context) =>
+      isColumnModeByWidth(MediaQuery.of(context).size.width);
+
+  static bool getDisplayNavigationRail(BuildContext context) =>
+      !VRouter.of(context).path.startsWith('/settings');
+
+  static const fallbackTextStyle = TextStyle(
+    fontFamily: 'Roboto',
+    fontFamilyFallback: ['NotoEmoji'],
+  );
+
+  static var fallbackTextTheme = const TextTheme(
+    bodyLarge: fallbackTextStyle,
+    bodyMedium: fallbackTextStyle,
+    labelLarge: fallbackTextStyle,
+    bodySmall: fallbackTextStyle,
+    labelSmall: fallbackTextStyle,
+    displayLarge: fallbackTextStyle,
+    displayMedium: fallbackTextStyle,
+    displaySmall: fallbackTextStyle,
+    headlineMedium: fallbackTextStyle,
+    headlineSmall: fallbackTextStyle,
+    titleLarge: fallbackTextStyle,
+    titleMedium: fallbackTextStyle,
+    titleSmall: fallbackTextStyle,
+  );
+
+  static const Curve animationCurve = Curves.easeInOut;
+
+  static ThemeData buildTheme(Brightness brightness, [Color? seed]) =>
+      ThemeData(
+        visualDensity: VisualDensity.standard,
+        useMaterial3: true,
+        brightness: brightness,
+        colorSchemeSeed: seed ?? AppConfig.colorSchemeSeed,
+        textTheme: PlatformInfos.isDesktop || PlatformInfos.isWeb
+            ? brightness == Brightness.light
+            ? Typography.material2018().black.merge(fallbackTextTheme)
+            : Typography.material2018().white.merge(fallbackTextTheme)
+            : null,
+        snackBarTheme: const SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+        ),
+        dividerColor: brightness == Brightness.light
+            ? Colors.blueGrey.shade50
+            : Colors.blueGrey.shade900,
+        popupMenuTheme: PopupMenuThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConfig.borderRadius),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: UnderlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
+          ),
+          filled: true,
+        ),
+        appBarTheme: AppBarTheme(
+          surfaceTintColor:
+          brightness == Brightness.light ? Colors.white : Colors.black,
+          shadowColor: Colors.black.withAlpha(64),
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: brightness.reversed,
+            statusBarBrightness: brightness,
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
+            ),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
+            ),
+          ),
+        ),
+        dialogTheme: DialogTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(16),
+            textStyle: const TextStyle(fontSize: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppConfig.borderRadius),
+            ),
+          ),
+        ),
+      );
+}
+
+extension on Brightness {
+  Brightness get reversed =>
+      this == Brightness.dark ? Brightness.light : Brightness.dark;
 }

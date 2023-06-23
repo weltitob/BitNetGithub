@@ -1,4 +1,4 @@
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/pages/routetrees/showprofile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

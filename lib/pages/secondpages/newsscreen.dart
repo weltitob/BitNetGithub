@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:BitNet/components/items/newsitem.dart';
 import 'package:BitNet/models/news.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

@@ -1,5 +1,5 @@
 import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/models/settingsmodel.dart';
 import 'package:BitNet/pages/settings/invitation_page.dart';

@@ -1,6 +1,6 @@
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/components/dialogsandsheets/colorpicker.dart';
 import 'package:BitNet/main.dart';

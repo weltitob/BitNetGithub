@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/pages/settings/settingsscreen.dart';
 import 'package:flutter/material.dart';
 

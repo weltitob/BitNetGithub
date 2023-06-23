@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 
 
 class GetStartedScreen extends StatefulWidget {

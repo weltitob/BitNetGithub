@@ -1,4 +1,4 @@
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/backbone/security/biometrics/biometric_check.dart';
 import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/models/settingsmodel.dart';

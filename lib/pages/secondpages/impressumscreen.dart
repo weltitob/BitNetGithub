@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:BitNet/pages/settings/settingsscreen.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 
 class ImpressumScreen extends StatelessWidget {
   const ImpressumScreen({Key? key}) : super(key: key);

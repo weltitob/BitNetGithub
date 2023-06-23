@@ -15,7 +15,7 @@ import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/components/textfield/formtextfield.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'dart:math';
 
 Random random = new Random();

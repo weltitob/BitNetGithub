@@ -1,5 +1,5 @@
 import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/container/imagewithtext.dart';

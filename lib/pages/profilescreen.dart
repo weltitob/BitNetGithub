@@ -1,7 +1,7 @@
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/container/coinlogo.dart';
 import 'package:BitNet/components/container/glassmorph.dart';

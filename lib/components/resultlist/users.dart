@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class UsersList extends StatefulWidget {

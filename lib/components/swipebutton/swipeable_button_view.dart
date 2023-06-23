@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'swipeable_widget.dart';
 
 class SwipeableButtonView extends StatefulWidget {

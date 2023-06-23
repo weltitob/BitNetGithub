@@ -17,7 +17,7 @@ import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/components/textfield/formtextfield.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/models/verificationcode.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class CreateAccountScreen extends StatefulWidget {

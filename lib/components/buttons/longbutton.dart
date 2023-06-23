@@ -6,7 +6,7 @@ import 'package:BitNet/components/container/solidcolorcontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image/image.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 
 enum ButtonState { idle, loading, disabled }
 

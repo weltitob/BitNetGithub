@@ -10,7 +10,7 @@ import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/models/issuereport.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/pages/settings/settingsscreen.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 class ReportIssueScreen extends StatefulWidget {

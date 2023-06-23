@@ -1,6 +1,6 @@
 import 'package:BitNet/backbone/auth/storePrivateData.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
 import 'package:BitNet/components/container/profilepicture.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';

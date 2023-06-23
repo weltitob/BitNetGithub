@@ -15,7 +15,7 @@ import 'package:BitNet/components/camera/qrscanneroverlay.dart';
 import 'package:BitNet/components/camera/textscanneroverlay.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/models/qr_codes/qr_bitcoinadress.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 class QRScreen extends StatefulWidget {

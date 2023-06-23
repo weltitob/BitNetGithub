@@ -7,7 +7,7 @@ import 'package:BitNet/components/container/glassmorph.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/pages/settings/settingsscreen.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 
 class ChangeEmailScreen extends StatefulWidget {
   const ChangeEmailScreen({Key? key}) : super(key: key);

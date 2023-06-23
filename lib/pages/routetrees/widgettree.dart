@@ -6,7 +6,7 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:BitNet/backbone/security/security.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/pages/bottomnav.dart';
 import 'package:BitNet/pages/routetrees/getstartedtree.dart';
 import 'package:provider/provider.dart';

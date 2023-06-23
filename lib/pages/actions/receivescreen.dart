@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:BitNet/components/buttons/glassbutton.dart';
 import 'package:BitNet/components/camera/qrscanneroverlay.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';

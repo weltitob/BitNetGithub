@@ -13,7 +13,7 @@ import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/streams/gettransactionsstream.dart';
 import 'package:BitNet/components/items/transactionitem.dart';
 import 'package:BitNet/models/transaction.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:provider/provider.dart';
 

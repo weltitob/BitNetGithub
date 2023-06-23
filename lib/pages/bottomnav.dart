@@ -3,9 +3,8 @@ import 'package:BitNet/pages/homescreen.dart';
 import 'package:BitNet/pages/matrix/widgets/fluffy_chat_app.dart';
 import 'package:BitNet/pages/profilescreen.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/pages/walletscreen.dart';
-import 'package:BitNet/pages/scan_qr_screen.dart';
 import 'package:BitNet/pages/settings/settingsscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -45,6 +44,7 @@ class _BottomNavState extends State<BottomNav> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Add this line
       body: Stack(
         children: [
           screens[_index],

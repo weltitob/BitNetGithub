@@ -1,4 +1,4 @@
-import 'package:BitNet/backbone/helper/theme.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/buttons/personalactionbutton.dart';
 import 'package:BitNet/components/container/glassmorph.dart';
 import 'package:BitNet/components/container/imagewithtext.dart';
