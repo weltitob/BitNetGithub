@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:BitNet/backbone/helper/helpers.dart';
+import 'package:BitNet/components/fields/textfield/formtextfield.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/pages/routetrees/authroutes.dart';
 import 'package:BitNet/pages/routetrees/authtree.dart';
@@ -14,7 +15,6 @@ import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
-import 'package:BitNet/components/textfield/formtextfield.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';

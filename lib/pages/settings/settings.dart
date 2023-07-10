@@ -21,7 +21,7 @@ showSettingsBottomSheet({
         builder: (BuildContext context, StateSetter setModalState) {
           return Container(
             // Set the desired height
-            height: MediaQuery.of(context).size.height * 0.7,  // 80% of screen height
+            height: MediaQuery.of(context).size.height * 0.6,  // 80% of screen height
             child: SettingsPage(),
           );
         },

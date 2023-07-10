@@ -1,15 +1,9 @@
 import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'dart:async';
-
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:BitNet/models/transaction.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 

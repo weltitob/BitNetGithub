@@ -11,12 +11,9 @@ import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:universal_html/html.dart' as html; // Changed from 'dart:html'
-import 'package:BitNet/pages/matrix/utils/other/client_manager.dart';
 import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:matrix/matrix.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-//import 'package:BitNet/generated/l10n.dart';
-//import 'package:BitNet/.dart_tool/flutter_gen/gen_l10n/l10n.dart';
 
 //import 'firebase_options.dart';
 

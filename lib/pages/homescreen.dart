@@ -1,6 +1,7 @@
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:BitNet/components/fields/searchfield/searchfield.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/components/items/usersearchresult.dart';
 import 'package:BitNet/models/user/userdata.dart';
@@ -35,16 +36,17 @@ class _HomeScreenState extends State<HomeScreen>
   Future<QuerySnapshot>? searchResultsFuture;
 
   handleSearch(String query) {
-    try{
-      Future<QuerySnapshot> users =
-      usersCollection.where("username", isGreaterThanOrEqualTo: query).get();
+    try {
+      Future<QuerySnapshot> users = usersCollection
+          .where("username", isGreaterThanOrEqualTo: query)
+          .get();
 
       setState(() {
         searchResultsFuture = users;
       });
 
       print(searchResultsFuture);
-    } catch(e){
+    } catch (e) {
       searchResultsFuture = null;
       print("Error searching for user: $e");
     }
@@ -125,54 +127,6 @@ class _HomeScreenState extends State<HomeScreen>
   String watchlist = "";
   bool _loading = true;
 
-  Widget buildSearchField() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: AppTheme.elementSpacing,
-          vertical: AppTheme.elementSpacing),
-      color: Colors.transparent,
-      child: Container(
-        height: 45,
-        decoration: BoxDecoration(
-          borderRadius: AppTheme.cardRadiusMid,
-          boxShadow: [
-            AppTheme.boxShadowProfile,
-          ],
-        ),
-        child: TextFormField(
-          controller: TextFieldController,
-          onFieldSubmitted: handleSearch,
-          style: Theme.of(context).textTheme.bodyLarge,
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(0.25),
-              hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
-                  ),
-              hintText: 'Search',
-              prefixIcon: Icon(
-                Icons.search,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              suffixIcon: TextFieldController.text.isEmpty
-                  ? Container(width: 0)
-                  : IconButton(
-                      icon: Icon(
-                        Icons.cancel,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      onPressed: () => TextFieldController.clear(),
-                      color: Theme.of(context).primaryColorDark,
-                    ),
-              fillColor: Theme.of(context).colorScheme.onSecondary,
-              filled: true,
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(width: 0, style: BorderStyle.none),
-                  borderRadius: AppTheme.cardRadiusMid)),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -184,7 +138,11 @@ class _HomeScreenState extends State<HomeScreen>
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    buildSearchField(),
+                    buildSearchField(
+                      context: context,
+                      TextFieldController: TextFieldController,
+                      handleSearch: handleSearch,
+                    ),
                     Container(
                       height: 100,
                       margin: EdgeInsets.only(left: AppTheme.elementSpacing),
@@ -286,8 +244,9 @@ class _HomeScreenState extends State<HomeScreen>
         snapshot.data.docs.forEach((doc) {
           UserData user = UserData.fromDocument(doc);
           UserSearchResult searchResult = UserSearchResult(
-            onTap: () async {  },
-            userData: user,);
+            onTap: () async {},
+            userData: user,
+          );
           searchresults.add(searchResult);
         });
         if (searchresults.isEmpty) {
@@ -297,8 +256,9 @@ class _HomeScreenState extends State<HomeScreen>
         } else {
           return Padding(
             padding: const EdgeInsets.only(
-                left: AppTheme.cardPadding,right: AppTheme.cardPadding,
-            top: AppTheme.elementSpacing),
+                left: AppTheme.cardPadding,
+                right: AppTheme.cardPadding,
+                top: AppTheme.elementSpacing),
             child: ListView(
               children: searchresults,
             ),

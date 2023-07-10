@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
+import 'package:BitNet/components/fields/textfield/formtextfield.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +15,6 @@ import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
-import 'package:BitNet/components/textfield/formtextfield.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'dart:math';
 
