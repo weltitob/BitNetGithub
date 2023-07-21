@@ -1,10 +1,14 @@
+import 'dart:ui';
+
+import 'package:BitNet/components/appstandards/glasscontainerborder.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FormTextField extends StatefulWidget {
   final Function()? changefocustonext;
-  final String title;
+  final String hintText;
   final bool isObscure;
   final bool isBIPField;
   final List<String>? bipwords;
@@ -12,10 +16,16 @@ class FormTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final dynamic validator;
   final dynamic onChanged;
+  final TextInputAction? textInputAction;
+  final dynamic onFieldSubmitted;
+  final List<TextInputFormatter>? inputFormatters;
+  final String? labelText;
+  final String? prefixText;
+  final Widget? suffixIcon;
 
   const FormTextField({
     Key? key,
-    required this.title,
+    required this.hintText,
     required this.isObscure,
     this.controller,
     this.focusNode,
@@ -24,13 +34,19 @@ class FormTextField extends StatefulWidget {
     this.changefocustonext,
     this.isBIPField = false,
     this.bipwords,
+    this.textInputAction,
+    this.onFieldSubmitted,
+    this.inputFormatters,
+    this.labelText,
+    this.prefixText,
+    this.suffixIcon,
   }) : super(key: key);
 
   @override
   State<FormTextField> createState() => _FormTextFieldState();
 }
 
-class _FormTextFieldState extends State<FormTextField>  {
+class _FormTextFieldState extends State<FormTextField> {
   bool isInsideList = false;
   bool movedToNext = false;
 
@@ -41,10 +57,11 @@ class _FormTextFieldState extends State<FormTextField>  {
 
   void _isinsideList() {
     if (widget.isBIPField) {
-      isInsideList = widget.bipwords?.any((bipword) =>
-      (bipword == widget.controller?.text)) ?? false;
+      isInsideList = widget.bipwords
+              ?.any((bipword) => (bipword == widget.controller?.text)) ??
+          false;
       setState(() {
-        if(isInsideList && !movedToNext){
+        if (isInsideList && !movedToNext) {
           print("should changefocustonext");
           widget.changefocustonext?.call();
           movedToNext = true;
@@ -57,26 +74,56 @@ class _FormTextFieldState extends State<FormTextField>  {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: AppTheme.elementSpacing),
-      child: TextFormField(
-        validator: widget.validator,
-        controller: widget.controller,
-        focusNode: widget.focusNode,
-        textAlign: TextAlign.center,
-        style: (widget.isBIPField)
-            ? Theme.of(context).textTheme.titleSmall!.copyWith(
-          color: (isInsideList) ? AppTheme.successColor : AppTheme.errorColor,
-        )
-            : Theme.of(context).textTheme.titleSmall,
-        obscureText: widget.isObscure,
-        decoration: InputDecoration(
-          hintText: widget.title,
-          fillColor: AppTheme.white60,
-          border: OutlineInputBorder(
-              borderRadius: AppTheme.cardRadiusMid
-          ),
-        ),
-        onChanged: widget.onChanged,
+      child: ClipRRect(
+        borderRadius: AppTheme.cardRadiusMid,
+        child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: AppTheme.cardRadiusMid,
+                  border: Border.all(
+                    color: Colors.transparent,
+                    width: 0.0,
+                  ),
+                  color: Colors.white.withOpacity(0.01),
+                ),
+                child: TextFormField(
+                  validator: widget.validator,
+                  controller: widget.controller,
+                  focusNode: widget.focusNode,
+                  textInputAction: widget.textInputAction,
+                  onFieldSubmitted: widget.onFieldSubmitted,
+                  inputFormatters: widget.inputFormatters,
+                  textAlign: TextAlign.center,
+                  style: (widget.isBIPField)
+                      ? Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: (isInsideList)
+                                ? AppTheme.successColor
+                                : AppTheme.errorColor,
+                          )
+                      : Theme.of(context).textTheme.titleSmall,
+                  obscureText: widget.isObscure,
+                  decoration: InputDecoration(
+                    labelText: widget.labelText,
+                    hintText: widget.hintText,
+                    prefixText: widget.prefixText,
+                    suffixIcon: widget.suffixIcon,
+                    fillColor: AppTheme.white60,
+                    focusedBorder: GradientOutlineInputBorder(
+                      isFocused: true,
+                      borderRadius: AppTheme.cardRadiusMid,
+                      borderWidth: 2,
+                    ),
+                    enabledBorder: GradientOutlineInputBorder(
+                      isFocused: false,
+                      borderRadius: AppTheme.cardRadiusMid,
+                      borderWidth: 1.5,
+                    ),
+                  ),
+                  onChanged: widget.onChanged,
+                ))),
       ),
     );
   }
 }
+

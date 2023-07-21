@@ -215,7 +215,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     FormTextField(
-                      title: "Username",
+                      hintText: "Username",
                       validator: (val) => val!.isEmpty
                           ? 'The username you entered is not valid'
                           : null,

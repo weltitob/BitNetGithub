@@ -155,7 +155,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
                         child: FormTextField(
-                          title: L10n.of(context)!.usernameOrDID,
+                          hintText: L10n.of(context)!.usernameOrDID,
                           controller: _usernameController,
                           isObscure: false,
                           //das muss eh noch geändert werden gibt ja keine email
@@ -263,7 +263,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FormTextField(
-            title: text1,
+            hintText: text1,
             controller: _textController1,
             focusNode: _focusNode1,
             bipwords: splittedbipwords,
@@ -272,7 +272,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
             changefocustonext: moveToNext,
           ),
           FormTextField(
-            title: text2,
+            hintText: text2,
             controller: _textController2,
             focusNode: _focusNode2,
             bipwords: splittedbipwords,
@@ -281,7 +281,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
             changefocustonext: moveToNext,
           ),
           FormTextField(
-            title: text3,
+            hintText: text3,
             controller: _textController3,
             focusNode: _focusNode3,
             bipwords: splittedbipwords,
@@ -290,7 +290,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
             changefocustonext: moveToNext,
           ),
           FormTextField(
-            title: text4,
+            hintText: text4,
             controller: _textController4,
             focusNode: _focusNode4,
             bipwords: splittedbipwords,

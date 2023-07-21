@@ -12,7 +12,7 @@ import 'package:BitNet/backbone/cloudfunctions/sendbitcoin.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/pages/bottomnav.dart';
 import 'package:BitNet/components/camera/qrscanneroverlay.dart';
-import 'package:BitNet/components/container/glassmorph.dart';
+import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/components/swipebutton/swipeable_button_view.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';

@@ -3,7 +3,7 @@ import 'package:BitNet/backbone/security/biometrics/biometric_check.dart';
 import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/models/settingsmodel.dart';
 import 'package:BitNet/pages/settings/security/recoverwithqrpage.dart';
-import 'package:BitNet/pages/settings/settings.dart';
+import 'package:BitNet/pages/settings/bottomsheet/settingspage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

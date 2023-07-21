@@ -4,13 +4,14 @@ import 'package:BitNet/backbone/helper/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/container/coinlogo.dart';
-import 'package:BitNet/components/container/glassmorph.dart';
+import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/dialogsandsheets/bottomsheet.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
 import 'package:BitNet/components/tabs/editprofile.dart';
 import 'package:BitNet/components/tabs/wallettab.dart';
 import 'package:BitNet/models/user/userdata.dart';
-import 'package:BitNet/pages/settings/settings.dart';
+import 'package:BitNet/pages/settings/bottomsheet/settings.dart';
+import 'package:BitNet/pages/settings/bottomsheet/settingspage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
@@ -619,9 +620,9 @@ class _ProfileState extends State<Profile> {
     bool isProfileOwner = currentUserId == userData.did;
 
     return Positioned(
-      bottom: 17,
+      bottom: AppTheme.cardPadding,
       child: Container(
-        height: AppTheme.cardPadding * 2,
+        height: AppTheme.cardPadding * 1.75,
         width: AppTheme.cardPadding * 10,
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusBigger,

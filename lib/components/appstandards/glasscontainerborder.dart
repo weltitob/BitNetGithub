@@ -1,0 +1,89 @@
+import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:flutter/material.dart';
+
+class GradientOutlineInputBorder extends InputBorder {
+  final BorderRadius borderRadius;
+  final double borderWidth;
+  final bool isFocused;
+
+  GradientOutlineInputBorder({
+    this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
+    this.borderWidth = 1.0,
+    required this.isFocused,
+  }) : super();
+
+  @override
+  InputBorder copyWith({BorderSide? borderSide}) => this;
+
+  @override
+  void paint(
+      Canvas canvas,
+      Rect rect, {
+        double? gapStart,
+        double gapExtent = 0.0,
+        double gapPercentage = 0.0,
+        TextDirection? textDirection,
+      }) {
+    final Paint paint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: isFocused ? [Colors.white.withOpacity(0.6), Colors.white.withOpacity(0.3), Colors.white.withOpacity(0.3), Colors.white.withOpacity(0.6),] : [Colors.white.withOpacity(0.4), Colors.transparent, Colors.transparent, Colors.white.withOpacity(0.4)],
+      ).createShader(rect)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = borderWidth;
+
+    final RRect outer = borderRadius.toRRect(rect);
+    canvas.drawRRect(outer, paint);
+  }
+
+  @override
+  ShapeBorder scale(double t) => this;
+
+  @override
+  EdgeInsetsGeometry get dimensions => EdgeInsets.all(borderWidth);
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
+    return Path()
+      ..addRRect(borderRadius.resolve(textDirection).toRRect(rect).deflate(borderWidth));
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    return Path()
+      ..addRRect(borderRadius.resolve(textDirection).toRRect(rect));
+  }
+
+  @override
+  bool get isOutline => true;
+}
+
+
+class GradientBorderPainter extends CustomPainter {
+  final BorderRadius borderRadius;
+  final double borderWidth;
+
+  GradientBorderPainter({
+    this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
+    this.borderWidth = 1.0,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Colors.white.withOpacity(0.6), AppTheme.colorBitcoin, AppTheme.colorBitcoin, Colors.white.withOpacity(0.6)],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = borderWidth;
+
+    final outer = borderRadius.toRRect(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawRRect(outer, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}

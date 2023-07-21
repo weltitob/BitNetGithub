@@ -97,7 +97,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                                 image: const AssetImage(
                                     'assets/images/bitcoin.png'),
                                 typeNumber: null,
-                                size: AppTheme.cardPadding * 10,
+                                size: qrCodeSize(context),
                                 data: "bitcoin: ${userWallet.walletAddress}",
                                 errorCorrectLevel: QrErrorCorrectLevel.M,
                                 roundEdges: true,

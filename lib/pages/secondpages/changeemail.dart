@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/components/buttons/glassbutton.dart';
-import 'package:BitNet/components/container/glassmorph.dart';
+import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/pages/settings/settingsscreen.dart';

@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:BitNet/backbone/helper/loaders.dart';
-import 'package:BitNet/components/container/glassmorph.dart';
-import 'package:BitNet/components/container/solidcolorcontainer.dart';
+import 'package:BitNet/components/appstandards/glassmorph.dart';
+import 'package:BitNet/components/appstandards/solidcolorcontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image/image.dart';
@@ -65,10 +65,9 @@ class LongButtonWidget extends StatelessWidget {
                       ),
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color:
-                            textColor != null ? textColor : AppTheme.white100,
-                        fontSize: 17,
+                            textColor != null ? textColor : AppTheme.white90,
                         shadows: [
                           AppTheme.boxShadowSmall
                         ],

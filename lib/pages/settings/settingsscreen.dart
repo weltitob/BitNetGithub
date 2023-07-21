@@ -5,7 +5,7 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:BitNet/backbone/security/security.dart';
-import 'package:BitNet/components/container/glassmorph.dart';
+import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/pages/actions/sendscreen.dart';
 import 'package:BitNet/pages/secondpages/agbscreen.dart';
 import 'package:BitNet/pages/secondpages/changeemail.dart';

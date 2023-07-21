@@ -3,7 +3,7 @@ import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:BitNet/components/chart/chart.dart';
-import 'package:BitNet/components/container/buildroundedbox.dart';
+import 'package:BitNet/components/appstandards/buildroundedbox.dart';
 import 'package:BitNet/pages/secondpages/newsscreen.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 

@@ -1,6 +1,6 @@
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/pages/homescreen.dart';
-import 'package:BitNet/pages/matrix/widgets/fluffy_chat_app.dart';
+import 'package:BitNet/pages/matrix_chat_app.dart';
 import 'package:BitNet/pages/profilescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
@@ -23,7 +23,7 @@ class _BottomNavState extends State<BottomNav> {
   Widget build(BuildContext context) {
     final screens = [
       HomeScreen(),
-      FluffyChatApp(),
+      MatrixChatApp(),
       SettingsScreen(),
       const WalletScreen(),
       Profile(profileId: userdid)

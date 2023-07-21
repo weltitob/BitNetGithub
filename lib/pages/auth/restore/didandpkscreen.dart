@@ -147,7 +147,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   FormTextField(
-                    title: L10n.of(context)!.usernameOrDID,
+                    hintText: L10n.of(context)!.usernameOrDID,
                     controller: _controllerUsername,
                     isObscure: false,
                     //das muss eh noch geändert werden gibt ja keine email
@@ -178,7 +178,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                           password = val;
                         });
                       },
-                      title: L10n.of(context)!.privateKey,
+                      hintText: L10n.of(context)!.privateKey,
                       controller: _controllerPassword,
                       isObscure: true,
                     ),

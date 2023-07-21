@@ -1,5 +1,5 @@
 import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/container/solidcolorcontainer.dart';
+import 'package:BitNet/components/appstandards/solidcolorcontainer.dart';
 import 'package:flutter/material.dart';
 
 Widget personalActionButton({

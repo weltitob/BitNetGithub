@@ -1,6 +1,15 @@
+import 'package:BitNet/backbone/helper/theme/theme_builder.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/models/user/userdata.dart';
+import 'package:BitNet/pages/matrix/config/app_config.dart';
+import 'package:BitNet/pages/matrix/utils/other/background_push.dart';
+import 'package:BitNet/pages/matrix/utils/other/custom_scroll_behaviour.dart';
+import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
+import 'package:BitNet/pages/routetrees/matrix.dart';
+import 'package:BitNet/pages/matrix_chat_app.dart';
+import 'package:BitNet/pages/routetrees/routes.dart';
 import 'package:app_links/app_links.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/loaders.dart';
@@ -9,7 +18,13 @@ import 'package:BitNet/backbone/security/security.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/pages/bottomnav.dart';
 import 'package:BitNet/pages/routetrees/getstartedtree.dart';
+import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:vrouter/vrouter.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
+import '../matrix/utils/other/client_manager.dart';
 
 class WidgetTree extends StatefulWidget {
   const WidgetTree({Key? key}) : super(key: key);
@@ -31,6 +46,7 @@ class _WidgetTreeState extends State<WidgetTree> {
   @override
   initState() {
     super.initState();
+    getclientsfunc();
     isBiometricsAvailable();
     _appLinks = AppLinks(
       onAppLink: (Uri uri, String string) {
@@ -66,6 +82,46 @@ class _WidgetTreeState extends State<WidgetTree> {
       hasBiometrics = false;
     }
   }
+
+  bool? columnMode;
+  String? _initialUrl;
+  dynamic clients;
+  bool _isLoading = true;
+
+  getclientsfunc() async {
+    try{
+      clients = await ClientManager.getClients();
+      // Preload first client
+      final firstClient = clients.firstOrNull;
+      await firstClient?.roomsLoading;
+      await firstClient?.accountDataLoading;
+
+      if (PlatformInfos.isMobile) {
+        BackgroundPush.clientOnly(clients.first);
+      }
+
+      final queryParameters = <String, String>{};
+      //why is this line executed try with own mobile phone next
+      if (kIsWeb) {
+        queryParameters
+            .addAll(Uri.parse(html.window.location.href).queryParameters);
+      }
+
+      _initialUrl =
+      clients.any((client) => client.isLogged()) ? '/rooms' : '/home';
+      _isLoading = false;
+      print("Loading should be finished");
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e){
+      setState(() {
+        _isLoading = false;
+      });
+      throw Exception("error loading matrix: $e");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +176,26 @@ class _WidgetTreeState extends State<WidgetTree> {
             );
         } //when userdata isnt null anymore (listening to Stream)
           if (isBioAuthenticated == true || hasBiometrics == false) {
-            return BottomNav();
+            return _isLoading
+                ? Center(child: dotProgress(context))
+                : ThemeBuilder(
+                  builder: (context, themeMode, primaryColor) => LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isColumnMode = AppTheme.isColumnModeByWidth(constraints.maxWidth);
+                      if (isColumnMode != columnMode) {
+                        Logs().v('Set Column Mode = $isColumnMode');
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          setState(() {
+                            _initialUrl = MatrixChatApp.routerKey.currentState?.url;
+                            columnMode = isColumnMode;
+                            MatrixChatApp.routerKey = GlobalKey<VRouterState>();
+                          });
+                        });
+                      }
+                      return BottomNav();
+                    },
+                  ),
+                );
           }
           return Container(
             color: AppTheme.colorBackground,

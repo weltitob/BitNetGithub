@@ -2,37 +2,19 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/models/settingsmodel.dart';
-import 'package:BitNet/pages/settings/invitation_page.dart';
+import 'package:BitNet/pages/settings/bottomsheet/settings.dart';
+import 'package:BitNet/pages/settings/invite/invitation_page.dart';
 import 'package:BitNet/pages/settings/security/security_page.dart';
 import 'package:BitNet/pages/settings/theme_page.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-showSettingsBottomSheet({
-  required BuildContext context,
-}) {
-  return showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setModalState) {
-          return Container(
-            // Set the desired height
-            height: MediaQuery.of(context).size.height * 0.6,  // 80% of screen height
-            child: SettingsPage(),
-          );
-        },
-      );
-    },
-  );
-}
-
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  final SettingsController controller;
+
+  const SettingsPage({Key? key, required this.controller}) : super(key: key);
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -81,8 +63,8 @@ class _SettingsPageState extends State<SettingsPage>
       SettingsPageModel(
         widget: InvitationSettingsPage(),
         goBack: true,
-        iconData: Icons.key_rounded,
-        title: 'Invitation Keys',
+        iconData: Icons.chat,
+        title: 'Chat',
       ),
     ];
     super.initState();
@@ -218,8 +200,8 @@ class _SettingsPageState extends State<SettingsPage>
             },
           ),
           SettingsListItem(
-            icon: Icons.key,
-            text: 'Invitation keys',
+            icon: Icons.chat,
+            text: 'Chat',
             onTap: () {
               setState(() {
                 currentview = 4;

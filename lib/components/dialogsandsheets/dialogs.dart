@@ -1,6 +1,6 @@
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/buttons/personalactionbutton.dart';
-import 'package:BitNet/components/container/glassmorph.dart';
+import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';

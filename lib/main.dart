@@ -53,7 +53,7 @@ Future<void> main() async {
     PlatformInfos.isMobile
         ? AppLock(
             builder: (args) =>
-                //fluffy_chat_app.dart apply later
+                //matrix_chat_app.dart apply later
                 const MyApp(),
             lockScreen: const LockScreen(),
             enabled: false,

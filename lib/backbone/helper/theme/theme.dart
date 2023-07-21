@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
@@ -28,7 +30,10 @@ Color lighten(Color c, [int percent = 10]) {
       c.blue + ((255 - c.blue) * p).round());
 }
 
+dynamic qrCodeSize(BuildContext context) => min(MediaQuery.of(context).size.width - AppTheme.cardPadding, AppTheme.cardPadding * 10).toDouble();
+
 abstract class AppTheme {
+
   //borderradius
   static BorderRadius cardRadiusSuperSmall = BorderRadius.circular(10);
   static BorderRadius cardRadiusSmall = BorderRadius.circular(16);
@@ -56,6 +61,9 @@ abstract class AppTheme {
     offset: const Offset(0, 2.5),
     blurRadius: 10,
   );
+
+  static const double tabbarBorderWidth = 1.5;
+  static const double tabbarBorderRadius = 100;
 
   static const double columnWidth = 15 * cardPadding;
   static const double navRailWidth = 2 * cardPadding + elementSpacing;
