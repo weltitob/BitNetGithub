@@ -4,7 +4,7 @@ import 'package:BitNet/backbone/streams/bitcoinpricestream.dart';
 import 'package:BitNet/backbone/streams/cryptochartline.dart';
 import 'package:BitNet/components/chart/chart.dart';
 import 'package:BitNet/components/container/currencypicture.dart';
-import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/pages/secondpages/bitcoinscreen.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

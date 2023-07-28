@@ -15,7 +15,7 @@ import 'package:BitNet/components/camera/qrscanneroverlay.dart';
 import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
 import 'package:BitNet/components/swipebutton/swipeable_button_view.dart';
-import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/models/cloudfunction_callback.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
@@ -750,7 +750,12 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                       context,
                       PageTransition(
                           type: PageTransitionType.fade,
-                          child: const BottomNav()));
+                          child: const Scaffold(
+                            body: Center(
+                              child: Text("ADD SCREEN!"),
+                            ),
+                          )
+                      ));
                 } else {
                   // Display an error message if the cloud function failed and set isFinished to false
                   print(

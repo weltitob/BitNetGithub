@@ -1,6 +1,6 @@
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/container/coinlogo.dart';
@@ -18,8 +18,9 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
-  final String profileId;
-  Profile({required this.profileId});
+  String? profileId;
+
+  Profile({this.profileId});
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -63,6 +64,10 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
+    // If profileId was not given, use the current user's ID
+    if (widget.profileId == null) {
+      widget.profileId = Auth().currentUser!.uid;
+    }
     getUser();
     getFollowers();
     getFollowing();
@@ -309,7 +314,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     final myuser = Auth().currentUser!.uid;
-    final String currentUserId = widget.profileId;
+    final String currentUserId = widget.profileId!;
 
     bool isProfileOwner = currentUserId == myuser;
 
@@ -615,7 +620,7 @@ class _ProfileState extends State<Profile> {
 
   Widget buildCenterWidget() {
     final userData = Provider.of<UserData>(context, listen: false);
-    final String currentUserId = widget.profileId;
+    final String currentUserId = widget.profileId!;
 
     bool isProfileOwner = currentUserId == userData.did;
 
@@ -772,6 +777,7 @@ class _ProfileState extends State<Profile> {
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
+                fillColor: Colors.transparent,
                 isDense: true,
                 border: InputBorder.none,
                 errorText: _displayNameValid ? null : 'Bad characters', // Add this line
@@ -789,6 +795,7 @@ class _ProfileState extends State<Profile> {
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
+                  fillColor: Colors.transparent,
                   isDense: true,
                   border: InputBorder.none,
                   errorText:
@@ -807,6 +814,7 @@ class _ProfileState extends State<Profile> {
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
+                fillColor: Colors.transparent,
                 border: InputBorder.none,
                 isDense: true,
               ),

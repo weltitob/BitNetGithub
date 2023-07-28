@@ -199,13 +199,13 @@ dev_dependencies:
 
 
 
-flutter_icons:
+flutter_launcher_icons:
   andorid: true
   ios: true
-  image_path_android: "assets/bitcoin.png"
-  image_path_ios: "assets/bitcoin.png"
+  image_path_android: "assets/logo.png"
+  image_path_ios: "assets/logo.png"
   adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/bitcoin.png"
+  adaptive_icon_foreground: "assets/logo_foreground.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

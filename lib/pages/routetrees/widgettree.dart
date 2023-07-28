@@ -12,11 +12,10 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:BitNet/backbone/security/security.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/pages/bottomnav.dart';
 import 'package:BitNet/pages/routetrees/getstartedtree.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +26,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import '../matrix/utils/other/client_manager.dart';
 
 class WidgetTree extends StatefulWidget {
+  static GlobalKey<VRouterState> routerKey = GlobalKey<VRouterState>();
+
   const WidgetTree({Key? key}) : super(key: key);
 
   @override
@@ -42,6 +43,11 @@ class _WidgetTreeState extends State<WidgetTree> {
   //send and receive bitcoin applinks (deeplinks)
   //also restore account applinks
   late final AppLinks _appLinks;
+
+  bool? columnMode;
+  String? _initialUrl;
+  dynamic clients;
+  bool _isLoading = true;
 
   @override
   initState() {
@@ -83,11 +89,6 @@ class _WidgetTreeState extends State<WidgetTree> {
     }
   }
 
-  bool? columnMode;
-  String? _initialUrl;
-  dynamic clients;
-  bool _isLoading = true;
-
   getclientsfunc() async {
     try{
       clients = await ClientManager.getClients();
@@ -107,8 +108,9 @@ class _WidgetTreeState extends State<WidgetTree> {
             .addAll(Uri.parse(html.window.location.href).queryParameters);
       }
 
-      _initialUrl =
-      clients.any((client) => client.isLogged()) ? '/rooms' : '/home';
+      //_initialUrl = clients.any((client) => client.isLogged()) ? '/rooms' : '/home';
+      _initialUrl = '/feed';
+
       _isLoading = false;
       print("Loading should be finished");
       setState(() {
@@ -134,7 +136,7 @@ class _WidgetTreeState extends State<WidgetTree> {
         if (snapshot.hasData) {
           if (userData == null) {
             return FutureBuilder(
-              future: Future.delayed(Duration(seconds: 20)),
+              future: Future.delayed(Duration(seconds: 30)),
               builder: (context, snapshot) {
                 // If Future is still running, show the loading progress
                 //while retriving userData
@@ -179,23 +181,45 @@ class _WidgetTreeState extends State<WidgetTree> {
             return _isLoading
                 ? Center(child: dotProgress(context))
                 : ThemeBuilder(
-                  builder: (context, themeMode, primaryColor) => LayoutBuilder(
-                    builder: (context, constraints) {
-                      final isColumnMode = AppTheme.isColumnModeByWidth(constraints.maxWidth);
-                      if (isColumnMode != columnMode) {
-                        Logs().v('Set Column Mode = $isColumnMode');
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          setState(() {
-                            _initialUrl = MatrixChatApp.routerKey.currentState?.url;
-                            columnMode = isColumnMode;
-                            MatrixChatApp.routerKey = GlobalKey<VRouterState>();
-                          });
-                        });
-                      }
-                      return BottomNav();
-                    },
-                  ),
-                );
+              builder: (context, themeMode, primaryColor) => LayoutBuilder(
+                builder: (context, constraints) {
+                  final isColumnMode = AppTheme.isColumnModeByWidth(constraints.maxWidth);
+                  if (isColumnMode != columnMode) {
+                    Logs().v('Set Column Mode = $isColumnMode');
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        _initialUrl = MatrixChatApp.routerKey.currentState?.url;
+                        columnMode = isColumnMode;
+                        MatrixChatApp.routerKey = GlobalKey<VRouterState>();
+                      });
+                    });
+                  }
+                  return VRouter(
+                    key: MatrixChatApp.routerKey,
+                    title: AppConfig.applicationName,
+                    debugShowCheckedModeBanner: false,
+                    themeMode: themeMode,
+                    theme:
+                    AppTheme.buildTheme(Brightness.light, primaryColor),
+                    darkTheme:
+                    AppTheme.buildTheme(Brightness.dark, primaryColor),
+                    scrollBehavior: CustomScrollBehavior(),
+                    logs: kReleaseMode ? VLogs.none : VLogs.info,
+                    localizationsDelegates: L10n.localizationsDelegates,
+                    supportedLocales: L10n.supportedLocales,
+                    initialUrl: _initialUrl ?? '/',
+                    routes: AppRoutes(columnMode ?? false).routes,
+                    builder: (context, child) => Matrix(
+                      context: context,
+                      router: MatrixChatApp.routerKey,
+                      clients: clients,
+                      child: child,
+                    ),
+                  );
+                },
+              ),
+            );
+            //bottomnav needs to be implemented as standard
           }
           return Container(
             color: AppTheme.colorBackground,

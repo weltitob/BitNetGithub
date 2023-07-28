@@ -1,5 +1,5 @@
 import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';

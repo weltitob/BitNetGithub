@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/auth/storePrivateData.dart';
-import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/models/keys/privatedata.dart';
 import 'package:flutter/material.dart';

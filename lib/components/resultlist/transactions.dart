@@ -9,7 +9,7 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/streams/gettransactionsstream.dart';
 import 'package:BitNet/components/items/transactionitem.dart';
 import 'package:BitNet/models/transaction.dart';

@@ -1,53 +1,41 @@
 import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/pages/homescreen.dart';
-import 'package:BitNet/pages/matrix_chat_app.dart';
-import 'package:BitNet/pages/profilescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/pages/walletscreen.dart';
-import 'package:BitNet/pages/settings/settingsscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vrouter/vrouter.dart';
 
 class BottomNav extends StatefulWidget {
-  const BottomNav({Key? key}) : super(key: key);
+  final Widget child;
+  const BottomNav({Key? key, required this.child}) : super(key: key);
 
   @override
   State<BottomNav> createState() => _BottomNavState();
 }
 
 class _BottomNavState extends State<BottomNav> {
-  int _index = 0;
-  final userdid = Auth().currentUser!.uid;
+
 
   @override
   Widget build(BuildContext context) {
-    final screens = [
-      HomeScreen(),
-      MatrixChatApp(),
-      SettingsScreen(),
-      const WalletScreen(),
-      Profile(profileId: userdid)
-    ];
 
     final navItems = [
-      FontAwesomeIcons.fire,
-      FontAwesomeIcons.rocketchat,
-      FontAwesomeIcons.upload,
-      FontAwesomeIcons.wallet,
-      FontAwesomeIcons.userAstronaut,
+      {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
+      {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
+      {'icon': FontAwesomeIcons.upload, 'route': '/settings'},
+      {'icon': FontAwesomeIcons.wallet, 'route': '/wallet'},
+      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile'},
     ];
 
-    void onTabTapped(int index) {
-      setState(() {
-        _index = index;
-      });
+    void onTabTapped(String route) {
+      context.vRouter.to(route);
     }
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
       body: Stack(
         children: [
-          screens[_index],
+          widget.child,
+          // Body content will be managed by VRouter based on the current route
           Stack(
               alignment: Alignment.bottomCenter,
               children: <Widget>[
@@ -73,22 +61,22 @@ class _BottomNavState extends State<BottomNav> {
             right: AppTheme.cardPadding * 1.25,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.0),
-                color: lighten(AppTheme.colorBackground, 17)
+                  borderRadius: BorderRadius.circular(100.0),
+                  color: lighten(AppTheme.colorBackground, 17)
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1.25, vertical: AppTheme.elementSpacing * 1.25),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    for (var i = 0; i < navItems.length; i++)
+                    for (var item in navItems)
                       InkWell(
-                        onTap: () => onTabTapped(i),
+                        onTap: () => onTabTapped(item['route'] as String),
                         child: Column(
                           children: [
                             Icon(
-                              navItems[i],
-                              color: _index == i ? Colors.orange : Colors.white.withOpacity(0.4),
+                              item['icon'] as IconData,  // <--- Here
+                              color: context.vRouter.url.contains(item['route'] as String) ? Colors.orange : Colors.white.withOpacity(0.4),
                               size: AppTheme.cardPadding,
                             ),
                           ],

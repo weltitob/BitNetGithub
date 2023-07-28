@@ -1,5 +1,5 @@
 import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/backbone/helper/loaders.dart';
+import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/fields/searchfield/searchfield.dart';
 import 'package:BitNet/components/items/userresult.dart';
@@ -22,12 +22,12 @@ class WalletCategory {
   );
 }
 
-class HomeScreen extends StatefulWidget {
+class FeedScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _FeedScreenState createState() => _FeedScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
+class _FeedScreenState extends State<FeedScreen>
     with SingleTickerProviderStateMixin {
   bool get wantKeepAlive => true;
 
