@@ -21,7 +21,7 @@ class _BottomNavState extends State<BottomNav> {
     final navItems = [
       {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
       {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
-      {'icon': FontAwesomeIcons.upload, 'route': '/settings'},
+      {'icon': FontAwesomeIcons.upload, 'route': '/create'},
       {'icon': FontAwesomeIcons.wallet, 'route': '/wallet'},
       {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile'},
     ];

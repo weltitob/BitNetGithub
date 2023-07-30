@@ -1,4 +1,4 @@
-import 'package:BitNet/pages/profilescreen.dart';
+import 'package:BitNet/pages/profile/profilescreen.dart';
 import 'package:flutter/material.dart';
 
 

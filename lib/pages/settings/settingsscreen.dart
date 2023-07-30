@@ -1,4 +1,5 @@
 import 'package:BitNet/models/user/userdata.dart';
+import 'package:BitNet/pages/profile/actions/sendscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/auth/auth.dart';
@@ -6,11 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:BitNet/backbone/security/security.dart';
 import 'package:BitNet/components/appstandards/glassmorph.dart';
-import 'package:BitNet/pages/actions/sendscreen.dart';
-import 'package:BitNet/pages/secondpages/agbscreen.dart';
-import 'package:BitNet/pages/secondpages/changeemail.dart';
-import 'package:BitNet/pages/secondpages/impressumscreen.dart';
-import 'package:BitNet/pages/secondpages/reportissuescreen.dart';
+import 'package:BitNet/pages/settings/compliance/agbscreen.dart';
+import 'package:BitNet/pages/settings/compliance/impressumscreen.dart';
+import 'package:BitNet/pages/settings/reportissue/reportissuescreen.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -226,18 +225,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ChildBuildBoxInternToggleSwich(
                       Icons.fingerprint_rounded,
                       "Erhöhte Sicherheit",
-                    ),
-                    MyDivider(),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const ChangeEmailScreen(),
-                          ),
-                        );
-                      },
-                      child: ChildBuildBoxIntern(
-                          Icons.email_rounded, "E-Mail Adresse ändern"),
                     ),
                     MyDivider(),
                     GestureDetector(

@@ -19,6 +19,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  #von oldbitnet create screen stuff
+  flutter_sound: ^9.2.13
+  flutter_inappwebview: ^5.7.2+3
+  youtube_player_flutter: ^8.1.2
+  either_dart: ^1.0.0
+  like_button: ^2.0.5
+
   #von fluffy
   adaptive_dialog: ^1.9.0-no-macos.2
   animations: ^2.0.7

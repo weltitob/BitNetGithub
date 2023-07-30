@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 final usersCollection = FirebaseFirestore.instance.collection("users");
 final transactionCollection = FirebaseFirestore.instance.collection("transactions");
@@ -9,3 +10,9 @@ final followersRef = FirebaseFirestore.instance.collection("followers");
 final followingRef = FirebaseFirestore.instance.collection("following");
 final activityFeedRef = FirebaseFirestore.instance.collection("activityFeed");
 final postsCollection = FirebaseFirestore.instance.collection("posts");
+
+//after bitnetold posts has been added
+final storageRef = FirebaseStorage.instance.ref();
+final commentsRef = FirebaseFirestore.instance.collection('comments');
+final timelineRef = FirebaseFirestore.instance.collection('timeline');
+//auth verification codes

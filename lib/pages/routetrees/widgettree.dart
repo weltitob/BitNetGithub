@@ -200,8 +200,10 @@ class _WidgetTreeState extends State<WidgetTree> {
                     debugShowCheckedModeBanner: false,
                     themeMode: themeMode,
                     theme:
+                    //AppTheme.standardTheme(),
                     AppTheme.buildTheme(Brightness.light, primaryColor),
                     darkTheme:
+                      //AppTheme.standardTheme(),
                     AppTheme.buildTheme(Brightness.dark, primaryColor),
                     scrollBehavior: CustomScrollBehavior(),
                     logs: kReleaseMode ? VLogs.none : VLogs.info,

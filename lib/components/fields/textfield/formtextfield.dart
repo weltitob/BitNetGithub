@@ -4,7 +4,6 @@ import 'package:BitNet/components/appstandards/glasscontainerborder.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class FormTextField extends StatefulWidget {
   final Function()? changefocustonext;
@@ -85,7 +84,7 @@ class _FormTextFieldState extends State<FormTextField> {
                     color: Colors.transparent,
                     width: 0.0,
                   ),
-                  color: Colors.white.withOpacity(0.01),
+                  color: Colors.white.withOpacity(0.2),
                 ),
                 child: TextFormField(
                   validator: widget.validator,
