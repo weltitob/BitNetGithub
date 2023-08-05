@@ -3,11 +3,6 @@ import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/models/settingsmodel.dart';
 import 'package:BitNet/pages/settings/bottomsheet/settings.dart';
-import 'package:BitNet/pages/settings/invite/invitation_page.dart';
-import 'package:BitNet/pages/settings/security/security_page.dart';
-import 'package:BitNet/pages/settings/theme_page.dart';
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 
@@ -36,36 +31,6 @@ class _SettingsPageState extends State<SettingsPage>
         iconData: Icons.settings,
         title: 'Settings',
       ),
-      SettingsPageModel(
-        widget: SecuritySettingsPage(),
-        goBack: true,
-        iconData: Icons.verified_user,
-        title: 'Security',
-      ),
-      SettingsPageModel(
-        widget: ThemeSettingsPage(),
-        goBack: true,
-        iconData: Icons.color_lens_rounded,
-        title: 'Theme',
-      ),
-      SettingsPageModel(
-        widget: InvitationSettingsPage(),
-        goBack: true,
-        iconData: Icons.live_help_rounded,
-        title: 'Help & Support',
-      ),
-      SettingsPageModel(
-        widget: InvitationSettingsPage(),
-        goBack: true,
-        iconData: Icons.key_rounded,
-        title: 'Invitation Keys',
-      ),
-      SettingsPageModel(
-        widget: InvitationSettingsPage(),
-        goBack: true,
-        iconData: Icons.chat,
-        title: 'Chat',
-      ),
     ];
     super.initState();
   }
@@ -83,55 +48,6 @@ class _SettingsPageState extends State<SettingsPage>
       ),
       child: Column(
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-                left: AppTheme.cardPadding,
-                right: AppTheme.cardPadding,
-                top: AppTheme.elementSpacing),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                pages[currentview].goBack
-                    ? GestureDetector(
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      size: 18,
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                    onTap: () => setState(() {
-                      currentview = 0;
-                    }))
-                    : Container(
-                  width: 18,
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          right: AppTheme.elementSpacing * 0.5),
-                      child: Icon(
-                        pages[currentview].iconData,
-                        size: 18,
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ),
-                    ),
-                    Text(
-                      pages[currentview].title,
-                      style: Theme.of(context).textTheme.subtitle2,
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  child: Icon(
-                    Icons.clear_rounded,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.onBackground,
-                  ),
-                  onTap: () => Navigator.pop(context),
-                )
-              ],
-            ),
-          ),
           Expanded(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
@@ -211,15 +127,6 @@ class _SettingsPageState extends State<SettingsPage>
               //     context,
               //     MaterialPageRoute(
               //         builder: (context) => InvitationSettingsPage()));
-            },
-          ),
-          SettingsListItem(
-            icon: Icons.login_rounded,
-            text: 'Logout',
-            hasNavigation: false,
-            onTap: () async {
-              Navigator.of(context).pop();
-              await Auth().signOut();
             },
           ),
         ],

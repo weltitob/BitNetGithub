@@ -21,13 +21,15 @@ Future<bool?> showColorPickerDialouge({
               bottomLeft: Radius.circular(24)
           ),
         ),
+        backgroundColor: Theme.of(context).colorScheme.background,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             HueRingPicker(
               enableAlpha: false,
-              hueRingStrokeWidth: 22,
-              colorPickerHeight: AppTheme.iconSize * 10,
+              displayThumbColor: true,
+              hueRingStrokeWidth: AppTheme.cardPadding,
+              colorPickerHeight: AppTheme.iconSize * 8.5,
               portraitOnly: false,
               pickerColor: pickerColor,
               onColorChanged: onColorChanged,
@@ -58,7 +60,6 @@ Future<bool?> showColorPickerDialouge({
           ],
         ),
         elevation: 20.0,
-        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       );
     },
   );

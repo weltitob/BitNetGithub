@@ -10,7 +10,6 @@ import 'package:BitNet/backbone/cloudfunctions/getbalance.dart';
 import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/components/cards/balancecard.dart';
-import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/components/items/cryptoitem.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';

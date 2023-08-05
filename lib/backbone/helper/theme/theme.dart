@@ -3,11 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
-import '../../../pages/matrix/config/app_config.dart';
 
 
 /// Darken a color by [percent] amount (100 = black)
@@ -34,6 +32,107 @@ dynamic qrCodeSize(BuildContext context) => min(MediaQuery.of(context).size.widt
 
 abstract class AppTheme {
 
+  static String _applicationName = 'BitNet';
+  static String get applicationName => _applicationName;
+  static String? _applicationWelcomeMessage;
+  static String? get applicationWelcomeMessage => _applicationWelcomeMessage;
+  static String _defaultHomeserver = 'matrix.org';
+  static String get defaultHomeserver => _defaultHomeserver;
+  static double bubbleSizeFactor = 1;
+  static double fontSizeFactor = 1;
+  static const Color chatColor = primaryColor;
+  static Color? colorSchemeSeed = primaryColor;
+  static const double messageFontSize = 15.75;
+  static const bool allowOtherHomeservers = true;
+  static const bool enableRegistration = true;
+  static const Color primaryColor = Color(0xFF5625BA);
+  static const Color primaryColorLight = Color(0xFFCCBDEA);
+  static const Color secondaryColor = Color(0xFF41a2bc);
+  static String _privacyUrl =
+      'https://gitlab.com/famedly/fluffychat/-/blob/main/PRIVACY.md';
+  static String get privacyUrl => _privacyUrl;
+  static const String enablePushTutorial =
+      'https://gitlab.com/famedly/fluffychat/-/wikis/Push-Notifications-without-Google-Services';
+  static const String encryptionTutorial =
+      'https://gitlab.com/famedly/fluffychat/-/wikis/How-to-use-end-to-end-encryption-in-FluffyChat';
+  static const String appId = 'im.fluffychat.FluffyChat';
+  static const String appOpenUrlScheme = 'im.fluffychat';
+  static String _webBaseUrl = 'https://fluffychat.im/web';
+  static String get webBaseUrl => _webBaseUrl;
+  static const String sourceCodeUrl = 'https://gitlab.com/famedly/fluffychat';
+  static const String supportUrl =
+      'https://gitlab.com/famedly/fluffychat/issues';
+  static final Uri newIssueUrl = Uri(
+    scheme: 'https',
+    host: 'gitlab.com',
+    path: '/famedly/fluffychat/-/issues/new',
+  );
+  static const bool enableSentry = true;
+  static const String sentryDns =
+      'https://8591d0d863b646feb4f3dda7e5dcab38@o256755.ingest.sentry.io/5243143';
+  static bool renderHtml = true;
+  static bool hideRedactedEvents = false;
+  static bool hideUnknownEvents = true;
+  static bool hideUnimportantStateEvents = true;
+  static bool showDirectChatsInSpaces = true;
+  static bool separateChatTypes = false;
+  static bool autoplayImages = true;
+  static bool sendOnEnter = false;
+  static bool experimentalVoip = false;
+  static const bool hideTypingUsernames = false;
+  static const bool hideAllStateEvents = false;
+  static const String inviteLinkPrefix = 'https://matrix.to/#/';
+  static const String deepLinkPrefix = 'im.fluffychat://chat/';
+  static const String schemePrefix = 'matrix:';
+  static const String pushNotificationsChannelId = 'fluffychat_push';
+  static const String pushNotificationsChannelName = 'FluffyChat push channel';
+  static const String pushNotificationsChannelDescription =
+      'Push notifications for FluffyChat';
+  static const String pushNotificationsAppId = 'chat.fluffy.fluffychat';
+  static const String pushNotificationsGatewayUrl =
+      'https://push.fluffychat.im/_matrix/push/v1/notify';
+  static const String pushNotificationsPusherFormat = 'event_id_only';
+  static const String emojiFontName = 'Noto Emoji';
+  static const String emojiFontUrl =
+      'https://github.com/googlefonts/noto-emoji/';
+
+  static void loadFromJson(Map<String, dynamic> json) {
+    if (json['chat_color'] != null) {
+      try {
+        colorSchemeSeed = Color(json['chat_color']);
+      } catch (e) {
+        Logs().w(
+          'Invalid color in config.json! Please make sure to define the color in this format: "0xffdd0000"',
+          e,
+        );
+      }
+    }
+    if (json['application_name'] is String) {
+      _applicationName = json['application_name'];
+    }
+    if (json['application_welcome_message'] is String) {
+      _applicationWelcomeMessage = json['application_welcome_message'];
+    }
+    if (json['default_homeserver'] is String) {
+      _defaultHomeserver = json['default_homeserver'];
+    }
+    if (json['privacy_url'] is String) {
+      _webBaseUrl = json['privacy_url'];
+    }
+    if (json['web_base_url'] is String) {
+      _privacyUrl = json['web_base_url'];
+    }
+    if (json['render_html'] is bool) {
+      renderHtml = json['render_html'];
+    }
+    if (json['hide_redacted_events'] is bool) {
+      hideRedactedEvents = json['hide_redacted_events'];
+    }
+    if (json['hide_unknown_events'] is bool) {
+      hideUnknownEvents = json['hide_unknown_events'];
+    }
+  }
+
   //borderradius
   static BorderRadius cardRadiusSuperSmall = BorderRadius.circular(10);
   static BorderRadius cardRadiusSmall = BorderRadius.circular(16);
@@ -44,7 +143,14 @@ abstract class AppTheme {
   static Radius cornerRadiusMid = const Radius.circular(24);
   static BorderRadius cardRadiusCircular = BorderRadius.circular(500);
 
+  static const double borderRadiusSmall = 16.0;
+
   //Boxshadows
+  static BoxShadow boxShadow = BoxShadow(
+    color: Colors.black.withOpacity(0.25),
+    offset: const Offset(0, 2),
+    blurRadius: 4,
+  );
   static BoxShadow boxShadowSmall = BoxShadow(
     color: Colors.black.withOpacity(0.1),
     offset: const Offset(0, 2.5),
@@ -144,12 +250,12 @@ abstract class AppTheme {
         primary: AppTheme.colorBitcoin,
         secondary: lighten(AppTheme.colorBackground, 20),
         onBackground: AppTheme.white90,
-        surface: Colors.cyan,
+        surface: Colors.deepPurple,
         onPrimary: AppTheme.colorBitcoin,
         error: AppTheme.errorColor,
         onSecondary: AppTheme.white90,
         onError: AppTheme.errorColor,
-        onSurface: AppTheme.colorPrimaryGradient),
+        onSurface: AppTheme.white90),
   );
 
   static final textTheme = TextTheme(
@@ -261,6 +367,7 @@ abstract class AppTheme {
       color: AppTheme.white90,
     ),
   );
+
   static ThemeData dark = ThemeData.dark().copyWith(
     primaryColorDark: Colors.grey[400],
     primaryColorLight: Colors.grey[800],
@@ -320,7 +427,7 @@ abstract class AppTheme {
         visualDensity: VisualDensity.standard,
         useMaterial3: true,
         brightness: brightness,
-        colorSchemeSeed: seed ?? AppConfig.colorSchemeSeed,
+        colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
         textTheme: PlatformInfos.isDesktop || PlatformInfos.isWeb
             ? brightness == Brightness.light
             ? Typography.material2018().black.merge(fallbackTextTheme)
@@ -334,13 +441,13 @@ abstract class AppTheme {
             : Colors.blueGrey.shade900,
         popupMenuTheme: PopupMenuThemeData(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppConfig.borderRadius),
+            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: UnderlineInputBorder(
             borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
+            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall / 2),
           ),
           filled: true,
         ),
@@ -357,28 +464,28 @@ abstract class AppTheme {
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
+              borderRadius: BorderRadius.circular(cardPadding / 2),
             ),
           ),
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
+              borderRadius: BorderRadius.circular(cardPadding / 2),
             ),
           ),
         ),
         dialogTheme: DialogTheme(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
+            borderRadius: BorderRadius.circular(cardPadding / 2),
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppTheme.elementSpacing),
             textStyle: const TextStyle(fontSize: 16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppConfig.borderRadius),
+              borderRadius: AppTheme.cardRadiusMid,
             ),
           ),
         ),

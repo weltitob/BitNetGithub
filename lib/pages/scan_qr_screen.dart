@@ -31,7 +31,7 @@ class QRScreen extends StatefulWidget {
 }
 
 class _QRScreenState extends State<QRScreen> {
-  @override
+
   MobileScannerController cameraController = MobileScannerController();
   bool isQRScanner = true;
   bool isLoading = false;

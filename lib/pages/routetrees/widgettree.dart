@@ -1,7 +1,6 @@
 import 'package:BitNet/backbone/helper/theme/theme_builder.dart';
 import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/models/user/userdata.dart';
-import 'package:BitNet/pages/matrix/config/app_config.dart';
 import 'package:BitNet/pages/matrix/utils/other/background_push.dart';
 import 'package:BitNet/pages/matrix/utils/other/custom_scroll_behaviour.dart';
 import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
@@ -90,7 +89,7 @@ class _WidgetTreeState extends State<WidgetTree> {
   }
 
   getclientsfunc() async {
-    try{
+    try {
       clients = await ClientManager.getClients();
       // Preload first client
       final firstClient = clients.firstOrNull;
@@ -116,14 +115,13 @@ class _WidgetTreeState extends State<WidgetTree> {
       setState(() {
         _isLoading = false;
       });
-    } catch (e){
+    } catch (e) {
       setState(() {
         _isLoading = false;
       });
       throw Exception("error loading matrix: $e");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -162,13 +160,19 @@ class _WidgetTreeState extends State<WidgetTree> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("Something went wrong, please check your connection and try again later.",
-                          style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
-                          SizedBox(height: AppTheme.cardPadding,),
-                          LongButtonWidgetTransparent(title: "Sign out", onTap:
-                          (){
-                            Auth().signOut();}
+                          Text(
+                            "Something went wrong, please check your connection and try again later.",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
                           ),
+                          SizedBox(
+                            height: AppTheme.cardPadding,
+                          ),
+                          LongButtonWidgetTransparent(
+                              title: "Sign out",
+                              onTap: () {
+                                Auth().signOut();
+                              }),
                         ],
                       ),
                     ),
@@ -176,51 +180,57 @@ class _WidgetTreeState extends State<WidgetTree> {
                 );
               },
             );
-        } //when userdata isnt null anymore (listening to Stream)
+          } //when userdata isnt null anymore (listening to Stream)
           if (isBioAuthenticated == true || hasBiometrics == false) {
             return _isLoading
                 ? Center(child: dotProgress(context))
                 : ThemeBuilder(
-              builder: (context, themeMode, primaryColor) => LayoutBuilder(
-                builder: (context, constraints) {
-                  final isColumnMode = AppTheme.isColumnModeByWidth(constraints.maxWidth);
-                  if (isColumnMode != columnMode) {
-                    Logs().v('Set Column Mode = $isColumnMode');
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      setState(() {
-                        _initialUrl = MatrixChatApp.routerKey.currentState?.url;
-                        columnMode = isColumnMode;
-                        MatrixChatApp.routerKey = GlobalKey<VRouterState>();
-                      });
-                    });
-                  }
-                  return VRouter(
-                    key: MatrixChatApp.routerKey,
-                    title: AppConfig.applicationName,
-                    debugShowCheckedModeBanner: false,
-                    themeMode: themeMode,
-                    theme:
-                    //AppTheme.standardTheme(),
-                    AppTheme.buildTheme(Brightness.light, primaryColor),
-                    darkTheme:
-                      //AppTheme.standardTheme(),
-                    AppTheme.buildTheme(Brightness.dark, primaryColor),
-                    scrollBehavior: CustomScrollBehavior(),
-                    logs: kReleaseMode ? VLogs.none : VLogs.info,
-                    localizationsDelegates: L10n.localizationsDelegates,
-                    supportedLocales: L10n.supportedLocales,
-                    initialUrl: _initialUrl ?? '/',
-                    routes: AppRoutes(columnMode ?? false).routes,
-                    builder: (context, child) => Matrix(
-                      context: context,
-                      router: MatrixChatApp.routerKey,
-                      clients: clients,
-                      child: child,
+                    builder: (context, themeMode, primaryColor) =>
+                        LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isColumnMode =
+                            AppTheme.isColumnModeByWidth(constraints.maxWidth);
+                        if (isColumnMode != columnMode) {
+                          Logs().v('Set Column Mode = $isColumnMode');
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            setState(() {
+                              _initialUrl =
+                                  MatrixChatApp.routerKey.currentState?.url;
+                              columnMode = isColumnMode;
+                              MatrixChatApp.routerKey =
+                                  GlobalKey<VRouterState>();
+                            });
+                          });
+                        }
+                        return VRouter(
+                          key: MatrixChatApp.routerKey,
+                          title: AppTheme.applicationName,
+                          debugShowCheckedModeBanner: false,
+                          themeMode: themeMode,
+                          theme:
+                              //AppTheme.standardTheme(),
+                              AppTheme.buildTheme(
+                                  Brightness.light, primaryColor),
+                          darkTheme:
+                              //AppTheme.standardTheme(),
+                              AppTheme.buildTheme(
+                                  Brightness.dark, primaryColor),
+                          scrollBehavior: CustomScrollBehavior(),
+                          logs: kReleaseMode ? VLogs.none : VLogs.info,
+                          localizationsDelegates: L10n.localizationsDelegates,
+                          supportedLocales: L10n.supportedLocales,
+                          initialUrl: _initialUrl ?? '/',
+                          routes: AppRoutes(columnMode ?? false).routes,
+                          builder: (context, child) => Matrix(
+                            context: context,
+                            router: MatrixChatApp.routerKey,
+                            clients: clients,
+                            child: child,
+                          ),
+                        );
+                      },
                     ),
                   );
-                },
-              ),
-            );
             //bottomnav needs to be implemented as standard
           }
           return Container(

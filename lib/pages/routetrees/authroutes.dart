@@ -4,7 +4,6 @@ import 'package:BitNet/pages/routetrees/widgettree.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/pages/auth/createaccountscreen.dart';
-import 'package:flutter/material.dart';
 
 
 void navigateToIONLoadingScreen(BuildContext context) {

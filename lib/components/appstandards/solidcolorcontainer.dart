@@ -1,8 +1,6 @@
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/appstandards/glasscontainerborder.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:flutter/material.dart';
 
 Widget solidContainer({
   required BuildContext context,

@@ -4,8 +4,6 @@ import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //All diffrent dialogs go here, they should have a consistent design
 

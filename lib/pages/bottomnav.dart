@@ -41,20 +41,29 @@ class _BottomNavState extends State<BottomNav> {
               children: <Widget>[
                 IgnorePointer(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 28),
+                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 30),
                     child: Container(
-                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 28,
+                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 30,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, AppTheme.colorBackground],
+                          // Use color stops to create an "exponential" effect
+                          stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+                          colors: [
+                            Colors.transparent,
+                            Theme.of(context).colorScheme.background.withOpacity(0.45),
+                            Theme.of(context).colorScheme.background.withOpacity(0.9),
+                            Theme.of(context).colorScheme.background,
+                            Theme.of(context).colorScheme.background,
+                          ],
                         ),
                       ),
                     ),
                   ),
                 )
-              ]),
+              ]
+          ),
           Positioned(
             bottom: AppTheme.cardPadding,
             left: AppTheme.cardPadding * 1.25,
@@ -62,7 +71,7 @@ class _BottomNavState extends State<BottomNav> {
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100.0),
-                  color: lighten(AppTheme.colorBackground, 17)
+                  color: Theme.of(context).colorScheme.secondaryContainer
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1.25, vertical: AppTheme.elementSpacing * 1.25),

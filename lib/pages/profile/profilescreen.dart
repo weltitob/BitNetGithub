@@ -17,6 +17,47 @@ import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 
+
+// Padding(
+//   padding: const EdgeInsets.all(32.0),
+//   child: Stack(
+//     children: [
+//       Material(
+//         elevation: Theme.of(context)
+//                 .appBarTheme
+//                 .scrolledUnderElevation ??
+//             4,
+//         shadowColor:
+//             Theme.of(context).appBarTheme.shadowColor,
+//         shape: RoundedRectangleBorder(
+//           side: BorderSide(
+//             color: Theme.of(context).dividerColor,
+//           ),
+//           borderRadius: BorderRadius.circular(
+//             Avatar.defaultSize * 1,
+//           ),
+//         ),
+//         child: Avatar(
+//           mxContent: profile?.avatarUrl,
+//           name: displayname,
+//           size: Avatar.defaultSize * 2.5,
+//           fontSize: 18 * 2.5,
+//         ),
+//       ),
+//       // if (profile != null)
+//       //   Positioned(
+//       //     bottom: 0,
+//       //     right: 0,
+//       //     child: FloatingActionButton.small(
+//       //       onPressed: controller.setAvatarAction,
+//       //       heroTag: null,
+//       //       child: const Icon(Icons.camera_alt_outlined),
+//       //     ),
+//       //   ),
+//     ],
+//   ),
+// ),
+
 class Profile extends StatefulWidget {
   String? profileId;
 

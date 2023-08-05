@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
