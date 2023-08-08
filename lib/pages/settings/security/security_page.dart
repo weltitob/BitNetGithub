@@ -67,6 +67,18 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         iconData: Icons.key_rounded,
         title: 'Human Identity',
       ),
+      SettingsPageModel(
+        widget: Container(),
+        goBack: true,
+        iconData: Icons.color_lens_rounded,
+        title: 'Recovery phrases',
+      ),
+      SettingsPageModel(
+        widget: Container(), //VRouter.of(context).to('/settings/security'),
+        goBack: true,
+        iconData: Icons.security,
+        title: 'Extended Sec',
+      ),
     ];
     super.initState();
   }
@@ -167,6 +179,16 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
               //     context,
               //     MaterialPageRoute(
               //         builder: (context) => InvitationSettingsPage()));
+            },
+          ),
+          SettingsListItem(
+            icon: Icons.shield_outlined,
+            text: 'Extended sec', //L10n.of(context)!.security
+            hasNavigation: true,
+            onTap: () {
+              setState(() {
+                currentview = 5;
+              });
             },
           ),
           SettingsListItem(

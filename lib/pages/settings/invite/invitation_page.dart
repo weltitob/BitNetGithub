@@ -1,8 +1,11 @@
 import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/cloudfunctions/loginion.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
+import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
+import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:BitNet/pages/matrix/pages/chat_list/client_chooser_button.dart';
 import 'package:BitNet/pages/routetrees/showprofile.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/user/userdata.dart';
@@ -10,6 +13,8 @@ import 'package:BitNet/models/verificationcode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vrouter/vrouter.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class InvitationSettingsPage extends StatefulWidget {
   const InvitationSettingsPage({Key? key}) : super(key: key);
@@ -39,43 +44,58 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
-      child: StreamBuilder(
-        stream: invitekeystream,
-        builder: (context, AsyncSnapshot<List<VerificationCode>> snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text(snapshot.error.toString()));
-          }
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              !snapshot.hasData) {
-            return Container(
-                height: 400, child: Center(child: CircularProgressIndicator()));
-          }
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(AppTheme.cardPadding),
-                child: Text(
-                  "Our service is currently in beta and "
-                      "limited to invited users. You can share these invitation "
-                      "keys with your friends and family!",
-                  style: Theme.of(context).textTheme.caption,
-                  textAlign: TextAlign.center,
+    return BitNetScaffold(
+      context: context,
+      appBar: BitNetAppBar(text: L10n.of(context)!.inviteContact, context: context, onTap: (){
+        VRouter.of(context).pop();
+      }),
+      body: Container(
+        color: Colors.transparent,
+        child: StreamBuilder(
+          stream: invitekeystream,
+          builder: (context, AsyncSnapshot<List<VerificationCode>> snapshot) {
+            if (snapshot.hasError) {
+              return Center(child: Text(snapshot.error.toString()));
+            }
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                !snapshot.hasData) {
+              return Container(
+                  height: 400, child: Center(child: CircularProgressIndicator()));
+            }
+            return Column(
+              children: [
+                SettingsListItem(
+                  icon: Icons.share_outlined,
+                  text: L10n.of(context)!.inviteContact,
+                  hasNavigation: true,
+                  onTap: () {
+                    print("Share button pressed");
+                    SettingsAction.invite;
+                  },
                 ),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final verificationkey = snapshot.data![index];
-                  return _KeyItem(verificationkey: verificationkey);
-                },
-              ),
-            ],
-          );
-        },
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.cardPadding),
+                  child: Text(
+                    "Our service is currently in beta and "
+                        "limited to invited users. You can share these invitation "
+                        "keys with your friends and family!",
+                    style: Theme.of(context).textTheme.caption,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final verificationkey = snapshot.data![index];
+                    return _KeyItem(verificationkey: verificationkey);
+                  },
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
