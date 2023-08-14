@@ -5,14 +5,16 @@ import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/pages/matrix/pages/chat_list/client_chooser_button.dart';
+import 'package:BitNet/pages/chat_list/client_chooser_button.dart';
 import 'package:BitNet/pages/routetrees/showprofile.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
+import 'package:BitNet/pages/settings/bottomsheet/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -47,7 +49,9 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
     return BitNetScaffold(
       context: context,
       appBar: BitNetAppBar(text: L10n.of(context)!.inviteContact, context: context, onTap: (){
-        VRouter.of(context).pop();
+        print("pressed");
+        Provider.of<SettingsProvider>(context, listen: false)
+            .switchTab('main');
       }),
       body: Container(
         color: Colors.transparent,

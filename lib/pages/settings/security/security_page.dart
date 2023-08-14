@@ -1,11 +1,17 @@
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/backbone/security/biometrics/biometric_check.dart';
+import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
+import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/models/settingsmodel.dart';
+import 'package:BitNet/pages/settings/bottomsheet/settings.dart';
 import 'package:BitNet/pages/settings/security/recoverwithqrpage.dart';
 import 'package:BitNet/pages/settings/bottomsheet/settingspage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:provider/provider.dart';
 
 class SecuritySettingsPage extends StatefulWidget {
   const SecuritySettingsPage({Key? key}) : super(key: key);
@@ -31,7 +37,6 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       print("Biometrics unsuccessfull");
     }
   }
-
 
   @override
   void initState() {
@@ -85,54 +90,42 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return
-      isVerified ?
-      Container(
-      height: AppTheme.cardPadding * 19,
-      decoration: new BoxDecoration(
-        color: Theme.of(context).colorScheme.background,
-        borderRadius: new BorderRadius.only(
-          topLeft: AppTheme.cornerRadiusBig,
-          topRight: AppTheme.cornerRadiusBig,
-        ),
-      ),
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return SlideTransition(
-                  position: Tween(
-                    begin: Offset(-1.0, 0.0),
-                    end: Offset.zero,
-                  )
-                      .animate(animation),
-                  child: child,
-                );
-              },
-              child: pages[currentview].widget,
-            ),
-          ),
-        ],
-      ),
-    ) : Container(
-        child: Expanded(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  FontAwesomeIcons.lock,
-                  size: AppTheme.cardPadding * 2,
-                ),
-                SizedBox(height: AppTheme.elementSpacing,),
-                Text("Verify your identity"),
+    return BitNetScaffold(
+      body: isVerified
+          ? Column(
+              children: <Widget>[
+                pages[currentview].widget,
               ],
+            )
+          : Container(
+              child: Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.lock,
+                        size: AppTheme.cardPadding * 2,
+                      ),
+                      SizedBox(
+                        height: AppTheme.elementSpacing,
+                      ),
+                      Text("Verify your identity"),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      );
+      context: context,
+      appBar: BitNetAppBar(
+          text: L10n.of(context)!.security,
+          context: context,
+          onTap: () {
+            print("pressed");
+            Provider.of<SettingsProvider>(context, listen: false)
+                .switchTab('main');
+          }),
+    );
   }
 
   Widget buildSettings() {

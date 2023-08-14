@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
+import 'package:BitNet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:uuid/uuid.dart';
 
 final datetime = DateTime.now();

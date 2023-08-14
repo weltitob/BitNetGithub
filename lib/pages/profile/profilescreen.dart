@@ -1,12 +1,13 @@
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/components/dialogsandsheets/bottom_sheets/settings_bottom_sheet/settings_bottom_sheet.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/container/coinlogo.dart';
 import 'package:BitNet/components/appstandards/glassmorph.dart';
-import 'package:BitNet/components/dialogsandsheets/bottomsheet.dart';
-import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
+import 'package:BitNet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
+import 'package:BitNet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:BitNet/components/tabs/editprofile.dart';
 import 'package:BitNet/components/tabs/wallettab.dart';
 import 'package:BitNet/models/user/userdata.dart';

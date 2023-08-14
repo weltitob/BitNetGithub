@@ -6,7 +6,7 @@ import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:BitNet/backbone/cloudfunctions/getbalance.dart';
-import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
+import 'package:BitNet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:provider/provider.dart';

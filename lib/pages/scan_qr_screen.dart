@@ -13,7 +13,7 @@ import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validato
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:BitNet/components/camera/qrscanneroverlay.dart';
 import 'package:BitNet/components/camera/textscanneroverlay.dart';
-import 'package:BitNet/components/dialogsandsheets/snackbar.dart';
+import 'package:BitNet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:BitNet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';

@@ -3,7 +3,7 @@ import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/container/imagewithtext.dart';
-import 'package:BitNet/components/dialogsandsheets/dialogs.dart';
+import 'package:BitNet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:BitNet/components/resultlist/users.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:BitNet/pages/auth/ionloadingscreen.dart';
