@@ -2,12 +2,9 @@ import 'dart:math';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/pages/matrix/pages/createnew/new_group/new_group.dart';
-import 'package:BitNet/pages/matrix/pages/createnew/new_group/new_group_view.dart';
-import 'package:BitNet/pages/matrix/pages/createnew/new_private_chat/new_private_chat.dart';
-import 'package:BitNet/pages/matrix/pages/createnew/new_private_chat/new_private_chat_view.dart';
-import 'package:BitNet/pages/matrix/pages/createnew/new_space/new_space.dart';
-import 'package:BitNet/pages/matrix/pages/createnew/new_space/new_space_view.dart';
+import 'package:BitNet/pages/chat_list/createnew/new_group/new_group.dart';
+import 'package:BitNet/pages/chat_list/createnew/new_private_chat/new_private_chat.dart';
+import 'package:BitNet/pages/chat_list/createnew/new_space/new_space.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -88,7 +85,7 @@ class _CreateNewScreenState extends State<CreateNewScreen>
               padding: const EdgeInsets.only(
                   left: AppTheme.cardPadding,
                   right: AppTheme.cardPadding,
-                  top: AppTheme.cardPadding * 3),
+                  top: AppTheme.cardPadding * 1),
               child: DefaultTabController(
                 length: 3,
                 initialIndex: 0,
