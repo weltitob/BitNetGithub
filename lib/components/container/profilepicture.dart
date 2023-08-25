@@ -1,8 +1,8 @@
 import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/pages/routetrees/showprofile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vrouter/vrouter.dart';
 
 class ProfilePictureSmall extends StatelessWidget {
   final String profileImageURL;
@@ -16,7 +16,7 @@ class ProfilePictureSmall extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap ?? () => showProfile(context, profileId: profileId),
+      onTap: onTap ?? () => VRouter.of(context).to("/showprofile/:$profileId"),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusSmall,

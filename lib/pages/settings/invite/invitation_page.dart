@@ -6,7 +6,6 @@ import 'package:BitNet/components/items/settingslistitem.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/pages/chat_list/client_chooser_button.dart';
-import 'package:BitNet/pages/routetrees/showprofile.dart';
 import 'package:BitNet/components/items/userresult.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
@@ -138,7 +137,7 @@ class _KeyItemState extends State<_KeyItem> {
     return GestureDetector(
       onTap: widget.verificationkey.used
           ? () {
-        showProfile(context, profileId: widget.verificationkey.receiver);
+        VRouter.of(context).to("/profile/:${widget.verificationkey.receiver}");
       }
           : () {
         //copy the key

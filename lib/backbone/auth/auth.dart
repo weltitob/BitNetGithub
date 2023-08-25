@@ -9,11 +9,19 @@ import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/keys/privatedata.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
+import 'package:BitNet/backbone/helper/localized_exception_extension.dart';
+import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:BitNet/pages/routetrees/authroutes.dart';
+import 'package:BitNet/pages/routetrees/matrix.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:vrouter/vrouter.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:matrix/matrix.dart';
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
@@ -22,13 +30,13 @@ Authentication and Cloud Firestore.
 
 class Auth {
   // initialzie FirebaseAuth instance
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final fbAuth.FirebaseAuth _firebaseAuth = fbAuth.FirebaseAuth.instance;
 
   // currentUser getter returns the current authentical user
-  User? get currentUser => _firebaseAuth.currentUser;
+  fbAuth.User? get currentUser => _firebaseAuth.currentUser;
 
   // authSateChanges getter returns a stream of authentication state changes
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+  Stream<fbAuth.User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
   /*
   The userWalletStreamForAuthChanges getter returns a stream of the authenticated user's wallet data.
@@ -54,20 +62,20 @@ class Auth {
   operator is used to transform the DocumentSnapshot to a UserWallet object.
    */
   Stream<UserData?> get userWalletStream => usersCollection
-          .doc(_firebaseAuth.currentUser?.uid)
-          .snapshots()
-          .map<UserData?>((snapshot) {
-        if (_firebaseAuth.currentUser?.uid == null) {
-          return null;
-        }
-        if (!snapshot.exists) {
-          print("Hier ist ein error aufgetreten (auth.dart)!");
-          return null;
-        }
-        final data = snapshot.data()!;
-        final UserData user = UserData.fromMap(data);
-        return user;
-      });
+      .doc(_firebaseAuth.currentUser?.uid)
+      .snapshots()
+      .map<UserData?>((snapshot) {
+    if (_firebaseAuth.currentUser?.uid == null) {
+      return null;
+    }
+    if (!snapshot.exists) {
+      print("Hier ist ein error aufgetreten (auth.dart)!");
+      return null;
+    }
+    final data = snapshot.data()!;
+    final UserData user = UserData.fromMap(data);
+    return user;
+  });
 
   /*
   The _createUserDocument method is used to update the user's wallet data in the Firestore database.
@@ -80,11 +88,11 @@ class Auth {
   The signInWithEmailAndPassword method signs in the user with the given email address and password.
   The method returns a UserWallet object for the signed-in user.
    */
-  Future<UserCredential?> signInWithToken({
+  Future<fbAuth.UserCredential?> signInWithToken({
     required String customToken,
   }) async {
-    UserCredential user =
-        await _firebaseAuth.signInWithCustomToken(customToken);
+    fbAuth.UserCredential user =
+    await _firebaseAuth.signInWithCustomToken(customToken);
     return user;
   }
 
@@ -186,7 +194,7 @@ class Auth {
 
     try{
       //showLoadingScreen
-      navigateToIONLoadingScreen(context);
+      VRouter.of(context).to('/ionloading');
 
       final String customToken = await loginION(
         did.toString(),
@@ -202,7 +210,7 @@ class Auth {
         throw Exception("User couldnt be signed in with custom Token!");
       } else {
         //if successfull push back to homescreen
-        navigateToHomeScreenAfterLogin(context);
+        VRouter.of(context).to("/");
       }
 
     } catch(e){
@@ -224,4 +232,127 @@ class Auth {
     await _firebaseAuth.signOut();
   }
 
+
+  Future<void> restoreBackupMatrix(BuildContext context) async {
+    final picked = await FilePicker.platform.pickFiles(withData: true);
+    final file = picked?.files.firstOrNull;
+    if (file == null) return;
+    await showFutureLoadingDialog(
+      context: context,
+      future: () async {
+        try {
+          final client = Matrix.of(context).getLoginClient();
+          await client.importDump(String.fromCharCodes(file.bytes!));
+          Matrix.of(context).initMatrix();
+        } catch (e, s) {
+          print("Auth.dart: This line somehow importet matrix and it messed with the User line");
+          print(e);
+          //This line somehow importet matrix and it messed with the User line
+          //Logs().e('Future error:', e, s);
+        }
+      },
+    );
+  }
+
+  void loginMatrix(BuildContext context, String username, String password) async {
+    final matrix = Matrix.of(context);
+
+    try {
+      AuthenticationIdentifier identifier;
+      if (username.isEmail) {
+        identifier = AuthenticationThirdPartyIdentifier(
+          medium: 'email',
+          address: username,
+        );
+      } else if (username.isPhoneNumber) {
+        identifier = AuthenticationThirdPartyIdentifier(
+          medium: 'msisdn',
+          address: username,
+        );
+      } else {
+        identifier = AuthenticationUserIdentifier(user: username);
+      }
+      await matrix.getLoginClient().login(
+        LoginType.mLoginPassword,
+        identifier: identifier,
+        // To stay compatible with older server versions
+        // ignore: deprecated_member_use
+        user: identifier.type == AuthenticationIdentifierTypes.userId
+            ? username
+            : null,
+        password: password,
+        initialDeviceDisplayName: PlatformInfos.clientName,
+      );
+    } on MatrixException catch (exception) {
+      throw Exception("Exception occured with signin Matrix itself: $exception");
+    } catch (exception) {
+      throw Exception("Exception occured with signin Matrix thats not Matrix: ${exception.toString()}");
+    }
+  }
+
+
+  void signUpMatrixFirst(BuildContext context, String username) async {
+    try {
+      try {
+        await Matrix.of(context).getLoginClient().register(username: username);
+      } on MatrixException catch (e) {
+        if (!e.requireAdditionalAuthentication) rethrow;
+      }
+      Matrix.of(context).loginUsername = username;
+      VRouter.of(context).to('signup');
+    } catch (e, s) {
+      Logs().d('Sign up failed', e, s);
+    }
+  }
+
+  void signupMatrix(BuildContext context, String email, String password) async {
+    try {
+      final client = Matrix.of(context).getLoginClient();
+
+      if (email.isNotEmpty) {
+        Matrix.of(context).currentClientSecret =
+            DateTime.now().millisecondsSinceEpoch.toString();
+        Matrix.of(context).currentThreepidCreds =
+        await client.requestTokenToRegisterEmail(
+          Matrix.of(context).currentClientSecret,
+          email,
+          0,
+        );
+      }
+
+      final displayname = Matrix.of(context).loginUsername!;
+      final localPart = displayname.toLowerCase().replaceAll(' ', '_');
+
+      await client.uiaRequestBackground(
+            (auth) => client.register(
+          username: localPart,
+          password: password,
+          initialDeviceDisplayName: PlatformInfos.clientName,
+          auth: auth,
+        ),
+      );
+      // Set displayname
+      if (displayname != localPart) {
+        await client.setDisplayName(
+          client.userID!,
+          displayname,
+        );
+      }
+    } catch (e) {
+      final error = (e).toLocalizedString(context);
+      print(error);
+    }
+  }
+
+
+}
+
+extension on String {
+  static final RegExp _phoneRegex =
+  RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
+  static final RegExp _emailRegex = RegExp(r'(.+)@(.+)\.(.+)');
+
+  bool get isEmail => _emailRegex.hasMatch(this);
+
+  bool get isPhoneNumber => _phoneRegex.hasMatch(this);
 }

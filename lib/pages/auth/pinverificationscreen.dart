@@ -14,14 +14,10 @@ import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
 import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:vrouter/vrouter.dart';
 
 class PinVerificationScreen extends StatefulWidget {
-  Function() toggleView;
-  Function() toggleGetStarted;
-  PinVerificationScreen({
-    required this.toggleView,
-    required this.toggleGetStarted,
-  });
+  const PinVerificationScreen({Key? key}) : super(key: key);
   @override
   _PinVerificationScreenState createState() => _PinVerificationScreenState();
 }
@@ -111,10 +107,11 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
+      extendBodyBehindAppBar: true,
       context: context,
       appBar: BitNetAppBar(
         onTap: () {
-          widget.toggleGetStarted();
+          VRouter.of(context).to('/authhome');
         },
         text: L10n.of(context)!.pinCodeVerification,
         context: context,

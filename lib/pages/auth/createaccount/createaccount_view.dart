@@ -1,0 +1,247 @@
+import 'package:BitNet/components/fields/textfield/formtextfield.dart';
+import 'package:BitNet/components/buttons/sso_button.dart';
+import 'package:BitNet/pages/auth/createaccount/createaccount.dart';
+import 'package:BitNet/pages/routetrees/matrix.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/material.dart';
+import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
+import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
+import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:BitNet/components/buttons/longbutton.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:matrix/matrix.dart';
+import 'package:vrouter/vrouter.dart';
+//import 'package:universal_html/html.dart' as html;
+
+class CreateAccountView extends StatefulWidget {
+  CreateAccountController controller;
+  CreateAccountView({required this.controller});
+
+  @override
+  State<CreateAccountView> createState() => _CreateAccountViewState();
+}
+
+class _CreateAccountViewState extends State<CreateAccountView>
+    with TickerProviderStateMixin {
+
+  //MERGED connect_page from matrix in this screen
+  //String? get domain => VRouter.of(context).queryParameters['domain'];
+
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        if (!widget.controller.isLoading) {
+          VRouter.of(context).to('/authhome');
+        }
+        return false; // Prevent the system from popping the current route.
+      },
+      child: BitNetScaffold(
+        extendBodyBehindAppBar: true,
+        context: context,
+        gradientColor: Colors.black,
+        appBar: BitNetAppBar(
+            text:L10n.of(context)!.register,
+            context: context,
+            onTap: () {
+              if (!widget.controller.isLoading) {
+                VRouter.of(context).to('/authhome');
+              }
+            }),
+        body: BackgroundWithContent(
+          opacity: 0.8,
+          child: Form(
+            key: widget.controller.form,
+            child: ListView(
+              padding: EdgeInsets.only(
+                  left: AppTheme.cardPadding * 2,
+                  right: AppTheme.cardPadding * 2,
+                  top: AppTheme.cardPadding * 5),
+              physics: BouncingScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: AppTheme.cardPadding * 4,
+                ),
+                Container(
+                  height: AppTheme.cardPadding * 4.5,
+                  child: AnimatedTextKit(
+                    animatedTexts: [
+                      TypewriterAnimatedText(
+                        L10n.of(context)!.powerToThePeople,
+                        textStyle: Theme.of(context).textTheme.displayLarge,
+                        textAlign: TextAlign.left,
+                        speed: const Duration(milliseconds: 120),
+                      ),
+                    ],
+                    totalRepeatCount: 1,
+                    displayFullTextOnTap: false,
+                    stopPauseOnTap: false,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      L10n.of(context)!.poweredByDIDs,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Container(
+                      margin:
+                      EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                      height: AppTheme.cardPadding * 1.5,
+                      child: Image.asset("assets/images/ion.png"),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    FormTextField(
+                      hintText: "Username",
+                      validator: (val) => val!.isEmpty
+                          ? 'The username you entered is not valid'
+                          : null,
+                      onChanged: (val) {
+                        setState(() {
+                          widget.controller.username = val;
+                        });
+                      },
+                      controller: widget.controller.controllerUsername,
+                      isObscure: false,
+                    ),
+                    SizedBox(
+                      height: AppTheme.cardPadding,
+                    ),
+                    if (widget.controller.supportsSso)
+                      widget.controller.identityProviders == null
+                          ? const SizedBox(
+                        height: 74,
+                        child: Center(child: CircularProgressIndicator.adaptive()),
+                      )
+                          : Center(
+                        child: widget.controller.identityProviders!.length == 1
+                            ? Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12.0),
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
+                              foregroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
+                            ),
+                            icon: widget.controller.identityProviders!.single.icon == null
+                                ? const Icon(
+                              Icons.web_outlined,
+                              size: 16,
+                            )
+                                : Image.network(
+                              Uri.parse(widget.controller.identityProviders!.single.icon!)
+                                  .getDownloadLink(
+                                Matrix.of(context).getLoginClient(),
+                              )
+                                  .toString(),
+                              width: 32,
+                              height: 32,
+                            ),
+                            onPressed: () {
+                              //ssoLoginAction(identityProviders!.single.id!);
+                            },
+                            label: Text(
+                              widget.controller.identityProviders!.single.name ??
+                                  widget.controller.identityProviders!.single.brand ??
+                                  L10n.of(context)!.loginWithOneClick,
+                            ),
+                          ),
+                        )
+                            : Wrap(
+                          children: [
+                            for (final identityProvider in widget.controller.identityProviders!)
+                              SsoButton(
+                                onPressed: () {
+                                  //ssoLoginAction(identityProvider.id!);
+                                },
+                                identityProvider: identityProvider,
+                              ),
+                          ].toList(),
+                        ),
+                      ),
+                    LongButtonWidget(
+                      title: L10n.of(context)!.register,
+                      onTap: () {
+                        if (widget.controller.form.currentState!.validate()) {
+                          widget.controller.createAccountPressed();
+                        }
+                      },
+                      state:
+                      widget.controller.isLoading ? ButtonState.loading : ButtonState.idle,
+                    ),
+                    widget.controller.errorMessage == null
+                        ? Container()
+                        : Padding(
+                      padding: const EdgeInsets.only(
+                          top: AppTheme.cardPadding),
+                      child: Text(
+                        widget.controller.errorMessage!,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: AppTheme.errorColor),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
+                      child: Text(
+                        L10n.of(context)!.alreadyHaveAccount,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: AppTheme.cardPadding),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppTheme.white60,
+                          width: 2,
+                        ),
+                        borderRadius: AppTheme.cardRadiusCircular,
+                      ),
+                      child: SizedBox(
+                        height: 0,
+                        width: 65,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppTheme.cardPadding,
+                          bottom: AppTheme.cardPadding),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (!widget.controller.isLoading) {
+                            VRouter.of(context).to('/login');
+                          }
+                        },
+                        child: Text(
+                          L10n.of(context)!.restoreAccount,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

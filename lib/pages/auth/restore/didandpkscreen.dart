@@ -18,6 +18,8 @@ import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'dart:math';
 
+import 'package:vrouter/vrouter.dart';
+
 Random random = new Random();
 
 // ignore: must_be_immutable
@@ -89,6 +91,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
+      extendBodyBehindAppBar: true,
       context: context,
       gradientColor: Colors.black,
       appBar: BitNetAppBar(text: "DID and Private Key Login", context: context,
@@ -232,7 +235,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     margin: EdgeInsets.only(top: AppTheme.cardPadding, bottom: AppTheme.cardPadding),
                     child: GestureDetector(
                       onTap: () {
-                        print("Implement push to verification screen...");
+                        VRouter.of(context).to("/pinverification");
                       },
                       child: Text(
                         L10n.of(context)!.register,

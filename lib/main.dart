@@ -82,16 +82,7 @@ class MyApp extends StatelessWidget {
         ),
         // Provide a stream of user wallet data
       ],
-      child: MaterialApp(
-        //multilanguage support
-        localizationsDelegates: L10n.localizationsDelegates,
-        supportedLocales: L10n.supportedLocales,
-        // Other properties like theme, home, etc.
-        debugShowCheckedModeBanner: false,
-        title: 'BitNet',
-        theme: AppTheme.standardTheme(),
-        home: const WidgetTree(),
-      ),
+      child: WidgetTree(),
     );
   }
 }

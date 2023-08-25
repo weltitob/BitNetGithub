@@ -141,10 +141,9 @@ class _LongButtonWidgetTransparentState
                         if (widget.leadingIcon != null) widget.leadingIcon!,
                         Text(
                           widget.title,
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             color:
                             widget.textColor != null ? widget.textColor : AppTheme.white90,
-                            fontSize: 17,
                             shadows: [
                               AppTheme.boxShadowSmall
                             ],
