@@ -38,9 +38,9 @@ class GradientBoxBorder extends BoxBorder {
   void paint(Canvas canvas, Rect rect, {BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius, TextDirection? textDirection}) {
     final paint = Paint()
       ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Colors.white.withOpacity(0.6), Colors.white.withOpacity(0.3), Colors.white.withOpacity(0.3), Colors.white.withOpacity(0.6)],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.2)],
       ).createShader(rect)
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;
@@ -96,7 +96,7 @@ class GradientOutlineInputBorder extends InputBorder {
       ..shader = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: isFocused ? [Colors.white.withOpacity(0.6), Colors.white.withOpacity(0.3), Colors.white.withOpacity(0.3), Colors.white.withOpacity(0.6),] : [Colors.white.withOpacity(0.4), Colors.transparent, Colors.transparent, Colors.white.withOpacity(0.4)],
+        colors: isFocused ? [Colors.white.withOpacity(0.5), Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.5),] : [Colors.white.withOpacity(0.3), Colors.transparent, Colors.transparent, Colors.white.withOpacity(0.3)],
       ).createShader(rect)
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;
@@ -141,9 +141,9 @@ class GradientBorderPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
       ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Colors.white.withOpacity(0.6), AppTheme.colorBitcoin, AppTheme.colorBitcoin, Colors.white.withOpacity(0.6)],
+        begin: Alignment.topCenter,
+        end: Alignment.centerRight,
+        colors: [lighten(AppTheme.colorBitcoin, 40), AppTheme.colorBitcoin, AppTheme.colorBitcoin, lighten(AppTheme.colorBitcoin, 40)],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;

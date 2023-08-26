@@ -40,6 +40,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
+      extendBodyBehindAppBar: true,
       context: context,
       appBar: BitNetAppBar(
           text: "Connect with other device",

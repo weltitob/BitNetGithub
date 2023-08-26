@@ -139,31 +139,6 @@ class Auth {
     return newUser;
   }
 
-  Future<String> getUserUsername(String did) async {
-    QuerySnapshot snapshot = await usersCollection
-        .where('did', isEqualTo: did)
-        .get();
-
-    if (snapshot.docs.isEmpty) {
-      throw Exception('No user found with the provided username');
-    } else {
-      // assuming that 'username' is the field name that holds the DID in the document
-      return snapshot.docs.first.get('username');
-    }
-  }
-
-  Future<String> getUserDID(String username) async {
-    QuerySnapshot snapshot = await usersCollection
-        .where('username', isEqualTo: username)
-        .get();
-
-    if (snapshot.docs.isEmpty) {
-      throw Exception('No user found with the provided username');
-    } else {
-      // assuming that 'did' is the field name that holds the DID in the document
-      return snapshot.docs.first.get('did');
-    }
-  }
 
   signMessageAuth(did, privateIONKey) async{
     try{
@@ -205,7 +180,6 @@ class Auth {
 
       if(currentuser == null){
         // Remove the loading screen
-        //maybe add error
         Navigator.pop(context);
         throw Exception("User couldnt be signed in with custom Token!");
       } else {
@@ -217,6 +191,34 @@ class Auth {
       // Also pop the loading screen when an error occurs
       Navigator.pop(context);
       throw Exception("signIn user failed $e");
+    }
+  }
+
+  //-----------------------------FIREBASE HELPERS---------------------------
+
+  Future<String> getUserDID(String username) async {
+    QuerySnapshot snapshot = await usersCollection
+        .where('username', isEqualTo: username)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      throw Exception('No user found with the provided username');
+    } else {
+      // assuming that 'did' is the field name that holds the DID in the document
+      return snapshot.docs.first.get('did');
+    }
+  }
+
+  Future<String> getUserUsername(String did) async {
+    QuerySnapshot snapshot = await usersCollection
+        .where('did', isEqualTo: did)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      throw Exception('No user found with the provided username');
+    } else {
+      // assuming that 'username' is the field name that holds the DID in the document
+      return snapshot.docs.first.get('username');
     }
   }
 
@@ -232,6 +234,9 @@ class Auth {
     await _firebaseAuth.signOut();
   }
 
+  //-----------------------------FIREBASE HELPERS---------------------------
+
+  //-----------------------------MATRIX-------------------------------------
 
   Future<void> restoreBackupMatrix(BuildContext context) async {
     final picked = await FilePicker.platform.pickFiles(withData: true);
@@ -245,8 +250,7 @@ class Auth {
           await client.importDump(String.fromCharCodes(file.bytes!));
           Matrix.of(context).initMatrix();
         } catch (e, s) {
-          print("Auth.dart: This line somehow importet matrix and it messed with the User line");
-          print(e);
+          print("Auth.dart: This line somehow importet matrix and it messed with the User line $e");
           //This line somehow importet matrix and it messed with the User line
           //Logs().e('Future error:', e, s);
         }
@@ -343,6 +347,8 @@ class Auth {
       print(error);
     }
   }
+
+  //-----------------------------MATRIX-------------------------------------
 
 
 }

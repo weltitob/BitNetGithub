@@ -118,65 +118,10 @@ class _CreateAccountViewState extends State<CreateAccountView>
                     SizedBox(
                       height: AppTheme.cardPadding,
                     ),
-                    if (widget.controller.supportsSso)
-                      widget.controller.identityProviders == null
-                          ? const SizedBox(
-                        height: 74,
-                        child: Center(child: CircularProgressIndicator.adaptive()),
-                      )
-                          : Center(
-                        child: widget.controller.identityProviders!.length == 1
-                            ? Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(12.0),
-                          child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer,
-                              foregroundColor: Theme.of(context)
-                                  .colorScheme
-                                  .onPrimaryContainer,
-                            ),
-                            icon: widget.controller.identityProviders!.single.icon == null
-                                ? const Icon(
-                              Icons.web_outlined,
-                              size: 16,
-                            )
-                                : Image.network(
-                              Uri.parse(widget.controller.identityProviders!.single.icon!)
-                                  .getDownloadLink(
-                                Matrix.of(context).getLoginClient(),
-                              )
-                                  .toString(),
-                              width: 32,
-                              height: 32,
-                            ),
-                            onPressed: () {
-                              //ssoLoginAction(identityProviders!.single.id!);
-                            },
-                            label: Text(
-                              widget.controller.identityProviders!.single.name ??
-                                  widget.controller.identityProviders!.single.brand ??
-                                  L10n.of(context)!.loginWithOneClick,
-                            ),
-                          ),
-                        )
-                            : Wrap(
-                          children: [
-                            for (final identityProvider in widget.controller.identityProviders!)
-                              SsoButton(
-                                onPressed: () {
-                                  //ssoLoginAction(identityProvider.id!);
-                                },
-                                identityProvider: identityProvider,
-                              ),
-                          ].toList(),
-                        ),
-                      ),
                     LongButtonWidget(
                       title: L10n.of(context)!.register,
                       onTap: () {
+                        //no sso removed sso (single-sign-on) buttons because we have own system
                         if (widget.controller.form.currentState!.validate()) {
                           widget.controller.createAccountPressed();
                         }

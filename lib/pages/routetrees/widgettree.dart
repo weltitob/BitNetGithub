@@ -1,19 +1,15 @@
+import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/theme/theme_builder.dart';
-import 'package:BitNet/components/buttons/longbutton.dart';
 import 'package:BitNet/components/loaders/empty_page.dart';
-import 'package:BitNet/components/loaders/loading_view.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/pages/matrix/utils/other/background_push.dart';
 import 'package:BitNet/pages/matrix/utils/other/custom_scroll_behaviour.dart';
 import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:BitNet/pages/routetrees/matrix.dart';
-import 'package:BitNet/pages/matrix_chat_app.dart';
 import 'package:BitNet/pages/routetrees/routes.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:BitNet/backbone/security/security.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
@@ -65,7 +61,7 @@ class _WidgetTreeState extends State<WidgetTree> {
   String? _initialUrl;
 
   bool? columnMode;
-  dynamic clients;
+  late List<Client> clients;
   bool _isLoadingClients = true;
 
   @override
@@ -102,8 +98,8 @@ class _WidgetTreeState extends State<WidgetTree> {
       });
       print("Fetched clients: ${clients.toString()}");
       // Preload first client if we have clients
-      final firstClient = clients.firstOrNull;
-
+      print("If now firstornullerror its here...");
+      final firstClient = clients.isNotEmpty ? clients.first : null;
       print("First client: $firstClient");
 
       await firstClient?.roomsLoading;
@@ -162,10 +158,10 @@ class _WidgetTreeState extends State<WidgetTree> {
             themeMode: themeMode,
             theme:
                 //AppTheme.standardTheme(),
-                AppTheme.buildTheme(Brightness.light, primaryColor),
+                AppTheme.customTheme(Brightness.light, primaryColor),
             darkTheme:
                 //AppTheme.standardTheme(),
-                AppTheme.buildTheme(Brightness.dark, primaryColor),
+                AppTheme.customTheme(Brightness.dark, primaryColor),
             scrollBehavior: CustomScrollBehavior(),
             logs: kReleaseMode ? VLogs.none : VLogs.info,
             localizationsDelegates: L10n.localizationsDelegates,
@@ -176,39 +172,47 @@ class _WidgetTreeState extends State<WidgetTree> {
                 //child,
                 (_isLoadingClients)
                     ? EmptyPage(loading: true, text: "Clients still loading...")
-                    : Matrix(
-                        context: context,
-                        router: WidgetTree.routerKey,
-                        clients: clients,
-                        child: child,
-                      ),
+                    // : Matrix(
+                    //     context: context,
+                    //     router: WidgetTree.routerKey,
+                    //     clients: clients,
+                    //     child: child,
+                    //   ),
 
-            //     StreamBuilder(
-            //   stream: Auth().authStateChanges,
-            //   builder: (context, snapshot) {
-            //     if (snapshot.hasError) {
-            //       return EmptyPage(loading: true, text: snapshot.error.toString(),);
-            //     }
-            //     //causes loading when switched anywhere in the app basically lol
-            //     if (snapshot.connectionState == ConnectionState.waiting) {
-            //       return EmptyPage(loading: true, text: "Loading something (authstate changes or request smth etc.)",);
-            //     }
-            //     if (snapshot.hasData) {
-            //       return Container(
-            //         child: Matrix(
-            //           context: context,
-            //           router: WidgetTree.routerKey,
-            //           clients: clients,
-            //           child: child,
-            //         ),
-            //         //only child also has the loading bug so Matrix widget isnt responsible for it
-            //         //child
-            //         //Text("Somehow change the loading view to general loading view or dont wrap the child in the matrix widget call matrix widget somehow else or their providers")
-            //       );
-            //     }
-            //     return EmptyPage(loading: true, text: "Coulnt log in to firebase",);
-            //   },
-            // ),
+                    : StreamBuilder(
+                        stream: Auth().authStateChanges,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return EmptyPage(
+                              loading: true,
+                              text: snapshot.error.toString(),
+                            );
+                          }
+                          //causes loading when switched anywhere in the app basically lol
+                          // if (snapshot.connectionState ==
+                          //     ConnectionState.waiting) {
+                          //   return EmptyPage(
+                          //     loading: true,
+                          //     text:
+                          //         "Loading something (authstate changes or request smth etc.)",
+                          //   );
+                          // }
+                          if (snapshot.hasData) {
+                            return Matrix(
+                              context: context,
+                              router: WidgetTree.routerKey,
+                              clients: clients,
+                              child: child,
+                            );
+                          }
+                          return Matrix(
+                            context: context,
+                            router: WidgetTree.routerKey,
+                            clients: clients,
+                            child: child,
+                          );
+                        },
+                      ),
           );
         },
       ),

@@ -13,6 +13,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
+      extendBodyBehindAppBar: true,
       appBar: BitNetAppBar(
           text: "Social recovery",
           context: context,

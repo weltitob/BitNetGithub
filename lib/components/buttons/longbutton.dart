@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/appstandards/solidcolorcontainer.dart';
@@ -69,7 +70,7 @@ class LongButtonWidget extends StatelessWidget {
                         color:
                             textColor != null ? textColor : AppTheme.white90,
                         shadows: [
-                          AppTheme.boxShadowSmall
+                          AppTheme.boxShadowButton,
                         ],
                       ),
                     ),
@@ -104,52 +105,50 @@ class LongButtonWidgetTransparent extends StatefulWidget {
   State<LongButtonWidgetTransparent> createState() =>
       _LongButtonWidgetTransparentState();
 }
-
-class _LongButtonWidgetTransparentState
-    extends State<LongButtonWidgetTransparent> {
+class _LongButtonWidgetTransparentState extends State<LongButtonWidgetTransparent> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return Material(
-      child: Container(
-        height: AppTheme.cardPadding * 2.5,
-        width: size.width - AppTheme.cardPadding * 2,
-        decoration: BoxDecoration(
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Material(
+        borderRadius: AppTheme.cardRadiusMid,
+        child: Container(
+          height: AppTheme.cardPadding * 2.5,
+          width: size.width - AppTheme.cardPadding * 2,
+          decoration: BoxDecoration(
             borderRadius: AppTheme.cardRadiusMid,
-          boxShadow: [
-            AppTheme.boxShadowProfile
-          ],
-        ),
-        child: Glassmorphism(
-          gradientBegin: Alignment.topCenter,
-          gradientEnd: Alignment.bottomCenter,
-          blur: 50,
-          opacity: 0.15,
-          radius: AppTheme.cardPadding,
-          child: InkWell(
+            boxShadow: [AppTheme.boxShadowProfile],
+          ),
+          child: GlassContainer(
+            borderThickness: 1.5, // remove border if not active
+            blur: 50,
+            opacity: 0.1,
             borderRadius: AppTheme.cardRadiusMid,
-            onTap: widget.onTap,
-            child: Container(
-              height: AppTheme.cardPadding * 2.5,
-              alignment: Alignment.center,
-              child: widget.state == ButtonState.loading
-                  ? Center(child: dotProgress(context, color: AppTheme.white90))
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (widget.leadingIcon != null) widget.leadingIcon!,
-                        Text(
-                          widget.title,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color:
-                            widget.textColor != null ? widget.textColor : AppTheme.white90,
-                            shadows: [
-                              AppTheme.boxShadowSmall
-                            ],
-                        ),
-                        )],
-                    ),
+            child: ClipRRect( // Added this ClipRRect to clip child widgets
+              borderRadius: AppTheme.cardRadiusMid,
+              child: Container(
+                height: AppTheme.cardPadding * 2.5,
+                alignment: Alignment.center,
+                child: widget.state == ButtonState.loading
+                    ? Center(child: dotProgress(context, color: AppTheme.white90))
+                    : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (widget.leadingIcon != null) widget.leadingIcon!,
+                    Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: widget.textColor != null
+                            ? widget.textColor
+                            : AppTheme.white90,
+                        shadows: [AppTheme.boxShadowButton],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -157,3 +156,4 @@ class _LongButtonWidgetTransparentState
     );
   }
 }
+

@@ -1,4 +1,5 @@
 import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:BitNet/backbone/pb_generator/tranform_link.dart';
 import 'package:BitNet/pages/auth/createaccount/createaccount_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,6 @@ import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/models/user/userwallet.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
-import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:universal_html/html.dart' as html;
@@ -33,23 +32,9 @@ class CreateAccountController extends State<CreateAccount> {
   void initState() {
     super.initState();
     //vllt genau hier crap iwie
-    if (supportsSso) {
-      Matrix.of(context)
-          .getLoginClient()
-          .request(
-        RequestType.GET,
-        '/client/r0/login',
-      )
-          .then(
-            (loginTypes) => setState(() {
-          _rawLoginTypes = loginTypes;
-        }),
-      );
-    }
   }
 
   final GlobalKey<FormState> form = GlobalKey<FormState>();
-
   String profileimageurl = "https://media.discordapp.net/attachments/1077885354608177222/1111142365340635206/weltitob_a_corud_of_people_holding_their_fist_up_recolution_str_c5102adf-bf30-4478-aacf-acdd5d618e83.png?width=548&height=548";
 
   String? errorMessage = null;
@@ -65,8 +50,6 @@ class CreateAccountController extends State<CreateAccount> {
           ?.loginFlows
           .any((flow) => flow.type == flowType) ??
           false;
-
-  bool get supportsSso => _supportsFlow('m.login.sso');
 
   bool isDefaultPlatform = (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
 
@@ -90,35 +73,6 @@ class CreateAccountController extends State<CreateAccount> {
     }
     return list;
   }
-
-  void ssoLoginAction(String id) async {
-    final redirectUrl = kIsWeb
-        ? '${html.window.origin!}/web/auth.html'
-        : isDefaultPlatform
-        ? '${AppTheme.appOpenUrlScheme.toLowerCase()}://login'
-        : 'http://localhost:3001//login';
-    final url =
-        '${Matrix.of(context).getLoginClient().homeserver?.toString()}/_matrix/client/r0/login/sso/redirect/${Uri.encodeComponent(id)}?redirectUrl=${Uri.encodeQueryComponent(redirectUrl)}';
-    final urlScheme = isDefaultPlatform
-        ? Uri.parse(redirectUrl).scheme
-        : "http://localhost:3001";
-    final result = await FlutterWebAuth2.authenticate(
-      url: url,
-      callbackUrlScheme: urlScheme,
-    );
-    final token = Uri.parse(result).queryParameters['loginToken'];
-    if (token?.isEmpty ?? false) return;
-
-    await showFutureLoadingDialog(
-      context: context,
-      future: () => Matrix.of(context).getLoginClient().login(
-        LoginType.mLoginToken,
-        token: token,
-        initialDeviceDisplayName: PlatformInfos.clientName,
-      ),
-    );
-  }
-
 
   createAccountPressed() async {
     setState(() {
@@ -157,6 +111,15 @@ class CreateAccountController extends State<CreateAccount> {
     });
   }
 
+  void matrixSignUp() async {
+    print("signup matrix need to change email each time and at one point setup own matrix server without email auth");
+    Auth().signUpMatrixFirst(context, localpart);
+    Auth().signupMatrix(context, "contact@mybitnet.com", "i__hate..passwords!!");
+    final picked = await urlToXFile(profileimageurl);
+    //set matrix profilepicture too
+    Matrix.of(context).loginAvatar = picked;
+  }
+
   Future<void> createUser() async {
     try {
       //final userwalletdata = await createWallet(email: _controllerEmail.text);
@@ -180,7 +143,7 @@ class CreateAccountController extends State<CreateAccount> {
           bio: "Hey there Bitcoiners! I joined the revolution!",
           customToken: "customToken",
           username: localpart,
-          profileImageUrl: "https://marketplace.canva.com/EAFEits4-uw/1/0/1600w/canva-boy-cartoon-gamer-animated-twitch-profile-photo-oEqs2yqaL8s.jpg",
+          profileImageUrl: profileimageurl,
           createdAt: timestamp,
           updatedAt: timestamp,
           isActive: true,
@@ -195,17 +158,16 @@ class CreateAccountController extends State<CreateAccount> {
               issuer: widget.code.issuer,
               receiver: widget.code.receiver));
 
-      print("signup matrix need to change email each time and at one point setup own matrix server without email auth");
-
-      //Auth().signUpMatrixFirst(context, localpart);
-      //Auth().signupMatrix(context, "contact@mybitnet.com", "i__hate..passwords!!");
+      matrixSignUp();
 
       print("Should navigate to homescreen now...");
       VRouter.of(context).to('/');
 
-      setState(() {});
-
-    } on FirebaseException catch (e) {
+    } on MatrixException catch(e){
+      print("Matrix Exception: $e");
+      throw Exception(e);
+    }
+    on FirebaseException catch (e) {
       print("Firebase Exception: $e");
       throw Exception(
           "We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");

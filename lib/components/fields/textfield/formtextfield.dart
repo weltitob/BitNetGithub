@@ -84,7 +84,7 @@ class _FormTextFieldState extends State<FormTextField> {
                     color: Colors.transparent,
                     width: 0.0,
                   ),
-                  color: Colors.white.withOpacity(0.2),
+                  color: AppTheme.colorGlassContainer,
                 ),
                 child: TextFormField(
                   validator: widget.validator,

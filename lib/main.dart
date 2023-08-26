@@ -1,7 +1,5 @@
 import 'package:BitNet/models/user/userdata.dart';
-import 'package:BitNet/pages/matrix/utils/other/background_push.dart';
 import 'package:BitNet/pages/secondpages/lock_screen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:firebase_core/firebase_core.dart';

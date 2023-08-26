@@ -25,7 +25,7 @@ Widget solidContainer({
   return GestureDetector(
     onTap: onPressed,
     child: CustomPaint(
-      painter: GradientBorderPainter(borderRadius: BorderRadius.circular(AppTheme.cardPadding), borderWidth: 2.0),
+      painter: GradientBorderPainter(borderRadius: BorderRadius.circular(AppTheme.cardPadding), borderWidth: 1.5),
       child: Container(
         height: height,
         width: width,

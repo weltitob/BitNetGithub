@@ -35,6 +35,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
   @override
   Widget build(BuildContext context) {
     return BitNetScaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: BitNetAppBar(
           text: L10n.of(context)!.restoreAccount,
@@ -45,7 +46,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
       body: ListView(
         children: [
           SizedBox(
-            height: AppTheme.cardPadding * 2,
+            height: AppTheme.cardPadding * 1,
           ),
           Padding(
             padding:
@@ -99,7 +100,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
           //list accounts
           UsersList(
             showError: showError,
-          )
+          ),
+          SizedBox(
+            height: AppTheme.cardPadding,
+          ),
         ],
       ),
       context: context,

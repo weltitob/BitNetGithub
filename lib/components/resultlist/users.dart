@@ -242,7 +242,7 @@ class _UsersListState extends State<UsersList>
             height: AppTheme.elementSpacing,
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 3),
+            margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
             child: Text(
               "It appears that you haven't added any users to your device yet.",
               textAlign: TextAlign.center,

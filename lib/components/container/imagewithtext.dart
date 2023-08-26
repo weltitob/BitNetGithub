@@ -18,7 +18,13 @@ Widget GlassContainer({
       filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.white.withOpacity(opacity),
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withOpacity(opacity + 0.1),
+                  Colors.white.withOpacity(opacity - 0.05),
+                ]),
             borderRadius: borderRadius,
             border: GradientBoxBorder(
               borderRadius: borderRadius,
@@ -61,7 +67,7 @@ Widget OptionContainer(
           child: GlassContainer(
             borderThickness: isActive ? 1.5 : 0, // remove border if not active
             blur: 50,
-            opacity: 0.2,
+            opacity: 0.1,
             borderRadius: AppTheme.cardRadiusBigger,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -84,6 +90,7 @@ Widget OptionContainer(
                 ),
                 Container(
                   margin: EdgeInsets.only(
+                    top: AppTheme.elementSpacing / 2,
                       bottom: AppTheme.elementSpacing,
                       right: AppTheme.elementSpacing,
                   left: AppTheme.elementSpacing),

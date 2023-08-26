@@ -40,14 +40,31 @@ abstract class AppTheme {
   static String get defaultHomeserver => _defaultHomeserver;
   static double bubbleSizeFactor = 1;
   static double fontSizeFactor = 1;
-  static const Color chatColor = primaryColor;
-  static Color? colorSchemeSeed = primaryColor;
   static const double messageFontSize = 15.75;
+
+  static const Color chatColor = primaryColor;
+  static Color? colorSchemeSeed = Color(0xFF5625BA);
   static const bool allowOtherHomeservers = true;
   static const bool enableRegistration = true;
   static const Color primaryColor = Color(0xFF5625BA);
   static const Color primaryColorLight = Color(0xFFCCBDEA);
   static const Color secondaryColor = Color(0xFF41a2bc);
+  static Color glassMorphColor = Colors.black.withOpacity(0.2);
+  static Color glassMorphColorLight = Colors.white.withOpacity(0.2);
+  static Color glassMorphColorDark = Colors.black.withOpacity(0.3);
+
+  // //bitcoincolors
+  // static const Color orange = Color(0xFFFFBD69);
+  // static const Color kAccentColor = Color(0xFFFFC107);
+  static const Color colorBitcoin = Color(0xfff2a900);
+  static const Color colorBackground = Color(0xff150036);
+  static const Color colorPrimaryGradient = Color(0xfff25d00);
+  //
+  //green and red
+  static const Color errorColor = Color(0xFFFF6363);
+  static const Color errorColorGradient = Color(0xFFC52C2C);
+  static const Color successColor = Color(0xFF5DE165);
+  static const Color successColorGradient = Color(0xFF148C1A);
   static String _privacyUrl =
       'https://gitlab.com/famedly/fluffychat/-/blob/main/PRIVACY.md';
   static String get privacyUrl => _privacyUrl;
@@ -55,11 +72,10 @@ abstract class AppTheme {
       'https://gitlab.com/famedly/fluffychat/-/wikis/Push-Notifications-without-Google-Services';
   static const String encryptionTutorial =
       'https://gitlab.com/famedly/fluffychat/-/wikis/How-to-use-end-to-end-encryption-in-FluffyChat';
-  static const String appId = 'im.fluffychat.FluffyChat';
-  static const String appOpenUrlScheme = 'im.fluffychat';
-  static String _webBaseUrl = 'https://fluffychat.im/web';
+  static const String appId = 'com.bitnet.BitNet';
+  static const String appOpenUrlScheme = 'com.bitnet';
+  static String _webBaseUrl = 'https://mybitnet.com'; //'https://fluffychat.im/web';
   static String get webBaseUrl => _webBaseUrl;
-  static const String sourceCodeUrl = 'https://gitlab.com/famedly/fluffychat';
   static const String supportUrl =
       'https://gitlab.com/famedly/fluffychat/issues';
   static final Uri newIssueUrl = Uri(
@@ -82,8 +98,11 @@ abstract class AppTheme {
   static const bool hideTypingUsernames = false;
   static const bool hideAllStateEvents = false;
   static const String inviteLinkPrefix = 'https://matrix.to/#/';
-  static const String deepLinkPrefix = 'im.fluffychat://chat/';
+  static const String deepLinkPrefix = 'com.mybitnet://chat/';
   static const String schemePrefix = 'matrix:';
+
+  //wtf is this here ------------------------------------------------
+
   static const String pushNotificationsChannelId = 'fluffychat_push';
   static const String pushNotificationsChannelName = 'FluffyChat push channel';
   static const String pushNotificationsChannelDescription =
@@ -91,6 +110,9 @@ abstract class AppTheme {
   static const String pushNotificationsAppId = 'chat.fluffy.fluffychat';
   static const String pushNotificationsGatewayUrl =
       'https://push.fluffychat.im/_matrix/push/v1/notify';
+
+  //wtf is this here ------------------------------------------------
+
   static const String pushNotificationsPusherFormat = 'event_id_only';
   static const String emojiFontName = 'Noto Emoji';
   static const String emojiFontUrl =
@@ -149,17 +171,23 @@ abstract class AppTheme {
   static BoxShadow boxShadow = BoxShadow(
     color: Colors.black.withOpacity(0.25),
     offset: const Offset(0, 2),
-    blurRadius: 4,
+    blurRadius: 5,
   );
   static BoxShadow boxShadowSmall = BoxShadow(
     color: Colors.black.withOpacity(0.1),
     offset: const Offset(0, 2.5),
-    blurRadius: 10,
+    blurRadius: 20,
   );
-  static BoxShadow boxShadowBig = const BoxShadow(
-    color: Colors.black45,
-    offset: Offset(0, 5),
-    blurRadius: 8.0,
+  static BoxShadow boxShadowBig = BoxShadow(
+    color: Colors.black.withOpacity(0.1),
+    offset: Offset(0, 2.5),
+    blurRadius: 40.0,
+  );
+
+  static BoxShadow boxShadowButton = BoxShadow(
+    color: Colors.black.withOpacity(0.5),
+    offset: Offset(0, 3),
+    blurRadius: 40.0,
   );
 
   static BoxShadow boxShadowProfile = BoxShadow(
@@ -203,22 +231,7 @@ abstract class AppTheme {
   static Color white70 = const Color(0xFFFFFFFF).withOpacity(0.7);
   static Color white60 = const Color(0xFFFFFFFF).withOpacity(0.6);
 
-  static Color glassMorphColor = Colors.black.withOpacity(0.2);
-  static Color glassMorphColorLight = Colors.white.withOpacity(0.2);
-  static Color glassMorphColorDark = Colors.black.withOpacity(0.3);
-
-  // //bitcoincolors
-  // static const Color orange = Color(0xFFFFBD69);
-  // static const Color kAccentColor = Color(0xFFFFC107);
-  static const Color colorBitcoin = Color(0xfff2a900);
-  static const Color colorBackground = Color(0xff150036);
-  static const Color colorPrimaryGradient = Color(0xfff25d00);
-  //
-  //green and red
-  static const Color errorColor = Color(0xFFFF6363);
-  static const Color errorColorGradient = Color(0xFFC52C2C);
-  static const Color successColor = Color(0xFF5DE165);
-  static const Color successColorGradient = Color(0xFF148C1A);
+  static Color colorGlassContainer = const Color(0xFFFFFFFF).withOpacity(0.15);
 
 
   static InputDecoration textfieldDecoration(String hintText, BuildContext context) => InputDecoration(
@@ -230,37 +243,9 @@ abstract class AppTheme {
     ),
   );
 
-  static ThemeData customColorTheme(Color color, Brightness brightness) =>
-      ThemeData(
-        //later change seed to the one selected
-        colorSchemeSeed: color,
-        useMaterial3: true,
-        brightness: brightness,
-        textTheme: (brightness == Brightness.light) ? textTheme : textThemeDarkMode,
-      );
-
-  static ThemeData standardTheme() => ThemeData(
-    //later change seed to the one selected
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    textTheme: textThemeDarkMode,
-    colorScheme: ColorScheme(
-        background: AppTheme.colorBackground,
-        brightness: Brightness.dark,
-        primary: AppTheme.colorBitcoin,
-        secondary: lighten(AppTheme.colorBackground, 20),
-        onBackground: AppTheme.white90,
-        surface: Colors.deepPurple,
-        onPrimary: AppTheme.colorBitcoin,
-        error: AppTheme.errorColor,
-        onSecondary: AppTheme.white90,
-        onError: AppTheme.errorColor,
-        onSurface: AppTheme.white90),
-  );
-
   static final textTheme = TextTheme(
     displayLarge: GoogleFonts.inter(
-      fontSize: 45,
+      fontSize: 48,
       fontWeight: FontWeight.bold,
       letterSpacing: -1.5,
     ),
@@ -301,22 +286,27 @@ abstract class AppTheme {
     ),
     bodyLarge: GoogleFonts.inter(
       fontSize: 17,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
       letterSpacing: 0.15,
     ),
     bodyMedium: const TextStyle(
       fontSize: 15,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
       letterSpacing: 0.15,
     ),
     bodySmall: const TextStyle(
       fontSize: 12,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
       letterSpacing: 0.25,
     ),
     labelLarge: const TextStyle(
       fontSize: 12,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.25,
+    ),
+    labelMedium: const TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
       letterSpacing: 0.25,
     ),
     labelSmall: GoogleFonts.inter(
@@ -363,41 +353,13 @@ abstract class AppTheme {
     labelSmall: textTheme.labelSmall!.copyWith(
       color: AppTheme.white60,
     ),
+    labelMedium: textTheme.labelMedium!.copyWith(
+      color: AppTheme.white60,
+    ),
     labelLarge: textTheme.labelLarge!.copyWith(
-      color: AppTheme.white90,
+      color: AppTheme.white60,
     ),
   );
-
-  static ThemeData dark = ThemeData.dark().copyWith(
-    primaryColorDark: Colors.grey[400],
-    primaryColorLight: Colors.grey[800],
-    scaffoldBackgroundColor: Colors.black,
-    primaryColor: Colors.red,
-    appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
-
-    iconTheme: const IconThemeData(color: white100),
-    // textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme)
-
-
-    //Theme for Bottom Nav
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: white100,
-      selectedItemColor: Colors.white70,
-      unselectedItemColor: white60,
-      selectedIconTheme: IconThemeData(color: white60),
-      showUnselectedLabels: true,
-    ),
-  );
-
-
-  static bool isColumnModeByWidth(double width) =>
-      width > columnWidth * 2 + navRailWidth;
-
-  static bool isColumnMode(BuildContext context) =>
-      isColumnModeByWidth(MediaQuery.of(context).size.width);
-
-  static bool getDisplayNavigationRail(BuildContext context) =>
-      !VRouter.of(context).path.startsWith('/settings');
 
   static const fallbackTextStyle = TextStyle(
     fontFamily: 'Roboto',
@@ -420,75 +382,105 @@ abstract class AppTheme {
     titleSmall: fallbackTextStyle,
   );
 
+  static bool isColumnModeByWidth(double width) =>
+      width > columnWidth * 2 + navRailWidth;
+
+  static bool isColumnMode(BuildContext context) =>
+      isColumnModeByWidth(MediaQuery.of(context).size.width);
+
+  static bool getDisplayNavigationRail(BuildContext context) =>
+      !VRouter.of(context).path.startsWith('/settings');
+
   static const Curve animationCurve = Curves.easeInOut;
 
-  static ThemeData buildTheme(Brightness brightness, [Color? seed]) =>
+
+  static ThemeData customTheme(Brightness brightness, [Color? seed]) =>
       ThemeData(
         visualDensity: VisualDensity.standard,
         useMaterial3: true,
         brightness: brightness,
-        colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
-        textTheme: PlatformInfos.isDesktop || PlatformInfos.isWeb
-            ? brightness == Brightness.light
-            ? Typography.material2018().black.merge(fallbackTextTheme)
-            : Typography.material2018().white.merge(fallbackTextTheme)
-            : null,
-        snackBarTheme: const SnackBarThemeData(
-          behavior: SnackBarBehavior.floating,
+        
+        //colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
+        colorScheme: ColorScheme(
+            //https://m3.material.io/styles/color/the-color-system/color-roles
+            brightness: brightness,
+            primary: AppTheme.colorSchemeSeed ?? Colors.black,
+            onPrimary: AppTheme.colorBitcoin,
+            secondary: lighten(AppTheme.colorBackground, 20),
+            onSecondary: AppTheme.white90,
+            //------stays the same always...-------
+            tertiary: AppTheme.colorBitcoin,
+            onTertiary: AppTheme.colorPrimaryGradient,
+            //-------------------------------------
+            error: AppTheme.errorColor,
+            onError: AppTheme.errorColor,
+            //------stays the same always...-------
+            background: AppTheme.colorSchemeSeed!.withAlpha(25) ?? Colors.black,
+            onBackground: AppTheme.white90,
+            //-------------------------------------
+
+            surface: Colors.deepPurple,
+            onSurface: AppTheme.white90
+
         ),
-        dividerColor: brightness == Brightness.light
-            ? Colors.blueGrey.shade50
-            : Colors.blueGrey.shade900,
-        popupMenuTheme: PopupMenuThemeData(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: UnderlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall / 2),
-          ),
-          filled: true,
-        ),
-        appBarTheme: AppBarTheme(
-          surfaceTintColor:
-          brightness == Brightness.light ? Colors.white : Colors.black,
-          shadowColor: Colors.black.withAlpha(64),
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness: brightness.reversed,
-            statusBarBrightness: brightness,
-          ),
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(cardPadding / 2),
-            ),
-          ),
-        ),
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(cardPadding / 2),
-            ),
-          ),
-        ),
-        dialogTheme: DialogTheme(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(cardPadding / 2),
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(AppTheme.elementSpacing),
-            textStyle: const TextStyle(fontSize: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: AppTheme.cardRadiusMid,
-            ),
-          ),
-        ),
+        //textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme)
+        textTheme: brightness == Brightness.light ? textTheme.merge(fallbackTextTheme) : textThemeDarkMode.merge(fallbackTextTheme)
+        // snackBarTheme: const SnackBarThemeData(
+        //   behavior: SnackBarBehavior.floating,
+        // ),
+        // dividerColor: brightness == Brightness.light
+        //     ? Colors.blueGrey.shade50
+        //     : Colors.blueGrey.shade900,
+        // popupMenuTheme: PopupMenuThemeData(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+        //   ),
+        // ),
+        // inputDecorationTheme: InputDecorationTheme(
+        //   border: UnderlineInputBorder(
+        //     borderSide: BorderSide.none,
+        //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall / 2),
+        //   ),
+        //   filled: true,
+        // ),
+        // appBarTheme: AppBarTheme(
+        //   surfaceTintColor:
+        //   brightness == Brightness.light ? Colors.white : Colors.black,
+        //   shadowColor: Colors.black.withAlpha(64),
+        //   systemOverlayStyle: SystemUiOverlayStyle(
+        //     statusBarColor: Colors.transparent,
+        //     statusBarIconBrightness: brightness.reversed,
+        //     statusBarBrightness: brightness,
+        //   ),
+        // ),
+        // textButtonTheme: TextButtonThemeData(
+        //   style: TextButton.styleFrom(
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(cardPadding / 2),
+        //     ),
+        //   ),
+        // ),
+        // outlinedButtonTheme: OutlinedButtonThemeData(
+        //   style: OutlinedButton.styleFrom(
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(cardPadding / 2),
+        //     ),
+        //   ),
+        // ),
+        // dialogTheme: DialogTheme(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(cardPadding / 2),
+        //   ),
+        // ),
+        // elevatedButtonTheme: ElevatedButtonThemeData(
+        //   style: ElevatedButton.styleFrom(
+        //     padding: const EdgeInsets.all(AppTheme.elementSpacing),
+        //     textStyle: const TextStyle(fontSize: 16),
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: AppTheme.cardRadiusMid,
+        //     ),
+        //   ),
+        // ),
       );
 }
 

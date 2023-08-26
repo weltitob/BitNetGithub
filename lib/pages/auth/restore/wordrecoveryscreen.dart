@@ -118,6 +118,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return BitNetScaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: BitNetAppBar(
           text: "Word recovery",

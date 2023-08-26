@@ -239,7 +239,7 @@ msix_config:
   publisher_display_name: BitNet
   publisher: CN=BitNet, O=Head of bad integration tests, L=Matrix, S=Internet, C=EU
   identity_name: net.bit.bitnet
-  logo_path: assets\bitcoin.png
+  logo_path: assets\logo.png
   capabilities: internetClient, location, microphone, webcam
   protocol_activation: https
   app_uri_handler_hosts: bitnet.im, matrix.to
