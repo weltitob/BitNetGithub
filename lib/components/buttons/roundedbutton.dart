@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:BitNet/components/appstandards/glassmorph.dart';
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 
@@ -24,12 +24,11 @@ class RoundedButtonWidget extends StatelessWidget {
       child: Container(
           height: AppTheme.cardPadding * 2,
           width: AppTheme.cardPadding * 2,
-          child: Glassmorphism(
-            gradientBegin: Alignment.topLeft,
-            gradientEnd: Alignment.bottomRight,
-            blur: 200,
-            opacity: 0.2,
-            radius: AppTheme.cardPaddingSmall,
+          child: GlassContainer(
+            borderThickness: 1.5, // remove border if not active
+            blur: 50,
+            opacity: 0.1,
+            borderRadius: AppTheme.cardRadiusMid,
             child: Icon(
               iconData,
               color: isGlassmorph

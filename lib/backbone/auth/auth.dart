@@ -238,6 +238,42 @@ class Auth {
 
   //-----------------------------MATRIX-------------------------------------
 
+  /// Starts an analysis of the given homeserver. It uses the current domain and
+  /// makes sure that it is prefixed with https. Then it searches for the
+  /// well-known information and forwards to the login page depending on the
+  /// login type.
+
+  //coming from old homeserverpicker
+  Future<void> checkHomeserverAction(BuildContext context, String homeservertext) async {
+    try {
+      var homeserver = Uri.parse(homeservertext);
+      if (homeserver.scheme.isEmpty) {
+        homeserver = Uri.https(homeservertext, '');
+      }
+      final matrix = Matrix.of(context);
+      matrix.loginHomeserverSummary =
+      await matrix.getLoginClient().checkHomeserver(homeserver);
+      final ssoSupported = matrix.loginHomeserverSummary!.loginFlows
+          .any((flow) => flow.type == 'm.login.sso');
+
+      try {
+        await Matrix.of(context).getLoginClient().register();
+        matrix.loginRegistrationSupported = true;
+      } on MatrixException catch (e) {
+        matrix.loginRegistrationSupported = e.requireAdditionalAuthentication;
+      }
+
+      if (!ssoSupported && matrix.loginRegistrationSupported == false) {
+        // Server does not support SSO or registration. We can skip to login page:
+        VRouter.of(context).to('login');
+      } else {
+        VRouter.of(context).to('connect');
+      }
+    } catch (e) {
+      Logs().e('Error in checkHomeserverAction', (e).toLocalizedString(context));
+    }
+  }
+
   Future<void> restoreBackupMatrix(BuildContext context) async {
     final picked = await FilePicker.platform.pickFiles(withData: true);
     final file = picked?.files.firstOrNull;

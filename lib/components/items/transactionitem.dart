@@ -1,7 +1,7 @@
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/models/transaction.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/models/user/userwallet.dart';
@@ -148,10 +148,11 @@ class _TransactionItemState extends State<TransactionItem> {
                                         : AppTheme.white90),
                           ),
                           SizedBox(height: AppTheme.elementSpacing / 4,),
-                          Glassmorphism(
-                            blur: 20,
+                          GlassContainer(
+                            borderThickness: 1.5, // remove border if not active
+                            blur: 50,
                             opacity: 0.1,
-                            radius: 50.0,
+                            borderRadius: AppTheme.cardRadiusMid,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: AppTheme.elementSpacing / 3,

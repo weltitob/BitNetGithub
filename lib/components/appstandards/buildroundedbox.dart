@@ -1,7 +1,7 @@
 import 'dart:ui';
 
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 
 class RoundedContainer extends StatefulWidget {
@@ -18,10 +18,11 @@ class _RoundedContainerState extends State<RoundedContainer> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
-      child: Glassmorphism(
-        blur: 20,
+      child: GlassContainer(
+        borderThickness: 1.5, // remove border if not active
+        blur: 50,
         opacity: 0.1,
-        radius: AppTheme.cardPadding,
+        borderRadius: AppTheme.cardRadiusMid,
         child: Container(
             padding: const EdgeInsets.only(
                 top: AppTheme.elementSpacing,

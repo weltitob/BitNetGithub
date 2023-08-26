@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/pages/secondpages/newsscreen.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 

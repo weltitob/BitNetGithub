@@ -1,9 +1,10 @@
+import 'package:BitNet/components/appstandards/mydivider.dart';
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:BitNet/components/buttons/glassbutton.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:BitNet/models/issuereport.dart';
 import 'package:BitNet/models/user/userwallet.dart';
@@ -79,10 +80,11 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
             ),
             Container(
               width: AppTheme.cardPadding * 11.5,
-              child: Glassmorphism(
-                blur: 20,
+              child: GlassContainer(
+                borderThickness: 1.5, // remove border if not active
+                blur: 50,
                 opacity: 0.1,
-                radius: 24.0,
+                borderRadius: AppTheme.cardRadiusMid,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.elementSpacing * 1.5),

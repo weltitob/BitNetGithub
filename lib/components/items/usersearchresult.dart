@@ -1,5 +1,5 @@
 import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/container/profilepicture.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:flutter/material.dart';
@@ -22,10 +22,11 @@ class _UserSearchResultState extends State<UserSearchResult> {
     return  Container(
       margin: EdgeInsets.only(top: AppTheme.elementSpacing),
       height: AppTheme.cardPadding * 2.75,
-      child: Glassmorphism(
-        blur: 75,
-        opacity: 0.125,
-        radius: AppTheme.cardPadding,
+      child: GlassContainer(
+          borderThickness: 1.5, // remove border if not active
+          blur: 50,
+          opacity: 0.1,
+          borderRadius: AppTheme.cardRadiusMid,
         child: InkWell(
           onTap: () {},
           borderRadius: AppTheme.cardRadiusBig,

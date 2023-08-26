@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/backbone/streams/bitcoinpricestream.dart';
 import 'package:BitNet/backbone/streams/cryptochartline.dart';
 import 'package:BitNet/components/container/currencypicture.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -349,10 +349,11 @@ class _ChartWidgetState extends State<ChartWidget> {
       padding:
       const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
       child: timespan == timeperiod
-          ? Glassmorphism(
-        blur: 20,
+          ? GlassContainer(
+        borderThickness: 1.5, // remove border if not active
+        blur: 50,
         opacity: 0.1,
-        radius: 50.0,
+        borderRadius: AppTheme.cardRadiusMid,
         child: TextButton(
           style: TextButton.styleFrom(
               padding: EdgeInsets.zero,

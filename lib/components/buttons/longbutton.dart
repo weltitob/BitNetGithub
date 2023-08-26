@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/appstandards/solidcolorcontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

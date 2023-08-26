@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:BitNet/backbone/security/biometrics/biometric_check.dart';
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/pages/scan_qr_screen.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ import 'package:BitNet/backbone/cloudfunctions/sendbitcoin.dart';
 import 'package:BitNet/backbone/helper/helpers.dart';
 import 'package:BitNet/pages/bottomnav.dart';
 import 'package:BitNet/components/camera/qrscanneroverlay.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:BitNet/components/swipebutton/swipeable_button_view.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
@@ -249,10 +249,13 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                       // Adds a text input for the Bitcoin receiver address
                                       Container(
                                         width: AppTheme.cardPadding * 11.5,
-                                        child: Glassmorphism(
-                                          blur: 20,
+                                        child: GlassContainer(
+                                          borderThickness:
+                                              1.5, // remove border if not active
+                                          blur: 50,
                                           opacity: 0.1,
-                                          radius: 50.0,
+                                          borderRadius:
+                                              AppTheme.cardRadiusCircular,
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal:
@@ -263,7 +266,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                             child: TextFormField(
                                               // Unfocuses the input field when tapped outside of it
                                               onTapOutside: (value) {
-                                                if (myFocusNodeAdress.hasFocus) {
+                                                if (myFocusNodeAdress
+                                                    .hasFocus) {
                                                   myFocusNodeAdress.unfocus();
                                                   validateAdress(
                                                       bitcoinReceiverAdressController
@@ -299,7 +303,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                       ),
                                       // A GestureDetector widget that navigates to a new page when tapped
                                       GestureDetector(
-                                          onTap: () => Navigator.of(context).push(
+                                          onTap: () =>
+                                              Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       const QRScreen(
@@ -378,7 +383,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   ),
                   // A Padding widget that contains a button widget
                   Padding(
-                      padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 2),
+                      padding:
+                          EdgeInsets.only(bottom: AppTheme.cardPadding * 2),
                       child: button()),
                 ],
               ),
@@ -619,11 +625,12 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
       child:
           fees == feesSelected // if the fees parameter equals the selected fees
-              ? Glassmorphism(
+              ? GlassContainer(
                   // render a button with glassmorphism effect
-                  blur: 20,
+                  borderThickness: 1.5, // remove border if not active
+                  blur: 50,
                   opacity: 0.1,
-                  radius: 50.0,
+                  borderRadius: AppTheme.cardRadiusCircular,
                   child: TextButton(
                     style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -754,8 +761,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                             body: Center(
                               child: Text("ADD SCREEN!"),
                             ),
-                          )
-                      ));
+                          )));
                 } else {
                   // Display an error message if the cloud function failed and set isFinished to false
                   print(

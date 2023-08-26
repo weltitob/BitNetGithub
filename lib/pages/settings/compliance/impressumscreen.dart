@@ -1,3 +1,4 @@
+import 'package:BitNet/components/appstandards/mydivider.dart';
 import 'package:flutter/material.dart';
 import 'package:BitNet/pages/settings/settingsscreen.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';

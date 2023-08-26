@@ -1,6 +1,5 @@
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/buttons/personalactionbutton.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -24,10 +23,11 @@ Future<bool?> showErrorDialog({
         child: Container(
           height: AppTheme.cardPadding * 13,
           width: AppTheme.cardPadding * 13,
-          child: Glassmorphism(
-            blur: 75,
-            opacity: 0.125,
-            radius: AppTheme.cardPaddingBig,
+          child: GlassContainer(
+            borderThickness: 1.5, // remove border if not active
+            blur: 50,
+            opacity: 0.1,
+            borderRadius: AppTheme.cardRadiusBig,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
               child: Column(
@@ -94,10 +94,11 @@ Future<bool?> showDialogue({
         child: Container(
           height: AppTheme.cardPadding * 13,
           width: AppTheme.cardPadding * 13,
-          child: Glassmorphism(
-            blur: 75,
-            opacity: 0.125,
-            radius: AppTheme.cardPaddingBig,
+          child: GlassContainer(
+            borderThickness: 1.5, // remove border if not active
+            blur: 50,
+            opacity: 0.1,
+            borderRadius: AppTheme.cardRadiusBig,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
               child: Column(

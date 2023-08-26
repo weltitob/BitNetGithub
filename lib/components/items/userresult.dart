@@ -1,7 +1,7 @@
 import 'package:BitNet/backbone/auth/storePrivateData.dart';
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/container/profilepicture.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:BitNet/models/user/userdata.dart';
@@ -30,10 +30,11 @@ class _UserResultState extends State<UserResult> {
   Widget build(BuildContext context) {
     return Container(
       height: AppTheme.cardPadding * 2.75,
-      child: Glassmorphism(
-        blur: 75,
-        opacity: 0.125,
-        radius: AppTheme.cardPadding,
+      child: GlassContainer(
+        borderThickness: 1.5, // remove border if not active
+        blur: 50,
+        opacity: 0.1,
+        borderRadius: AppTheme.cardRadiusMid,
         child: InkWell(
           onTap: () {},
           borderRadius: AppTheme.cardRadiusBig,
@@ -96,10 +97,11 @@ class _UserResultState extends State<UserResult> {
                           child: Container(
                             height: AppTheme.cardPadding * 1.5,
                             width: AppTheme.cardPadding * 1.5,
-                            child: Glassmorphism(
-                              blur: 75,
-                              opacity: 0.125,
-                              radius: AppTheme.cardPadding * 10,
+                            child: GlassContainer(
+                              borderThickness: 1.5, // remove border if not active
+                              blur: 50,
+                              opacity: 0.1,
+                              borderRadius: AppTheme.cardRadiusMid,
                               child: Icon(
                                 FontAwesomeIcons.remove,
                                 size: AppTheme.elementSpacing * 1.5,
@@ -129,10 +131,11 @@ class _UserResultState extends State<UserResult> {
                             child: Container(
                               height: AppTheme.cardPadding * 1.5,
                               width: AppTheme.cardPadding * 1.5,
-                              child: Glassmorphism(
-                                blur: 75,
-                                opacity: 0.125,
-                                radius: AppTheme.cardPadding * 10,
+                              child: GlassContainer(
+                                borderThickness: 1.5, // remove border if not active
+                                blur: 50,
+                                opacity: 0.1,
+                                borderRadius: AppTheme.cardRadiusCircular,
                                 child: Icon(
                                   FontAwesomeIcons.key,
                                   size: AppTheme.elementSpacing * 1.5,

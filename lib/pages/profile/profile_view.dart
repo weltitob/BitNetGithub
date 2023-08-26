@@ -1,11 +1,11 @@
 import 'package:BitNet/backbone/auth/auth.dart';
 import 'package:BitNet/backbone/helper/databaserefs.dart';
+import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/dialogsandsheets/bottom_sheets/settings_bottom_sheet/settings_bottom_sheet.dart';
 import 'package:BitNet/components/loaders/loaders.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/buttons/roundedbutton.dart';
 import 'package:BitNet/components/container/coinlogo.dart';
-import 'package:BitNet/components/appstandards/glassmorph.dart';
 import 'package:BitNet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:BitNet/models/user/userdata.dart';
@@ -159,7 +159,6 @@ class _ProfileViewState extends State<ProfileView> {
                                       print('follow dagelassen lol');
                                     }
                                   : () {
-                                      print('wtf');
                                       showDialogueMultipleOptions(
                                         image1: 'assets/images/bitcoin.png',
                                         image2: 'assets/images/bitcoin.png',
@@ -385,19 +384,14 @@ class _ProfileViewState extends State<ProfileView> {
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusBigger,
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              offset: Offset(0, 2.5),
-              blurRadius: 10,
-            ),
+            AppTheme.boxShadowProfile
           ],
         ),
-        child: Glassmorphism(
-          gradientBegin: Alignment.topCenter,
-          gradientEnd: Alignment.bottomCenter,
+        child: GlassContainer(
+          borderThickness: 1.5, // remove border if not active
           blur: 50,
-          opacity: 0.15,
-          radius: AppTheme.cardPaddingBigger,
+          opacity: 0.1,
+          borderRadius: AppTheme.cardRadiusBigger,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
