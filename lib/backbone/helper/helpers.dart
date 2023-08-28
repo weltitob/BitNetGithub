@@ -1,4 +1,4 @@
-import 'package:BitNet/pages/auth/restore/didandpkscreen.dart';
+import 'package:BitNet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
