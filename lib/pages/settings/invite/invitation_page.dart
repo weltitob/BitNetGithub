@@ -1,15 +1,15 @@
-import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/components/items/settingslistitem.dart';
-import 'package:BitNet/components/loaders/loaders.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/pages/chat_list/client_chooser_button.dart';
-import 'package:BitNet/components/items/userresult.dart';
-import 'package:BitNet/models/user/userdata.dart';
-import 'package:BitNet/models/verificationcode.dart';
-import 'package:BitNet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/items/settingslistitem.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/pages/chat_list/client_chooser_button.dart';
+import 'package:bitnet/components/items/userresult.dart';
+import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/models/verificationcode.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,9 +45,9 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
       context: context,
-      appBar: BitNetAppBar(text: L10n.of(context)!.inviteContact, context: context, onTap: (){
+      appBar: bitnetAppBar(text: L10n.of(context)!.inviteContact, context: context, onTap: (){
         print("pressed");
         Provider.of<SettingsProvider>(context, listen: false)
             .switchTab('main');

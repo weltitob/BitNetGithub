@@ -1,6 +1,6 @@
 
-import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
-import 'package:BitNet/backbone/security/security.dart';
+import 'package:bitnet/backbone/security/biometrics/biometric_helper.dart';
+import 'package:bitnet/backbone/security/security.dart';
 
 bool hasBiometrics =
 true; // a flag indicating whether biometrics is supported on the device

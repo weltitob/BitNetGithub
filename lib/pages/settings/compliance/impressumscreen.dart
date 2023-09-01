@@ -1,7 +1,7 @@
-import 'package:BitNet/components/appstandards/mydivider.dart';
+import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/pages/settings/settingsscreen.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/pages/settings/settingsscreen.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class ImpressumScreen extends StatelessWidget {
   const ImpressumScreen({Key? key}) : super(key: key);

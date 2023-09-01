@@ -1,10 +1,10 @@
 import 'dart:math';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/pages/chat_list/createnew/new_group/new_group.dart';
-import 'package:BitNet/pages/chat_list/createnew/new_private_chat/new_private_chat.dart';
-import 'package:BitNet/pages/chat_list/createnew/new_space/new_space.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/pages/chat_list/createnew/new_group/new_group.dart';
+import 'package:bitnet/pages/chat_list/createnew/new_private_chat/new_private_chat.dart';
+import 'package:bitnet/pages/chat_list/createnew/new_space/new_space.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -70,9 +70,9 @@ class _CreateNewScreenState extends State<CreateNewScreen>
 
     final qrCodeSize =
     min(MediaQuery.of(context).size.width - 16, 256).toDouble();
-    return BitNetScaffold(
+    return bitnetScaffold(
       context: context,
-      appBar: BitNetAppBar(
+      appBar: bitnetAppBar(
         context: context,
         onTap: () => Navigator.of(context).pop(),
         text: _title,

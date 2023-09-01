@@ -1,14 +1,14 @@
-import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/cloudfunctions/recoverKeyWithMnemonic.dart';
-import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/components/buttons/longbutton.dart';
-import 'package:BitNet/components/fields/textfield/formtextfield.dart';
-import 'package:BitNet/components/indicators/smoothpageindicator.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/cloudfunctions/recoverKeyWithMnemonic.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/fields/textfield/formtextfield.dart';
+import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:BitNet/models/keys/privatedata.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -117,10 +117,10 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return BitNetScaffold(
+    return bitnetScaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: BitNetAppBar(
+      appBar: bitnetAppBar(
           text: "Word recovery",
           context: context,
           onTap: () {

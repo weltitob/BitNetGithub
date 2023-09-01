@@ -1,7 +1,7 @@
-import 'package:BitNet/components/appstandards/mydivider.dart';
+import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/pages/settings/settingsscreen.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/pages/settings/settingsscreen.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class AGBScreen extends StatefulWidget {
   const AGBScreen({Key? key}) : super(key: key);

@@ -1,16 +1,16 @@
-// import 'package:BitNet/models/user/userdata.dart';
-// import 'package:BitNet/pages/profile/actions/sendscreen.dart';
+// import 'package:bitnet/models/user/userdata.dart';
+// import 'package:bitnet/pages/profile/actions/sendscreen.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';
-// import 'package:BitNet/backbone/auth/auth.dart';
+// import 'package:bitnet/backbone/auth/auth.dart';
 // import 'package:flutter/cupertino.dart';
-// import 'package:BitNet/backbone/security/biometrics/biometric_helper.dart';
-// import 'package:BitNet/backbone/security/security.dart';
-// import 'package:BitNet/components/appstandards/glassmorph.dart';
-// import 'package:BitNet/pages/settings/compliance/agbscreen.dart';
-// import 'package:BitNet/pages/settings/compliance/impressumscreen.dart';
-// import 'package:BitNet/pages/settings/reportissue/reportissuescreen.dart';
-// import 'package:BitNet/backbone/helper/theme/theme.dart';
+// import 'package:bitnet/backbone/security/biometrics/biometric_helper.dart';
+// import 'package:bitnet/backbone/security/security.dart';
+// import 'package:bitnet/components/appstandards/glassmorph.dart';
+// import 'package:bitnet/pages/settings/compliance/agbscreen.dart';
+// import 'package:bitnet/pages/settings/compliance/impressumscreen.dart';
+// import 'package:bitnet/pages/settings/reportissue/reportissuescreen.dart';
+// import 'package:bitnet/backbone/helper/theme/theme.dart';
 // import 'package:provider/provider.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 //

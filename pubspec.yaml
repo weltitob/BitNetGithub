@@ -1,4 +1,4 @@
-name: BitNet
+name: bitnet
 description: You'll own everything and be happy!
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
@@ -234,9 +234,9 @@ flutter:
     - assets/textfiles/
 
 msix_config:
-  display_name: BitNet
-  publisher_display_name: BitNet
-  publisher: CN=BitNet, O=Head of bad integration tests, L=Matrix, S=Internet, C=EU
+  display_name: bitnet
+  publisher_display_name: bitnet
+  publisher: CN=bitnet, O=Head of bad integration tests, L=Matrix, S=Internet, C=EU
   identity_name: net.bit.bitnet
   logo_path: assets\logo.png
   capabilities: internetClient, location, microphone, webcam

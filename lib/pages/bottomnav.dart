@@ -1,6 +1,6 @@
-import 'package:BitNet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vrouter/vrouter.dart';
 

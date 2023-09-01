@@ -1,8 +1,8 @@
-import 'package:BitNet/pages/auth/createaccount/createaccount.dart';
-import 'package:BitNet/pages/auth/ionloadingscreen.dart';
-import 'package:BitNet/pages/routetrees/widgettree.dart';
+import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
+import 'package:bitnet/pages/auth/ionloadingscreen.dart';
+import 'package:bitnet/pages/routetrees/widgettree.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/models/verificationcode.dart';
+import 'package:bitnet/models/verificationcode.dart';
 
 
 void onPinVerificationSuccess({

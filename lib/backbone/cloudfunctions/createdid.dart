@@ -1,6 +1,6 @@
-import 'package:BitNet/backbone/helper/deepmapcast.dart';
-import 'package:BitNet/models/IONdata.dart';
-import 'package:BitNet/models/cloudfunction_callback.dart';
+import 'package:bitnet/backbone/helper/deepmapcast.dart';
+import 'package:bitnet/models/IONdata.dart';
+import 'package:bitnet/models/cloudfunction_callback.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 createDID(String username, String challenge) async {

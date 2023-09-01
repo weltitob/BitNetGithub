@@ -1,12 +1,12 @@
 import 'dart:ui';
 
-import 'package:BitNet/components/container/imagewithtext.dart';
-import 'package:BitNet/components/loaders/loaders.dart';
-import 'package:BitNet/components/appstandards/solidcolorcontainer.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/components/appstandards/solidcolorcontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image/image.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 enum ButtonState { idle, loading, disabled }
 

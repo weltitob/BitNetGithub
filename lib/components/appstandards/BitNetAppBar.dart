@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/backgrounds/backgroundgradient.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/backgrounds/backgroundgradient.dart';
 
-AppBar BitNetAppBar({
+AppBar bitnetAppBar({
   required String text,
   required BuildContext context,
   required Function() onTap,

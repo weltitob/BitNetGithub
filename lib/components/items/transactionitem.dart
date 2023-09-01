@@ -1,10 +1,10 @@
-import 'package:BitNet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
-import 'package:BitNet/models/transaction.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/models/user/userwallet.dart';
+import 'package:bitnet/backbone/cloudfunctions/gettransactions.dart';
+import 'package:bitnet/models/transaction.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/models/user/userwallet.dart';
 import 'package:provider/provider.dart';
 
 class TransactionItem extends StatefulWidget {

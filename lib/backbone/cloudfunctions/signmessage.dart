@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:BitNet/backbone/helper/deepmapcast.dart';
-import 'package:BitNet/models/IONdata.dart';
-import 'package:BitNet/models/cloudfunction_callback.dart';
-import 'package:BitNet/models/keys/privateionkey.dart';
+import 'package:bitnet/backbone/helper/deepmapcast.dart';
+import 'package:bitnet/models/IONdata.dart';
+import 'package:bitnet/models/cloudfunction_callback.dart';
+import 'package:bitnet/models/keys/privateionkey.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 signMessageFunction(String did, String privateIONKey, String message,) async {

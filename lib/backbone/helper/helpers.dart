@@ -1,10 +1,10 @@
-import 'package:BitNet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
+import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:BitNet/components/dialogsandsheets/snackbars/snackbar.dart';
+import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:uuid/uuid.dart';
 
 

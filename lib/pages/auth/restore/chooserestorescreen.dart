@@ -1,9 +1,9 @@
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/components/container/imagewithtext.dart';
-import 'package:BitNet/components/dialogsandsheets/dialogs/dialogs.dart';
-import 'package:BitNet/components/resultlist/users.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:bitnet/components/resultlist/users.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
@@ -28,10 +28,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: BitNetAppBar(
+      appBar: bitnetAppBar(
           text: L10n.of(context)!.restoreAccount,
           context: context,
           onTap: () {

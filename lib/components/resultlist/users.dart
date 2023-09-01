@@ -1,19 +1,19 @@
 import 'dart:async';
-import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/auth/storePrivateData.dart';
-import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
-import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/components/indicators/smoothpageindicator.dart';
-import 'package:BitNet/components/items/userresult.dart';
-import 'package:BitNet/models/keys/privateionkey.dart';
-import 'package:BitNet/models/keys/privatedata.dart';
-import 'package:BitNet/models/user/userdata.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/components/indicators/smoothpageindicator.dart';
+import 'package:bitnet/components/items/userresult.dart';
+import 'package:bitnet/models/keys/privateionkey.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
+import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/components/loaders/loaders.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class UsersList extends StatefulWidget {

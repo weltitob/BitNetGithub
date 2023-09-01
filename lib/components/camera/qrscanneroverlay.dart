@@ -1,6 +1,6 @@
-import 'package:BitNet/components/container/randombubblecontainer.dart';
+import 'package:bitnet/components/container/randombubblecontainer.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class QRScannerOverlay extends StatelessWidget {
   const QRScannerOverlay({Key? key, required this.overlayColour})

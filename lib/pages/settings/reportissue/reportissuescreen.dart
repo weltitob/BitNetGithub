@@ -1,15 +1,15 @@
-import 'package:BitNet/components/appstandards/mydivider.dart';
-import 'package:BitNet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/appstandards/mydivider.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/components/buttons/glassbutton.dart';
-import 'package:BitNet/components/dialogsandsheets/snackbars/snackbar.dart';
-import 'package:BitNet/models/issuereport.dart';
-import 'package:BitNet/models/user/userwallet.dart';
-import 'package:BitNet/pages/settings/settingsscreen.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/components/buttons/glassbutton.dart';
+import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
+import 'package:bitnet/models/issuereport.dart';
+import 'package:bitnet/models/user/userwallet.dart';
+import 'package:bitnet/pages/settings/settingsscreen.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 class ReportIssueScreen extends StatefulWidget {

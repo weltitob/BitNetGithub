@@ -1,7 +1,7 @@
-import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/components/loaders/loaders.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -27,7 +27,7 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false, // prevent the user from going back
-      child: BitNetScaffold(
+      child: bitnetScaffold(
         body: Stack(
           children: [
             Container(

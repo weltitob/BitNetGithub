@@ -1,6 +1,6 @@
 
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

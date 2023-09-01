@@ -1,5 +1,5 @@
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/pages/landingpage/website_landingpage/website_landingpage.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 
 class WebsiteLandingPageView extends StatelessWidget {
@@ -10,7 +10,7 @@ class WebsiteLandingPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
         body: SingleChildScrollView(
           child: Column(
             children: [

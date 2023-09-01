@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/pages/secondpages/newsscreen.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/pages/secondpages/newsscreen.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class NewsTile extends StatelessWidget {
   final String imgUrl, title, desc, content, posturl, author, publishedAt;

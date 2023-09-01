@@ -1,11 +1,11 @@
-import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/components/loaders/loaders.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/components/buttons/longbutton.dart';
-import 'package:BitNet/components/container/futurelottie.dart';
-import 'package:BitNet/pages/scan_qr_screen.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/futurelottie.dart';
+import 'package:bitnet/pages/scan_qr_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -39,10 +39,10 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
-      appBar: BitNetAppBar(
+      appBar: bitnetAppBar(
           text: "Connect with other device",
           context: context,
           onTap: () {
@@ -63,7 +63,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    "Launch the BitNet app on an alternative device where your account is already active and logged in.",
+                    "Launch the bitnet app on an alternative device where your account is already active and logged in.",
                     textAlign: TextAlign.left,
                     maxLines: 50,
                     style: Theme.of(context).textTheme.bodyMedium,

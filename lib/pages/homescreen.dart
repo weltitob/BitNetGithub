@@ -1,10 +1,10 @@
-import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/components/loaders/loaders.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/fields/searchfield/searchfield.dart';
-import 'package:BitNet/components/items/userresult.dart';
-import 'package:BitNet/components/items/usersearchresult.dart';
-import 'package:BitNet/models/user/userdata.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/items/userresult.dart';
+import 'package:bitnet/components/items/usersearchresult.dart';
+import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';

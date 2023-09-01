@@ -1,10 +1,10 @@
-import 'package:BitNet/backbone/auth/storePrivateData.dart';
-import 'package:BitNet/components/container/imagewithtext.dart';
-import 'package:BitNet/components/loaders/loaders.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/container/profilepicture.dart';
-import 'package:BitNet/components/dialogsandsheets/dialogs/dialogs.dart';
-import 'package:BitNet/models/user/userdata.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/container/profilepicture.dart';
+import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:bitnet/models/user/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

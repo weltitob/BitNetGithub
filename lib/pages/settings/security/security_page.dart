@@ -1,12 +1,12 @@
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/backbone/security/biometrics/biometric_check.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/components/items/settingslistitem.dart';
-import 'package:BitNet/models/settingsmodel.dart';
-import 'package:BitNet/pages/settings/bottomsheet/settings.dart';
-import 'package:BitNet/pages/settings/security/recoverwithqrpage.dart';
-import 'package:BitNet/pages/settings/bottomsheet/settingspage.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/items/settingslistitem.dart';
+import 'package:bitnet/models/settingsmodel.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/pages/settings/security/recoverwithqrpage.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settingspage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -90,7 +90,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
       body: isVerified
           ? Column(
               children: <Widget>[
@@ -117,7 +117,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
               ),
             ),
       context: context,
-      appBar: BitNetAppBar(
+      appBar: bitnetAppBar(
           text: L10n.of(context)!.security,
           context: context,
           onTap: () {

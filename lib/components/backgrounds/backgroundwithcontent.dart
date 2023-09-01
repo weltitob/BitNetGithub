@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:BitNet/backbone/futures/openai.dart';
+import 'package:bitnet/backbone/futures/openai.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:http/http.dart' as http;
-import 'package:BitNet/models/openai_image.dart';
+import 'package:bitnet/models/openai_image.dart';
 
 // Create a StatefulWidget for the background animation
 class BackgroundWithContent extends StatefulWidget {

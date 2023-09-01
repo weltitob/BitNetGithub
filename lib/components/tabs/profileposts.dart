@@ -1,5 +1,5 @@
-// import 'package:BitNet/backbone/helper/databaserefs.dart';
-// import 'package:BitNet/backbone/helper/loaders.dart';
+// import 'package:bitnet/backbone/helper/databaserefs.dart';
+// import 'package:bitnet/backbone/helper/loaders.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
 //

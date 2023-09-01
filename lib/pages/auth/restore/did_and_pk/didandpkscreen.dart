@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
-import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/components/fields/textfield/formtextfield.dart';
+import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
-import 'package:BitNet/components/buttons/longbutton.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'dart:math';
 
 import 'package:vrouter/vrouter.dart';
@@ -87,11 +87,11 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
       gradientColor: Colors.black,
-      appBar: BitNetAppBar(text: "DID and Private Key Login", context: context,
+      appBar: bitnetAppBar(text: "DID and Private Key Login", context: context,
       onTap: (){
         Navigator.of(context).pop();
       }),

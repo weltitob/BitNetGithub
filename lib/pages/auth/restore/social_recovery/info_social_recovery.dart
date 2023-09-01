@@ -1,8 +1,8 @@
-import "package:BitNet/backbone/helper/helpers.dart";
-import "package:BitNet/backbone/helper/theme/theme.dart";
-import "package:BitNet/components/appstandards/BitNetAppBar.dart";
-import "package:BitNet/components/appstandards/BitNetScaffold.dart";
-import "package:BitNet/components/container/futurelottie.dart";
+import "package:bitnet/backbone/helper/helpers.dart";
+import "package:bitnet/backbone/helper/theme/theme.dart";
+import "package:bitnet/components/appstandards/bitnetAppBar.dart";
+import "package:bitnet/components/appstandards/bitnetScaffold.dart";
+import "package:bitnet/components/container/futurelottie.dart";
 import "package:flutter/material.dart";
 import "package:lottie/lottie.dart";
 
@@ -35,10 +35,10 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
-      appBar: BitNetAppBar(
+      appBar: bitnetAppBar(
           text: "Social Recovery Info",
           context: context,
           onTap: () {

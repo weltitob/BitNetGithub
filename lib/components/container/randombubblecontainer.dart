@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/bubble.dart';

@@ -1,11 +1,11 @@
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/components/container/imagewithtext.dart';
-import 'package:BitNet/components/items/userresult.dart';
-import 'package:BitNet/components/swipebutton/swipeable_button_view.dart';
-import 'package:BitNet/models/user/userdata.dart';
-import 'package:BitNet/models/user/userwallet.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/items/userresult.dart';
+import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
+import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/models/user/userwallet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
@@ -24,9 +24,9 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
         extendBodyBehindAppBar: true,
-        appBar: BitNetAppBar(
+        appBar: bitnetAppBar(
             actions: [
               GestureDetector(
                 onTap: () {

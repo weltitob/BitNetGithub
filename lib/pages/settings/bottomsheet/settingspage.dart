@@ -1,8 +1,8 @@
-import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/items/settingslistitem.dart';
-import 'package:BitNet/models/settingsmodel.dart';
-import 'package:BitNet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/items/settingslistitem.dart';
+import 'package:bitnet/models/settingsmodel.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:flutter/material.dart';
 
 

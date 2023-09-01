@@ -1,17 +1,17 @@
 import 'dart:async';
-import 'package:BitNet/components/resultlist/transactions.dart';
-import 'package:BitNet/models/user/userdata.dart';
-import 'package:BitNet/pages/profile/actions/receivescreen.dart';
-import 'package:BitNet/pages/profile/actions/sendscreen.dart';
+import 'package:bitnet/components/resultlist/transactions.dart';
+import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/profile/actions/receivescreen.dart';
+import 'package:bitnet/pages/profile/actions/sendscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
-import 'package:BitNet/backbone/cloudfunctions/getbalance.dart';
-import 'package:BitNet/backbone/cloudfunctions/gettransactions.dart';
-import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/components/cards/balancecard.dart';
-import 'package:BitNet/components/items/cryptoitem.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/cloudfunctions/getbalance.dart';
+import 'package:bitnet/backbone/cloudfunctions/gettransactions.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/cards/balancecard.dart';
+import 'package:bitnet/components/items/cryptoitem.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

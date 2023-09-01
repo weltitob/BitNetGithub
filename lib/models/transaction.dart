@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:BitNet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 
 class BitcoinTransaction {
   final String transactionDirection;

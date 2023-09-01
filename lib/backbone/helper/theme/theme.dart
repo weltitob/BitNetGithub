@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
+import 'package:bitnet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:flutter/services.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
@@ -32,7 +32,7 @@ dynamic qrCodeSize(BuildContext context) => min(MediaQuery.of(context).size.widt
 
 abstract class AppTheme {
 
-  static String _applicationName = 'BitNet';
+  static String _applicationName = 'bitnet';
   static String get applicationName => _applicationName;
   static String? _applicationWelcomeMessage;
   static String? get applicationWelcomeMessage => _applicationWelcomeMessage;
@@ -72,7 +72,7 @@ abstract class AppTheme {
       'https://gitlab.com/famedly/fluffychat/-/wikis/Push-Notifications-without-Google-Services';
   static const String encryptionTutorial =
       'https://gitlab.com/famedly/fluffychat/-/wikis/How-to-use-end-to-end-encryption-in-FluffyChat';
-  static const String appId = 'com.bitnet.BitNet';
+  static const String appId = 'com.bitnet.bitnet';
   static const String appOpenUrlScheme = 'com.bitnet';
   static String _webBaseUrl = 'https://mybitnet.com'; //'https://fluffychat.im/web';
   static String get webBaseUrl => _webBaseUrl;

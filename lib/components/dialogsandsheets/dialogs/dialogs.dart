@@ -1,6 +1,6 @@
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/buttons/personalactionbutton.dart';
-import 'package:BitNet/components/container/imagewithtext.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/buttons/personalactionbutton.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

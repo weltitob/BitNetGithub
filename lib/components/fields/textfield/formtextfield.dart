@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import 'package:BitNet/components/appstandards/glasscontainerborder.dart';
+import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/services.dart';
 
 class FormTextField extends StatefulWidget {

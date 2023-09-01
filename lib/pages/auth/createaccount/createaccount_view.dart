@@ -1,14 +1,14 @@
-import 'package:BitNet/components/fields/textfield/formtextfield.dart';
-import 'package:BitNet/components/buttons/sso_button.dart';
-import 'package:BitNet/pages/auth/createaccount/createaccount.dart';
-import 'package:BitNet/pages/routetrees/matrix.dart';
+import 'package:bitnet/components/fields/textfield/formtextfield.dart';
+import 'package:bitnet/components/buttons/sso_button.dart';
+import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
+import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
-import 'package:BitNet/components/buttons/longbutton.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
@@ -38,11 +38,11 @@ class _CreateAccountViewState extends State<CreateAccountView>
         }
         return false; // Prevent the system from popping the current route.
       },
-      child: BitNetScaffold(
+      child: bitnetScaffold(
         extendBodyBehindAppBar: true,
         context: context,
         gradientColor: Colors.black,
-        appBar: BitNetAppBar(
+        appBar: bitnetAppBar(
             text:L10n.of(context)!.register,
             context: context,
             onTap: () {

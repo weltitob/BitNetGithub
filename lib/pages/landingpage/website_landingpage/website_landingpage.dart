@@ -1,4 +1,4 @@
-import 'package:BitNet/pages/landingpage/website_landingpage/website_landingpage_view.dart';
+import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage_view.dart';
 import 'package:flutter/material.dart';
 
 class WebsiteLandingPage extends StatefulWidget {

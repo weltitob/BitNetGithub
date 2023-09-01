@@ -1,11 +1,11 @@
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:BitNet/components/chart/chart.dart';
-import 'package:BitNet/components/appstandards/buildroundedbox.dart';
-import 'package:BitNet/pages/secondpages/newsscreen.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/chart/chart.dart';
+import 'package:bitnet/components/appstandards/buildroundedbox.dart';
+import 'package:bitnet/pages/secondpages/newsscreen.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class BitcoinScreen extends StatefulWidget {
   const BitcoinScreen({
@@ -26,10 +26,10 @@ class _BitcoinScreenState extends State<BitcoinScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
       context: context,
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: BitNetAppBar(
+      appBar: bitnetAppBar(
           text: "Bitcoin chart",
           context: context,
           onTap: () {

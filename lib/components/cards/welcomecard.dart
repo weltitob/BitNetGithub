@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:BitNet/components/cards/balancecard.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/cards/balancecard.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class WelcomeCard extends StatelessWidget {
   const WelcomeCard({Key? key}) : super(key: key);

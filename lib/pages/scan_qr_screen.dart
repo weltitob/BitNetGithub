@@ -1,21 +1,21 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/auth/storePrivateData.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/models/keys/privatedata.dart';
-import 'package:BitNet/models/user/userdata.dart';
-import 'package:BitNet/pages/profile/actions/sendscreen.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
+import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/profile/actions/sendscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:BitNet/components/camera/qrscanneroverlay.dart';
-import 'package:BitNet/components/camera/textscanneroverlay.dart';
-import 'package:BitNet/components/dialogsandsheets/snackbars/snackbar.dart';
-import 'package:BitNet/models/qr_codes/qr_bitcoinadress.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/camera/qrscanneroverlay.dart';
+import 'package:bitnet/components/camera/textscanneroverlay.dart';
+import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
+import 'package:bitnet/models/qr_codes/qr_bitcoinadress.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 class QRScreen extends StatefulWidget {
@@ -111,10 +111,10 @@ class _QRScreenState extends State<QRScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
       backgroundColor: Colors.transparent,
       gradientColor: Colors.black,
-      appBar: BitNetAppBar(
+      appBar: bitnetAppBar(
           text: "Scan QR",
           context: context,
           onTap: (){

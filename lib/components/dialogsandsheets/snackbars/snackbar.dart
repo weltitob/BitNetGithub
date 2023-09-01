@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 displaySnackbar(BuildContext context, String text) {
   final snackBar = SnackBar(

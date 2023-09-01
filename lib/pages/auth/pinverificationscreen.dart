@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:BitNet/pages/routetrees/authroutes.dart';
+import 'package:bitnet/pages/routetrees/authroutes.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:BitNet/backbone/helper/databaserefs.dart';
-import 'package:BitNet/components/loaders/loaders.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
-import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
-import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
-import 'package:BitNet/components/backgrounds/backgroundwithcontent.dart';
-import 'package:BitNet/models/verificationcode.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:bitnet/models/verificationcode.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -106,10 +106,10 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BitNetScaffold(
+    return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
-      appBar: BitNetAppBar(
+      appBar: bitnetAppBar(
         onTap: () {
           VRouter.of(context).to('/authhome');
         },

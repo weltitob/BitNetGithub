@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:BitNet/backbone/auth/auth.dart';
-import 'package:BitNet/backbone/helper/helpers.dart';
-import 'package:BitNet/models/keys/privatedata.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final secureStorage = FlutterSecureStorage();
