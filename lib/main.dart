@@ -1,7 +1,7 @@
 import 'package:BitNet/models/user/userdata.dart';
+import 'package:BitNet/pages/landingpage/website_landingpage/website_landingpage.dart';
 import 'package:BitNet/pages/secondpages/lock_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:BitNet/pages/routetrees/widgettree.dart';
 import 'package:flutter_app_lock/flutter_app_lock.dart';
@@ -11,9 +11,9 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:universal_html/html.dart' as html; // Changed from 'dart:html'
 import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:matrix/matrix.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-
 //import 'firebase_options.dart';
+
+
 
 late ThemeData activeTheme;
 late Brightness brightness;
@@ -80,7 +80,8 @@ class MyApp extends StatelessWidget {
         ),
         // Provide a stream of user wallet data
       ],
-      child: WidgetTree(),
+      child: WebsiteLandingPage(),
+      //WidgetTree(),
     );
   }
 }

@@ -111,13 +111,19 @@ class CreateAccountController extends State<CreateAccount> {
     });
   }
 
-  void matrixSignUp() async {
-    print("signup matrix need to change email each time and at one point setup own matrix server without email auth");
+  void matrixSignUp() {
+
+    Logs().w("!!!CHANGE NEEDED: signup matrix need to change email each time and at one point setup own matrix server without email auth");
+    Logs().w("signupmatrixfirst from Auth is called...");
     Auth().signUpMatrixFirst(context, localpart);
-    Auth().signupMatrix(context, "contact@mybitnet.com", "i__hate..passwords!!");
-    final picked = await urlToXFile(profileimageurl);
+    // Logs().w("signupmatrixsecond from Auth is called...");
+    // Auth().signupMatrix(context, "testhaha@gmail.com", "i__hate..passwords!!");
+
+    //set profilepicture
+    // Logs().w("Setting profilepicture for Matrix client too...");
+    // final picked = await urlToXFile(profileimageurl);
     //set matrix profilepicture too
-    Matrix.of(context).loginAvatar = picked;
+    // Matrix.of(context).loginAvatar = picked;
   }
 
   Future<void> createUser() async {
@@ -150,18 +156,24 @@ class CreateAccountController extends State<CreateAccount> {
           dob: 0,
           wallets: walletlist);
 
-      final UserData? currentuserwallet = await firebaseAuthentication(
-          userdata,
-          VerificationCode(
-              used: false,
-              code: widget.code.code,
-              issuer: widget.code.issuer,
-              receiver: widget.code.receiver));
+      Logs().w("Signing up user for Matrix now...");
+      //matrixSignUp();
+      Logs().w("For now simply login in own matrix client until own sever is setup and can register there somehow.");
+      Auth().loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
 
-      matrixSignUp();
+      // Logs().w("Making firebase auth now...");
+      //
+      // final UserData? currentuserwallet = await firebaseAuthentication(
+      //     userdata,
+      //     VerificationCode(
+      //         used: false,
+      //         code: widget.code.code,
+      //         issuer: widget.code.issuer,
+      //         receiver: widget.code.receiver));
 
-      print("Should navigate to homescreen now...");
-      VRouter.of(context).to('/');
+      //
+      // Logs().w("Navigating to homescreen now...");
+      // VRouter.of(context).to('/');
 
     } on MatrixException catch(e){
       print("Matrix Exception: $e");

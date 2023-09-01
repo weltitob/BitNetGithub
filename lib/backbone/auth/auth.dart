@@ -5,20 +5,23 @@ import 'package:BitNet/backbone/auth/verificationcodes.dart';
 import 'package:BitNet/backbone/cloudfunctions/createdid.dart';
 import 'package:BitNet/backbone/cloudfunctions/loginion.dart';
 import 'package:BitNet/backbone/cloudfunctions/signmessage.dart';
+import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/models/IONdata.dart';
 import 'package:BitNet/models/keys/privatedata.dart';
 import 'package:BitNet/models/user/userdata.dart';
 import 'package:BitNet/models/verificationcode.dart';
 import 'package:BitNet/backbone/helper/localized_exception_extension.dart';
 import 'package:BitNet/pages/matrix/utils/other/platform_infos.dart';
-import 'package:BitNet/pages/routetrees/authroutes.dart';
 import 'package:BitNet/pages/routetrees/matrix.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
 import 'package:BitNet/backbone/helper/databaserefs.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:universal_html/html.dart' as html;
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
@@ -100,27 +103,42 @@ class Auth {
     required UserData user,
     required VerificationCode code,
   }) async {
-    print('Calling Cloudfunction with Microsoft ION now...');
+    Logs().w("Calling Cloudfunction with Microsoft ION now...");
+    Logs().w("Generating challenge...");
 
-    final String challange = generateChallenge(user.did);
+    //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
+
+    final String challange = generateChallenge(user.username);
+
+    Logs().w("Challenge created: $challange. Creating user now...");
+
 
     final IONData iondata = await createDID(user.username, challange);
 
+    Logs().w("User created: IONDATA RECEIVED: $iondata.");
+
+    Logs().w("Storing private data now...");
+
     final PrivateData privateData = PrivateData(
         did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
-    print("IONDATA RECEIVED: $iondata");
 
     // Call the function to store Private data in secure storage
     await storePrivateData(privateData);
 
+    Logs().w("Private data stored. Signing in with token now...");
+
     final currentuser = await signInWithToken(customToken: iondata.customToken);
 
     final newUser = user.copyWith(did: iondata.did);
+
+    Logs().w("User signed in with token. Creating user in database now...");
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
 
-    print('Successfully created wallet/user in database: ${newUser.toMap()}');
+    Logs().w('Successfully created wallet/user in database: ${newUser.toMap()}');
 
     // Call the function to generate and store verification codes
+
+    Logs().w("Generating and storing verification codes for friends of the new user now...");
     await generateAndStoreVerificationCodes(
       numCodes: 4,
       codeLength: 5,
@@ -128,7 +146,7 @@ class Auth {
       codesCollection: codesCollection,
     );
 
-
+    Logs().w("Marking the verification code as used now...");
     // Call the function to mark the verification code as used
     await markVerificationCodeAsUsed(
       code: code,
@@ -136,6 +154,7 @@ class Auth {
       codesCollection: codesCollection,
     );
 
+    Logs().w("Verification code marked as used. Returning new user now...");
     return newUser;
   }
 
@@ -295,7 +314,14 @@ class Auth {
   }
 
   void loginMatrix(BuildContext context, String username, String password) async {
+
+    //this stuff kind of comes from somehwere else...
     final matrix = Matrix.of(context);
+    Uri homeserver = Uri.parse("http://matrix.org");
+    matrix.loginHomeserverSummary = await matrix.getLoginClient().checkHomeserver(homeserver);
+
+    //also throws error that some pushtoken is missing
+    //this somehow still automtically causes a push to the chats screen which we dont want
 
     try {
       AuthenticationIdentifier identifier;
@@ -323,6 +349,9 @@ class Auth {
         password: password,
         initialDeviceDisplayName: PlatformInfos.clientName,
       );
+
+
+
     } on MatrixException catch (exception) {
       throw Exception("Exception occured with signin Matrix itself: $exception");
     } catch (exception) {
@@ -331,17 +360,73 @@ class Auth {
   }
 
 
+  // bool isDefaultPlatform =
+  // (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
+
+  //
+  // void ssoLoginAction(BuildContext context, String id) async {
+  //   final redirectUrl = kIsWeb
+  //       ? '${html.window.origin!}/web/auth.html'
+  //       : isDefaultPlatform
+  //       ? '${AppTheme.appOpenUrlScheme.toLowerCase()}://login'
+  //       : 'http://localhost:3001//login';
+  //   final url =
+  //       '${Matrix.of(context).getLoginClient().homeserver?.toString()}/_matrix/client/r0/login/sso/redirect/${Uri.encodeComponent(id)}?redirectUrl=${Uri.encodeQueryComponent(redirectUrl)}';
+  //   final urlScheme = isDefaultPlatform
+  //       ? Uri.parse(redirectUrl).scheme
+  //       : "http://localhost:3001";
+  //   final result = await FlutterWebAuth2.authenticate(
+  //     url: url,
+  //     callbackUrlScheme: urlScheme,
+  //   );
+  //   final token = Uri.parse(result).queryParameters['loginToken'];
+  //   if (token?.isEmpty ?? false) return;
+  //
+  //   await showFutureLoadingDialog(
+  //     context: context,
+  //     future: () => Matrix.of(context).getLoginClient().login(
+  //       LoginType.mLoginToken,
+  //       token: token,
+  //       initialDeviceDisplayName: PlatformInfos.clientName,
+  //     ),
+  //   );
+  // }
+
+  //
+  // bool get supportsPasswordLogin => _supportsFlow('m.login.password');
+  //
+
+
+
   void signUpMatrixFirst(BuildContext context, String username) async {
     try {
       try {
-        await Matrix.of(context).getLoginClient().register(username: username);
+        Logs().w("Trying to register username $username on client");
+
+        Client client = Matrix.of(context).getLoginClient();
+        print(client.database);
+        print(client.clientName);
+        print(client.accountData);
+        print(client.deviceID); //this is null already so the client bullshit def is some issue
+
+        if(client != null){
+          client.register(username: username, password: "testjklskhajkd", initialDeviceDisplayName: "test");
+          Logs().w("To here it needs to come...");
+        }
+        else {
+          Logs().e("Client is null");
+        }
       } on MatrixException catch (e) {
+        Logs().e("signUpMatrixFirst error: $e");
         if (!e.requireAdditionalAuthentication) rethrow;
       }
       Matrix.of(context).loginUsername = username;
-      VRouter.of(context).to('signup');
+
+      //VRouter.of(context).to('signup');
+
     } catch (e, s) {
-      Logs().d('Sign up failed', e, s);
+      final signupError = e.toLocalizedString(context);
+      Logs().e('Sign up failed: $signupError, in signUpMatrixFirst', e, s);
     }
   }
 
@@ -359,6 +444,8 @@ class Auth {
           0,
         );
       }
+
+      //the Matrix loginUsername setting is missing for sure!!
 
       final displayname = Matrix.of(context).loginUsername!;
       final localPart = displayname.toLowerCase().replaceAll(' ', '_');
@@ -380,7 +467,7 @@ class Auth {
       }
     } catch (e) {
       final error = (e).toLocalizedString(context);
-      print(error);
+      Logs().e(error);
     }
   }
 

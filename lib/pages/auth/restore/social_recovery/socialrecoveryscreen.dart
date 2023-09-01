@@ -234,7 +234,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                 // Set the text style for the button text
                 buttontextstyle: Theme.of(context)
                     .textTheme
-                    .headline6!
+                    .titleLarge!
                     .copyWith(
                         color: AppTheme.white80,
                         shadows: [AppTheme.boxShadowSmall]),

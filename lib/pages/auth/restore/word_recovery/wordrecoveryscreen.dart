@@ -27,7 +27,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   List<String> splittedbipwords = [];
 
   late String lottiefile;
-  bool _visible = false;
+  //bool _visible = false;
 
   TextEditingController _usernameController = TextEditingController();
 

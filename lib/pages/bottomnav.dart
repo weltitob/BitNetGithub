@@ -41,21 +41,26 @@ class _BottomNavState extends State<BottomNav> {
               children: <Widget>[
                 IgnorePointer(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 30),
+                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 29),
                     child: Container(
-                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 30,
+                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 29,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           // Use color stops to create an "exponential" effect
-                          stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+                          stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
                           colors: [
                             Colors.transparent,
-                            Theme.of(context).colorScheme.background.withOpacity(0.45),
-                            Theme.of(context).colorScheme.background.withOpacity(0.9),
-                            Theme.of(context).colorScheme.background,
-                            Theme.of(context).colorScheme.background,
+                            Colors.black.withOpacity(0.33),
+                            Colors.black.withOpacity(0.66),
+                            Colors.black.withOpacity(0.99),
+                            // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
+                            // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
+                            // Theme.of(context).colorScheme.background,
+                            // Theme.of(context).colorScheme.background,
+                            Colors.black,
+                            Colors.black,
                           ],
                         ),
                       ),

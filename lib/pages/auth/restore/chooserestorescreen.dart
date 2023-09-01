@@ -1,4 +1,3 @@
-import 'package:BitNet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:BitNet/backbone/helper/theme/theme.dart';
 import 'package:BitNet/components/appstandards/BitNetAppBar.dart';
 import 'package:BitNet/components/appstandards/BitNetScaffold.dart';
@@ -6,11 +5,6 @@ import 'package:BitNet/components/container/imagewithtext.dart';
 import 'package:BitNet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:BitNet/components/resultlist/users.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:BitNet/pages/auth/ionloadingscreen.dart';
-import 'package:BitNet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
-import 'package:BitNet/pages/auth/restore/other_device/otherdevicescreen.dart';
-import 'package:BitNet/pages/auth/restore/social_recovery/socialrecoveryscreen.dart';
-import 'package:BitNet/pages/auth/restore/word_recovery/wordrecoveryscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
