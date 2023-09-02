@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/components/loaders/empty_page.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage.dart';
 import 'package:bitnet/pages/matrix/utils/other/background_push.dart';
 import 'package:bitnet/pages/matrix/utils/other/custom_scroll_behaviour.dart';
 import 'package:bitnet/pages/matrix/utils/other/platform_infos.dart';
@@ -198,19 +199,22 @@ class _WidgetTreeState extends State<WidgetTree> {
                           //   );
                           // }
                           if (snapshot.hasData) {
-                            return Matrix(
-                              context: context,
-                              router: WidgetTree.routerKey,
-                              clients: clients,
-                              child: child,
-                            );
+                            WebsiteLandingPage();
+                            // return Matrix(
+                            //   context: context,
+                            //   router: WidgetTree.routerKey,
+                            //   clients: clients,
+                            //   child: child,
+                            // );
                           }
-                          return Matrix(
-                            context: context,
-                            router: WidgetTree.routerKey,
-                            clients: clients,
-                            child: child,
-                          );
+                          return WebsiteLandingPage();
+
+                          //   Matrix(
+                          //   context: context,
+                          //   router: WidgetTree.routerKey,
+                          //   clients: clients,
+                          //   child: child,
+                          // );
                         },
                       ),
           );

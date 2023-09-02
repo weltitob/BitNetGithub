@@ -54,47 +54,38 @@ import 'package:provider/provider.dart';
 //   ),
 // ),
 
-class ProfileView extends StatefulWidget {
-
+class ProfileView extends StatelessWidget {
   final ProfileController controller;
 
-  const ProfileView({
-    Key? key, required this.controller,
-  }) : super(key: key);
-
-  @override
-  _ProfileViewState createState() => _ProfileViewState();
-}
-
-class _ProfileViewState extends State<ProfileView> {
+  const ProfileView(this.controller, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final myuser = Auth().currentUser!.uid;
-    final String currentUserId = widget.controller.profileId!;
+    final String currentUserId = controller!.profileId!;
     bool isProfileOwner = currentUserId == myuser;
     // final testuser = UserPreferences.myUser;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: widget.controller.isUserLoading
+      body: controller.isUserLoading
           ? Center(child: dotProgress(context))
           : ListView(
               children: [
                 buildProfileHeader(context),
-                widget.controller.pages[widget.controller.currentview],
+                controller.pages[controller.currentview],
                 // ProfilePosts(userId: currentUserId),
               ],
             ),
     );
   }
 
-  Widget buildProfileButton() {
+  Widget buildProfileButton(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(45),
       child: Material(
         color: Colors.transparent,
-        child: widget.controller.currentview != 2
+        child: controller!.currentview != 2
             ? CoinLogoWidgetSmall(coinid: 1)
             : Container(
                 width: 30.0,
@@ -125,7 +116,7 @@ class _ProfileViewState extends State<ProfileView> {
                     color: Colors.black,
                     boxShadow: [AppTheme.boxShadowProfile],
                     image: DecorationImage(
-                      image: NetworkImage(widget.controller.userData.backgroundImageUrl),
+                      image: NetworkImage(controller.userData.backgroundImageUrl),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
                           Colors.black.withOpacity(0.25), BlendMode.dstATop),
@@ -140,12 +131,12 @@ class _ProfileViewState extends State<ProfileView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          widget.controller.currentview == 2
+                          controller.currentview == 2
                               ? buildCountColumn(
-                                  context, widget.controller.followingCount, 'Following')
-                              : widget.controller.userData.showFollowers
+                                  context, controller.followingCount, 'Following')
+                              : controller.userData.showFollowers
                                   ? buildCountColumn(
-                                      context, widget.controller.followingCount, 'Following')
+                                      context, controller.followingCount, 'Following')
                                   : Container(
                                       width: 100,
                                     ),
@@ -154,7 +145,7 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                           Center(
                             child: GestureDetector(
-                              onTap: widget.controller.currentview != 2
+                              onTap: controller.currentview != 2
                                   ? () {
                                       print('follow dagelassen lol');
                                     }
@@ -173,11 +164,11 @@ class _ProfileViewState extends State<ProfileView> {
                                     },
                               child: Stack(
                                 children: [
-                                  buildImage(widget.controller.userData.profileImageUrl),
+                                  buildImage(context, controller.userData.profileImageUrl),
                                   Positioned(
                                     bottom: 0,
                                     right: 4,
-                                    child: buildProfileButton(),
+                                    child: buildProfileButton(context),
                                   ),
                                 ],
                               ),
@@ -186,12 +177,12 @@ class _ProfileViewState extends State<ProfileView> {
                           SizedBox(
                             width: AppTheme.elementSpacing,
                           ),
-                          widget.controller.currentview == 2
+                          controller.currentview == 2
                               ? buildCountColumn(
-                                  context, widget.controller.followerCount, 'Followers')
-                              : widget.controller.userData.showFollowers
+                                  context, controller.followerCount, 'Followers')
+                              : controller.userData.showFollowers
                                   ? buildCountColumn(
-                                      context, widget.controller.followerCount, 'Followers')
+                                      context, controller.followerCount, 'Followers')
                                   : Container(
                                       width: 100,
                                     ),
@@ -199,8 +190,9 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                       const SizedBox(height: AppTheme.elementSpacing / 2),
                       buildUserInformation(
-                        widget.controller.userData.username,
-                        widget.controller.userData.displayName,
+                        context,
+                        controller.userData.username,
+                        controller.userData.displayName,
                       ),
                       const SizedBox(height: AppTheme.cardPadding * 2),
                     ],
@@ -208,11 +200,11 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
                 const SizedBox(height: 40),
               ]),
-          buildSettingsButton(),
-          buildQRButton(),
+          buildSettingsButton(context),
+          buildQRButton(context),
           buildEditEyeLeft(),
           buildEditEyeRight(),
-          buildCenterWidget(),
+          buildCenterWidget(context),
         ]),
       ],
     );
@@ -222,18 +214,16 @@ class _ProfileViewState extends State<ProfileView> {
     return Positioned(
       top: 165,
       right: 57,
-      child: widget.controller.currentview == 2
+      child: controller!.currentview == 2
           ? Align(
               child: IconButton(
                   color: AppTheme.white90,
                   onPressed: () {
-                    setState(() {
-                      widget.controller.showFollwers = !widget.controller.showFollwers;
-                      widget.controller.updateShowFollowers(widget.controller.showFollwers);
-                    });
+                      controller.showFollwers = !controller.showFollwers;
+                      controller.updateShowFollowers(controller.showFollwers);
                   },
                   icon: Icon(
-                    widget.controller.showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
+                    controller.showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
                   )),
             )
           : Container(),
@@ -244,25 +234,23 @@ class _ProfileViewState extends State<ProfileView> {
     return Positioned(
       top: 165,
       left: 57,
-      child: widget.controller.currentview == 2
+      child: controller.currentview == 2
           ? Align(
               child: IconButton(
                   color: AppTheme.white90,
                   onPressed: () {
-                    setState(() {
-                      widget.controller.showFollwers = ! widget.controller.showFollwers;
-                      widget.controller.updateShowFollowers(widget.controller.showFollwers);
-                    });
+                      controller.showFollwers = ! controller.showFollwers;
+                      controller.updateShowFollowers(controller.showFollwers);
                   },
                   icon: Icon(
-                    widget.controller.showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
+                    controller.showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
                   )),
             )
           : Container(),
     );
   }
 
-  Widget buildSettingsButton() {
+  Widget buildSettingsButton(BuildContext context) {
     return Positioned(
       top: AppTheme.elementSpacing,
       right: AppTheme.elementSpacing,
@@ -283,7 +271,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget buildQRButton() {
+  Widget buildQRButton(BuildContext context) {
     return Positioned(
       top: AppTheme.elementSpacing,
       left: AppTheme.elementSpacing,
@@ -294,7 +282,7 @@ class _ProfileViewState extends State<ProfileView> {
           child: RoundedButtonWidget(
             iconData: Icons.qr_code_rounded,
             onTap: () {
-              onQRButtonPressed();
+              onQRButtonPressed(context);
               // print("Hello world");
               // Navigator.push(context, MaterialPageRoute<void>(
               //   builder: (BuildContext context) {
@@ -311,7 +299,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  void onQRButtonPressed() {
+  void onQRButtonPressed(BuildContext context) {
     showModalBottomSheetWidget(
         goBack: false,
         context: context,
@@ -320,7 +308,7 @@ class _ProfileViewState extends State<ProfileView> {
         iconData: Icons.qr_code_rounded,
         child: Center(
           child: RepaintBoundary(
-            key: widget.controller.globalKeyQR,
+            key: controller.globalKeyQR,
             child: Column(
               children: [
                 Container(
@@ -333,7 +321,7 @@ class _ProfileViewState extends State<ProfileView> {
                     child: PrettyQr(
                       typeNumber: 5,
                       size: AppTheme.cardPadding * 10,
-                      data: 'did: ${widget.controller.userData.did}',
+                      data: 'did: ${controller.userData.did}',
                       errorCorrectLevel: QrErrorCorrectLevel.M,
                       roundEdges: true,
                     ),
@@ -346,6 +334,7 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   buildCenterWidgetIcon({
+    required BuildContext context,
     required IconData iconData,
     required int index,
     required Function() onTap,
@@ -360,7 +349,7 @@ class _ProfileViewState extends State<ProfileView> {
           child: Icon(
             iconData,
             size: AppTheme.iconSize,
-            color: widget.controller.currentview == index
+            color: controller.currentview == index
                 ? Theme.of(context).colorScheme.onSecondaryContainer
                 : Theme.of(context)
                     .colorScheme
@@ -370,9 +359,9 @@ class _ProfileViewState extends State<ProfileView> {
         ));
   }
 
-  Widget buildCenterWidget() {
+  Widget buildCenterWidget(BuildContext context) {
     final userData = Provider.of<UserData>(context, listen: false);
-    final String currentUserId = widget.controller.profileId!;
+    final String currentUserId = controller.profileId!;
 
     bool isProfileOwner = currentUserId == userData.did;
 
@@ -396,23 +385,24 @@ class _ProfileViewState extends State<ProfileView> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               buildCenterWidgetIcon(
+                context: context,
                 iconData: Icons.table_rows_rounded,
                 index: 0,
-                onTap: () => setState(() {
-                  widget.controller.currentview = 0;
-                }),
+                onTap: () {
+                  controller.currentview = 0;
+                },
               ),
               buildCenterWidgetIcon(
+                context: context,
                 iconData: Icons.wallet,
                 index: 1,
-                onTap: () => setState(() {
-                  widget.controller.currentview = 1;
-                }),
+                onTap: () {
+                  controller.currentview = 1;
+                },
               ),
               GestureDetector(
-                  onTap: () => setState(() {
-                    widget.controller.currentview = 2;
-                      }),
+                  onTap: () {
+                    controller.currentview = 2; },
                   child: Container(
                     decoration: BoxDecoration(
                         // color: Colors.greenAccent[700],
@@ -420,7 +410,7 @@ class _ProfileViewState extends State<ProfileView> {
                     child: Icon(
                       isProfileOwner ? Icons.edit : Icons.person_add_rounded,
                       size: AppTheme.iconSize,
-                      color: widget.controller.currentview == 2
+                      color: controller.currentview == 2
                           ? Theme.of(context).colorScheme.onSecondaryContainer
                           : Theme.of(context)
                               .colorScheme
@@ -435,12 +425,12 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget buildImage(String imagePath) {
+  Widget buildImage(BuildContext context, String imagePath) {
     return Container(
       width: 120,
       height: 120,
       decoration: BoxDecoration(
-        gradient: widget.controller.currentview != 2
+        gradient: controller.currentview != 2
             ? LinearGradient(colors: [
                 Color.fromRGBO(199, 77, 77, 1.0),
                 Color.fromRGBO(242, 169, 0, 1.0),
@@ -477,7 +467,7 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Widget buildCountColumn(BuildContext context, int count, String label) =>
-      widget.controller.isUserLoading
+      controller.isUserLoading
           ? Container()
           : MaterialButton(
               shape:
@@ -513,33 +503,33 @@ class _ProfileViewState extends State<ProfileView> {
               ),
             );
 
-  Widget buildUserInformation(String username, String displayName) => Padding(
+  Widget buildUserInformation(BuildContext context, String username, String displayName) => Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
         child: Column(
           children: [
             TextField(
-              focusNode: widget.controller.focusNodeUsername,
-              readOnly: widget.controller.currentview == 2 ? false : true,
+              focusNode: controller.focusNodeUsername,
+              readOnly: controller.currentview == 2 ? false : true,
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                 fillColor: Colors.transparent,
                 isDense: true,
                 border: InputBorder.none,
-                errorText: widget.controller.displayNameValid
+                errorText: controller.displayNameValid
                     ? null
                     : 'Bad characters', // Add this line
               ),
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: AppTheme.white70,
                   ),
-              controller: widget.controller.userNameController,
+              controller: controller.userNameController,
             ),
             const SizedBox(height: AppTheme.cardPadding),
             TextField(
-              focusNode: widget.controller.focusNodeDisplayName,
-              readOnly: widget.controller.currentview == 2 ? false : true,
+              focusNode: controller.focusNodeDisplayName,
+              readOnly: controller.currentview == 2 ? false : true,
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
@@ -547,16 +537,16 @@ class _ProfileViewState extends State<ProfileView> {
                   isDense: true,
                   border: InputBorder.none,
                   errorText:
-                  widget.controller.displayNameValid ? null : "Couldn't change username"),
+                  controller.displayNameValid ? null : "Couldn't change username"),
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall!
                   .copyWith(color: AppTheme.white90),
-              controller: widget.controller.displayNameController,
+              controller: controller.displayNameController,
             ),
             TextField(
-              focusNode: widget.controller.focusNodeBio,
-              readOnly: widget.controller.currentview == 2 ? false : true,
+              focusNode: controller.focusNodeBio,
+              readOnly: controller.currentview == 2 ? false : true,
               keyboardType: TextInputType.multiline,
               maxLines: null,
               textAlign: TextAlign.center,
@@ -570,7 +560,7 @@ class _ProfileViewState extends State<ProfileView> {
                   .textTheme
                   .bodyMedium!
                   .copyWith(color: AppTheme.white70),
-              controller: widget.controller.bioController,
+              controller: controller.bioController,
             ),
             const SizedBox(height: AppTheme.elementSpacing / 2),
           ],

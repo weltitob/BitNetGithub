@@ -2,15 +2,17 @@ import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage
 import 'package:flutter/material.dart';
 
 class WebsiteLandingPage extends StatefulWidget {
-  const WebsiteLandingPage({super.key});
+  const WebsiteLandingPage({Key? key}) : super(key: key);
 
   @override
-  State<WebsiteLandingPage> createState() => WebsiteLandingPageController();
+  WebsiteLandingPageController createState() => WebsiteLandingPageController();
 }
 
 class WebsiteLandingPageController extends State<WebsiteLandingPage> {
   @override
   Widget build(BuildContext context) {
-    return WebsiteLandingPageView(controller: this,);
+    return Container(
+      color: Colors.green,
+    );
   }
 }
