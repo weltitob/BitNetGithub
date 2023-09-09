@@ -6,7 +6,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
-import 'package:bitnet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -51,6 +51,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
               }
             }),
         body: BackgroundWithContent(
+          backgroundType: BackgroundType.image,
           opacity: 0.8,
           child: Form(
             key: widget.controller.form,

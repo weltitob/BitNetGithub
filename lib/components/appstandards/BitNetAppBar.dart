@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/backgrounds/backgroundgradient.dart';
+import 'package:bitnet/components/appstandards/backgroundgradient.dart';
 
 AppBar bitnetAppBar({
   required String text,

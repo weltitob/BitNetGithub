@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
-import 'package:bitnet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'dart:math';
@@ -96,6 +96,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
         Navigator.of(context).pop();
       }),
       body: BackgroundWithContent(
+        backgroundType: BackgroundType.image,
         opacity: 0.8,
         child: Form(
           key: _form,

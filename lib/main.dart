@@ -27,8 +27,16 @@ Future<void> main() async {
 
   // Initialize Firebase
   await Firebase.initializeApp(
-      //options: DefaultFirebaseOptions.currentPlatform,
-      );
+      options: FirebaseOptions(
+        apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
+        //authDomain: '...',
+        //appId von firebase ist iwie für ios und android unterschiedlich
+        appId: '466393582939',
+        messagingSenderId: '01',
+        projectId: 'bitnet-cb34f',
+        // ... other options
+      ),
+  );
 
   Logs().nativeColors = !PlatformInfos.isIOS;
   // Run the app
@@ -65,8 +73,7 @@ class MyApp extends StatelessWidget {
         ),
         // Provide a stream of user wallet data
       ],
-      child: WebsiteLandingPage(),
-      //WidgetTree(),
+      child: WidgetTree(),
     );
   }
 }

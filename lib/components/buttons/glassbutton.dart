@@ -34,7 +34,7 @@ class _glassButtonState extends State<glassButton> {
                 width: AppTheme.cardPadding * 6,
                 padding: const EdgeInsets.symmetric(
                   vertical: AppTheme.elementSpacing * 0.75,
-                  horizontal: AppTheme.elementSpacing,
+                  horizontal: AppTheme.elementSpacing * 0.75,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -44,7 +44,7 @@ class _glassButtonState extends State<glassButton> {
                         : Icon(
                             widget.iconData,
                             color: AppTheme.white80,
-                            size: 22,
+                            size: AppTheme.elementSpacing * 1.5,
                           ),
                     widget.iconData == null
                         ? Container()
@@ -53,8 +53,7 @@ class _glassButtonState extends State<glassButton> {
                           ),
                     Text(
                       widget.text,
-                      style: AppTheme.textTheme.bodyMedium!.copyWith(
-                          color: AppTheme.white80, fontWeight: FontWeight.bold),
+                      style: AppTheme.textTheme.titleSmall
                     ),
                   ],
                 ),
@@ -67,7 +66,7 @@ class _glassButtonState extends State<glassButton> {
               width: AppTheme.cardPadding * 6,
               padding: const EdgeInsets.symmetric(
                 vertical: AppTheme.elementSpacing * 0.75,
-                horizontal: AppTheme.elementSpacing,
+                horizontal: AppTheme.elementSpacing * 0.75,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -77,7 +76,7 @@ class _glassButtonState extends State<glassButton> {
                       : Icon(
                           widget.iconData,
                           color: AppTheme.white80,
-                          size: 22,
+                          size: AppTheme.elementSpacing * 1.5,
                         ),
                   widget.iconData == null
                       ? Container()
@@ -86,8 +85,7 @@ class _glassButtonState extends State<glassButton> {
                         ),
                   Text(
                     widget.text,
-                    style: AppTheme.textTheme.bodyMedium!.copyWith(
-                        color: AppTheme.white80, fontWeight: FontWeight.bold),
+                    style: AppTheme.textTheme.titleSmall
                   )
                 ],
               ),

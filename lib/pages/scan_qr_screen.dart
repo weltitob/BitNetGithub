@@ -9,6 +9,7 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/profile/actions/sendscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
@@ -123,15 +124,20 @@ class _QRScreenState extends State<QRScreen> {
       body: Stack(
         children: [
           MobileScanner(
-              allowDuplicates: false,
+              //allowDuplicates: false,
               controller: cameraController,
-              onDetect: (barcode, args) async {
-                final String codeinjson = barcode.rawValue.toString();
-                var encodedString = jsonDecode(codeinjson);
-                //check what type we scanned somehow and then call the according functions
+              onDetect: (capture) {
+                final List<Barcode> barcodes = capture.barcodes;
+                final Uint8List? image = capture.image;
+                for (final barcode in barcodes) {
+                  debugPrint('Barcode found! ${barcode.rawValue}');
+                  final String codeinjson = barcode.rawValue.toString();
+                  var encodedString = jsonDecode(codeinjson);
+                  //check what type we scanned somehow and then call the according functions
 
-                onScannedForSignIn(encodedString);
-              }),
+                  onScannedForSignIn(encodedString);
+                }
+              },),
           isQRScanner
               ? QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5))
               : TextScannerOverlay(

@@ -1,5 +1,13 @@
+import 'dart:async';
+
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:lottie/lottie.dart';
 
 class WebsiteLandingPage extends StatefulWidget {
   const WebsiteLandingPage({Key? key}) : super(key: key);
@@ -9,10 +17,87 @@ class WebsiteLandingPage extends StatefulWidget {
 }
 
 class WebsiteLandingPageController extends State<WebsiteLandingPage> {
+
+  late final Future<LottieComposition> composition;
+
+  PageController pageController = PageController(initialPage: 0);
+
+  late ScrollController scrollController;
+  late Timer _timer;
+  double _offset = 0;
+  bool isUserScrolling = false;
+  DateTime? lastUserScrollTime;  // Timestamp of the last time the user manually scrolled
+
+  @override
+  void initState() {
+    super.initState();
+    composition = loadComposition('assets/lottiefiles/blockchain_loader.json');
+    scrollController = ScrollController();
+    scrollController.addListener(_handleUserScroll);
+    _timer = Timer.periodic(Duration(milliseconds: 50), _animateList);
+  }
+
+  void _handleUserScroll() {
+    if (scrollController.position.userScrollDirection == ScrollDirection.idle) {
+      // User has stopped scrolling
+      lastUserScrollTime = DateTime.now();
+    } else {
+      // User is scrolling
+      isUserScrolling = true;
+      lastUserScrollTime = DateTime.now();
+      _offset = scrollController.offset;  // Update _offset to the current scroll position
+    }
+  }
+
+  void _animateList(Timer timer) {
+    if (!scrollController.hasClients) return;
+
+    if (DateTime.now().difference(lastUserScrollTime ?? DateTime.now()).inSeconds >= 1) {
+      // It's been more than 1 second since the last manual scroll, resume auto-scroll
+      isUserScrolling = false;
+    }
+
+    if (!isUserScrolling) {
+      double maxScrollExtent = scrollController.position.maxScrollExtent;
+
+      if (_offset > maxScrollExtent) {
+        _offset = 0;
+      } else {
+        _offset += 1;
+      }
+
+      scrollController.animateTo(_offset,
+          duration: Duration(milliseconds: 50), curve: Curves.linear);
+    }
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(_handleUserScroll);
+    scrollController.dispose();
+    _timer.cancel();
+    super.dispose();
+  }
+
+
+
+  Stream<int> userCountStream() {
+    return usersCollection
+        .snapshots()
+        .map((snapshot) => snapshot.size);
+  }
+
+  Stream<List<UserData>> lastTenUsersStream() {
+    print("Last 100 users stream called");
+    return usersCollection
+        .orderBy('createdAt', descending: true)
+        .limitToLast(100)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => UserData.fromDocument(doc)).toList());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.green,
-    );
+    return WebsiteLandingPageView(controller: this);
   }
 }

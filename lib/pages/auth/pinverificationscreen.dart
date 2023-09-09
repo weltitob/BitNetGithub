@@ -11,7 +11,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
-import 'package:bitnet/components/backgrounds/backgroundwithcontent.dart';
+import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/models/verificationcode.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:vrouter/vrouter.dart';
@@ -119,6 +119,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       gradientColor: Colors.black,
       key: scaffoldKey,
       body: BackgroundWithContent(
+        backgroundType: BackgroundType.image,
         opacity: 0.7,
         child: Column(
           children: <Widget>[

@@ -334,7 +334,6 @@ class ProfileController extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ProfileView(this);
   }
 }

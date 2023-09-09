@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:bitnet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:flutter/services.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
@@ -245,12 +244,12 @@ abstract class AppTheme {
 
   static final textTheme = TextTheme(
     displayLarge: GoogleFonts.inter(
-      fontSize: 48,
+      fontSize: 52,
       fontWeight: FontWeight.bold,
-      letterSpacing: -1.5,
+      letterSpacing: -0.5,
     ),
     displayMedium: GoogleFonts.inter(
-        fontSize: 34,
+        fontSize: 40,
         fontWeight: FontWeight.bold,
         letterSpacing: -0.5
     ),
@@ -258,6 +257,11 @@ abstract class AppTheme {
       fontSize: 28,
       fontWeight: FontWeight.bold,
       letterSpacing: 0.0,
+    ),
+    headlineLarge: GoogleFonts.inter(
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 0.25,
     ),
     headlineMedium: GoogleFonts.inter(
       fontSize: 22,
@@ -324,6 +328,9 @@ abstract class AppTheme {
       color: AppTheme.white90,
     ),
     displaySmall: textTheme.displaySmall!.copyWith(
+      color: AppTheme.white90,
+    ),
+    headlineLarge: textTheme.headlineMedium!.copyWith(
       color: AppTheme.white90,
     ),
     headlineMedium: textTheme.headlineMedium!.copyWith(
