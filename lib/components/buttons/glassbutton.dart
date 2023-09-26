@@ -2,6 +2,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
+
 class glassButton extends StatefulWidget {
   final String text;
   final IconData? iconData;
@@ -43,17 +44,17 @@ class _glassButtonState extends State<glassButton> {
                         ? Container()
                         : Icon(
                             widget.iconData,
-                            color: AppTheme.white80,
+                            color: AppTheme.white90,
                             size: AppTheme.elementSpacing * 1.5,
                           ),
                     widget.iconData == null
                         ? Container()
                         : const SizedBox(
-                            width: AppTheme.elementSpacing / 2,
+                            width: AppTheme.elementSpacing / 1.5,
                           ),
                     Text(
                       widget.text,
-                      style: AppTheme.textTheme.titleSmall
+                      style: AppTheme.textTheme.titleSmall!.copyWith(color: AppTheme.white90,),
                     ),
                   ],
                 ),
@@ -93,3 +94,115 @@ class _glassButtonState extends State<glassButton> {
           );
   }
 }
+
+class ColorfulGradientButton extends StatefulWidget {
+  final String text;
+  final IconData? iconData;
+  final Function()? onTap;
+  final bool? isSelected;
+  final Gradient gradient; // Gradient property
+
+  const ColorfulGradientButton({
+    required this.text,
+    required this.onTap,
+    this.iconData,
+    this.isSelected,
+    this.gradient = const LinearGradient(
+      colors: [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],  // Default gradient for example's sake
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    ),
+  });
+
+  @override
+  State<ColorfulGradientButton> createState() => _ColorfulGradientButtonState();
+}
+
+class _ColorfulGradientButtonState extends State<ColorfulGradientButton> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.isSelected == null || widget.isSelected!
+        ? GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: widget.gradient,
+          borderRadius: AppTheme.cardRadiusMid,
+          boxShadow: [AppTheme.boxShadowProfile],
+        ),
+        width: AppTheme.cardPadding * 6,
+        padding: const EdgeInsets.symmetric(
+          vertical: AppTheme.elementSpacing * 0.75,
+          horizontal: AppTheme.elementSpacing * 0.75,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            widget.iconData == null
+                ? Container()
+                : Icon(
+              widget.iconData,
+              color: AppTheme.white90,
+              size: AppTheme.elementSpacing * 1.5,
+            ),
+            widget.iconData == null
+                ? Container()
+                : const SizedBox(
+              width: AppTheme.elementSpacing / 1.5,
+            ),
+            Text(
+                widget.text,
+                style: AppTheme.textTheme.titleSmall!.copyWith(
+                    color: Colors.white,
+                    shadows: [
+                      AppTheme.boxShadowButton,
+                    ]
+                )
+            ),
+          ],
+        ),
+      ),
+    )
+        : GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: widget.gradient,
+          borderRadius: AppTheme.cardRadiusMid,
+        ),
+        width: AppTheme.cardPadding * 6,
+        padding: const EdgeInsets.symmetric(
+          vertical: AppTheme.elementSpacing * 0.75,
+          horizontal: AppTheme.elementSpacing * 0.75,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            widget.iconData == null
+                ? Container()
+                : Icon(
+              widget.iconData,
+              color: AppTheme.white90,
+              size: AppTheme.elementSpacing * 1.5,
+            ),
+            widget.iconData == null
+                ? Container()
+                : const SizedBox(
+              width: AppTheme.elementSpacing / 1.5,
+            ),
+            Text(
+                widget.text,
+                style: AppTheme.textTheme.titleSmall!.copyWith(
+                    color: Colors.white,
+                    shadows: [
+                      AppTheme.boxShadowButton,
+                    ]
+                )
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

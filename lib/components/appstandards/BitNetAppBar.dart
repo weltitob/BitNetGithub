@@ -1,12 +1,15 @@
+import 'package:bitnet/components/buttons/roundediconbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundgradient.dart';
 
 AppBar bitnetAppBar({
-  required String text,
   required BuildContext context,
-  required Function() onTap,
-  List<Widget>? actions, // New parameter for actions
+  Function()? onTap,
+  List<Widget>? actions, // Parameter for actions
+  String? text,
+  Widget? customTitle,
+  Widget? customLeading,
 }) {
   return AppBar(
     bottomOpacity: 0,
@@ -14,8 +17,8 @@ AppBar bitnetAppBar({
     centerTitle: true,
     titleTextStyle: Theme.of(context).textTheme.titleLarge,
     backgroundColor: Colors.transparent,
-    title: (text != null) ? Container(child: Text(text)) : Container(),
-    leading: GestureDetector(
+    title: customTitle ?? (text != null ? Text(text) : Container()), // Use customTitle if provided
+    leading: customLeading ?? GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(
@@ -23,19 +26,13 @@ AppBar bitnetAppBar({
             right: AppTheme.elementSpacing * 0.5,
             top: AppTheme.elementSpacing,
             bottom: AppTheme.elementSpacing),
-        child: BackgroundGradient(
-          colorprimary: AppTheme.colorPrimaryGradient,
-          colorsecondary: AppTheme.colorBitcoin,
-          child: Container(
-              alignment: Alignment.center,
-              child: Icon(
-                Icons.arrow_back_rounded,
-                color: AppTheme.white90,
-                size: AppTheme.cardPadding * 1.25,
-              )),
+        child: RoundedIconButton(
+          iconData: Icons.arrow_back,
+          colorPrimary: AppTheme.colorPrimaryGradient,
+          colorSecondary: AppTheme.colorBitcoin,
         ),
       ),
     ),
-    actions: actions, // Add the actions to the AppBar
+    actions: actions,
   );
 }

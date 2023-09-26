@@ -164,7 +164,14 @@ abstract class AppTheme {
   static Radius cornerRadiusMid = const Radius.circular(24);
   static BorderRadius cardRadiusCircular = BorderRadius.circular(500);
 
+
+
+  static const double borderRadiusSuperSmall = 10.0;
   static const double borderRadiusSmall = 16.0;
+  static const double borderRadiusMid = 24.0;
+  static const double borderRadiusBig = 28.0;
+  static const double borderRadiusBigger = 32.0;
+  static const double borderRadiusCircular = 500.0;
 
   //Boxshadows
   static BoxShadow boxShadow = BoxShadow(

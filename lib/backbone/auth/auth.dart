@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
+import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
 import 'package:bitnet/models/IONdata.dart';
@@ -177,6 +179,17 @@ class Auth {
     }
   }
 
+  String generateRandomString(int length) {
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    return String.fromCharCodes(
+      Iterable.generate(
+        length,
+            (_) => characters.codeUnitAt(random.nextInt(characters.length)),
+      ),
+    );
+  }
+
 
   Future<void> signIn(String did, dynamic signedAuthMessage, BuildContext context) async {
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
@@ -185,11 +198,16 @@ class Auth {
     try{
       //showLoadingScreen
       VRouter.of(context).to('/ionloading');
+      final String randomstring = generateRandomString(20); // length 20
 
-      final String customToken = await loginION(
-        did.toString(),
-        signedAuthMessage.toString(),
+      final String customToken = await fakeLoginION(
+          randomstring,
       );
+
+      // final String customToken = await loginION(
+      //   did.toString(),
+      //   signedAuthMessage.toString(),
+      // );
 
       final currentuser = await signInWithToken(customToken: customToken);
 

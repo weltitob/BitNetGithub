@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,18 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:uuid/uuid.dart';
+
+enum MediaType { image, audio, camera, document, pdf, text, link, sticker, location, wallet }
+
+Color getRandomColor() {
+  final random = Random();
+  return Color.fromRGBO(
+    random.nextInt(256),
+    random.nextInt(256),
+    random.nextInt(256),
+    1,
+  );
+}
 
 
 final datetime = DateTime.now();
@@ -158,5 +172,13 @@ class DotFormatter extends TextInputFormatter {
     else {
       return newValue;
     }
+  }
+}
+
+class MyBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
   }
 }
