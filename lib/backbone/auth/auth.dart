@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
-import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
 import 'package:bitnet/models/IONdata.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
@@ -103,39 +102,23 @@ class Auth {
   }) async {
     Logs().w("Calling Cloudfunction with Microsoft ION now...");
     Logs().w("Generating challenge...");
-
     //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
-
     final String challange = generateChallenge(user.username);
-
     Logs().w("Challenge created: $challange. Creating user now...");
-
-
     final IONData iondata = await createDID(user.username, challange);
-
     Logs().w("User created: IONDATA RECEIVED: $iondata.");
-
     Logs().w("Storing private data now...");
-
     final PrivateData privateData = PrivateData(
         did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
-
     // Call the function to store Private data in secure storage
     await storePrivateData(privateData);
-
     Logs().w("Private data stored. Signing in with token now...");
-
     final currentuser = await signInWithToken(customToken: iondata.customToken);
-
     final newUser = user.copyWith(did: iondata.did);
-
     Logs().w("User signed in with token. Creating user in database now...");
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-
     Logs().w('Successfully created wallet/user in database: ${newUser.toMap()}');
-
     // Call the function to generate and store verification codes
-
     Logs().w("Generating and storing verification codes for friends of the new user now...");
     await generateAndStoreVerificationCodes(
       numCodes: 4,
@@ -143,7 +126,6 @@ class Auth {
       issuer: newUser.did,
       codesCollection: codesCollection,
     );
-
     Logs().w("Marking the verification code as used now...");
     // Call the function to mark the verification code as used
     await markVerificationCodeAsUsed(
@@ -197,8 +179,14 @@ class Auth {
 
     try{
       //showLoadingScreen
-      VRouter.of(context).to('/ionloading');
+      //VRouter.of(context).to('/ionloading');
       final String randomstring = generateRandomString(20); // length 20
+
+      Logs().w("For now simply login in own matrix client until own sever is setup and can register there somehow.");
+
+      //dieser call leitet uns iwie bereits weiter zur matrix page da das muss verhindert werden
+
+      await loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
 
       final String customToken = await fakeLoginION(
           randomstring,
@@ -213,7 +201,7 @@ class Auth {
 
       if(currentuser == null){
         // Remove the loading screen
-        Navigator.pop(context);
+        VRouter.of(context).pop();
         throw Exception("User couldnt be signed in with custom Token!");
       } else {
         //if successfull push back to homescreen
@@ -327,7 +315,7 @@ class Auth {
     );
   }
 
-  void loginMatrix(BuildContext context, String username, String password) async {
+  loginMatrix(BuildContext context, String username, String password) async {
 
     //this stuff kind of comes from somehwere else...
     final matrix = Matrix.of(context);
@@ -363,8 +351,6 @@ class Auth {
         password: password,
         initialDeviceDisplayName: PlatformInfos.clientName,
       );
-
-
 
     } on MatrixException catch (exception) {
       throw Exception("Exception occured with signin Matrix itself: $exception");

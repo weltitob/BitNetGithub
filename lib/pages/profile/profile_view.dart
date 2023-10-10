@@ -62,6 +62,7 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myuser = Auth().currentUser!.uid;
+    print('myuser: $myuser');
     final String currentUserId = controller!.profileId!;
     bool isProfileOwner = currentUserId == myuser;
     // final testuser = UserPreferences.myUser;

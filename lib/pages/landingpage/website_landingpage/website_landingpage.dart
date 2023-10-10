@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:lottie/lottie.dart';
@@ -87,13 +86,32 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
         .map((snapshot) => snapshot.size);
   }
 
-  Stream<List<UserData>> lastTenUsersStream() {
+  Stream<List<UserData>> lastUsersStream() {
     print("Last 100 users stream called");
     return usersCollection
         .orderBy('createdAt', descending: true)
         .limitToLast(100)
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => UserData.fromDocument(doc)).toList());
+  }
+
+  Stream<double> percentageChangeInUserCountStream() async* {
+    print("Percentchange called");
+    int initialUserCount = await _userCountFrom7DaysAgo();
+    await for (int currentUserCount in userCountStream()) {
+      if (initialUserCount == 0) {
+        yield (currentUserCount > 0) ? 100.0 : 0.0; // If we had 0 users 7 days ago and now we have more, that's a 100% increase
+      } else {
+        double percentageChange = ((currentUserCount - initialUserCount) / initialUserCount) * 100;
+        yield percentageChange;
+      }
+    }
+  }
+
+  Future<int> _userCountFrom7DaysAgo() async {
+    DateTime sevenDaysAgo = DateTime.now().subtract(Duration(days: 7));
+    var snapshot = await usersCollection.where('createdAt', isLessThanOrEqualTo: sevenDaysAgo).get();
+    return snapshot.size;
   }
 
   @override

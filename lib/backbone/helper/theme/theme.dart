@@ -205,7 +205,7 @@ abstract class AppTheme {
   static const double tabbarBorderWidth = 1.5;
   static const double tabbarBorderRadius = 100;
 
-  static const double columnWidth = 15 * cardPadding;
+  static const double columnWidth = 12 * cardPadding;
   static const double navRailWidth = 2 * cardPadding + elementSpacing;
   //spaces
   static const double cardPadding = 24;
@@ -413,14 +413,15 @@ abstract class AppTheme {
         visualDensity: VisualDensity.standard,
         useMaterial3: true,
         brightness: brightness,
-        
+
         //colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
         colorScheme: ColorScheme(
             //https://m3.material.io/styles/color/the-color-system/color-roles
             brightness: brightness,
             primary: AppTheme.colorSchemeSeed ?? Colors.black,
-            onPrimary: AppTheme.colorBitcoin,
-            secondary: lighten(AppTheme.colorBackground, 20),
+            onPrimary: AppTheme.white90,
+            //------stays the same always...-------
+            secondary: AppTheme.colorSchemeSeed ?? Colors.black,
             onSecondary: AppTheme.white90,
             //------stays the same always...-------
             tertiary: AppTheme.colorBitcoin,
@@ -432,7 +433,6 @@ abstract class AppTheme {
             background: AppTheme.colorSchemeSeed!.withAlpha(25) ?? Colors.black,
             onBackground: AppTheme.white90,
             //-------------------------------------
-
             surface: Colors.deepPurple,
             onSurface: AppTheme.white90
 

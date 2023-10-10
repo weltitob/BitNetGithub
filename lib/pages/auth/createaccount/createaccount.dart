@@ -159,21 +159,23 @@ class CreateAccountController extends State<CreateAccount> {
       Logs().w("Signing up user for Matrix now...");
       //matrixSignUp();
       Logs().w("For now simply login in own matrix client until own sever is setup and can register there somehow.");
+
+      //dieser call leitet uns iwie bereits weiter zur matrix page da das muss verhindert werden
       Auth().loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
 
-      // Logs().w("Making firebase auth now...");
-      //
-      // final UserData? currentuserwallet = await firebaseAuthentication(
-      //     userdata,
-      //     VerificationCode(
-      //         used: false,
-      //         code: widget.code.code,
-      //         issuer: widget.code.issuer,
-      //         receiver: widget.code.receiver));
+      Logs().w("Making firebase auth now...");
 
-      //
-      // Logs().w("Navigating to homescreen now...");
-      // VRouter.of(context).to('/');
+      final UserData? currentuserwallet = await firebaseAuthentication(
+          userdata,
+          VerificationCode(
+              used: false,
+              code: widget.code.code,
+              issuer: widget.code.issuer,
+              receiver: widget.code.receiver));
+
+
+      Logs().w("Navigating to homescreen now...");
+      VRouter.of(context).to('/');
 
     } on MatrixException catch(e){
       print("Matrix Exception: $e");
@@ -194,13 +196,14 @@ class CreateAccountController extends State<CreateAccount> {
       UserData userData, VerificationCode code) async {
     try {
       //blablabla
+      Logs().w("Creating firebase user now...");
       final UserData currentuserwallet = await Auth().createUser(
         user: userData,
         code: code,
       );
       return currentuserwallet;
     }on FirebaseException catch (e) {
-      print("Firebase Exception: $e");
+      Logs().e("Firebase Exception: $e");
       setState(() {
         errorMessage =
         "We currently have troubles reaching our servers which connect with the blockchain. Please try again later.";

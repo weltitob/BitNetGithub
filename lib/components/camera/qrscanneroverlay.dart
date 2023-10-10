@@ -1,4 +1,4 @@
-import 'package:bitnet/components/container/randombubblecontainer.dart';
+import 'package:bitnet/components/container/randomcontainers/randombubblecontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 

@@ -24,8 +24,9 @@ class Profile extends StatefulWidget {
 
 class ProfileController extends State<Profile> {
 
-
-  String? get profileId => VRouter.of(context).pathParameters['profileId'];
+  //String profileId = Auth().currentUser!.uid;
+  //String? get profileId => VRouter.of(context).pathParameters['profileId'];
+  String profileId = "did:ion:EiDzohpJZiOLnibQRpC0mcvh6S6mBBTAGJJcanIY2_-jxg";
 
   late List<Widget> pages;
   int currentview = 0;
@@ -64,10 +65,6 @@ class ProfileController extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    // If profileId was not given, use the current user's ID
-    if (profileId == null) {
-      String profileId = Auth().currentUser!.uid;
-    }
     getUser();
     getFollowers();
     getFollowing();

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/bubble.dart';
+import '../../../models/animatedmodels/bubble.dart';
 
 class BubbleWidget extends StatefulWidget {
   final double width;

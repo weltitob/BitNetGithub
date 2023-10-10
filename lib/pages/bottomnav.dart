@@ -14,6 +14,8 @@ class BottomNav extends StatefulWidget {
 
 class _BottomNavState extends State<BottomNav> {
 
+  String profileId = Auth().currentUser!.uid;
+
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class _BottomNavState extends State<BottomNav> {
       {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
       {'icon': FontAwesomeIcons.upload, 'route': '/create'},
       {'icon': FontAwesomeIcons.wallet, 'route': '/wallet'},
-      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile'},
+      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/:2RUAWrVJXvkZxftDuDEv'},
     ];
 
     void onTabTapped(String route) {
