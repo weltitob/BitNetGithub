@@ -42,12 +42,17 @@ abstract class AppTheme {
   static const double messageFontSize = 15.75;
 
   static const Color chatColor = primaryColor;
+
   static Color? colorSchemeSeed = Color(0xFF5625BA);
+  static const Color colorBackground = Color(0xff130036);
+
   static const bool allowOtherHomeservers = true;
   static const bool enableRegistration = true;
+
   static const Color primaryColor = Color(0xFF5625BA);
   static const Color primaryColorLight = Color(0xFFCCBDEA);
   static const Color secondaryColor = Color(0xFF41a2bc);
+
   static Color glassMorphColor = Colors.black.withOpacity(0.2);
   static Color glassMorphColorLight = Colors.white.withOpacity(0.2);
   static Color glassMorphColorDark = Colors.black.withOpacity(0.3);
@@ -56,7 +61,6 @@ abstract class AppTheme {
   // static const Color orange = Color(0xFFFFBD69);
   // static const Color kAccentColor = Color(0xFFFFC107);
   static const Color colorBitcoin = Color(0xfff2a900);
-  static const Color colorBackground = Color(0xff150036);
   static const Color colorPrimaryGradient = Color(0xfff25d00);
   //
   //green and red
@@ -475,7 +479,7 @@ abstract class AppTheme {
             error: AppTheme.errorColor,
             onError: AppTheme.errorColor,
             //------stays the same always...-------
-            background: AppTheme.colorSchemeSeed!.withAlpha(25) ?? Colors.black,
+            background: AppTheme.colorBackground ?? Colors.black,
             onBackground: AppTheme.white90,
             //-------------------------------------
             surface: Colors.deepPurple,
