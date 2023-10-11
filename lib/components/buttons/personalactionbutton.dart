@@ -8,14 +8,17 @@ Widget personalActionButton({
   required IconData iconData,
   required List<Color> gradientColors,
 }) {
-  return solidContainer(
-    context: context,
-    onPressed: onPressed,
-    gradientColors: gradientColors,
-    child: Center(
-      child: Icon(
-        iconData,
-        color: AppTheme.white90,
+  return MouseRegion(
+    cursor: SystemMouseCursors.click,
+    child: solidContainer(
+      context: context,
+      onPressed: onPressed,
+      gradientColors: gradientColors,
+      child: Center(
+        child: Icon(
+          iconData,
+          color: AppTheme.white90,
+        ),
       ),
     ),
   );

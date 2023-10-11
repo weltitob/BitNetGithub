@@ -17,15 +17,18 @@ class RoundedIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BackgroundGradient(
-      colorprimary: colorPrimary,
-      colorsecondary: colorSecondary,
-      child: Container(
-        alignment: Alignment.center,
-        child: Icon(
-          iconData,
-          color: AppTheme.white90,
-          size: AppTheme.cardPadding * 1.25,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: BackgroundGradient(
+        colorprimary: colorPrimary,
+        colorsecondary: colorSecondary,
+        child: Container(
+          alignment: Alignment.center,
+          child: Icon(
+            iconData,
+            color: AppTheme.white90,
+            size: AppTheme.cardPadding * 1.25,
+          ),
         ),
       ),
     );

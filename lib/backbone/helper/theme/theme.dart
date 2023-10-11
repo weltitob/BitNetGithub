@@ -64,6 +64,51 @@ abstract class AppTheme {
   static const Color errorColorGradient = Color(0xFFC52C2C);
   static const Color successColor = Color(0xFF5DE165);
   static const Color successColorGradient = Color(0xFF148C1A);
+
+
+  //SOCIALS
+  //onTap: () => launchUrlString(AppTheme.supportUrl),
+  //Marketing startegie ist EXTREME CONTENT STRATEGIE
+
+  static String instagramUrl =
+      'https://www.instagram.com/bitnet.ai/';
+  static String twitterUrl =
+      'https://twitter.com/bitnet_ai';
+  static String facebookUrl =
+      'https://www.facebook.com/bitnet.ai';
+  static String linkedinUrl =
+      'https://www.linkedin.com/company/bitnet-ai';
+  static String pinterestUrl =
+      'https://www.pinterest.com/bitnet_ai';
+  static String youtubeUrl =
+      'https://www.youtube.com/channel/UCnrJYplZtmZwDn3ia8J5Obg';
+  static String discordUrl =
+      'https://discord.gg/9QJ2X8Q';
+  static String telegramUrl =
+      'https://t.me/bitnet_ai';
+  static String snapchatUrl =
+      'https://www.snapchat.com/add/bitnet.ai';
+  static String tiktokUrl =
+      'https://tiktok.com/@bitnet_ai';
+
+  //NEXT 5 TO BE ADDED TO CONTENT MASCHINE
+
+  //twitch
+  //github
+  //medium
+  //reddit
+  //tumblr
+
+  //DIESE plattformen auch haben aber nicht erwähnen auf website wo content geuploaded wird
+  //pornhub
+  //onlyfans
+  //patreon
+  //XVideos
+  //xhamster
+  //YouPorn
+  //RedTube
+
+
   static String _privacyUrl =
       'https://gitlab.com/famedly/fluffychat/-/blob/main/PRIVACY.md';
   static String get privacyUrl => _privacyUrl;

@@ -7,6 +7,7 @@ import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage
 import 'package:bitnet/pages/matrix/utils/other/background_push.dart';
 import 'package:bitnet/pages/matrix/utils/other/custom_scroll_behaviour.dart';
 import 'package:bitnet/pages/matrix/utils/other/platform_infos.dart';
+import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/pages/routetrees/routes.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
@@ -122,13 +123,18 @@ class _WidgetTreeState extends State<WidgetTree> {
     } catch (e) {
       throw Exception("error loading matrix: $e");
     }
-    if (clients.isNotEmpty) {
-      print('Client is not null so this gets triggered...');
-      _initialUrl =
-          clients.any((client) => client.isLogged()) ? '/feed' : '/authhome';
-    } else {
-      print('Client seems to be null...');
-      _initialUrl = '/';
+    if(kIsWeb){
+      _initialUrl = '/website';
+    }
+    else {
+      if (clients.isNotEmpty) {
+        print('Client is not null so this gets triggered...');
+        _initialUrl =
+        clients.any((client) => client.isLogged()) ? '/feed' : '/authhome';
+      } else {
+        print('Client seems to be null...');
+        _initialUrl = '/';
+      }
     }
   }
 
@@ -174,52 +180,52 @@ class _WidgetTreeState extends State<WidgetTree> {
                 (_isLoadingClients)
                     ? EmptyPage(loading: true, text: "Clients still loading...")
                     :
-                WebsiteLandingPage(),
-                // Matrix(
-                //         context: context,
-                //         router: WidgetTree.routerKey,
-                //         clients: clients,
-                //         child: child,
-                //       ),
+                    //WebsiteLandingPage(),
+                    Matrix(
+                        context: context,
+                        router: WidgetTree.routerKey,
+                        clients: clients,
+                        child: child,
+                      ),
 
-                    // : StreamBuilder(
-                    //     stream: Auth().authStateChanges,
-                    //     builder: (context, snapshot) {
-                    //       if (snapshot.hasError) {
-                    //         return EmptyPage(
-                    //           loading: true,
-                    //           text: snapshot.error.toString(),
-                    //         );
-                    //       }
-                    //       //causes loading when switched anywhere in the app basically lol
-                    //       // if (snapshot.connectionState ==
-                    //       //     ConnectionState.waiting) {
-                    //       //   return EmptyPage(
-                    //       //     loading: true,
-                    //       //     text:
-                    //       //         "Loading something (authstate changes or request smth etc.)",
-                    //       //   );
-                    //       // }
-                    //       if (snapshot.hasData) {
-                    //         return
-                    //           //WebsiteLandingPage();
-                    //         Matrix(
-                    //           context: context,
-                    //           router: WidgetTree.routerKey,
-                    //           clients: clients,
-                    //           child: child,
-                    //         );
-                    //       }
-                    //       return
-                    //         //WebsiteLandingPage();
-                    //         Matrix(
-                    //         context: context,
-                    //         router: WidgetTree.routerKey,
-                    //         clients: clients,
-                    //         child: child,
-                    //       );
-                    //     },
-                    //   ),
+            // : StreamBuilder(
+            //     stream: Auth().authStateChanges,
+            //     builder: (context, snapshot) {
+            //       if (snapshot.hasError) {
+            //         return EmptyPage(
+            //           loading: true,
+            //           text: snapshot.error.toString(),
+            //         );
+            //       }
+            //       //causes loading when switched anywhere in the app basically lol
+            //       // if (snapshot.connectionState ==
+            //       //     ConnectionState.waiting) {
+            //       //   return EmptyPage(
+            //       //     loading: true,
+            //       //     text:
+            //       //         "Loading something (authstate changes or request smth etc.)",
+            //       //   );
+            //       // }
+            //       if (snapshot.hasData) {
+            //         return
+            //           //WebsiteLandingPage();
+            //         Matrix(
+            //           context: context,
+            //           router: WidgetTree.routerKey,
+            //           clients: clients,
+            //           child: child,
+            //         );
+            //       }
+            //       return
+            //         //WebsiteLandingPage();
+            //         Matrix(
+            //         context: context,
+            //         router: WidgetTree.routerKey,
+            //         clients: clients,
+            //         child: child,
+            //       );
+            //     },
+            //   ),
           );
         },
       ),

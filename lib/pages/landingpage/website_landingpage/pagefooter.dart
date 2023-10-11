@@ -5,6 +5,8 @@ import 'package:bitnet/components/container/randomcontainers/randomavatarcontain
 import 'package:bitnet/pages/landingpage/website_landingpage/socialrow.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:vrouter/vrouter.dart';
 
 class PageFooter extends StatefulWidget {
   const PageFooter({super.key});
@@ -59,38 +61,53 @@ class _PageFooterState extends State<PageFooter> {
                 alignment: Alignment.topCenter,
                 child: Container(
                   margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
-                  child: GlassContainer(
-                    borderThickness: 1.5, // remove border if not active
-                    blur: 50,
-                    opacity: 0.1,
-                    borderRadius: AppTheme.cardRadiusMid,
-                    child: Container(
-                      width: 850,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding * 3,
-                          vertical: AppTheme.cardPadding * 3
-                      ),
-                      child: ShaderMask(
-                        shaderCallback: (bounds) => LinearGradient(
-                            colors: [
-                              AppTheme.colorBitcoin,
-                              AppTheme.colorPrimaryGradient, // You can change this to any other color to achieve the gradient effect you want
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            tileMode: TileMode.clamp
-                        ).createShader(bounds),
-                        child: AnimatedTextKit(
-                          isRepeatingAnimation: false,
-                          animatedTexts: [
-                            TypewriterAnimatedText(
-                              '"Our freedom is not for sale!"',
-                              textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                color: Colors.white, // This color will be replaced by the gradient effect
-                              ),
-                              speed: const Duration(milliseconds: 100),
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: (){
+                        VRouter.of(context).to("/register");
+                      },
+                      child: GlassContainer(
+                        borderThickness: 1.5, // remove border if not active
+                        blur: 50,
+                        opacity: 0.1,
+                        borderRadius: AppTheme.cardRadiusMid,
+                        child: Container(
+                          width: 850,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding * 3,
+                              vertical: AppTheme.cardPadding * 3
+                          ),
+                          child: ShaderMask(
+                            shaderCallback: (bounds) => LinearGradient(
+                                colors: [
+                                  AppTheme.colorBitcoin,
+                                  AppTheme.colorPrimaryGradient, // You can change this to any other color to achieve the gradient effect you want
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                tileMode: TileMode.clamp
+                            ).createShader(bounds),
+                            child: AnimatedTextKit(
+                              isRepeatingAnimation: false,
+                              animatedTexts: [
+                                TypewriterAnimatedText(
+                                  '"We take it in our own hands!"',
+                                  textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                    color: Colors.white, // This color will be replaced by the gradient effect
+                                  ),
+                                  speed: const Duration(milliseconds: 100),
+                                ),
+                                TypewriterAnimatedText(
+                                  '      Join the revolution now!',
+                                  textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                    color: Colors.white, // This color will be replaced by the gradient effect
+                                  ),
+                                  speed: const Duration(milliseconds: 100),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -125,26 +142,32 @@ class _PageFooterState extends State<PageFooter> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: (){},
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      height: AppTheme.cardPadding * 3,
-                      width: AppTheme.cardPadding * 3,
-                      child: Image(
-                          image: AssetImage('assets/images/logotransparent.png')),
+                    Row(
+                      children: [
+                        Container(
+                          height: AppTheme.cardPadding * 2.5,
+                          width: AppTheme.cardPadding * 2.5,
+                          child: Image(
+                              image: AssetImage('assets/images/logotransparent.png')),
+                        ),
+                        SizedBox(
+                          width: AppTheme.cardPadding,
+                        ),
+                        Text("BitNet", style: Theme.of(context).textTheme.displaySmall,),
+                      ],
                     ),
-                    SizedBox(
-                      width: AppTheme.cardPadding,
-                    ),
-                    Text("BitNet", style: Theme.of(context).textTheme.displaySmall,),
+                    SizedBox(height: AppTheme.cardPadding,),
+                    Text("©2023 by BitNet GmBH, Germany", style: Theme.of(context).textTheme.labelSmall,),
                   ],
                 ),
-                SizedBox(height: AppTheme.cardPadding,),
-                Text("©2023 by BitNet GmBH, Germany", style: Theme.of(context).textTheme.labelSmall,),
-              ],
+              ),
             ),
 
             Row(
@@ -154,11 +177,11 @@ class _PageFooterState extends State<PageFooter> {
                   children: [
                     Text("Product", style: Theme.of(context).textTheme.titleMedium,),
                     SizedBox(height: AppTheme.elementSpacing,),
-                    SocialRow(platformName: "Get Started"),
-                    SocialRow(platformName: "Features"),
-                    SocialRow(platformName: "Pricing"),
-                    SocialRow(platformName: "Roadmap"),
-                    SocialRow(platformName: "Whitepaper"),
+                    SocialRow(platformName: "Get Started"), // VRouter auth
+                    SocialRow(platformName: "About us"), // About us page (nur ich lol)
+                    SocialRow(platformName: "Fund us"), // Support the project give money or buy these nfts
+                    SocialRow(platformName: "Roadmap"), // make roadmap how the app should develop
+                    SocialRow(platformName: "Whitepaper"), // whitepaper (webbrowser einfach n tab mit dem whitepaper öffnen
                     //reddit??
                     //tumblr??
                   ],
@@ -169,11 +192,11 @@ class _PageFooterState extends State<PageFooter> {
                   children: [
                     Text("Help and Support", style: Theme.of(context).textTheme.titleMedium,),
                     SizedBox(height: AppTheme.elementSpacing,),
-                    SocialRow(platformName: "Contact"),
-                    SocialRow(platformName: "Report Bug"),
-                    SocialRow(platformName: "Report Abuse"),
-                    SocialRow(platformName: "Report Fraud"),
-                    SocialRow(platformName: "Report Security Issue"),
+                    SocialRow(platformName: "Contact"), //lauch gmail mit contact@mybitnet
+                    SocialRow(platformName: "Report Bug"), //vrouter reporting page (bug voreingetsellt)
+                    SocialRow(platformName: "Report Abuse"), //vrouter reporting page (abuse voreingetsellt)
+                    SocialRow(platformName: "Report Fraud"), //vrouter reporting page (fraud voreingetsellt)
+                    SocialRow(platformName: "Report Security Issue"), //vrouter reporting page (security voreingetsellt)
                   ],
                 ),
                 SizedBox(width: AppTheme.cardPadding * 4,),
@@ -188,22 +211,43 @@ class _PageFooterState extends State<PageFooter> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SocialRow(iconData: FontAwesomeIcons.instagram, platformName: "Instagram"),
-                            SocialRow(iconData: FontAwesomeIcons.facebook, platformName: "Facebook"),
-                            SocialRow(iconData: FontAwesomeIcons.twitter, platformName: "Twitter"),
-                            SocialRow(iconData: FontAwesomeIcons.linkedin, platformName: "LinkedIn"),
-                            SocialRow(iconData: FontAwesomeIcons.tiktok, platformName: "TikTok"),
+                            SocialRow(iconData: FontAwesomeIcons.instagram, platformName: "Instagram", onTap: (){
+                              launchUrlString(AppTheme.instagramUrl);
+                            },),
+                            SocialRow(iconData: FontAwesomeIcons.facebook, platformName: "Facebook", onTap: (){
+                              launchUrlString(AppTheme.facebookUrl);
+                            },),
+                            SocialRow(iconData: FontAwesomeIcons.twitter, platformName: "Twitter", onTap: (){
+                              launchUrlString(AppTheme.twitterUrl);
+                            },),
+                            SocialRow(iconData: FontAwesomeIcons.linkedin, platformName: "LinkedIn", onTap: (){
+                              launchUrlString(AppTheme.linkedinUrl);
+                            },),
+                            SocialRow(iconData: FontAwesomeIcons.tiktok, platformName: "TikTok", onTap: (){
+                              launchUrlString(AppTheme.tiktokUrl);
+                            },),
                           ],
                         ),
                         SizedBox(width: AppTheme.cardPadding * 2,),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SocialRow(iconData: FontAwesomeIcons.youtube, platformName: "YouTube"),
-                            SocialRow(iconData: FontAwesomeIcons.pinterest, platformName: "Pinterest"),
-                            SocialRow(iconData: FontAwesomeIcons.snapchat, platformName: "Snapchat"),
-                            SocialRow(iconData: FontAwesomeIcons.telegram, platformName: "Telegram"),
-                            SocialRow(iconData: FontAwesomeIcons.discord, platformName: "Discord"),
+                            SocialRow(iconData: FontAwesomeIcons.youtube, platformName: "YouTube", onTap: (){
+                              launchUrlString(AppTheme.youtubeUrl);
+                            },),
+                            SocialRow(iconData: FontAwesomeIcons.pinterest, platformName: "Pinterest", onTap: (){
+                              launchUrlString(AppTheme.pinterestUrl);
+                            },),
+                            SocialRow(iconData: FontAwesomeIcons.snapchat, platformName: "Snapchat", onTap: (){
+                              launchUrlString(AppTheme.snapchatUrl);
+                            },),
+                            SocialRow(iconData: FontAwesomeIcons.telegram, platformName: "Telegram", onTap: (){
+                              launchUrlString(AppTheme.telegramUrl);
+                            },),
+                            SocialRow(iconData: FontAwesomeIcons.discord, platformName: "Discord", onTap: (){
+                              launchUrlString(AppTheme.discordUrl);
+                            },
+                            ),
                           ],
                         )
                       ],

@@ -1,10 +1,7 @@
-import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:bitnet/components/buttons/glassbutton.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
@@ -13,10 +10,10 @@ import 'package:bitnet/pages/landingpage/website_landingpage/pagefour.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/pageone.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/pagethree.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/pagetwo.dart';
-import 'package:bitnet/pages/landingpage/website_landingpage/socialrow.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vrouter/vrouter.dart';
 
 class WebsiteLandingPageView extends StatelessWidget {
   final WebsiteLandingPageController controller;
@@ -26,6 +23,7 @@ class WebsiteLandingPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       appBar: websiteAppBar(context),
       context: context,
       body: PageView(
@@ -48,7 +46,11 @@ class WebsiteLandingPageView extends StatelessWidget {
 
   AppBar websiteAppBar(BuildContext context) {
     return AppBar(
-        backgroundColor: darken(Colors.deepPurple, 80),
+        scrolledUnderElevation: 0,
+        shadowColor: Colors.transparent,
+        elevation: 0,
+        bottomOpacity: 0,
+        backgroundColor: Colors.transparent,
         title: LayoutBuilder(builder: (context, constraints) {
           double width = constraints.maxWidth;
 
@@ -63,29 +65,35 @@ class WebsiteLandingPageView extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: AppTheme.cardPadding * (isSmallScreen ? 1 : 1.25),
-                      width: AppTheme.cardPadding * (isSmallScreen ? 1 : 1.25),
-                      child: Image.asset(
-                        "./images/logoclean.png",
-                      ),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: (){},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: AppTheme.cardPadding * (isSmallScreen ? 1 : 1.25),
+                          width: AppTheme.cardPadding * (isSmallScreen ? 1 : 1.25),
+                          child: Image.asset(
+                            "./images/logoclean.png",
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              AppTheme.elementSpacing * (isSmallScreen ? 0.5 : 1),
+                        ),
+                        Text(
+                          "BitNet",
+                          style: TextStyle(
+                            fontSize: isSmallScreen
+                                ? 16
+                                : 20, // Adjust font size for small screen
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      width:
-                          AppTheme.elementSpacing * (isSmallScreen ? 0.5 : 1),
-                    ),
-                    Text(
-                      "BitNet",
-                      style: TextStyle(
-                        fontSize: isSmallScreen
-                            ? 16
-                            : 20, // Adjust font size for small screen
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
                 isSmallScreen
                     ? SizedBox.shrink() // Hide this container on small screens
@@ -158,7 +166,9 @@ class WebsiteLandingPageView extends StatelessWidget {
                   child: glassButton(
                     iconData: FontAwesomeIcons.circleArrowRight,
                     text: "Get started",
-                    onTap: () {},
+                    onTap: () {
+                      VRouter.of(context).to('/authhome');
+                    },
                   ),
                 ),
               ],

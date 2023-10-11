@@ -8,7 +8,6 @@ import 'package:bitnet/components/buttons/glassbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/models/issuereport.dart';
 import 'package:bitnet/models/user/userwallet.dart';
-import 'package:bitnet/pages/settings/settingsscreen.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 

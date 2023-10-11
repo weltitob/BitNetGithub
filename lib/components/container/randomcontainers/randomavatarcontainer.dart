@@ -71,9 +71,9 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget> with TickerProv
 
         await Future.delayed(Duration(milliseconds: 250));  // Delay between each avatar spawn
 
-        if (avatarCounter >= 25) return false;
+        if (avatarCounter >= 30) return false;
 
-        double baseSize = 55.0 - (avatarCounter * 2.0);
+        double baseSize = 50.0 - (avatarCounter * 2.0);
         double endRadius = AppTheme.cardPadding + baseSize + (random.nextDouble() * 20 - 10);
 
         if (endRadius < AppTheme.cardPadding) {

@@ -18,24 +18,27 @@ class RoundedButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: AppTheme.cardRadiusSmall,
-      onTap: onTap,
-      child: Container(
-          height: AppTheme.cardPadding * 2,
-          width: AppTheme.cardPadding * 2,
-          child: GlassContainer(
-            borderThickness: 1.5, // remove border if not active
-            blur: 50,
-            opacity: 0.1,
-            borderRadius: AppTheme.cardRadiusMid,
-            child: Icon(
-              iconData,
-              color: isGlassmorph
-                  ? AppTheme.white90
-                  : Theme.of(context).colorScheme.onSecondaryContainer,
-            ),
-          )),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: InkWell(
+        borderRadius: AppTheme.cardRadiusSmall,
+        onTap: onTap,
+        child: Container(
+            height: AppTheme.cardPadding * 2,
+            width: AppTheme.cardPadding * 2,
+            child: GlassContainer(
+              borderThickness: 1.5, // remove border if not active
+              blur: 50,
+              opacity: 0.1,
+              borderRadius: AppTheme.cardRadiusMid,
+              child: Icon(
+                iconData,
+                color: isGlassmorph
+                    ? AppTheme.white90
+                    : Theme.of(context).colorScheme.onSecondaryContainer,
+              ),
+            )),
+      ),
     );
   }
 }

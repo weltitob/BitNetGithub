@@ -10,18 +10,21 @@ class TextFieldButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
-          borderRadius: AppTheme.cardRadiusBig,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Icon(
-            iconData,
-            color: Theme.of(context).colorScheme.onSecondary,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondary,
+            borderRadius: AppTheme.cardRadiusBig,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Icon(
+              iconData,
+              color: Theme.of(context).colorScheme.onSecondary,
+            ),
           ),
         ),
       ),

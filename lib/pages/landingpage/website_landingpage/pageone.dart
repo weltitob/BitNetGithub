@@ -100,7 +100,7 @@ class _PageOneState extends State<PageOne> {
               ),
               Text(
                 "limited spots left!",
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
               Row(
                 children: [
