@@ -32,7 +32,7 @@ class _PageTwoState extends State<PageTwo> {
         double spacingMultiplier = isSmallScreen ? 3 : 0.75;
 
       return Container(
-        color: darken(Colors.deepPurple, 80),
+        color: Theme.of(context).colorScheme.background,
         child: Stack(
           children: [
             Positioned(
@@ -61,10 +61,10 @@ class _PageTwoState extends State<PageTwo> {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      darken(Colors.deepPurple, 80).withOpacity(0.25),
-                      darken(Colors.deepPurple, 80).withOpacity(0.7),
-                      darken(Colors.deepPurple, 80),
-                      darken(Colors.deepPurple, 80),
+                      Theme.of(context).colorScheme.background.withOpacity(0.25),
+                      Theme.of(context).colorScheme.background.withOpacity(0.7),
+                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.background,
                     ],
                   ),
                 ),
@@ -83,10 +83,10 @@ class _PageTwoState extends State<PageTwo> {
                     end: Alignment.topCenter,
                     colors: [
                       Colors.transparent,
-                      darken(Colors.deepPurple, 80).withOpacity(0.25),
-                      darken(Colors.deepPurple, 80).withOpacity(0.7),
-                      darken(Colors.deepPurple, 80),
-                      darken(Colors.deepPurple, 80),
+                      Theme.of(context).colorScheme.background.withOpacity(0.25),
+                      Theme.of(context).colorScheme.background..withOpacity(0.7),
+                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.background,
                     ],
                   ),
                 ),
@@ -102,10 +102,10 @@ class _PageTwoState extends State<PageTwo> {
                   end: Alignment.centerLeft,
                   colors: [
                     Colors.transparent,
-                    darken(Colors.deepPurple, 80).withOpacity(0.25),
-                    darken(Colors.deepPurple, 80).withOpacity(0.7),
-                    darken(Colors.deepPurple, 80),
-                    darken(Colors.deepPurple, 80),
+                    Theme.of(context).colorScheme.background.withOpacity(0.25),
+                    Theme.of(context).colorScheme.background.withOpacity(0.7),
+                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.background,
                   ],
                 ),
               ),
@@ -117,7 +117,7 @@ class _PageTwoState extends State<PageTwo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: AppTheme.cardPadding * 5 * spacingMultiplier,
+                    height: AppTheme.cardPadding * 8 * spacingMultiplier,
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

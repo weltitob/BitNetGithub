@@ -111,15 +111,16 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     colors: [
                       Colors.transparent,
                       Colors.transparent,
-                      darken(Colors.deepPurple, 80).withOpacity(0.5),
-                      darken(Colors.deepPurple, 80),
-                      darken(Colors.deepPurple, 80),
+                      Theme.of(context).colorScheme.background.withOpacity(0.5),
+                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.background,
                     ],
                   ),
                 ),
               ),
             ),
           widget.child,
+
         ],
       ),
     );

@@ -25,7 +25,7 @@ class _PageThreeState extends State<PageThree> {
             (width > 600) ? AppTheme.columnWidth : 16.0; // Beispielhafte Grenze
 
         return Container(
-          color: darken(Colors.deepPurple, 80),
+          color: Theme.of(context).colorScheme.background,
           child: Stack(
             children: [
               FittedBox(
@@ -51,10 +51,10 @@ class _PageThreeState extends State<PageThree> {
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        darken(Colors.deepPurple, 80).withOpacity(0.2),
-                        darken(Colors.deepPurple, 80).withOpacity(0.6),
-                        darken(Colors.deepPurple, 80).withOpacity(0.9),
-                        darken(Colors.deepPurple, 80),
+                        Theme.of(context).colorScheme.background.withOpacity(0.2),
+                        Theme.of(context).colorScheme.background.withOpacity(0.5),
+                        Theme.of(context).colorScheme.background.withOpacity(0.9),
+                        Theme.of(context).colorScheme.background,
                       ],
                     ),
                   ),
@@ -73,10 +73,10 @@ class _PageThreeState extends State<PageThree> {
                       end: Alignment.topCenter,
                       colors: [
                         Colors.transparent,
-                        darken(Colors.deepPurple, 80).withOpacity(0.2),
-                        darken(Colors.deepPurple, 80).withOpacity(0.6),
-                        darken(Colors.deepPurple, 80).withOpacity(0.9),
-                        darken(Colors.deepPurple, 80),
+                        Theme.of(context).colorScheme.background.withOpacity(0.2),
+                        Theme.of(context).colorScheme.background.withOpacity(0.5),
+                        Theme.of(context).colorScheme.background.withOpacity(0.9),
+                        Theme.of(context).colorScheme.background,
                       ],
                     ),
                   ),

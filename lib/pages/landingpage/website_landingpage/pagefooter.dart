@@ -3,13 +3,15 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/container/randomcontainers/randomavatarcontainer.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/socialrow.dart';
+import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:vrouter/vrouter.dart';
 
 class PageFooter extends StatefulWidget {
-  const PageFooter({super.key});
+  final WebsiteLandingPageController controller;
+  const PageFooter({super.key, required this.controller});
 
   @override
   State<PageFooter> createState() => _PageFooterState();
@@ -19,7 +21,7 @@ class _PageFooterState extends State<PageFooter> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: darken(Colors.deepPurple, 80),
+        color: Theme.of(context).colorScheme.background,
         child: Stack(children: [
           Positioned(
               bottom: 0,
@@ -47,10 +49,11 @@ class _PageFooterState extends State<PageFooter> {
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
-                  margin: EdgeInsets.only(top: AppTheme.cardPadding * 2,),
+                  margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
                   width: 850 + AppTheme.cardPadding * 10,
                   height: 350,
                   child: RandomAvatarWidget(
+
                     start: false,
                     width: 850 + AppTheme.cardPadding * 10,
                     height: 350,
@@ -60,7 +63,7 @@ class _PageFooterState extends State<PageFooter> {
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
-                  margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
+                  margin: EdgeInsets.only(top: AppTheme.cardPadding * 8,),
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
@@ -117,7 +120,7 @@ class _PageFooterState extends State<PageFooter> {
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
-                  margin: EdgeInsets.only(top: AppTheme.cardPadding * 2,),
+                  margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
                   width: 850 + AppTheme.cardPadding * 10,
                   height: 350,
                   child: RandomAvatarWidget(

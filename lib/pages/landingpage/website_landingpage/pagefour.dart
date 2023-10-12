@@ -26,7 +26,7 @@ class _PageFourState extends State<PageFour> {
         double spacingMultiplier = isSmallScreen ? 3 : 1;
 
         return Container(
-        color: darken(Colors.deepPurple, 80),
+        color: Theme.of(context).colorScheme.background,
         child: Stack(
           children: [
             Container(

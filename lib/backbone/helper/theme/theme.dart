@@ -7,28 +7,6 @@ import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
 
 
-/// Darken a color by [percent] amount (100 = black)
-Color darken(Color c, [int percent = 10]) {
-  assert(1 <= percent && percent <= 100);
-  var f = 1 - percent / 100;
-  return Color.fromARGB(c.alpha, (c.red * f).round(), (c.green * f).round(),
-      (c.blue * f).round());
-}
-
-/// Lighten a color by [percent] amount (100 = white)
-Color lighten(Color c, [int percent = 10]) {
-  assert(1 <= percent && percent <= 100);
-  assert(1 <= percent && percent <= 100);
-  var p = percent / 100;
-  return Color.fromARGB(
-      c.alpha,
-      c.red + ((255 - c.red) * p).round(),
-      c.green + ((255 - c.green) * p).round(),
-      c.blue + ((255 - c.blue) * p).round());
-}
-
-dynamic qrCodeSize(BuildContext context) => min(MediaQuery.of(context).size.width - AppTheme.cardPadding, AppTheme.cardPadding * 10).toDouble();
-
 abstract class AppTheme {
 
   static String _applicationName = 'bitnet';
@@ -213,14 +191,36 @@ abstract class AppTheme {
   static Radius cornerRadiusMid = const Radius.circular(24);
   static BorderRadius cardRadiusCircular = BorderRadius.circular(500);
 
-
-
   static const double borderRadiusSuperSmall = 10.0;
   static const double borderRadiusSmall = 16.0;
   static const double borderRadiusMid = 24.0;
   static const double borderRadiusBig = 28.0;
   static const double borderRadiusBigger = 32.0;
   static const double borderRadiusCircular = 500.0;
+
+  static const double tabbarBorderWidth = 1.5;
+  static const double tabbarBorderRadius = 100;
+  static const double navRailWidth = 2 * cardPadding + elementSpacing;
+  //spaces
+  static const double cardPadding = 24;
+  static const double columnWidth = 12 * cardPadding;
+  static const double cardPaddingSmall = 16;
+  static const double cardPaddingBig = 28;
+  static const double cardPaddingBigger = 32;
+  static const double elementSpacing = cardPadding * 0.5;
+  static const double bottomNavBarHeight = 64;
+
+  //sizes
+  static const double iconSize = cardPadding;
+  static const double buttonHeight = 50;
+  static Size size(BuildContext context) => MediaQuery.of(context).size;
+
+  //responsiveness
+
+  static const double isSmallScreen = 1000; // Example breakpoint for small screens
+  static const double isMidScreen = 1400;
+
+
 
   //Boxshadows
   static BoxShadow boxShadow = BoxShadow(
@@ -251,23 +251,6 @@ abstract class AppTheme {
     blurRadius: 10,
   );
 
-  static const double tabbarBorderWidth = 1.5;
-  static const double tabbarBorderRadius = 100;
-
-  static const double columnWidth = 12 * cardPadding;
-  static const double navRailWidth = 2 * cardPadding + elementSpacing;
-  //spaces
-  static const double cardPadding = 24;
-  static const double cardPaddingSmall = 16;
-  static const double cardPaddingBig = 28;
-  static const double cardPaddingBigger = 32;
-  static const double elementSpacing = cardPadding * 0.5;
-  static const double bottomNavBarHeight = 64;
-
-  //sizes
-  static const double iconSize = cardPadding;
-  static const double buttonHeight = 50;
-  static Size size(BuildContext context) => MediaQuery.of(context).size;
 
   //duration
   static const Duration animationDuration = Duration(milliseconds: 300);
@@ -551,3 +534,26 @@ extension on Brightness {
   Brightness get reversed =>
       this == Brightness.dark ? Brightness.light : Brightness.dark;
 }
+
+
+/// Darken a color by [percent] amount (100 = black)
+Color darken(Color c, [int percent = 10]) {
+  assert(1 <= percent && percent <= 100);
+  var f = 1 - percent / 100;
+  return Color.fromARGB(c.alpha, (c.red * f).round(), (c.green * f).round(),
+      (c.blue * f).round());
+}
+
+/// Lighten a color by [percent] amount (100 = white)
+Color lighten(Color c, [int percent = 10]) {
+  assert(1 <= percent && percent <= 100);
+  assert(1 <= percent && percent <= 100);
+  var p = percent / 100;
+  return Color.fromARGB(
+      c.alpha,
+      c.red + ((255 - c.red) * p).round(),
+      c.green + ((255 - c.green) * p).round(),
+      c.blue + ((255 - c.blue) * p).round());
+}
+
+dynamic qrCodeSize(BuildContext context) => min(MediaQuery.of(context).size.width - AppTheme.cardPadding, AppTheme.cardPadding * 10).toDouble();

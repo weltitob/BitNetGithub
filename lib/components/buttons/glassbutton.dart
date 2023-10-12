@@ -18,62 +18,31 @@ class glassButton extends StatefulWidget {
   @override
   State<glassButton> createState() => _glassButtonState();
 }
-
 class _glassButtonState extends State<glassButton> {
   @override
   Widget build(BuildContext context) {
-    return widget.isSelected == null || widget.isSelected!
-        ? MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: widget.onTap,
-              child: GlassContainer(
-                borderThickness: 1.5, // remove border if not active
-                blur: 50,
-                opacity: 0.1,
-                borderRadius: AppTheme.cardRadiusMid,
-                child: Container(
-                  width: AppTheme.cardPadding * 6,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppTheme.elementSpacing * 0.75,
-                    horizontal: AppTheme.elementSpacing * 0.75,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      widget.iconData == null
-                          ? Container()
-                          : Icon(
-                              widget.iconData,
-                              color: AppTheme.white90,
-                              size: AppTheme.elementSpacing * 1.5,
-                            ),
-                      widget.iconData == null
-                          ? Container()
-                          : const SizedBox(
-                              width: AppTheme.elementSpacing / 1.5,
-                            ),
-                      Text(
-                        widget.text,
-                        style: AppTheme.textTheme.titleSmall!.copyWith(
-                          color: AppTheme.white90,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          )
-        : MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: widget.onTap,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+
+        double screenWidth = MediaQuery.of(context).size.width; // This gets the screen width
+        bool isSmallScreen = screenWidth < AppTheme.isSmallScreen; // Example breakpoint for small screens
+        bool isMidScreen = screenWidth < AppTheme.isMidScreen;
+
+        return MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: GlassContainer(
+              borderThickness: widget.isSelected == null || widget.isSelected! ? 1.5 : 0,
+              blur: 50,
+              opacity: 0.1,
+              borderRadius: AppTheme.cardRadiusSmall,
               child: Container(
-                width: AppTheme.cardPadding * 6,
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppTheme.elementSpacing * 0.75,
-                  horizontal: AppTheme.elementSpacing * 0.75,
+                //color: Colors.red,
+                width: isSmallScreen ? AppTheme.cardPadding * 5 : AppTheme.cardPadding * 6,
+                padding: EdgeInsets.symmetric(
+                  vertical: isSmallScreen? AppTheme.elementSpacing * 0.5 :  AppTheme.elementSpacing * 0.75,
+                  horizontal: isSmallScreen? AppTheme.elementSpacing * 0.5 : AppTheme.elementSpacing * 0.75,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -81,23 +50,43 @@ class _glassButtonState extends State<glassButton> {
                     widget.iconData == null
                         ? Container()
                         : Icon(
-                            widget.iconData,
-                            color: AppTheme.white80,
-                            size: AppTheme.elementSpacing * 1.5,
-                          ),
+                      widget.iconData,
+                      color: (widget.isSelected == null || widget.isSelected!)
+                          ? AppTheme.white90
+                          : AppTheme.white80,
+                      size: isSmallScreen ? AppTheme.elementSpacing * 1.25 : AppTheme.elementSpacing * 1.5,
+                    ),
                     widget.iconData == null
                         ? Container()
-                        : const SizedBox(
-                            width: AppTheme.elementSpacing / 2,
-                          ),
-                    Text(widget.text, style: AppTheme.textTheme.titleSmall)
+                        : SizedBox(
+                      width: isSmallScreen ? AppTheme.elementSpacing / 2 : AppTheme.elementSpacing / 1.5,
+                    ),
+                    Text(
+                      widget.text,
+                      style: isSmallScreen
+                          ? AppTheme.textTheme.titleSmall!.copyWith(
+                        fontSize: 14,
+                        color: (widget.isSelected == null || widget.isSelected!)
+                            ? AppTheme.white90
+                            : AppTheme.white80,
+                      )
+                          : AppTheme.textTheme.titleSmall!.copyWith(
+                        color: (widget.isSelected == null || widget.isSelected!)
+                            ? AppTheme.white90
+                            : AppTheme.white80,
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-          );
+          ),
+        );
+      },
+    );
   }
 }
+
 
 class ColorfulGradientButton extends StatefulWidget {
   final String text;
@@ -136,7 +125,7 @@ class _ColorfulGradientButtonState extends State<ColorfulGradientButton> {
               child: Container(
                 decoration: BoxDecoration(
                   gradient: widget.gradient,
-                  borderRadius: AppTheme.cardRadiusMid,
+                  borderRadius: AppTheme.cardRadiusSmall,
                   boxShadow: [AppTheme.boxShadowProfile],
                 ),
                 width: AppTheme.cardPadding * 6,
@@ -176,7 +165,7 @@ class _ColorfulGradientButtonState extends State<ColorfulGradientButton> {
               child: Container(
                 decoration: BoxDecoration(
                   gradient: widget.gradient,
-                  borderRadius: AppTheme.cardRadiusMid,
+                  borderRadius: AppTheme.cardRadiusSmall,
                 ),
                 width: AppTheme.cardPadding * 6,
                 padding: const EdgeInsets.symmetric(
