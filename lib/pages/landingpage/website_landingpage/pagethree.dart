@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/custom_card_landigpage.dart';
 import 'package:flutter/material.dart';
 
@@ -19,93 +20,36 @@ class _PageThreeState extends State<PageThree> {
         double height = constraints.maxHeight;
 
         // Werte anpassen basierend auf der Bildschirmhöhe
-        double titleSpacing = height * 0.05;
-        double cardSpacing = height * 0.03;
         double cardMargin =
             (width > 600) ? AppTheme.columnWidth : 16.0; // Beispielhafte Grenze
 
-        return Container(
-          color: Theme.of(context).colorScheme.background,
-          child: Stack(
+        return BackgroundWithContent(
+          opacity: 0.7,
+          backgroundType: BackgroundType.asset,
+          withGradientBottomMedium: true,
+          withGradientTopMedium: true,
+          child: Column(
             children: [
-              FittedBox(
-                fit: BoxFit.fitHeight,
-                child:
-                    Image(image: AssetImage('assets/images/metaverse_fb.png')),
+              SizedBox(
+                height: AppTheme.cardPadding * 5,
+              ),
+              Text(
+                "Our mission.",
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
+              SizedBox(
+                height: AppTheme.cardPadding * 3,
               ),
               Container(
-                height: double.infinity,
-                width: double.infinity,
-                color: Colors.black.withOpacity(0.7),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 700,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      stops: [0.0, 0.25, 0.5, 0.75, 1.0],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Theme.of(context).colorScheme.background.withOpacity(0.2),
-                        Theme.of(context).colorScheme.background.withOpacity(0.5),
-                        Theme.of(context).colorScheme.background.withOpacity(0.9),
-                        Theme.of(context).colorScheme.background,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 700,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      stops: [0.0, 0.25, 0.5, 0.75, 1.0],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        Colors.transparent,
-                        Theme.of(context).colorScheme.background.withOpacity(0.2),
-                        Theme.of(context).colorScheme.background.withOpacity(0.5),
-                        Theme.of(context).colorScheme.background.withOpacity(0.9),
-                        Theme.of(context).colorScheme.background,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Column(
-                children: [
-                  SizedBox(
-                    height: AppTheme.cardPadding * 5,
-                  ),
-                  Text(
-                    "Our mission.",
-                    style: Theme.of(context).textTheme.displayLarge,
-                  ),
-                  SizedBox(
-                    height: AppTheme.cardPadding * 3,
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: cardMargin),
-                    child: (width > 600) // Beispielhafte Grenze
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: _buildCards(),
-                          )
-                        : Column(
-                            children: _buildCards(),
-                          ),
-                  ),
-                ],
+                margin: EdgeInsets.symmetric(horizontal: cardMargin),
+                child: (width > 600) // Beispielhafte Grenze
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: _buildCards(),
+                      )
+                    : Column(
+                        children: _buildCards(),
+                      ),
               ),
             ],
           ),

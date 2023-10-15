@@ -23,7 +23,7 @@ class _PageOneState extends State<PageOne> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         // Check if the screen width is less than 600 pixels.
-        bool isSmallScreen = constraints.maxWidth < 600;
+        bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
 
         // Adjust widget sizes based on screen size.
         double textWidth = isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 33;
@@ -32,7 +32,7 @@ class _PageOneState extends State<PageOne> {
 
         return BackgroundWithContent(
           backgroundType: BackgroundType.asset,
-          withGradient: true,
+          withGradientBottomBig: true,
           opacity: 0.7,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

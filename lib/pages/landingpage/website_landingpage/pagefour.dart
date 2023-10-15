@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -25,77 +26,77 @@ class _PageFourState extends State<PageFour> {
         double subtitleWidth = isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 25;
         double spacingMultiplier = isSmallScreen ? 3 : 1;
 
-        return Container(
-        color: Theme.of(context).colorScheme.background,
-        child: Stack(
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: AppTheme.columnWidth),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: AppTheme.cardPadding * 5 * spacingMultiplier,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: AppTheme.cardPadding * 18 * spacingMultiplier,
-                        width: AppTheme.cardPadding * 18 * spacingMultiplier,
-                        child: Lottie.asset(
-                          'assets/lottiefiles/blob.json',),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: AppTheme.cardPadding * 18 * spacingMultiplier,
-                            margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                            child: Text(
-                              "More and more decide to join us each day!",
-                              style: Theme.of(context).textTheme.displayMedium,
-                            ),
+        return BackgroundWithContent(
+          opacity: 0.7,
+          backgroundType: BackgroundType.asset,
+          withGradientTopSmall: true,
+          withGradientBottomSmall: true,
+          withGradientRightBig: true,
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: AppTheme.columnWidth),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: AppTheme.cardPadding * 5 * spacingMultiplier,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: AppTheme.cardPadding * 18 * spacingMultiplier,
+                      width: AppTheme.cardPadding * 18 * spacingMultiplier,
+                      child: Lottie.asset(
+                        'assets/lottiefiles/blob.json',),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: AppTheme.cardPadding * 18 * spacingMultiplier,
+                          margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                          child: Text(
+                            "More and more decide to join us each day!",
+                            style: Theme.of(context).textTheme.displayMedium,
                           ),
-                          SizedBox(
-                            height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                        ),
+                        SizedBox(
+                          height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                          width: AppTheme.cardPadding * 18 * spacingMultiplier,
+                          child: Text(
+                            "We are the light that helps others see Bitcoin. We form the next step in the evolution of bitcoin!",
+                            style:
+                            Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 24),
                           ),
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                            width: AppTheme.cardPadding * 18 * spacingMultiplier,
-                            child: Text(
-                              "We are the light that helps others see Bitcoin. We form the next step in the evolution of bitcoin!",
-                              style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 24),
-                            ),
-                          ),
-                          SizedBox(
-                            height: AppTheme.cardPadding * 2 * spacingMultiplier
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                            width: AppTheme.cardPadding * 10,
-                            child: LongButtonWidget(
-                                title: L10n.of(context)!.register,
-                                onTap: () async {
-                                  VRouter.of(context).to('/pinverification');
-                                }),
-                          ),
-                        ],
-                      ),
-                      // Container(
-                      //     height: AppTheme.cardPadding * 15,
-                      //     child: buildFutureLottie(controller.composition, true))
-                    ],
-                  ),
-                ],
-              ),
+                        ),
+                        SizedBox(
+                          height: AppTheme.cardPadding * 2 * spacingMultiplier
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                          width: AppTheme.cardPadding * 10,
+                          child: LongButtonWidget(
+                              title: L10n.of(context)!.register,
+                              onTap: () async {
+                                VRouter.of(context).to('/pinverification');
+                              }),
+                        ),
+                      ],
+                    ),
+                    // Container(
+                    //     height: AppTheme.cardPadding * 15,
+                    //     child: buildFutureLottie(controller.composition, true))
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
-      );},
+          ),
+        );},
     );
   }
 }
