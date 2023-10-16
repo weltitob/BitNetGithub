@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/settings_bottom_sheet/settings_bottom_sheet.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -262,7 +263,7 @@ class ProfileView extends StatelessWidget {
               top: AppTheme.cardPadding,
             ),
             child: RoundedButtonWidget(
-              isGlassmorph: true,
+              buttonType: ButtonType.transparent,
               iconData: Icons.brightness_low_rounded,
               onTap: () {
                 showSettingsBottomSheet(context: context);
@@ -293,7 +294,7 @@ class ProfileView extends StatelessWidget {
               //   },
               // ));
             },
-            isGlassmorph: true,
+            buttonType: ButtonType.transparent,
           ),
         ),
       ),

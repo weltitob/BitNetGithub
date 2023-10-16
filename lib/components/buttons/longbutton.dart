@@ -1,175 +1,136 @@
-import 'dart:ui';
-
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/appstandards/solidcolorcontainer.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:image/image.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 enum ButtonState { idle, loading, disabled }
-class LongButtonWidget extends StatelessWidget {
+
+enum ButtonType { solid, transparent }
+
+class LongButtonWidget extends StatefulWidget {
   final String title;
+  final double customWidth;
+  final double customHeight;
   final TextStyle? titleStyle;
   final ButtonState state;
   final Widget? leadingIcon;
   final Function()? onTap;
-  final Gradient? buttonGradient; // Gradient property
+  final Gradient? buttonGradient;
   dynamic textColor;
+  final ButtonType buttonType;
 
   LongButtonWidget({
     required this.title,
     required this.onTap,
     this.titleStyle,
-    this.buttonGradient, // initialize gradient in constructor
+    this.buttonGradient,
     this.textColor,
     this.state = ButtonState.idle,
     this.leadingIcon,
+    this.customWidth = AppTheme.cardPadding * 10,
+    this.customHeight = AppTheme.cardPadding * 2.5,
+    this.buttonType = ButtonType.solid,
   });
 
-  final ValueNotifier<bool> _isHovered = ValueNotifier<bool>(false);
+  @override
+  _LongButtonWidgetState createState() => _LongButtonWidgetState();
+}
+
+class _LongButtonWidgetState extends State<LongButtonWidget> {
+  bool _isHovered = false;
+
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
 
-    return ValueListenableBuilder<bool>(
-      valueListenable: _isHovered,
-      builder: (context, isHovered, child) {
-        return InkWell(
-          onHover: (value) => _isHovered.value = value,
-          onTap: onTap,
-          child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [AppTheme.boxShadowProfile],
-              borderRadius: AppTheme.cardRadiusMid,
-            ),
-            child: solidContainer(
-              gradientColors: isHovered ? [darken(AppTheme.colorBitcoin, 10), darken(AppTheme.colorPrimaryGradient, 10)] : [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],
-              gradientBegin: Alignment.topCenter,
-              gradientEnd: Alignment.bottomCenter,
-              context: context,
-              borderRadius: AppTheme.cardRadiusMid,
-              onPressed: onTap ?? () {},
-              width: size.width - AppTheme.cardPadding * 2,
-              height: AppTheme.cardPadding * 2.5,
-              child: state == ButtonState.loading
-                  ? Center(
-                  child: Transform.scale(
-                      scale: 0.6,
-                      child: dotProgress(context,
-                          color: AppTheme.white90)))
-                  : Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (leadingIcon != null)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                right: AppTheme.elementSpacing),
-                            child: leadingIcon,
-                          ),
-                        Text(
-                          title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall
-                              ?.copyWith(
-                            color: textColor != null
-                                ? textColor
-                                : AppTheme.white90,
-                            shadows: [
-                              AppTheme.boxShadowButton,
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-            ),
+    final borderRadius = BorderRadius.circular(widget.customHeight / 2.5);
+    final borderRadiusNum = widget.customHeight / 2.5;
+
+    return Stack(
+      children: [
+        // Your background content goes here:
+        Container(
+          decoration: BoxDecoration(
+            boxShadow: [AppTheme.boxShadowProfile],
+            borderRadius: borderRadius,
           ),
-        );
-      },
-    );
-  }
-}
-
-class LongButtonWidgetTransparent extends StatefulWidget {
-  final String title;
-  final TextStyle? titleStyle;
-  final ButtonState state;
-  final Widget? leadingIcon;
-  final Function()? onTap;
-  dynamic buttonColor;
-  dynamic textColor;
-
-  LongButtonWidgetTransparent({
-    required this.title,
-    required this.onTap,
-    this.titleStyle,
-    this.buttonColor,
-    this.textColor,
-    this.state = ButtonState.idle,
-    this.leadingIcon,
-  });
-
-  @override
-  State<LongButtonWidgetTransparent> createState() =>
-      _LongButtonWidgetTransparentState();
-}
-class _LongButtonWidgetTransparentState extends State<LongButtonWidgetTransparent> {
-  @override
-  Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Material(
-          borderRadius: AppTheme.cardRadiusMid,
-          child: Container(
-            height: AppTheme.cardPadding * 2.5,
-            width: size.width - AppTheme.cardPadding * 2,
-            decoration: BoxDecoration(
-              borderRadius: AppTheme.cardRadiusMid,
-              boxShadow: [AppTheme.boxShadowProfile],
-            ),
-            child: GlassContainer(
-              borderThickness: 1.5, // remove border if not active
-              blur: 50,
-              opacity: 0.1,
-              borderRadius: AppTheme.cardRadiusMid,
-              child: ClipRRect( // Added this ClipRRect to clip child widgets
-                borderRadius: AppTheme.cardRadiusMid,
-                child: Container(
-                  height: AppTheme.cardPadding * 2.5,
-                  alignment: Alignment.center,
-                  child: widget.state == ButtonState.loading
-                      ? Center(child: dotProgress(context, color: AppTheme.white90))
-                      : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (widget.leadingIcon != null) widget.leadingIcon!,
-                      Text(
-                        widget.title,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: widget.textColor != null
-                              ? widget.textColor
-                              : AppTheme.white90,
-                          shadows: [AppTheme.boxShadowButton],
-                        ),
-                      )
-                    ],
-                  ),
+          child: widget.buttonType == ButtonType.solid
+              ? solidContainer(
+                  gradientColors: _isHovered
+                      ? [
+                          darken(AppTheme.colorBitcoin, 10),
+                          darken(AppTheme.colorPrimaryGradient, 10)
+                        ]
+                      : [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],
+                  gradientBegin: Alignment.topCenter,
+                  gradientEnd: Alignment.bottomCenter,
+                  context: context,
+                  borderRadius: borderRadiusNum,
+                  width: widget.customWidth,
+                  height: widget.customHeight,
+                  child: Container(),
+                )
+              : GlassContainer(
+                  height: widget.customHeight,
+                  width: widget.customWidth,
+                  borderThickness: 1.5, // remove border if not active
+                  blur: 50,
+                  opacity: 0.1,
+                  borderRadius: borderRadius,
+                  child: Container(),
                 ),
+        ),
+        // The InkWell goes on top of the background:
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              hoverColor: Colors.black.withOpacity(0.1),
+              onHover: (value) => setState(() => _isHovered = value),
+              onTap: widget.onTap,
+              borderRadius: borderRadius,
+              child: Ink(
+                decoration: BoxDecoration(
+                  // This can be a transparent decoration to ensure the borderRadius is applied.
+                  borderRadius: borderRadius,
+                ),
+                child: widget.state == ButtonState.loading
+                    ? Center(
+                        child: Transform.scale(
+                            scale: 0.6,
+                            child:
+                                dotProgress(context, color: AppTheme.white90)))
+                    : Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (widget.leadingIcon != null)
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    right: AppTheme.elementSpacing * 0.75),
+                                child: widget.leadingIcon,
+                              ),
+                            Text(
+                              widget.title,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                color: widget.textColor != null
+                                    ? widget.textColor
+                                    : AppTheme.white90,
+                                shadows: [AppTheme.boxShadowSmall],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
               ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
-

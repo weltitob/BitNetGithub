@@ -34,6 +34,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
@@ -74,7 +77,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             SizedBox(
               height: AppTheme.cardPadding * 6,
             ),
-            LongButtonWidgetTransparent(
+            LongButtonWidget(
+              customWidth: AppTheme.cardPadding * 12,
+              buttonType: ButtonType.transparent,
               title: L10n.of(context)!.restoreAccount,
               onTap: () {
                 VRouter.of(context).to('/login');
@@ -83,6 +88,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             // creating the signup button
             SizedBox(height: AppTheme.cardPadding),
             LongButtonWidget(
+              customWidth: AppTheme.cardPadding * 12,
                 title: L10n.of(context)!.register,
                 onTap: () async {
                   VRouter.of(context).to('/pinverification');

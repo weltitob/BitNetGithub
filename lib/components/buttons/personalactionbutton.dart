@@ -8,11 +8,10 @@ Widget personalActionButton({
   required IconData iconData,
   required List<Color> gradientColors,
 }) {
-  return MouseRegion(
-    cursor: SystemMouseCursors.click,
+  return InkWell(
+    onTap: onPressed,
     child: solidContainer(
       context: context,
-      onPressed: onPressed,
       gradientColors: gradientColors,
       child: Center(
         child: Icon(

@@ -1,5 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/glassbutton.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +14,8 @@ class CustomCard extends StatelessWidget {
   final String subTitle;
   final String buttonText;
   final VoidCallback onButtonTap;
-  final double? customWidth;
-  final double? customHeight;
+  final double customWidth;
+  final double customHeight;
 
   CustomCard({
     required this.lottieAssetPath,
@@ -21,8 +23,8 @@ class CustomCard extends StatelessWidget {
     required this.subTitle,
     required this.buttonText,
     required this.onButtonTap,
-    this.customWidth,
-    this.customHeight,
+    this.customWidth = AppTheme.cardPadding * 12,
+    this.customHeight = AppTheme.cardPadding * 20,
   });
 
   final ValueNotifier<bool> _isHovered = ValueNotifier<bool>(false);
@@ -57,10 +59,11 @@ class CustomCard extends StatelessWidget {
                 child: Stack(
                   children: [
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          height: height * 0.15,
-                          width: width * 0.15,
+                          height: customHeight * 0.3,
+                          width: customWidth,
                           child: Lottie.asset(
 
                               lottieAssetPath),
@@ -88,15 +91,28 @@ class CustomCard extends StatelessWidget {
                       right: 0,
                       left: 0,
                       bottom: AppTheme.cardPadding,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                        child: ColorfulGradientButton(
-                          iconData: FontAwesomeIcons.circleArrowRight,
-                          text: buttonText,
-                          onTap: onButtonTap,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          LongButtonWidget(
+                            leadingIcon: Icon(
+                                FontAwesomeIcons.circleArrowRight,
+                            size: AppTheme.cardPadding * 0.8,
+                            color: AppTheme.white90,),
+                            customWidth: customWidth * 0.5 + AppTheme.cardPadding * 2,
+                            customHeight: AppTheme.cardPadding * 1 + customHeight * 0.04,
+                            title: buttonText,
+                            onTap: onButtonTap,
+                          ),
+                        ],
                       ),
-                    )
+
+                      // ColorfulGradientButton(
+                      //   iconData: FontAwesomeIcons.circleArrowRight,
+                      //   text: buttonText,
+                      //   onTap: onButtonTap,
+                      // ),
+                    ),
                   ],
                 ),
               ),

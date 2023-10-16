@@ -27,7 +27,7 @@ class _PageOneState extends State<PageOne> {
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
         double bigtextWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 24 : AppTheme.cardPadding * 30 : AppTheme.cardPadding * 36;
-        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 33;
+        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 28;
         double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
         double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
         double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
@@ -43,7 +43,7 @@ class _PageOneState extends State<PageOne> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 4 * spacingMultiplier,
                 ),
                 Container(
                   width: bigtextWidth,
@@ -67,14 +67,12 @@ class _PageOneState extends State<PageOne> {
                 SizedBox(
                   height: AppTheme.cardPadding * 2 * spacingMultiplier,
                 ),
-                Container(
-                  width: AppTheme.cardPadding * 10,
-                  child: LongButtonWidget(
-                    title: L10n.of(context)!.register,
-                    onTap: () async {
-                      VRouter.of(context).to('/pinverification');
-                    },
-                  ),
+                LongButtonWidget(
+                  buttonType: ButtonType.solid,
+                  title: L10n.of(context)!.register,
+                  onTap: () async {
+                    VRouter.of(context).to('/pinverification');
+                  },
                 ),
                 SizedBox(
                   height: AppTheme.cardPadding * 10 * spacingMultiplier,

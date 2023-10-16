@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -7,13 +8,13 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 class RoundedButtonWidget extends StatelessWidget {
   final IconData iconData;
   final Function()? onTap;
-  final bool isGlassmorph;
+  final ButtonType buttonType;
 
   const RoundedButtonWidget({
     super.key,
     required this.iconData,
     required this.onTap,
-    required this.isGlassmorph,
+    this.buttonType = ButtonType.solid,
   });
 
   @override
@@ -33,7 +34,7 @@ class RoundedButtonWidget extends StatelessWidget {
               borderRadius: AppTheme.cardRadiusMid,
               child: Icon(
                 iconData,
-                color: isGlassmorph
+                color: buttonType == ButtonType.solid
                     ? AppTheme.white90
                     : Theme.of(context).colorScheme.onSecondaryContainer,
               ),

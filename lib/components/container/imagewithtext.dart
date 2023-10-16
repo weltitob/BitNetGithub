@@ -9,6 +9,8 @@ Widget GlassContainer({
   required double blur,
   required double opacity,
   required BorderRadius borderRadius,
+  double? height,
+  double? width,
   double borderThickness = 1.0, // default value is 1.0
 }) {
   return ClipRRect(
@@ -16,6 +18,8 @@ Widget GlassContainer({
     child: BackdropFilter(
       filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
       child: Container(
+        height: height,
+        width: width,
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topRight,

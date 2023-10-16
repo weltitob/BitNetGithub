@@ -217,9 +217,8 @@ abstract class AppTheme {
 
   //responsiveness
 
-  static const double isSmallScreen = 1000; // Example breakpoint for small screens
+  static const double isSmallScreen = 1100; // Example breakpoint for small screens
   static const double isMidScreen = 1600;
-
 
 
   //Boxshadows

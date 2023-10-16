@@ -74,7 +74,7 @@ class WebsiteLandingPageView extends StatelessWidget {
               isSmallScreen
                   ? SizedBox.shrink() // Hide this container on small screens
                   : Container(
-                width: AppTheme.cardPadding * 20,
+                width: AppTheme.cardPadding * 17,
                 child: Center(
                   child: StreamBuilder<double>(
                     stream:

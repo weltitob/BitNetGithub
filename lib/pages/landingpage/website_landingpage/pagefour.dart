@@ -21,7 +21,7 @@ class _PageFourState extends State<PageFour> {
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 33;
+        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 28;
         double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
         double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
         double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
@@ -39,7 +39,7 @@ class _PageFourState extends State<PageFour> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: AppTheme.cardPadding * 8 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 6 * spacingMultiplier,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

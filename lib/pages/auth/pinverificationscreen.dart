@@ -119,7 +119,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       gradientColor: Colors.black,
       key: scaffoldKey,
       body: BackgroundWithContent(
-        backgroundType: BackgroundType.image,
+        backgroundType: BackgroundType.asset,
         opacity: 0.7,
         child: Column(
           children: <Widget>[
