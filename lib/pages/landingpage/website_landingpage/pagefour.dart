@@ -18,13 +18,13 @@ class _PageFourState extends State<PageFour> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        // Check if the screen width is less than 600 pixels.
-        bool isSmallScreen = constraints.maxWidth < 600;
+        bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+        bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-        // Adjust widget sizes based on screen size.
-        double textWidth = isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 33;
-        double subtitleWidth = isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 25;
-        double spacingMultiplier = isSmallScreen ? 3 : 1;
+        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 25 : AppTheme.cardPadding * 33;
+        double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
+        double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
+        double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
 
         return BackgroundWithContent(
           opacity: 0.7,
@@ -33,29 +33,40 @@ class _PageFourState extends State<PageFour> {
           withGradientBottomSmall: true,
           withGradientRightBig: true,
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: AppTheme.columnWidth),
+            margin: EdgeInsets.symmetric(horizontal: centerSpacing),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: AppTheme.cardPadding * 5 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 8 * spacingMultiplier,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      height: AppTheme.cardPadding * 18 * spacingMultiplier,
-                      width: AppTheme.cardPadding * 18 * spacingMultiplier,
-                      child: Lottie.asset(
-                        'assets/lottiefiles/blob.json',),
+                    Stack(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(AppTheme.cardPadding * 5.5),
+                          height: AppTheme.cardPadding * 20 * spacingMultiplier,
+                          width: AppTheme.cardPadding * 20 * spacingMultiplier,
+                          child: Lottie.asset(
+                            'assets/lottiefiles/btc_3d.json',),
+                        ),
+                        Container(
+                          height: AppTheme.cardPadding * 34 * spacingMultiplier,
+                          width: AppTheme.cardPadding * 34 * spacingMultiplier,
+                          child: Lottie.asset(
+                            'assets/lottiefiles/circle_animation.json',),
+                        ),
+                      ],
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: AppTheme.cardPadding * 18 * spacingMultiplier,
+                          width: subtitleWidth,
                           margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                           child: Text(
                             "More and more decide to join us each day!",
@@ -67,7 +78,7 @@ class _PageFourState extends State<PageFour> {
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                          width: AppTheme.cardPadding * 18 * spacingMultiplier,
+                          width: subtitleWidth,
                           child: Text(
                             "We are the light that helps others see Bitcoin. We form the next step in the evolution of bitcoin!",
                             style:

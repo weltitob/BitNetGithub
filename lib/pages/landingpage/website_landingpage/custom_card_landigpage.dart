@@ -18,6 +18,8 @@ class CustomCard extends StatelessWidget {
   final String subTitle;
   final String buttonText;
   final VoidCallback onButtonTap;
+  final double? customWidth;  // New custom width parameter
+  final double? customHeight; // New custom height parameter
 
   CustomCard({
     required this.lottieAssetPath,
@@ -25,10 +27,13 @@ class CustomCard extends StatelessWidget {
     required this.subTitle,
     required this.buttonText,
     required this.onButtonTap,
+    this.customWidth,         // New custom width initializer
+    this.customHeight,        // New custom height initializer
   });
 
   @override
   Widget build(BuildContext context) {
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
@@ -39,7 +44,7 @@ class CustomCard extends StatelessWidget {
       borderRadius: AppTheme.cardRadiusBigger,
       child: Container(
         height: height * 0.5,
-        width: width * 0.17,
+        width: width * 0.125 + 100,
         padding: EdgeInsets.all(AppTheme.cardPadding),
         child: Stack(
           children: [

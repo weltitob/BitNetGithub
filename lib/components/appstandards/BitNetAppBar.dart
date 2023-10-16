@@ -27,7 +27,7 @@ AppBar bitnetAppBar({
     // Define breakpoint values for responsive layout.
     bool isSmallScreen = width < AppTheme.isSmallScreen; // Example breakpoint for small screens
     bool isMidScreen = width < AppTheme.isMidScreen;
-    double horizontalMargin = isMidScreen ? AppTheme.cardPadding : AppTheme.columnWidth;
+    double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
 
     return customTitle ?? (text != null ? Text(text) : Container());}), // Use customTitle if provided
     leading: hasBackButton ? customLeading ?? MouseRegion(

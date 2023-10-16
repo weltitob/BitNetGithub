@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bitnet/backbone/futures/openai.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/futurelottie.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -26,6 +25,7 @@ class BackgroundWithContent extends StatefulWidget {
   final bool withGradientRightMedium;
   final bool withGradientRightSmall;
   final String assetPath;
+  final String lottieassetPath;
   const BackgroundWithContent({
     Key? key,
     required this.child,
@@ -44,6 +44,8 @@ class BackgroundWithContent extends StatefulWidget {
     this.withGradientRightMedium = false,
     this.withGradientRightSmall = false,
     this.assetPath = 'assets/images/metaverse_fb.png',
+    this.lottieassetPath = 'assets/lottiefiles/background.json',
+
   }) : super(key: key);
 
   @override
@@ -69,7 +71,7 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
         });
       });
     } else {
-      composition = loadComposition("assets/lottiefiles/background.json");
+      composition = loadComposition(widget.lottieassetPath);
     }
   }
 
@@ -118,7 +120,7 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                         }
                       },
                     )
-                  : buildFutureLottie(composition, true),
+                  : widget.backgroundType == BackgroundType.lottie ? buildFutureLottie(composition, true) : Container(),
           Container(
             height: double.infinity,
             width: double.infinity,

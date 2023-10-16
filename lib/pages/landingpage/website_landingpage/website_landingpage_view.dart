@@ -33,10 +33,11 @@ class WebsiteLandingPageView extends StatelessWidget {
         // Define breakpoint values for responsive layout.
         bool isSmallScreen = width < AppTheme.isSmallScreen; // Example breakpoint for small screens
         bool isMidScreen = width < AppTheme.isMidScreen;
-        double horizontalMargin = isMidScreen ? AppTheme.cardPadding : AppTheme.columnWidth;
+        double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.cardPadding : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+
 
         return Container(
-          margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
+          margin: EdgeInsets.symmetric(horizontal: centerSpacing),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -24,90 +24,94 @@ class _PageOneState extends State<PageOne> {
       builder: (BuildContext context, BoxConstraints constraints) {
         // Check if the screen width is less than 600 pixels.
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+        bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-        // Adjust widget sizes based on screen size.
-        double textWidth = isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 33;
-        double subtitleWidth = isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 25;
-        double spacingMultiplier = isSmallScreen ? 3 : 2;
+        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 25 : AppTheme.cardPadding * 33;
+        double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
+        double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
+        double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
 
         return BackgroundWithContent(
           backgroundType: BackgroundType.asset,
           withGradientBottomBig: true,
           opacity: 0.7,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: AppTheme.cardPadding * spacingMultiplier,
-              ),
-              Container(
-                width: textWidth,
-                child: Text(
-                  "Bitcoin solved the trust, but we the people need to solve the adoption problem!",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displayMedium,
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: centerSpacing),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: AppTheme.cardPadding * spacingMultiplier,
                 ),
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding,
-              ),
-              Container(
-                width: subtitleWidth,
-                child: Text(
-                  "BitNet is not a social network. It's the third layer platform built on the Bitcoin Network.",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge,
+                Container(
+                  width: textWidth,
+                  child: Text(
+                    "Bitcoin solved the trust, but we the people need to solve the adoption problem!",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding,
-              ),
-              Container(
-                width: AppTheme.cardPadding * 10,
-                child: LongButtonWidget(
-                  title: L10n.of(context)!.register,
-                  onTap: () async {
-                    VRouter.of(context).to('/pinverification');
+                SizedBox(
+                  height: AppTheme.cardPadding * spacingMultiplier,
+                ),
+                Container(
+                  width: subtitleWidth,
+                  child: Text(
+                    "BitNet is not a social network. It's the third layer platform built on the Bitcoin Network.",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                ),
+                Container(
+                  width: AppTheme.cardPadding * 10,
+                  child: LongButtonWidget(
+                    title: L10n.of(context)!.register,
+                    onTap: () async {
+                      VRouter.of(context).to('/pinverification');
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding * 8 * spacingMultiplier,
+                ),
+                StreamBuilder<Object>(
+                  stream: widget.controller.userCountStream(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return SizedBox(
+                          height: AppTheme.cardPadding * 4,
+                          child: Center(child: dotProgress(context)));
+                    }
+                    int currentusernumber = snapshot.data as int;
+                    num _value = (1000000 - currentusernumber);
+                    return AnimatedFlipCounter(
+                      value: _value,
+                      thousandSeparator: ".",
+                      decimalSeparator: ",",
+                      textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                        fontSize: 100,
+                      ),
+                    );
                   },
                 ),
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding * 7,
-              ),
-              StreamBuilder<Object>(
-                stream: widget.controller.userCountStream(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return SizedBox(
-                        height: AppTheme.cardPadding * 4,
-                        child: Center(child: dotProgress(context)));
-                  }
-                  int currentusernumber = snapshot.data as int;
-                  num _value = (1000000 - currentusernumber);
-                  return AnimatedFlipCounter(
-                    value: _value,
-                    thousandSeparator: ".",
-                    decimalSeparator: ",",
-                    textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                      fontSize: 100,
-                    ),
-                  );
-                },
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding,
-              ),
-              Text(
-                "limited spots left!",
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              Row(
-                children: [
-                  Container()
-                ],
-              )
-            ],
+                SizedBox(
+                  height: AppTheme.cardPadding * spacingMultiplier,
+                ),
+                Text(
+                  "limited spots left!",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                Row(
+                  children: [
+                    Container()
+                  ],
+                )
+              ],
+            ),
           ),
         );
       },

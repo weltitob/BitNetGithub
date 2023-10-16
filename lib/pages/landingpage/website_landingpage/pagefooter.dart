@@ -20,95 +20,106 @@ class PageFooter extends StatefulWidget {
 class _PageFooterState extends State<PageFooter> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Theme.of(context).colorScheme.background,
-        child: Stack(children: [
-          Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 500,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    stops: [0.0, 0.25, 0.5, 0.75, 1.0],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withOpacity(0.25),
-                      Colors.black.withOpacity(0.5),
-                      Colors.black.withOpacity(0.75),
-                      Colors.black,
-                    ],
-                  ),
-                ),
-              )),
-          Stack(
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
-                  width: 850 + AppTheme.cardPadding * 10,
-                  height: 350,
-                  child: RandomAvatarWidget(
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+          bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-                    start: false,
+          double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 25 : AppTheme.cardPadding * 33;
+          double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
+          double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
+          double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+
+          return Container(
+          color: Theme.of(context).colorScheme.background,
+          child: Stack(children: [
+            Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 500,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.25),
+                        Colors.black.withOpacity(0.5),
+                        Colors.black.withOpacity(0.75),
+                        Colors.black,
+                      ],
+                    ),
+                  ),
+                )),
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
                     width: 850 + AppTheme.cardPadding * 10,
                     height: 350,
+                    child: RandomAvatarWidget(
+
+                      start: false,
+                      width: 850 + AppTheme.cardPadding * 10,
+                      height: 350,
+                    ),
                   ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: EdgeInsets.only(top: AppTheme.cardPadding * 8,),
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: (){
-                        VRouter.of(context).to("/register");
-                      },
-                      child: GlassContainer(
-                        borderThickness: 1.5, // remove border if not active
-                        blur: 50,
-                        opacity: 0.1,
-                        borderRadius: AppTheme.cardRadiusMid,
-                        child: Container(
-                          width: 850,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppTheme.cardPadding * 3,
-                              vertical: AppTheme.cardPadding * 3
-                          ),
-                          child: ShaderMask(
-                            shaderCallback: (bounds) => LinearGradient(
-                                colors: [
-                                  AppTheme.colorBitcoin,
-                                  AppTheme.colorPrimaryGradient, // You can change this to any other color to achieve the gradient effect you want
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 8,),
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: (){
+                          VRouter.of(context).to("/register");
+                        },
+                        child: GlassContainer(
+                          borderThickness: 1.5, // remove border if not active
+                          blur: 50,
+                          opacity: 0.1,
+                          borderRadius: AppTheme.cardRadiusMid,
+                          child: Container(
+                            width: 850,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: AppTheme.cardPadding * 3,
+                                vertical: AppTheme.cardPadding * 3
+                            ),
+                            child: ShaderMask(
+                              shaderCallback: (bounds) => LinearGradient(
+                                  colors: [
+                                    AppTheme.colorBitcoin,
+                                    AppTheme.colorPrimaryGradient, // You can change this to any other color to achieve the gradient effect you want
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  tileMode: TileMode.clamp
+                              ).createShader(bounds),
+                              child: AnimatedTextKit(
+                                isRepeatingAnimation: false,
+                                animatedTexts: [
+                                  TypewriterAnimatedText(
+                                    '"We take it in our own hands!"',
+                                    textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                      color: Colors.white, // This color will be replaced by the gradient effect
+                                    ),
+                                    speed: const Duration(milliseconds: 100),
+                                  ),
+                                  TypewriterAnimatedText(
+                                    '      Join the revolution now!',
+                                    textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                      color: Colors.white, // This color will be replaced by the gradient effect
+                                    ),
+                                    speed: const Duration(milliseconds: 100),
+                                  ),
                                 ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                tileMode: TileMode.clamp
-                            ).createShader(bounds),
-                            child: AnimatedTextKit(
-                              isRepeatingAnimation: false,
-                              animatedTexts: [
-                                TypewriterAnimatedText(
-                                  '"We take it in our own hands!"',
-                                  textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                    color: Colors.white, // This color will be replaced by the gradient effect
-                                  ),
-                                  speed: const Duration(milliseconds: 100),
-                                ),
-                                TypewriterAnimatedText(
-                                  '      Join the revolution now!',
-                                  textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                    color: Colors.white, // This color will be replaced by the gradient effect
-                                  ),
-                                  speed: const Duration(milliseconds: 100),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
@@ -116,24 +127,24 @@ class _PageFooterState extends State<PageFooter> {
                     ),
                   ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
-                  width: 850 + AppTheme.cardPadding * 10,
-                  height: 350,
-                  child: RandomAvatarWidget(
-                    start: true,
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
                     width: 850 + AppTheme.cardPadding * 10,
                     height: 350,
+                    child: RandomAvatarWidget(
+                      start: true,
+                      width: 850 + AppTheme.cardPadding * 10,
+                      height: 350,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          buildFooter(context),
-        ]));
+              ],
+            ),
+            buildFooter(context),
+          ]));}
+    );
   }
 
   Widget buildFooter(BuildContext context){

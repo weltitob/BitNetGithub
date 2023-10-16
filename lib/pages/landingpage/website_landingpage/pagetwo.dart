@@ -25,21 +25,14 @@ class _PageTwoState extends State<PageTwo> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        bool isSmallScreen = constraints.maxWidth < 600;
+        bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+        bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
         // Adjust widget sizes based on screen size.
-        double textWidth = isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 33;
-        double subtitleWidth = isSmallScreen ? AppTheme.cardPadding * 15 : AppTheme.cardPadding * 25;
-        double spacingMultiplier = isSmallScreen ? 3 : 0.75;
-
-        // Positioned(
-        //     right: 0,
-        //     child: Image(
-        //         height: 900,
-        //         width: 2000,
-        //         fit: BoxFit.cover,
-        //         //https://de.fiverr.com/buzzzy/design-a-modern-app-icon-logo?context_referrer=listings_page&source=your_recently_viewed_gigs&ref_ctx_id=1048bfb54f4d89424086c09d740f5724&context=recommendation&pckg_id=1&pos=1&context_alg=recently_viewed&imp_id=43806367-a06d-4aac-8553-a3f253ae12af
-        //         image: AssetImage('assets/images/x.png'))),
+        double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
+        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 25 : AppTheme.cardPadding * 33;
+        double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
+        double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
 
       return BackgroundWithContent(
         //https://de.fiverr.com/buzzzy/design-a-modern-app-icon-logo?context_referrer=listings_page&source=your_recently_viewed_gigs&ref_ctx_id=1048bfb54f4d89424086c09d740f5724&context=recommendation&pckg_id=1&pos=1&context_alg=recently_viewed&imp_id=43806367-a06d-4aac-8553-a3f253ae12af
@@ -49,11 +42,8 @@ class _PageTwoState extends State<PageTwo> {
         withGradientLeftBig: true,
         assetPath: "assets/images/x.png",
         opacity: 0.7,
-        // withGradientTopSmall: true,
-        // withGradientBottomSmall: true,
-        // withGradientLeftBig: true,
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: AppTheme.columnWidth),
+          margin: EdgeInsets.symmetric(horizontal: centerSpacing),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +59,7 @@ class _PageTwoState extends State<PageTwo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: AppTheme.cardPadding * 22,
+                    width: subtitleWidth,
                     margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                     child: Text(
                       "Unlock your gateway to our future of digital assets!",
@@ -81,7 +71,7 @@ class _PageTwoState extends State<PageTwo> {
                   ),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                    width: AppTheme.cardPadding * 22,
+                    width: subtitleWidth,
                     child: Text(
                       "Be among the first million users and secure your exclusive, complimentary early-bird Bitcoin inscription!",
                       style:
@@ -109,9 +99,9 @@ class _PageTwoState extends State<PageTwo> {
                 ],
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 5 * spacingMultiplier,
+                height: AppTheme.cardPadding * 4 * spacingMultiplier,
               ),
-              Container(
+              isSmallScreen? Container() : Container(
                 margin:
                 EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                 child: Row(
@@ -140,12 +130,12 @@ class _PageTwoState extends State<PageTwo> {
                 ),
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                height: AppTheme.cardPadding * 1 * spacingMultiplier,
               ),
               Container(
                 margin:
                 EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                height: AppTheme.cardPadding * 6,
+                height: AppTheme.cardPadding * 5.5 ,
                 child: StreamBuilder<List<UserData>>(
                   stream: widget.controller.lastUsersStream(),
                   builder: (context, userDataSnapshot) {
@@ -160,7 +150,7 @@ class _PageTwoState extends State<PageTwo> {
                     }
                     return Container(
                       alignment: Alignment.center,
-                      height: AppTheme.cardPadding * 6,
+                      height: AppTheme.cardPadding * 5.5,
                       child: ShaderMask(
                         shaderCallback: (Rect bounds) {
                           return LinearGradient(
@@ -192,7 +182,7 @@ class _PageTwoState extends State<PageTwo> {
                             return Container(
                               margin: const EdgeInsets.symmetric(
                                   horizontal: AppTheme.cardPadding),
-                              width: AppTheme.cardPadding * 6,
+                              width: AppTheme.cardPadding * 5.5,
                               child: Column(
                                 children: [
                                   Avatar(
@@ -216,9 +206,6 @@ class _PageTwoState extends State<PageTwo> {
                     );
                   },
                 ),
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding * 1,
               ),
             ],
           ),
