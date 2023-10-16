@@ -28,13 +28,12 @@ class _PageTwoState extends State<PageTwo> {
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-        // Adjust widget sizes based on screen size.
+        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 33;
         double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
-        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 25 : AppTheme.cardPadding * 33;
         double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
         double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
 
-      return BackgroundWithContent(
+        return BackgroundWithContent(
         //https://de.fiverr.com/buzzzy/design-a-modern-app-icon-logo?context_referrer=listings_page&source=your_recently_viewed_gigs&ref_ctx_id=1048bfb54f4d89424086c09d740f5724&context=recommendation&pckg_id=1&pos=1&context_alg=recently_viewed&imp_id=43806367-a06d-4aac-8553-a3f253ae12af
         backgroundType: BackgroundType.asset,
         withGradientBottomSmall: true,
@@ -59,7 +58,7 @@ class _PageTwoState extends State<PageTwo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: subtitleWidth,
+                    width: textWidth,
                     margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                     child: Text(
                       "Unlock your gateway to our future of digital assets!",

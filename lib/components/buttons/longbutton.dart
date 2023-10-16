@@ -9,7 +9,6 @@ import 'package:image/image.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 enum ButtonState { idle, loading, disabled }
-
 class LongButtonWidget extends StatelessWidget {
   final String title;
   final TextStyle? titleStyle;
@@ -29,57 +28,69 @@ class LongButtonWidget extends StatelessWidget {
     this.leadingIcon,
   });
 
+  final ValueNotifier<bool> _isHovered = ValueNotifier<bool>(false);
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            AppTheme.boxShadowProfile
-          ],
-          borderRadius: AppTheme.cardRadiusMid,
-        ),
-        child: solidContainer(
-          gradientBegin: Alignment.topCenter,
-          gradientEnd: Alignment.bottomCenter,
-          context: context,
-          borderRadius: AppTheme.cardRadiusMid,
-          onPressed: onTap ?? (){},
-          width: size.width - AppTheme.cardPadding * 2,
-          height: AppTheme.cardPadding * 2.5,
-          child: state == ButtonState.loading
-              ? Center(
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isHovered,
+      builder: (context, isHovered, child) {
+        return InkWell(
+          onHover: (value) => _isHovered.value = value,
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              boxShadow: [AppTheme.boxShadowProfile],
+              borderRadius: AppTheme.cardRadiusMid,
+            ),
+            child: solidContainer(
+              gradientColors: isHovered ? [darken(AppTheme.colorBitcoin, 10), darken(AppTheme.colorPrimaryGradient, 10)] : [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],
+              gradientBegin: Alignment.topCenter,
+              gradientEnd: Alignment.bottomCenter,
+              context: context,
+              borderRadius: AppTheme.cardRadiusMid,
+              onPressed: onTap ?? () {},
+              width: size.width - AppTheme.cardPadding * 2,
+              height: AppTheme.cardPadding * 2.5,
+              child: state == ButtonState.loading
+                  ? Center(
                   child: Transform.scale(
                       scale: 0.6,
-                      child: dotProgress(context, color: AppTheme.white90)))
-              : Center(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (leadingIcon != null)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              right: AppTheme.elementSpacing),
-                          child: leadingIcon,
+                      child: dotProgress(context,
+                          color: AppTheme.white90)))
+                  : Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (leadingIcon != null)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                right: AppTheme.elementSpacing),
+                            child: leadingIcon,
+                          ),
+                        Text(
+                          title,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall
+                              ?.copyWith(
+                            color: textColor != null
+                                ? textColor
+                                : AppTheme.white90,
+                            shadows: [
+                              AppTheme.boxShadowButton,
+                            ],
+                          ),
                         ),
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color:
-                              textColor != null ? textColor : AppTheme.white90,
-                          shadows: [
-                            AppTheme.boxShadowButton,
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-              ),
-        ),
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

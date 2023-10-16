@@ -8,7 +8,7 @@ class GradientBoxBorder extends BoxBorder {
 
   GradientBoxBorder({
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
-    this.borderWidth = 1.0,
+    this.borderWidth = 1.5,
   }) : super();
 
   @override
@@ -76,7 +76,7 @@ class GradientOutlineInputBorder extends InputBorder {
 
   GradientOutlineInputBorder({
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
-    this.borderWidth = 1.0,
+    this.borderWidth = 1.5,
     required this.isFocused,
   }) : super();
 
@@ -134,7 +134,7 @@ class GradientBorderPainter extends CustomPainter {
 
   GradientBorderPainter({
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
-    this.borderWidth = 1.0,
+    this.borderWidth = 1.5,
   });
 
   @override
@@ -142,8 +142,8 @@ class GradientBorderPainter extends CustomPainter {
     final Paint paint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
-        end: Alignment.centerRight,
-        colors: [lighten(AppTheme.colorBitcoin, 40), AppTheme.colorBitcoin, AppTheme.colorBitcoin, lighten(AppTheme.colorBitcoin, 40)],
+        end: Alignment.bottomCenter,
+        colors: [lighten(AppTheme.colorBitcoin, 60), AppTheme.colorBitcoin, AppTheme.colorBitcoin, lighten(AppTheme.colorBitcoin, 60)],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;

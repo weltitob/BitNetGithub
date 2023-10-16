@@ -26,7 +26,8 @@ class _PageOneState extends State<PageOne> {
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 25 : AppTheme.cardPadding * 33;
+        double bigtextWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 24 : AppTheme.cardPadding * 30 : AppTheme.cardPadding * 36;
+        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 33;
         double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
         double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
         double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
@@ -42,10 +43,10 @@ class _PageOneState extends State<PageOne> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: AppTheme.cardPadding * spacingMultiplier,
+                  height: AppTheme.cardPadding * 2 * spacingMultiplier,
                 ),
                 Container(
-                  width: textWidth,
+                  width: bigtextWidth,
                   child: Text(
                     "Bitcoin solved the trust, but we the people need to solve the adoption problem!",
                     textAlign: TextAlign.center,
@@ -76,7 +77,7 @@ class _PageOneState extends State<PageOne> {
                   ),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * 8 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 10 * spacingMultiplier,
                 ),
                 StreamBuilder<Object>(
                   stream: widget.controller.userCountStream(),

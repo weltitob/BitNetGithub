@@ -25,7 +25,7 @@ class _PageFooterState extends State<PageFooter> {
           bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
           bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-          double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 25 : AppTheme.cardPadding * 33;
+          double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 33;
           double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
           double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
           double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
@@ -84,7 +84,7 @@ class _PageFooterState extends State<PageFooter> {
                           borderThickness: 1.5, // remove border if not active
                           blur: 50,
                           opacity: 0.1,
-                          borderRadius: AppTheme.cardRadiusMid,
+                          borderRadius: AppTheme.cardRadiusBigger,
                           child: Container(
                             width: 850,
                             padding: EdgeInsets.symmetric(

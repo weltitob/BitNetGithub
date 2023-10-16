@@ -21,7 +21,7 @@ class _PageFourState extends State<PageFour> {
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 25 : AppTheme.cardPadding * 33;
+        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 33;
         double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
         double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
         double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
@@ -43,20 +43,20 @@ class _PageFourState extends State<PageFour> {
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Stack(
                       children: [
                         Container(
-                          margin: EdgeInsets.all(AppTheme.cardPadding * 5.5),
-                          height: AppTheme.cardPadding * 20 * spacingMultiplier,
-                          width: AppTheme.cardPadding * 20 * spacingMultiplier,
+                          margin: EdgeInsets.all(AppTheme.cardPadding * 4.5),
+                          height: AppTheme.cardPadding * 18 * spacingMultiplier,
+                          width: AppTheme.cardPadding * 18 * spacingMultiplier,
                           child: Lottie.asset(
                             'assets/lottiefiles/btc_3d.json',),
                         ),
                         Container(
-                          height: AppTheme.cardPadding * 34 * spacingMultiplier,
-                          width: AppTheme.cardPadding * 34 * spacingMultiplier,
+                          height: AppTheme.cardPadding * 30 * spacingMultiplier,
+                          width: AppTheme.cardPadding * 30 * spacingMultiplier,
                           child: Lottie.asset(
                             'assets/lottiefiles/circle_animation.json',),
                         ),
@@ -66,7 +66,7 @@ class _PageFourState extends State<PageFour> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: subtitleWidth,
+                          width: textWidth,
                           margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                           child: Text(
                             "More and more decide to join us each day!",
