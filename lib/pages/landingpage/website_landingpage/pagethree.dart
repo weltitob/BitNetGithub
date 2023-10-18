@@ -89,8 +89,8 @@ class _PageThreeState extends State<PageThree> {
               ),
               SizedBox(height: AppTheme.cardPadding * 2 * spacingMultiplier,),
               isSmallScreen ? buildIndicator(
-                  pageController,
-                  3,) : Container(),
+                  pageController: pageController,
+                  count: 3,) : Container(),
             ],
           ),
         );

@@ -35,7 +35,7 @@ class CustomCard extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
 
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      //cursor: SystemMouseCursors.click,
       onEnter: (_) => _isHovered.value = true, // When mouse enters the region
       onExit: (_) => _isHovered.value = false, // When mouse exits the region
       // onHover: (event) {
@@ -46,7 +46,7 @@ class CustomCard extends StatelessWidget {
         builder: (context, isHovered, child) {
           return AnimatedScale(
             duration: Duration(milliseconds: 200), // you can adjust the duration
-            scale: isHovered ? 1.0 : 0.95, // Scale by 5% when hovered
+            scale: isHovered ? 1.0 : 0.925, // Scale by 5% when hovered
             child: GlassContainer(
               borderThickness: 1.5,
               blur: 50,

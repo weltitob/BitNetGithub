@@ -226,7 +226,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
                   SizedBox(
                     height: AppTheme.cardPadding,
                   ),
-                  buildIndicator(_pageController, 4),
+                  buildIndicator(pageController: _pageController, count: 4),
                   SizedBox(
                     height: AppTheme.cardPadding * 2,
                   ),

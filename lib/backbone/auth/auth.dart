@@ -142,6 +142,7 @@ class Auth {
   signMessageAuth(did, privateIONKey) async{
     try{
       Logs().w("Signing Message in auth.dart ...");
+      Logs().w("did: $did, privateIONKey: $privateIONKey");
 
       final message = generateChallenge(did);
 

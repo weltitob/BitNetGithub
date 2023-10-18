@@ -194,8 +194,7 @@ class _UsersListState extends State<UsersList>
                         ),
                         Center(
                           child: buildIndicator(
-                              pageController,
-                              all_userresults.length)
+                              pageController: pageController, count: all_userresults.length)
                         ),
                       ],
                     );
