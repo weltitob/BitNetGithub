@@ -106,82 +106,117 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return bitnetScaffold(
-      extendBodyBehindAppBar: true,
-      context: context,
-      appBar: bitnetAppBar(
-        onTap: () {
-          VRouter.of(context).to('/authhome');
-        },
-        text: L10n.of(context)!.pinCodeVerification,
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+      bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+
+      double textWidth = isMidScreen
+          ? isSmallScreen
+              ? AppTheme.cardPadding * 16
+              : AppTheme.cardPadding * 22
+          : AppTheme.cardPadding * 24;
+      double subtitleWidth = isMidScreen
+          ? isSmallScreen
+              ? AppTheme.cardPadding * 14
+              : AppTheme.cardPadding * 18
+          : AppTheme.cardPadding * 22;
+      double spacingMultiplier = isMidScreen
+          ? isSmallScreen
+              ? 0.5
+              : 0.75
+          : 1;
+      double centerSpacing = isMidScreen
+          ? isSmallScreen
+              ? AppTheme.columnWidth * 0.15
+              : AppTheme.columnWidth * 0.65
+          : AppTheme.columnWidth;
+      return bitnetScaffold(
+        margin: isSuperSmallScreen
+            ? EdgeInsets.symmetric(horizontal: 0)
+            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+        extendBodyBehindAppBar: true,
         context: context,
-      ),
-      gradientColor: Colors.black,
-      key: scaffoldKey,
-      body: BackgroundWithContent(
-        backgroundType: BackgroundType.asset,
-        opacity: 0.7,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Center(
-                child: ListView(
-                  children: [
-                    SizedBox(
-                      height: AppTheme.cardPadding * 3,
-                    ),
-                    Center(
-                        child: Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding * 2),
-                      child: AnimatedTextKit(
-                        animatedTexts: [
-                          TypewriterAnimatedText(
-                            L10n.of(context)!.platformDemandText,
-                            textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
-                              shadows: [
-                                AppTheme.boxShadowSmall,
-                              ]
-                            ),
-                            textAlign: TextAlign.center,
-                            speed: const Duration(milliseconds: 50),
-                          ),
-                          TypewriterAnimatedText(
-                            L10n.of(context)!.platformExlusivityText,
-                            textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                shadows: [
-                                  AppTheme.boxShadowSmall,
-                                ]
-                            ),
-                            textAlign: TextAlign.center,
-                            speed: const Duration(milliseconds: 50),
-                          ),
-                          TypewriterAnimatedText(
-                            L10n.of(context)!.platformExpandCapacityText,
-                            textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                shadows: [
-                                  AppTheme.boxShadowSmall,
-                                ]
-                            ),
-                            textAlign: TextAlign.center,
-                            speed: const Duration(milliseconds: 50),
-                          ),
-                        ],
-                        repeatForever: true,
-                        pause: const Duration(milliseconds: 2000),
-                        displayFullTextOnTap: true,
-                        stopPauseOnTap: true,
+        appBar: bitnetAppBar(
+          onTap: () {
+            VRouter.of(context).to('/authhome');
+          },
+          text: L10n.of(context)!.pinCodeVerification,
+          context: context,
+        ),
+        gradientColor: Colors.black,
+        key: scaffoldKey,
+        body: BackgroundWithContent(
+          backgroundType: BackgroundType.asset,
+          opacity: 0.7,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Center(
+                  child: ListView(
+                    children: [
+                      SizedBox(
+                        height: AppTheme.cardPadding * 3,
                       ),
-                    )),
-                  ],
+                      Center(
+                          child: Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppTheme.cardPadding * 2),
+                        child: AnimatedTextKit(
+                          animatedTexts: [
+                            TypewriterAnimatedText(
+                              L10n.of(context)!.platformDemandText,
+                              textStyle: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(shadows: [
+                                AppTheme.boxShadowSmall,
+                              ]),
+                              textAlign: TextAlign.center,
+                              speed: const Duration(milliseconds: 50),
+                            ),
+                            TypewriterAnimatedText(
+                              L10n.of(context)!.platformExlusivityText,
+                              textStyle: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(shadows: [
+                                AppTheme.boxShadowSmall,
+                              ]),
+                              textAlign: TextAlign.center,
+                              speed: const Duration(milliseconds: 50),
+                            ),
+                            TypewriterAnimatedText(
+                              L10n.of(context)!.platformExpandCapacityText,
+                              textStyle: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(shadows: [
+                                AppTheme.boxShadowSmall,
+                              ]),
+                              textAlign: TextAlign.center,
+                              speed: const Duration(milliseconds: 50),
+                            ),
+                          ],
+                          repeatForever: true,
+                          pause: const Duration(milliseconds: 2000),
+                          displayFullTextOnTap: true,
+                          stopPauseOnTap: true,
+                        ),
+                      )),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            buildVerificationSpace()
-          ],
+              buildVerificationSpace()
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget buildVerificationSpace() {

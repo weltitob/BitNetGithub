@@ -1,3 +1,4 @@
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bitnet/components/buttons/glassbutton.dart';
@@ -150,9 +151,14 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   // Add a button to copy the wallet address to the clipboard
-                  glassButton(
-                    text: "Kopieren",
-                    iconData: Icons.copy_rounded,
+                  LongButtonWidget(
+                    buttonType: ButtonType.transparent,
+                    title: "Kopieren",
+                    leadingIcon: Icon(
+                      Icons.copy_rounded,
+                      size: AppTheme.cardPadding,
+                      color: AppTheme.white90,
+                    ),
                     onTap: () async {
                       await Clipboard.setData(
                           ClipboardData(text: userWallet.walletAddress));
@@ -161,15 +167,20 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                           context, "Wallet-Adresse in Zwischenablage kopiert");
                     },
                   ),
-                  // Add a button to share the wallet address
-                  glassButton(
-                    text: "Teilen",
-                    iconData: Icons.share_rounded,
+                  LongButtonWidget(
+                    buttonType: ButtonType.transparent,
+                    title: "Teilen",
+                    leadingIcon: Icon(
+                      Icons.share_rounded,
+                      size: AppTheme.cardPadding,
+                      color: AppTheme.white90,
+                    ),
                     onTap: () {
                       // Share the wallet address
                       Share.share('${userWallet.walletAddress}');
                     },
                   ),
+                  // Add a button to share the wallet address
                 ],
               ),
               // Add some space between the rows

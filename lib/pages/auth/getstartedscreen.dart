@@ -36,66 +36,81 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+          bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+          bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-    return bitnetScaffold(
-      extendBodyBehindAppBar: true,
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.background,
-      margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-      body: Container(
-        margin: EdgeInsets.only(
-            top: AppTheme.cardPadding * 6,
-            bottom: AppTheme.cardPadding * 2,
-            left: AppTheme.cardPadding,
-            right: AppTheme.cardPadding),
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          // even space distribution
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              color: Colors.transparent,
-              width: double.infinity,
-              child: FutureBuilder(
-                future: _compostionBitcoin,
-                builder: (context, snapshot) {
-                  var composition = snapshot.data;
-                  if (composition != null) {
-                    return FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: Lottie(
-                        composition: composition,
-                        repeat: false,
-                      ),
-                    );
-                  } else {
-                    return Container();
-                  }
+          double bigtextWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
+          double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
+          double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
+          double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
+          double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+
+          return bitnetScaffold(
+        extendBodyBehindAppBar: true,
+        context: context,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+        body: Container(
+          margin: EdgeInsets.only(
+              top: AppTheme.cardPadding * 6,
+              bottom: AppTheme.cardPadding * 2,
+              left: AppTheme.cardPadding,
+              right: AppTheme.cardPadding),
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            // even space distribution
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                color: Colors.transparent,
+                width: AppTheme.cardPadding * 20 * spacingMultiplier, //double.infinity
+                child: FutureBuilder(
+                  future: _compostionBitcoin,
+                  builder: (context, snapshot) {
+                    var composition = snapshot.data;
+                    if (composition != null) {
+                      return FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Lottie(
+                          composition: composition,
+                          repeat: false,
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        height: AppTheme.cardPadding,
+                        width: AppTheme.cardPadding,
+                      );
+                    }
+                  },
+                ),
+              ),
+              SizedBox(
+                height: AppTheme.cardPadding * 6,
+              ),
+              LongButtonWidget(
+                customWidth: AppTheme.cardPadding * 12,
+                buttonType: ButtonType.transparent,
+                title: L10n.of(context)!.restoreAccount,
+                onTap: () {
+                  VRouter.of(context).to('/login');
                 },
               ),
-            ),
-            SizedBox(
-              height: AppTheme.cardPadding * 6,
-            ),
-            LongButtonWidget(
-              customWidth: AppTheme.cardPadding * 12,
-              buttonType: ButtonType.transparent,
-              title: L10n.of(context)!.restoreAccount,
-              onTap: () {
-                VRouter.of(context).to('/login');
-              },
-            ),
-            // creating the signup button
-            SizedBox(height: AppTheme.cardPadding),
-            LongButtonWidget(
-              customWidth: AppTheme.cardPadding * 12,
-                title: L10n.of(context)!.register,
-                onTap: () async {
-                  VRouter.of(context).to('/pinverification');
-                })
-          ],
+              // creating the signup button
+              SizedBox(height: AppTheme.cardPadding),
+              LongButtonWidget(
+                  customWidth: AppTheme.cardPadding * 12,
+                  title: L10n.of(context)!.register,
+                  onTap: () async {
+                    VRouter.of(context).to('/pinverification');
+                  })
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 } //

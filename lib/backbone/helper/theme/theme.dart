@@ -216,7 +216,7 @@ abstract class AppTheme {
   static Size size(BuildContext context) => MediaQuery.of(context).size;
 
   //responsiveness
-
+  static const double isSuperSmallScreen = 500;
   static const double isSmallScreen = 1100; // Example breakpoint for small screens
   static const double isMidScreen = 1600;
 

@@ -38,155 +38,166 @@ class _CreateAccountViewState extends State<CreateAccountView>
         }
         return false; // Prevent the system from popping the current route.
       },
-      child: bitnetScaffold(
-        extendBodyBehindAppBar: true,
-        context: context,
-        gradientColor: Colors.black,
-        appBar: bitnetAppBar(
-            text:L10n.of(context)!.register,
+      child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            final screenWidth = MediaQuery.of(context).size.width;
+            bool isSuperSmallScreen =
+                constraints.maxWidth < AppTheme.isSuperSmallScreen;
+          return bitnetScaffold(
+            margin: isSuperSmallScreen
+                ? EdgeInsets.symmetric(horizontal: 0)
+                : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+            extendBodyBehindAppBar: true,
             context: context,
-            onTap: () {
-              if (!widget.controller.isLoading) {
-                VRouter.of(context).to('/authhome');
-              }
-            }),
-        body: BackgroundWithContent(
-          backgroundType: BackgroundType.image,
-          opacity: 0.8,
-          child: Form(
-            key: widget.controller.form,
-            child: ListView(
-              padding: EdgeInsets.only(
-                  left: AppTheme.cardPadding * 2,
-                  right: AppTheme.cardPadding * 2,
-                  top: AppTheme.cardPadding * 5),
-              physics: BouncingScrollPhysics(),
-              children: [
-                SizedBox(
-                  height: AppTheme.cardPadding * 4,
-                ),
-                Container(
-                  height: AppTheme.cardPadding * 4.5,
-                  child: AnimatedTextKit(
-                    animatedTexts: [
-                      TypewriterAnimatedText(
-                        L10n.of(context)!.powerToThePeople,
-                        textStyle: Theme.of(context).textTheme.displayLarge,
-                        textAlign: TextAlign.left,
-                        speed: const Duration(milliseconds: 120),
-                      ),
-                    ],
-                    totalRepeatCount: 1,
-                    displayFullTextOnTap: false,
-                    stopPauseOnTap: false,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+            gradientColor: Colors.black,
+            appBar: bitnetAppBar(
+                text:L10n.of(context)!.register,
+                context: context,
+                onTap: () {
+                  if (!widget.controller.isLoading) {
+                    VRouter.of(context).to('/authhome');
+                  }
+                }),
+            body: BackgroundWithContent(
+              backgroundType: BackgroundType.image,
+              opacity: 0.8,
+              child: Form(
+                key: widget.controller.form,
+                child: ListView(
+                  padding: EdgeInsets.only(
+                      left: AppTheme.cardPadding * 2,
+                      right: AppTheme.cardPadding * 2,
+                      top: AppTheme.cardPadding * 5),
+                  physics: BouncingScrollPhysics(),
                   children: [
-                    Text(
-                      L10n.of(context)!.poweredByDIDs,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                    SizedBox(
+                      height: AppTheme.cardPadding * 4,
                     ),
                     Container(
-                      margin:
-                      EdgeInsets.only(left: AppTheme.elementSpacing / 2),
-                      height: AppTheme.cardPadding * 1.5,
-                      child: Image.asset("assets/images/ion.png"),
+                      height: AppTheme.cardPadding * 4.5,
+                      child: AnimatedTextKit(
+                        animatedTexts: [
+                          TypewriterAnimatedText(
+                            L10n.of(context)!.powerToThePeople,
+                            textStyle: Theme.of(context).textTheme.displayLarge,
+                            textAlign: TextAlign.left,
+                            speed: const Duration(milliseconds: 120),
+                          ),
+                        ],
+                        totalRepeatCount: 1,
+                        displayFullTextOnTap: false,
+                        stopPauseOnTap: false,
+                      ),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FormTextField(
-                      hintText: "Username",
-                      validator: (val) => val!.isEmpty
-                          ? 'The username you entered is not valid'
-                          : null,
-                      onChanged: (val) {
-                        setState(() {
-                          widget.controller.username = val;
-                        });
-                      },
-                      controller: widget.controller.controllerUsername,
-                      isObscure: false,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          L10n.of(context)!.poweredByDIDs,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        Container(
+                          margin:
+                          EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                          height: AppTheme.cardPadding * 1.5,
+                          child: Image.asset("assets/images/ion.png"),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: AppTheme.cardPadding,
                     ),
-                    LongButtonWidget(
-                      title: L10n.of(context)!.register,
-                      onTap: () {
-                        //no sso removed sso (single-sign-on) buttons because we have own system
-                        if (widget.controller.form.currentState!.validate()) {
-                          widget.controller.createAccountPressed();
-                        }
-                      },
-                      state:
-                      widget.controller.isLoading ? ButtonState.loading : ButtonState.idle,
-                    ),
-                    widget.controller.errorMessage == null
-                        ? Container()
-                        : Padding(
-                      padding: const EdgeInsets.only(
-                          top: AppTheme.cardPadding),
-                      child: Text(
-                        widget.controller.errorMessage!,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: AppTheme.errorColor),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
-                      child: Text(
-                        L10n.of(context)!.alreadyHaveAccount,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: AppTheme.cardPadding),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppTheme.white60,
-                          width: 2,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        FormTextField(
+                          hintText: "Username",
+                          validator: (val) => val!.isEmpty
+                              ? 'The username you entered is not valid'
+                              : null,
+                          onChanged: (val) {
+                            setState(() {
+                              widget.controller.username = val;
+                            });
+                          },
+                          controller: widget.controller.controllerUsername,
+                          isObscure: false,
                         ),
-                        borderRadius: AppTheme.cardRadiusCircular,
-                      ),
-                      child: SizedBox(
-                        height: 0,
-                        width: 65,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          top: AppTheme.cardPadding,
-                          bottom: AppTheme.cardPadding),
-                      child: GestureDetector(
-                        onTap: () {
-                          if (!widget.controller.isLoading) {
-                            VRouter.of(context).to('/login');
-                          }
-                        },
-                        child: Text(
-                          L10n.of(context)!.restoreAccount,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                        SizedBox(
+                          height: AppTheme.cardPadding,
                         ),
-                      ),
+                        LongButtonWidget(
+                          customWidth: AppTheme.cardPadding * 12,
+                          title: L10n.of(context)!.register,
+                          onTap: () {
+                            //no sso removed sso (single-sign-on) buttons because we have own system
+                            if (widget.controller.form.currentState!.validate()) {
+                              widget.controller.createAccountPressed();
+                            }
+                          },
+                          state:
+                          widget.controller.isLoading ? ButtonState.loading : ButtonState.idle,
+                        ),
+                        widget.controller.errorMessage == null
+                            ? Container()
+                            : Padding(
+                          padding: const EdgeInsets.only(
+                              top: AppTheme.cardPadding),
+                          child: Text(
+                            widget.controller.errorMessage!,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(color: AppTheme.errorColor),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
+                          child: Text(
+                            L10n.of(context)!.alreadyHaveAccount,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: AppTheme.cardPadding),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppTheme.white60,
+                              width: 2,
+                            ),
+                            borderRadius: AppTheme.cardRadiusCircular,
+                          ),
+                          child: SizedBox(
+                            height: 0,
+                            width: 65,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                              top: AppTheme.cardPadding,
+                              bottom: AppTheme.cardPadding),
+                          child: GestureDetector(
+                            onTap: () {
+                              if (!widget.controller.isLoading) {
+                                VRouter.of(context).to('/login');
+                              }
+                            },
+                            child: Text(
+                              L10n.of(context)!.restoreAccount,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        }
       ),
     );
   }

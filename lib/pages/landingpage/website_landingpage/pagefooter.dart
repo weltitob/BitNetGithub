@@ -25,10 +25,10 @@ class _PageFooterState extends State<PageFooter> {
           bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
           bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-          double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 28;
+          double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
           double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
           double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
-          double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+          double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.cardPadding : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
 
           return Container(
           color: Theme.of(context).colorScheme.background,
@@ -54,12 +54,12 @@ class _PageFooterState extends State<PageFooter> {
                     ),
                   ),
                 )),
-            Stack(
+            isSmallScreen ? Container() : Stack(
               children: [
                 Align(
                   alignment: Alignment.topCenter,
                   child: Container(
-                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 7 * spacingMultiplier,),
                     width: 850 + AppTheme.cardPadding * 10,
                     height: 350,
                     child: RandomAvatarWidget(
@@ -73,7 +73,7 @@ class _PageFooterState extends State<PageFooter> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: Container(
-                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 8,),
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 10 * spacingMultiplier,),
                     child: MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(
@@ -130,7 +130,7 @@ class _PageFooterState extends State<PageFooter> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: Container(
-                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 5,),
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 7 * spacingMultiplier,),
                     width: 850 + AppTheme.cardPadding * 10,
                     height: 350,
                     child: RandomAvatarWidget(
@@ -142,137 +142,171 @@ class _PageFooterState extends State<PageFooter> {
                 ),
               ],
             ),
-            buildFooter(context),
+            buildFooter(context, centerSpacing, spacingMultiplier, isSmallScreen),
           ]));}
     );
   }
 
-  Widget buildFooter(BuildContext context){
+  Widget buildFooter(BuildContext context, centerSpacing, spacingMultiplier, isSmallScreen) {
     return Positioned(
       bottom: AppTheme.cardPadding * 3,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(horizontal: AppTheme.columnWidth),
+        padding: EdgeInsets.symmetric(horizontal: centerSpacing),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: isSmallScreen? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
           children: [
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: (){},
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: AppTheme.cardPadding * 2.5,
-                          width: AppTheme.cardPadding * 2.5,
-                          child: Image(
-                              image: AssetImage('assets/images/logotransparent.png')),
-                        ),
-                        SizedBox(
-                          width: AppTheme.cardPadding,
-                        ),
-                        Text("BitNet", style: Theme.of(context).textTheme.displaySmall,),
-                      ],
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                //mainAxisSize: double.infinity,
+                //mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: (){
+                        VRouter.of(context).to("/");
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                            height: AppTheme.cardPadding * 2.5,
+                            width: AppTheme.cardPadding * 2.5,
+                            child: Image(
+                                image: AssetImage('assets/images/logotransparent.png')),
+                          ),
+                          SizedBox(
+                            width: AppTheme.cardPadding,
+                          ),
+                          Text("BitNet", style: Theme.of(context).textTheme.displaySmall,),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: AppTheme.cardPadding,),
-                    Text("©2023 by BitNet GmBH, Germany", style: Theme.of(context).textTheme.labelSmall,),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: AppTheme.cardPadding,),
+                  Text("©2023 by BitNet GmBH, Germany", style: Theme.of(context).textTheme.labelSmall,),
+                  isSmallScreen ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: AppTheme.cardPadding * 4 * spacingMultiplier,),
+                      Row(
+                        children: [
+                          product(),
+                          SizedBox(width: AppTheme.cardPadding * 4 * spacingMultiplier,),
+                          helpandSupport(),
+                        ],
+                      ),
+                      SizedBox(height: AppTheme.cardPadding * 2 * spacingMultiplier),
+                      socials(spacingMultiplier),
+                    ],
+                  ) : SizedBox(height: 0,),
+                ],
               ),
             ),
-
-            Row(
+            isSmallScreen ? Container() : Row(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Product", style: Theme.of(context).textTheme.titleMedium,),
-                    SizedBox(height: AppTheme.elementSpacing,),
-                    SocialRow(platformName: "Get Started"), // VRouter auth
-                    SocialRow(platformName: "About us"), // About us page (nur ich lol)
-                    SocialRow(platformName: "Fund us"), // Support the project give money or buy these nfts
-                    SocialRow(platformName: "Roadmap"), // make roadmap how the app should develop
-                    SocialRow(platformName: "Whitepaper"), // whitepaper (webbrowser einfach n tab mit dem whitepaper öffnen
-                    //reddit??
-                    //tumblr??
-                  ],
-                ),
-                SizedBox(width: AppTheme.cardPadding * 4,),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Help and Support", style: Theme.of(context).textTheme.titleMedium,),
-                    SizedBox(height: AppTheme.elementSpacing,),
-                    SocialRow(platformName: "Contact"), //lauch gmail mit contact@mybitnet
-                    SocialRow(platformName: "Report Bug"), //vrouter reporting page (bug voreingetsellt)
-                    SocialRow(platformName: "Report Abuse"), //vrouter reporting page (abuse voreingetsellt)
-                    SocialRow(platformName: "Report Fraud"), //vrouter reporting page (fraud voreingetsellt)
-                    SocialRow(platformName: "Report Security Issue"), //vrouter reporting page (security voreingetsellt)
-                  ],
-                ),
-                SizedBox(width: AppTheme.cardPadding * 4,),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Socials", style: Theme.of(context).textTheme.titleMedium,),
-                    SizedBox(height: AppTheme.elementSpacing,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SocialRow(iconData: FontAwesomeIcons.instagram, platformName: "Instagram", onTap: (){
-                              launchUrlString(AppTheme.instagramUrl);
-                            },),
-                            SocialRow(iconData: FontAwesomeIcons.facebook, platformName: "Facebook", onTap: (){
-                              launchUrlString(AppTheme.facebookUrl);
-                            },),
-                            SocialRow(iconData: FontAwesomeIcons.twitter, platformName: "Twitter", onTap: (){
-                              launchUrlString(AppTheme.twitterUrl);
-                            },),
-                            SocialRow(iconData: FontAwesomeIcons.linkedin, platformName: "LinkedIn", onTap: (){
-                              launchUrlString(AppTheme.linkedinUrl);
-                            },),
-                            SocialRow(iconData: FontAwesomeIcons.tiktok, platformName: "TikTok", onTap: (){
-                              launchUrlString(AppTheme.tiktokUrl);
-                            },),
-                          ],
-                        ),
-                        SizedBox(width: AppTheme.cardPadding * 2,),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SocialRow(iconData: FontAwesomeIcons.youtube, platformName: "YouTube", onTap: (){
-                              launchUrlString(AppTheme.youtubeUrl);
-                            },),
-                            SocialRow(iconData: FontAwesomeIcons.pinterest, platformName: "Pinterest", onTap: (){
-                              launchUrlString(AppTheme.pinterestUrl);
-                            },),
-                            SocialRow(iconData: FontAwesomeIcons.snapchat, platformName: "Snapchat", onTap: (){
-                              launchUrlString(AppTheme.snapchatUrl);
-                            },),
-                            SocialRow(iconData: FontAwesomeIcons.telegram, platformName: "Telegram", onTap: (){
-                              launchUrlString(AppTheme.telegramUrl);
-                            },),
-                            SocialRow(iconData: FontAwesomeIcons.discord, platformName: "Discord", onTap: (){
-                              launchUrlString(AppTheme.discordUrl);
-                            },
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+                product(),
+                SizedBox(width: AppTheme.cardPadding * 4 * spacingMultiplier,),
+                helpandSupport(),
+                SizedBox(width: AppTheme.cardPadding * 4 * spacingMultiplier,),
+                socials(spacingMultiplier),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+  Widget socials(spacingMultiplier){
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Socials", style: Theme.of(context).textTheme.titleMedium,),
+          SizedBox(height: AppTheme.elementSpacing,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SocialRow(iconData: FontAwesomeIcons.instagram, platformName: "Instagram", onTap: (){
+                    launchUrlString(AppTheme.instagramUrl);
+                  },),
+                  SocialRow(iconData: FontAwesomeIcons.facebook, platformName: "Facebook", onTap: (){
+                    launchUrlString(AppTheme.facebookUrl);
+                  },),
+                  SocialRow(iconData: FontAwesomeIcons.twitter, platformName: "Twitter", onTap: (){
+                    launchUrlString(AppTheme.twitterUrl);
+                  },),
+                  SocialRow(iconData: FontAwesomeIcons.linkedin, platformName: "LinkedIn", onTap: (){
+                    launchUrlString(AppTheme.linkedinUrl);
+                  },),
+                  SocialRow(iconData: FontAwesomeIcons.tiktok, platformName: "TikTok", onTap: (){
+                    launchUrlString(AppTheme.tiktokUrl);
+                  },),
+                ],
+              ),
+              SizedBox(width: AppTheme.cardPadding * 2 * spacingMultiplier,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SocialRow(iconData: FontAwesomeIcons.youtube, platformName: "YouTube", onTap: (){
+                    launchUrlString(AppTheme.youtubeUrl);
+                  },),
+                  SocialRow(iconData: FontAwesomeIcons.pinterest, platformName: "Pinterest", onTap: (){
+                    launchUrlString(AppTheme.pinterestUrl);
+                  },),
+                  SocialRow(iconData: FontAwesomeIcons.snapchat, platformName: "Snapchat", onTap: (){
+                    launchUrlString(AppTheme.snapchatUrl);
+                  },),
+                  SocialRow(iconData: FontAwesomeIcons.telegram, platformName: "Telegram", onTap: (){
+                    launchUrlString(AppTheme.telegramUrl);
+                  },),
+                  SocialRow(iconData: FontAwesomeIcons.discord, platformName: "Discord", onTap: (){
+                    launchUrlString(AppTheme.discordUrl);
+                  },
+                  ),
+                ],
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget product(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Product", style: Theme.of(context).textTheme.titleMedium,),
+        SizedBox(height: AppTheme.elementSpacing,),
+        SocialRow(platformName: "Get Started"), // VRouter auth
+        SocialRow(platformName: "About us"), // About us page (nur ich lol)
+        SocialRow(platformName: "Fund us"), // Support the project give money or buy these nfts
+        SocialRow(platformName: "Roadmap"), // make roadmap how the app should develop
+        SocialRow(platformName: "Whitepaper"), // whitepaper (webbrowser einfach n tab mit dem whitepaper öffnen
+        //reddit??
+        //tumblr??
+      ],
+    );
+  }
+
+  Widget helpandSupport(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Help and Support", style: Theme.of(context).textTheme.titleMedium,),
+        SizedBox(height: AppTheme.elementSpacing,),
+        SocialRow(platformName: "Contact"), //lauch gmail mit contact@mybitnet
+        SocialRow(platformName: "Report incident"), //vrouter reporting page (bug voreingetsellt)
+        SocialRow(platformName: "Report Abuse"), //vrouter reporting page (abuse voreingetsellt)
+        SocialRow(platformName: "Report Fraud"), //vrouter reporting page (fraud voreingetsellt)
+        SocialRow(platformName: "Report Security Issue"), //vrouter reporting page (security voreingetsellt)
+      ],
     );
   }
 }

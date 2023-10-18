@@ -1,4 +1,5 @@
 import 'package:bitnet/components/appstandards/mydivider.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -117,10 +118,17 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
               height: AppTheme.cardPadding,
             ),
             Center(
-              child: glassButton(
-                  text: "Melden",
-                  iconData: Icons.send,
-                  onTap: () => sendIssue()),
+              child:
+              LongButtonWidget(
+                buttonType: ButtonType.transparent,
+                title: "Melden",
+                leadingIcon: Icon(
+                  Icons.send,
+                  size: AppTheme.cardPadding,
+                  color: AppTheme.white90,
+                ),
+                  onTap: () => sendIssue(),
+              ),
             ),
           ],
         ),

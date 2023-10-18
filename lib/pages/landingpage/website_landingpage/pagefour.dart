@@ -21,7 +21,7 @@ class _PageFourState extends State<PageFour> {
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 28;
+        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
         double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
         double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
         double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
@@ -35,22 +35,22 @@ class _PageFourState extends State<PageFour> {
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: centerSpacing),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: AppTheme.cardPadding * 6 * spacingMultiplier,
-                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Stack(
+                    isSmallScreen ? SizedBox(
+                      width: 0,
+                      height: 0,
+                    ) : Stack(
                       children: [
                         Container(
-                          margin: EdgeInsets.all(AppTheme.cardPadding * 4.5),
-                          height: AppTheme.cardPadding * 18 * spacingMultiplier,
-                          width: AppTheme.cardPadding * 18 * spacingMultiplier,
+                          margin: EdgeInsets.all(AppTheme.cardPadding * 9 * spacingMultiplier),
+                          height: AppTheme.cardPadding * 12 * spacingMultiplier,
+                          width: AppTheme.cardPadding * 12 * spacingMultiplier,
                           child: Lottie.asset(
                             'assets/lottiefiles/btc_3d.json',),
                         ),
@@ -64,10 +64,10 @@ class _PageFourState extends State<PageFour> {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
                           width: textWidth,
-                          margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                           child: Text(
                             "More and more decide to join us each day!",
                             style: Theme.of(context).textTheme.displayMedium,
@@ -77,7 +77,6 @@ class _PageFourState extends State<PageFour> {
                           height: AppTheme.cardPadding * 2 * spacingMultiplier,
                         ),
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                           width: subtitleWidth,
                           child: Text(
                             "We are the light that helps others see Bitcoin. We form the next step in the evolution of bitcoin!",
@@ -89,7 +88,6 @@ class _PageFourState extends State<PageFour> {
                           height: AppTheme.cardPadding * 2 * spacingMultiplier
                         ),
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                           width: AppTheme.cardPadding * 10,
                           child: LongButtonWidget(
                               title: L10n.of(context)!.register,
@@ -99,6 +97,12 @@ class _PageFourState extends State<PageFour> {
                         ),
                       ],
                     ),
+                    isSmallScreen ? SizedBox(
+                      width: 0,
+                      height: 0,
+                    ) : SizedBox(
+                      width: AppTheme.cardPadding * 2,
+                      height: AppTheme.cardPadding * 2,)
                     // Container(
                     //     height: AppTheme.cardPadding * 15,
                     //     child: buildFutureLottie(controller.composition, true))

@@ -82,7 +82,9 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                 ),
         ),
         // The InkWell goes on top of the background:
-        Positioned.fill(
+        Container(
+          width: widget.customWidth,
+          height: widget.customHeight,
           child: Material(
             color: Colors.transparent,
             child: InkWell(
@@ -120,7 +122,7 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                                 color: widget.textColor != null
                                     ? widget.textColor
                                     : AppTheme.white90,
-                                shadows: [AppTheme.boxShadowSmall],
+                                shadows: [AppTheme.boxShadowButton],
                               ),
                             ),
                           ],
