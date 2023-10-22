@@ -69,7 +69,7 @@ class _PageFourState extends State<PageFour> {
                         Container(
                           width: textWidth,
                           child: Text(
-                            "More and more decide to join us each day!",
+                            "We are the light that helps others see Bitcoin.",
                             style: Theme.of(context).textTheme.displayMedium,
                           ),
                         ),
@@ -79,7 +79,7 @@ class _PageFourState extends State<PageFour> {
                         Container(
                           width: subtitleWidth,
                           child: Text(
-                            "We are the light that helps others see Bitcoin. We form the next step in the evolution of bitcoin!",
+                            "More and more decide to join us each day!",
                             style:
                             Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 24),
                           ),

@@ -102,26 +102,26 @@ class _PageThreeState extends State<PageThree> {
     return [
       CustomCard(
         lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
-        mainTitle: "We the people, control our money!",
+        mainTitle: "Fighting for a faster Bitcoinization of the world!",
         subTitle:
-            "We are a simple and secure way to send and receive payments on the Bitcoin Network",
+            "We are a simple and secure way to use bitcoin with the most advanced web wallet out there!",
         buttonText: "Send BTC",
         onButtonTap: () {},
       ), // Abstand für das Spaltenlayout
       CustomCard(
         lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-        mainTitle: "We the people, own our data!",
+        mainTitle: "Giving the power back to the people!",
         subTitle:
-            "We are building a third layer platform on top of the trustless Bitcoin Network.",
-        buttonText: "Get a DID",
+            "We use decentralized IDs. We own our data and can verify and trust the blockchain!",
+        buttonText: "Explore BTC",
         onButtonTap: () {},
       ), // Abstand für das Spaltenlayout
       CustomCard(
-        lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
-        mainTitle: "We the people, build our future!",
+        lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
+        mainTitle: "Developing a fair Cyberspace built on Bitcoin!",
         subTitle:
-            "and start exploring the blockchain exploring the blockchain.",
-        buttonText: "Explore BTC",
+            "History in Making: We form the third layer on top of the trustless Bitcoin Network. Unlocking it's full potential! ",
+        buttonText: "Get a profile",
         onButtonTap: () {},
       ),
     ];

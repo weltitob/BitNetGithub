@@ -48,7 +48,7 @@ class _PageOneState extends State<PageOne> {
                 Container(
                   width: bigtextWidth,
                   child: Text(
-                    "Bitcoin solved the trust, but we the people need to solve the adoption problem!",
+                    "We are Bitcoins platform. Accelerating the adoption and development of cyberspace!",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
@@ -59,7 +59,7 @@ class _PageOneState extends State<PageOne> {
                 Container(
                   width: subtitleWidth,
                   child: Text(
-                    "BitNet is not a social network. It's the third layer platform built on the Bitcoin Network.",
+                    "Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),

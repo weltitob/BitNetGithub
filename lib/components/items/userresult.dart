@@ -1,8 +1,8 @@
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/profilepicture.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:flutter/material.dart';
@@ -46,10 +46,11 @@ class _UserResultState extends State<UserResult> {
                   SizedBox(
                     width: AppTheme.elementSpacing,
                   ),
-                  ProfilePictureSmall(
-                    onTap: widget.onTap,
-                    profileImageURL: widget.userData.profileImageUrl,
+                  Avatar(
                     profileId: widget.userData.did,
+                    mxContent: Uri.parse(widget.userData.profileImageUrl),
+                    size: AppTheme.cardPadding * 1.75,
+                    onTap: widget.onTap,
                   ),
                   SizedBox(width: AppTheme.elementSpacing),
                   Container(

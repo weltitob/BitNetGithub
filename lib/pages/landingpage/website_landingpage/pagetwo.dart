@@ -61,7 +61,7 @@ class _PageTwoState extends State<PageTwo> {
                     width: textWidth,
                     margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                     child: Text(
-                      "Unlock your gateway to our future of digital assets!",
+                      "Unlocking our gateway to our future of digital assets!",
                       style: Theme.of(context).textTheme.displayMedium,
                     ),
                   ),
@@ -72,7 +72,7 @@ class _PageTwoState extends State<PageTwo> {
                     margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                     width: subtitleWidth,
                     child: Text(
-                      "Be among the first million users and secure your exclusive, complimentary early-bird Bitcoin inscription!",
+                      "Be among the first million users and secure an exclusive, complimentary early-bird Bitcoin inscription!",
                       style:
                       Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 24),
                     ),
@@ -116,7 +116,7 @@ class _PageTwoState extends State<PageTwo> {
                       width: AppTheme.elementSpacing,
                     ),
                     Text(
-                      "History in Making: Be Part with Your Free Bitcoin NFT.",
+                      "Be Part with Your Free Bitcoin NFT.",
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     SizedBox(

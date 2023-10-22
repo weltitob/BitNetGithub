@@ -173,6 +173,7 @@ class AvatarLayout extends StatelessWidget {
               final avatarWidget = Avatar(
                 mxContent: Uri.parse(avatar.uri),
                 size: avatar.size.value,
+                profileId: avatar.uri,
               );
 
               final avatarPosition = avatar.position -

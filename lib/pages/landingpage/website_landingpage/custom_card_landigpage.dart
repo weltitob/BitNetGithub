@@ -59,17 +59,22 @@ class CustomCard extends StatelessWidget {
                 child: Stack(
                   children: [
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          height: customHeight * 0.3,
-                          width: customWidth,
-                          child: Lottie.asset(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: customHeight * 0.3,
+                              width: customWidth * 0.8,
+                              child: Lottie.asset(
 
-                              lottieAssetPath),
+                                  lottieAssetPath),
+                            ),
+                          ],
                         ),
                         SizedBox(
-                          height: height * 0.02,
+                          height: height * 0.01,
                         ),
                         Text(
                           mainTitle,
@@ -81,9 +86,6 @@ class CustomCard extends StatelessWidget {
                         Text(
                           subTitle,
                           style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        SizedBox(
-                          height: height * 0.05,
                         ),
                       ],
                     ),

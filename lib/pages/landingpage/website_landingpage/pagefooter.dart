@@ -1,9 +1,13 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/components/container/fadein.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/container/randomcontainers/randomavatarcontainer.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
+import 'package:bitnet/components/items/usersearchresult.dart';
+import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/socialrow.dart';
 import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +15,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:vrouter/vrouter.dart';
+
+class PageData {
+  final String text;
+  final UserData userData;
+
+  PageData(this.text, this.userData);
+}
 
 class PageFooter extends StatefulWidget {
   final WebsiteLandingPageController controller;
@@ -21,10 +32,97 @@ class PageFooter extends StatefulWidget {
 }
 
 class _PageFooterState extends State<PageFooter> {
+  PageController _pageController = PageController();
+  GlobalKey<FadeInState> fadeInKey = GlobalKey<FadeInState>();
+  int _selectedindex = 0;
+  bool _isThirdAnimationCompleted = false;
+
+  @override
+  void dispose() {
+    _pageController.dispose(); // Don't forget to dispose the PageController
+    super.dispose();
+  }
+
+  List<PageData> pageDataList = [
+    PageData(
+      '"I have always been a Bitcoin enthusiast, so BitNet was a no-brainer for me. Its great to see how far we have come with Bitcoin."',
+      UserData(
+          backgroundImageUrl: "",
+          isPrivate: false,
+          showFollowers: false,
+          did: "whattheheck",
+          displayName: "Display Name",
+          bio: "jddjskd",
+          customToken: "dsd",
+          username: "brianbelt",
+          profileImageUrl:
+              "https://static.demilked.com/wp-content/uploads/2019/04/5cb6d34f775c2-stock-models-share-weirdest-stories-photo-use-102-5cb5c725bc378__700.jpg",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isActive: false,
+          dob: 2,
+          mainWallet: UserWallet(
+              walletAddress: "walletAddress",
+              walletType: "walletType",
+              walletBalance: "",
+              privateKey: "privateKey",
+              userdid: "userdid"),
+          wallets: []),
+    ),
+    PageData(
+      '"So happy to be part of the club 1 million. Zero chance Im selling my bitcoin NFT! This feels like buying bitcoin back in 2015."',
+      UserData(
+          backgroundImageUrl: "",
+          isPrivate: false,
+          showFollowers: false,
+          did: "djskdj",
+          displayName: "Display Name",
+          bio: "jddjskd",
+          customToken: "dsd",
+          username: "username",
+          profileImageUrl:
+              "https://img.freepik.com/free-photo/people-taking-selfie-together-registration-day_23-2149096795.jpg",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isActive: false,
+          dob: 2,
+          mainWallet: UserWallet(
+              walletAddress: "walletAddress",
+              walletType: "walletType",
+              walletBalance: "",
+              privateKey: "privateKey",
+              userdid: "userdid"),
+          wallets: []),
+    ),
+    PageData(
+      '"Wow! Bitnet is the part that I was always missing for bitcoin. Lightning wallets truly are the future. I believe we will only see more and more bitcoin adoption from now on."',
+      UserData(
+          backgroundImageUrl: "",
+          isPrivate: false,
+          showFollowers: false,
+          did: "djskdj",
+          displayName: "Display Name",
+          bio: "jddjskd",
+          customToken: "dsd",
+          username: "fakeusername",
+          profileImageUrl:
+              "https://variety.com/wp-content/uploads/2022/08/Jonah-Hill.jpg?w=1000",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isActive: false,
+          dob: 2,
+          mainWallet: UserWallet(
+              walletAddress: "walletAddress",
+              walletType: "walletType",
+              walletBalance: "",
+              privateKey: "privateKey",
+              userdid: "userdid"),
+          wallets: []),
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    PageController pageController = PageController();
-
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
@@ -79,253 +177,319 @@ class _PageFooterState extends State<PageFooter> {
                 ? Container()
                 : Stack(
                     children: [
-                      // Align(
-                      //   alignment: Alignment.topCenter,
-                      //   child: Container(
-                      //     margin: EdgeInsets.only(top: AppTheme.cardPadding * 7 * spacingMultiplier,),
-                      //     width: 850 + AppTheme.cardPadding * 10,
-                      //     height: 350,
-                      //     child: RandomAvatarWidget(
-                      //
-                      //       start: false,
-                      //       width: 850 + AppTheme.cardPadding * 10,
-                      //       height: 350,
-                      //     ),
-                      //   ),
-                      // ),
-                      Align(
+                      _isThirdAnimationCompleted
+                          ? Container()
+                          : FadeIn(
+                              delay: Duration(milliseconds: 1200),
+                              duration: Duration(seconds: 2),
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    top: AppTheme.cardPadding *
+                                        18 *
+                                        spacingMultiplier,
+                                    left: AppTheme.cardPadding *
+                                        35.5 *
+                                        spacingMultiplier,
+                                  ),
+                                  child: quoteText(),
+                                ),
+                              ),
+                            ),
+                      _isThirdAnimationCompleted ? Align(
                         alignment: Alignment.topCenter,
                         child: Container(
-                          margin: EdgeInsets.only(
-                            top: AppTheme.cardPadding * 18 * spacingMultiplier,
-                            left:
-                                AppTheme.cardPadding * 35.5 * spacingMultiplier,
-                          ),
-                          child: Text(
-                            '"',
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge!
-                                .copyWith(
-                                  fontSize: 170,
-                                  fontFamily: GoogleFonts.lobster().fontFamily,
-                                  color: AppTheme
-                                      .colorBitcoin, // This color will be replaced by the gradient effect
-                                ),
+                          margin: EdgeInsets.only(top: AppTheme.cardPadding * 6.5 * spacingMultiplier,),
+                          width: 850 + AppTheme.cardPadding * 10,
+                          height: 400,
+                          child: RandomAvatarWidget(
+                            start: false,
+                            width: 850 + AppTheme.cardPadding * 10,
+                            height: 400,
                           ),
                         ),
-                      ),
-
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            top: AppTheme.cardPadding * 10 * spacingMultiplier,
-                          ),
-                          child: MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () {
-                                VRouter.of(context).to("/register");
-                              },
-                              child: GlassContainer(
-                                borderThickness:
-                                    1.5, // remove border if not active
-                                blur: 50,
-                                opacity: 0.1,
-                                borderRadius: AppTheme.cardRadiusBigger,
-                                child: Container(
-                                  width: 850,
-                                  height: 240,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: AppTheme.cardPadding * 2,
-                                    vertical: AppTheme.cardPadding * 2,
-                                  ),
+                      ) : Container(),
+                      FadeIn(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              top:
+                                  AppTheme.cardPadding * 10 * spacingMultiplier,
+                            ),
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () {
+                                  VRouter.of(context).to("/register");
+                                },
+                                child: GlassContainer(
+                                  borderThickness:
+                                      1.5, // remove border if not active
+                                  blur: 50,
+                                  opacity: 0.1,
+                                  borderRadius: AppTheme.cardRadiusBigger,
                                   child: Container(
-                                    //color: Colors.green.withOpacity(0.1),
-                                    child: Container(
-                                      width: AppTheme.cardPadding * 24,
-                                      child: AnimatedTextKit(
-                                        isRepeatingAnimation: false,
-                                        animatedTexts: [
-                                          TypewriterAnimatedText(
-                                            '"This feels like the time the first iPhone was announced"',
-                                            textStyle: Theme.of(context)
-                                                .textTheme
-                                                .displayMedium!
-                                                .copyWith(
-                                              color: AppTheme.white90, // This color will be replaced by the gradient effect
-                                            ),
-                                            speed: const Duration(
-                                                milliseconds: 100),
+                                    width: 850,
+                                    height: 240,
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          width: 850,
+                                          height: 240,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: AppTheme.cardPadding * 2,
+                                            vertical: AppTheme.cardPadding * 2,
                                           ),
-                                        ],
-                                      ),
+                                          child: _isThirdAnimationCompleted
+                                              ? Container(
+                                                  alignment: Alignment.center,
+                                                  child: ShaderMask(
+                                                    shaderCallback: (bounds) =>
+                                                        LinearGradient(
+                                                                colors: [
+                                                          AppTheme.colorBitcoin,
+                                                          AppTheme
+                                                              .colorPrimaryGradient, // You can change this to any other color to achieve the gradient effect you want
+                                                        ],
+                                                                begin: Alignment
+                                                                    .topCenter,
+                                                                end: Alignment
+                                                                    .bottomCenter,
+                                                                tileMode:
+                                                                    TileMode.clamp)
+                                                            .createShader(bounds),
+                                                    child: AnimatedTextKit(
+                                                      isRepeatingAnimation: false,
+                                                      animatedTexts: [
+                                                        TypewriterAnimatedText(
+                                                          '"We take it in our own hands!"',
+                                                          textStyle: Theme.of(context)
+                                                              .textTheme
+                                                              .displayLarge!
+                                                              .copyWith(
+                                                                color: Colors
+                                                                    .white, // This color will be replaced by the gradient effect
+                                                              ),
+                                                          speed: const Duration(
+                                                              milliseconds: 50),
+                                                        ),
+                                                        TypewriterAnimatedText(
+                                                          'Join BitNet now!',
+                                                          textStyle: Theme.of(context)
+                                                              .textTheme
+                                                              .displayLarge!
+                                                              .copyWith(
+                                                                color: Colors
+                                                                    .white, // This color will be replaced by the gradient effect
+                                                              ),
+                                                          speed: const Duration(
+                                                              milliseconds: 50),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                              : PageView.builder(
+                                                  controller: _pageController,
+                                                  onPageChanged: (index) {
+                                                    setState(() {
+                                                      _selectedindex = index;
+                                                    });
+                                                    // Restart the FadeIn animation
+                                                    fadeInKey.currentState
+                                                        ?.restartAnimation();
+                                                  },
+                                                  itemCount: pageDataList.length,
+                                                  itemBuilder: (context, index) {
+                                                    return Column(
+                                                      children: [
+                                                        _buildTypewriterText(
+                                                            pageDataList[index].text,
+                                                            () {
+                                                          if (index <
+                                                              pageDataList.length -
+                                                                  1) {
+                                                            Future.delayed(
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        2000), () {
+                                                              _pageController
+                                                                  .nextPage(
+                                                                duration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            300),
+                                                                curve:
+                                                                    Curves.easeInOut,
+                                                              );
+                                                            });
+                                                          }
+                                                        }),
+                                                      ],
+                                                    );
+                                                  },
+                                                ),
+                                        ),
+                                        _isThirdAnimationCompleted
+                                            ? Container()
+                                            : Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Container(
+                                              margin: EdgeInsets.only(
+                                                bottom: AppTheme.cardPadding *
+                                                    1 *
+                                                    spacingMultiplier,
+                                              ),
+                                              child: buildIndicator(
+                                                dotHeight: AppTheme.elementSpacing,
+                                                dotWidth: AppTheme.elementSpacing,
+                                                pageController: _pageController,
+                                                count: 3,
+                                              )),
+                                        ),
+                                      ],
                                     ),
                                   ),
-
-                                  // child: ShaderMask(
-                                  //   shaderCallback: (bounds) => LinearGradient(
-                                  //       colors: [
-                                  //         AppTheme.colorBitcoin,
-                                  //         AppTheme.colorPrimaryGradient, // You can change this to any other color to achieve the gradient effect you want
-                                  //       ],
-                                  //       begin: Alignment.topCenter,
-                                  //       end: Alignment.bottomCenter,
-                                  //       tileMode: TileMode.clamp
-                                  //   ).createShader(bounds),
-                                  //   child:
-                                  //   AnimatedTextKit(
-                                  //     isRepeatingAnimation: false,
-                                  //     animatedTexts: [
-                                  //
-                                  //       TypewriterAnimatedText(
-                                  //         '"We take it in our own hands!"',
-                                  //         textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                  //           color: Colors.white, // This color will be replaced by the gradient effect
-                                  //         ),
-                                  //         speed: const Duration(milliseconds: 100),
-                                  //       ),
-                                  //       TypewriterAnimatedText(
-                                  //         '      Join the revolution now!',
-                                  //         textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                  //           color: Colors.white, // This color will be replaced by the gradient effect
-                                  //         ),
-                                  //         speed: const Duration(milliseconds: 100),
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                            margin: EdgeInsets.only(
-                              top: AppTheme.cardPadding *
-                                  18.5 *
-                                  spacingMultiplier,
-                            ),
-                            child: buildIndicator(
-                              dotHeight: AppTheme.elementSpacing,
-                              dotWidth: AppTheme.elementSpacing,
-                              pageController: pageController,
-                              count: 3,
-                            )),
-                      ),
-
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            top:
-                                AppTheme.cardPadding * 7.75 * spacingMultiplier,
-                            right:
-                                AppTheme.cardPadding * 36.5 * spacingMultiplier,
-                          ),
-                          child: Text(
-                            '"',
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge!
-                                .copyWith(
-                                  fontSize: 170,
-                                  fontFamily: GoogleFonts.lobster().fontFamily,
-                                  color: AppTheme
-                                      .colorBitcoin, // This color will be replaced by the gradient effect
+                      _isThirdAnimationCompleted
+                          ? Container()
+                          : FadeIn(
+                              delay: Duration(milliseconds: 1200),
+                              duration: Duration(seconds: 2),
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    top: AppTheme.cardPadding *
+                                        7.75 *
+                                        spacingMultiplier,
+                                    right: AppTheme.cardPadding *
+                                        36.5 *
+                                        spacingMultiplier,
+                                  ),
+                                  child: quoteText(),
                                 ),
-                          ),
-                        ),
-                      ),
+                              ),
+                            ),
+                      _isThirdAnimationCompleted ?
                       Align(
                         alignment: Alignment.topCenter,
                         child: Container(
-                          margin: EdgeInsets.only(
-                            top: AppTheme.cardPadding * 8 * spacingMultiplier,
-                          ),
-                          child: GlassContainer(
-                            borderThickness: 1.5, // remove border if not active
-                            blur: 50,
-                            opacity: 0.1,
-                            borderRadius: AppTheme.cardRadiusBigger,
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                horizontal: AppTheme.elementSpacing,
-                                vertical: AppTheme.elementSpacing,
-                              ),
-                              height: AppTheme.cardPadding * 2.5,
-                              width: AppTheme.cardPadding * 12,
-                              child: Row(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                children: [
-                                  Avatar(
-                                    mxContent:
-                                    Uri.parse("https://matrix.org/m"),
-
-                                    //mxContent: ,
-                                    size: AppTheme.cardPadding * 2.5,
-                                  ),
-                                  SizedBox(
-                                    width: AppTheme.cardPadding * 0.5,
-                                    height: 1,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "@nameofperson",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
-                                      ),
-                                      SizedBox(
-                                        height:
-                                        AppTheme.elementSpacing / 2,
-                                      ),
-                                      Text(
-                                        "Joined BitNet 2 days ago",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge,
-                                      ),
-                                    ],
-                                  ),
-
-                                ],
-                              ),
-                            ),
+                          margin: EdgeInsets.only(top: AppTheme.cardPadding * 6.5 * spacingMultiplier,),
+                          width: 850 + AppTheme.cardPadding * 10,
+                          height: 400,
+                          child: RandomAvatarWidget(
+                            start: true,
+                            width: 850 + AppTheme.cardPadding * 10,
+                            height: 400,
                           ),
                         ),
-                      ),
-                      // Align(
-                      //   alignment: Alignment.topCenter,
-                      //   child: Container(
-                      //     margin: EdgeInsets.only(top: AppTheme.cardPadding * 7 * spacingMultiplier,),
-                      //     width: 850 + AppTheme.cardPadding * 10,
-                      //     height: 350,
-                      //     child: RandomAvatarWidget(
-                      //       start: true,
-                      //       width: 850 + AppTheme.cardPadding * 10,
-                      //       height: 350,
-                      //     ),
-                      //   ),
-                      // ),
+                      ) : Container(),
+                      _isThirdAnimationCompleted
+                          ? Container()
+                          : FadeIn(
+                              key: fadeInKey,
+                              delay: Duration(milliseconds: 500),
+                              duration: Duration(seconds: 2),
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    top: AppTheme.cardPadding *
+                                        7.5 *
+                                        spacingMultiplier,
+                                  ),
+                                  child: _buildUserSearchResult(
+                                      pageDataList[_selectedindex].userData),
+                                ),
+                              ),
+                            ),
                     ],
                   ),
             buildFooter(
                 context, centerSpacing, spacingMultiplier, isSmallScreen),
           ]));
     });
+  }
+
+  Widget quoteText() {
+    return Text(
+      '"',
+      style: Theme.of(context).textTheme.displayLarge!.copyWith(
+            fontSize: 170,
+            fontFamily: GoogleFonts.lobster().fontFamily,
+            color: AppTheme
+                .colorBitcoin, // This color will be replaced by the gradient effect
+          ),
+    );
+  }
+
+  Widget _buildTypewriterText(String text, VoidCallback onCompleted) {
+    return Container(
+      child: AnimatedTextKit(
+        totalRepeatCount: 1,
+        //pause: const Duration(milliseconds: 4000),
+        animatedTexts: [
+          TypewriterAnimatedText(
+            text,
+            textStyle: Theme.of(context).textTheme.displaySmall!.copyWith(
+                  color: AppTheme.white90,
+                ),
+            speed: const Duration(milliseconds: 50),
+          ),
+        ],
+        onFinished: () {
+          if (_selectedindex == 2) {
+            // Assuming the pages are 0-indexed and the third page is index 2
+            onCompleted();
+            setState(() {
+              _isThirdAnimationCompleted = true;
+            });
+          } else {
+            onCompleted();
+          }
+        }, // Call the callback when the animation is finished
+      ),
+    );
+  }
+
+  Widget _buildUserSearchResult(UserData userData) {
+    return UserSearchResult(
+      scaleRatio: 1.2,
+      onTap: () {
+        print("User selected: ${userData.displayName}");
+      },
+      userData: UserData(
+        backgroundImageUrl: userData.backgroundImageUrl,
+        isPrivate: userData.isPrivate,
+        showFollowers: userData.showFollowers,
+        did: userData.did,
+        displayName: userData.displayName,
+        bio: userData.bio,
+        customToken: userData.customToken,
+        username: userData.username,
+        profileImageUrl: userData.profileImageUrl,
+        createdAt: userData.createdAt,
+        updatedAt: userData.updatedAt,
+        isActive: userData.isActive,
+        dob: userData.dob,
+        mainWallet: UserWallet(
+          walletAddress: userData.mainWallet.walletAddress,
+          walletType: userData.mainWallet.walletType,
+          walletBalance: userData.mainWallet.walletBalance,
+          privateKey: userData.mainWallet.privateKey,
+          userdid: userData.mainWallet.userdid,
+        ),
+        wallets: userData.wallets,
+      ),
+    );
   }
 
   Widget buildFooter(
@@ -580,15 +744,14 @@ class _PageFooterState extends State<PageFooter> {
         SocialRow(
             platformName:
                 "Report incident"), //vrouter reporting page (bug voreingetsellt)
+        SocialRow(platformName: "Report Abuse and Fraud"),
+        //dafür bekommt man belohnungen
         SocialRow(
             platformName:
-                "Report Abuse"), //vrouter reporting page (abuse voreingetsellt)
+                "Report Security Issue"), //vrouter reporting page (abuse voreingetsellt)
         SocialRow(
             platformName:
-                "Report Fraud"), //vrouter reporting page (fraud voreingetsellt)
-        SocialRow(
-            platformName:
-                "Report Security Issue"), //vrouter reporting page (security voreingetsellt)
+                "Submit Idea"), //vrouter reporting page (fraud voreingetsellt)//vrouter reporting page (security voreingetsellt)
       ],
     );
   }
