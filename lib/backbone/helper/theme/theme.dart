@@ -216,10 +216,15 @@ abstract class AppTheme {
   static Size size(BuildContext context) => MediaQuery.of(context).size;
 
   //responsiveness
+  static bool isColumnModeByWidth(double width) =>
+      width > columnWidth * 2 + navRailWidth;
+
+  static bool isColumnMode(BuildContext context) =>
+      isColumnModeByWidth(MediaQuery.of(context).size.width);
+
   static const double isSuperSmallScreen = 500;
   static const double isSmallScreen = 1100; // Example breakpoint for small screens
   static const double isMidScreen = 1600;
-
 
   //Boxshadows
   static BoxShadow boxShadow = BoxShadow(
@@ -249,7 +254,6 @@ abstract class AppTheme {
     offset: const Offset(0, 2.5),
     blurRadius: 10,
   );
-
 
   //duration
   static const Duration animationDuration = Duration(milliseconds: 300);
@@ -426,12 +430,6 @@ abstract class AppTheme {
     titleMedium: fallbackTextStyle,
     titleSmall: fallbackTextStyle,
   );
-
-  static bool isColumnModeByWidth(double width) =>
-      width > columnWidth * 2 + navRailWidth;
-
-  static bool isColumnMode(BuildContext context) =>
-      isColumnModeByWidth(MediaQuery.of(context).size.width);
 
   static bool getDisplayNavigationRail(BuildContext context) =>
       !VRouter.of(context).path.startsWith('/settings');

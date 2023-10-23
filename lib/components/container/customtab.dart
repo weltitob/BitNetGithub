@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -16,15 +17,15 @@ class CustomTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(
-          radius: 20,  // Adjust the size as needed
-          backgroundImage: CachedNetworkImageProvider(imageUrl),
-          backgroundColor: Colors.transparent, // or another color if you want a background
+        SizedBox(width: AppTheme.elementSpacing / 2),
+        Avatar(
+          mxContent: Uri.parse(imageUrl),
+          size: 25,
         ),
-        SizedBox(width: AppTheme.elementSpacing / 3),  // Give some spacing between the image and the text
+        SizedBox(width: AppTheme.elementSpacing / 2),  // Give some spacing between the image and the text
         Text(
           text,
-          style: AppTheme.textTheme.bodyMedium!.copyWith(
+          style: AppTheme.textTheme.titleMedium!.copyWith(
               color: AppTheme.white80,
               fontWeight: FontWeight.bold),
         ),

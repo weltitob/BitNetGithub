@@ -120,7 +120,7 @@ class _PageThreeState extends State<PageThree> {
         lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
         mainTitle: "Developing a fair Cyberspace built on Bitcoin!",
         subTitle:
-            "History in Making: We form the third layer on top of the trustless Bitcoin Network. Unlocking it's full potential! ",
+            "We form the third layer on top of the trustless Bitcoin Network. Unlocking it's full potential! ",
         buttonText: "Get a profile",
         onButtonTap: () {},
       ),

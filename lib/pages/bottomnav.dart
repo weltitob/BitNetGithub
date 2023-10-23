@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -53,16 +54,16 @@ class _BottomNavState extends State<BottomNav> {
                           // Use color stops to create an "exponential" effect
                           stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
                           colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.33),
-                            Colors.black.withOpacity(0.66),
-                            Colors.black.withOpacity(0.99),
+                            Theme.of(context).colorScheme.background.withOpacity(0.0001),
+                            Theme.of(context).colorScheme.background.withOpacity(0.33),
+                            Theme.of(context).colorScheme.background.withOpacity(0.66),
+                            Theme.of(context).colorScheme.background.withOpacity(0.99),
                             // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
                             // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
                             // Theme.of(context).colorScheme.background,
                             // Theme.of(context).colorScheme.background,
-                            Colors.black,
-                            Colors.black,
+                            Theme.of(context).colorScheme.background,
+                            Theme.of(context).colorScheme.background
                           ],
                         ),
                       ),
@@ -73,13 +74,13 @@ class _BottomNavState extends State<BottomNav> {
           ),
           Positioned(
             bottom: AppTheme.cardPadding,
-            left: AppTheme.cardPadding * 1.25,
-            right: AppTheme.cardPadding * 1.25,
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100.0),
-                  color: Theme.of(context).colorScheme.secondaryContainer
-              ),
+            left: AppTheme.cardPadding * 1,
+            right: AppTheme.cardPadding * 1,
+            child: GlassContainer(
+              borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2.5 / 2.5),
+              borderThickness: 1.5, // remove border if not active
+              blur: 50,
+              opacity: 0.1,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1.25, vertical: AppTheme.elementSpacing * 1.25),
                 child: Row(

@@ -66,7 +66,7 @@ class CustomCard extends StatelessWidget {
                           children: [
                             Container(
                               height: customHeight * 0.3,
-                              width: customWidth * 0.8,
+                              width: customWidth * 0.75,
                               child: Lottie.asset(
 
                                   lottieAssetPath),

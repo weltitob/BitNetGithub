@@ -5,16 +5,20 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 // Widget to display a spinning animation with three bouncing dots
-Container dotProgress(BuildContext context, {Color? color}) {
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+Container dotProgress(BuildContext context, {Color? color, double? size}) {
   return Container(
     child: Center(
       child: SpinKitThreeBounce(
         color: color ?? AppTheme.colorBitcoin, // Set the color of the dots
-        size: AppTheme.iconSize, // Set the size of the dots
+        size: size ?? AppTheme.iconSize, // Set the size of the dots, with a fallback to the default
       ),
     ),
   );
 }
+
 
 // Widget to display a glowing icon with a specified icon and color
 Widget avatarGlow(BuildContext context, IconData icon) {
