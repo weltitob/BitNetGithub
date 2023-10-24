@@ -72,10 +72,10 @@ class OptionContainer extends StatelessWidget {
                 children: [
                   Container(
                     margin: EdgeInsets.only(
-                      top: height / 20,
+                      top: height / 40,
                     ),
-                    height: height / 1.6,
-                    width: height / 1.6,
+                    height: width / 1.5,
+                    width: width / 1.5,
                     decoration: BoxDecoration(
                       borderRadius: borderRadius / 1.5,
                       boxShadow: [AppTheme.boxShadowSmall],
@@ -89,11 +89,12 @@ class OptionContainer extends StatelessWidget {
                   ),
                   Container(
                     margin: EdgeInsets.only(
-                      bottom: height / 20,
-                      right: width / 10,
-                      left: width / 10,
+                      right: AppTheme.elementSpacing,
+                      left: AppTheme.elementSpacing,
                     ),
                     child: Text(text,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center, style: textstyle),
                   ),
                 ],

@@ -81,7 +81,7 @@ dependencies:
   receive_sharing_intent: ^1.4.5
   record: ^4.4.4
   scroll_to_index: ^3.0.1
-  share_plus: ^7.0.0
+  share_plus: ^7.2.1
   slugify: ^2.0.0
   swipe_to_action: ^0.2.0
   tor_detector_web: ^1.1.0
