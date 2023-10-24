@@ -1,79 +1,107 @@
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
-Widget OptionContainer(
-    BuildContext context,
-    String text,
-    VoidCallback action, {
-      IconData? fallbackIcon,
-      String? image,
-      double? width, // new width parameter
-      double? height, // new height parameter
-      bool isActive = true, // new isActive parameter with default value true
-    }) {
-  double containerWidth = width ?? AppTheme.cardPadding * 6;
-  double containerHeight = height ?? AppTheme.cardPadding * 7.25;
+class OptionContainer extends StatelessWidget {
+  final String text;
+  final VoidCallback action;
+  final IconData? fallbackIcon;
+  final String? image;
+  final double width;
+  final double height;
+  final bool isActive;
 
-  //Inkwell doesnt work here so we need to do stack like on the button widget
+  OptionContainer(
+    this.text,
+    this.action, {
+    this.fallbackIcon,
+    this.image,
+    this.width = AppTheme.cardPadding * 5.5,
+    this.height = AppTheme.cardPadding * 7,
+    this.isActive = true, // default value is true
+    Key? key,
+  }) : super(key: key);
 
-  return InkWell(
-    onTap: action, // if not active, disable the onTap
-    borderRadius: AppTheme.cardRadiusBigger,
-    child: ClipRRect(
-      borderRadius: AppTheme.cardRadiusBigger,
-      child: ColorFiltered(
-        colorFilter: isActive ? ColorFilter.mode(Colors.transparent, BlendMode.color) : ColorFilter.mode(Colors.black.withOpacity(0.99), BlendMode.color),
-        child: Container(
-          width: containerWidth, // use the custom width if provided
-          height: containerHeight, // use the custom height if provided
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: AppTheme.cardRadiusBigger,
-            boxShadow: [AppTheme.boxShadowProfile],
-          ),
-          child: GlassContainer(
-            borderThickness: isActive ? 1.5 : 0, // remove border if not active
-            blur: 50,
-            opacity: 0.1,
-            borderRadius: AppTheme.cardRadiusBigger,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  height: containerHeight / 1.78,
-                  width: containerHeight / 1.78,
-                  decoration: BoxDecoration(
-                    borderRadius: AppTheme.cardRadiusBigger,
-                    boxShadow: [AppTheme.boxShadowSmall],
-                  ),
-                  child: image != null
-                      ? Image.asset(image)
-                      : Icon(
-                    fallbackIcon ?? Icons.error,
-                    size: 50,
-                  ),
+  @override
+  Widget build(BuildContext context) {
+
+    BorderRadius borderRadius = BorderRadius.circular(width / 3);
+
+    TextStyle textstyle = width > 100
+        ? Theme.of(context).textTheme.titleSmall!.copyWith(
+            shadows: [
+              AppTheme.boxShadow,
+            ],
+          )
+        : Theme.of(context).textTheme.bodySmall!.copyWith(
+            shadows: [
+              AppTheme.boxShadow,
+            ],
+          );
+
+    return InkWell(
+      onTap: isActive ? action : null,
+      borderRadius: borderRadius,
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: ColorFiltered(
+          colorFilter: isActive
+              ? ColorFilter.mode(
+                  Colors.transparent,
+                  BlendMode.color,
+                )
+              : ColorFilter.mode(
+                  Colors.black.withOpacity(0.99),
+                  BlendMode.color,
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                      top: AppTheme.elementSpacing / 2,
-                      bottom: AppTheme.elementSpacing,
-                      right: AppTheme.elementSpacing,
-                      left: AppTheme.elementSpacing),
-                  child: Text(text,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        shadows: [
-                          AppTheme.boxShadow,
-                        ],
-                      )),
-                ),
-              ],
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              boxShadow: [AppTheme.boxShadowProfile],
+            ),
+            child: GlassContainer(
+              borderThickness: isActive ? 1.5 : 0,
+              blur: 50,
+              opacity: 0.1,
+              borderRadius: borderRadius,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: height / 20,
+                    ),
+                    height: height / 1.6,
+                    width: height / 1.6,
+                    decoration: BoxDecoration(
+                      borderRadius: borderRadius / 1.5,
+                      boxShadow: [AppTheme.boxShadowSmall],
+                    ),
+                    child: image != null
+                        ? Image.asset(image!)
+                        : Icon(
+                            fallbackIcon ?? Icons.error,
+                            size: 50,
+                          ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      bottom: height / 20,
+                      right: width / 10,
+                      left: width / 10,
+                    ),
+                    child: Text(text,
+                        textAlign: TextAlign.center, style: textstyle),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

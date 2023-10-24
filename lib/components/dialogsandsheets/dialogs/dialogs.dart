@@ -190,20 +190,28 @@ Future<bool?> showDialogueMultipleOptions({
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    OptionContainer(context, text1, action1, image: image1),
-                    OptionContainer(context, text2, action2, image: image2),
+                    OptionContainer(
+                      text1,
+                      action1,
+                      image: image1,
+                    ),
+                    OptionContainer(
+                      text2,
+                      action2,
+                      image: image2,
+                    ),
+
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     OptionContainer(
-                      context,
                       text3,
                       action3,
                       image: image3,
                     ),
-                    OptionContainer(context, text4, action4, image: image4),
+                    OptionContainer(text4, action4, image: image4),
                   ],
                 ),
                 ElevatedButton(

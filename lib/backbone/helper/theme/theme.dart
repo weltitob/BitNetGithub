@@ -40,6 +40,9 @@ abstract class AppTheme {
   // static const Color kAccentColor = Color(0xFFFFC107);
   static const Color colorBitcoin = Color(0xfff2a900);
   static const Color colorPrimaryGradient = Color(0xfff25d00);
+
+
+  static const Color colorLink = Colors.blueAccent;
   //
   //green and red
   static const Color errorColor = Color(0xFFFF6363);

@@ -70,10 +70,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  OptionContainer(context, "Word recovery", () {
+                  OptionContainer( "Word recovery", () {
                     VRouter.of(context).to('/word_recovery');
                   }, image: "assets/images/wallet.png"),
-                  OptionContainer(context, "Connect with other device", () {
+                  OptionContainer("Connect with other device", () {
                     VRouter.of(context).to('/device_recovery');
                   }, image: "assets/images/scan_qr_device.png"),
                 ],
@@ -84,10 +84,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  OptionContainer(context, "Social recovery", () {
+                  OptionContainer("Social recovery", () {
                     VRouter.of(context).to('/social_recovery');
                   }, image: "assets/images/friends.png"),
-                  OptionContainer(context, "Use DID and Private Key", () {
+                  OptionContainer("Use DID and Private Key", () {
                     VRouter.of(context).to('/did_recovery');
                   }, image: "assets/images/key_removed_bck.png"),
                 ],

@@ -1,8 +1,5 @@
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/buttons/roundedbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class BitNetListTile extends StatelessWidget {
   final Widget? leading;
@@ -22,7 +19,7 @@ class BitNetListTile extends StatelessWidget {
     this.text = "",
     this.subtitle,
     this.trailing,
-    this.contentPadding = const EdgeInsets.symmetric(horizontal: 16.0),
+    this.contentPadding = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
     this.onTap,
     this.tileColor,
     this.shape,
@@ -30,48 +27,52 @@ class BitNetListTile extends StatelessWidget {
     this.subtitleStyle,
   });
 
-  //Inkwell funktioniert hier noch nicht
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: AppTheme.elementSpacing),
-      child: LongButtonWidget(
-        customHeight: AppTheme.cardPadding * 2,
-        customWidth: MediaQuery.of(context).size.width - AppTheme.cardPadding,
-        title: text,
-        buttonType: ButtonType.transparent,
-        leadingIcon: leading,
-        onTap: () {  },
-
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(top: AppTheme.elementSpacing, left: AppTheme.elementSpacing, right: AppTheme.elementSpacing,),
+        padding: contentPadding,
+        decoration: BoxDecoration(
+          color: tileColor ?? Colors.white.withOpacity(0.1),
+          borderRadius: AppTheme.cardRadiusSmall,
+          border: shape != null ? null : Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          children: <Widget>[
+            if (leading != null) ...[
+              leading!,
+              SizedBox(width: 16),
+            ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    text,
+                    style: titleStyle ?? Theme.of(context).textTheme.subtitle1,
+                  ),
+                  if (subtitle != null) ...[
+                    SizedBox(height: 4),
+                    DefaultTextStyle(
+                      style: subtitleStyle ?? Theme.of(context).textTheme.bodyText2!.copyWith(
+                        color: Colors.grey.shade600,
+                      ),
+                      child: subtitle!,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (trailing != null) ...[
+              SizedBox(width: 16),
+              trailing!,
+            ],
+          ],
+        ),
       ),
     );
-
-    //
-    //   InkWell(
-    //   onTap: onTap,
-    //   borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2 / 2.5),
-    //   child: Padding(
-    //     padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
-    //     child: GlassContainer(
-    //       height: AppTheme.cardPadding * 2,
-    //       width: MediaQuery.of(context).size.width - AppTheme.cardPadding ,
-    //       borderThickness: 1.5, // remove border if not active
-    //       blur: 50,
-    //       opacity: 0.1,
-    //       borderRadius:
-    //       BorderRadius.circular(AppTheme.cardPadding * 2 / 2.5),
-    //       child: ListTile(
-    //         leading: leading,
-    //         title: title != null ? DefaultTextStyle(style: titleStyle ?? Theme.of(context).textTheme.subtitle1!, child: title!) : null,
-    //         subtitle: subtitle != null ? DefaultTextStyle(style: subtitleStyle ?? Theme.of(context).textTheme.bodyText2!, child: subtitle!) : null,
-    //         trailing: trailing,
-    //         contentPadding: contentPadding,
-    //         onTap: onTap,
-    //         tileColor: tileColor,
-    //         shape: shape,
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
