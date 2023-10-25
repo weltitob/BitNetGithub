@@ -4,7 +4,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class OptionContainer extends StatelessWidget {
   final String text;
-  final VoidCallback action;
+  final Function() action;
   final IconData? fallbackIcon;
   final String? image;
   final double width;
@@ -39,65 +39,68 @@ class OptionContainer extends StatelessWidget {
             ],
           );
 
-    return InkWell(
-      onTap: isActive ? action : null,
-      borderRadius: borderRadius,
-      child: ClipRRect(
+    return Transform.scale(
+      scale: isActive ? 1 : 0.9,
+      child: InkWell(
+        onTap: action,
         borderRadius: borderRadius,
-        child: ColorFiltered(
-          colorFilter: isActive
-              ? ColorFilter.mode(
-                  Colors.transparent,
-                  BlendMode.color,
-                )
-              : ColorFilter.mode(
-                  Colors.black.withOpacity(0.99),
-                  BlendMode.color,
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: ColorFiltered(
+            colorFilter: isActive
+                ? ColorFilter.mode(
+                    Colors.transparent,
+                    BlendMode.color,
+                  )
+                : ColorFilter.mode(
+                    Colors.black.withOpacity(0.5),
+                    BlendMode.color,
+                  ),
+            child: Container(
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                borderRadius: borderRadius,
+                boxShadow: [AppTheme.boxShadowProfile],
+              ),
+              child: GlassContainer(
+                borderThickness: isActive ? 1.5 : 0,
+                blur: 50,
+                opacity: 0.1,
+                borderRadius: borderRadius,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(
+                        top: height / 40,
+                      ),
+                      height: width / 1.5,
+                      width: width / 1.5,
+                      decoration: BoxDecoration(
+                        borderRadius: borderRadius / 1.5,
+                        boxShadow: [AppTheme.boxShadowSmall],
+                      ),
+                      child: image != null
+                          ? Image.asset(image!)
+                          : Icon(
+                              fallbackIcon ?? Icons.error,
+                              size: 50,
+                            ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        right: AppTheme.elementSpacing,
+                        left: AppTheme.elementSpacing,
+                      ),
+                      child: Text(text,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center, style: textstyle),
+                    ),
+                  ],
                 ),
-          child: Container(
-            width: width,
-            height: height,
-            decoration: BoxDecoration(
-              borderRadius: borderRadius,
-              boxShadow: [AppTheme.boxShadowProfile],
-            ),
-            child: GlassContainer(
-              borderThickness: isActive ? 1.5 : 0,
-              blur: 50,
-              opacity: 0.1,
-              borderRadius: borderRadius,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: height / 40,
-                    ),
-                    height: width / 1.5,
-                    width: width / 1.5,
-                    decoration: BoxDecoration(
-                      borderRadius: borderRadius / 1.5,
-                      boxShadow: [AppTheme.boxShadowSmall],
-                    ),
-                    child: image != null
-                        ? Image.asset(image!)
-                        : Icon(
-                            fallbackIcon ?? Icons.error,
-                            size: 50,
-                          ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      right: AppTheme.elementSpacing,
-                      left: AppTheme.elementSpacing,
-                    ),
-                    child: Text(text,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center, style: textstyle),
-                  ),
-                ],
               ),
             ),
           ),

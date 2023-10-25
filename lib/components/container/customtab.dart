@@ -6,11 +6,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 class CustomTabContent extends StatelessWidget {
   final String imageUrl;
   final String text;
+  final Function()? onTap;
 
   const CustomTabContent({
     Key? key,
     required this.imageUrl,
     required this.text,
+    this.onTap,
   }) : super(key: key);
 
   @override

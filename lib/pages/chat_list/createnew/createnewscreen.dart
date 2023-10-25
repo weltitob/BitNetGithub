@@ -1,13 +1,16 @@
 import 'dart:math';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetTabBar.dart';
 import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/horizontallistviewwrapper.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_group/new_group.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_private_chat/new_private_chat.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_space/new_space.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:vrouter/vrouter.dart';
 
 class CreateNewScreen extends StatefulWidget {
 
@@ -74,7 +77,7 @@ class _CreateNewScreenState extends State<CreateNewScreen>
       context: context,
       appBar: bitnetAppBar(
         context: context,
-        onTap: () => Navigator.of(context).pop(),
+        onTap: () => VRouter.of(context).to('/rooms'),
         text: _title,
       ),
       body: SingleChildScrollView(
@@ -83,55 +86,50 @@ class _CreateNewScreenState extends State<CreateNewScreen>
           children: [
             Padding(
               padding: const EdgeInsets.only(
-                  left: AppTheme.cardPadding,
-                  right: AppTheme.cardPadding,
                   top: AppTheme.cardPadding * 1),
-              child: DefaultTabController(
-                length: 3,
-                initialIndex: 0,
-                child: ButtonsTabBar(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: AppTheme.elementSpacing * 0.5,
-                    horizontal: AppTheme.elementSpacing,
-                  ),
-                  borderWidth: AppTheme.tabbarBorderWidth,
-                  unselectedBorderColor: Colors.transparent,
-                  borderColor: Colors.white.withOpacity(0.2),
-                  radius: AppTheme.tabbarBorderRadius,
-                  physics: ClampingScrollPhysics(),
-                  controller: _tabController,
-                  // give the indicator a decoration (color and border radius)
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: AppTheme.cardRadiusCircular,
-                  ),
-                  unselectedDecoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: AppTheme.cardRadiusCircular,
-                  ),
-                  tabs: [
-                    Tab(
-                      child: Text(
-                        L10n.of(context)!.newChat,
-                        style: AppTheme.textTheme.bodyMedium!.copyWith(
-                            color: AppTheme.white80, fontWeight: FontWeight.bold),
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                alignment: Alignment.center,
+                child: DefaultTabController(
+                  length: 3,
+                  initialIndex: 0,
+                  child: Container(
+                    height: AppTheme.elementSpacing * 3,
+                    child: BitNetTabBar(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing,
                       ),
+                      //buttonMargin: EdgeInsets.only(left: AppTheme.elementSpacing, right: AppTheme.elementSpacing),
+                      tabController: _tabController,
+                      tabs: [
+                        Tab(
+                          child: Text(
+                            L10n.of(context)!.newChat,
+
+                            style: AppTheme.textTheme.titleSmall!.copyWith(
+                                color: AppTheme.white80,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            L10n.of(context)!.createNewGroup,
+                            style: AppTheme.textTheme.titleSmall!.copyWith(
+                                color: AppTheme.white80,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            L10n.of(context)!.createNewSpace,
+                            style: AppTheme.textTheme.titleSmall!.copyWith(
+                                color: AppTheme.white80,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
-                    Tab(
-                      child: Text(
-                        L10n.of(context)!.createNewGroup,
-                        style: AppTheme.textTheme.bodyMedium!.copyWith(
-                            color: AppTheme.white80, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Tab(
-                      child: Text(
-                        L10n.of(context)!.createNewSpace,
-                        style: AppTheme.textTheme.bodyMedium!.copyWith(
-                            color: AppTheme.white80, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),

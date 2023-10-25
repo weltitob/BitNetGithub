@@ -44,9 +44,9 @@ class _BottomNavState extends State<BottomNav> {
               children: <Widget>[
                 IgnorePointer(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 29),
+                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 30),
                     child: Container(
-                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 29,
+                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 30,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -77,10 +77,6 @@ class _BottomNavState extends State<BottomNav> {
             left: AppTheme.cardPadding * 1,
             right: AppTheme.cardPadding * 1,
             child: GlassContainer(
-              borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2.5 / 2.5),
-              borderThickness: 1.5, // remove border if not active
-              blur: 50,
-              opacity: 0.1,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1.25, vertical: AppTheme.elementSpacing * 1.25),
                 child: Row(

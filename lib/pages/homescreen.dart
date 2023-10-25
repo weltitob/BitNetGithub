@@ -1,8 +1,8 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -193,19 +193,16 @@ class _FeedScreenState extends State<FeedScreen>
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: AppTheme.cardRadiusMid,
-          border: Border.all(
-            color: index == _tabController.index
-                ? Theme.of(context).colorScheme.secondary
-                : Colors.transparent,
-            width: 3,
-          ),
           boxShadow: [
             AppTheme.boxShadowSmall,
           ],
         ),
-        child: Material(
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            borderRadius: AppTheme.cardRadiusMid,
+        child: Transform.scale(
+          scale: index == _tabController.index ? 1 : 0.9,
+          child: GlassContainer(
+            borderThickness: index == _tabController.index
+                ? 3
+                : 1.5,
             child: InkWell(
               borderRadius: AppTheme.cardRadiusMid,
               child: Column(
@@ -230,7 +227,9 @@ class _FeedScreenState extends State<FeedScreen>
                   _tabController.animateTo(index);
                 });
               },
-            )));
+            ),
+          ),
+        ));
   }
 
   FutureBuilder buildSearchResults() {

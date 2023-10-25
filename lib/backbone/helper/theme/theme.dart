@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/services.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -15,9 +14,10 @@ abstract class AppTheme {
   static String? get applicationWelcomeMessage => _applicationWelcomeMessage;
   static String _defaultHomeserver = 'matrix.org';
   static String get defaultHomeserver => _defaultHomeserver;
-  static double bubbleSizeFactor = 1;
+
+  static double bubbleSizeFactor = 0.8;
   static double fontSizeFactor = 1;
-  static const double messageFontSize = 15.75;
+  static const double messageFontSize = 15;
 
   static const Color chatColor = primaryColor;
 
@@ -46,7 +46,7 @@ abstract class AppTheme {
   //
   //green and red
   static const Color errorColor = Color(0xFFFF6363);
-  static const Color errorColorGradient = Color(0xFFC52C2C);
+  static const Color errorColorGradient = Color(0xFFC54545);
   static const Color successColor = Color(0xFF5DE165);
   static const Color successColorGradient = Color(0xFF148C1A);
 
@@ -202,7 +202,8 @@ abstract class AppTheme {
   static const double borderRadiusCircular = 500.0;
 
   static const double tabbarBorderWidth = 1.5;
-  static const double tabbarBorderRadius = 100;
+
+
   static const double navRailWidth = 2 * cardPadding + elementSpacing;
   //spaces
   static const double cardPadding = 24;

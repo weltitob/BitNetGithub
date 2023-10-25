@@ -1,4 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/personalactionbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -152,81 +154,81 @@ Future<bool?> showDialogue({
 Future<bool?> showDialogueMultipleOptions({
   required BuildContext context,
   String? title,
-  required String text1,
-  required String text2,
-  required String text3,
-  required String text4,
-  required String image1,
-  required String image2,
-  required String image3,
-  required String image4,
-  dynamic action1,
-  dynamic action2,
-  dynamic action3,
-  dynamic action4,
+  List<String?> texts = const [],
+  List<String?> images = const [],
+  List<bool> isActives = const [],
+  List<VoidCallback?> actions = const [],
 }) {
   return showDialog(
     context: context,
     builder: (context) {
+      // Ensure there are 4 items in all lists for consistency
+      int length = texts.length;
+      List<Widget> optionContainers = List.generate(
+        length,
+            (index) {
+          if (index < length &&
+              texts[index] != null &&
+              images[index] != null &&
+              actions[index] != null) {
+            return OptionContainer(
+              isActive: index < isActives.length ? isActives[index] : true,
+              height: AppTheme.cardPadding * 4.5,
+              width: AppTheme.cardPadding * 4.5,
+              texts[index]!,
+              actions[index]!,
+              image: images[index]!,
+            );
+          } else {
+            return SizedBox.shrink();
+          }
+        },
+      );
+
+      List<Widget> rows = [];
+      for (int i = 0; i < optionContainers.length; i += 2) {
+        rows.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              optionContainers[i],
+              if (i + 1 < optionContainers.length) ...[
+                SizedBox(width: AppTheme.elementSpacing),
+                optionContainers[i + 1],
+              ]
+            ],
+          ),
+        );
+        if (i + 2 < optionContainers.length) rows.add(SizedBox(height: AppTheme.elementSpacing));
+      }
+
       return AlertDialog(
-        elevation: 20.0,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        backgroundColor: AppTheme.colorSchemeSeed,
+        contentPadding: EdgeInsets.all(0),
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: AppTheme.cardRadiusBig,
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            (title != null)
-                ? Padding(
-                    padding: const EdgeInsets.only(
-                        top: AppTheme.elementSpacing / 2,
-                        bottom: AppTheme.elementSpacing / 2),
-                    child: Text(title,
-                        style: Theme.of(context).textTheme.displaySmall),
-                  )
-                : Container(),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    OptionContainer(
-                      text1,
-                      action1,
-                      image: image1,
-                    ),
-                    OptionContainer(
-                      text2,
-                      action2,
-                      image: image2,
-                    ),
-
-                  ],
+        content: GlassContainer(
+          borderRadius: AppTheme.cardRadiusBig,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              bitnetAppBar(context: context, text: title ?? "Choose an option", customIcon: Icons.close,
+                  onTap: () {
+                    Navigator.pop(context);
+                  }),
+              Padding(
+                padding: const EdgeInsets.all(AppTheme.cardPadding),
+                child: Column(
+                  children:
+                    rows
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    OptionContainer(
-                      text3,
-                      action3,
-                      image: image3,
-                    ),
-                    OptionContainer(text4, action4, image: image4),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(AppTheme.errorColor),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100))),
-                  ),
-                  child: Icon(Icons.stop_rounded),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       );
     },

@@ -25,7 +25,7 @@ class FormTextField extends StatefulWidget {
   const FormTextField({
     Key? key,
     required this.hintText,
-    required this.isObscure,
+    this.isObscure = false,
     this.controller,
     this.focusNode,
     this.validator,

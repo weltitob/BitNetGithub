@@ -153,14 +153,30 @@ class ProfileView extends StatelessWidget {
                                     }
                                   : () {
                                       showDialogueMultipleOptions(
-                                        image1: 'assets/images/bitcoin.png',
-                                        image2: 'assets/images/bitcoin.png',
-                                        image3: 'assets/images/bitcoin.png',
-                                        image4: 'assets/images/bitcoin.png',
-                                        text1: 'Profilepic',
-                                        text2: 'Background',
-                                        text3: 'Porfile NFT',
-                                        text4: 'Backgr. NFT',
+                                        isActives: [
+                                          true,
+                                          true,
+                                          true,
+                                          true,
+                                        ],
+                                        actions: [
+                                          (){},
+                                          (){},
+                                          (){},
+                                          (){},
+                                        ],
+                                        images: [
+                                          'assets/images/bitcoin.png',
+                                          'assets/images/bitcoin.png',
+                                          'assets/images/bitcoin.png',
+                                          'assets/images/bitcoin.png',
+                                        ],
+                                        texts: [
+                                          'Profilepic',
+                                          'Background',
+                                          'Porfile NFT',
+                                          'Backgr. NFT',
+                                        ],
                                         context: context,
                                       );
                                     },

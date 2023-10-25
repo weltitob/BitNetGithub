@@ -5,7 +5,8 @@ import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/futurelottie.dart';
-import 'package:bitnet/pages/scan_qr_screen.dart';
+import 'package:bitnet/pages/qrscanner/qrscanner.dart';
+import 'package:bitnet/pages/qrscanner/scan_qr_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -152,8 +153,8 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) =>
-                        const QRScreen(
-                          isBottomButtonVisible: true,
+                        const QrScanner(
+                          //isBottomButtonVisible: true,
                         ),
                       ),
                     );

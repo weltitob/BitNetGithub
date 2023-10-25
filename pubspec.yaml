@@ -25,6 +25,7 @@ dependencies:
   youtube_player_flutter: ^8.1.2
   either_dart: ^1.0.0
   like_button: ^2.0.5
+  marquee: ^2.2.3
 
   #von fluffy
   adaptive_dialog: ^1.9.0-no-macos.2
