@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
-import 'package:bitnet/pages/qrscanner/scan_qr_screen.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

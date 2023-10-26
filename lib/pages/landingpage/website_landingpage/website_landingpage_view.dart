@@ -2,7 +2,6 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
-import 'package:bitnet/components/buttons/glassbutton.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -39,7 +38,6 @@ class WebsiteLandingPageView extends StatelessWidget {
               double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
               double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
               double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
-
 
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: centerSpacing),

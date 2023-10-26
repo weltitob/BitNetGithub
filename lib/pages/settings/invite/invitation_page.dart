@@ -5,7 +5,7 @@ import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/pages/chat_list/client_chooser_button.dart';
+import 'package:bitnet/components/buttons/client_chooser_button.dart';
 import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/models/verificationcode.dart';

@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class GradientBoxBorder extends BoxBorder {
   final BorderRadius borderRadius;
   final double borderWidth;
+  final bool isTransparent;
 
   GradientBoxBorder({
-    this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(14.0)),
     this.borderWidth = 1.5,
+    this.isTransparent = false,
   }) : super();
 
   @override
@@ -40,7 +42,7 @@ class GradientBoxBorder extends BoxBorder {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.2)],
+        colors: isTransparent? [Colors.transparent,Colors.transparent,Colors.transparent, Colors.transparent] : [Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.2)],
       ).createShader(rect)
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;

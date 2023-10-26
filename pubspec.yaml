@@ -77,7 +77,6 @@ dependencies:
   package_info_plus: ^4.0.0
   pin_code_text_field: ^1.8.0
   punycode: ^1.0.0
-  qr_code_scanner: ^1.0.0
   qr_flutter: ^4.0.0
   receive_sharing_intent: ^1.4.5
   record: ^4.4.4
