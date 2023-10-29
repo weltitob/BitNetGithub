@@ -44,8 +44,12 @@ class BitNetTabBar extends StatelessWidget {
         left: AppTheme
             .elementSpacing), // Default value from AppTheme.elementSpacing
     this.contentPadding = const EdgeInsets.symmetric(
-        vertical: AppTheme.elementSpacing,
-        horizontal: AppTheme.elementSpacing),
+      vertical:
+      AppTheme.elementSpacing *
+          0.5,
+      horizontal:
+      AppTheme.elementSpacing / 4,
+    ),
     this.borderWidth = AppTheme.tabbarBorderWidth,
     this.unselectedBorderColor = Colors.transparent,
     this.radius = AppTheme.cardPaddingSmall,

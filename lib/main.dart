@@ -1,5 +1,4 @@
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';

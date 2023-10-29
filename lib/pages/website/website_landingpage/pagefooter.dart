@@ -8,8 +8,7 @@ import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/models/user/userwallet.dart';
-import 'package:bitnet/pages/landingpage/website_landingpage/socialrow.dart';
-import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage.dart';
+import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -197,19 +196,25 @@ class _PageFooterState extends State<PageFooter> {
                                 ),
                               ),
                             ),
-                      _isThirdAnimationCompleted ? Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          margin: EdgeInsets.only(top: AppTheme.cardPadding * 6.5 * spacingMultiplier,),
-                          width: 850 + AppTheme.cardPadding * 10,
-                          height: 400,
-                          child: RandomAvatarWidget(
-                            start: false,
-                            width: 850 + AppTheme.cardPadding * 10,
-                            height: 400,
-                          ),
-                        ),
-                      ) : Container(),
+                      _isThirdAnimationCompleted
+                          ? Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: AppTheme.cardPadding *
+                                      6.5 *
+                                      spacingMultiplier,
+                                ),
+                                width: 850 + AppTheme.cardPadding * 10,
+                                height: 400,
+                                child: RandomAvatarWidget(
+                                  start: false,
+                                  width: 850 + AppTheme.cardPadding * 10,
+                                  height: 400,
+                                ),
+                              ),
+                            )
+                          : Container(),
                       FadeIn(
                         child: Align(
                           alignment: Alignment.topCenter,
@@ -239,7 +244,8 @@ class _PageFooterState extends State<PageFooter> {
                                           width: 850,
                                           height: 240,
                                           padding: EdgeInsets.symmetric(
-                                            horizontal: AppTheme.cardPadding * 2,
+                                            horizontal:
+                                                AppTheme.cardPadding * 2,
                                             vertical: AppTheme.cardPadding * 2,
                                           ),
                                           child: _isThirdAnimationCompleted
@@ -258,32 +264,37 @@ class _PageFooterState extends State<PageFooter> {
                                                                 end: Alignment
                                                                     .bottomCenter,
                                                                 tileMode:
-                                                                    TileMode.clamp)
-                                                            .createShader(bounds),
+                                                                    TileMode
+                                                                        .clamp)
+                                                            .createShader(
+                                                                bounds),
                                                     child: AnimatedTextKit(
-                                                      isRepeatingAnimation: false,
+                                                      isRepeatingAnimation:
+                                                          false,
                                                       animatedTexts: [
                                                         TypewriterAnimatedText(
                                                           '"We take it in our own hands!"',
-                                                          textStyle: Theme.of(context)
-                                                              .textTheme
-                                                              .displayLarge!
-                                                              .copyWith(
-                                                                color: Colors
-                                                                    .white, // This color will be replaced by the gradient effect
-                                                              ),
+                                                          textStyle:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .displayLarge!
+                                                                  .copyWith(
+                                                                    color: Colors
+                                                                        .white, // This color will be replaced by the gradient effect
+                                                                  ),
                                                           speed: const Duration(
                                                               milliseconds: 50),
                                                         ),
                                                         TypewriterAnimatedText(
                                                           'Join BitNet now!',
-                                                          textStyle: Theme.of(context)
-                                                              .textTheme
-                                                              .displayLarge!
-                                                              .copyWith(
-                                                                color: Colors
-                                                                    .white, // This color will be replaced by the gradient effect
-                                                              ),
+                                                          textStyle:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .displayLarge!
+                                                                  .copyWith(
+                                                                    color: Colors
+                                                                        .white, // This color will be replaced by the gradient effect
+                                                                  ),
                                                           speed: const Duration(
                                                               milliseconds: 50),
                                                         ),
@@ -301,28 +312,32 @@ class _PageFooterState extends State<PageFooter> {
                                                     fadeInKey.currentState
                                                         ?.restartAnimation();
                                                   },
-                                                  itemCount: pageDataList.length,
-                                                  itemBuilder: (context, index) {
+                                                  itemCount:
+                                                      pageDataList.length,
+                                                  itemBuilder:
+                                                      (context, index) {
                                                     return Column(
                                                       children: [
                                                         _buildTypewriterText(
-                                                            pageDataList[index].text,
-                                                            () {
+                                                            pageDataList[index]
+                                                                .text, () {
                                                           if (index <
-                                                              pageDataList.length -
+                                                              pageDataList
+                                                                      .length -
                                                                   1) {
                                                             Future.delayed(
                                                                 const Duration(
                                                                     milliseconds:
-                                                                        2000), () {
+                                                                        2000),
+                                                                () {
                                                               _pageController
                                                                   .nextPage(
                                                                 duration:
                                                                     const Duration(
                                                                         milliseconds:
                                                                             300),
-                                                                curve:
-                                                                    Curves.easeInOut,
+                                                                curve: Curves
+                                                                    .easeInOut,
                                                               );
                                                             });
                                                           }
@@ -335,20 +350,25 @@ class _PageFooterState extends State<PageFooter> {
                                         _isThirdAnimationCompleted
                                             ? Container()
                                             : Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Container(
-                                              margin: EdgeInsets.only(
-                                                bottom: AppTheme.cardPadding *
-                                                    1 *
-                                                    spacingMultiplier,
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Container(
+                                                    margin: EdgeInsets.only(
+                                                      bottom:
+                                                          AppTheme.cardPadding *
+                                                              1 *
+                                                              spacingMultiplier,
+                                                    ),
+                                                    child: buildIndicator(
+                                                      dotHeight: AppTheme
+                                                          .elementSpacing,
+                                                      dotWidth: AppTheme
+                                                          .elementSpacing,
+                                                      pageController:
+                                                          _pageController,
+                                                      count: 3,
+                                                    )),
                                               ),
-                                              child: buildIndicator(
-                                                dotHeight: AppTheme.elementSpacing,
-                                                dotWidth: AppTheme.elementSpacing,
-                                                pageController: _pageController,
-                                                count: 3,
-                                              )),
-                                        ),
                                       ],
                                     ),
                                   ),
@@ -378,20 +398,25 @@ class _PageFooterState extends State<PageFooter> {
                                 ),
                               ),
                             ),
-                      _isThirdAnimationCompleted ?
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          margin: EdgeInsets.only(top: AppTheme.cardPadding * 6.5 * spacingMultiplier,),
-                          width: 850 + AppTheme.cardPadding * 10,
-                          height: 400,
-                          child: RandomAvatarWidget(
-                            start: true,
-                            width: 850 + AppTheme.cardPadding * 10,
-                            height: 400,
-                          ),
-                        ),
-                      ) : Container(),
+                      _isThirdAnimationCompleted
+                          ? Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: AppTheme.cardPadding *
+                                      6.5 *
+                                      spacingMultiplier,
+                                ),
+                                width: 850 + AppTheme.cardPadding * 10,
+                                height: 400,
+                                child: RandomAvatarWidget(
+                                  start: true,
+                                  width: 850 + AppTheme.cardPadding * 10,
+                                  height: 400,
+                                ),
+                              ),
+                            )
+                          : Container(),
                       _isThirdAnimationCompleted
                           ? Container()
                           : FadeIn(
@@ -713,16 +738,29 @@ class _PageFooterState extends State<PageFooter> {
         SizedBox(
           height: AppTheme.elementSpacing,
         ),
-        SocialRow(platformName: "Get Started"), // VRouter auth
-        SocialRow(platformName: "About us"), // About us page (nur ich lol)
         SocialRow(
-            platformName:
-                "Fund us"), // Support the project give money or buy these nfts
+          platformName: "Get Started",
+          onTap: () => VRouter.of(context).to('/website'),
+        ), // VRouter auth
         SocialRow(
-            platformName: "Roadmap"), // make roadmap how the app should develop
+          platformName: "About us",
+          onTap: () => VRouter.of(context).to('/aboutus'),
+        ), // About us page (nur ich lol)
         SocialRow(
-            platformName:
-                "Whitepaper"), // whitepaper (webbrowser einfach n tab mit dem whitepaper öffnen
+            platformName: "Impressum",
+            onTap: () => VRouter.of(context)
+                .to('/impressum')), // make roadmap how the app should develop
+        SocialRow(
+            platformName: "Fund us",
+            onTap: () {
+              launchUrlString(AppTheme.goFundMeUrl);
+            }), // Support the project give money or buy these nfts
+        SocialRow(
+          platformName: "Whitepaper",
+          onTap: () {
+            print("Download whitepaper as pdf or smth...");
+          },
+        ), // whitepaper (webbrowser einfach n tab mit dem whitepaper öffnen
         //reddit??
         //tumblr??
       ],
@@ -740,19 +778,73 @@ class _PageFooterState extends State<PageFooter> {
         SizedBox(
           height: AppTheme.elementSpacing,
         ),
-        SocialRow(platformName: "Contact"), //lauch gmail mit contact@mybitnet
         SocialRow(
-            platformName:
-                "Report incident"), //vrouter reporting page (bug voreingetsellt)
-        SocialRow(platformName: "Report Abuse and Fraud"),
+          platformName: "Contact",
+          onTap: () {
+            print("open email and send email to support auto");
+            VRouter.of(context).to("/contact");
+          },
+        ), //lauch gmail mit contact@mybitnet
+        SocialRow(
+          platformName: "Report incident",
+          onTap: () {
+            print("Help and Support");
+            VRouter.of(context).to("/report");
+          },
+        ), //vrouter reporting page (bug voreingetsellt)
+        SocialRow(
+            platformName: "Report Abuse and Fraud", //Abuse Fraud Bugs Security Issue and so on...
+            onTap: () {
+              VRouter.of(context).to("/report");
+            }),
         //dafür bekommt man belohnungen
         SocialRow(
-            platformName:
-                "Report Security Issue"), //vrouter reporting page (abuse voreingetsellt)
+          platformName: "Report Security Issue",
+          onTap: () {
+            VRouter.of(context).to('/report');
+          },
+        ), //vrouter reporting page (abuse voreingetsellt)
+        //ideaportal
         SocialRow(
-            platformName:
-                "Submit Idea"), //vrouter reporting page (fraud voreingetsellt)//vrouter reporting page (security voreingetsellt)
+            platformName: "Submit Idea",
+            onTap: () {
+              VRouter.of(context).to('/submitidea');
+            }), //vrouter reporting page (fraud voreingetsellt)//vrouter reporting page (security voreingetsellt)
       ],
+    );
+  }
+}
+
+class SocialRow extends StatelessWidget {
+  IconData? iconData;
+  final String platformName;
+  final VoidCallback? onTap; // <-- Declare an onTap function
+
+  SocialRow({
+    this.iconData,
+    required this.platformName,
+    this.onTap, // <-- Initialize it in the constructor
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppTheme.elementSpacing / 1.25),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: onTap, // <-- Use the passed function here
+          child: Row(
+            children: [
+              if (iconData != null)
+                Icon(iconData, size: AppTheme.elementSpacing * 1.5),
+              if (iconData != null)
+                SizedBox(width: AppTheme.elementSpacing / 2),
+              Text(platformName, style: Theme.of(context).textTheme.bodyMedium),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
-import 'package:bitnet/pages/landingpage/website_landingpage/custom_card_landigpage.dart';
+import 'package:bitnet/components/container/custom_card_landigpage.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 

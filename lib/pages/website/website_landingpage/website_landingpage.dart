@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/landingpage/website_landingpage/website_landingpage_view.dart';
+import 'package:bitnet/pages/website/website_landingpage/website_landingpage_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:lottie/lottie.dart';

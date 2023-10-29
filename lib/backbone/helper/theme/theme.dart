@@ -93,6 +93,9 @@ abstract class AppTheme {
   //YouPorn
   //RedTube
 
+  static String goFundMeUrl =
+      'https://www.gofundme.com/manage/bitnet-a-decentralized-metaverse-application';
+
 
   static String _privacyUrl =
       'https://gitlab.com/famedly/fluffychat/-/blob/main/PRIVACY.md';
@@ -287,81 +290,80 @@ abstract class AppTheme {
       color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.4),
     ),
   );
-
   static final textTheme = TextTheme(
     displayLarge: GoogleFonts.inter(
       fontSize: 52,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
     ),
     displayMedium: GoogleFonts.inter(
         fontSize: 40,
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
         letterSpacing: -0.5
     ),
     displaySmall: GoogleFonts.inter(
       fontSize: 28,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.0,
     ),
     headlineLarge: GoogleFonts.inter(
       fontSize: 24,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
     ),
     headlineMedium: GoogleFonts.inter(
       fontSize: 22,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
     ),
     headlineSmall: GoogleFonts.inter(
       fontSize: 20,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
     ),
     titleLarge: GoogleFonts.inter(
       fontSize: 17,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
     ),
     titleMedium: GoogleFonts.inter(
       fontSize: 17,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
     ),
     titleSmall: GoogleFonts.inter(
       fontSize: 15,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
     ),
     bodyLarge: GoogleFonts.inter(
       fontSize: 17,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
     ),
     bodyMedium: const TextStyle(
       fontSize: 15,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
     ),
     bodySmall: const TextStyle(
       fontSize: 12,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.25,
     ),
     labelLarge: const TextStyle(
       fontSize: 12,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
     ),
     labelMedium: const TextStyle(
       fontSize: 15,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
     ),
     labelSmall: GoogleFonts.inter(
       fontSize: 10,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
     ),
   );

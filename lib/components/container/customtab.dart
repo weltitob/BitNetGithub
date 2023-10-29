@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class CustomTabContent extends StatelessWidget {
-  final String imageUrl;
+  final dynamic mxContent;
   final String text;
   final Function()? onTap;
 
   const CustomTabContent({
     Key? key,
-    required this.imageUrl,
+    required this.mxContent,
     required this.text,
     this.onTap,
   }) : super(key: key);
@@ -21,8 +21,8 @@ class CustomTabContent extends StatelessWidget {
       children: [
         SizedBox(width: AppTheme.elementSpacing / 2),
         Avatar(
-          mxContent: Uri.parse(imageUrl),
-          size: 25,
+          mxContent: mxContent,
+          size: 30,
         ),
         SizedBox(width: AppTheme.elementSpacing / 2),  // Give some spacing between the image and the text
         Text(

@@ -1,3 +1,4 @@
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/pages/settings/settingsscreen.dart';
@@ -8,7 +9,8 @@ class ImpressumScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return bitnetScaffold(
+      context: context,
       backgroundColor: AppTheme.colorBackground,
       body: Container(
         padding: EdgeInsets.only(top: AppTheme.cardPadding * 2),
@@ -94,22 +96,6 @@ class ImpressumScreen extends StatelessWidget {
             SizedBox(height: AppTheme.cardPadding * 4),
 
           ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: AppTheme.cardPadding),
-        child: FloatingActionButton.extended(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100.0),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          label: const Text('Zurück'),
-          elevation: 500,
-          icon: const Icon(Icons.arrow_back_rounded),
-          backgroundColor: Colors.purple.shade800,
         ),
       ),
     );
