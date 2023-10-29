@@ -3,7 +3,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetTabBar.dart';
 import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
-import 'package:bitnet/components/appstandards/horizontallistviewwrapper.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_group/new_group.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_private_chat/new_private_chat.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_space/new_space.dart';

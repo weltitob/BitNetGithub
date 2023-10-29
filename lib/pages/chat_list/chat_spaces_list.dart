@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetTabBar.dart';
-import 'package:bitnet/components/appstandards/horizontallistviewwrapper.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/customtab.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/chat_list/chat_list.dart';

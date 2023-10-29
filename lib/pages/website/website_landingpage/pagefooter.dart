@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/fadein.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/container/randomcontainers/randomavatarcontainer.dart';
@@ -14,13 +15,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:vrouter/vrouter.dart';
-
-class PageData {
-  final String text;
-  final UserData userData;
-
-  PageData(this.text, this.userData);
-}
 
 class PageFooter extends StatefulWidget {
   final WebsiteLandingPageController controller;
@@ -42,83 +36,6 @@ class _PageFooterState extends State<PageFooter> {
     super.dispose();
   }
 
-  List<PageData> pageDataList = [
-    PageData(
-      '"I have always been a Bitcoin enthusiast, so BitNet was a no-brainer for me. Its great to see how far we have come with Bitcoin."',
-      UserData(
-          backgroundImageUrl: "",
-          isPrivate: false,
-          showFollowers: false,
-          did: "whattheheck",
-          displayName: "Display Name",
-          bio: "jddjskd",
-          customToken: "dsd",
-          username: "brianbelt",
-          profileImageUrl:
-              "https://static.demilked.com/wp-content/uploads/2019/04/5cb6d34f775c2-stock-models-share-weirdest-stories-photo-use-102-5cb5c725bc378__700.jpg",
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          isActive: false,
-          dob: 2,
-          mainWallet: UserWallet(
-              walletAddress: "walletAddress",
-              walletType: "walletType",
-              walletBalance: "",
-              privateKey: "privateKey",
-              userdid: "userdid"),
-          wallets: []),
-    ),
-    PageData(
-      '"So happy to be part of the club 1 million. Zero chance Im selling my bitcoin NFT! This feels like buying bitcoin back in 2015."',
-      UserData(
-          backgroundImageUrl: "",
-          isPrivate: false,
-          showFollowers: false,
-          did: "djskdj",
-          displayName: "Display Name",
-          bio: "jddjskd",
-          customToken: "dsd",
-          username: "username",
-          profileImageUrl:
-              "https://img.freepik.com/free-photo/people-taking-selfie-together-registration-day_23-2149096795.jpg",
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          isActive: false,
-          dob: 2,
-          mainWallet: UserWallet(
-              walletAddress: "walletAddress",
-              walletType: "walletType",
-              walletBalance: "",
-              privateKey: "privateKey",
-              userdid: "userdid"),
-          wallets: []),
-    ),
-    PageData(
-      '"Wow! Bitnet is the part that I was always missing for bitcoin. Lightning wallets truly are the future. I believe we will only see more and more bitcoin adoption from now on."',
-      UserData(
-          backgroundImageUrl: "",
-          isPrivate: false,
-          showFollowers: false,
-          did: "djskdj",
-          displayName: "Display Name",
-          bio: "jddjskd",
-          customToken: "dsd",
-          username: "fakeusername",
-          profileImageUrl:
-              "https://variety.com/wp-content/uploads/2022/08/Jonah-Hill.jpg?w=1000",
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          isActive: false,
-          dob: 2,
-          mainWallet: UserWallet(
-              walletAddress: "walletAddress",
-              walletType: "walletType",
-              walletBalance: "",
-              privateKey: "privateKey",
-              userdid: "userdid"),
-          wallets: []),
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +151,7 @@ class _PageFooterState extends State<PageFooter> {
                                       1.5, // remove border if not active
                                   blur: 50,
                                   opacity: 0.1,
-                                  borderRadius: AppTheme.cardRadiusBigger,
+                                  borderRadius: BorderRadius.circular(240 / 3.5),
                                   child: Container(
                                     width: 850,
                                     height: 240,
@@ -245,8 +162,8 @@ class _PageFooterState extends State<PageFooter> {
                                           height: 240,
                                           padding: EdgeInsets.symmetric(
                                             horizontal:
-                                                AppTheme.cardPadding * 2,
-                                            vertical: AppTheme.cardPadding * 2,
+                                                AppTheme.cardPadding,
+                                            vertical: AppTheme.cardPadding * 2.25,
                                           ),
                                           child: _isThirdAnimationCompleted
                                               ? Container(
@@ -302,50 +219,55 @@ class _PageFooterState extends State<PageFooter> {
                                                     ),
                                                   ),
                                                 )
-                                              : PageView.builder(
-                                                  controller: _pageController,
-                                                  onPageChanged: (index) {
-                                                    setState(() {
-                                                      _selectedindex = index;
-                                                    });
-                                                    // Restart the FadeIn animation
-                                                    fadeInKey.currentState
-                                                        ?.restartAnimation();
-                                                  },
-                                                  itemCount:
-                                                      pageDataList.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return Column(
-                                                      children: [
-                                                        _buildTypewriterText(
-                                                            pageDataList[index]
-                                                                .text, () {
-                                                          if (index <
-                                                              pageDataList
-                                                                      .length -
-                                                                  1) {
-                                                            Future.delayed(
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        2000),
-                                                                () {
-                                                              _pageController
-                                                                  .nextPage(
-                                                                duration:
+                                              : HorizontalFadeListView(
+                                                child: PageView.builder(
+                                                    controller: _pageController,
+                                                    onPageChanged: (index) {
+                                                      setState(() {
+                                                        _selectedindex = index;
+                                                      });
+                                                      // Restart the FadeIn animation
+                                                      fadeInKey.currentState
+                                                          ?.restartAnimation();
+                                                    },
+                                                    itemCount:
+                                                    widget.controller.pageDataList.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.25),
+                                                        child: Column(
+                                                          children: [
+                                                            _buildTypewriterText(
+                                                                widget.controller.pageDataList[index]
+                                                                    .text, () {
+                                                              if (index <
+                                                                  widget.controller.pageDataList
+                                                                          .length -
+                                                                      1) {
+                                                                Future.delayed(
                                                                     const Duration(
                                                                         milliseconds:
-                                                                            300),
-                                                                curve: Curves
-                                                                    .easeInOut,
-                                                              );
-                                                            });
-                                                          }
-                                                        }),
-                                                      ],
-                                                    );
-                                                  },
-                                                ),
+                                                                            2000),
+                                                                    () {
+                                                                  _pageController
+                                                                      .nextPage(
+                                                                    duration:
+                                                                        const Duration(
+                                                                            milliseconds:
+                                                                                300),
+                                                                    curve: Curves
+                                                                        .easeInOut,
+                                                                  );
+                                                                });
+                                                              }
+                                                            }),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                              ),
                                         ),
                                         _isThirdAnimationCompleted
                                             ? Container()
@@ -432,7 +354,7 @@ class _PageFooterState extends State<PageFooter> {
                                         spacingMultiplier,
                                   ),
                                   child: _buildUserSearchResult(
-                                      pageDataList[_selectedindex].userData),
+                                      widget.controller.pageDataList[_selectedindex].userData),
                                 ),
                               ),
                             ),
@@ -468,6 +390,7 @@ class _PageFooterState extends State<PageFooter> {
                   color: AppTheme.white90,
                 ),
             speed: const Duration(milliseconds: 50),
+            textAlign: TextAlign.center,
           ),
         ],
         onFinished: () {
@@ -745,11 +668,11 @@ class _PageFooterState extends State<PageFooter> {
         SocialRow(
           platformName: "About us",
           onTap: () => VRouter.of(context).to('/aboutus'),
-        ), // About us page (nur ich lol)
+        ), // About us page (nur ich lol)make roadmap how the app should develop
         SocialRow(
-            platformName: "Impressum",
-            onTap: () => VRouter.of(context)
-                .to('/impressum')), // make roadmap how the app should develop
+          platformName: "Our Team",
+          onTap: () => VRouter.of(context).to('/ourteam'),
+        ),
         SocialRow(
             platformName: "Fund us",
             onTap: () {
@@ -761,6 +684,7 @@ class _PageFooterState extends State<PageFooter> {
             print("Download whitepaper as pdf or smth...");
           },
         ), // whitepaper (webbrowser einfach n tab mit dem whitepaper öffnen
+
         //reddit??
         //tumblr??
       ],
@@ -772,44 +696,38 @@ class _PageFooterState extends State<PageFooter> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Help and Support",
+          "Contact",
           style: Theme.of(context).textTheme.titleMedium,
         ),
         SizedBox(
           height: AppTheme.elementSpacing,
         ),
         SocialRow(
-          platformName: "Contact",
+          platformName: "Help Center",
           onTap: () {
-            print("open email and send email to support auto");
-            VRouter.of(context).to("/contact");
+            print("Help and Support");
+            VRouter.of(context).to("/help");
           },
-        ), //lauch gmail mit contact@mybitnet
+        ), //vrouter help page (faq voreingetsellt)
         SocialRow(
-          platformName: "Report incident",
+          platformName:
+              "Report issue", //bugs, incidents, security issues etc abuse and fraud etc problems in general
           onTap: () {
             print("Help and Support");
             VRouter.of(context).to("/report");
           },
         ), //vrouter reporting page (bug voreingetsellt)
         SocialRow(
-            platformName: "Report Abuse and Fraud", //Abuse Fraud Bugs Security Issue and so on...
-            onTap: () {
-              VRouter.of(context).to("/report");
-            }),
-        //dafür bekommt man belohnungen
-        SocialRow(
-          platformName: "Report Security Issue",
-          onTap: () {
-            VRouter.of(context).to('/report');
-          },
-        ), //vrouter reporting page (abuse voreingetsellt)
-        //ideaportal
-        SocialRow(
             platformName: "Submit Idea",
             onTap: () {
               VRouter.of(context).to('/submitidea');
             }), //vrouter reporting page (fraud voreingetsellt)//vrouter reporting page (security voreingetsellt)
+        SocialRow(
+            platformName: "AGBS",
+            onTap: () => VRouter.of(context).to('/agbs')), //
+        SocialRow(
+            platformName: "Impressum",
+            onTap: () => VRouter.of(context).to('/impressum')), //
       ],
     );
   }

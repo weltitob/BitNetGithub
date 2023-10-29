@@ -1,0 +1,116 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/animations/bitnetscale.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/avatar.dart';
+import 'package:flutter/material.dart';
+import 'package:vrouter/vrouter.dart';
+
+
+import 'package:flutter/material.dart';
+
+class TeamProfileCard extends StatefulWidget {
+  final String avatarUrl;
+  final String name;
+  final String position;
+  final String quote;
+  final bool isYou;
+
+  TeamProfileCard({
+    required this.avatarUrl,
+    required this.name,
+    required this.position,
+    required this.quote,
+    this.isYou = false,
+  });
+
+  @override
+  _TeamProfileCardState createState() => _TeamProfileCardState();
+}
+
+class _TeamProfileCardState extends State<TeamProfileCard> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() {
+          isHovered = true;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          isHovered = false;
+        });
+      },
+      child: AnimatedScale(
+          duration: Duration(milliseconds: 200),
+          scale: isHovered ? 1.0 : 0.9, // your widget tree
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Avatar(
+                    size: AppTheme.cardPadding * 7,
+                    mxContent: Uri.parse(widget.avatarUrl),
+                    name: widget.name,
+                    profileId: "did:ethr:0x1234567890123456789012345678901234567890",
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: AppTheme.cardPadding,
+              ),
+              Text(
+                widget.name,
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(
+                widget.position,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              SizedBox(height: AppTheme.cardPadding),
+              widget.isYou ? Container() : Container(
+                width: AppTheme.cardPadding * 9,
+                child: isHovered ? ShaderMask(
+                  shaderCallback: (rect) {
+                    return LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],
+                    ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                  },
+                  child: Text(
+                    widget.quote,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ) : Text(
+                  widget.quote,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              widget.isYou ?
+              LongButtonWidget(title: "Contribute now!",
+                  buttonType: ButtonType.transparent,
+                  customHeight: AppTheme.cardPadding * 1.5,
+                  customWidth: AppTheme.cardPadding * 7.5,
+                  onTap: (){
+                VRouter.of(context).to('/submitidea');
+              }) : Container(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

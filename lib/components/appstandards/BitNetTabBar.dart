@@ -1,4 +1,4 @@
-import 'package:bitnet/components/appstandards/horizontallistviewwrapper.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';

@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -25,49 +26,54 @@ class AboutUsView extends StatelessWidget {
           double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
           double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
 
-          return BackgroundWithContent(
-            backgroundType: BackgroundType.asset,
-            withGradientBottomBig: true,
-            opacity: 0.7,
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: centerSpacing),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: AppTheme.cardPadding * 4 * spacingMultiplier,
-                  ),
-                  Container(
-                    width: bigtextWidth,
-                    child: Text(
-                      "About us",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                  ),
-                  SizedBox(
-                    height: AppTheme.cardPadding * spacingMultiplier,
-                  ),
-                  Container(
-                    width: subtitleWidth,
-                    child: Text(
-                      "Hi, we're BitNet. But its all of us. Bringing together...!",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ),
-                  SizedBox(
-                    height: AppTheme.cardPadding * 2 * spacingMultiplier,
-                  ),
-                  Row(
+          return bitnetScaffold(
+            appBar: bitnetAppBar(context: context),
+            body: BackgroundWithContent(
+              backgroundType: BackgroundType.asset,
+              withGradientBottomBig: true,
+              opacity: 0.7,
+              child: SingleChildScrollView(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: centerSpacing),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container()
+                      SizedBox(
+                        height: AppTheme.cardPadding * 4 * spacingMultiplier,
+                      ),
+                      Container(
+                        width: bigtextWidth,
+                        child: Text(
+                          "About us",
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.displayLarge,
+                        ),
+                      ),
+                      SizedBox(
+                        height: AppTheme.cardPadding * 4 * spacingMultiplier,
+                      ),
+                      Container(
+                        width: subtitleWidth,
+                        child: Text(
+                          "Hi, we're BitNet. its all of us. Bringing together...!",
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      SizedBox(
+                        height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                      ),
+                      Row(
+                        children: [
+                          Container()
+                        ],
+                      )
                     ],
-                  )
-                ],
+                  ),
+                ),
               ),
-            ),
+            ), context: context,
           );
         },
       );

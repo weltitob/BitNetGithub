@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/horizontallistviewwrapper.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 

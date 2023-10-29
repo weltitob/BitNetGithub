@@ -1,3 +1,4 @@
+import 'package:bitnet/pages/website/aboutus/aboutus_view.dart';
 import 'package:flutter/material.dart';
 
 class AboutUs extends StatefulWidget {
@@ -10,6 +11,6 @@ class AboutUs extends StatefulWidget {
 class AboutUsController extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return AboutUsView(controller: this,);
   }
 }
