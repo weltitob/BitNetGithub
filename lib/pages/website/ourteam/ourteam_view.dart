@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -37,7 +38,7 @@ class OurTeamView extends StatelessWidget {
 
         return bitnetScaffold(
           extendBodyBehindAppBar: true,
-          appBar: bitnetAppBar(context: context),
+          appBar: bitnetWebsiteAppBar(),
           body: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,

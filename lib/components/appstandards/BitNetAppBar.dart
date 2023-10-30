@@ -3,7 +3,7 @@ import 'package:bitnet/components/animations/animatedtext.dart';
 import 'package:bitnet/components/buttons/roundediconbutton.dart';
 import 'package:flutter/material.dart';
 
-class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget {
+class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget{ //
   final BuildContext context;
   final Function()? onTap;
   final bool hasBackButton;

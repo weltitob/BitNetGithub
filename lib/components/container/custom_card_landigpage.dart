@@ -106,7 +106,7 @@ class _CustomCardState extends State<CustomCard> {
                           size: AppTheme.cardPadding * 0.8,
                           color: AppTheme.white90,),
                         customWidth: widget.customWidth * 0.3 + AppTheme.cardPadding * 4,
-                        customHeight: AppTheme.cardPadding * 1 + widget.customHeight * 0.05,
+                        customHeight: AppTheme.cardPadding * 1 + widget.customHeight * 0.04,
                         title: widget.buttonText,
                         onTap: widget.onButtonTap,
                       ),

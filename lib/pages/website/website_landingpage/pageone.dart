@@ -75,7 +75,7 @@ class _PageOneState extends State<PageOne> {
                   },
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * 10 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 8 * spacingMultiplier,
                 ),
                 StreamBuilder<Object>(
                   stream: widget.controller.userCountStream(),
