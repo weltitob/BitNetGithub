@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:bitnet/components/cards/balancecard.dart';
+import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class WelcomeCard extends StatelessWidget {

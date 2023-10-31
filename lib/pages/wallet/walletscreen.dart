@@ -9,7 +9,7 @@ import 'package:lottie/lottie.dart';
 import 'package:bitnet/backbone/cloudfunctions/getbalance.dart';
 import 'package:bitnet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/components/cards/balancecard.dart';
+import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';

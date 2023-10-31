@@ -48,7 +48,7 @@ class _PageOneState extends State<PageOne> {
                 Container(
                   width: bigtextWidth,
                   child: Text(
-                    "We are Bitcoins platform. Accelerating the adoption and development of cyberspace!",
+                    "We bring Bitcoin to ordinary people! We build Bitcoins cyberspace.",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.displayMedium,
                   ),

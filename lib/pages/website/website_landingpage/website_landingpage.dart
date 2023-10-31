@@ -20,6 +20,8 @@ class WebsiteLandingPage extends StatefulWidget {
 
 class WebsiteLandingPageController extends State<WebsiteLandingPage> {
 
+  bool isLastPage = false;
+
 
   List<PageData> pageDataList = [
     PageData(
@@ -102,6 +104,7 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
   late final Future<LottieComposition> composition;
 
   PageController pageController = PageController(initialPage: 0);
+  final ValueNotifier<bool> showFab = ValueNotifier<bool>(true);
 
   late ScrollController scrollController;
   late Timer _timer;
@@ -115,9 +118,16 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     composition = loadComposition('assets/lottiefiles/blockchain_loader.json');
     scrollController = ScrollController();
     scrollController.addListener(_handleUserScroll);
+    pageController.addListener(_updateFabVisibility);
     _timer = Timer.periodic(Duration(milliseconds: 50), _animateList);
   }
 
+  void _updateFabVisibility() {
+    if (pageController.page != null) {
+      final int currentPage = pageController.page!.round();
+      showFab.value = currentPage != 4; // 0-indexed, so 4 corresponds to the fifth page
+    }
+  }
 
   Stream<int> userCountStream() {
     print("Usercountstream called");

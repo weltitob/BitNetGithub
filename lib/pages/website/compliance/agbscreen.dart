@@ -1,4 +1,6 @@
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/pages/settings/settingsscreen.dart';
@@ -34,6 +36,8 @@ class _AGBScreenState extends State<AGBScreen> {
               .columnWidth;
 
         return bitnetScaffold(
+          extendBodyBehindAppBar: true,
+          appBar: bitnetWebsiteAppBar(),
           context: context,
           backgroundColor: AppTheme.colorBackground,
           body: Container(

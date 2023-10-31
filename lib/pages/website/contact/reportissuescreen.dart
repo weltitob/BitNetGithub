@@ -1,3 +1,5 @@
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -50,8 +52,10 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
   Widget build(BuildContext context) {
     final UserWallet userWallet = Provider.of<UserWallet>(context);
 
-    return Scaffold(
+    return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: AppTheme.colorBackground,
+      appBar: bitnetWebsiteAppBar(),
       body: Container(
         padding: EdgeInsets.only(top: AppTheme.cardPadding * 2),
         child: ListView(
@@ -132,23 +136,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
             ),
           ],
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: AppTheme.cardPadding),
-        child: FloatingActionButton.extended(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100.0),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          label: const Text('Zurück'),
-          elevation: 500,
-          icon: const Icon(Icons.arrow_back_rounded),
-          backgroundColor: Colors.purple.shade800,
-        ),
-      ),
+      ), context: context,
     );
   }
 }

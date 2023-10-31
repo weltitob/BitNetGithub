@@ -59,7 +59,11 @@ class _CustomCardState extends State<CustomCard> {
           child: Container(
             height: height * 0.08 + widget.customHeight,
             width: width * 0.025 + widget.customWidth,
-            padding: EdgeInsets.all(AppTheme.cardPadding),
+            padding: EdgeInsets.only(
+                top: AppTheme.cardPadding,
+                bottom: AppTheme.cardPadding,
+                left: AppTheme.cardPadding,
+                right: AppTheme.cardPadding),
             child: Stack(
               children: [
                 Column(
@@ -72,24 +76,29 @@ class _CustomCardState extends State<CustomCard> {
                           height: widget.customHeight * 0.4,
                           width: widget.customWidth * 0.9,
                           child: Lottie.asset(
-                            animate: isHovered,
-                              widget.lottieAssetPath),
+                              animate: isHovered, widget.lottieAssetPath),
                         ),
                       ],
                     ),
                     SizedBox(
                       height: height * 0.01,
                     ),
-                    Text(
-                      widget.mainTitle,
-                      style: Theme.of(context).textTheme.headlineLarge,
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      child: Text(
+                        widget.mainTitle,
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      ),
                     ),
                     SizedBox(
                       height: height * 0.01,
                     ),
-                    Text(
-                      widget.subTitle,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      child: Text(
+                        widget.subTitle,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ),
                   ],
                 ),
@@ -104,9 +113,12 @@ class _CustomCardState extends State<CustomCard> {
                         leadingIcon: Icon(
                           FontAwesomeIcons.circleArrowRight,
                           size: AppTheme.cardPadding * 0.8,
-                          color: AppTheme.white90,),
-                        customWidth: widget.customWidth * 0.3 + AppTheme.cardPadding * 4,
-                        customHeight: AppTheme.cardPadding * 1 + widget.customHeight * 0.04,
+                          color: AppTheme.white90,
+                        ),
+                        customWidth:
+                            widget.customWidth * 0.3 + AppTheme.cardPadding * 4,
+                        customHeight: AppTheme.cardPadding * 1 +
+                            widget.customHeight * 0.04,
                         title: widget.buttonText,
                         onTap: widget.onButtonTap,
                       ),

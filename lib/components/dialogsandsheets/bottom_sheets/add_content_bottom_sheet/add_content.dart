@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/pages/matrix/matrix_pages/chat/chat.dart';
+import 'package:bitnet/pages/chat_list/chat/chat.dart';
 import 'package:flutter/material.dart';
 
 //controller.onAddPopupMenuButtonSelected('file'),

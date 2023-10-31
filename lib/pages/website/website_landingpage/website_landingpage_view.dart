@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetFAB.dart';
 import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -12,6 +13,7 @@ import 'package:bitnet/pages/website/website_landingpage/pagethree.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagetwo.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class WebsiteLandingPageView extends StatelessWidget {
   final WebsiteLandingPageController controller;
@@ -21,6 +23,28 @@ class WebsiteLandingPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      floatingActionButton: ValueListenableBuilder<bool>(
+          valueListenable: controller.showFab,
+          builder: (context, showFab, child) {
+          return AnimatedOpacity(
+            opacity: showFab ? 1 : 0,
+            duration: Duration(milliseconds: 200),
+            child: BitNetFAB(onPressed: () {
+              if (controller.pageController.hasClients) {
+                var nextPage = controller.pageController.page!.toInt() + 1;
+                if (nextPage < 5) {
+                  controller.pageController.animateToPage(
+                    nextPage,
+                    duration: Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              }
+
+            },),
+          );
+        }
+      ),
       extendBodyBehindAppBar: true,
       appBar: bitnetWebsiteAppBar(
         centerWidget: centerWidget(),

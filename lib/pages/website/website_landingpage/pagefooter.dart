@@ -102,12 +102,8 @@ class _PageFooterState extends State<PageFooter> {
                                 alignment: Alignment.topCenter,
                                 child: Container(
                                   margin: EdgeInsets.only(
-                                    top: AppTheme.cardPadding *
-                                        18 *
-                                        spacingMultiplier,
-                                    left: AppTheme.cardPadding *
-                                        35.5 *
-                                        spacingMultiplier,
+                                    top: AppTheme.cardPadding * 10 * spacingMultiplier + 180,
+                                    left: 850 - AppTheme.cardPadding,
                                   ),
                                   child: quoteText(),
                                 ),
@@ -137,8 +133,7 @@ class _PageFooterState extends State<PageFooter> {
                           alignment: Alignment.topCenter,
                           child: Container(
                             margin: EdgeInsets.only(
-                              top:
-                                  AppTheme.cardPadding * 10 * spacingMultiplier,
+                              top: AppTheme.cardPadding * 10 * spacingMultiplier,
                             ),
                             child: MouseRegion(
                               cursor: SystemMouseCursors.click,
@@ -312,9 +307,7 @@ class _PageFooterState extends State<PageFooter> {
                                     top: AppTheme.cardPadding *
                                         7.75 *
                                         spacingMultiplier,
-                                    right: AppTheme.cardPadding *
-                                        36.5 *
-                                        spacingMultiplier,
+                                    right: 850 - AppTheme.cardPadding,
                                   ),
                                   child: quoteText(),
                                 ),

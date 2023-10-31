@@ -1,7 +1,9 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
+import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -42,26 +44,46 @@ class _PageFourState extends State<PageFour> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    isSmallScreen ? SizedBox(
-                      width: 0,
-                      height: 0,
-                    ) : Stack(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.all(AppTheme.cardPadding * 9 * spacingMultiplier),
-                          height: AppTheme.cardPadding * 12 * spacingMultiplier,
-                          width: AppTheme.cardPadding * 12 * spacingMultiplier,
-                          child: Lottie.asset(
-                            'assets/lottiefiles/btc_3d.json',),
-                        ),
-                        Container(
-                          height: AppTheme.cardPadding * 30 * spacingMultiplier,
-                          width: AppTheme.cardPadding * 30 * spacingMultiplier,
-                          child: Lottie.asset(
-                            'assets/lottiefiles/circle_animation.json',),
-                        ),
-                      ],
+                    Container(
+                      height: AppTheme.cardPadding * 22,
+                      width: AppTheme.cardPadding * 22,
+                      child: Stack(
+                        children: [
+                          Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                height: AppTheme.cardPadding * 22,
+                                width: AppTheme.cardPadding * 22,
+                                child: Image.asset(
+                                  'assets/images/phone.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              )),
+                          Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Container(height: AppTheme.cardPadding * 16,
+                                width: AppTheme.cardPadding * 16,
+                                child: Lottie.asset(
+                                  'assets/lottiefiles/charts_rocket.json',
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                          ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(height: AppTheme.cardPadding,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Theme.of(context).colorScheme.background,],)),),
+                          ),
+                        ],
+                      ),
                     ),
+
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -69,7 +91,7 @@ class _PageFourState extends State<PageFour> {
                         Container(
                           width: textWidth,
                           child: Text(
-                            "We are the light that helps others see Bitcoin.",
+                            "More and more decide to join us each day!",
                             style: Theme.of(context).textTheme.displayMedium,
                           ),
                         ),
@@ -79,7 +101,7 @@ class _PageFourState extends State<PageFour> {
                         Container(
                           width: subtitleWidth,
                           child: Text(
-                            "More and more decide to join us each day!",
+                            "Get the app now and join the BitNet community!",
                             style:
                             Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 24),
                           ),
@@ -87,22 +109,62 @@ class _PageFourState extends State<PageFour> {
                         SizedBox(
                           height: AppTheme.cardPadding * 2 * spacingMultiplier
                         ),
+                        Row(
+                          children: [
+                            Container(
+                              width: AppTheme.cardPadding * 10,
+                              child: LongButtonWidget(
+                                  leadingIcon: Icon(FontAwesomeIcons.googlePlay,
+                                  size: 20,),
+                                  title: "Google Play",
+                                  buttonType: ButtonType.transparent,
+                                  onTap: () async {
+                                    VRouter.of(context).to('/pinverification');
+                                  }),
+                            ),
+                            SizedBox(width: AppTheme.elementSpacing,),
+                            Container(
+                              width: AppTheme.cardPadding * 10,
+                              child: LongButtonWidget(
+                                leadingIcon: Icon(FontAwesomeIcons.apple),
+                                  title: "Apple Store",
+                                  buttonType: ButtonType.transparent,
+                                  onTap: () async {
+                                    VRouter.of(context).to('/pinverification');
+                                  }),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: AppTheme.cardPadding,),
+
+                        Row(
+                          children: [
+                            Container(
+                              width: AppTheme.cardPadding * 9,
+                                child: MyDivider()),
+                            SizedBox(width: AppTheme.elementSpacing,),
+                            Text("OR", style: Theme.of(context).textTheme.bodyLarge,),
+                            SizedBox(width: AppTheme.elementSpacing,),
+                            Container(
+                                width: AppTheme.cardPadding * 9,
+                                child: MyDivider()),
+                          ],
+                        ),
+                        SizedBox(height: AppTheme.elementSpacing,),
                         Container(
                           width: AppTheme.cardPadding * 10,
                           child: LongButtonWidget(
-                              title: L10n.of(context)!.register,
+                              leadingIcon: Icon(FontAwesomeIcons.download),
+                              title: "Download .apk",
+                              buttonType: ButtonType.solid,
                               onTap: () async {
                                 VRouter.of(context).to('/pinverification');
                               }),
                         ),
+
                       ],
                     ),
-                    isSmallScreen ? SizedBox(
-                      width: 0,
-                      height: 0,
-                    ) : SizedBox(
-                      width: AppTheme.cardPadding * 2,
-                      height: AppTheme.cardPadding * 2,)
                     // Container(
                     //     height: AppTheme.cardPadding * 15,
                     //     child: buildFutureLottie(controller.composition, true))
