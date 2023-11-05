@@ -6,11 +6,13 @@ class BackgroundGradient extends StatefulWidget {
   final Widget child;
   final Color colorprimary;
   final Color colorsecondary;
+  final BorderRadius borderRadius;
   const BackgroundGradient({
     Key? key,
     required this.child,
     required this.colorprimary,
-    required this.colorsecondary
+    required this.colorsecondary,
+    required this.borderRadius
   }) : super(key: key);
 
   @override
@@ -37,7 +39,7 @@ class _BackgroundGradientState extends State<BackgroundGradient> {
         Container(
           padding: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            borderRadius: AppTheme.cardRadiusBig,
+            borderRadius: widget.borderRadius,
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -51,7 +53,7 @@ class _BackgroundGradientState extends State<BackgroundGradient> {
             ),
           ),
           child: ClipRRect(
-            borderRadius: AppTheme.cardRadiusBig,
+            borderRadius: widget.borderRadius,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(

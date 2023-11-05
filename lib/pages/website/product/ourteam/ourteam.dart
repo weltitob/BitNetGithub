@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/employees/teammembers_website.dart';
-import 'package:bitnet/pages/website/ourteam/ourteam_view.dart';
+import 'package:bitnet/pages/website/product/ourteam/ourteam_view.dart';
 import 'package:flutter/material.dart';
 
 class OurTeam extends StatefulWidget {

@@ -5,10 +5,8 @@ import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/items/teamprofilecard.dart';
-import 'package:bitnet/pages/website/ourteam/ourteam.dart';
+import 'package:bitnet/pages/website/product/ourteam/ourteam.dart';
 import 'package:flutter/material.dart';
-
-import '../../../components/appstandards/bitnetAppBar.dart';
 
 class OurTeamView extends StatelessWidget {
   final OurTeamController controller;

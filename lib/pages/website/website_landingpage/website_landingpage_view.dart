@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:bitnet/backbone/helper/responsiveness/webview_pagephysics.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetFAB.dart';
 import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
@@ -51,6 +52,7 @@ class WebsiteLandingPageView extends StatelessWidget {
       ),
       context: context,
       body: PageView(
+        physics: FastScrollPhysics(),
         scrollDirection: Axis.vertical,
         controller: controller.pageController,
         children: [

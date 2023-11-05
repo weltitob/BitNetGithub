@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/animations/animatedtext.dart';
-import 'package:bitnet/components/buttons/roundediconbutton.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:flutter/material.dart';
 
 class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget{ //
@@ -83,10 +84,10 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
                     right: AppTheme.elementSpacing * 0.5,
                     top: AppTheme.elementSpacing,
                     bottom: AppTheme.elementSpacing),
-                child: RoundedIconButton(
+                child: RoundedButtonWidget(
+                  buttonType: ButtonType.solid,
                   iconData: widget.customIcon ?? Icons.arrow_back,
-                  colorPrimary: AppTheme.colorPrimaryGradient,
-                  colorSecondary: AppTheme.colorBitcoin,
+                  onTap: () {  },
                 ),
               ),
             ),

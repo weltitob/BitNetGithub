@@ -45,26 +45,26 @@ class _PageFourState extends State<PageFour> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
-                      height: AppTheme.cardPadding * 22,
-                      width: AppTheme.cardPadding * 22,
+                      height: AppTheme.cardPadding * 20,
+                      width: AppTheme.cardPadding * 20,
                       child: Stack(
                         children: [
                           Align(
                               alignment: Alignment.bottomCenter,
                               child: Container(
-                                height: AppTheme.cardPadding * 22,
-                                width: AppTheme.cardPadding * 22,
+                                height: AppTheme.cardPadding * 20,
+                                width: AppTheme.cardPadding * 20,
                                 child: Image.asset(
                                   'assets/images/phone.png',
                                   fit: BoxFit.cover,
                                 ),
                               )),
                           Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Container(height: AppTheme.cardPadding * 16,
-                                width: AppTheme.cardPadding * 16,
+                              alignment: Alignment.centerLeft,
+                              child: Container(height: AppTheme.cardPadding * 6.5,
+                                width: AppTheme.cardPadding * 6.5,
                                 child: Lottie.asset(
-                                  'assets/lottiefiles/charts_rocket.json',
+                                  'assets/lottiefiles/phone_bubbles.json',
                                   fit: BoxFit.cover,
                                 ),
                               )

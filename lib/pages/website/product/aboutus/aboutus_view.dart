@@ -4,7 +4,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/pages/website/aboutus/aboutus.dart';
+import 'package:bitnet/pages/website/product/aboutus/aboutus.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vrouter/vrouter.dart';

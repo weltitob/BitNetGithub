@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/animations/bitnetscale.dart';
+import 'package:bitnet/components/appstandards/BitNetShaderMask.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:flutter/material.dart';
@@ -75,14 +76,7 @@ class _TeamProfileCardState extends State<TeamProfileCard> {
               SizedBox(height: AppTheme.cardPadding),
               widget.isYou ? Container() : Container(
                 width: AppTheme.cardPadding * 9,
-                child: isHovered ? ShaderMask(
-                  shaderCallback: (rect) {
-                    return LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],
-                    ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                  },
+                child: isHovered ? BitNetShaderMask(
                   child: Text(
                     widget.quote,
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(

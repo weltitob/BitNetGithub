@@ -1,4 +1,4 @@
-import 'package:bitnet/pages/website/aboutus/aboutus_view.dart';
+import 'package:bitnet/pages/website/product/aboutus/aboutus_view.dart';
 import 'package:flutter/material.dart';
 
 class AboutUs extends StatefulWidget {

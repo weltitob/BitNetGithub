@@ -103,7 +103,7 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
 
   late final Future<LottieComposition> composition;
 
-  PageController pageController = PageController(initialPage: 0);
+  PageController pageController = PageController(initialPage: 0, viewportFraction: 0.99); //https://github.com/flutter/flutter/issues/31191
   final ValueNotifier<bool> showFab = ValueNotifier<bool>(true);
 
   late ScrollController scrollController;

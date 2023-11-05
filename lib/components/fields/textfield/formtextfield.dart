@@ -21,6 +21,7 @@ class FormTextField extends StatefulWidget {
   final String? labelText;
   final String? prefixText;
   final Widget? suffixIcon;
+  final bool isMultiline;
 
   const FormTextField({
     Key? key,
@@ -39,6 +40,7 @@ class FormTextField extends StatefulWidget {
     this.labelText,
     this.prefixText,
     this.suffixIcon,
+    this.isMultiline = false,
   }) : super(key: key);
 
   @override
@@ -87,6 +89,7 @@ class _FormTextFieldState extends State<FormTextField> {
                   color: AppTheme.colorGlassContainer,
                 ),
                 child: TextFormField(
+                  maxLines: widget.isMultiline ? null : 1,
                   validator: widget.validator,
                   controller: widget.controller,
                   focusNode: widget.focusNode,
@@ -111,7 +114,7 @@ class _FormTextFieldState extends State<FormTextField> {
                     focusedBorder: GradientOutlineInputBorder(
                       isFocused: true,
                       borderRadius: AppTheme.cardRadiusMid,
-                      borderWidth: 2,
+                      borderWidth: 3,
                     ),
                     enabledBorder: GradientOutlineInputBorder(
                       isFocused: false,

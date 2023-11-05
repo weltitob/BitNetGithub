@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetShaderMask.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/fadein.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -163,23 +164,7 @@ class _PageFooterState extends State<PageFooter> {
                                           child: _isThirdAnimationCompleted
                                               ? Container(
                                                   alignment: Alignment.center,
-                                                  child: ShaderMask(
-                                                    shaderCallback: (bounds) =>
-                                                        LinearGradient(
-                                                                colors: [
-                                                          AppTheme.colorBitcoin,
-                                                          AppTheme
-                                                              .colorPrimaryGradient, // You can change this to any other color to achieve the gradient effect you want
-                                                        ],
-                                                                begin: Alignment
-                                                                    .topCenter,
-                                                                end: Alignment
-                                                                    .bottomCenter,
-                                                                tileMode:
-                                                                    TileMode
-                                                                        .clamp)
-                                                            .createShader(
-                                                                bounds),
+                                                  child: BitNetShaderMask(
                                                     child: AnimatedTextKit(
                                                       isRepeatingAnimation:
                                                           false,
