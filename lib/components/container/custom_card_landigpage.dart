@@ -13,6 +13,7 @@ class CustomCard extends StatefulWidget {
   final VoidCallback onButtonTap;
   final double customWidth;
   final double customHeight;
+  final bool isBiggerOnHover; // New parameter
 
   CustomCard({
     required this.lottieAssetPath,
@@ -20,8 +21,9 @@ class CustomCard extends StatefulWidget {
     required this.subTitle,
     required this.buttonText,
     required this.onButtonTap,
-    this.customWidth = AppTheme.cardPadding * 12, // Example value
-    this.customHeight = AppTheme.cardPadding * 16, // Example value
+    this.customWidth = AppTheme.cardPadding * 12,
+    this.customHeight = AppTheme.cardPadding * 15,
+    this.isBiggerOnHover = true, // Default value
   });
 
   @override
@@ -50,7 +52,7 @@ class _CustomCardState extends State<CustomCard> {
       onTap: widget.onButtonTap,
       child: AnimatedScale(
         duration: Duration(milliseconds: 200),
-        scale: isHovered ? 1.0 : 0.9,
+        scale: isHovered ? 1.0 : widget.isBiggerOnHover ? 0.9 : 1.0,
         child: GlassContainer(
           borderThickness: 1.5,
           blur: 50,
@@ -58,7 +60,7 @@ class _CustomCardState extends State<CustomCard> {
           borderRadius: borderRadius,
           child: Container(
             height: height * 0.08 + widget.customHeight,
-            width: width * 0.025 + widget.customWidth,
+            width: width * 0.01 + widget.customWidth,
             padding: EdgeInsets.only(
                 top: AppTheme.cardPadding,
                 bottom: AppTheme.cardPadding,
@@ -73,10 +75,11 @@ class _CustomCardState extends State<CustomCard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          height: widget.customHeight * 0.4,
-                          width: widget.customWidth * 0.9,
+                          height: width * 0.01 + widget.customHeight * 0.4,
+                          width: widget.customWidth * 0.8,
                           child: Lottie.asset(
-                              animate: isHovered, widget.lottieAssetPath),
+                              animate: widget.isBiggerOnHover ? isHovered : true,
+                              widget.lottieAssetPath),
                         ),
                       ],
                     ),
@@ -124,12 +127,6 @@ class _CustomCardState extends State<CustomCard> {
                       ),
                     ],
                   ),
-
-                  // ColorfulGradientButton(
-                  //   iconData: FontAwesomeIcons.circleArrowRight,
-                  //   text: buttonText,
-                  //   onTap: onButtonTap,
-                  // ),
                 ),
                 // Your widget tree
               ],

@@ -23,14 +23,17 @@ class _PageOneState extends State<PageOne> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         // Check if the screen width is less than 600 pixels.
+        // Check if the screen width is less than 600 pixels.
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
-        double bigtextWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
-        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
+        double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30 : AppTheme.cardPadding * 33;
+        double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 12 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
         double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
-        double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
-        double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+        double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.5 : 0.5 : 0.75 : 1;
+        double centerSpacing = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.columnWidth * 0.05 : AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+
 
         return BackgroundWithContent(
           backgroundType: BackgroundType.asset,
@@ -43,29 +46,29 @@ class _PageOneState extends State<PageOne> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: AppTheme.cardPadding * 4 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 2 * spacingMultiplier,
                 ),
                 Container(
                   width: bigtextWidth,
                   child: Text(
-                    "We bring Bitcoin to ordinary people! We build Bitcoins cyberspace.",
+                    "We build Bitcoins Cyberspace!", //We bring Bitcoin to ordinary people!
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.displayMedium,
+                    style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,
                   ),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * spacingMultiplier,
+                  height: AppTheme.cardPadding * 1 * spacingMultiplier,
                 ),
                 Container(
                   width: subtitleWidth,
                   child: Text(
-                    "Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!",
+                    "We believe that adopting Bitcoin will solve almost all of our worlds problems!", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: isSuperSmallScreen ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 1.5 * spacingMultiplier,
                 ),
                 LongButtonWidget(
                   buttonType: ButtonType.solid,
@@ -75,7 +78,8 @@ class _PageOneState extends State<PageOne> {
                   },
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * 8 * spacingMultiplier,
+                  //height: AppTheme.cardPadding * 8 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 10 * spacingMultiplier,
                 ),
                 StreamBuilder<Object>(
                   stream: widget.controller.userCountStream(),
@@ -92,7 +96,7 @@ class _PageOneState extends State<PageOne> {
                       thousandSeparator: ".",
                       decimalSeparator: ",",
                       textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                        fontSize: 100,
+                        fontSize: isSuperSmallScreen ? 74 : 80,
                       ),
                     );
                   },

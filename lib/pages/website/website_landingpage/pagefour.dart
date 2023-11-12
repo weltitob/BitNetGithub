@@ -20,13 +20,16 @@ class _PageFourState extends State<PageFour> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
+
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
-        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
-        double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
-        double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
-        double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+        double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 13 : AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
+        double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 13 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
+        double subtitleWidth = isMidScreen ? isSmallScreen ?isSuperSmallScreen ?  AppTheme.cardPadding * 13 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
+        double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.25 : 0.5 : 0.75 : 1;
+        double centerSpacing = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.columnWidth * 0.075 : AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
 
         return BackgroundWithContent(
           opacity: 0.7,
@@ -44,7 +47,7 @@ class _PageFourState extends State<PageFour> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Container(
+                    isSmallScreen ? Container() : Container(
                       height: AppTheme.cardPadding * 20,
                       width: AppTheme.cardPadding * 20,
                       child: Stack(
@@ -103,55 +106,41 @@ class _PageFourState extends State<PageFour> {
                           child: Text(
                             "Get the app now and join the BitNet community!",
                             style:
-                            Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 24),
+                            Theme.of(context).textTheme.bodyLarge,
                           ),
                         ),
                         SizedBox(
-                          height: AppTheme.cardPadding * 2 * spacingMultiplier
+                          height: AppTheme.cardPadding * 4 * spacingMultiplier
                         ),
-                        Row(
+                        isSmallScreen
+                            ? Column(
                           children: [
-                            Container(
-                              width: AppTheme.cardPadding * 10,
-                              child: LongButtonWidget(
-                                  leadingIcon: Icon(FontAwesomeIcons.googlePlay,
-                                  size: 20,),
-                                  title: "Google Play",
-                                  buttonType: ButtonType.transparent,
-                                  onTap: () async {
-                                    VRouter.of(context).to('/pinverification');
-                                  }),
-                            ),
-                            SizedBox(width: AppTheme.elementSpacing,),
-                            Container(
-                              width: AppTheme.cardPadding * 10,
-                              child: LongButtonWidget(
-                                leadingIcon: Icon(FontAwesomeIcons.apple),
-                                  title: "Apple Store",
-                                  buttonType: ButtonType.transparent,
-                                  onTap: () async {
-                                    VRouter.of(context).to('/pinverification');
-                                  }),
-                            ),
+                            ...downloadFromStores(), // Using the spread operator
+                          ],
+                        )
+                            : Row(
+                          children: [
+                            ...downloadFromStores(), // Using the spread operator
                           ],
                         ),
-
                         SizedBox(height: AppTheme.cardPadding,),
-
-                        Row(
-                          children: [
-                            Container(
-                              width: AppTheme.cardPadding * 9,
-                                child: MyDivider()),
-                            SizedBox(width: AppTheme.elementSpacing,),
-                            Text("OR", style: Theme.of(context).textTheme.bodyLarge,),
-                            SizedBox(width: AppTheme.elementSpacing,),
-                            Container(
-                                width: AppTheme.cardPadding * 9,
-                                child: MyDivider()),
-                          ],
+                        Container(
+                          height: AppTheme.cardPadding,
+                          width: isSmallScreen ? AppTheme.cardPadding * 10 : AppTheme.cardPadding * 22,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                  child: MyDivider()),
+                              SizedBox(width: AppTheme.elementSpacing,),
+                              Text("OR", style: Theme.of(context).textTheme.bodyLarge,),
+                              SizedBox(width: AppTheme.elementSpacing,),
+                              Expanded(
+                                  child: MyDivider()),
+                            ],
+                          ),
                         ),
-                        SizedBox(height: AppTheme.elementSpacing,),
+                        SizedBox(height: AppTheme.cardPadding,),
                         Container(
                           width: AppTheme.cardPadding * 10,
                           child: LongButtonWidget(
@@ -175,5 +164,31 @@ class _PageFourState extends State<PageFour> {
           ),
         );},
     );
+  }
+  List <Widget> downloadFromStores(){
+    return [
+      Container(
+        width: AppTheme.cardPadding * 10,
+        child: LongButtonWidget(
+            leadingIcon: Icon(FontAwesomeIcons.googlePlay,
+              size: 20,),
+            title: "Google Play",
+            buttonType: ButtonType.transparent,
+            onTap: () async {
+              VRouter.of(context).to('/pinverification');
+            }),
+      ),
+      SizedBox(width: AppTheme.elementSpacing, height: AppTheme.elementSpacing,),
+      Container(
+        width: AppTheme.cardPadding * 10,
+        child: LongButtonWidget(
+            leadingIcon: Icon(FontAwesomeIcons.apple),
+            title: "Apple Store",
+            buttonType: ButtonType.transparent,
+            onTap: () async {
+              VRouter.of(context).to('/pinverification');
+            }),
+      ),
+    ];
   }
 }

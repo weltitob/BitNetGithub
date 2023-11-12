@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetFAB.dart';
 import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefooter.dart';
@@ -14,7 +13,6 @@ import 'package:bitnet/pages/website/website_landingpage/pagethree.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagetwo.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class WebsiteLandingPageView extends StatelessWidget {
   final WebsiteLandingPageController controller;

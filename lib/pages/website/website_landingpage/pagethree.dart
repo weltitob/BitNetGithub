@@ -13,10 +13,8 @@ class PageThree extends StatefulWidget {
 }
 
 class _PageThreeState extends State<PageThree> {
-
-  PageController pageController = PageController(viewportFraction: 0.7);
+  PageController pageController = PageController(viewportFraction: 0.8);
   int _selectedindex = 0;
-  double _scale = 0.9;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +26,44 @@ class _PageThreeState extends State<PageThree> {
 
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+        bool isSuperSmallScreen =
+            constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
-        double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
-        double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
-        double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
-        double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+        double bigtextWidth = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 13
+                    : AppTheme.cardPadding * 24
+                : AppTheme.cardPadding * 28
+            : AppTheme.cardPadding * 30;
+        double textWidth = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 13
+                    : AppTheme.cardPadding * 16
+                : AppTheme.cardPadding * 22
+            : AppTheme.cardPadding * 24;
+        double subtitleWidth = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 13
+                    : AppTheme.cardPadding * 16
+                : AppTheme.cardPadding * 18
+            : AppTheme.cardPadding * 22;
+        double spacingMultiplier = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? 0.25
+                    : 0.5
+                : 0.75
+            : 1;
+        double centerSpacing = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.columnWidth * 0.075
+                    : AppTheme.columnWidth * 0.15
+                : AppTheme.columnWidth * 0.65
+            : AppTheme.columnWidth;
 
         return BackgroundWithContent(
           opacity: 0.7,
@@ -40,57 +71,54 @@ class _PageThreeState extends State<PageThree> {
           withGradientBottomMedium: true,
           withGradientTopMedium: true,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                height: AppTheme.cardPadding * 7 * spacingMultiplier
-              ),
+              SizedBox(height: AppTheme.cardPadding * 2 * spacingMultiplier),
               Text(
                 "Our mission.",
-                style: Theme.of(context).textTheme.displayLarge,
+                style: Theme.of(context).textTheme.displayMedium,
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 3 * spacingMultiplier,
+                height: AppTheme.cardPadding * 2 * spacingMultiplier,
               ),
               Container(
-                child: isSmallScreen ?
-                Container(
-                  height: 500,
-                  child: PageView.builder(
-                    controller: pageController,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _selectedindex = index;
-                      });
-                    },
-                    itemCount: _buildCards().length, // Set the itemCount to the length of the _buildCards list
-                    itemBuilder: (context, index) {
-
-                      return TweenAnimationBuilder<double>(
-                        tween: Tween<double>(begin: _scale, end: _scale),
-                        curve: Curves.ease,
-                        duration: Duration(milliseconds: 350),
-                        builder: (context, value, child) {
-                          return Transform.scale(
-                            scale: value,
-                            child: child,
-                          );
-                        },
-                        child: _buildCards()[index],  // Use the index to get the specific CustomCard from the _buildCards list
-                      );
-                    },
-                  ),
-                ) : Container(
-                  margin: EdgeInsets.symmetric(horizontal: centerSpacing),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: _buildCards(), // Use the complete list of CustomCard widgets
-                  ),
-                ),
+                child: isSmallScreen
+                    ? Container(
+                        height: AppTheme.cardPadding * 20,
+                        child: PageView.builder(
+                          controller: pageController,
+                          onPageChanged: (index) {
+                            setState(() {
+                              _selectedindex = index;
+                            });
+                          },
+                          itemCount: _buildCards()
+                              .length, // Set the itemCount to the length of the _buildCards list
+                          itemBuilder: (context, index) {
+                            return _buildCardsSmallScreen()[index];
+                          },
+                        ),
+                      )
+                    : Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: centerSpacing * spacingMultiplier),
+                        color: Colors.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: _buildCards(), // Use the complete list of CustomCard widgets
+                        ),
+                      ),
               ),
-              SizedBox(height: AppTheme.cardPadding * 2 * spacingMultiplier,),
-              isSmallScreen ? buildIndicator(
-                  pageController: pageController,
-                  count: 3,) : Container(),
+              SizedBox(
+                height: AppTheme.cardPadding * 2 * spacingMultiplier,
+              ),
+              isSmallScreen
+                  ? buildIndicator(
+                      pageController: pageController,
+                      count: 3,
+                    )
+                  : Container(),
             ],
           ),
         );
@@ -98,29 +126,84 @@ class _PageThreeState extends State<PageThree> {
     );
   }
 
+  List<Widget> _buildCardsSmallScreen() {
+    //the center and sizedbox widget is needed to maintain the widgets custom dimensions
+    return [
+      Container(
+        margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+        child: Center(
+          child: SizedBox(
+            child: CustomCard(
+              isBiggerOnHover: false,
+              lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
+              mainTitle: "Fight for a faster Bitcoinization!",
+              subTitle:
+                  "We are a simple way to use bitcoin with the most advanced web wallet!",
+              buttonText: "Send BTC",
+              onButtonTap: () {},
+            ),
+          ),
+        ),
+      ), // Abstand für das Spaltenlayout
+      Container(
+        margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+        child: Center(
+          child: SizedBox(
+            child: CustomCard(
+              isBiggerOnHover: false,
+              lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
+              mainTitle: "Give the power back to the people!",
+              subTitle:
+                  "We own our data and can verify and trust Bitcoins blockchain!",
+              buttonText: "Explore BTC",
+              onButtonTap: () {},
+            ),
+          ),
+        ),
+      ), // Abstand für das Spaltenlayout
+      Container(
+        margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+        child: Center(
+          child: SizedBox(
+            child: CustomCard(
+              isBiggerOnHover: false,
+              lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
+              mainTitle: "Develop a fair Cyberspace!",
+              subTitle: "We form the third layer on top of Bitcoin!",
+              buttonText: "Get a profile",
+              onButtonTap: () {},
+            ),
+          ),
+        ),
+      ),
+    ];
+  }
+
   List<Widget> _buildCards() {
     return [
       CustomCard(
+        isBiggerOnHover: true,
         lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
-        mainTitle: "Fighting for a faster Bitcoinization of the world!",
+        mainTitle: "Fight for a faster Bitcoinization!",
         subTitle:
-            "We are a simple and secure way to use bitcoin with the most advanced web wallet out there!",
+            "We are a simple way to use bitcoin with the most advanced web wallet!",
         buttonText: "Send BTC",
         onButtonTap: () {},
       ), // Abstand für das Spaltenlayout
       CustomCard(
+        isBiggerOnHover: true,
         lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-        mainTitle: "Giving the power back to the people!",
+        mainTitle: "Give the power back to the people!",
         subTitle:
-            "We use decentralized IDs. We own our data and can verify and trust the blockchain!",
+            "We own our data and can verify and trust Bitcoins blockchain!",
         buttonText: "Explore BTC",
         onButtonTap: () {},
       ), // Abstand für das Spaltenlayout
       CustomCard(
+        isBiggerOnHover: true,
         lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-        mainTitle: "Developing a fair Cyberspace built on Bitcoin!",
-        subTitle:
-            "We form the third layer on top of the trustless Bitcoin Network. Unlocking it's full potential! ",
+        mainTitle: "Develop a fair Cyberspace!",
+        subTitle: "We form the third layer on top of Bitcoin!",
         buttonText: "Get a profile",
         onButtonTap: () {},
       ),

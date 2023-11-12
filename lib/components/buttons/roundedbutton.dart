@@ -81,6 +81,7 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
       color: widget.buttonType == ButtonType.solid
           ? AppTheme.white90
           : Theme.of(context).colorScheme.onSecondaryContainer,
+      size: widget.size * 0.6,
     );
   }
 }

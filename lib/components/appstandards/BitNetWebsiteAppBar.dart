@@ -27,32 +27,14 @@ class bitnetWebsiteAppBar extends StatelessWidget
             // Check if the screen width is less than 600 pixels.
             bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
             bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+            bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
-            double bigtextWidth = isMidScreen
-                ? isSmallScreen
-                    ? AppTheme.cardPadding * 24
-                    : AppTheme.cardPadding * 28
-                : AppTheme.cardPadding * 30;
-            double textWidth = isMidScreen
-                ? isSmallScreen
-                    ? AppTheme.cardPadding * 16
-                    : AppTheme.cardPadding * 22
-                : AppTheme.cardPadding * 24;
-            double subtitleWidth = isMidScreen
-                ? isSmallScreen
-                    ? AppTheme.cardPadding * 14
-                    : AppTheme.cardPadding * 18
-                : AppTheme.cardPadding * 22;
-            double spacingMultiplier = isMidScreen
-                ? isSmallScreen
-                    ? 0.5
-                    : 0.75
-                : 1;
-            double centerSpacing = isMidScreen
-                ? isSmallScreen
-                    ? AppTheme.columnWidth * 0.15
-                    : AppTheme.columnWidth * 0.65
-                : AppTheme.columnWidth;
+            double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
+            double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 12 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
+            double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
+            double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.25 : 0.5 : 0.75 : 1;
+            double centerSpacing = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.columnWidth * 0.05 : AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+
 
             return Container(
               margin: EdgeInsets.symmetric(horizontal: centerSpacing),
@@ -68,22 +50,22 @@ class bitnetWebsiteAppBar extends StatelessWidget
                         children: [
                           Container(
                             height: AppTheme.cardPadding *
-                                (isSmallScreen ? 1 : 1.25),
+                                (isSmallScreen ? 1.2 : 1.25),
                             width: AppTheme.cardPadding *
-                                (isSmallScreen ? 1 : 1.25),
+                                (isSmallScreen ? 1.2 : 1.25),
                             child: Image.asset(
-                              "./images/logoclean.png",
+                              "assets/images/logoclean.png",
                             ),
                           ),
                           SizedBox(
                             width: AppTheme.elementSpacing *
-                                (isSmallScreen ? 0.5 : 1),
+                                (isSmallScreen ? 0.75 : 1),
                           ),
                           Text(
                             "BitNet",
                             style: TextStyle(
                               fontSize: isSmallScreen
-                                  ? 16
+                                  ? 20
                                   : 20, // Adjust font size for small screen
                             ),
                           ),
@@ -102,10 +84,10 @@ class bitnetWebsiteAppBar extends StatelessWidget
                     child: LongButtonWidget(
                       buttonType: ButtonType.transparent,
                       customWidth: isSmallScreen
-                          ? AppTheme.cardPadding * 5
+                          ? AppTheme.cardPadding * 5.25
                           : AppTheme.cardPadding * 6.5,
                       customHeight: isSmallScreen
-                          ? AppTheme.cardPadding * 1.25
+                          ? AppTheme.cardPadding * 1.5
                           : AppTheme.cardPadding * 1.6,
                       title: "Get started",
                       leadingIcon: Icon(

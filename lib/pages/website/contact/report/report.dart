@@ -9,6 +9,12 @@ class Report extends StatefulWidget {
 }
 
 class ReportController extends State<Report> {
+
+  onAddButton(){
+    print("add button pressed");
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return ReportView(controller: this);
