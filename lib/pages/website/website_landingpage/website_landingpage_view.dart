@@ -6,6 +6,7 @@ import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/website/website_landingpage/pagefive.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefooter.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefour.dart';
 import 'package:bitnet/pages/website/website_landingpage/pageone.dart';
@@ -38,6 +39,9 @@ class WebsiteLandingPageView extends StatelessWidget {
                     curve: Curves.easeInOut,
                   );
                 }
+                else{
+                  print("Last page reached");
+                }
               }
 
             },),
@@ -50,7 +54,7 @@ class WebsiteLandingPageView extends StatelessWidget {
       ),
       context: context,
       body: PageView(
-        physics: FastScrollPhysics(),
+        //physics: FastScrollPhysics(), //FastScrollPhysics was causing a bug where pagecontroller would jump back up to the first page when it reached the last page
         scrollDirection: Axis.vertical,
         controller: controller.pageController,
         children: [
@@ -62,6 +66,9 @@ class WebsiteLandingPageView extends StatelessWidget {
           ),
           PageThree(),
           PageFour(),
+          // PageFive(
+          //   controller: controller,
+          // ),
           PageFooter(
             controller: controller,
           ),

@@ -66,20 +66,25 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
     } else if (widget.backgroundType == BackgroundType.asset) {
       // This is optional, just a dummy delay to simulate loading
       Future.delayed(Duration(milliseconds: 300)).then((_) {
-        setState(() {
-          _visible = true;
-        });
+        if (mounted) {
+          setState(() {
+            _visible = true;
+          });
+        }
       });
-    } else {
+    }
+    else {
       composition = loadComposition(widget.lottieassetPath);
     }
   }
 
   void updateVisibility() async {
     await _networkImage;
-    setState(() {
-      _visible = true;
-    });
+    if (mounted) {
+      setState(() {
+        _visible = true;
+      });
+    }
   }
 
   @override

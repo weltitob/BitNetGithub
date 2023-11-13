@@ -20,93 +20,13 @@ class WebsiteLandingPage extends StatefulWidget {
 
 class WebsiteLandingPageController extends State<WebsiteLandingPage> {
 
-  bool isLastPage = false;
-
-
-  List<PageData> pageDataList = [
-    PageData(
-      '"I have always been a Bitcoin enthusiast, so BitNet was a no-brainer for me. Its great to see how far we have come with Bitcoin."',
-      UserData(
-          backgroundImageUrl: "",
-          isPrivate: false,
-          showFollowers: false,
-          did: "whattheheck",
-          displayName: "Display Name",
-          bio: "jddjskd",
-          customToken: "dsd",
-          username: "brianbelt",
-          profileImageUrl:
-          "https://static.demilked.com/wp-content/uploads/2019/04/5cb6d34f775c2-stock-models-share-weirdest-stories-photo-use-102-5cb5c725bc378__700.jpg",
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          isActive: false,
-          dob: 2,
-          mainWallet: UserWallet(
-              walletAddress: "walletAddress",
-              walletType: "walletType",
-              walletBalance: "",
-              privateKey: "privateKey",
-              userdid: "userdid"),
-          wallets: []),
-    ),
-    PageData(
-      '"So happy to be part of the club 1 million. Zero chance Im selling my bitcoin NFT! This feels like buying bitcoin back in 2015."',
-      UserData(
-          backgroundImageUrl: "",
-          isPrivate: false,
-          showFollowers: false,
-          did: "djskdj",
-          displayName: "Display Name",
-          bio: "jddjskd",
-          customToken: "dsd",
-          username: "username",
-          profileImageUrl:
-          "https://img.freepik.com/free-photo/people-taking-selfie-together-registration-day_23-2149096795.jpg",
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          isActive: false,
-          dob: 2,
-          mainWallet: UserWallet(
-              walletAddress: "walletAddress",
-              walletType: "walletType",
-              walletBalance: "",
-              privateKey: "privateKey",
-              userdid: "userdid"),
-          wallets: []),
-    ),
-    PageData(
-      '"Wow! Bitnet is the part that I was always missing for bitcoin. Lightning wallets truly are the future. Now we will only see more and more bitcoin adoption."',
-      UserData(
-          backgroundImageUrl: "",
-          isPrivate: false,
-          showFollowers: false,
-          did: "djskdj",
-          displayName: "Display Name",
-          bio: "jddjskd",
-          customToken: "dsd",
-          username: "fakeusername",
-          profileImageUrl:
-          "https://variety.com/wp-content/uploads/2022/08/Jonah-Hill.jpg?w=1000",
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          isActive: false,
-          dob: 2,
-          mainWallet: UserWallet(
-              walletAddress: "walletAddress",
-              walletType: "walletType",
-              walletBalance: "",
-              privateKey: "privateKey",
-              userdid: "userdid"),
-          wallets: []),
-    ),
-  ];
-
   late final Future<LottieComposition> composition;
 
   PageController pageController = PageController(initialPage: 0, viewportFraction: 0.99); //https://github.com/flutter/flutter/issues/31191
   final ValueNotifier<bool> showFab = ValueNotifier<bool>(true);
 
   late ScrollController scrollController;
+
   late Timer _timer;
   double _offset = 0;
   bool isUserScrolling = false;
@@ -199,10 +119,91 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     }
   }
 
+
+  List<PageData> pageDataList = [
+    PageData(
+      '"I have always been a Bitcoin enthusiast, so BitNet was a no-brainer for me. Its great to see how far we have come with Bitcoin."',
+      UserData(
+          backgroundImageUrl: "",
+          isPrivate: false,
+          showFollowers: false,
+          did: "whattheheck",
+          displayName: "Display Name",
+          bio: "jddjskd",
+          customToken: "dsd",
+          username: "brianbelt",
+          profileImageUrl:
+          "https://static.demilked.com/wp-content/uploads/2019/04/5cb6d34f775c2-stock-models-share-weirdest-stories-photo-use-102-5cb5c725bc378__700.jpg",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isActive: false,
+          dob: 2,
+          mainWallet: UserWallet(
+              walletAddress: "walletAddress",
+              walletType: "walletType",
+              walletBalance: "",
+              privateKey: "privateKey",
+              userdid: "userdid"),
+          wallets: []),
+    ),
+    PageData(
+      '"So happy to be part of the club 1 million. Zero chance Im selling my bitcoin NFT! This feels like buying bitcoin back in 2015."',
+      UserData(
+          backgroundImageUrl: "",
+          isPrivate: false,
+          showFollowers: false,
+          did: "djskdj",
+          displayName: "Display Name",
+          bio: "jddjskd",
+          customToken: "dsd",
+          username: "username",
+          profileImageUrl:
+          "https://img.freepik.com/free-photo/people-taking-selfie-together-registration-day_23-2149096795.jpg",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isActive: false,
+          dob: 2,
+          mainWallet: UserWallet(
+              walletAddress: "walletAddress",
+              walletType: "walletType",
+              walletBalance: "",
+              privateKey: "privateKey",
+              userdid: "userdid"),
+          wallets: []),
+    ),
+    PageData(
+      '"Wow! Bitnet is the part that I was always missing for bitcoin. Lightning wallets truly are the future. Now we will only see more and more bitcoin adoption."',
+      UserData(
+          backgroundImageUrl: "",
+          isPrivate: false,
+          showFollowers: false,
+          did: "djskdj",
+          displayName: "Display Name",
+          bio: "jddjskd",
+          customToken: "dsd",
+          username: "fakeusername",
+          profileImageUrl:
+          "https://variety.com/wp-content/uploads/2022/08/Jonah-Hill.jpg?w=1000",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isActive: false,
+          dob: 2,
+          mainWallet: UserWallet(
+              walletAddress: "walletAddress",
+              walletType: "walletType",
+              walletBalance: "",
+              privateKey: "privateKey",
+              userdid: "userdid"),
+          wallets: []),
+    ),
+  ];
+
+
   @override
   void dispose() {
     scrollController.removeListener(_handleUserScroll);
     scrollController.dispose();
+
     _timer.cancel();
     super.dispose();
   }

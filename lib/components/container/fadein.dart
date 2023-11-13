@@ -42,7 +42,9 @@ class FadeInState extends State<FadeIn> with SingleTickerProviderStateMixin {
 
   _startAnimation() async {
     await Future.delayed(widget.delay);
-    _controller.forward();
+    if (mounted) {
+      _controller.forward();
+    }
   }
 
   @override
