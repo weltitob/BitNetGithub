@@ -103,11 +103,9 @@ class _CryptoItemState extends State<CryptoItem>
     setState(() {
       if (_currentPrice < _priceOneTimestampAgo) {
         _animationColor = AppTheme.errorColor;
-      }
-      else if (_currentPrice > _priceOneTimestampAgo) {
+      } else if (_currentPrice > _priceOneTimestampAgo) {
         _animationColor = AppTheme.successColor;
-      }
-      else {
+      } else {
         _animationColor = Colors.transparent;
       }
     });
@@ -166,18 +164,25 @@ class _CryptoItemState extends State<CryptoItem>
   @override
   Widget build(BuildContext context) {
     return _loading
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(AppTheme.cardPadding),
-            child: Container(
-              height: AppTheme.cardPadding * 3,
-              color: lighten(
-                Theme.of(context).backgroundColor,
-                10,
+        ? GestureDetector(
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const BitcoinScreen(),
               ),
-              child: Center(
-                child: dotProgress(context),
-              ),
-            ))
+            ),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppTheme.cardPadding),
+                child: Container(
+                  height: AppTheme.cardPadding * 3,
+                  color: lighten(
+                    Theme.of(context).backgroundColor,
+                    10,
+                  ),
+                  child: Center(
+                    child: dotProgress(context),
+                  ),
+                )),
+          )
         : ClipRRect(
             borderRadius: BorderRadius.circular(AppTheme.cardPadding),
             child: Container(

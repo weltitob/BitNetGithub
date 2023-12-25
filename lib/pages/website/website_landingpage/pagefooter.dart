@@ -1,20 +1,8 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/BitNetShaderMask.dart';
-import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
-import 'package:bitnet/components/container/fadein.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/components/container/randomcontainers/randomavatarcontainer.dart';
-import 'package:bitnet/components/indicators/smoothpageindicator.dart';
-import 'package:bitnet/components/items/usersearchresult.dart';
-import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefive.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:vrouter/vrouter.dart';
 

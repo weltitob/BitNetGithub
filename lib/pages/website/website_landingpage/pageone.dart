@@ -5,6 +5,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -35,87 +36,122 @@ class _PageOneState extends State<PageOne> {
         double centerSpacing = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.columnWidth * 0.05 : AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
 
 
-        return BackgroundWithContent(
-          backgroundType: BackgroundType.asset,
-          withGradientBottomBig: true,
-          opacity: 0.7,
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: centerSpacing),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: AppTheme.cardPadding * 2 * spacingMultiplier,
-                ),
-                Container(
-                  width: bigtextWidth,
-                  child: Text(
-                    "We build Bitcoins Cyberspace!", //We bring Bitcoin to ordinary people!
-                    textAlign: TextAlign.center,
-                    style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,
-                  ),
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding * 1 * spacingMultiplier,
-                ),
-                Container(
-                  width: subtitleWidth,
-                  child: Text(
-                    "We believe that adopting Bitcoin will solve almost all of our worlds problems!", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
-                    textAlign: TextAlign.center,
-                    style: isSuperSmallScreen ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding * 1.5 * spacingMultiplier,
-                ),
-                LongButtonWidget(
-                  buttonType: ButtonType.solid,
-                  title: L10n.of(context)!.register,
-                  onTap: () async {
-                    VRouter.of(context).to('/pinverification');
-                  },
-                ),
-                SizedBox(
-                  //height: AppTheme.cardPadding * 8 * spacingMultiplier,
-                  height: AppTheme.cardPadding * 10 * spacingMultiplier,
-                ),
-                StreamBuilder<Object>(
-                  stream: widget.controller.userCountStream(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return SizedBox(
-                          height: AppTheme.cardPadding * 4,
-                          child: Center(child: dotProgress(context)));
-                    }
-                    int currentusernumber = snapshot.data as int;
-                    num _value = (1000000 - currentusernumber);
-                    return AnimatedFlipCounter(
-                      value: _value,
-                      thousandSeparator: ".",
-                      decimalSeparator: ",",
-                      textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
-                        fontSize: isSuperSmallScreen ? 74 : 80,
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding * spacingMultiplier,
-                ),
-                Text(
-                  "limited spots left!",
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                Row(
+        return Stack(
+          children: [
+            BackgroundWithContent(
+              backgroundType: BackgroundType.asset,
+              withGradientBottomBig: true,
+              opacity: 0.7,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: centerSpacing),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container()
+                    SizedBox(
+                      height: AppTheme.cardPadding * 4 * spacingMultiplier,
+                    ),
+                    Container(
+                      width: bigtextWidth,
+                      child: Text(
+                        "We build Bitcoins Cyberspace!", //We bring Bitcoin to ordinary people!
+                        textAlign: TextAlign.center,
+                        style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,
+                      ),
+                    ),
+                    SizedBox(
+                      height: AppTheme.cardPadding * 1 * spacingMultiplier,
+                    ),
+                    Container(
+                      width: subtitleWidth,
+                      child: Text(
+                        "We believe that adopting Bitcoin will solve almost all of our worlds problems!", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
+                        textAlign: TextAlign.center,
+                        style: isSuperSmallScreen ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                    SizedBox(
+                      height: AppTheme.cardPadding * 1.5 * spacingMultiplier,
+                    ),
+                    LongButtonWidget(
+                      buttonType: ButtonType.solid,
+                      title: L10n.of(context)!.register,
+                      onTap: () async {
+                        VRouter.of(context).to('/pinverification');
+                      },
+                    ),
+                    SizedBox(
+                      //height: AppTheme.cardPadding * 8 * spacingMultiplier,
+                      height: AppTheme.cardPadding * 10 * spacingMultiplier,
+                    ),
+                    StreamBuilder<Object>(
+                      stream: widget.controller.userCountStream(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return SizedBox(
+                              height: AppTheme.cardPadding * 4,
+                              child: Center(child: dotProgress(context)));
+                        }
+                        int currentusernumber = snapshot.data as int;
+                        num startvalue = 1000000;
+                        num endvalue = (1000000 - currentusernumber);
+
+                        return TweenAnimationBuilder<num>(
+                          duration: Duration(seconds: 3), // Adjust the duration according to your need
+                          tween: Tween(begin: startvalue, end: endvalue),
+                          builder: (context, value, child) {
+                            return AnimatedFlipCounter(
+                              value: value, // Animated value
+                              duration: Duration(milliseconds: 500), // Adjust the flip duration
+                              curve: Curves.easeOut, // Adjust the animation curve
+                              thousandSeparator: ".",
+                              decimalSeparator: ",",
+                              textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                fontSize: isSuperSmallScreen ? 74 : 84,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      height: AppTheme.cardPadding * spacingMultiplier,
+                    ),
+                    Text(
+                      "limited spots left!",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    Row(
+                      children: [
+                        Container()
+                      ],
+                    )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
-          ),
+            // Align(
+            //     alignment: Alignment.bottomCenter,
+            //     child: Expanded(
+            //       child: Lottie.asset(
+            //         'assets/lottiefiles/stars.json',
+            //         fit: BoxFit.cover,
+            //       ),
+            //     )
+            // ),
+            // Align(
+            //     alignment: Alignment.bottomRight,
+            //     child: Container(
+            //       height: AppTheme.cardPadding * 25 * spacingMultiplier,
+            //       width: AppTheme.cardPadding * 25 * spacingMultiplier,
+            //       margin: EdgeInsets.only(right: AppTheme.cardPadding * 5 * spacingMultiplier),
+            //       child: Lottie.asset(
+            //         'assets/lottiefiles/astronaut_lp.json',
+            //         fit: BoxFit.cover,
+            //       ),
+            //     )
+            // ),
+          ],
         );
       },
     );

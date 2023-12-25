@@ -19,6 +19,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  #
+  get:
+  animate_do: ^3.1.2
+  web_socket_channel: ^2.4.0
+  number_paginator: ^0.4.0
+  vector_math: ^2.1.0
+
   #von oldbitnet create screen stuff
   flutter_sound: ^9.2.13
   flutter_inappwebview: ^5.7.2+3
@@ -144,7 +151,7 @@ dependencies:
   animator: ^3.1.0
   avatar_glow: ^2.0.2
   flutter_svg: ^2.0.6
-  dio: ^4.0.4
+  dio: ^4.0.6
   json_annotation: ^4.0.0
   flutter_spinkit: ^5.0.0
 

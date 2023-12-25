@@ -1,9 +1,10 @@
+import 'package:bitnet/backbone/helper/matrix_helpers/other/background_push.dart';
+import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart';
+import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_scroll_behaviour.dart';
+import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/components/loaders/empty_page.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/matrix/utils/other/background_push.dart';
-import 'package:bitnet/pages/matrix/utils/other/custom_scroll_behaviour.dart';
-import 'package:bitnet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/pages/routetrees/routes.dart';
 import 'package:app_links/app_links.dart';
@@ -17,8 +18,6 @@ import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-
-import '../matrix/utils/other/client_manager.dart';
 
 class WidgetTree extends StatefulWidget {
   static GlobalKey<VRouterState> routerKey = GlobalKey<VRouterState>();

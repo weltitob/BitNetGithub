@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/models/footerpagedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/models/user/userwallet.dart';
-import 'package:bitnet/pages/website/website_landingpage/pagefooter.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

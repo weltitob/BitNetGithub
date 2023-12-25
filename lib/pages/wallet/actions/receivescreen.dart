@@ -26,7 +26,9 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
   @override
   Widget build(BuildContext context) {
     // Get the current user's wallet from a provider
-    final userWallet = Provider.of<UserWallet>(context);
+    //final userWallet = Provider.of<UserWallet>(context);
+    final userWallet = UserWallet(walletAddress: "fakewallet",
+        walletType: "walletType", walletBalance: "0", privateKey: "privateKey", userdid: "userdid");
 
     return Scaffold(
       // The screen background color

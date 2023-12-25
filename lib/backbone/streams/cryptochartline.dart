@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:bitnet/components/chart/chart.dart';
+import 'package:matrix/matrix.dart';
 
 /*
 This class represents a chart line for a given cryptocurrency and allows fetching its chart data from the Coingecko API.
@@ -11,6 +12,7 @@ class CryptoChartLine {
   final String interval;
   final String days;
   final String currency;
+  final String apiKey = 'CG-12UjARcpudDsAw5CKgGxNRqe';
 
   CryptoChartLine({
     required this.crypto,
@@ -24,8 +26,9 @@ class CryptoChartLine {
 
   // Function to fetch chart data from Coingecko API
   Future<void> getChartData() async {
+    print("Fetching chart data for $crypto...");
     var url =
-        "https://api.coingecko.com/api/v3/coins/$crypto/market_chart?vs_currency=$currency&days=$days&interval=$interval";
+        "https://api.coingecko.com/api/v3/coins/$crypto/market_chart?vs_currency=$currency&days=$days&interval=$interval&api_key=$apiKey";
     Response res = await get(Uri.parse(url));
     var jsonData = jsonDecode(res.body);
     if (res.statusCode == 200) {
@@ -65,6 +68,7 @@ class CryptoChartLine {
         });
       }
     } else {
+      Logs().e("Unable to retrieve chart data from Coingecko. Status code: ${res.statusCode} Response: ${res.body}");
       // Throw an error if unable to retrieve chart data from Coingecko
       throw "Unable to retrieve chart data from Coingecko.";
     }

@@ -1,11 +1,11 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/helper/matrix_helpers/url_launcher.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/matrix/utils/other/url_launcher.dart';
-import 'package:bitnet/pages/profile/actions/sendscreen.dart';
+import 'package:bitnet/pages/wallet/actions/sendscreen.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';

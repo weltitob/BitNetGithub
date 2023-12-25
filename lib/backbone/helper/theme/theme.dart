@@ -35,7 +35,7 @@ abstract class AppTheme {
   static Color glassMorphColorLight = Colors.white.withOpacity(0.2);
   static Color glassMorphColorDark = Colors.black.withOpacity(0.3);
 
-  // //bitcoincolors
+  // //bF2A900FFitcoincolors
   // static const Color orange = Color(0xFFFFBD69);
   // static const Color kAccentColor = Color(0xFFFFC107);
   static const Color colorBitcoin = Color(0xfff2a900);

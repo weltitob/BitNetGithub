@@ -58,10 +58,10 @@ class _TransactionsState extends State<Transactions>
 
   @override
   Widget build(BuildContext context) {
-    final userData = Provider.of<UserData>(context);
-    final userWallet = userData.mainWallet;
+    //final userData = Provider.of<UserData>(context);
+    //final userWallet = userData.mainWallet;
 
-    getTransactions(userWallet);
+    //getTransactions(userWallet);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/profile/actions/receivescreen.dart';
-import 'package:bitnet/pages/profile/actions/sendscreen.dart';
+import 'package:bitnet/pages/wallet/actions/receivescreen.dart';
+import 'package:bitnet/pages/wallet/actions/sendscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
@@ -68,7 +68,7 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
 
   @override
   Widget build(BuildContext context) {
-    final UserData userData = Provider.of<UserData>(context);
+    //final UserData userData = Provider.of<UserData>(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -130,7 +130,7 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                               CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Willkommen bei',
+                                  'Welcome to',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium!
@@ -139,7 +139,7 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  "NexusWallet",
+                                  "BitNet",
                                   // NumberFormat.simpleCurrency().format(MockBalance.data.last),
                                   style: Theme.of(context)
                                       .textTheme
@@ -153,7 +153,7 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                                     borderRadius:
                                     BorderRadius.circular(30),
                                     color: Theme.of(context)
-                                        .backgroundColor
+                                        .colorScheme.background
                                         .withOpacity(0.25),
                                   ),
                                   child: Padding(
@@ -237,7 +237,7 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                   GestureDetector(
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => SendBTCScreen(bitcoinSenderAdress: userData.mainWallet.walletAddress,),
+                        builder: (context) => SendBTCScreen(bitcoinSenderAdress: "penis"),//userData.mainWallet.walletAddress,),
                       ),
                     ),
                     child: circButtonWidget("Senden", _compositionSend,

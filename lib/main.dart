@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:universal_html/html.dart' as html; // Changed from 'dart:html'
-import 'package:bitnet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:matrix/matrix.dart';
 //import 'firebase_options.dart';
 

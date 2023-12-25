@@ -180,7 +180,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
   @override
   Widget build(BuildContext context) {
     // Retrieves userWallet using the Provider
-    final userWallet = Provider.of<UserWallet>(context);
+    //final userWallet = Provider.of<UserWallet>(context);
+
+    final userWallet = UserWallet(walletAddress: "fakewallet",
+        walletType: "walletType", walletBalance: "0", privateKey: "privateKey", userdid: "userdid");
 
     // Builds the screen scaffold
     return Scaffold(
@@ -508,7 +511,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
 
   Widget bitcoinWidget() {
     // Accessing the user wallet object from Provider
-    final userWallet = Provider.of<UserWallet>(context);
+    //final userWallet = Provider.of<UserWallet>(context);
+    final userWallet = UserWallet(walletAddress: "fakewallet",
+        walletType: "walletType", walletBalance: "0", privateKey: "privateKey", userdid: "userdid");
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -694,7 +699,9 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
 
   Widget button() {
     // Get the user wallet from the context using Provider
-    final userWallet = Provider.of<UserWallet>(context);
+    //final userWallet = Provider.of<UserWallet>(context);
+    final userWallet = UserWallet(walletAddress: "fakewallet",
+        walletType: "walletType", walletBalance: "0", privateKey: "privateKey", userdid: "userdid");
 
     // Return a Padding widget containing a SwipeableButtonView
     return Padding(

@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/pb_generator/tranform_link.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
@@ -7,7 +8,6 @@ import 'dart:async';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/models/identityprovider_matrix.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bitnet/backbone/auth/auth.dart';

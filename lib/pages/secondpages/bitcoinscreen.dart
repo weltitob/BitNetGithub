@@ -1,5 +1,9 @@
 import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/pages/mempool/view/mempoolhome.dart';
+import 'package:bitnet/pages/secondpages/analystsassesment.dart';
+import 'package:bitnet/pages/secondpages/keymetrics.dart';
+import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:bitnet/components/chart/chart.dart';
@@ -41,26 +45,84 @@ class _BitcoinScreenState extends State<BitcoinScreen>
         children: <Widget>[
           Column(
             children: [
-              SizedBox(
-                height: AppTheme.cardPadding * 3,
-              ),
               ChartWidget(),
             ],
           ),
           RoundedContainer(
+            contentPadding: const EdgeInsets.all(0),
+            child: MempoolHome(),
+          ),
+          RoundedContainer(
+            contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.cardPadding),
+                  child: Text(
+                    "Key metrics",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding,
+                ),
+                buildKeymetrics(),
+              ],
+            ),
+          ),
+          RoundedContainer(
+            contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.cardPadding),
+                  child: Text(
+                    "Analysis",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding,
+                ),
+                AnalysisWidget(),
+              ],
+            ),
+          ),
+          RoundedContainer(
+            contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.cardPadding),
+                  child: Text(
+                    "Whale behaviour",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding,
+                ),
+                WhaleBehaviour(),
+              ],
+            ),
+          ),
+          RoundedContainer(
               child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "News",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding,
-              ),
-              buildNews(),
-            ],
-          )),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "News",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(
+                    height: AppTheme.elementSpacing,
+                  ),
+                  buildNews(),
+                ],
+              )),
         ],
       ),
     );

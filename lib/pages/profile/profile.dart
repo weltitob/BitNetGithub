@@ -1,10 +1,10 @@
 //move the controller and all the functions here
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
 import 'package:bitnet/components/tabs/wallettab.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/matrix/utils/other/platform_infos.dart';
 import 'package:bitnet/pages/profile/profile_view.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';

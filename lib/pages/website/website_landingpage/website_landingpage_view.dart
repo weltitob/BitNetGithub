@@ -1,5 +1,4 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:bitnet/backbone/helper/responsiveness/webview_pagephysics.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetFAB.dart';
 import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
@@ -66,12 +65,12 @@ class WebsiteLandingPageView extends StatelessWidget {
           ),
           PageThree(),
           PageFour(),
-          // PageFive(
-          //   controller: controller,
-          // ),
-          PageFooter(
+          PageFive(
             controller: controller,
           ),
+          // PageFooter(
+          //   controller: controller,
+          // ),
         ],
       ),
     );
@@ -114,6 +113,7 @@ class WebsiteLandingPageView extends StatelessWidget {
                   List<AnimatedText> texts = [
                     RotateAnimatedText(
                       "We have liftoff! Exclusive Early Access for Invited Users.",
+                      duration: Duration(milliseconds: 2400),
                       textStyle: Theme.of(context)
                           .textTheme
                           .titleSmall,
@@ -122,6 +122,7 @@ class WebsiteLandingPageView extends StatelessWidget {
                   texts.add(
                     RotateAnimatedText(
                       '+${percentageChange!.toStringAsFixed(1)}% User-change in the last 7 days!',
+                      duration: Duration(milliseconds: 2400),
                       textStyle: Theme.of(context)
                           .textTheme
                           .titleSmall,
@@ -130,6 +131,7 @@ class WebsiteLandingPageView extends StatelessWidget {
                   texts.add(
                     RotateAnimatedText(
                       '@${firstFourUsernames[0]} just joined the BitNet!',
+                      duration: Duration(milliseconds: 2400),
                       textStyle: Theme.of(context)
                           .textTheme
                           .titleSmall,

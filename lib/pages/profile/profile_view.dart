@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/settings_bottom_sheet/settings_bottom_sheet.dart';
@@ -10,6 +11,7 @@ import 'package:bitnet/components/container/coinlogo.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
@@ -378,7 +380,29 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget buildCenterWidget(BuildContext context) {
-    final userData = Provider.of<UserData>(context, listen: false);
+    //final userData = Provider.of<UserData>(context, listen: false);
+    final userData = UserData(
+        backgroundImageUrl: "backgroundImageUrl",
+        isPrivate: true,
+        showFollowers: true,
+        did: "did",
+        displayName: "displayName",
+        bio: "bio",
+        customToken: "customToken",
+        username: "username",
+        profileImageUrl: "profileImageUrl",
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        isActive: true,
+        dob: 1,
+        mainWallet: UserWallet(
+            walletAddress: "walletAddress",
+            walletType: "walletType",
+            walletBalance: "walletBalance",
+            privateKey: "privateKey",
+            userdid: "userdid"),
+        wallets: []);
+
     final String currentUserId = controller.profileId!;
 
     bool isProfileOwner = currentUserId == userData.did;

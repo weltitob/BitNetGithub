@@ -26,6 +26,7 @@ class BackgroundWithContent extends StatefulWidget {
   final bool withGradientRightSmall;
   final String assetPath;
   final String lottieassetPath;
+  
   const BackgroundWithContent({
     Key? key,
     required this.child,

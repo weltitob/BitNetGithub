@@ -1,10 +1,10 @@
+import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_locals.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetTabBar.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/customtab.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/chat_list/chat_list.dart';
-import 'package:bitnet/pages/matrix/utils/matrix_sdk_extensions/matrix_locals.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
