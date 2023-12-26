@@ -14,16 +14,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vrouter/vrouter.dart';
 
-class PageFive extends StatefulWidget {
+class Quotes extends StatefulWidget {
   final WebsiteLandingPageController controller;
 
-  const PageFive({super.key, required this.controller});
+  const Quotes({super.key, required this.controller});
 
   @override
-  State<PageFive> createState() => _PageFiveState();
+  State<Quotes> createState() => _QuotesState();
 }
 
-class _PageFiveState extends State<PageFive> {
+class _QuotesState extends State<Quotes> {
   PageController _pageController = PageController();
   GlobalKey<FadeInState> fadeInKey = GlobalKey<FadeInState>();
   int _selectedindex = 0;
@@ -34,236 +34,232 @@ class _PageFiveState extends State<PageFive> {
     _pageController.dispose(); // Don't forget to dispose the PageController
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          // Diese sind die Breite und Höhe aus den Constraints
-          double width = constraints.maxWidth;
-          double height = constraints.maxHeight;
+      // Diese sind die Breite und Höhe aus den Constraints
+      double width = constraints.maxWidth;
+      double height = constraints.maxHeight;
 
-          bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
-          bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-          bool isSuperSmallScreen =
-              constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+      bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
-          double bigtextWidth = isMidScreen
-              ? isSmallScreen
+      double bigtextWidth = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? AppTheme.cardPadding * 13
-              : AppTheme.cardPadding * 24
+                  ? AppTheme.cardPadding * 13
+                  : AppTheme.cardPadding * 24
               : AppTheme.cardPadding * 28
-              : AppTheme.cardPadding * 30;
-          double textWidth = isMidScreen
-              ? isSmallScreen
+          : AppTheme.cardPadding * 30;
+      double textWidth = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? AppTheme.cardPadding * 13
-              : AppTheme.cardPadding * 16
+                  ? AppTheme.cardPadding * 13
+                  : AppTheme.cardPadding * 16
               : AppTheme.cardPadding * 22
-              : AppTheme.cardPadding * 24;
-          double subtitleWidth = isMidScreen
-              ? isSmallScreen
+          : AppTheme.cardPadding * 24;
+      double subtitleWidth = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? AppTheme.cardPadding * 13
-              : AppTheme.cardPadding * 16
+                  ? AppTheme.cardPadding * 13
+                  : AppTheme.cardPadding * 16
               : AppTheme.cardPadding * 18
-              : AppTheme.cardPadding * 22;
-          double spacingMultiplier = isMidScreen
-              ? isSmallScreen
+          : AppTheme.cardPadding * 22;
+      double spacingMultiplier = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? 0.25
-              : 0.5
+                  ? 0.25
+                  : 0.5
               : 0.75
-              : 1;
-          double centerSpacing = isMidScreen
-              ? isSmallScreen
+          : 1;
+      double centerSpacing = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? AppTheme.columnWidth * 0.075
-              : AppTheme.columnWidth * 0.15
+                  ? AppTheme.columnWidth * 0.075
+                  : AppTheme.columnWidth * 0.15
               : AppTheme.columnWidth * 0.65
-              : AppTheme.columnWidth;
+          : AppTheme.columnWidth;
 
-          return Stack(
-          children: [
-            _isThirdAnimationCompleted
-                ? Container()
-                : FadeIn(
-              delay: Duration(milliseconds: 1200),
-              duration: Duration(seconds: 2),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: AppTheme.cardPadding * 10 * spacingMultiplier + 180,
-                    left: 850 - AppTheme.cardPadding,
+      return Stack(
+        children: [
+          _isThirdAnimationCompleted
+              ? Container()
+              : FadeIn(
+                  delay: Duration(milliseconds: 1200),
+                  duration: Duration(seconds: 2),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        top: isSmallScreen
+                            ? AppTheme.cardPadding * 16 +
+                                spacingMultiplier +
+                                180
+                            : AppTheme.cardPadding * 5 +
+                                spacingMultiplier +
+                                180,
+                        left: isSmallScreen
+                            ? 425 - AppTheme.cardPadding * 6
+                            : 850 - AppTheme.cardPadding,
+                      ),
+                      child: quoteText(),
+                    ),
                   ),
-                  child: quoteText(),
                 ),
-              ),
-            ),
-            _isThirdAnimationCompleted && !isSmallScreen
-                ? Align(
-              alignment: Alignment.topCenter,
+          _isThirdAnimationCompleted && !isSmallScreen
+              ? Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: isSmallScreen
+                        ? 300 + AppTheme.cardPadding * 5
+                        : 850 + AppTheme.cardPadding * 10,
+                    height: isSmallScreen ? 800 : 400,
+                    child: RandomAvatarWidget(
+                      start: true,
+                      width: isSmallScreen
+                          ? 300 + AppTheme.cardPadding * 5
+                          : 850 + AppTheme.cardPadding * 10,
+                      height: isSmallScreen ? 800 : 400,
+                    ),
+                  ),
+                )
+              : Container(),
+          FadeIn(
+            child: Align(
+              alignment: Alignment.center,
               child: Container(
-                margin: EdgeInsets.only(
-                  top: AppTheme.cardPadding *
-                      6.5 *
-                      spacingMultiplier,
-                ),
-                width: 850 + AppTheme.cardPadding * 10,
-                height: 400,
-                child: RandomAvatarWidget(
-                  start: false,
-                  width: 850 + AppTheme.cardPadding * 10,
-                  height: 400,
-                ),
-              ),
-            )
-                : Container(),
-            FadeIn(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: AppTheme.cardPadding * 10 * spacingMultiplier,
-                  ),
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () {
-                        VRouter.of(context).to("/register");
-                      },
-                      child: GlassContainer(
-                        borderThickness:
-                        1.5, // remove border if not active
-                        blur: 50,
-                        opacity: 0.1,
-                        borderRadius: BorderRadius.circular(240 / 3.5),
-                        child: Container(
-                          width: isSmallScreen? 300: 850,
-                          height: isSmallScreen? 500: 240,
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: isSmallScreen? 300 : 850,
-                                height: isSmallScreen? 500: 240,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                  AppTheme.cardPadding,
-                                  vertical: AppTheme.cardPadding * 2.25,
-                                ),
-                                child: _isThirdAnimationCompleted
-                                    ? Container(
-                                  alignment: Alignment.center,
-                                  child: BitNetShaderMask(
-                                    child: AnimatedTextKit(
-                                      isRepeatingAnimation:
-                                      false,
-                                      animatedTexts: [
-                                        TypewriterAnimatedText(
-                                          '"We take it in our own hands!"',
-                                          textStyle:
-                                          Theme.of(context)
-                                              .textTheme
-                                              .displayLarge!
-                                              .copyWith(
-                                            color: Colors
-                                                .white, // This color will be replaced by the gradient effect
-                                          ),
-                                          speed: const Duration(
-                                              milliseconds: 50),
-                                        ),
-                                        TypewriterAnimatedText(
-                                          'Join BitNet now!',
-                                          textStyle:
-                                          Theme.of(context)
-                                              .textTheme
-                                              .displayLarge!
-                                              .copyWith(
-                                            color: Colors
-                                                .white, // This color will be replaced by the gradient effect
-                                          ),
-                                          speed: const Duration(
-                                              milliseconds: 50),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                                    : HorizontalFadeListView(
-                                  child: PageView.builder(
-                                    controller: _pageController,
-                                    onPageChanged: (index) {
-                                      setState(() {
-                                        _selectedindex = index;
-                                      });
-                                      // Restart the FadeIn animation
-                                      fadeInKey.currentState
-                                          ?.restartAnimation();
-                                    },
-                                    itemCount:
-                                    widget.controller.pageDataList.length,
-                                    itemBuilder:
-                                        (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.25),
-                                        child: Column(
-                                          children: [
-                                            _buildTypewriterText(
-                                                widget.controller.pageDataList[index]
-                                                    .text, () {
-                                              if (index <
-                                                  widget.controller.pageDataList
-                                                      .length -
-                                                      1) {
-                                                Future.delayed(
-                                                    const Duration(
-                                                        milliseconds:
-                                                        2000),
-                                                        () {
-                                                      _pageController
-                                                          .nextPage(
-                                                        duration:
-                                                        const Duration(
-                                                            milliseconds:
-                                                            300),
-                                                        curve: Curves
-                                                            .easeInOut,
-                                                      );
-                                                    });
-                                              }
-                                            }),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      VRouter.of(context).to("/register");
+                    },
+                    child: GlassContainer(
+                      borderThickness: 1.5, // remove border if not active
+                      blur: 50,
+                      opacity: 0.1,
+                      borderRadius: BorderRadius.circular(240 / 3.5),
+                      child: Container(
+                        width: isSmallScreen ? 300 : 850,
+                        height: isSmallScreen ? 500 : 240,
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: isSmallScreen ? 300 : 850,
+                              height: isSmallScreen ? 500 : 240,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: AppTheme.cardPadding,
+                                vertical: AppTheme.cardPadding * 2.25,
+                              ),
+                              child: _isThirdAnimationCompleted
+                                  ? Container(
+                                      alignment: Alignment.center,
+                                      child: BitNetShaderMask(
+                                        child: AnimatedTextKit(
+                                          isRepeatingAnimation: false,
+                                          animatedTexts: [
+                                            TypewriterAnimatedText(
+                                              '"We take it in our own hands!"',
+                                              textAlign: TextAlign.center,
+                                              textStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .displayLarge!
+                                                  .copyWith(
+                                                    color: Colors
+                                                        .white, // This color will be replaced by the gradient effect
+                                                  ),
+                                              speed: const Duration(
+                                                  milliseconds: 50),
+                                            ),
+                                            TypewriterAnimatedText(
+                                              'Join BitNet now!',
+                                              textAlign: TextAlign.center,
+                                              textStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .displayLarge!
+                                                  .copyWith(
+                                                    color: Colors
+                                                        .white, // This color will be replaced by the gradient effect
+                                                  ),
+                                              speed: const Duration(
+                                                  milliseconds: 50),
+                                            ),
                                           ],
                                         ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                              _isThirdAnimationCompleted
-                                  ? Container()
-                                  : Align(
-                                alignment:
-                                Alignment.bottomCenter,
-                                child: Container(
-                                    margin: EdgeInsets.only(
-                                      bottom:
-                                      AppTheme.cardPadding *
-                                          1 *
-                                          spacingMultiplier,
+                                      ),
+                                    )
+                                  : HorizontalFadeListView(
+                                      child: PageView.builder(
+                                        controller: _pageController,
+                                        onPageChanged: (index) {
+                                          setState(() {
+                                            _selectedindex = index;
+                                          });
+                                          // Restart the FadeIn animation
+                                          fadeInKey.currentState
+                                              ?.restartAnimation();
+                                        },
+                                        itemCount: widget
+                                            .controller.pageDataList.length,
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal:
+                                                    AppTheme.cardPadding *
+                                                        1.25),
+                                            child: Column(
+                                              children: [
+                                                _buildTypewriterText(
+                                                    widget
+                                                        .controller
+                                                        .pageDataList[index]
+                                                        .text, () {
+                                                  if (index <
+                                                      widget
+                                                              .controller
+                                                              .pageDataList
+                                                              .length -
+                                                          1) {
+                                                    Future.delayed(
+                                                        const Duration(
+                                                            milliseconds: 2000),
+                                                        () {
+                                                      _pageController.nextPage(
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    300),
+                                                        curve: Curves.easeInOut,
+                                                      );
+                                                    });
+                                                  }
+                                                }),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                    child: buildIndicator(
-                                      dotHeight: AppTheme
-                                          .elementSpacing,
-                                      dotWidth: AppTheme
-                                          .elementSpacing,
-                                      pageController:
-                                      _pageController,
-                                      count: 3,
-                                    )),
-                              ),
-                            ],
-                          ),
+                            ),
+                            _isThirdAnimationCompleted
+                                ? Container()
+                                : Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                        margin: EdgeInsets.only(
+                                            bottom: AppTheme.cardPadding * 1),
+                                        child: buildIndicator(
+                                          dotHeight: AppTheme.elementSpacing,
+                                          dotWidth: AppTheme.elementSpacing,
+                                          pageController: _pageController,
+                                          count: 3,
+                                        )),
+                                  ),
+                          ],
                         ),
                       ),
                     ),
@@ -271,77 +267,79 @@ class _PageFiveState extends State<PageFive> {
                 ),
               ),
             ),
-            _isThirdAnimationCompleted
-                ? Container()
-                : FadeIn(
-              delay: Duration(milliseconds: 1200),
-              duration: Duration(seconds: 2),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: AppTheme.cardPadding *
-                        7.75 *
-                        spacingMultiplier,
-                    right: 850 - AppTheme.cardPadding,
+          ),
+          _isThirdAnimationCompleted
+              ? Container()
+              : FadeIn(
+                  delay: Duration(milliseconds: 1200),
+                  duration: Duration(seconds: 2),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        bottom: isSmallScreen
+                            ? AppTheme.cardPadding * 16
+                            : AppTheme.cardPadding * 5,
+                        right: isSmallScreen
+                            ? 425 - AppTheme.cardPadding * 3.5
+                            : 850 - AppTheme.cardPadding + AppTheme.cardPadding,
+                      ),
+                      child: quoteText(),
+                    ),
                   ),
-                  child: quoteText(),
                 ),
-              ),
-            ),
-            _isThirdAnimationCompleted && !isSmallScreen
-                ? Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                margin: EdgeInsets.only(
-                  top: AppTheme.cardPadding *
-                      6.5 *
-                      spacingMultiplier,
-                ),
-                width: 850 + AppTheme.cardPadding * 10,
-                height: 400,
-                child: RandomAvatarWidget(
-                  start: true,
-                  width: 850 + AppTheme.cardPadding * 10,
-                  height: 400,
-                ),
-              ),
-            )
-                : Container(),
-            _isThirdAnimationCompleted
-                ? Container()
-                : FadeIn(
-              key: fadeInKey,
-              delay: Duration(milliseconds: 500),
-              duration: Duration(seconds: 2),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: AppTheme.cardPadding *
-                        7.5 *
-                        spacingMultiplier,
+          _isThirdAnimationCompleted && !isSmallScreen
+              ? Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: isSmallScreen
+                        ? 300 + AppTheme.cardPadding * 5
+                        : 850 + AppTheme.cardPadding * 10,
+                    height: isSmallScreen ? 800 : 400,
+                    child: RandomAvatarWidget(
+                      start: true,
+                      width: isSmallScreen
+                          ? 300 + AppTheme.cardPadding * 5
+                          : 850 + AppTheme.cardPadding * 10,
+                      height: isSmallScreen ? 800 : 400,
+                    ),
                   ),
-                  child: _buildUserSearchResult(
-                      widget.controller.pageDataList[_selectedindex].userData),
+                )
+              : Container(),
+          _isThirdAnimationCompleted
+              ? Container()
+              : FadeIn(
+                  key: fadeInKey,
+                  delay: Duration(milliseconds: 500),
+                  duration: Duration(seconds: 2),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        bottom: isSmallScreen
+                            ? 240 +
+                                AppTheme.cardPadding * 10.5
+                            : AppTheme.cardPadding * 10.5,
+                      ),
+                      child: _buildUserSearchResult(widget
+                          .controller.pageDataList[_selectedindex].userData),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ],
-        );
-      }
-    );
+        ],
+      );
+    });
   }
 
   Widget quoteText() {
     return Text(
       '"',
       style: Theme.of(context).textTheme.displayLarge!.copyWith(
-        fontSize: 170,
-        fontFamily: GoogleFonts.lobster().fontFamily,
-        color: AppTheme
-            .colorBitcoin, // This color will be replaced by the gradient effect
-      ),
+            fontSize: 170,
+            fontFamily: GoogleFonts.lobster().fontFamily,
+            color: AppTheme
+                .colorBitcoin, // This color will be replaced by the gradient effect
+          ),
     );
   }
 
@@ -354,8 +352,8 @@ class _PageFiveState extends State<PageFive> {
           TypewriterAnimatedText(
             text,
             textStyle: Theme.of(context).textTheme.displaySmall!.copyWith(
-              color: AppTheme.white90,
-            ),
+                  color: AppTheme.white90,
+                ),
             speed: const Duration(milliseconds: 50),
             textAlign: TextAlign.center,
           ),
@@ -406,5 +404,4 @@ class _PageFiveState extends State<PageFive> {
       ),
     );
   }
-
 }

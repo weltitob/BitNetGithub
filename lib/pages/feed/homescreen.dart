@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -138,24 +139,26 @@ class _FeedScreenState extends State<FeedScreen>
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    buildSearchField(
-                      context: context,
-                      TextFieldController: TextFieldController,
+                    SearchFieldWidget(
+                      isSearchEnabled: true,
+                      hintText: "Search...",
                       handleSearch: handleSearch,
                     ),
-                    Container(
-                      height: 100,
-                      margin: EdgeInsets.only(left: AppTheme.elementSpacing),
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: walletcategorys.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ScreenCategorys(
-                                walletcategorys[index].imageURL,
-                                walletcategorys[index].text,
-                                walletcategorys[index].header,
-                                index);
-                          }),
+                    HorizontalFadeListView(
+                      child: Container(
+                        height: 100,
+                        margin: EdgeInsets.only(left: AppTheme.elementSpacing),
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: walletcategorys.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return ScreenCategorys(
+                                  walletcategorys[index].imageURL,
+                                  walletcategorys[index].text,
+                                  walletcategorys[index].header,
+                                  index);
+                            }),
+                      ),
                     ),
                   ],
                 ),

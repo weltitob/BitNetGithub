@@ -65,12 +65,12 @@ class WebsiteLandingPageView extends StatelessWidget {
           ),
           PageThree(),
           PageFour(),
-          PageFive(
-            controller: controller,
-          ),
-          // PageFooter(
+          // PageFive(
           //   controller: controller,
           // ),
+          PageFooter(
+            controller: controller,
+          ),
         ],
       ),
     );

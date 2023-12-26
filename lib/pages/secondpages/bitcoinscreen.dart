@@ -1,8 +1,10 @@
 import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
-import 'package:bitnet/pages/mempool/view/mempoolhome.dart';
+import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:bitnet/pages/secondpages/analystsassesment.dart';
 import 'package:bitnet/pages/secondpages/keymetrics.dart';
+import 'package:bitnet/pages/secondpages/mempool/view/recentreplacements.dart';
+import 'package:bitnet/pages/secondpages/mempool/view/recenttransactions.dart';
 import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -21,11 +23,20 @@ class BitcoinScreen extends StatefulWidget {
 }
 
 class _BitcoinScreenState extends State<BitcoinScreen>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin { //TickerProviderStateMixin
   final _controller = PageController(viewportFraction: 0.9);
+  late TabController _tabController;
 
-  Future<void> _handleRefresh() async {
-    print("Fetch data new");
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,6 +62,29 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           RoundedContainer(
             contentPadding: const EdgeInsets.all(0),
             child: MempoolHome(),
+          ),
+          RoundedContainer(
+            contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
+            child: Column(
+              children: <Widget>[
+                TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    Tab(text: 'Recent Transactions'),
+                    Tab(text: 'Recent Replacements'),
+                  ],
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      SingleChildScrollView(child: RecentTransactions()),
+                      SingleChildScrollView(child: RecentReplacements()),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           RoundedContainer(
             contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
@@ -111,18 +145,18 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           ),
           RoundedContainer(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "News",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  SizedBox(
-                    height: AppTheme.elementSpacing,
-                  ),
-                  buildNews(),
-                ],
-              )),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "News",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              SizedBox(
+                height: AppTheme.elementSpacing,
+              ),
+              buildNews(),
+            ],
+          )),
         ],
       ),
     );

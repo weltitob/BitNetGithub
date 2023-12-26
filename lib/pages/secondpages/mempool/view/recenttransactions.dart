@@ -1,5 +1,5 @@
-import 'package:bitnet/pages/mempool/controller/home_controller.dart';
-import 'package:bitnet/pages/mempool/view/view_sockets.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
+import 'package:bitnet/pages/secondpages/mempool/view/view_sockets.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:flutter/material.dart';
@@ -130,7 +130,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                         const SizedBox(width: 20),
                         Expanded(
                             child: Text(
-                                '${feeSatVb.toStringAsFixed(1)} sat/vB' ??
+                                '\$${(feeSatVb / 100000000 * 140 * controller.currentUSD.value).toStringAsFixed(2)}' ??
                                     '')),
                       ],
                     ),

@@ -47,111 +47,90 @@ class _PageFourState extends State<PageFour> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    isSmallScreen ? Container() : Container(
-                      height: AppTheme.cardPadding * 20,
-                      width: AppTheme.cardPadding * 20,
-                      child: Stack(
-                        children: [
-                          Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Container(
-                                height: AppTheme.cardPadding * 20,
-                                width: AppTheme.cardPadding * 20,
-                                child: Image.asset(
-                                  'assets/images/phone.png',
-                                  fit: BoxFit.cover,
-                                ),
-                              )),
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Container(height: AppTheme.cardPadding * 6.5,
-                                width: AppTheme.cardPadding * 6.5,
-                                child: Lottie.asset(
-                                  'assets/lottiefiles/phone_bubbles.json',
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                          ),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(height: AppTheme.cardPadding,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Theme.of(context).colorScheme.background,],)),),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
+                    isSmallScreen ? Container() :
+                    mobileWithPicture(),
+                    Stack(
                       children: [
-                        Container(
-                          width: textWidth,
-                          child: Text(
-                            "More and more decide to join us each day!",
-                            style: Theme.of(context).textTheme.displayMedium,
+                        isSmallScreen ? Container(
+                          height: MediaQuery.of(context).size.height * 0.85,
+                          width: MediaQuery.of(context).size.width * 0.85,
+                          padding: EdgeInsets.only(bottom: AppTheme.elementSpacing ),
+                          alignment: Alignment.center,
+                          child: Image.asset(
+                            'assets/images/phone.png',
+                            fit: BoxFit.cover,
                           ),
-                        ),
-                        SizedBox(
-                          height: AppTheme.cardPadding * 2 * spacingMultiplier,
-                        ),
+                        ) : Container(),
                         Container(
-                          width: subtitleWidth,
-                          child: Text(
-                            "Get the app now and join the BitNet community!",
-                            style:
-                            Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        SizedBox(
-                          height: AppTheme.cardPadding * 4 * spacingMultiplier
-                        ),
-                        isSmallScreen
-                            ? Column(
-                          children: [
-                            ...downloadFromStores(), // Using the spread operator
-                          ],
-                        )
-                            : Row(
-                          children: [
-                            ...downloadFromStores(), // Using the spread operator
-                          ],
-                        ),
-                        SizedBox(height: AppTheme.cardPadding,),
-                        Container(
-                          height: AppTheme.cardPadding,
-                          width: isSmallScreen ? AppTheme.cardPadding * 10 : AppTheme.cardPadding * 22,
-                          child: Row(
+                          alignment: Alignment.center,
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Expanded(
-                                  child: MyDivider()),
-                              SizedBox(width: AppTheme.elementSpacing,),
-                              Text("OR", style: Theme.of(context).textTheme.bodyLarge,),
-                              SizedBox(width: AppTheme.elementSpacing,),
-                              Expanded(
-                                  child: MyDivider()),
+                              Container(
+                                width: textWidth,
+                                child: Text(
+                                  "More and more decide to join us each day!",
+                                  style: Theme.of(context).textTheme.displayMedium,
+                                ),
+                              ),
+                              SizedBox(
+                                height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                              ),
+                              Container(
+                                width: subtitleWidth,
+                                child: Text(
+                                  "Get the app now and join the BitNet community!",
+                                  style:
+                                  Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
+                              SizedBox(
+                                height: AppTheme.cardPadding * 2 * spacingMultiplier
+                              ),
+                              isSmallScreen
+                                  ? Column(
+                                children: [
+                                  ...downloadFromStores(), // Using the spread operator
+                                ],
+                              )
+                                  : Row(
+                                children: [
+                                  ...downloadFromStores(), // Using the spread operator
+                                ],
+                              ),
+                              SizedBox(height: AppTheme.cardPadding,),
+                              Container(
+                                height: AppTheme.cardPadding,
+                                width: isSmallScreen ? AppTheme.cardPadding * 10 : AppTheme.cardPadding * 22,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                        child: MyDivider()),
+                                    SizedBox(width: AppTheme.elementSpacing,),
+                                    Text("OR", style: Theme.of(context).textTheme.bodyLarge,),
+                                    SizedBox(width: AppTheme.elementSpacing,),
+                                    Expanded(
+                                        child: MyDivider()),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: AppTheme.cardPadding,),
+                              Container(
+                                width: AppTheme.cardPadding * 10,
+                                child: LongButtonWidget(
+                                    leadingIcon: Icon(FontAwesomeIcons.download),
+                                    title: "Download .apk",
+                                    buttonType: ButtonType.solid,
+                                    onTap: () async {
+                                      VRouter.of(context).to('/pinverification');
+                                    }),
+                              ),
+
                             ],
                           ),
                         ),
-                        SizedBox(height: AppTheme.cardPadding,),
-                        Container(
-                          width: AppTheme.cardPadding * 10,
-                          child: LongButtonWidget(
-                              leadingIcon: Icon(FontAwesomeIcons.download),
-                              title: "Download .apk",
-                              buttonType: ButtonType.solid,
-                              onTap: () async {
-                                VRouter.of(context).to('/pinverification');
-                              }),
-                        ),
-
                       ],
                     ),
                     // Container(
@@ -165,6 +144,83 @@ class _PageFourState extends State<PageFour> {
         );},
     );
   }
+
+  Widget mobileWithPicture(){
+    return Container(
+      height: AppTheme.cardPadding * 20,
+      width: AppTheme.cardPadding * 20,
+      child: Stack(
+        children: [
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: AppTheme.cardPadding * 20,
+                width: AppTheme.cardPadding * 20,
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: AppTheme.elementSpacing ),
+                        height: AppTheme.cardPadding * 18.6,
+                        width: AppTheme.cardPadding * 18.25,
+                        alignment: Alignment.bottomCenter,
+                        child: Image.asset(
+                          'assets/images/screenshot_small.png',
+                          fit: BoxFit.cover,),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(bottom: AppTheme.elementSpacing ),
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(
+                        'assets/images/phone.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+          Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                height: AppTheme.cardPadding * 6,
+                width: AppTheme.cardPadding * 6,
+                child: Lottie.asset(
+                  'assets/lottiefiles/phone_bubbles.json',
+                  fit: BoxFit.cover,
+                ),
+              )
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  height: AppTheme.cardPadding * 2,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(AppTheme.cardPadding),
+                        bottomRight: Radius.circular(AppTheme.cardPadding),
+                        topLeft: Radius.circular(AppTheme.cardPadding),
+                        topRight: Radius.circular(AppTheme.cardPadding),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Theme.of(context).colorScheme.background,],)),),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   List <Widget> downloadFromStores(){
     return [
       Container(

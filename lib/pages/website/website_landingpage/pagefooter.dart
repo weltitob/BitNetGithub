@@ -15,57 +15,56 @@ class PageFooter extends StatefulWidget {
 }
 
 class _PageFooterState extends State<PageFooter> {
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          // Diese sind die Breite und Höhe aus den Constraints
-          double width = constraints.maxWidth;
-          double height = constraints.maxHeight;
+      // Diese sind die Breite und Höhe aus den Constraints
+      double width = constraints.maxWidth;
+      double height = constraints.maxHeight;
 
-          bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
-          bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-          bool isSuperSmallScreen =
-              constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+      bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
-          double bigtextWidth = isMidScreen
-              ? isSmallScreen
+      double bigtextWidth = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? AppTheme.cardPadding * 13
-              : AppTheme.cardPadding * 24
+                  ? AppTheme.cardPadding * 13
+                  : AppTheme.cardPadding * 24
               : AppTheme.cardPadding * 28
-              : AppTheme.cardPadding * 30;
-          double textWidth = isMidScreen
-              ? isSmallScreen
+          : AppTheme.cardPadding * 30;
+      double textWidth = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? AppTheme.cardPadding * 13
-              : AppTheme.cardPadding * 16
+                  ? AppTheme.cardPadding * 13
+                  : AppTheme.cardPadding * 16
               : AppTheme.cardPadding * 22
-              : AppTheme.cardPadding * 24;
-          double subtitleWidth = isMidScreen
-              ? isSmallScreen
+          : AppTheme.cardPadding * 24;
+      double subtitleWidth = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? AppTheme.cardPadding * 13
-              : AppTheme.cardPadding * 16
+                  ? AppTheme.cardPadding * 13
+                  : AppTheme.cardPadding * 16
               : AppTheme.cardPadding * 18
-              : AppTheme.cardPadding * 22;
-          double spacingMultiplier = isMidScreen
-              ? isSmallScreen
+          : AppTheme.cardPadding * 22;
+      double spacingMultiplier = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? 0.25
-              : 0.5
+                  ? 0.25
+                  : 0.5
               : 0.75
-              : 1;
-          double centerSpacing = isMidScreen
-              ? isSmallScreen
+          : 1;
+      double centerSpacing = isMidScreen
+          ? isSmallScreen
               ? isSuperSmallScreen
-              ? AppTheme.columnWidth * 0.075
-              : AppTheme.columnWidth * 0.15
+                  ? AppTheme.columnWidth * 0.075
+                  : AppTheme.columnWidth * 0.15
               : AppTheme.columnWidth * 0.65
-              : AppTheme.columnWidth;
+          : AppTheme.columnWidth;
 
-          return Container(
+      return Container(
           color: Theme.of(context).colorScheme.background,
           child: Stack(children: [
             Positioned(
@@ -91,7 +90,11 @@ class _PageFooterState extends State<PageFooter> {
                 )),
             isSmallScreen
                 ? Container()
-                : PageFive(controller: widget.controller,), //PageFive(controller: widget.controller,),
+                : Container(
+                    padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 10),
+                    child: Quotes(
+                      controller: widget.controller,
+                    )), //PageFive(controller: widget.controller,),
             buildFooter(
                 context, centerSpacing, spacingMultiplier, isSmallScreen),
           ]));

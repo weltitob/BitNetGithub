@@ -47,9 +47,7 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
       child: Container(
           height: containerHeight,
           width: containerWidth,
-          child:
-
-          ButtonType == ButtonType.transparent ? GlassContainer(
+          child: widget.buttonType == ButtonType.transparent ? GlassContainer(
             borderThickness: 1.5, // remove border if not active
             blur: 50,
             opacity: 0.1,

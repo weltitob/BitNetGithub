@@ -1,4 +1,5 @@
-import 'package:bitnet/pages/mempool/controller/home_controller.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 20),
+        const SizedBox(height: AppTheme.cardPadding),
         Text(
           'Recent replacements'.toUpperCase(),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
