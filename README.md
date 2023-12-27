@@ -25,4 +25,4 @@ Thank you for your cooperation and commitment to maintaining the confidentiality
 
 ---
 
-© [Year] [BitNet, Germany]. All rights reserved.
+© 2024 BitNet, Germany. All rights reserved.
