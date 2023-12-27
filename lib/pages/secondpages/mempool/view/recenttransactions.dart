@@ -16,6 +16,7 @@ class RecentTransactions extends StatefulWidget {
 
 class _RecentTransactionsState extends State<RecentTransactions> {
   final controller = Get.put(HomeController());
+  //move to get?
 
   @override
   Widget build(BuildContext context) {
