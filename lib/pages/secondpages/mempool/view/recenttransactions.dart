@@ -5,6 +5,7 @@ import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:vrouter/vrouter.dart';
 
 class RecentTransactions extends StatefulWidget {
   const RecentTransactions({super.key});
@@ -15,6 +16,7 @@ class RecentTransactions extends StatefulWidget {
 
 class _RecentTransactionsState extends State<RecentTransactions> {
   final controller = Get.put(HomeController());
+  //move to get?
 
   @override
   Widget build(BuildContext context) {
@@ -97,10 +99,13 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                           flex: 2,
                           child: InkWell(
                             onTap: () {
-                              Get.to(const SingleTransactionScreen(),
-                                  arguments: controller
-                                      .transaction[index].txid
-                                      .toString());
+                              VRouter.of(context).to('/single_transaction');
+                              // Get.to(
+                              //     const SingleTransactionScreen(),
+                              //     arguments: controller
+                              //         .transaction[index].txid
+                              //         .toString()
+                              // );
                               final controllerTransaction =
                               Get.put(TransactionController());
                               controllerTransaction.getTransLatest(
