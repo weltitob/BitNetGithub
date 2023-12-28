@@ -1,5 +1,6 @@
 import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:bitnet/pages/secondpages/analystsassesment.dart';
 import 'package:bitnet/pages/secondpages/keymetrics.dart';
@@ -87,6 +88,20 @@ class _BitcoinScreenState extends State<BitcoinScreen>
             ),
           ),
           RoundedContainer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hashrate chart",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(
+                    height: AppTheme.elementSpacing,
+                  ),
+                  HashrateChart(),
+                ],
+              )),
+          RoundedContainer(
             contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,6 +120,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               ],
             ),
           ),
+
           RoundedContainer(
             contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
             child: Column(

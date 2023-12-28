@@ -3,12 +3,15 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  cloud_firestore
   connectivity_plus
   desktop_drop
   desktop_lifecycle
   dynamic_color
   emoji_picker_flutter
+  firebase_auth
   firebase_core
+  firebase_storage
   flutter_webrtc
   local_auth_windows
   permission_handler_windows
