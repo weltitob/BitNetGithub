@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vrouter/vrouter.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageFour extends StatefulWidget {
   const PageFour({super.key});
@@ -20,16 +19,46 @@ class _PageFourState extends State<PageFour> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isSuperSmallScreen =
+            constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
-        double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 13 : AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
-        double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 13 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
-        double subtitleWidth = isMidScreen ? isSmallScreen ?isSuperSmallScreen ?  AppTheme.cardPadding * 13 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
-        double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.25 : 0.5 : 0.75 : 1;
-        double centerSpacing = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.columnWidth * 0.075 : AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+        double bigtextWidth = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 13
+                    : AppTheme.cardPadding * 24
+                : AppTheme.cardPadding * 28
+            : AppTheme.cardPadding * 30;
+        double textWidth = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 13
+                    : AppTheme.cardPadding * 16
+                : AppTheme.cardPadding * 22
+            : AppTheme.cardPadding * 24;
+        double subtitleWidth = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 13
+                    : AppTheme.cardPadding * 16
+                : AppTheme.cardPadding * 18
+            : AppTheme.cardPadding * 22;
+        double spacingMultiplier = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? 0.25
+                    : 0.5
+                : 0.75
+            : 1;
+        double centerSpacing = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.columnWidth * 0.075
+                    : AppTheme.columnWidth * 0.15
+                : AppTheme.columnWidth * 0.65
+            : AppTheme.columnWidth;
 
         return BackgroundWithContent(
           opacity: 0.7,
@@ -38,7 +67,9 @@ class _PageFourState extends State<PageFour> {
           withGradientBottomSmall: true,
           withGradientRightBig: true,
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: centerSpacing),
+            margin: isSmallScreen
+                ? EdgeInsets.symmetric(horizontal: 0)
+                : EdgeInsets.symmetric(horizontal: centerSpacing),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,90 +78,134 @@ class _PageFourState extends State<PageFour> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    isSmallScreen ? Container() :
-                    mobileWithPicture(),
+                    isSmallScreen ? Container() : mobileWithPicture(),
                     Stack(
                       children: [
-                        isSmallScreen ? Container(
-                          height: MediaQuery.of(context).size.height * 0.85,
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          padding: EdgeInsets.only(bottom: AppTheme.elementSpacing ),
-                          alignment: Alignment.center,
-                          child: Image.asset(
-                            'assets/images/phone.png',
-                            fit: BoxFit.cover,
-                          ),
-                        ) : Container(),
+                        // isSmallScreen
+                        //     ? Positioned(
+                        //         left: MediaQuery.of(context).size.width / 10,
+                        //         top: MediaQuery.of(context).size.height / 10,
+                        //         child: Container(
+                        //           alignment: Alignment.center,
+                        //           height:
+                        //               MediaQuery.of(context).size.width * 0.25,
+                        //           width:
+                        //               MediaQuery.of(context).size.width * 0.25,
+                        //           child: Image.asset(
+                        //             'assets/images/logoclean.png',
+                        //             fit: BoxFit.cover,
+                        //           ),
+                        //         ),
+                        //       )
+                        //     : Container(),
+                        isSmallScreen
+                            ? Align(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.9,
+                                  width: MediaQuery.of(context).size.width * 1,
+                                  padding: EdgeInsets.only(
+                                      left: AppTheme.elementSpacing * 1.25,
+                                      right: AppTheme.elementSpacing * 1.25,
+                                      bottom: AppTheme.elementSpacing),
+                                  child: Stack(
+                                    children: [
+                                      // Align(
+                                      //   alignment: Alignment.center,
+                                      //   child: Container(
+                                      //     height:
+                                      //         MediaQuery.of(context).size.height *
+                                      //             0.5,
+                                      //     decoration: BoxDecoration(
+                                      //       borderRadius: AppTheme.cardRadiusBig,
+                                      //       color: Theme.of(context).colorScheme.background,
+                                      //     ),
+                                      //     margin: EdgeInsets.symmetric(
+                                      //       horizontal:
+                                      //             AppTheme.elementSpacing,
+                                      //     )),
+                                      // ),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                          child: Image.asset(
+                                            'assets/images/phone.png',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Container(),
                         Container(
+                          height: isSmallScreen
+                              ? MediaQuery.of(context).size.height * 0.9
+                              : 500,
+                          width: isSmallScreen
+                              ? MediaQuery.of(context).size.width
+                              : 600,
                           alignment: Alignment.center,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: isSmallScreen
+                                ? CrossAxisAlignment.center
+                                : CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                width: textWidth,
+                                margin: isSmallScreen
+                                    ? EdgeInsets.only(
+                                        top: AppTheme.cardPadding * 4)
+                                    : EdgeInsets.symmetric(horizontal: 0),
+                                width: isSmallScreen
+                                    ? 150 + MediaQuery.of(context).size.width / 3
+                                    : textWidth,
                                 child: Text(
-                                  "More and more decide to join us each day!",
-                                  style: Theme.of(context).textTheme.displayMedium,
-                                ),
-                              ),
-                              SizedBox(
-                                height: AppTheme.cardPadding * 2 * spacingMultiplier,
-                              ),
-                              Container(
-                                width: subtitleWidth,
-                                child: Text(
-                                  "Get the app now and join the BitNet community!",
+                                  "More and more join us each day!",
                                   style:
-                                  Theme.of(context).textTheme.bodyLarge,
+                                      Theme.of(context).textTheme.displayMedium,
                                 ),
                               ),
                               SizedBox(
-                                height: AppTheme.cardPadding * 2 * spacingMultiplier
+                                height: AppTheme.cardPadding *
+                                    2 *
+                                    spacingMultiplier,
                               ),
-                              isSmallScreen
-                                  ? Column(
-                                children: [
-                                  ...downloadFromStores(), // Using the spread operator
-                                ],
-                              )
-                                  : Row(
-                                children: [
-                                  ...downloadFromStores(), // Using the spread operator
-                                ],
-                              ),
-                              SizedBox(height: AppTheme.cardPadding,),
                               Container(
-                                height: AppTheme.cardPadding,
-                                width: isSmallScreen ? AppTheme.cardPadding * 10 : AppTheme.cardPadding * 22,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                        child: MyDivider()),
-                                    SizedBox(width: AppTheme.elementSpacing,),
-                                    Text("OR", style: Theme.of(context).textTheme.bodyLarge,),
-                                    SizedBox(width: AppTheme.elementSpacing,),
-                                    Expanded(
-                                        child: MyDivider()),
-                                  ],
+                                width: isSmallScreen
+                                    ? 150 + MediaQuery.of(context).size.width / 3
+                                    : subtitleWidth,
+                                child: Text(
+                                  "Get the app now and join the BitNet community too!",
+                                  style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ),
-                              SizedBox(height: AppTheme.cardPadding,),
-                              Container(
-                                width: AppTheme.cardPadding * 10,
-                                child: LongButtonWidget(
-                                    leadingIcon: Icon(FontAwesomeIcons.download),
-                                    title: "Download .apk",
-                                    buttonType: ButtonType.solid,
-                                    onTap: () async {
-                                      VRouter.of(context).to('/pinverification');
-                                    }),
-                              ),
-
+                              SizedBox(
+                                  height: AppTheme.cardPadding *
+                                      4 *
+                                      spacingMultiplier),
+                              buildAllButtons(isSmallScreen),
                             ],
                           ),
                         ),
+                        isSmallScreen
+                            ? Positioned(
+                                bottom: MediaQuery.of(context).size.height / 10,
+                                right: AppTheme.cardPadding * 1.5,
+                                child: Container(
+                                  height:
+                                      MediaQuery.of(context).size.width / 2.1,
+                                  width:
+                                      MediaQuery.of(context).size.width / 2.1,
+                                  child: Lottie.asset(
+                                    'assets/lottiefiles/chartgoup.json',
+                                    fit: BoxFit.cover,
+                                    repeat: false,
+                                  ),
+                                ))
+                            : Container(),
                       ],
                     ),
                     // Container(
@@ -141,11 +216,78 @@ class _PageFourState extends State<PageFour> {
               ],
             ),
           ),
-        );},
+        );
+      },
     );
   }
 
-  Widget mobileWithPicture(){
+  Widget buildAllButtons(isSmallScreen) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width:
+              isSmallScreen ? 150 + MediaQuery.of(context).size.width / 3 : 500,
+          child: Row(
+            mainAxisAlignment: isSmallScreen
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.center,
+            children: [
+              ...downloadFromStores(isSmallScreen), // Using the spread operator
+            ],
+          ),
+        ),
+        SizedBox(
+          height: AppTheme.cardPadding,
+        ),
+        isSmallScreen ? Container() : downloadAPKButton(),
+      ],
+    );
+  }
+
+  Widget downloadAPKButton() {
+    return Column(
+      children: [
+        Container(
+          height: AppTheme.cardPadding,
+          width: AppTheme.cardPadding * 20,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: MyDivider()),
+              SizedBox(
+                width: AppTheme.elementSpacing,
+              ),
+              Text(
+                "OR",
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              SizedBox(
+                width: AppTheme.elementSpacing,
+              ),
+              Expanded(child: MyDivider()),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: AppTheme.cardPadding,
+        ),
+        Container(
+          width: AppTheme.cardPadding * 10,
+          child: LongButtonWidget(
+              leadingIcon: Icon(FontAwesomeIcons.download),
+              title: "Download .apk",
+              buttonType: ButtonType.solid,
+              onTap: () async {
+                VRouter.of(context).to('/pinverification');
+              }),
+        ),
+      ],
+    );
+  }
+
+  Widget mobileWithPicture() {
     return Container(
       height: AppTheme.cardPadding * 20,
       width: AppTheme.cardPadding * 20,
@@ -161,17 +303,19 @@ class _PageFourState extends State<PageFour> {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        padding: EdgeInsets.only(bottom: AppTheme.elementSpacing ),
+                        padding:
+                            EdgeInsets.only(bottom: AppTheme.elementSpacing),
                         height: AppTheme.cardPadding * 18.6,
                         width: AppTheme.cardPadding * 18.25,
                         alignment: Alignment.bottomCenter,
                         child: Image.asset(
                           'assets/images/screenshot_small.png',
-                          fit: BoxFit.cover,),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.only(bottom: AppTheme.elementSpacing ),
+                      padding: EdgeInsets.only(bottom: AppTheme.elementSpacing),
                       alignment: Alignment.bottomCenter,
                       child: Image.asset(
                         'assets/images/phone.png',
@@ -190,8 +334,7 @@ class _PageFourState extends State<PageFour> {
                   'assets/lottiefiles/phone_bubbles.json',
                   fit: BoxFit.cover,
                 ),
-              )
-          ),
+              )),
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(
@@ -212,7 +355,10 @@ class _PageFourState extends State<PageFour> {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Theme.of(context).colorScheme.background,],)),),
+                          Theme.of(context).colorScheme.background,
+                        ],
+                      )),
+                ),
               ],
             ),
           ),
@@ -221,30 +367,59 @@ class _PageFourState extends State<PageFour> {
     );
   }
 
-  List <Widget> downloadFromStores(){
+  List<Widget> downloadFromStores(isSmallScreen) {
     return [
-      Container(
-        width: AppTheme.cardPadding * 10,
-        child: LongButtonWidget(
-            leadingIcon: Icon(FontAwesomeIcons.googlePlay,
-              size: 20,),
-            title: "Google Play",
-            buttonType: ButtonType.transparent,
-            onTap: () async {
-              VRouter.of(context).to('/pinverification');
-            }),
+      isSmallScreen
+          ? Icon(
+              FontAwesomeIcons.googlePlay,
+              size: AppTheme.cardPadding * 1.4,
+            )
+          : Container(
+              width: AppTheme.cardPadding * 10,
+              child: LongButtonWidget(
+                  leadingIcon: Icon(
+                    color: AppTheme.white90,
+                    FontAwesomeIcons.googlePlay,
+                  ),
+                  title: "Google Play",
+                  buttonType: ButtonType.transparent,
+                  onTap: () async {
+                    VRouter.of(context).to('/pinverification');
+                  }),
+            ),
+      SizedBox(
+        width: AppTheme.elementSpacing,
+        height: AppTheme.elementSpacing,
       ),
-      SizedBox(width: AppTheme.elementSpacing, height: AppTheme.elementSpacing,),
-      Container(
-        width: AppTheme.cardPadding * 10,
-        child: LongButtonWidget(
-            leadingIcon: Icon(FontAwesomeIcons.apple),
-            title: "Apple Store",
-            buttonType: ButtonType.transparent,
-            onTap: () async {
-              VRouter.of(context).to('/pinverification');
-            }),
-      ),
+      isSmallScreen
+          ? Icon(
+              FontAwesomeIcons.apple,
+              size: AppTheme.cardPadding * 1.6,
+              color: AppTheme.white90,
+            )
+          : Container(
+              width: AppTheme.cardPadding * 10,
+              child: LongButtonWidget(
+                  leadingIcon: Icon(FontAwesomeIcons.apple),
+                  title: "Apple Store",
+                  buttonType: ButtonType.transparent,
+                  onTap: () async {
+                    VRouter.of(context).to('/pinverification');
+                  }),
+            ),
+      isSmallScreen
+          ? SizedBox(
+              width: AppTheme.elementSpacing,
+              height: AppTheme.elementSpacing,
+            )
+          : Container(),
+      isSmallScreen
+          ? Icon(
+              color: AppTheme.white90,
+              FontAwesomeIcons.download,
+              size: AppTheme.cardPadding * 1.35,
+            )
+          : Container(),
     ];
   }
 }

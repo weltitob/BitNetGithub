@@ -251,8 +251,8 @@ abstract class AppTheme {
   );
 
   static BoxShadow boxShadowButton = BoxShadow(
-    color: Colors.black.withOpacity(0.5),
-    offset: Offset(0, 3),
+    color: Colors.black.withOpacity(0.6),
+    offset: Offset(0, 10),
     blurRadius: 40.0,
   );
 

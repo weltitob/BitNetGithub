@@ -5,7 +5,6 @@ import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/website/website_landingpage/pagefive.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefooter.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefour.dart';
 import 'package:bitnet/pages/website/website_landingpage/pageone.dart';
@@ -28,7 +27,8 @@ class WebsiteLandingPageView extends StatelessWidget {
           return AnimatedOpacity(
             opacity: showFab ? 1 : 0,
             duration: Duration(milliseconds: 200),
-            child: BitNetFAB(onPressed: () {
+            child: BitNetFAB(
+              onPressed: () {
               if (controller.pageController.hasClients) {
                 var nextPage = controller.pageController.page!.toInt() + 1;
                 if (nextPage < 5) {

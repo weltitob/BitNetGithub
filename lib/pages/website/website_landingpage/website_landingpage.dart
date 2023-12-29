@@ -146,7 +146,7 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
           wallets: []),
     ),
     PageData(
-      '"So happy to be part of the club 1 million. Zero chance Im selling my bitcoin NFT! This feels like buying bitcoin back in 2015."',
+      '"So happy to be part of the club 1 million! Lightning is the future."',
       UserData(
           backgroundImageUrl: "",
           isPrivate: false,
@@ -171,7 +171,7 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
           wallets: []),
     ),
     PageData(
-      '"Wow! Bitnet is the part that I was always missing for bitcoin. Lightning wallets truly are the future. Now we will only see more and more bitcoin adoption."',
+      '"Wow! Bitnet is the part that I was always missing for bitcoin. Now we will only see more and more bitcoin adoption."',
       UserData(
           backgroundImageUrl: "",
           isPrivate: false,
@@ -197,7 +197,6 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     ),
   ];
 
-
   @override
   void dispose() {
     scrollController.removeListener(_handleUserScroll);
@@ -206,8 +205,6 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     _timer.cancel();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {

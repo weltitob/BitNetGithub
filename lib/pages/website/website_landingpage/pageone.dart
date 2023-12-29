@@ -54,7 +54,7 @@ class _PageOneState extends State<PageOne> {
                     Container(
                       width: bigtextWidth,
                       child: Text(
-                        "We build Bitcoins Cyberspace!", //We bring Bitcoin to ordinary people!
+                        "We build the Bitcoin Network!", //We bring Bitcoin to ordinary people!
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,
                       ),
@@ -65,7 +65,7 @@ class _PageOneState extends State<PageOne> {
                     Container(
                       width: subtitleWidth,
                       child: Text(
-                        "We believe that adopting Bitcoin will solve almost all of our worlds problems!", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
+                        "We are growing a cyberspace that is not only fair and equitable but also liberates us from a dystopian future!", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge,
                       ),

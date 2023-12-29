@@ -1,5 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/pages/website/website_landingpage/pagefive.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:bitnet/pages/website/website_landingpage/quoteswidget.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,6 +17,20 @@ class PageFooter extends StatefulWidget {
 }
 
 class _PageFooterState extends State<PageFooter> {
+  bool showFab = false;
+
+
+  void toggleFooter() {
+    setState(() {
+      showFab = !showFab;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -88,10 +104,10 @@ class _PageFooterState extends State<PageFooter> {
                     ),
                   ),
                 )),
-            isSmallScreen
+            showFab
                 ? Container()
                 : Container(
-                    padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 10),
+                    padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 10 * spacingMultiplier),
                     child: Quotes(
                       controller: widget.controller,
                     )), //PageFive(controller: widget.controller,),
@@ -103,105 +119,124 @@ class _PageFooterState extends State<PageFooter> {
 
   Widget buildFooter(
       BuildContext context, centerSpacing, spacingMultiplier, isSmallScreen) {
-    return Positioned(
-      bottom: AppTheme.cardPadding * 3,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(horizontal: centerSpacing),
-        child: Row(
-          mainAxisAlignment: isSmallScreen
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                //mainAxisSize: double.infinity,
-                //mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () {
-                        VRouter.of(context).to("/");
-                      },
-                      child: Row(
-                        children: [
-                          Container(
-                            height: AppTheme.cardPadding * 2.5,
-                            width: AppTheme.cardPadding * 2.5,
-                            child: Image(
-                                image: AssetImage(
-                                    'assets/images/logotransparent.png')),
-                          ),
-                          SizedBox(
-                            width: AppTheme.cardPadding,
-                          ),
-                          Text(
-                            "BitNet",
-                            style: Theme.of(context).textTheme.displaySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: AppTheme.cardPadding,
-                  ),
-                  Text(
-                    "©2023 by BitNet GmBH, Germany",
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                  isSmallScreen
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height:
-                                  AppTheme.cardPadding * 4 * spacingMultiplier,
-                            ),
-                            Row(
-                              children: [
-                                product(),
-                                SizedBox(
-                                  width: AppTheme.cardPadding *
-                                      4 *
-                                      spacingMultiplier,
-                                ),
-                                helpandSupport(),
-                              ],
-                            ),
-                            SizedBox(
-                                height: AppTheme.cardPadding *
-                                    2 *
-                                    spacingMultiplier),
-                            socials(spacingMultiplier),
-                          ],
-                        )
-                      : SizedBox(
-                          height: 0,
-                        ),
-                ],
-              ),
-            ),
-            isSmallScreen
-                ? Container()
-                : Row(
+        return Positioned(
+          bottom: AppTheme.cardPadding * 3 * spacingMultiplier,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.symmetric(horizontal: centerSpacing),
+            child: Row(
+              mainAxisAlignment: isSmallScreen
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    //mainAxisSize: double.infinity,
+                    //mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      product(),
-                      SizedBox(
-                        width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                      MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () {
+                            VRouter.of(context).to("/");
+                          },
+                          child: Row(
+                            children: [
+                              isSmallScreen ? RoundedButtonWidget(
+                                buttonType: ButtonType.transparent,
+                                iconData: showFab ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                                onTap: () {
+                                  toggleFooter();
+                                  print("showFab: " + showFab.toString());
+                                },
+                              ) : Container(),
+                              isSmallScreen? SizedBox(width: AppTheme.cardPadding) : Container(),
+                              Container(
+                                height: AppTheme.cardPadding * 2.5,
+                                width: AppTheme.cardPadding * 2.5,
+                                child: Image(
+                                    image: AssetImage(
+                                        'assets/images/logotransparent.png')),
+                              ),
+                              SizedBox(
+                                width: AppTheme.cardPadding,
+                              ),
+                              Text(
+                                "BitNet",
+                                style: Theme.of(context).textTheme.displaySmall,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      helpandSupport(),
                       SizedBox(
-                        width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                        height: AppTheme.cardPadding,
                       ),
-                      socials(spacingMultiplier),
+                      Text(
+                        "©2023 by BitNet GmBH, Germany",
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                      isSmallScreen
+                          ?  smallScreenFooter(spacingMultiplier)
+                          : SizedBox(
+                              height: 0,
+                            ),
                     ],
                   ),
-          ],
-        ),
+                ),
+                isSmallScreen
+                    ? Container()
+                    : Row(
+                        children: [
+                          product(),
+                          SizedBox(
+                            width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                          ),
+                          helpandSupport(),
+                          SizedBox(
+                            width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                          ),
+                          socials(spacingMultiplier),
+                        ],
+                      ),
+              ],
+            ),
+          ),
+        );
+  }
+
+  Widget smallScreenFooter(spacingMultiplier){
+    double footerHeight = showFab ? 475 : 0; // Adjust these values as needed
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300), // Adjust duration as needed
+      curve: Curves.easeInOut, // This is the animation curve
+      height: footerHeight,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height:
+            AppTheme.cardPadding * 4 * spacingMultiplier,
+          ),
+          Row(
+            children: [
+              product(),
+              SizedBox(
+                width: AppTheme.cardPadding *
+                    4 *
+                    spacingMultiplier,
+              ),
+              helpandSupport(),
+            ],
+          ),
+          SizedBox(
+              height: AppTheme.cardPadding *
+                  2 *
+                  spacingMultiplier),
+          socials(spacingMultiplier),
+        ],
       ),
     );
   }

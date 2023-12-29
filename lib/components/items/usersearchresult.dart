@@ -47,7 +47,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
             child: Row(
               children: [
                 SizedBox(
-                  width: AppTheme.elementSpacing,
+                  width: AppTheme.elementSpacing * 0.75,
                 ),
                 Avatar(
                   size: AppTheme.cardPadding * 2 * widget.scaleRatio,

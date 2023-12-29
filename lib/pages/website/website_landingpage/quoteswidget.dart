@@ -96,9 +96,7 @@ class _QuotesState extends State<Quotes> {
                     child: Container(
                       margin: EdgeInsets.only(
                         top: isSmallScreen
-                            ? AppTheme.cardPadding * 16 +
-                                spacingMultiplier +
-                                180
+                            ? AppTheme.cardPadding * 16 + 160
                             : AppTheme.cardPadding * 5 +
                                 spacingMultiplier +
                                 180,
@@ -117,13 +115,13 @@ class _QuotesState extends State<Quotes> {
                     width: isSmallScreen
                         ? 300 + AppTheme.cardPadding * 5
                         : 850 + AppTheme.cardPadding * 10,
-                    height: isSmallScreen ? 800 : 400,
+                    height: isSmallScreen ? 500 : 400,
                     child: RandomAvatarWidget(
                       start: true,
                       width: isSmallScreen
                           ? 300 + AppTheme.cardPadding * 5
                           : 850 + AppTheme.cardPadding * 10,
-                      height: isSmallScreen ? 800 : 400,
+                      height: isSmallScreen ? 500 : 400,
                     ),
                   ),
                 )
@@ -152,7 +150,8 @@ class _QuotesState extends State<Quotes> {
                               width: isSmallScreen ? 300 : 850,
                               height: isSmallScreen ? 500 : 240,
                               padding: EdgeInsets.symmetric(
-                                horizontal: AppTheme.cardPadding,
+                                horizontal:
+                                    AppTheme.cardPadding * spacingMultiplier,
                                 vertical: AppTheme.cardPadding * 2.25,
                               ),
                               child: _isThirdAnimationCompleted
@@ -232,7 +231,7 @@ class _QuotesState extends State<Quotes> {
                                                         duration:
                                                             const Duration(
                                                                 milliseconds:
-                                                                    300),
+                                                                    400),
                                                         curve: Curves.easeInOut,
                                                       );
                                                     });
@@ -295,13 +294,13 @@ class _QuotesState extends State<Quotes> {
                     width: isSmallScreen
                         ? 300 + AppTheme.cardPadding * 5
                         : 850 + AppTheme.cardPadding * 10,
-                    height: isSmallScreen ? 800 : 400,
+                    height: isSmallScreen ? 500 : 400,
                     child: RandomAvatarWidget(
                       start: true,
                       width: isSmallScreen
                           ? 300 + AppTheme.cardPadding * 5
                           : 850 + AppTheme.cardPadding * 10,
-                      height: isSmallScreen ? 800 : 400,
+                      height: isSmallScreen ? 500 : 400,
                     ),
                   ),
                 )
@@ -310,15 +309,14 @@ class _QuotesState extends State<Quotes> {
               ? Container()
               : FadeIn(
                   key: fadeInKey,
-                  delay: Duration(milliseconds: 500),
+                  delay: Duration(milliseconds: 400),
                   duration: Duration(seconds: 2),
                   child: Align(
                     alignment: Alignment.center,
                     child: Container(
                       margin: EdgeInsets.only(
                         bottom: isSmallScreen
-                            ? 240 +
-                                AppTheme.cardPadding * 10.5
+                            ? 240 + AppTheme.cardPadding * 10.5
                             : AppTheme.cardPadding * 10.5,
                       ),
                       child: _buildUserSearchResult(widget
@@ -375,7 +373,7 @@ class _QuotesState extends State<Quotes> {
 
   Widget _buildUserSearchResult(UserData userData) {
     return UserSearchResult(
-      scaleRatio: 1.2,
+      scaleRatio: 1.15,
       onTap: () {
         print("User selected: ${userData.displayName}");
       },

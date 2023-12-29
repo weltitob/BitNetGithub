@@ -9,6 +9,7 @@ class BitNetFAB extends StatefulWidget {
   final double width;
   final double height;
   final double iconSize;
+  final IconData iconData;
 
   const BitNetFAB({
     Key? key,
@@ -16,6 +17,7 @@ class BitNetFAB extends StatefulWidget {
     this.width = AppTheme.cardPadding * 3, // Default FAB width
     this.height = AppTheme.cardPadding * 1.5, // Default FAB height
     this.iconSize = 24.0, // Default icon size
+    this.iconData = Icons.keyboard_double_arrow_down,
   }) : super(key: key);
 
   @override
@@ -54,7 +56,7 @@ class _BitNetFABState extends State<BitNetFAB> {
                   ? Matrix4.translationValues(0, 2, 0) // adjust the value to control the height of the jump
                   : Matrix4.translationValues(0, -2, 0),
               child: Icon(
-                Icons.keyboard_double_arrow_down,
+                widget.iconData,
                 size: widget.iconSize,
               ),
             ),

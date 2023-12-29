@@ -54,13 +54,13 @@ class _PageTwoState extends State<PageTwo> {
               children: [
                 Container(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         width: textWidth,
                         child: Text(
-                          "We unlock the gateway to the future of digital assets!",
+                          "We unlock the future of digital assets!",
                           style: Theme.of(context).textTheme.displayMedium,
                         ),
                       ),
@@ -70,14 +70,14 @@ class _PageTwoState extends State<PageTwo> {
                       Container(
                         width: subtitleWidth,
                         child: Text(
-                          "Be among the first million users and secure an exclusive, complimentary early-bird Bitcoin inscription!",
+                          "Be among the first million users and secure your exclusive early-bird Bitcoin inscription!",
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
                         ),
                       ),
                       SizedBox(
-                        height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                        height: AppTheme.cardPadding * 2.5 * spacingMultiplier,
                       ),
                       Container(
                         width: AppTheme.cardPadding * 10,
@@ -91,10 +91,25 @@ class _PageTwoState extends State<PageTwo> {
                   ),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * 6 * spacingMultiplier,
+                  height: AppTheme.cardPadding + AppTheme.cardPadding * 5 * spacingMultiplier,
                 ),
                 isSmallScreen
-                    ? Container()
+                    ? Container(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Claim your free Bitcoin NFT",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      SizedBox(
+                        width: AppTheme.elementSpacing,
+                      ),
+                      Expanded(child: MyDivider()),
+                    ],
+                  ),
+                )
                     : Container(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +124,7 @@ class _PageTwoState extends State<PageTwo> {
                               width: AppTheme.elementSpacing,
                             ),
                             Text(
-                              "History in Making: Be Part with Your Free Bitcoin NFT.",
+                              "History in Making: Claim your free Bitcoin NFT.",
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             SizedBox(
@@ -122,7 +137,7 @@ class _PageTwoState extends State<PageTwo> {
                         ),
                       ),
                 SizedBox(
-                  height: isSmallScreen ? 0 : AppTheme.cardPadding * 2 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 2 * spacingMultiplier,
                 ),
                 Container(
                   height: AppTheme.cardPadding * 5.5,

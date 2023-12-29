@@ -1,17 +1,14 @@
 import 'dart:async';
 
-import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/cryptochartline.dart';
 import 'package:bitnet/components/container/currencypicture.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'dart:convert';
-import 'package:http/http.dart';
 
 var datetime = DateTime.now();
 DateFormat dateFormat = DateFormat("dd.MM.yyyy");
@@ -102,6 +99,8 @@ class _ChartWidgetState extends State<ChartWidget> {
     final oneyearchartunfinished = chartClassYear.chartLine.toSet().toList();
     final onemonthchartunfinished = chartClassMonth.chartLine.toSet().toList();
     final oneweekchartunfinished = chartClassWeek.chartLine.toSet().toList();
+    final oneweekchartfinished = chartClassDay.chartLine.toSet().toList();
+
     onedaychart = chartClassDay.chartLine.toSet().toList();
     //get latest price from onedaychart
     List<ChartLine> onedaychartlast = [onedaychart.last];

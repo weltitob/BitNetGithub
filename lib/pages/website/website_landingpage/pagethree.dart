@@ -1,9 +1,11 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetFAB.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/components/container/custom_card_landigpage.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
+import 'dart:math' as math;
 
 class PageThree extends StatefulWidget {
   const PageThree({super.key});
@@ -70,55 +72,116 @@ class _PageThreeState extends State<PageThree> {
           backgroundType: BackgroundType.asset,
           withGradientBottomMedium: true,
           withGradientTopMedium: true,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
-              SizedBox(height: AppTheme.cardPadding * 2 * spacingMultiplier),
-              Text(
-                "Our mission.",
-                style: Theme.of(context).textTheme.displayMedium,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      height: AppTheme.cardPadding * 2 * spacingMultiplier),
+                  Text(
+                    "Our mission.",
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding + AppTheme.cardPadding * 2 * spacingMultiplier,
+                  ),
+                  Container(
+                    child: isSmallScreen
+                        ? Container(
+                            height: AppTheme.cardPadding * 20,
+                            child: PageView.builder(
+                              controller: pageController,
+                              onPageChanged: (index) {
+                                setState(() {
+                                  _selectedindex = index;
+                                });
+                              },
+                              itemCount: _buildCards()
+                                  .length, // Set the itemCount to the length of the _buildCards list
+                              itemBuilder: (context, index) {
+                                return _buildCardsSmallScreen()[index];
+                              },
+                            ),
+                          )
+                        : Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: centerSpacing * spacingMultiplier),
+                            color: Colors.transparent,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children:
+                                  _buildCards(), // Use the complete list of CustomCard widgets
+                            ),
+                          ),
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                  ),
+                  isSmallScreen
+                      ? buildIndicator(
+                          pageController: pageController,
+                          count: 3,
+                        )
+                      : Container(),
+                ],
               ),
-              SizedBox(
-                height: AppTheme.cardPadding * 2 * spacingMultiplier,
-              ),
-              Container(
-                child: isSmallScreen
-                    ? Container(
-                        height: AppTheme.cardPadding * 20,
-                        child: PageView.builder(
-                          controller: pageController,
-                          onPageChanged: (index) {
-                            setState(() {
-                              _selectedindex = index;
-                            });
-                          },
-                          itemCount: _buildCards()
-                              .length, // Set the itemCount to the length of the _buildCards list
-                          itemBuilder: (context, index) {
-                            return _buildCardsSmallScreen()[index];
-                          },
-                        ),
-                      )
-                    : Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: centerSpacing * spacingMultiplier),
-                        color: Colors.transparent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: _buildCards(), // Use the complete list of CustomCard widgets
-                        ),
-                      ),
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding * 2 * spacingMultiplier,
-              ),
-              isSmallScreen
-                  ? buildIndicator(
-                      pageController: pageController,
-                      count: 3,
-                    )
-                  : Container(),
+              // isSmallScreen ? AnimatedOpacity(
+              //   duration: Duration(
+              //       milliseconds: 200), // Adjust the duration as needed
+              //   opacity: _selectedindex != 2
+              //       ? 1.0
+              //       : 0.0, // Fully visible or completely transparent
+              //   child: Align(
+              //     alignment: Alignment.centerRight,
+              //     child: Padding(
+              //       padding: EdgeInsets.symmetric(
+              //           horizontal: AppTheme.elementSpacing * spacingMultiplier),
+              //       child: Transform.rotate(
+              //         angle: math.pi * 1.5, // 270 degrees in radians
+              //         child: BitNetFAB(
+              //             iconData: Icons.keyboard_arrow_down_rounded,
+              //             onPressed: () {
+              //
+              //           if (_selectedindex < 2) {
+              //             pageController.nextPage(
+              //               duration: Duration(milliseconds: 400),
+              //               curve: Curves.easeInOut,
+              //             );
+              //           }
+              //         }),
+              //       ),
+              //     ),
+              //   ),
+              // ) : Container(),
+              // isSmallScreen ? AnimatedOpacity(
+              //   duration: Duration(
+              //       milliseconds: 200), // Adjust the duration as needed
+              //   opacity: _selectedindex != 0
+              //       ? 1.0
+              //       : 0.0, // Fully visible or completely transparent
+              //   child: Align(
+              //     alignment: Alignment.centerLeft,
+              //     child: Padding(
+              //       padding:
+              //           EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * spacingMultiplier),
+              //       child: Transform.rotate(
+              //         angle: math.pi / 2, // 90 degrees in radians
+              //         child: BitNetFAB(
+              //             iconData: Icons.keyboard_arrow_down_rounded,
+              //             onPressed: () {
+              //           if (_selectedindex > 0) {
+              //             pageController.previousPage(
+              //               duration: Duration(milliseconds: 400),
+              //               curve: Curves.easeInOut,
+              //             );
+              //           }
+              //         }),
+              //       ),
+              //     ),
+              //   ),
+              // ) : Container(),
             ],
           ),
         );
@@ -136,9 +199,9 @@ class _PageThreeState extends State<PageThree> {
             child: CustomCard(
               isBiggerOnHover: false,
               lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
-              mainTitle: "Fight for a faster Bitcoinization!",
+              mainTitle: "We fight for Bitcoinization!",
               subTitle:
-                  "We are a simple way to use bitcoin with the most advanced web wallet!",
+                  "We enable people to use bitcoin in a simple manner!",
               buttonText: "Send BTC",
               onButtonTap: () {},
             ),
@@ -152,9 +215,9 @@ class _PageThreeState extends State<PageThree> {
             child: CustomCard(
               isBiggerOnHover: false,
               lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-              mainTitle: "Give the power back to the people!",
+              mainTitle: "We give the power back to the people!",
               subTitle:
-                  "We own our data and can verify and trust Bitcoins blockchain!",
+                  "We own our data and digital identity!",
               buttonText: "Explore BTC",
               onButtonTap: () {},
             ),
@@ -167,9 +230,9 @@ class _PageThreeState extends State<PageThree> {
           child: SizedBox(
             child: CustomCard(
               isBiggerOnHover: false,
-              lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-              mainTitle: "Develop a fair Cyberspace!",
-              subTitle: "We form the third layer on top of Bitcoin!",
+              lottieAssetPath: 'assets/lottiefiles/plant.json',
+              mainTitle: "We grow the Bitcoin Network!",
+              subTitle: "We will grow Bitcoin to be much more than just a currency!",
               buttonText: "Get a profile",
               onButtonTap: () {},
             ),
@@ -201,8 +264,8 @@ class _PageThreeState extends State<PageThree> {
       ), // Abstand für das Spaltenlayout
       CustomCard(
         isBiggerOnHover: true,
-        lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-        mainTitle: "Develop a fair Cyberspace!",
+        lottieAssetPath: 'assets/lottiefiles/plant.json',
+        mainTitle: "Grow a fair Cyberspace!",
         subTitle: "We form the third layer on top of Bitcoin!",
         buttonText: "Get a profile",
         onButtonTap: () {},
