@@ -21,6 +21,7 @@ class bitnetWebsiteAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return bitnetAppBar(
+        customLeading: null,
         hasBackButton: false,
         customTitle: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -34,7 +35,6 @@ class bitnetWebsiteAppBar extends StatelessWidget
             double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
             double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.25 : 0.5 : 0.75 : 1;
             double centerSpacing = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.columnWidth * 0.05 : AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
-
 
             return Container(
               margin: EdgeInsets.symmetric(horizontal: centerSpacing),

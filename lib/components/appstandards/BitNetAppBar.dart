@@ -48,6 +48,7 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
     double centerSpacing = isMidScreen ? isSmallScreen ? width * 0.15 : width * 0.65 : width;
 
     return AppBar(
+      automaticallyImplyLeading: false,
       scrolledUnderElevation: 0,
       shadowColor: Colors.transparent,
       bottomOpacity: 0,

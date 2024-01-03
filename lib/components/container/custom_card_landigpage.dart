@@ -30,8 +30,30 @@ class CustomCard extends StatefulWidget {
   _CustomCardState createState() => _CustomCardState();
 }
 
-class _CustomCardState extends State<CustomCard> {
+class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateMixin {
+  late final AnimationController _lottieController;
   bool isHovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _lottieController = AnimationController(vsync: this)
+      ..value = 0.8 // Start at 80% of the animation
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          // When the animation completes, reset it to start from 0.8
+          _lottieController
+            ..value = 0.8
+            ..repeat();
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    _lottieController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +69,18 @@ class _CustomCardState extends State<CustomCard> {
           setState(() {
             isHovered = isHovering;
           });
+
+          if (isHovered) {
+            // Start a repeating animation when hovered
+            _lottieController.repeat();
+          } else {
+            // Stop/pause the animation when not hovered
+            _lottieController.stop();
+          }
         }
       },
+
+
       onTap: widget.onButtonTap,
       child: AnimatedScale(
         duration: Duration(milliseconds: 200),
@@ -78,8 +110,15 @@ class _CustomCardState extends State<CustomCard> {
                           height: width * 0.01 + widget.customHeight * 0.4,
                           width: widget.customWidth * 0.8,
                           child: Lottie.asset(
-                              animate: widget.isBiggerOnHover ? isHovered : true,
-                              widget.lottieAssetPath),
+                            widget.lottieAssetPath,
+                            controller: _lottieController,
+                            animate: false, // Animation is now controlled by the _lottieController
+                            onLoaded: (composition) {
+                              // Set the duration
+                              _lottieController.duration = composition.duration;
+                            },
+                          ),
+
                         ),
                       ],
                     ),

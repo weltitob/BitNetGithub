@@ -36,6 +36,7 @@ class OurTeamView extends StatelessWidget {
 
         return bitnetScaffold(
           extendBodyBehindAppBar: true,
+
           appBar: bitnetWebsiteAppBar(),
           body: SingleChildScrollView(
             child: Column(
