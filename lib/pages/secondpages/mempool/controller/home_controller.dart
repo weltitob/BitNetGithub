@@ -308,6 +308,7 @@ class HomeController extends GetxController {
     }
   }
 
+
   txDetailsF(String txId, int page) async {
     try {
       isLoadingTx.value = true;
