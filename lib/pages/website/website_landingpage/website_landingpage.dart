@@ -5,10 +5,14 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/models/footerpagedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/models/user/userwallet.dart';
+import 'package:bitnet/pages/website/website_landingpage/lastregisteredstream.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:lottie/lottie.dart';
+import 'package:matrix/matrix.dart';
+
 
 class WebsiteLandingPage extends StatefulWidget {
   const WebsiteLandingPage({Key? key}) : super(key: key);
@@ -23,6 +27,11 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
 
   PageController pageController = PageController(initialPage: 0, viewportFraction: 0.99); //https://github.com/flutter/flutter/issues/31191 //0.99 causes a background at bottom on the last page
   final ValueNotifier<bool> showFab = ValueNotifier<bool>(true);
+
+  //new percentagechange stuff
+  StreamController<double> _percentageChangeController = StreamController.broadcast();
+  int _initialUserCount = 0;
+  int _lastUserCount = 0;
 
   late ScrollController scrollController;
 
@@ -39,6 +48,8 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     scrollController.addListener(_handleUserScroll);
     pageController.addListener(_updateFabVisibility);
     _timer = Timer.periodic(Duration(milliseconds: 50), _animateList);
+    _initializePercentageChangeStream();
+    startListeningToLastUsersStream();
   }
 
   void _updateFabVisibility() {
@@ -48,34 +59,57 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     }
   }
 
+  //usercount needs a seperate document in the database which only adds one when new user is registered and does -1 when user is deleted
+
+
   Stream<int> userCountStream() {
-    print("Usercountstream called");
-    return usersCollection
-        .snapshots()
-        .map((snapshot) => snapshot.size);
-  }
-
-  Stream<List<UserData>> lastUsersStream() {
-    print("Last 100 users stream called");
-    return usersCollection
-        .orderBy('createdAt', descending: true)
-        .limitToLast(100)
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => UserData.fromDocument(doc)).toList());
-  }
-
-  Stream<double> percentageChangeInUserCountStream() async* {
-    print("Percentchange called");
-    int initialUserCount = await _userCountFrom7DaysAgo();
-    await for (int currentUserCount in userCountStream()) {
-      if (initialUserCount == 0) {
-        yield (currentUserCount > 0) ? 100.0 : 0.0; // If we had 0 users 7 days ago and now we have more, that's a 100% increase
-      } else {
-        double percentageChange = ((currentUserCount - initialUserCount) / initialUserCount) * 100;
-        yield percentageChange;
+    Logs().w("Usercountstream called");
+    return usersCountRef.doc("usersCount").snapshots().map((DocumentSnapshot<Map<String, dynamic>> snapshot) {
+      if (snapshot.exists && snapshot.data() != null) {
+        int count = snapshot.data()!['count'] as int;
+        return count;
       }
-    }
+      return 0; // Standardwert, falls das Dokument nicht existiert oder keinen 'count'-Schlüssel enthält
+    });
+  }
 
+  void _initializePercentageChangeStream() async {
+    Logs().w("_initializePercentageChangeStream called");
+    _initialUserCount = await _userCountFrom7DaysAgo();
+
+    userCountStream().listen((currentUserCount) {
+      if (_lastUserCount != currentUserCount) {
+        _lastUserCount = currentUserCount;
+        if (_initialUserCount != 0) {
+          double percentageChange = ((currentUserCount - _initialUserCount) / _initialUserCount) * 100;
+          _percentageChangeController.add(percentageChange);
+        } else {
+          _percentageChangeController.add((currentUserCount > 0) ? 100.0 : 0.0);
+        }
+      }
+    });
+  }
+
+  Stream<double> get percentageChangeInUserCountStream => _percentageChangeController.stream;
+  //
+  // Stream<double> percentageChangeInUserCountStream() async* {
+  //   print("Percentchange called");
+  //   int initialUserCount = await _userCountFrom7DaysAgo();
+  //   Timer.periodic(Duration(minutes: 5), (timer) async* {
+  //     // Get the current user count every 5 minutes
+  //     int currentUserCount = await _getCurrentUserCount();
+  //     if (initialUserCount == 0) {
+  //       yield (currentUserCount > 0) ? 100.0 : 0.0; // 100% increase if we had 0 users 7 days ago and now have more
+  //     } else {
+  //       double percentageChange = ((currentUserCount - initialUserCount) / initialUserCount) * 100;
+  //       yield percentageChange;
+  //     }
+  //   });
+  // }
+
+  Future<int> _getCurrentUserCount() async {
+    var snapshot = await usersCollection.get();
+    return snapshot.size;
   }
 
   Future<int> _userCountFrom7DaysAgo() async {
@@ -203,6 +237,8 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     scrollController.dispose();
 
     _timer.cancel();
+    _percentageChangeController.close();
+    stopListeningToLastUsersStream();
     super.dispose();
   }
 

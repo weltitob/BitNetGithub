@@ -29,12 +29,22 @@ class bitnetWebsiteAppBar extends StatelessWidget
             bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
             bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
             bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+            bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+
 
             double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 20 : AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
             double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 12 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
             double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
             double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.25 : 0.5 : 0.75 : 1;
-            double centerSpacing = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.columnWidth * 0.05 : AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+
+            double centerSpacing = isMidScreen ? isIntermediateScreen
+                ? isSmallScreen
+                ? isSuperSmallScreen
+                ? AppTheme.columnWidth * 0.075
+                : AppTheme.columnWidth * 0.15
+                : AppTheme.columnWidth * 0.35
+                : AppTheme.columnWidth * 0.65
+                : AppTheme.columnWidth;
 
             return Container(
               margin: EdgeInsets.symmetric(horizontal: centerSpacing),

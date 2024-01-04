@@ -10,6 +10,7 @@ final followersRef = FirebaseFirestore.instance.collection("followers");
 final followingRef = FirebaseFirestore.instance.collection("following");
 final activityFeedRef = FirebaseFirestore.instance.collection("activityFeed");
 final postsCollection = FirebaseFirestore.instance.collection("posts");
+final usersCountRef = FirebaseFirestore.instance.collection("usersCount");
 
 //after bitnetold posts has been added
 final storageRef = FirebaseStorage.instance.ref();

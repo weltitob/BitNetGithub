@@ -28,12 +28,21 @@ class _PageOneState extends State<PageOne> {
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
         bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
 
         double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30 : AppTheme.cardPadding * 33;
         double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 12 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
         double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
         double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.5 : 0.5 : 0.75 : 1;
-        double centerSpacing = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.columnWidth * 0.05 : AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+        double centerSpacing = isMidScreen ? isIntermediateScreen
+            ? isSmallScreen
+            ? isSuperSmallScreen
+            ? AppTheme.columnWidth * 0.075
+            : AppTheme.columnWidth * 0.15
+            : AppTheme.columnWidth * 0.35
+            : AppTheme.columnWidth * 0.65
+            : AppTheme.columnWidth;
+
 
 
         return Stack(
@@ -54,7 +63,7 @@ class _PageOneState extends State<PageOne> {
                     Container(
                       width: bigtextWidth,
                       child: Text(
-                        "We build the Bitcoin Network!", //We bring Bitcoin to ordinary people!
+                        "We digitalize the world on top of Bitcoin!", //We bring Bitcoin to ordinary people!
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,
                       ),
@@ -65,7 +74,7 @@ class _PageOneState extends State<PageOne> {
                     Container(
                       width: subtitleWidth,
                       child: Text(
-                        "We are growing a cyberspace that is not only fair and equitable but also liberates us from a dystopian future!", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
+                        "We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future!", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge,
                       ),

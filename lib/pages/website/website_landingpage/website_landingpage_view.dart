@@ -5,6 +5,7 @@ import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/website/website_landingpage/lastregisteredstream.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefooter.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefour.dart';
 import 'package:bitnet/pages/website/website_landingpage/pageone.dart';
@@ -86,22 +87,18 @@ class WebsiteLandingPageView extends StatelessWidget {
           return isSmallScreen ? Container() :Container(
           width: AppTheme.cardPadding * 17,
           child: StreamBuilder<double>(
-            stream: controller.percentageChangeInUserCountStream(),
+            stream: controller.percentageChangeInUserCountStream,
             builder: (context, percentageSnapshot) {
               double? percentageChange =
                   percentageSnapshot.data;
               percentageChange ??= 0;
-              return StreamBuilder<List<UserData>>(
-                stream: controller.lastUsersStream(),
-                builder: (context, userDataSnapshot) {
-                  if (!userDataSnapshot.hasData) {
+                  if (latestUserData.isEmpty) {
                     return SizedBox(
                         height: AppTheme.cardPadding * 4,
                         child: Center(
                             child: dotProgress(context)));
                   }
-                  List<UserData> all_userresults =
-                  userDataSnapshot.data!;
+                  List<UserData> all_userresults = latestUserData;
                   if (all_userresults.length == 0) {
                     return Container();
                   }
@@ -142,8 +139,6 @@ class WebsiteLandingPageView extends StatelessWidget {
                     pause: Duration(milliseconds: 1000),
                     animatedTexts: texts,
                   );
-                },
-              );
             },
           ),
         );

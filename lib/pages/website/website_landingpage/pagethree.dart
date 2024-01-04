@@ -30,6 +30,8 @@ class _PageThreeState extends State<PageThree> {
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
         bool isSuperSmallScreen =
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen =
+            constraints.maxWidth < AppTheme.isIntermediateScreen;
 
         double bigtextWidth = isMidScreen
             ? isSmallScreen
@@ -59,11 +61,12 @@ class _PageThreeState extends State<PageThree> {
                     : 0.5
                 : 0.75
             : 1;
-        double centerSpacing = isMidScreen
+        double centerSpacing = isMidScreen ? isIntermediateScreen
             ? isSmallScreen
                 ? isSuperSmallScreen
                     ? AppTheme.columnWidth * 0.075
                     : AppTheme.columnWidth * 0.15
+                : AppTheme.columnWidth * 0.35
                 : AppTheme.columnWidth * 0.65
             : AppTheme.columnWidth;
 

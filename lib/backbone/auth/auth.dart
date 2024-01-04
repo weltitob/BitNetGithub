@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
+import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
@@ -133,8 +134,10 @@ class Auth {
       receiver: newUser.did,
       codesCollection: codesCollection,
     );
-
-    Logs().w("Verification code marked as used. Returning new user now...");
+    Logs().w("Verification code marked as used.");
+    Logs().w("Adding user to userscount");
+    addUserCount();
+    Logs().w("Returning new user now...");
     return newUser;
   }
 

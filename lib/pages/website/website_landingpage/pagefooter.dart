@@ -43,6 +43,7 @@ class _PageFooterState extends State<PageFooter> {
       bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
       bool isSuperSmallScreen =
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
 
       double bigtextWidth = isMidScreen
           ? isSmallScreen
@@ -72,13 +73,15 @@ class _PageFooterState extends State<PageFooter> {
                   : 0.5
               : 0.75
           : 1;
-      double centerSpacing = isMidScreen
+      double centerSpacing = isMidScreen ? isIntermediateScreen
           ? isSmallScreen
-              ? isSuperSmallScreen
-                  ? AppTheme.columnWidth * 0.075
-                  : AppTheme.columnWidth * 0.15
-              : AppTheme.columnWidth * 0.65
+          ? isSuperSmallScreen
+          ? AppTheme.columnWidth * 0.075
+          : AppTheme.columnWidth * 0.15
+          : AppTheme.columnWidth * 0.35
+          : AppTheme.columnWidth * 0.65
           : AppTheme.columnWidth;
+
 
       return Container(
           color: Theme.of(context).colorScheme.background,

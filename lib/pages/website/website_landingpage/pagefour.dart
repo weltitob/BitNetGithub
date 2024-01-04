@@ -23,6 +23,7 @@ class _PageFourState extends State<PageFour> {
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
         bool isSuperSmallScreen =
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
 
         double bigtextWidth = isMidScreen
             ? isSmallScreen
@@ -52,13 +53,15 @@ class _PageFourState extends State<PageFour> {
                     : 0.5
                 : 0.75
             : 1;
-        double centerSpacing = isMidScreen
+        double centerSpacing = isMidScreen ? isIntermediateScreen
             ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.columnWidth * 0.075
-                    : AppTheme.columnWidth * 0.15
-                : AppTheme.columnWidth * 0.65
+            ? isSuperSmallScreen
+            ? AppTheme.columnWidth * 0.075
+            : AppTheme.columnWidth * 0.15
+            : AppTheme.columnWidth * 0.35
+            : AppTheme.columnWidth * 0.65
             : AppTheme.columnWidth;
+
 
         return BackgroundWithContent(
           opacity: 0.7,
@@ -101,41 +104,42 @@ class _PageFourState extends State<PageFour> {
                         isSmallScreen
                             ? Align(
                                 child: Container(
-                                  alignment: Alignment.center,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.9,
                                   width: MediaQuery.of(context).size.width * 1,
-                                  padding: EdgeInsets.only(
-                                      left: AppTheme.elementSpacing * 1.25,
-                                      right: AppTheme.elementSpacing * 1.25,
-                                      bottom: AppTheme.elementSpacing),
-                                  child: Stack(
-                                    children: [
-                                      // Align(
-                                      //   alignment: Alignment.center,
-                                      //   child: Container(
-                                      //     height:
-                                      //         MediaQuery.of(context).size.height *
-                                      //             0.5,
-                                      //     decoration: BoxDecoration(
-                                      //       borderRadius: AppTheme.cardRadiusBig,
-                                      //       color: Theme.of(context).colorScheme.background,
-                                      //     ),
-                                      //     margin: EdgeInsets.symmetric(
-                                      //       horizontal:
-                                      //             AppTheme.elementSpacing,
-                                      //     )),
-                                      // ),
-                                      Align(
-                                        alignment: Alignment.center,
-                                        child: Container(
-                                          child: Image.asset(
-                                            'assets/images/phone.png',
-                                            fit: BoxFit.cover,
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height:
+                                        MediaQuery.of(context).size.height * 0.9,
+                                    width: MediaQuery.of(context).size.width * 0.35 + 250,
+                                    child: Stack(
+                                      children: [
+                                        // Align(
+                                        //   alignment: Alignment.center,
+                                        //   child: Container(
+                                        //     height:
+                                        //         MediaQuery.of(context).size.height *
+                                        //             0.5,
+                                        //     decoration: BoxDecoration(
+                                        //       borderRadius: AppTheme.cardRadiusBig,
+                                        //       color: Theme.of(context).colorScheme.background,
+                                        //     ),
+                                        //     margin: EdgeInsets.symmetric(
+                                        //       horizontal:
+                                        //             AppTheme.elementSpacing,
+                                        //     )),
+                                        // ),
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            child: Image.asset(
+                                              'assets/images/phone.png',
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                        bottomGradientPhone(),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -143,10 +147,10 @@ class _PageFourState extends State<PageFour> {
                         Container(
                           height: isSmallScreen
                               ? MediaQuery.of(context).size.height * 0.9
-                              : 500,
+                            :  500,
                           width: isSmallScreen
                               ? MediaQuery.of(context).size.width
-                              : 600,
+                              : MediaQuery.of(context).size.width / 2.6,
                           alignment: Alignment.center,
                           child: Column(
                             crossAxisAlignment: isSmallScreen
@@ -160,7 +164,7 @@ class _PageFourState extends State<PageFour> {
                                         top: AppTheme.cardPadding * 4)
                                     : EdgeInsets.symmetric(horizontal: 0),
                                 width: isSmallScreen
-                                    ? 150 + MediaQuery.of(context).size.width / 3
+                                    ? 180 + MediaQuery.of(context).size.width / 3.5
                                     : textWidth,
                                 child: Text(
                                   "More and more join us each day!",
@@ -175,7 +179,7 @@ class _PageFourState extends State<PageFour> {
                               ),
                               Container(
                                 width: isSmallScreen
-                                    ? 150 + MediaQuery.of(context).size.width / 3
+                                    ? 180 + MediaQuery.of(context).size.width / 3.5
                                     : subtitleWidth,
                                 child: Text(
                                   "Get the app now and join the BitNet community too!",
@@ -186,19 +190,19 @@ class _PageFourState extends State<PageFour> {
                                   height: AppTheme.cardPadding *
                                       4 *
                                       spacingMultiplier),
-                              buildAllButtons(isSmallScreen),
+                              buildAllButtons(isSmallScreen, isIntermediateScreen),
                             ],
                           ),
                         ),
                         isSmallScreen
                             ? Positioned(
-                                bottom: MediaQuery.of(context).size.height / 10,
-                                right: AppTheme.cardPadding * 1.5,
+                                bottom: MediaQuery.of(context).size.height / 12,
+                                left:  MediaQuery.of(context).size.width * 0.65 - 80,
                                 child: Container(
                                   height:
-                                      MediaQuery.of(context).size.width / 2.1,
+                                      MediaQuery.of(context).size.width / 2.5,
                                   width:
-                                      MediaQuery.of(context).size.width / 2.1,
+                                      MediaQuery.of(context).size.width / 2.5,
                                   child: Lottie.asset(
                                     'assets/lottiefiles/chartgoup.json',
                                     fit: BoxFit.cover,
@@ -221,27 +225,27 @@ class _PageFourState extends State<PageFour> {
     );
   }
 
-  Widget buildAllButtons(isSmallScreen) {
+  Widget buildAllButtons(isSmallScreen, isIntermediateScreen) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           width:
-              isSmallScreen ? 150 + MediaQuery.of(context).size.width / 3 : 500,
+              isSmallScreen ? 180 + MediaQuery.of(context).size.width / 3.5 : 500,
           child: Row(
-            mainAxisAlignment: isSmallScreen
+            mainAxisAlignment: isIntermediateScreen ? isSmallScreen
                 ? MainAxisAlignment.start
-                : MainAxisAlignment.center,
+                : MainAxisAlignment.start : MainAxisAlignment.center,
             children: [
-              ...downloadFromStores(isSmallScreen), // Using the spread operator
+              ...downloadFromStores(isIntermediateScreen), // Using the spread operator
             ],
           ),
         ),
         SizedBox(
           height: AppTheme.cardPadding,
         ),
-        isSmallScreen ? Container() : downloadAPKButton(),
+        isIntermediateScreen ? Container() : downloadAPKButton(),
       ],
     );
   }
@@ -326,50 +330,57 @@ class _PageFourState extends State<PageFour> {
                 ),
               )),
           Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.bottomRight,
               child: Container(
-                height: AppTheme.cardPadding * 6,
-                width: AppTheme.cardPadding * 6,
+                margin: EdgeInsets.only(
+                    right: AppTheme.elementSpacing * 1.5,
+                    bottom: AppTheme.elementSpacing * 0),
+                height: AppTheme.cardPadding * 8,
+                width: AppTheme.cardPadding * 8,
                 child: Lottie.asset(
-                  'assets/lottiefiles/phone_bubbles.json',
+                  'assets/lottiefiles/chartgoup.json', //phone_bubbles
                   fit: BoxFit.cover,
                 ),
               )),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  height: AppTheme.cardPadding * 2,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(AppTheme.cardPadding),
-                        bottomRight: Radius.circular(AppTheme.cardPadding),
-                        topLeft: Radius.circular(AppTheme.cardPadding),
-                        topRight: Radius.circular(AppTheme.cardPadding),
-                      ),
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Theme.of(context).colorScheme.background,
-                        ],
-                      )),
+          bottomGradientPhone(),
+        ],
+      ),
+    );
+  }
+
+  Widget bottomGradientPhone(){
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            height: AppTheme.cardPadding * 2,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(AppTheme.cardPadding),
+                  bottomRight: Radius.circular(AppTheme.cardPadding),
+                  topLeft: Radius.circular(AppTheme.cardPadding),
+                  topRight: Radius.circular(AppTheme.cardPadding),
                 ),
-              ],
-            ),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Theme.of(context).colorScheme.background,
+                  ],
+                )),
           ),
         ],
       ),
     );
   }
 
-  List<Widget> downloadFromStores(isSmallScreen) {
+  List<Widget> downloadFromStores(isIntermediateScreen) {
     return [
-      isSmallScreen
+      isIntermediateScreen
           ? Icon(
               FontAwesomeIcons.googlePlay,
               size: AppTheme.cardPadding * 1.4,
@@ -391,7 +402,7 @@ class _PageFourState extends State<PageFour> {
         width: AppTheme.elementSpacing,
         height: AppTheme.elementSpacing,
       ),
-      isSmallScreen
+      isIntermediateScreen
           ? Icon(
               FontAwesomeIcons.apple,
               size: AppTheme.cardPadding * 1.6,
@@ -407,13 +418,13 @@ class _PageFourState extends State<PageFour> {
                     VRouter.of(context).to('/pinverification');
                   }),
             ),
-      isSmallScreen
+      isIntermediateScreen
           ? SizedBox(
               width: AppTheme.elementSpacing,
               height: AppTheme.elementSpacing,
             )
           : Container(),
-      isSmallScreen
+      isIntermediateScreen
           ? Icon(
               color: AppTheme.white90,
               FontAwesomeIcons.download,

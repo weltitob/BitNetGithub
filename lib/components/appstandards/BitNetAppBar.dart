@@ -43,9 +43,19 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
     double width = MediaQuery.of(context).size.width;
 
     // Define breakpoint values for responsive layout.
-    bool isSmallScreen = width < 600; // Example breakpoint for small screens
-    bool isMidScreen = width < 800;
-    double centerSpacing = isMidScreen ? isSmallScreen ? width * 0.15 : width * 0.65 : width;
+    bool isSuperSmallScreen = width < AppTheme.isSuperSmallScreen;
+    bool isSmallScreen = width < AppTheme.isSmallScreen; // Example breakpoint for small screens
+    bool isMidScreen = width < AppTheme.isMidScreen;
+    bool isIntermediateScreen = width < AppTheme.isIntermediateScreen;
+
+    double centerSpacing = isMidScreen ? isIntermediateScreen
+        ? isSmallScreen
+        ? isSuperSmallScreen
+        ? AppTheme.columnWidth * 0.075
+        : AppTheme.columnWidth * 0.15
+        : AppTheme.columnWidth * 0.35
+        : AppTheme.columnWidth * 0.65
+        : AppTheme.columnWidth;
 
     return AppBar(
       automaticallyImplyLeading: false,

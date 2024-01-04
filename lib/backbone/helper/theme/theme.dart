@@ -230,7 +230,8 @@ abstract class AppTheme {
       isColumnModeByWidth(MediaQuery.of(context).size.width);
 
   static const double isSuperSmallScreen = 500;
-  static const double isSmallScreen = 1100; // Example breakpoint for small screens
+  static const double isSmallScreen = 1100;
+  static const double isIntermediateScreen = 1350;// Example breakpoint for small screens
   static const double isMidScreen = 1600;
 
   //Boxshadows

@@ -30,23 +30,18 @@ class CustomCard extends StatefulWidget {
   _CustomCardState createState() => _CustomCardState();
 }
 
-class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateMixin {
+class _CustomCardState extends State<CustomCard>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _lottieController;
   bool isHovered = false;
 
   @override
   void initState() {
     super.initState();
-    _lottieController = AnimationController(vsync: this)
-      ..value = 0.8 // Start at 80% of the animation
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          // When the animation completes, reset it to start from 0.8
-          _lottieController
-            ..value = 0.8
-            ..repeat();
-        }
-      });
+    _lottieController = AnimationController(vsync: this);
+
+    // Set the initial frame (e.g., half-way through the animation)
+    _lottieController.value = 0.66;
   }
 
   @override
@@ -79,12 +74,14 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
           }
         }
       },
-
-
       onTap: widget.onButtonTap,
       child: AnimatedScale(
         duration: Duration(milliseconds: 200),
-        scale: isHovered ? 1.0 : widget.isBiggerOnHover ? 0.9 : 1.0,
+        scale: isHovered
+            ? 1.0
+            : widget.isBiggerOnHover
+                ? 0.9
+                : 1.0,
         child: GlassContainer(
           borderThickness: 1.5,
           blur: 50,
@@ -112,13 +109,13 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                           child: Lottie.asset(
                             widget.lottieAssetPath,
                             controller: _lottieController,
-                            animate: false, // Animation is now controlled by the _lottieController
+                            animate:
+                                false, // Animation is now controlled by the _lottieController
                             onLoaded: (composition) {
-                              // Set the duration
+// Set the duration
                               _lottieController.duration = composition.duration;
                             },
                           ),
-
                         ),
                       ],
                     ),
@@ -126,7 +123,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                       height: height * 0.01,
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppTheme.elementSpacing),
                       child: Text(
                         widget.mainTitle,
                         style: Theme.of(context).textTheme.headlineLarge,
@@ -136,7 +134,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                       height: height * 0.01,
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppTheme.elementSpacing),
                       child: Text(
                         widget.subTitle,
                         style: Theme.of(context).textTheme.bodyMedium,
@@ -152,7 +151,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppTheme.elementSpacing),
                         child: LongButtonWidget(
                           buttonType: ButtonType.solid,
                           leadingIcon: Icon(
@@ -160,8 +160,8 @@ class _CustomCardState extends State<CustomCard> with SingleTickerProviderStateM
                             size: AppTheme.cardPadding * 0.8,
                             color: AppTheme.white90,
                           ),
-                          customWidth:
-                              widget.customWidth * 0.25 + AppTheme.cardPadding * 3.5,
+                          customWidth: widget.customWidth * 0.25 +
+                              AppTheme.cardPadding * 3.5,
                           customHeight: AppTheme.cardPadding * 0.85 +
                               widget.customHeight * 0.04,
                           title: widget.buttonText,

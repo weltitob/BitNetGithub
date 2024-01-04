@@ -6,9 +6,11 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/website/website_landingpage/lastregisteredstream.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -30,12 +32,21 @@ class _PageTwoState extends State<PageTwo> {
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
         bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
 
         double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 13 : AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
         double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 13 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
         double subtitleWidth = isMidScreen ? isSmallScreen ?isSuperSmallScreen ?  AppTheme.cardPadding * 13 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
         double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.5 : 0.5 : 0.75 : 1;
-        double centerSpacing = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.columnWidth * 0.075 : AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+        double centerSpacing = isMidScreen ? isIntermediateScreen
+            ? isSmallScreen
+            ? isSuperSmallScreen
+            ? AppTheme.columnWidth * 0.075
+            : AppTheme.columnWidth * 0.15
+            : AppTheme.columnWidth * 0.35
+            : AppTheme.columnWidth * 0.65
+            : AppTheme.columnWidth;
+
 
 
         return BackgroundWithContent(
@@ -141,19 +152,11 @@ class _PageTwoState extends State<PageTwo> {
                 ),
                 Container(
                   height: AppTheme.cardPadding * 5.5,
-                  child: StreamBuilder<List<UserData>>(
-                    stream: widget.controller.lastUsersStream(),
-                    builder: (context, userDataSnapshot) {
-                      if (!userDataSnapshot.hasData) {
-                        return SizedBox(
+                  child:
+                      latestUserData.isEmpty ? SizedBox(
                             height: AppTheme.cardPadding * 4,
-                            child: Center(child: dotProgress(context)));
-                      }
-                      List<UserData> all_userresults = userDataSnapshot.data!;
-                      if (all_userresults.length == 0) {
-                        return Container(child: Text("No users found"));
-                      }
-                      return Container(
+                            child: Center(child: dotProgress(context))) :
+                      Container(
                         alignment: Alignment.center,
                         height: AppTheme.cardPadding * 5.5,
                         child: HorizontalFadeListView(
@@ -161,10 +164,10 @@ class _PageTwoState extends State<PageTwo> {
                             //physics: NeverScrollableScrollPhysics(),
                             controller: widget.controller.scrollController,
                             scrollDirection: Axis.horizontal,
-                            itemCount: all_userresults.length,
+                            itemCount: latestUserData.length,
                             itemBuilder: (context, index) {
                               final userData =
-                                  all_userresults.reversed.toList()[index];
+                              latestUserData.reversed.toList()[index];
                               return Container(
                                 width: AppTheme.cardPadding * 5.5,
                                 child: Column(
@@ -187,9 +190,7 @@ class _PageTwoState extends State<PageTwo> {
                             },
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
                 ),
               ],
             ),

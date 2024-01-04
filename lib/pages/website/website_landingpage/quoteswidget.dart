@@ -47,6 +47,8 @@ class _QuotesState extends State<Quotes> {
       bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
       bool isSuperSmallScreen =
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isIntermediateScreen =
+          constraints.maxWidth < AppTheme.isIntermediateScreen;
 
       double bigtextWidth = isMidScreen
           ? isSmallScreen
@@ -76,13 +78,6 @@ class _QuotesState extends State<Quotes> {
                   : 0.5
               : 0.75
           : 1;
-      double centerSpacing = isMidScreen
-          ? isSmallScreen
-              ? isSuperSmallScreen
-                  ? AppTheme.columnWidth * 0.075
-                  : AppTheme.columnWidth * 0.15
-              : AppTheme.columnWidth * 0.65
-          : AppTheme.columnWidth;
 
       return Stack(
         children: [
@@ -95,13 +90,17 @@ class _QuotesState extends State<Quotes> {
                     alignment: Alignment.center,
                     child: Container(
                       margin: EdgeInsets.only(
-                        top: isSmallScreen
-                            ? AppTheme.cardPadding * 16 + 160
+                        top: isIntermediateScreen
+                            ? isSmallScreen
+                                ? AppTheme.cardPadding * 16 + 160
+                                : AppTheme.cardPadding * 5 +
+                                    spacingMultiplier +
+                                    180
                             : AppTheme.cardPadding * 5 +
                                 spacingMultiplier +
                                 180,
-                        left: isSmallScreen
-                            ? 425 - AppTheme.cardPadding * 6
+                        left: isIntermediateScreen ? isSmallScreen
+                            ? 425 - AppTheme.cardPadding * 6 : 700 - AppTheme.cardPadding
                             : 850 - AppTheme.cardPadding,
                       ),
                       child: quoteText(),
@@ -112,16 +111,28 @@ class _QuotesState extends State<Quotes> {
               ? Align(
                   alignment: Alignment.center,
                   child: Container(
-                    width: isSmallScreen
-                        ? 300 + AppTheme.cardPadding * 5
+                    width: isIntermediateScreen
+                        ? isSmallScreen
+                            ? 300 + AppTheme.cardPadding * 5
+                            : 700 + AppTheme.cardPadding * 7.5
                         : 850 + AppTheme.cardPadding * 10,
-                    height: isSmallScreen ? 500 : 400,
+                    height: isIntermediateScreen
+                        ? isSmallScreen
+                            ? 500
+                            : 400
+                        : 400,
                     child: RandomAvatarWidget(
                       start: true,
-                      width: isSmallScreen
-                          ? 300 + AppTheme.cardPadding * 5
+                      width: isIntermediateScreen
+                          ? isSmallScreen
+                              ? 300 + AppTheme.cardPadding * 5
+                              : 700 + AppTheme.cardPadding * 7.5
                           : 850 + AppTheme.cardPadding * 10,
-                      height: isSmallScreen ? 500 : 400,
+                      height: isIntermediateScreen
+                          ? isSmallScreen
+                              ? 500
+                              : 400
+                          : 400,
                     ),
                   ),
                 )
@@ -142,13 +153,29 @@ class _QuotesState extends State<Quotes> {
                       opacity: 0.1,
                       borderRadius: BorderRadius.circular(240 / 3.5),
                       child: Container(
-                        width: isSmallScreen ? 300 : 850,
-                        height: isSmallScreen ? 500 : 240,
+                        width: isIntermediateScreen
+                            ? isSmallScreen
+                                ? 300
+                                : 700
+                            : 850,
+                        height: isIntermediateScreen
+                            ? isSmallScreen
+                                ? 500
+                                : 240
+                            : 240,
                         child: Stack(
                           children: [
                             Container(
-                              width: isSmallScreen ? 300 : 850,
-                              height: isSmallScreen ? 500 : 240,
+                              width: isIntermediateScreen
+                                  ? isSmallScreen
+                                      ? 300
+                                      : 700
+                                  : 850,
+                              height: isIntermediateScreen
+                                  ? isSmallScreen
+                                      ? 500
+                                      : 240
+                                  : 240,
                               padding: EdgeInsets.symmetric(
                                 horizontal:
                                     AppTheme.cardPadding * spacingMultiplier,
@@ -276,12 +303,16 @@ class _QuotesState extends State<Quotes> {
                     alignment: Alignment.center,
                     child: Container(
                       margin: EdgeInsets.only(
-                        bottom: isSmallScreen
-                            ? AppTheme.cardPadding * 16
+                        bottom: isIntermediateScreen
+                            ? isSmallScreen
+                                ? AppTheme.cardPadding * 16
+                                : AppTheme.cardPadding * 5
                             : AppTheme.cardPadding * 5,
-                        right: isSmallScreen
-                            ? 425 - AppTheme.cardPadding * 3.5
-                            : 850 - AppTheme.cardPadding + AppTheme.cardPadding,
+                        right: isIntermediateScreen
+                            ? isSmallScreen
+                                ? 425 - AppTheme.cardPadding * 3.5
+                                : 700
+                            : 850,
                       ),
                       child: quoteText(),
                     ),
@@ -291,16 +322,28 @@ class _QuotesState extends State<Quotes> {
               ? Align(
                   alignment: Alignment.center,
                   child: Container(
-                    width: isSmallScreen
-                        ? 300 + AppTheme.cardPadding * 5
+                    width: isIntermediateScreen
+                        ? isSmallScreen
+                            ? 300 + AppTheme.cardPadding * 5
+                            : 700 + AppTheme.cardPadding * 7.5
                         : 850 + AppTheme.cardPadding * 10,
-                    height: isSmallScreen ? 500 : 400,
+                    height: isIntermediateScreen
+                        ? isSmallScreen
+                            ? 500
+                            : 400
+                        : 400,
                     child: RandomAvatarWidget(
                       start: true,
-                      width: isSmallScreen
-                          ? 300 + AppTheme.cardPadding * 5
+                      width: isIntermediateScreen
+                          ? isSmallScreen
+                              ? 300 + AppTheme.cardPadding * 5
+                              : 700 + AppTheme.cardPadding * 7.5
                           : 850 + AppTheme.cardPadding * 10,
-                      height: isSmallScreen ? 500 : 400,
+                      height: isIntermediateScreen
+                          ? isSmallScreen
+                              ? 500
+                              : 400
+                          : 400,
                     ),
                   ),
                 )
