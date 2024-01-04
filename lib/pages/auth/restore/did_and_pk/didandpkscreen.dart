@@ -12,6 +12,7 @@ import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:matrix/matrix.dart';
 import 'dart:math';
 
 import 'package:vrouter/vrouter.dart';
@@ -49,6 +50,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
 
   // function to sign in with email and password
   Future<void> signIn() async {
+    Logs().w("signIn pressed...");
     setState(() {
       _isLoading = true;
       errorMessage = null;
@@ -67,7 +69,10 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       //call login with signed message and then store the iondata in the privatestorage of new device!
       //Auth().signIn(did, _controllerPassword.text, myusername);
 
-      final recoveredprivatkey = await recoverKey(did, _controllerPassword.text);
+      Logs().w("didandpkscreen.dart: recover privatekey from user (broken if no real did) for user $did");
+
+      final recoveredprivatkey = await recoverKey("did:ion:EiDzohpJZiOLnibQRpC0mcvh6S6mBBTAGJJcanIY2_-jxg", _controllerPassword.text);
+      //final recoveredprivatkey = await recoverKey(did, _controllerPassword.text);
 
       final signedMessage =
       await Auth().signMessageAuth(did, recoveredprivatkey);

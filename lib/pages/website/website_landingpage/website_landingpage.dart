@@ -1,19 +1,16 @@
 import 'dart:async';
-
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/streams/website_streams/lastregisteredstream.dart';
+import 'package:bitnet/backbone/streams/website_streams/userchangepercentstream.dart';
+import 'package:bitnet/backbone/streams/website_streams/usercountstream.dart';
 import 'package:bitnet/models/footerpagedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/models/user/userwallet.dart';
-import 'package:bitnet/pages/website/website_landingpage/streams/lastregisteredstream.dart';
-import 'package:bitnet/pages/website/website_landingpage/streams/userchangepercentstream.dart';
-import 'package:bitnet/pages/website/website_landingpage/streams/usercountstream.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:lottie/lottie.dart';
-import 'package:matrix/matrix.dart';
-
+import 'package:provider/provider.dart';
 
 class WebsiteLandingPage extends StatefulWidget {
   const WebsiteLandingPage({Key? key}) : super(key: key);
@@ -31,16 +28,6 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
 
   late ScrollController scrollController;
 
-  //for usercount
-  num startvalue = 1000000;
-  num endvalue = (1000000 - latestUserCount);
-
-  //for change in users
-  double percentagechange = latestPercentageChange;
-
-  //for last registered user
-  List<UserData> lastRegisteredUsers = latestUserData;
-
   late Timer _timer;
   double _offset = 0;
   bool isUserScrolling = false;
@@ -54,9 +41,6 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     scrollController.addListener(_handleUserScroll);
     pageController.addListener(_updateFabVisibility);
     _timer = Timer.periodic(Duration(milliseconds: 50), _animateList);
-    startListeningToLastUsersStream();
-    startListeningToUserCountStream();
-    startListeningToPercentageChange();
   }
 
   void _updateFabVisibility() {
@@ -187,14 +171,27 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     scrollController.dispose();
 
     _timer.cancel();
-    stopListeningToLastUsersStream();
-    stopListeningToUserCountStream();
-    stopListeningToPercentageChange();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return WebsiteLandingPageView(controller: this);
+    return MultiProvider(
+        providers: [
+          //all providers for the website landing page
+          StreamProvider<List<UserData>>(
+            create: (context) => lastUsersStream(),
+            initialData: [], // Initial empty list
+          ),
+          StreamProvider<double>(
+            create: (context) => percentageChangeInUserCountStream(),
+            initialData: 0.0, // Initial percentage change
+          ),
+          StreamProvider<int>(
+            create: (context) => userCountStream(),
+            initialData: 0, // Initial user count
+          ),
+        ],
+        child: WebsiteLandingPageView(controller: this));
   }
 }

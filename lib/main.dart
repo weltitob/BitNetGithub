@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:bitnet/pages/routetrees/widgettree.dart';
@@ -60,6 +61,15 @@ Future<void> main() async {
         projectId: 'bitnet-cb34f',
         // ... other options
       ),
+  );
+
+  await FirebaseAppCheck.instance.activate(
+    //web
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    //android
+    androidProvider: AndroidProvider.debug, //AndoroidProvider.playIntegrity nach release
+    //ios
+    appleProvider: AppleProvider.appAttest,
   );
 
   Logs().nativeColors = !PlatformInfos.isIOS;

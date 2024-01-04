@@ -26,7 +26,7 @@ class _BottomNavState extends State<BottomNav> {
       {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
       {'icon': FontAwesomeIcons.upload, 'route': '/create'},
       {'icon': FontAwesomeIcons.wallet, 'route': '/wallet'},
-      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/:2RUAWrVJXvkZxftDuDEv'},
+      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/:$profileId'},
     ];
 
     void onTabTapped(String route) {

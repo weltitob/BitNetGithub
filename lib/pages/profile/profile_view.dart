@@ -66,7 +66,7 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final myuser = Auth().currentUser!.uid;
     print('myuser: $myuser');
-    final String currentUserId = controller!.profileId!;
+    final String currentUserId = controller.profileId;
     bool isProfileOwner = currentUserId == myuser;
     // final testuser = UserPreferences.myUser;
 
@@ -380,28 +380,28 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget buildCenterWidget(BuildContext context) {
-    //final userData = Provider.of<UserData>(context, listen: false);
-    final userData = UserData(
-        backgroundImageUrl: "backgroundImageUrl",
-        isPrivate: true,
-        showFollowers: true,
-        did: "did",
-        displayName: "displayName",
-        bio: "bio",
-        customToken: "customToken",
-        username: "username",
-        profileImageUrl: "profileImageUrl",
-        createdAt: timestamp,
-        updatedAt: timestamp,
-        isActive: true,
-        dob: 1,
-        mainWallet: UserWallet(
-            walletAddress: "walletAddress",
-            walletType: "walletType",
-            walletBalance: "walletBalance",
-            privateKey: "privateKey",
-            userdid: "userdid"),
-        wallets: []);
+    final userData = Provider.of<UserData>(context, listen: false);
+    // final userData = UserData(
+    //     backgroundImageUrl: "backgroundImageUrl",
+    //     isPrivate: true,
+    //     showFollowers: true,
+    //     did: "did",
+    //     displayName: "displayName",
+    //     bio: "bio",
+    //     customToken: "customToken",
+    //     username: "username",
+    //     profileImageUrl: "profileImageUrl",
+    //     createdAt: timestamp,
+    //     updatedAt: timestamp,
+    //     isActive: true,
+    //     dob: 1,
+    //     mainWallet: UserWallet(
+    //         walletAddress: "walletAddress",
+    //         walletType: "walletType",
+    //         walletBalance: "walletBalance",
+    //         privateKey: "privateKey",
+    //         userdid: "userdid"),
+    //     wallets: []);
 
     final String currentUserId = controller.profileId!;
 

@@ -97,11 +97,61 @@ class Auth {
     return user;
   }
 
+
+  Future<UserData> createUserFake({
+    required UserData user,
+    required VerificationCode code,
+}) async {
+    Logs().w("Calling Cloudfunction with Microsoft ION now...");
+
+    Logs().w("Generating challenge...");
+    //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
+    final String challange = generateChallenge(user.username);
+    final String randomstring = generateRandomString(20); // length 20
+    final String customToken = await fakeLoginION(
+      randomstring,
+    );
+    final IONData iondata = IONData(did: "did", username: user.username, customToken: customToken, publicIONKey: "publicIONKey", privateIONKey: "privateIONKey", mnemonic: "mnemonic");
+    final PrivateData privateData = PrivateData(
+        did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
+    // Call the function to store Private data in secure storage
+    await storePrivateData(privateData);
+
+    final currentuser = await signInWithToken(customToken: iondata.customToken);
+    final newUser = user.copyWith(did: iondata.did);
+
+    Logs().w("User signed in with token. Creating user in database now...");
+
+    await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
+    Logs().w('Successfully created wallet/user in database: ${newUser.toMap()}');
+    // Call the function to generate and store verification codes
+    Logs().w("Generating and storing verification codes for friends of the new user now...");
+    await generateAndStoreVerificationCodes(
+      numCodes: 4,
+      codeLength: 5,
+      issuer: newUser.did,
+      codesCollection: codesCollection,
+    );
+    Logs().w("Marking the verification code as used now...");
+    // Call the function to mark the verification code as used
+    await markVerificationCodeAsUsed(
+      code: code,
+      receiver: newUser.did,
+      codesCollection: codesCollection,
+    );
+    Logs().w("Verification code marked as used.");
+    Logs().w("Adding user to userscount");
+    addUserCount();
+    Logs().w("Returning new user now...");
+    return newUser;
+  }
+
   Future<UserData> createUser({
     required UserData user,
     required VerificationCode code,
   }) async {
     Logs().w("Calling Cloudfunction with Microsoft ION now...");
+
     Logs().w("Generating challenge...");
     //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
     final String challange = generateChallenge(user.username);

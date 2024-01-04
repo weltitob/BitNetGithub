@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/website_streams/lastregisteredstream.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
@@ -6,11 +7,11 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/website/website_landingpage/streams/lastregisteredstream.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -26,6 +27,8 @@ class PageTwo extends StatefulWidget {
 class _PageTwoState extends State<PageTwo> {
   @override
   Widget build(BuildContext context) {
+    final latestUserData = Provider.of<List<UserData>>(context);
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         // Check if the screen width is less than 600 pixels.

@@ -97,7 +97,7 @@ class CreateAccountController extends State<CreateAccount> {
       if (!usernameExists) {
         // You can create the user here since they don't exist yet.
         print("Username is still available");
-        await createUser();
+        await createUserLocal();
       } else {
         print("Username already exists.");
         errorMessage = "This username is already taken.";
@@ -126,7 +126,7 @@ class CreateAccountController extends State<CreateAccount> {
     // Matrix.of(context).loginAvatar = picked;
   }
 
-  Future<void> createUser() async {
+  Future<void> createUserLocal() async {
     try {
       //final userwalletdata = await createWallet(email: _controllerEmail.text);
       //create ION wallet for the user with all abilities
@@ -197,10 +197,18 @@ class CreateAccountController extends State<CreateAccount> {
     try {
       //blablabla
       Logs().w("Creating firebase user now...");
-      final UserData currentuserwallet = await Auth().createUser(
+
+      final UserData currentuserwallet = await Auth().createUserFake(
         user: userData,
         code: code,
       );
+
+      // final UserData currentuserwallet = await Auth().createUser(
+      //   user: userData,
+      //   code: code,
+      // );
+
+
       return currentuserwallet;
     }on FirebaseException catch (e) {
       Logs().e("Firebase Exception: $e");

@@ -2,11 +2,10 @@ import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/pages/website/website_landingpage/streams/usercountstream.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -23,6 +22,10 @@ class _PageOneState extends State<PageOne> {
 
   @override
   Widget build(BuildContext context) {
+
+    final startvalue = 1000000;
+    final usercount = Provider.of<int>(context);
+    final endvalue = (1000000 - usercount);
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -98,7 +101,7 @@ class _PageOneState extends State<PageOne> {
                     ),
                     TweenAnimationBuilder<num>(
                           duration: Duration(seconds: 3), // Adjust the duration according to your need
-                          tween: Tween(begin: widget.controller.startvalue, end: widget.controller.endvalue),
+                          tween: Tween(begin: startvalue, end: endvalue),
                           builder: (context, value, child) {
                             return AnimatedFlipCounter(
                               value: value, // Animated value

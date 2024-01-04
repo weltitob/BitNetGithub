@@ -26,7 +26,7 @@ class ProfileController extends State<Profile> {
 
   //String profileId = Auth().currentUser!.uid;
   //String? get profileId => VRouter.of(context).pathParameters['profileId'];
-  String profileId = "did:ion:EiDzohpJZiOLnibQRpC0mcvh6S6mBBTAGJJcanIY2_-jxg";
+  String profileId = "GUsuvr19SPrGELGZtrAq";
 
   late List<Widget> pages;
   int currentview = 0;
