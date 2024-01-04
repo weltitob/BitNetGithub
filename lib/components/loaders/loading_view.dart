@@ -32,7 +32,7 @@ class LoadingViewAppStart extends StatelessWidget {
               VRouter.of(context).to('/website');
             } else{
               VRouter.of(context).to(
-                Matrix.of(context).widget.clients.any((client) => client.onLoginStateChanged.value == LoginState.loggedIn,) ?  '/website' : '/website', //'/feed' : '/authhome'
+                Matrix.of(context).widget.clients.any((client) => client.onLoginStateChanged.value == LoginState.loggedIn,) ?  '/feed' : '/authhome', //'/website' : '/website', //'/feed' : '/authhome'
                 queryParameters: VRouter.of(context).queryParameters,
               );
             }

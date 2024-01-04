@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/pages/website/website_landingpage/streams/usercountstream.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -19,8 +20,10 @@ class PageOne extends StatefulWidget {
 }
 
 class _PageOneState extends State<PageOne> {
+
   @override
   Widget build(BuildContext context) {
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         // Check if the screen width is less than 600 pixels.
@@ -93,21 +96,9 @@ class _PageOneState extends State<PageOne> {
                       //height: AppTheme.cardPadding * 8 * spacingMultiplier,
                       height: AppTheme.cardPadding * 10 * spacingMultiplier,
                     ),
-                    StreamBuilder<Object>(
-                      stream: widget.controller.userCountStream(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return SizedBox(
-                              height: AppTheme.cardPadding * 4,
-                              child: Center(child: dotProgress(context)));
-                        }
-                        int currentusernumber = snapshot.data as int;
-                        num startvalue = 1000000;
-                        num endvalue = (1000000 - currentusernumber);
-
-                        return TweenAnimationBuilder<num>(
+                    TweenAnimationBuilder<num>(
                           duration: Duration(seconds: 3), // Adjust the duration according to your need
-                          tween: Tween(begin: startvalue, end: endvalue),
+                          tween: Tween(begin: widget.controller.startvalue, end: widget.controller.endvalue),
                           builder: (context, value, child) {
                             return AnimatedFlipCounter(
                               value: value, // Animated value
@@ -120,9 +111,7 @@ class _PageOneState extends State<PageOne> {
                               ),
                             );
                           },
-                        );
-                      },
-                    ),
+                        ),
                     SizedBox(
                       height: AppTheme.cardPadding * spacingMultiplier,
                     ),
