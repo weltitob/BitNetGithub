@@ -33,6 +33,9 @@ class _PageThreeState extends State<PageThree> {
         bool isIntermediateScreen =
             constraints.maxWidth < AppTheme.isIntermediateScreen;
 
+        bool isSmallIntermediateScreen =
+            constraints.maxWidth < AppTheme.isSmallIntermediateScreen;
+
         double bigtextWidth = isMidScreen
             ? isSmallScreen
                 ? isSuperSmallScreen
@@ -110,7 +113,7 @@ class _PageThreeState extends State<PageThree> {
                           )
                         : Container(
                             margin: EdgeInsets.symmetric(
-                                horizontal: centerSpacing * spacingMultiplier),
+                                horizontal: isSmallIntermediateScreen ? MediaQuery.of(context).size.width * 0.045 : centerSpacing * spacingMultiplier),
                             color: Colors.transparent,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -196,7 +199,6 @@ class _PageThreeState extends State<PageThree> {
     //the center and sizedbox widget is needed to maintain the widgets custom dimensions
     return [
       Container(
-        margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
         child: Center(
           child: SizedBox(
             child: CustomCard(
@@ -211,24 +213,8 @@ class _PageThreeState extends State<PageThree> {
           ),
         ),
       ), // Abstand für das Spaltenlayout
+
       Container(
-        margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-        child: Center(
-          child: SizedBox(
-            child: CustomCard(
-              isBiggerOnHover: false,
-              lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-              mainTitle: "We give the power back to the people!",
-              subTitle:
-                  "We own our data and digital identity!",
-              buttonText: "Explore BTC",
-              onButtonTap: () {},
-            ),
-          ),
-        ),
-      ), // Abstand für das Spaltenlayout
-      Container(
-        margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
         child: Center(
           child: SizedBox(
             child: CustomCard(
@@ -242,6 +228,21 @@ class _PageThreeState extends State<PageThree> {
           ),
         ),
       ),
+      Container(
+        child: Center(
+          child: SizedBox(
+            child: CustomCard(
+              isBiggerOnHover: false,
+              lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
+              mainTitle: "We give the power back to the people!",
+              subTitle:
+              "We own our data and digital identity!",
+              buttonText: "Explore BTC",
+              onButtonTap: () {},
+            ),
+          ),
+        ),
+      ), // Abstand für das Spaltenlayout
     ];
   }
 
@@ -250,29 +251,28 @@ class _PageThreeState extends State<PageThree> {
       CustomCard(
         isBiggerOnHover: true,
         lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
-        mainTitle: "Fight for a faster Bitcoinization!",
+        mainTitle: "Make Bitcoin easy for everyone!",
         subTitle:
-            "We are a simple way to use bitcoin with the most advanced web wallet!",
+            "We offer the easiest, most secure, and most advanced web wallet.",
         buttonText: "Send BTC",
-        onButtonTap: () {},
-      ), // Abstand für das Spaltenlayout
-      CustomCard(
-        isBiggerOnHover: true,
-        lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-        mainTitle: "Give the power back to the people!",
-        subTitle:
-            "We own our data and can verify and trust Bitcoins blockchain!",
-        buttonText: "Explore BTC",
         onButtonTap: () {},
       ), // Abstand für das Spaltenlayout
       CustomCard(
         isBiggerOnHover: true,
         lottieAssetPath: 'assets/lottiefiles/plant.json',
         mainTitle: "Grow a fair Cyberspace!",
-        subTitle: "We form the third layer on top of Bitcoin!",
+        subTitle: "We digitize all sorts of assets on top of the Bitcoin Network.",
         buttonText: "Get a profile",
         onButtonTap: () {},
       ),
+      CustomCard(
+        isBiggerOnHover: true,
+        lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
+        mainTitle: "Give power back to the people!",
+        subTitle: "We build a transparent platform that uses verification - not trust.",
+        buttonText: "Explore BTC",
+        onButtonTap: () {},
+      ), // Abstand für das Spaltenlayout
     ];
   }
 }

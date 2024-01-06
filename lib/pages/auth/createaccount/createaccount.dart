@@ -1,8 +1,5 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/pb_generator/tranform_link.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:bitnet/backbone/helper/helpers.dart';

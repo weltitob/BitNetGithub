@@ -46,7 +46,7 @@ class AboutUsView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: AppTheme.cardPadding * 8 * spacingMultiplier,
+                        height: AppTheme.cardPadding * 6 * spacingMultiplier,
                       ),
                       Container(
                         width: bigtextWidth,
@@ -57,81 +57,123 @@ class AboutUsView extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: AppTheme.cardPadding * 2 * spacingMultiplier,
+                        height: AppTheme.cardPadding * 4 * spacingMultiplier,
+                      ),
+                      Text(
+                        "We are the light that helps others see Bitcoin.",
+                        style: Theme.of(context).textTheme.headlineLarge,
                       ),
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          isSmallScreen ? SizedBox(
+                            width: 0,
+                            height: 0,
+                          ) : Stack(
                             children: [
-                              isSmallScreen ? SizedBox(
-                                width: 0,
-                                height: 0,
-                              ) : Stack(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.all(AppTheme.cardPadding * 9 * spacingMultiplier),
-                                    height: AppTheme.cardPadding * 12 * spacingMultiplier,
-                                    width: AppTheme.cardPadding * 12 * spacingMultiplier,
-                                    child: Lottie.asset(
-                                      'assets/lottiefiles/btc_3d.json',),
-                                  ),
-                                  Container(
-                                    height: AppTheme.cardPadding * 30 * spacingMultiplier,
-                                    width: AppTheme.cardPadding * 30 * spacingMultiplier,
-                                    child: Lottie.asset(
-                                      'assets/lottiefiles/circle_animation.json',),
-                                  ),
-                                ],
+                              Container(
+                                margin: EdgeInsets.all(AppTheme.cardPadding * 11 * spacingMultiplier),
+                                height: AppTheme.cardPadding * 14 * spacingMultiplier,
+                                width: AppTheme.cardPadding * 14 * spacingMultiplier,
+                                child: Lottie.asset(
+                                  'assets/lottiefiles/btc_3d.json',),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: textWidth,
-                                    child: Text(
-                                      "We are the light that helps others see Bitcoin.",
-                                      style: Theme.of(context).textTheme.headlineLarge,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      height: AppTheme.elementSpacing * 1 * spacingMultiplier
-                                  ),
-                                  Container(
-                                    width: textWidth,
-                                    child: Text(
-                                      "Founded in 2023, BitNet was born out of the belief that Bitcoin is not just a digital asset for the tech-savvy and financial experts,"
-                                          " but a revolutionary tool that has the potential to build the foundations of cyberspace empowering individuals worldwide."
-                                          " We recognized the complexity and the mystique surrounding Bitcoin and cryptocurrencies,"
-                                          " and we decided it was time to demystify it and make it accessible to everyone."
-                                          " We are a pioneering platform dedicated to bringing Bitcoin closer to everyday people like you."
-                                          " Our mission is simple but profound: to accelerate the adoption of Bitcoin and create a world"
-                                          " where digital assets are accessible, understandable, and beneficial to all. "
-                                          "But Bitcoin is more than just a digital asset; it's a movement. A movement towards a more open, accessible, and equitable future."
-                                          " And at BitNet, we are proud to be at the forefront of this movement.",
-                                      textAlign: TextAlign.left,
-                                      style: Theme.of(context).textTheme.bodyLarge,
-                                    ),
-                                  ),
-                                ],
+                              Container(
+                                height: AppTheme.cardPadding * 36 * spacingMultiplier,
+                                width: AppTheme.cardPadding * 36 * spacingMultiplier,
+                                child: Lottie.asset(
+                                  'assets/lottiefiles/circle_animation.json',),
                               ),
-                              isSmallScreen ? SizedBox(
-                                width: 0,
-                                height: 0,
-                              ) : SizedBox(
-                                width: AppTheme.cardPadding * 2,
-                                height: AppTheme.cardPadding * 2,)
-                              // Container(
-                              //     height: AppTheme.cardPadding * 15,
-                              //     child: buildFutureLottie(controller.composition, true))
                             ],
+                          ),
+                          Container(
+                            width: textWidth,
+                            child: Text(
+                              "History",
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                          ),
+                          SizedBox(
+                              height: AppTheme.elementSpacing * 1 * spacingMultiplier
+                          ),
+                          Container(
+                            width: textWidth,
+                            child: Text(
+                              "Founded in 2023, BitNet was born out of the belief that Bitcoin is not just a digital asset for the tech-savvy and financial experts,"
+                                  " but a revolutionary tool that has the potential to build the foundations of cyberspace empowering individuals worldwide."
+                                  " We recognized the complexity and the mystique surrounding Bitcoin and cryptocurrencies,"
+                                  " and we decided it was time to demystify it and make it accessible to everyone."
+                                  " We are a pioneering platform dedicated to bringing Bitcoin closer to everyday people like you.",
+                              // " Our mission is simple but profound: to accelerate the adoption of Bitcoin and create a world"
+                              //     " where digital assets are accessible, understandable, and beneficial to all. "
+                              //     "But Bitcoin is more than just a digital asset; it's a movement. A movement towards a more open, accessible, and equitable future."
+                              //     " And at BitNet, we are proud to be at the forefront of this movement.",
+                              textAlign: TextAlign.left,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ),
+                          SizedBox(
+                              height: AppTheme.elementSpacing * 2.5 * spacingMultiplier
+                          ),
+                          Container(
+                            width: textWidth,
+                            child: Text(
+                              "Mission",
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                          ),
+                          SizedBox(
+                              height: AppTheme.elementSpacing * 1 * spacingMultiplier
+                          ),
+                          Container(
+                            width: textWidth,
+                            child: Text(
+                              "Our mission is simple but profound: To innovate in the digital "
+                                  "economy by integrating blockchain technology with asset digitization, "
+                                  "creating a secure and transparent platform that empowers users to engage "
+                                  "with the metaverse through Bitcoin. We are dedicated to making digital interactions "
+                                  "more accessible, equitable, and efficient for everyone. To accelerate the adoption of Bitcoin and create a world"
+                                  " where digital assets are accessible, understandable, and beneficial to all. Where people can verify information "
+                              " on their own.",
+                              textAlign: TextAlign.left,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ),
+                          SizedBox(
+                              height: AppTheme.elementSpacing * 2.5 * spacingMultiplier
+                          ),
+                          Container(
+                            width: textWidth,
+                            child: Text(
+                              "Vision",
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                          ),
+                          SizedBox(
+                              height: AppTheme.elementSpacing * 1 * spacingMultiplier
+                          ),
+                          Container(
+                            width: textWidth,
+                            child: Text(
+                              "But Bitcoin is more than just a digital asset; it's a movement. A movement towards a more open, accessible, and equitable future. "
+                                  "BitNet wants be at the forefront of the digital age as a pioneer in asset digitization using Bitcoin,"
+                                  " shaping a metaverse where equality, security, and sustainability"
+                                  " are not just ideals, but realities. Our vision is to create an"
+                                  " interconnected digital world where every user can seamlessly and"
+                                  " fairly access, exchange, and grow their digital assets.",
+                              textAlign: TextAlign.left,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
                           ),
                         ],
                       ),
+                      isSmallScreen ? SizedBox(
+                        width: 0,
+                        height: 0,
+                      ) : SizedBox(
+                        width: AppTheme.cardPadding * 2,
+                        height: AppTheme.cardPadding * 2,),
                       SizedBox(
                         height: AppTheme.cardPadding * 2 * spacingMultiplier,
                       ),

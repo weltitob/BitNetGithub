@@ -103,6 +103,9 @@ class _CustomCardState extends State<CustomCard>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        SizedBox(
+                          height: height * 0.01,
+                        ),
                         Container(
                           height: width * 0.01 + widget.customHeight * 0.4,
                           width: widget.customWidth * 0.8,
@@ -120,7 +123,7 @@ class _CustomCardState extends State<CustomCard>
                       ],
                     ),
                     SizedBox(
-                      height: height * 0.01,
+                      height: height * 0.02,
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(
@@ -131,7 +134,7 @@ class _CustomCardState extends State<CustomCard>
                       ),
                     ),
                     SizedBox(
-                      height: height * 0.01,
+                      height: height * 0.015,
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(

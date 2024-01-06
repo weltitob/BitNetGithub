@@ -210,7 +210,7 @@ abstract class AppTheme {
   static const double navRailWidth = 2 * cardPadding + elementSpacing;
   //spaces
   static const double cardPadding = 24;
-  static const double columnWidth = 12 * cardPadding;
+  static const double columnWidth = 14 * cardPadding;
   static const double cardPaddingSmall = 16;
   static const double cardPaddingBig = 28;
   static const double cardPaddingBigger = 32;
@@ -229,9 +229,11 @@ abstract class AppTheme {
   static bool isColumnMode(BuildContext context) =>
       isColumnModeByWidth(MediaQuery.of(context).size.width);
 
-  static const double isSuperSmallScreen = 500;
-  static const double isSmallScreen = 1100;
-  static const double isIntermediateScreen = 1350;// Example breakpoint for small screens
+  //breakpoints
+  static const double isSuperSmallScreen = 600;
+  static const double isSmallScreen = 1000;
+  static const double isIntermediateScreen = 1350;
+  static const double isSmallIntermediateScreen = 1100;
   static const double isMidScreen = 1600;
 
   //Boxshadows

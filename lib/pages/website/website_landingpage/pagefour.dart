@@ -110,7 +110,7 @@ class _PageFourState extends State<PageFour> {
                                     alignment: Alignment.center,
                                     height:
                                         MediaQuery.of(context).size.height * 0.9,
-                                    width: MediaQuery.of(context).size.width * 0.35 + 250,
+                                    width: MediaQuery.of(context).size.width * 0.3 + 280,
                                     child: Stack(
                                       children: [
                                         // Align(
@@ -137,7 +137,6 @@ class _PageFourState extends State<PageFour> {
                                             ),
                                           ),
                                         ),
-                                        bottomGradientPhone(),
                                       ],
                                     ),
                                   ),
@@ -167,14 +166,14 @@ class _PageFourState extends State<PageFour> {
                                     ? 180 + MediaQuery.of(context).size.width / 3.5
                                     : textWidth,
                                 child: Text(
-                                  "More and more join us each day!",
+                                  "Be a Part of the Revolution - Download Our App Today!",
                                   style:
                                       Theme.of(context).textTheme.displayMedium,
                                 ),
                               ),
                               SizedBox(
                                 height: AppTheme.cardPadding *
-                                    2 *
+                                    1 *
                                     spacingMultiplier,
                               ),
                               Container(
@@ -182,13 +181,13 @@ class _PageFourState extends State<PageFour> {
                                     ? 180 + MediaQuery.of(context).size.width / 3.5
                                     : subtitleWidth,
                                 child: Text(
-                                  "Get the app now and join the BitNet community too!",
+                                  "More and more decide to join our community each day! Let's build something extraordinary together.",
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ),
                               SizedBox(
                                   height: AppTheme.cardPadding *
-                                      4 *
+                                      2.5 *
                                       spacingMultiplier),
                               buildAllButtons(isSmallScreen, isIntermediateScreen),
                             ],
@@ -294,14 +293,14 @@ class _PageFourState extends State<PageFour> {
   Widget mobileWithPicture() {
     return Container(
       height: AppTheme.cardPadding * 20,
-      width: AppTheme.cardPadding * 20,
+      width: AppTheme.cardPadding * 14,
       child: Stack(
         children: [
           Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                height: AppTheme.cardPadding * 20,
-                width: AppTheme.cardPadding * 20,
+                height: AppTheme.cardPadding * 18.5,
+                width: AppTheme.cardPadding * 14,
                 child: Stack(
                   children: [
                     Align(
@@ -309,8 +308,8 @@ class _PageFourState extends State<PageFour> {
                       child: Container(
                         padding:
                             EdgeInsets.only(bottom: AppTheme.elementSpacing),
-                        height: AppTheme.cardPadding * 18.6,
-                        width: AppTheme.cardPadding * 18.25,
+                        height: AppTheme.cardPadding * 17.6,
+                        width: AppTheme.cardPadding * 14,
                         alignment: Alignment.bottomCenter,
                         child: Image.asset(
                           'assets/images/screenshot_small.png',
@@ -333,7 +332,7 @@ class _PageFourState extends State<PageFour> {
               alignment: Alignment.bottomRight,
               child: Container(
                 margin: EdgeInsets.only(
-                    right: AppTheme.elementSpacing * 1.5,
+                    right: 0,
                     bottom: AppTheme.elementSpacing * 0),
                 height: AppTheme.cardPadding * 8,
                 width: AppTheme.cardPadding * 8,
@@ -342,7 +341,7 @@ class _PageFourState extends State<PageFour> {
                   fit: BoxFit.cover,
                 ),
               )),
-          bottomGradientPhone(),
+          //bottomGradientPhone(),
         ],
       ),
     );
@@ -358,12 +357,12 @@ class _PageFourState extends State<PageFour> {
           Container(
             height: AppTheme.cardPadding * 2,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(AppTheme.cardPadding),
-                  bottomRight: Radius.circular(AppTheme.cardPadding),
-                  topLeft: Radius.circular(AppTheme.cardPadding),
-                  topRight: Radius.circular(AppTheme.cardPadding),
-                ),
+                // borderRadius: BorderRadius.only(
+                //   bottomLeft: Radius.circular(AppTheme.cardPadding),
+                //   bottomRight: Radius.circular(AppTheme.cardPadding),
+                //   topLeft: Radius.circular(AppTheme.cardPadding),
+                //   topRight: Radius.circular(AppTheme.cardPadding),
+                // ),
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,

@@ -189,7 +189,7 @@ class _QuotesState extends State<Quotes> {
                                           isRepeatingAnimation: false,
                                           animatedTexts: [
                                             TypewriterAnimatedText(
-                                              '"We take it in our own hands!"',
+                                              '"We empower Our Tomorrow!"',
                                               textAlign: TextAlign.center,
                                               textStyle: Theme.of(context)
                                                   .textTheme
@@ -202,7 +202,7 @@ class _QuotesState extends State<Quotes> {
                                                   milliseconds: 50),
                                             ),
                                             TypewriterAnimatedText(
-                                              'Join BitNet now!',
+                                              'Join us Today!',
                                               textAlign: TextAlign.center,
                                               textStyle: Theme.of(context)
                                                   .textTheme

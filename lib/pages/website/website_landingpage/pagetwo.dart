@@ -71,27 +71,31 @@ class _PageTwoState extends State<PageTwo> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(
+                        height: AppTheme.cardPadding * 1 * spacingMultiplier,
+                      ),
                       Container(
                         width: textWidth,
                         child: Text(
-                          "We unlock the future of digital assets!",
+                          "We unlock our future of digital assets!",
                           style: Theme.of(context).textTheme.displayMedium,
                         ),
                       ),
                       SizedBox(
-                        height: AppTheme.cardPadding * 1.5 * spacingMultiplier,
+                        height: AppTheme.cardPadding * 1 * spacingMultiplier,
                       ),
                       Container(
                         width: subtitleWidth,
                         child: Text(
-                          "Be among the first million users and secure your exclusive early-bird Bitcoin inscription!",
+                          //Join the Exclusive Circle of the First Million Users - We Embrace the Future with the latest Bitcoin Digital Asset Technology.
+                          "Be among the first million users and secure your exclusive early-bird Bitcoin inscription.",
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
                         ),
                       ),
                       SizedBox(
-                        height: AppTheme.cardPadding * 2.5 * spacingMultiplier,
+                        height: AppTheme.cardPadding * 1.5 * spacingMultiplier,
                       ),
                       Container(
                         width: AppTheme.cardPadding * 10,
@@ -105,7 +109,7 @@ class _PageTwoState extends State<PageTwo> {
                   ),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding + AppTheme.cardPadding * 5 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 3 + AppTheme.cardPadding * 3 * spacingMultiplier,
                 ),
                 isSmallScreen
                     ? Container(
