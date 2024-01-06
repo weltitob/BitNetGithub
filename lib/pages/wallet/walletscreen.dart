@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/wallet/actions/receivescreen.dart';
-import 'package:bitnet/pages/wallet/actions/sendscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
 import 'package:bitnet/backbone/cloudfunctions/getbalance.dart';
@@ -14,6 +13,7 @@ import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:vrouter/vrouter.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({Key? key}) : super(key: key);
@@ -235,21 +235,13 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => SendBTCScreen(bitcoinSenderAdress: "penis"),//userData.mainWallet.walletAddress,),
-                      ),
-                    ),
+                    onTap: () => VRouter.of(context).to('/wallet/send'), //userData.mainWallet.walletAddress,
                     child: circButtonWidget("Senden", _compositionSend,
                         const BackgroundGradientPurple()),
                   ),
                   GestureDetector(
                     onTap: () {
-                      //getTransactions(userWallet);
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const ReceiveScreen(),
-                        ));
+                      VRouter.of(context).to('/wallet/receive');
                     },
                     child: circButtonWidget(
                         "Erhalten",

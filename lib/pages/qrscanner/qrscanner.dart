@@ -5,12 +5,12 @@ import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/wallet/actions/sendscreen.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
+import 'package:vrouter/vrouter.dart';
 
 class QrScanner extends StatefulWidget {
   const QrScanner({super.key});
@@ -87,12 +87,9 @@ class QRScannerController extends State<QrScanner> {
     print(walletdetails);
 
     if(isValid){
-      await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            SendBTCScreen(
-              bitcoinReceiverAdress: currentqr.bitcoinAddress,
-              bitcoinSenderAdress: userData.mainWallet.walletAddress,),
-      ));
+      VRouter.of(context).to("wallet/send");
+      //bitcoinReceiverAdress: currentqr.bitcoinAddress,
+      //bitcoinSenderAdress: userData.mainWallet.walletAddress,
     } else {
       print("Error beim einscannen des QR Codes");
       displaySnackbar(context, "Der eingescannte QR-Code hat kein zugelassenes Format");

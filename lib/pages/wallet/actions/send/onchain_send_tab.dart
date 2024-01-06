@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
@@ -22,22 +23,20 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
-// Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
-class SendBTCScreen extends StatefulWidget {
+class OnChainSendTab extends StatefulWidget {
   final String?
       bitcoinReceiverAdress; // the Bitcoin receiver address, can be null
   final String bitcoinSenderAdress; // the Bitcoin receiver address, can be null
-  const SendBTCScreen(
-      {Key? key, this.bitcoinReceiverAdress, required this.bitcoinSenderAdress})
-      : super(key: key);
+  const OnChainSendTab(
+      {super.key,
+      this.bitcoinReceiverAdress,
+      required this.bitcoinSenderAdress});
 
-  // Create a state object for SendBTCScreen
   @override
-  State<SendBTCScreen> createState() => _SendBTCScreenState();
+  State<OnChainSendTab> createState() => _OnChainSendTabState();
 }
 
-// Define a state object called _SendBTCScreenState for SendBTCScreen
-class _SendBTCScreenState extends State<SendBTCScreen> {
+class _OnChainSendTabState extends State<OnChainSendTab> {
   late FocusNode myFocusNodeAdress;
   late FocusNode myFocusNodeMoney;
   late double feesInEur_medium;
@@ -176,236 +175,193 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     }
   }
 
-// The following function builds the widget tree for the screen
   @override
   Widget build(BuildContext context) {
-    // Retrieves userWallet using the Provider
-    //final userWallet = Provider.of<UserWallet>(context);
-
-    final userWallet = UserWallet(walletAddress: "fakewallet",
-        walletType: "walletType", walletBalance: "0", privateKey: "privateKey", userdid: "userdid");
-
-    // Builds the screen scaffold
-    return Scaffold(
-      // Disables resizing when the keyboard is shown
-      resizeToAvoidBottomInset: false,
-      backgroundColor: AppTheme.colorBackground,
-      appBar: AppBar(
-        // Adds a back button to the appbar
-        leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.arrow_back_rounded)),
-        elevation: 0,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Adds a title for the screen
-            Text("Bitcoin versenden",
-                style: Theme.of(context).textTheme.titleLarge),
-            // Displays the user's wallet balance
-            Text("${userWallet.walletBalance}BTC verfügbar",
-                style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ),
-        backgroundColor: AppTheme.colorBackground,
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          children: [
-            Container(
-              height:
-                  MediaQuery.of(context).size.height - AppTheme.cardPadding * 4,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: <Widget>[
-                      const SizedBox(
-                        height: AppTheme.cardPadding * 2,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: AppTheme.cardPadding),
-                            child: Text(
-                              "Empfänger",
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: [
+          Container(
+            height:
+            MediaQuery.of(context).size.height - AppTheme.cardPadding * 4,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding),
+                          child: Text(
+                            "Empfänger",
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          _hasReceiver
-                              ? userTile()
-                              : Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: AppTheme.cardPadding,
-                                      vertical: AppTheme.elementSpacing / 2),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // Adds a text input for the Bitcoin receiver address
-                                      Container(
-                                        width: AppTheme.cardPadding * 11.5,
-                                        child: GlassContainer(
-                                          borderThickness:
-                                              1.5, // remove border if not active
-                                          blur: 50,
-                                          opacity: 0.1,
-                                          borderRadius:
-                                              AppTheme.cardRadiusCircular,
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal:
-                                                    AppTheme.elementSpacing *
-                                                        1.5),
-                                            height: AppTheme.cardPadding * 2,
-                                            alignment: Alignment.center,
-                                            child: TextFormField(
-                                              // Unfocuses the input field when tapped outside of it
-                                              onTapOutside: (value) {
-                                                if (myFocusNodeAdress
-                                                    .hasFocus) {
-                                                  myFocusNodeAdress.unfocus();
-                                                  validateAdress(
-                                                      bitcoinReceiverAdressController
-                                                          .text);
-                                                }
-                                              },
-                                              // Limits the length of the input to 40 characters
-                                              maxLength: 40,
-                                              // Adds a focus node for the input field
-                                              focusNode: myFocusNodeAdress,
-                                              // Binds the controller to the text input
-                                              controller:
-                                                  bitcoinReceiverAdressController,
-                                              // Validates the address when the text input is submitted
-                                              onFieldSubmitted: (value) {
-                                                validateAdress(value);
-                                              },
-                                              autofocus: false,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium,
-                                              decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                counterText: "",
-                                                hintText:
-                                                    "Bitcoin-Adresse hier eingeben",
-                                                hintStyle: TextStyle(
-                                                    color: AppTheme.white60),
-                                              ),
-                                            ),
+                        ),
+                        _hasReceiver
+                            ? userTile()
+                            : Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding,
+                              vertical: AppTheme.elementSpacing / 2),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Adds a text input for the Bitcoin receiver address
+                              Container(
+                                width: AppTheme.cardPadding * 11.5,
+                                child: GlassContainer(
+                                  borderThickness:
+                                  1.5, // remove border if not active
+                                  blur: 50,
+                                  opacity: 0.1,
+                                  borderRadius:
+                                  AppTheme.cardRadiusCircular,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal:
+                                        AppTheme.elementSpacing *
+                                            1.5),
+                                    height: AppTheme.cardPadding * 2,
+                                    alignment: Alignment.center,
+                                    child: TextFormField(
+                                      // Unfocuses the input field when tapped outside of it
+                                      onTapOutside: (value) {
+                                        if (myFocusNodeAdress
+                                            .hasFocus) {
+                                          myFocusNodeAdress.unfocus();
+                                          validateAdress(
+                                              bitcoinReceiverAdressController
+                                                  .text);
+                                        }
+                                      },
+                                      // Limits the length of the input to 40 characters
+                                      maxLength: 40,
+                                      // Adds a focus node for the input field
+                                      focusNode: myFocusNodeAdress,
+                                      // Binds the controller to the text input
+                                      controller:
+                                      bitcoinReceiverAdressController,
+                                      // Validates the address when the text input is submitted
+                                      onFieldSubmitted: (value) {
+                                        validateAdress(value);
+                                      },
+                                      autofocus: false,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        counterText: "",
+                                        hintText:
+                                        "Bitcoin-Adresse hier eingeben",
+                                        hintStyle: TextStyle(
+                                            color: AppTheme.white60),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // A GestureDetector widget that navigates to a new page when tapped
+                              GestureDetector(
+                                  onTap: () =>
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                          const QrScanner(
+                                            //isBottomButtonVisible: true,
                                           ),
                                         ),
                                       ),
-                                      // A GestureDetector widget that navigates to a new page when tapped
-                                      GestureDetector(
-                                          onTap: () =>
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const QrScanner(
-                                                    //isBottomButtonVisible: true,
-                                                  ),
-                                                ),
-                                              ),
-                                          child: avatarGlow(
-                                            context,
-                                            Icons.circle,
-                                          )),
-                                    ],
-                                  ),
+                                  child: avatarGlow(
+                                    context,
+                                    Icons.circle,
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    // A SizedBox widget with a height of AppTheme.cardPadding * 2
+                    const SizedBox(
+                      height: AppTheme.cardPadding * 2,
+                    ),
+
+                    // A Center widget with a child of bitcoinWidget()
+                    Center(child: bitcoinWidget()),
+
+                    // A Center widget with a child of bitcoinToMoneyWidget()
+                    Center(child: bitcoinToMoneyWidget()),
+
+                    // A SizedBox widget with a height of AppTheme.cardPadding * 3
+                    const SizedBox(
+                      height: AppTheme.cardPadding * 3,
+                    ),
+
+                    // A Padding widget that contains a Column widget with a few children
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // A Row widget with a Text widget, a SizedBox widget, and a GestureDetector widget
+                          Row(
+                            children: [
+                              Text(
+                                "Gebühren",
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
+                              SizedBox(
+                                width: AppTheme.elementSpacing / 2,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  // Displays a snackbar message when tapped
+                                  displaySnackbar(
+                                      context,
+                                      "Die Gebührenhöhe bestimmt über "
+                                          "die Transaktionsgeschwindigkeit. "
+                                          "Wenn du hohe Gebühren zahlst wird deine "
+                                          "Transaktion schneller bei dem Empfänger ankommen");
+                                },
+                                child: Icon(
+                                  Icons.info_outline_rounded,
+                                  color: AppTheme.white90,
                                 ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: AppTheme.cardPadding,
+                          ),
+                          // A function that returns a widget for choosing fees
+                          buildFeesChooser(),
+                          SizedBox(
+                            height: AppTheme.cardPadding * 2,
+                          ),
                         ],
                       ),
-                      // A SizedBox widget with a height of AppTheme.cardPadding * 2
-                      const SizedBox(
-                        height: AppTheme.cardPadding * 2,
-                      ),
-
-                      // A Center widget with a child of bitcoinWidget()
-                      Center(child: bitcoinWidget()),
-
-                      // A Center widget with a child of bitcoinToMoneyWidget()
-                      Center(child: bitcoinToMoneyWidget()),
-
-                      // A SizedBox widget with a height of AppTheme.cardPadding * 3
-                      const SizedBox(
-                        height: AppTheme.cardPadding * 3,
-                      ),
-
-                      // A Padding widget that contains a Column widget with a few children
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.cardPadding),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            // A Row widget with a Text widget, a SizedBox widget, and a GestureDetector widget
-                            Row(
-                              children: [
-                                Text(
-                                  "Gebühren",
-                                  style: Theme.of(context).textTheme.headline6,
-                                ),
-                                SizedBox(
-                                  width: AppTheme.elementSpacing / 2,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // Displays a snackbar message when tapped
-                                    displaySnackbar(
-                                        context,
-                                        "Die Gebührenhöhe bestimmt über "
-                                        "die Transaktionsgeschwindigkeit. "
-                                        "Wenn du hohe Gebühren zahlst wird deine "
-                                        "Transaktion schneller bei dem Empfänger ankommen");
-                                  },
-                                  child: Icon(
-                                    Icons.info_outline_rounded,
-                                    color: AppTheme.white90,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: AppTheme.cardPadding,
-                            ),
-                            // A function that returns a widget for choosing fees
-                            buildFeesChooser(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  // A Padding widget that contains a button widget
-                  Padding(
-                      padding:
-                          EdgeInsets.only(bottom: AppTheme.cardPadding * 2),
-                      child: button()),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                // A Padding widget that contains a button widget
+                Padding(
+                    padding:
+                    EdgeInsets.only(bottom: AppTheme.cardPadding * 4),
+                    child: button()),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
-
-  /// Returns a widget that displays an animated icon with a glowing effect.
-  ///
-  /// The icon is wrapped in a [AvatarGlow] widget, which adds the glowing effect.
-  /// The icon itself is a [CustomPaint] widget that draws a border around an [Icon].
-  /// The icon's [IconData] is passed as a parameter to this function.
-  /// The [glowColor] parameter is used to set the color of the glow effect.
-  /// The [endRadius] parameter is used to set the size of the glow effect.
-  /// The animation duration and pause duration are also set.
   Widget avatarGlow(BuildContext context, IconData icon) {
     return Center(
       child: Column(
@@ -440,11 +396,11 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     return _isLoadingExchangeRt == true // if exchange rate is still loading
         ? dotProgress(context) // show a loading indicator
         : Text(
-            "≈ ${_moneyineur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge, // use the bodyLarge text theme style from the current theme
-          );
+      "≈ ${_moneyineur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
+      style: Theme.of(context)
+          .textTheme
+          .bodyLarge, // use the bodyLarge text theme style from the current theme
+    );
   }
 
   // This widget represents a user tile with an avatar, title, subtitle, and edit button.
@@ -614,11 +570,11 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
         _isLoadingFees // if exchange rate is still loading
             ? dotProgress(context) // show a loading indicator
             : Text(
-                "≈ ${feesInEur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge, // use the bodyLarge text theme style from the current theme
-              )
+          "≈ ${feesInEur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge, // use the bodyLarge text theme style from the current theme
+        )
       ],
     );
   }
@@ -627,73 +583,73 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     // defines a function that takes a string parameter called "fees"
     return Padding(
       padding:
-          const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
+      const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
       child:
-          fees == feesSelected // if the fees parameter equals the selected fees
-              ? GlassContainer(
-                  // render a button with glassmorphism effect
-                  borderThickness: 1.5, // remove border if not active
-                  blur: 50,
-                  opacity: 0.1,
-                  borderRadius: AppTheme.cardRadiusCircular,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: const Size(50, 30),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        alignment: Alignment.centerLeft),
-                    onPressed: () {},
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppTheme.elementSpacing * 0.5,
-                        horizontal: AppTheme.elementSpacing,
-                      ),
-                      child: Text(fees,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(color: AppTheme.white90)),
-                    ),
-                  ),
-                )
-              : TextButton(
-                  // if the fees parameter is not selected
-                  style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(50, 20),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      alignment: Alignment.centerLeft),
-                  onPressed: () {
-                    setState(() {
-                      // update the state with the new selected fees
-                      feesSelected = fees;
-                      switch (fees) {
-                        case "Niedrig":
-                          feesInEur = feesInEur_low;
-                          break;
-                        case "Mittel":
-                          feesInEur = feesInEur_medium;
-                          break;
-                        case "Hoch":
-                          feesInEur = feesInEur_high;
-                          break;
-                      }
-                    });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppTheme.elementSpacing * 0.5,
-                      horizontal: AppTheme.elementSpacing,
-                    ),
-                    child: Text(
-                      fees,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(color: AppTheme.white60),
-                    ),
-                  ),
-                ),
+      fees == feesSelected // if the fees parameter equals the selected fees
+          ? GlassContainer(
+        // render a button with glassmorphism effect
+        borderThickness: 1.5, // remove border if not active
+        blur: 50,
+        opacity: 0.1,
+        borderRadius: AppTheme.cardRadiusCircular,
+        child: TextButton(
+          style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(50, 30),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              alignment: Alignment.centerLeft),
+          onPressed: () {},
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppTheme.elementSpacing * 0.5,
+              horizontal: AppTheme.elementSpacing,
+            ),
+            child: Text(fees,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: AppTheme.white90)),
+          ),
+        ),
+      )
+          : TextButton(
+        // if the fees parameter is not selected
+        style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(50, 20),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            alignment: Alignment.centerLeft),
+        onPressed: () {
+          setState(() {
+            // update the state with the new selected fees
+            feesSelected = fees;
+            switch (fees) {
+              case "Niedrig":
+                feesInEur = feesInEur_low;
+                break;
+              case "Mittel":
+                feesInEur = feesInEur_medium;
+                break;
+              case "Hoch":
+                feesInEur = feesInEur_high;
+                break;
+            }
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: AppTheme.elementSpacing * 0.5,
+            horizontal: AppTheme.elementSpacing,
+          ),
+          child: Text(
+            fees,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(color: AppTheme.white60),
+          ),
+        ),
+      ),
     );
   }
 
@@ -707,7 +663,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SwipeableButtonView(
-          // Determine if the button should be active based on whether a receiver has been selected
+        // Determine if the button should be active based on whether a receiver has been selected
           isActive: _hasReceiver,
           // Set the text style for the button text
           buttontextstyle: Theme.of(context).textTheme.headline6!.copyWith(
@@ -759,7 +715,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                   displaySnackbar(
                       context,
                       "Deine Bitcoin wurden versendet!"
-                      " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
+                          " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
                   await Navigator.push(
                       context,
                       PageTransition(

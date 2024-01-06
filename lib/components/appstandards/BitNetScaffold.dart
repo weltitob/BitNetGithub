@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
+
 class bitnetScaffold extends StatelessWidget {
   final Widget body;
   final Color? gradientColor;
@@ -10,9 +11,10 @@ class bitnetScaffold extends StatelessWidget {
   final BuildContext context;
   final bool extendBodyBehindAppBar;
   final bool extendBodyBehindBottomNav;
-  final Widget? floatingActionButton;  // New attribute
+  final Widget? floatingActionButton;
   final bool removeGradientColor;
   final FloatingActionButtonLocation floatingActionButtonLocation;
+  final bool resizeToAvoidBottomInset; // New attribute
 
   const bitnetScaffold({
     Key? key,
@@ -25,8 +27,9 @@ class bitnetScaffold extends StatelessWidget {
     this.extendBodyBehindAppBar = false,
     this.extendBodyBehindBottomNav = false,
     this.removeGradientColor = false,
-    this.floatingActionButton, // New parameter
-    this.floatingActionButtonLocation = FloatingActionButtonLocation.centerDocked, // New parameter
+    this.floatingActionButton,
+    this.floatingActionButtonLocation = FloatingActionButtonLocation.centerDocked,
+    this.resizeToAvoidBottomInset = true, // New parameter with default value
   }) : super(key: key);
 
   @override
@@ -35,7 +38,7 @@ class bitnetScaffold extends StatelessWidget {
       child: Scaffold(
         backgroundColor: backgroundColor,
         extendBodyBehindAppBar: extendBodyBehindAppBar,
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         body: Stack(
           children: [
             Container(

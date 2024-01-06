@@ -24,6 +24,8 @@ import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
+import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
+import 'package:bitnet/pages/wallet/actions/send/sendscreen.dart';
 import 'package:bitnet/pages/website/compliance/agbscreen.dart';
 import 'package:bitnet/pages/website/compliance/impressumscreen.dart';
 import 'package:bitnet/pages/website/contact/report/report.dart';
@@ -97,6 +99,16 @@ class AppRoutes {
                 VWidget(
                   path: '/wallet/block_transactions',
                   widget: const BlockTransactions(),
+                  buildTransition: _fadeTransition,
+                ),
+                VWidget(
+                  path: '/wallet/receive',
+                  widget: const ReceiveScreen(),
+                  buildTransition: _fadeTransition,
+                ),
+                VWidget(
+                  path: '/wallet/send',
+                  widget: const SendBTCScreen(bitcoinSenderAdress: "bitcoinSenderAdress"),
                   buildTransition: _fadeTransition,
                 ),
               ],
