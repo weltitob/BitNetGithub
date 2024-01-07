@@ -2,12 +2,7 @@ import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matr
 import 'package:bitnet/backbone/helper/matrix_helpers/other/stream_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/BitNetTabBar.dart';
-import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
-import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
-import 'package:bitnet/components/container/customtab.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:bitnet/pages/chat_list/chat_list.dart';
 import 'package:bitnet/components/items/chat_list_item.dart';
 import 'package:bitnet/pages/chat_list/chat_spaces_list.dart';
@@ -15,7 +10,6 @@ import 'package:bitnet/pages/chat_list/search_title.dart';
 import 'package:bitnet/pages/chat_list/space_view.dart';
 import 'package:bitnet/pages/matrix/widgets/connection_status_header.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 
 import 'package:animations/animations.dart';

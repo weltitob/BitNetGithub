@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/animations/bitnetscale.dart';
 import 'package:bitnet/components/appstandards/BitNetShaderMask.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
 
-import 'package:flutter/material.dart';
 
 class TeamProfileCard extends StatefulWidget {
   final String avatarUrl;

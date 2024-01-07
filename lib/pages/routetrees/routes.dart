@@ -1,6 +1,4 @@
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/responsiveness/side_view_layout.dart';
-import 'package:bitnet/backbone/helper/responsiveness/two_column_layout.dart';
 import 'package:bitnet/pages/auth/getstartedscreen.dart';
 import 'package:bitnet/pages/auth/ionloadingscreen.dart';
 import 'package:bitnet/pages/auth/old_matrix/connect/connect_page.dart';
@@ -33,7 +31,6 @@ import 'package:bitnet/pages/website/product/ourteam/ourteam.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:bitnet/pages/chat_list/chat/chat.dart';
 import 'package:bitnet/pages/matrix/pages/invitation_selection/invitation_selection.dart';
-import 'package:bitnet/components/loaders/empty_page.dart';
 import 'package:bitnet/components/loaders/loading_view.dart';
 import 'package:bitnet/pages/matrix/widgets/log_view.dart';
 import 'package:bitnet/pages/profile/profile.dart';
@@ -53,9 +50,6 @@ import 'package:bitnet/pages/wallet/walletscreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:vrouter/vrouter.dart';
-import '../chat_list/createnew/new_group/new_group.dart';
-import '../chat_list/createnew/new_private_chat/new_private_chat.dart';
-import '../chat_list/createnew/new_space/new_space.dart';
 
 class AppRoutes {
   final bool columnMode;

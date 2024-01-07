@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/presence_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
 import 'package:matrix/matrix.dart';
@@ -21,15 +21,14 @@ class UserBottomSheetView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: bitnetAppBar(
-          text: user.calcDisplayname(),
-          context: context,
-          onTap: () {  },
-          actions: [
-            CloseButton(
-              onPressed: Navigator.of(context, rootNavigator: false).pop,
-            ),
-          ]
-        ),
+            text: user.calcDisplayname(),
+            context: context,
+            onTap: () {},
+            actions: [
+              CloseButton(
+                onPressed: Navigator.of(context, rootNavigator: false).pop,
+              ),
+            ]),
         body: ListView(
           children: [
             Row(
@@ -111,7 +110,8 @@ class UserBottomSheetView extends StatelessWidget {
               ),
             if (user.id != client.userID)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding),
                 child: OutlinedButton.icon(
                   onPressed: () => controller
                       .participantAction(UserBottomSheetAction.message),

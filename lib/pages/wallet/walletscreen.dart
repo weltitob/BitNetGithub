@@ -71,7 +71,7 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
     //final UserData userData = Provider.of<UserData>(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: LiquidPullToRefresh(
         color: lighten(AppTheme.colorBackground, 10),
         showChildOpacityTransition: false,

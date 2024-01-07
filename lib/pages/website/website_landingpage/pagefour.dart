@@ -23,7 +23,8 @@ class _PageFourState extends State<PageFour> {
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
         bool isSuperSmallScreen =
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+        bool isIntermediateScreen =
+            constraints.maxWidth < AppTheme.isIntermediateScreen;
 
         double bigtextWidth = isMidScreen
             ? isSmallScreen
@@ -53,15 +54,15 @@ class _PageFourState extends State<PageFour> {
                     : 0.5
                 : 0.75
             : 1;
-        double centerSpacing = isMidScreen ? isIntermediateScreen
-            ? isSmallScreen
-            ? isSuperSmallScreen
-            ? AppTheme.columnWidth * 0.075
-            : AppTheme.columnWidth * 0.15
-            : AppTheme.columnWidth * 0.35
-            : AppTheme.columnWidth * 0.65
+        double centerSpacing = isMidScreen
+            ? isIntermediateScreen
+                ? isSmallScreen
+                    ? isSuperSmallScreen
+                        ? AppTheme.columnWidth * 0.075
+                        : AppTheme.columnWidth * 0.15
+                    : AppTheme.columnWidth * 0.35
+                : AppTheme.columnWidth * 0.65
             : AppTheme.columnWidth;
-
 
         return BackgroundWithContent(
           opacity: 0.7,
@@ -108,9 +109,11 @@ class _PageFourState extends State<PageFour> {
                                   alignment: Alignment.center,
                                   child: Container(
                                     alignment: Alignment.center,
-                                    height:
-                                        MediaQuery.of(context).size.height * 0.9,
-                                    width: MediaQuery.of(context).size.width * 0.35 + 250,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.9,
+                                    width: MediaQuery.of(context).size.width *
+                                            0.35 +
+                                        250,
                                     child: Stack(
                                       children: [
                                         // Align(
@@ -147,7 +150,7 @@ class _PageFourState extends State<PageFour> {
                         Container(
                           height: isSmallScreen
                               ? MediaQuery.of(context).size.height * 0.9
-                            :  500,
+                              : 500,
                           width: isSmallScreen
                               ? MediaQuery.of(context).size.width
                               : MediaQuery.of(context).size.width / 2.6,
@@ -164,7 +167,8 @@ class _PageFourState extends State<PageFour> {
                                         top: AppTheme.cardPadding * 4)
                                     : EdgeInsets.symmetric(horizontal: 0),
                                 width: isSmallScreen
-                                    ? 180 + MediaQuery.of(context).size.width / 3.5
+                                    ? 180 +
+                                        MediaQuery.of(context).size.width / 3.5
                                     : textWidth,
                                 child: Text(
                                   "More and more join us each day!",
@@ -179,7 +183,8 @@ class _PageFourState extends State<PageFour> {
                               ),
                               Container(
                                 width: isSmallScreen
-                                    ? 180 + MediaQuery.of(context).size.width / 3.5
+                                    ? 180 +
+                                        MediaQuery.of(context).size.width / 3.5
                                     : subtitleWidth,
                                 child: Text(
                                   "Get the app now and join the BitNet community too!",
@@ -190,14 +195,16 @@ class _PageFourState extends State<PageFour> {
                                   height: AppTheme.cardPadding *
                                       4 *
                                       spacingMultiplier),
-                              buildAllButtons(isSmallScreen, isIntermediateScreen),
+                              buildAllButtons(
+                                  isSmallScreen, isIntermediateScreen),
                             ],
                           ),
                         ),
                         isSmallScreen
                             ? Positioned(
                                 bottom: MediaQuery.of(context).size.height / 12,
-                                left:  MediaQuery.of(context).size.width * 0.65 - 80,
+                                left: MediaQuery.of(context).size.width * 0.65 -
+                                    80,
                                 child: Container(
                                   height:
                                       MediaQuery.of(context).size.width / 2.5,
@@ -231,14 +238,18 @@ class _PageFourState extends State<PageFour> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width:
-              isSmallScreen ? 180 + MediaQuery.of(context).size.width / 3.5 : 500,
+          width: isSmallScreen
+              ? 180 + MediaQuery.of(context).size.width / 3.5
+              : 500,
           child: Row(
-            mainAxisAlignment: isIntermediateScreen ? isSmallScreen
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.start : MainAxisAlignment.center,
+            mainAxisAlignment: isIntermediateScreen
+                ? isSmallScreen
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.start
+                : MainAxisAlignment.center,
             children: [
-              ...downloadFromStores(isIntermediateScreen), // Using the spread operator
+              ...downloadFromStores(
+                  isIntermediateScreen), // Using the spread operator
             ],
           ),
         ),
@@ -280,6 +291,7 @@ class _PageFourState extends State<PageFour> {
         Container(
           width: AppTheme.cardPadding * 10,
           child: LongButtonWidget(
+              backgroundPainter: false,
               leadingIcon: Icon(FontAwesomeIcons.download),
               title: "Download .apk",
               buttonType: ButtonType.solid,
@@ -348,7 +360,7 @@ class _PageFourState extends State<PageFour> {
     );
   }
 
-  Widget bottomGradientPhone(){
+  Widget bottomGradientPhone() {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Column(
@@ -388,6 +400,7 @@ class _PageFourState extends State<PageFour> {
           : Container(
               width: AppTheme.cardPadding * 10,
               child: LongButtonWidget(
+                  backgroundPainter: false,
                   leadingIcon: Icon(
                     color: AppTheme.white90,
                     FontAwesomeIcons.googlePlay,
@@ -411,6 +424,7 @@ class _PageFourState extends State<PageFour> {
           : Container(
               width: AppTheme.cardPadding * 10,
               child: LongButtonWidget(
+                  backgroundPainter: false,
                   leadingIcon: Icon(FontAwesomeIcons.apple),
                   title: "Apple Store",
                   buttonType: ButtonType.transparent,

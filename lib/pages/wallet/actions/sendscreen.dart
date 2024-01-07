@@ -11,7 +11,6 @@ import 'package:http/http.dart';
 import 'package:bitnet/backbone/cloudfunctions/getfees.dart';
 import 'package:bitnet/backbone/cloudfunctions/sendbitcoin.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/pages/bottomnav.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
@@ -20,7 +19,6 @@ import 'package:bitnet/models/cloudfunction_callback.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:provider/provider.dart';
 
 // Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
 class SendBTCScreen extends StatefulWidget {
@@ -236,7 +234,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                                 horizontal: AppTheme.cardPadding),
                             child: Text(
                               "Empfänger",
-                              style: Theme.of(context).textTheme.headline6,
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ),
                           _hasReceiver
@@ -352,7 +350,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
                               children: [
                                 Text(
                                   "Gebühren",
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 SizedBox(
                                   width: AppTheme.elementSpacing / 2,
@@ -464,7 +462,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             // The title displays the user's name.
             title: Text(
               "Unbekannte Walletadresse",
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             // The subtitle displays a card number.
             subtitle: cardWithNumber(),
@@ -501,7 +499,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
               // The receiver address to be displayed
               _bitcoinReceiverAdress,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
         ],
@@ -523,7 +521,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           // Title of the widget
           Text(
             "Wert eingeben",
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           SizedBox(
             height: AppTheme.cardPadding,
@@ -710,7 +708,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
           // Determine if the button should be active based on whether a receiver has been selected
           isActive: _hasReceiver,
           // Set the text style for the button text
-          buttontextstyle: Theme.of(context).textTheme.headline6!.copyWith(
+          buttontextstyle: Theme.of(context).textTheme.titleLarge!.copyWith(
               color: AppTheme.white80, shadows: [AppTheme.boxShadowSmall]),
           // Set the text to display on the button
           buttonText: "JETZT SENDEN!",

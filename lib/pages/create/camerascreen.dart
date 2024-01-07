@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class CameraPage extends StatefulWidget {
@@ -49,13 +48,13 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                   title: Text(
                     '@fixauth',
-                    style: Theme.of(context).textTheme.headline6!.copyWith(
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       color: AppTheme.white90
                     ),
                   ),
                   subtitle: Text(
                     'fix die scheiss auth',
-                    style: Theme.of(context).textTheme.caption!.copyWith(
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: AppTheme.white70
                     ),
                   ),

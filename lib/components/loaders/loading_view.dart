@@ -1,12 +1,10 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/components/loaders/empty_page.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:matrix/matrix.dart';
-import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
 
 class LoadingViewAppStart extends StatelessWidget {

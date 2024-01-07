@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
 import 'package:bitnet/pages/create/camerascreen.dart';
-import 'package:bitnet/pages/create/create_post_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
@@ -134,7 +132,6 @@ class _CreatePageState extends State<CreatePage> {
   Widget getBody() {
     var size = MediaQuery.of(context).size;
     if (_isReady == false ||
-        _controller == null ||
         !_controller.value.isInitialized) {
       return Container(
         decoration: BoxDecoration(color: Colors.white),

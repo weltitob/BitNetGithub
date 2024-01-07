@@ -162,7 +162,7 @@ class HomeController extends GetxController {
       }
       isLoading.value = false;
       update();
-    } on DioError catch (err) {
+    } on DioError {
       isLoading.value = false;
       update();
     } catch (e) {
@@ -278,7 +278,7 @@ class HomeController extends GetxController {
         isLoading.value = false;
         Get.forceAppUpdate();
         update();
-      } on DioError catch (err) {
+      } on DioError {
         isLoading.value = false;
         update();
       } catch (e) {

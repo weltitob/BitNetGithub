@@ -1,13 +1,11 @@
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:bitnet/components/buttons/glassbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 // This class is a StatefulWidget which displays a screen where a user can receive bitcoin
@@ -72,7 +70,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
               // Text "Meine Bitcoinadresse" displayed with headline5 style
               Text(
                 "Meine Bitcoinadresse",
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
               // SizedBox to add some spacing
               const SizedBox(

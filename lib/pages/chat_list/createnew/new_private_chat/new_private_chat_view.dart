@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 
 class NewPrivateChatView extends StatefulWidget {

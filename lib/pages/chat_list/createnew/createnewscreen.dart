@@ -1,21 +1,19 @@
 import 'dart:math';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetTabBar.dart';
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
-import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_group/new_group.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_private_chat/new_private_chat.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_space/new_space.dart';
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:vrouter/vrouter.dart';
 
 class CreateNewScreen extends StatefulWidget {
-
   final int initialIndex;
-  const CreateNewScreen({Key? key, required this.initialIndex}) : super(key: key);
+  const CreateNewScreen({Key? key, required this.initialIndex})
+      : super(key: key);
 
   @override
   State<CreateNewScreen> createState() => _CreateNewScreenState();
@@ -29,7 +27,8 @@ class _CreateNewScreenState extends State<CreateNewScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this, initialIndex: widget.initialIndex);
+    _tabController = TabController(
+        length: 3, vsync: this, initialIndex: widget.initialIndex);
     _tabController.addListener(_handleTabSelection);
   }
 
@@ -46,7 +45,7 @@ class _CreateNewScreenState extends State<CreateNewScreen>
   }
 
   String _getTitle(int index) {
-    switch(index){
+    switch (index) {
       case 0:
         return L10n.of(context)!.newChat;
       case 1:
@@ -65,14 +64,13 @@ class _CreateNewScreenState extends State<CreateNewScreen>
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     // A GlobalKey is used to identify this widget in the widget tree, used to access and modify its properties
     GlobalKey globalKeyQR = GlobalKey();
 
     final qrCodeSize =
-    min(MediaQuery.of(context).size.width - 16, 256).toDouble();
+        min(MediaQuery.of(context).size.width - 16, 256).toDouble();
     return bitnetScaffold(
       context: context,
       appBar: bitnetAppBar(
@@ -85,10 +83,10 @@ class _CreateNewScreenState extends State<CreateNewScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(
-                  top: AppTheme.cardPadding * 1),
+              padding: const EdgeInsets.only(top: AppTheme.cardPadding * 1),
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                margin:
+                    EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                 alignment: Alignment.center,
                 child: DefaultTabController(
                   length: 3,
@@ -105,7 +103,6 @@ class _CreateNewScreenState extends State<CreateNewScreen>
                         Tab(
                           child: Text(
                             L10n.of(context)!.newChat,
-
                             style: AppTheme.textTheme.titleSmall!.copyWith(
                                 color: AppTheme.white80,
                                 fontWeight: FontWeight.bold),
@@ -134,14 +131,13 @@ class _CreateNewScreenState extends State<CreateNewScreen>
               ),
             ),
             Container(
-              height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 10.5,
-              child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    const NewPrivateChat(),
-                    const NewGroup(),
-                    const NewSpace(),
-                  ]),
+              height: MediaQuery.of(context).size.height -
+                  AppTheme.cardPadding * 10.5,
+              child: TabBarView(controller: _tabController, children: [
+                const NewPrivateChat(),
+                const NewGroup(),
+                const NewSpace(),
+              ]),
             ),
           ],
         ),

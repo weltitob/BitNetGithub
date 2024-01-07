@@ -1,6 +1,4 @@
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/settings_bottom_sheet/settings_bottom_sheet.dart';
@@ -11,7 +9,6 @@ import 'package:bitnet/components/container/coinlogo.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
@@ -89,7 +86,7 @@ class ProfileView extends StatelessWidget {
       borderRadius: BorderRadius.circular(45),
       child: Material(
         color: Colors.transparent,
-        child: controller!.currentview != 2
+        child: controller.currentview != 2
             ? CoinLogoWidgetSmall(coinid: 1)
             : Container(
                 width: 30.0,
@@ -234,7 +231,7 @@ class ProfileView extends StatelessWidget {
     return Positioned(
       top: 165,
       right: 57,
-      child: controller!.currentview == 2
+      child: controller.currentview == 2
           ? Align(
               child: IconButton(
                   color: AppTheme.white90,
@@ -403,7 +400,7 @@ class ProfileView extends StatelessWidget {
     //         userdid: "userdid"),
     //     wallets: []);
 
-    final String currentUserId = controller.profileId!;
+    final String currentUserId = controller.profileId;
 
     bool isProfileOwner = currentUserId == userData.did;
 

@@ -2,8 +2,8 @@ import 'package:bitnet/backbone/helper/matrix_helpers/voip/callkeep_manager.dart
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:bitnet/components/buttons/client_chooser_button.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/pages/matrix/widgets/settings_switch_list_tile.dart';

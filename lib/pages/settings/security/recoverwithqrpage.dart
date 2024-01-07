@@ -87,7 +87,7 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
                 children: [
                   Icon(FontAwesomeIcons.solidEyeSlash, size: AppTheme.elementSpacing,),
                   SizedBox(width: AppTheme.elementSpacing / 2,),
-                  Text("DON'T SHARE THIS QR CODE TO ANYONE!", style: Theme.of(context).textTheme.button,),
+                  Text("DON'T SHARE THIS QR CODE TO ANYONE!", style: Theme.of(context).textTheme.labelLarge,),
                 ],
               ),
             ],

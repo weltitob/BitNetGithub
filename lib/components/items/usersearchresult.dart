@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/website/widgets/webavatar.dart';
 import 'package:flutter/material.dart';
 
 class UserSearchResult extends StatefulWidget {
@@ -27,15 +27,17 @@ class UserSearchResult extends StatefulWidget {
 class _UserSearchResultState extends State<UserSearchResult> {
   @override
   Widget build(BuildContext context) {
-
-    final height =  widget.customHeight * widget.scaleRatio;
+    final height = widget.customHeight * widget.scaleRatio;
     final width = widget.customWidth * widget.scaleRatio;
     final borderRadius = BorderRadius.circular(height / 2.5);
 
     return Container(
       margin: EdgeInsets.only(top: AppTheme.elementSpacing),
+
       height: height,
-      width: width, // If customWidth is null, Container will take up available width
+      width:
+          width, // If customWidth is null, Container will take up available width
+
       child: GlassContainer(
           borderThickness: 1.5,
           blur: 50,
@@ -49,10 +51,10 @@ class _UserSearchResultState extends State<UserSearchResult> {
                 SizedBox(
                   width: AppTheme.elementSpacing * 0.75,
                 ),
-                Avatar(
+                WebAvatar(
                   size: AppTheme.cardPadding * 2 * widget.scaleRatio,
                   onTap: widget.onTap,
-                  mxContent: Uri.parse(widget.userData.profileImageUrl),
+                  mxContent: widget.userData.profileImageUrl,
                   name: widget.userData.username,
                   profileId: widget.userData.did,
                 ),

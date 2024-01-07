@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/colorpicker.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
@@ -27,7 +27,8 @@ class SettingsStyleView extends StatelessWidget {
         context: context,
         onTap: () {
           print("pressed");
-          Provider.of<SettingsProvider>(context, listen: false).switchTab('main');
+          Provider.of<SettingsProvider>(context, listen: false)
+              .switchTab('main');
         },
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -35,13 +36,17 @@ class SettingsStyleView extends StatelessWidget {
         withScrolling: true,
         child: Column(
           children: [
-            SizedBox(height: AppTheme.elementSpacing,),
+            SizedBox(
+              height: AppTheme.elementSpacing,
+            ),
             Text(
               "Color",
               textAlign: TextAlign.start,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            SizedBox(height: AppTheme.elementSpacing,),
+            SizedBox(
+              height: AppTheme.elementSpacing,
+            ),
             SizedBox(
               height: colorPickerSize + 24,
               child: ListView(

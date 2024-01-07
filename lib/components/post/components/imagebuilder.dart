@@ -45,7 +45,7 @@ class ImageBuilderNetwork extends StatelessWidget {
               ),
               errorWidget: (context, url, error) => Icon(
                 Icons.error,
-                color: Theme.of(context).errorColor,
+                color: Theme.of(context).colorScheme.error,
               ),
             ));
   }

@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -33,8 +33,8 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
         .where("issuer", isEqualTo: user!.uid)
         .snapshots()
         .map((event) => event.docs
-        .map((e) => VerificationCode.fromMap(e.data(), e.id))
-        .toList());
+            .map((e) => VerificationCode.fromMap(e.data(), e.id))
+            .toList());
   }
 
   @override
@@ -47,11 +47,14 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
   Widget build(BuildContext context) {
     return bitnetScaffold(
       context: context,
-      appBar: bitnetAppBar(text: L10n.of(context)!.inviteContact, context: context, onTap: (){
-        print("pressed");
-        Provider.of<SettingsProvider>(context, listen: false)
-            .switchTab('main');
-      }),
+      appBar: bitnetAppBar(
+          text: L10n.of(context)!.inviteContact,
+          context: context,
+          onTap: () {
+            print("pressed");
+            Provider.of<SettingsProvider>(context, listen: false)
+                .switchTab('main');
+          }),
       body: Container(
         color: Colors.transparent,
         child: StreamBuilder(
@@ -63,7 +66,8 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
             if (snapshot.connectionState == ConnectionState.waiting ||
                 !snapshot.hasData) {
               return Container(
-                  height: 400, child: Center(child: CircularProgressIndicator()));
+                  height: 400,
+                  child: Center(child: CircularProgressIndicator()));
             }
             return Column(
               children: [
@@ -80,9 +84,9 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
                   padding: const EdgeInsets.all(AppTheme.cardPadding),
                   child: Text(
                     "Our service is currently in beta and "
-                        "limited to invited users. You can share these invitation "
-                        "keys with your friends and family!",
-                    style: Theme.of(context).textTheme.caption,
+                    "limited to invited users. You can share these invitation "
+                    "keys with your friends and family!",
+                    style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -126,7 +130,8 @@ class _KeyItemState extends State<_KeyItem> {
   }
 
   getUser(String userId) {
-    Future<QuerySnapshot> user = usersCollection.where("did", isEqualTo: userId).get();
+    Future<QuerySnapshot> user =
+        usersCollection.where("did", isEqualTo: userId).get();
     setState(() {
       userFuture = user;
     });
@@ -137,16 +142,17 @@ class _KeyItemState extends State<_KeyItem> {
     return GestureDetector(
       onTap: widget.verificationkey.used
           ? () {
-        VRouter.of(context).to("/profile/:${widget.verificationkey.receiver}");
-      }
+              VRouter.of(context)
+                  .to("/profile/:${widget.verificationkey.receiver}");
+            }
           : () {
-        //copy the key
-        _free = "copied";
-        //change free text to copied code und dann abändern
-        Clipboard.setData(
-            ClipboardData(text: widget.verificationkey.code));
-        setState(() {});
-      },
+              //copy the key
+              _free = "copied";
+              //change free text to copied code und dann abändern
+              Clipboard.setData(
+                  ClipboardData(text: widget.verificationkey.code));
+              setState(() {});
+            },
       child: Container(
         height: AppTheme.cardPadding * 2,
         margin: EdgeInsets.symmetric(
@@ -166,10 +172,10 @@ class _KeyItemState extends State<_KeyItem> {
             widget.verificationkey.used
                 ? buildUserResult()
                 : Icon(
-              Icons.key,
-              color: Theme.of(context).colorScheme.onSecondaryContainer,
-              size: AppTheme.iconSize,
-            ),
+                    Icons.key,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                    size: AppTheme.iconSize,
+                  ),
             SizedBox(width: AppTheme.cardPadding),
             Text(widget.verificationkey.code,
                 style: Theme.of(context).textTheme.titleSmall),
@@ -191,7 +197,11 @@ class _KeyItemState extends State<_KeyItem> {
             return dotProgress(context);
           } else {
             UserData user = UserData.fromDocument(snapshot.data);
-            UserResult result = UserResult(userData: user, onTap: () async {}, onDelete: () {  },);
+            UserResult result = UserResult(
+              userData: user,
+              onTap: () async {},
+              onDelete: () {},
+            );
             return result;
           }
         });

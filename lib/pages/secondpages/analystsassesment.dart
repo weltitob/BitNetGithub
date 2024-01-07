@@ -1,8 +1,6 @@
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -132,7 +130,7 @@ class AnalysisWidget extends StatelessWidget {
         children: [
           Text(
               text,
-              style: Theme.of(context).textTheme.bodyText2
+              style: Theme.of(context).textTheme.bodyMedium
           ),
           Padding(
               padding: EdgeInsets.only(

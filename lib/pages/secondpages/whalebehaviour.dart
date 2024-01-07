@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 
-import 'dart:convert';
-import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
 
 class Analysts {
-
   final String analystCount;
   final String consensusDate;
   final String marketConsensus;
   final String marketConsensusTargetPrice;
 
-  Analysts({required this.analystCount, required this.consensusDate, required this.marketConsensus,
-    required this.marketConsensusTargetPrice,});
+  Analysts({
+    required this.analystCount,
+    required this.consensusDate,
+    required this.marketConsensus,
+    required this.marketConsensusTargetPrice,
+  });
 
   factory Analysts.fromJson(Map<String, dynamic> json) {
     return Analysts(
@@ -27,7 +27,6 @@ class Analysts {
 }
 
 class Keymetrics {
-
   final String marketcap;
   final String week52high;
   final String week52low;
@@ -35,8 +34,14 @@ class Keymetrics {
   final String employees;
   final String peRatio;
 
-  Keymetrics({required this.marketcap, required this.week52high, required this.week52low,
-    required this.float, required this.employees, required this.peRatio,});
+  Keymetrics({
+    required this.marketcap,
+    required this.week52high,
+    required this.week52low,
+    required this.float,
+    required this.employees,
+    required this.peRatio,
+  });
 
   factory Keymetrics.fromJson(Map<String, dynamic> json) {
     return Keymetrics(
@@ -49,19 +54,23 @@ class Keymetrics {
     );
   }
 }
-class Insider {
 
+class Insider {
   final String fullName;
   final String transactionValue;
   final String filingDate;
 
-  Insider({required this.fullName, required this.transactionValue, required this.filingDate,});
+  Insider({
+    required this.fullName,
+    required this.transactionValue,
+    required this.filingDate,
+  });
 
   factory Insider.fromJson(Map<String, dynamic> json) {
     return new Insider(
-      fullName: json['fullName'].toString() as String,
-      transactionValue: json['transactionValue'].toString() as String,
-      filingDate: json['filingDate'].toString() as String,
+      fullName: json['fullName'].toString(),
+      transactionValue: json['transactionValue'].toString(),
+      filingDate: json['filingDate'].toString(),
     );
   }
 }
@@ -87,9 +96,9 @@ class IEXCloudServicePrice {
 //for the marketConsensusTargetPrice // same as the numberofAnalysts?
 
 class IEXCloudServiceAnalysts {
-
-  Future<List<Analysts>> getData() async{
-    var url = Uri.parse("https://sandbox.iexapis.com/stable/time-series/CORE_ESTIMATES/TSLA?token=Tpk_85b3b5cdb32147d3a0fb751cc5176cdd");
+  Future<List<Analysts>> getData() async {
+    var url = Uri.parse(
+        "https://sandbox.iexapis.com/stable/time-series/CORE_ESTIMATES/TSLA?token=Tpk_85b3b5cdb32147d3a0fb751cc5176cdd");
     Response res = await get(url);
     return parseAnalysis(res.body);
   }
@@ -101,18 +110,15 @@ List<Analysts> parseAnalysis(String responseBody) {
 }
 
 class IEXCloudServiceInsider {
-
-  Future<List<Insider>> getInsiderData() async{
-
-    var url = Uri.parse("https://sandbox.iexapis.com/stable/stock/TSLA/insider-transactions?token=Tpk_85b3b5cdb32147d3a0fb751cc5176cdd");
+  Future<List<Insider>> getInsiderData() async {
+    var url = Uri.parse(
+        "https://sandbox.iexapis.com/stable/stock/TSLA/insider-transactions?token=Tpk_85b3b5cdb32147d3a0fb751cc5176cdd");
     Response res = await get(url);
     return parseAnalysisInsider(res.body);
-
   }
 }
 
 List<Insider> parseAnalysisInsider(String responseBody) {
-
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
   return parsed.map<Insider>((json) => new Insider.fromJson(json)).toList();
 }
@@ -121,20 +127,17 @@ List<Insider> parseAnalysisInsider(String responseBody) {
 //KeyMetrics
 
 class IEXCloudServiceKeymetrics {
-
-  Future<List<Keymetrics>> getKeymetricsData() async{
-
-    var url = Uri.parse("https://sandbox.iexapis.com/stable/stock/TSLA/stats?token=Tpk_85b3b5cdb32147d3a0fb751cc5176cdd");
+  Future<List<Keymetrics>> getKeymetricsData() async {
+    var url = Uri.parse(
+        "https://sandbox.iexapis.com/stable/stock/TSLA/stats?token=Tpk_85b3b5cdb32147d3a0fb751cc5176cdd");
     Response res = await get(url);
     return parseAnalysisKeymetrics(res.body);
-
   }
 }
 
 //https://sandbox.iexapis.com/stable/crypto/btcusd/price?token=Tpk_85b3b5cdb32147d3a0fb751cc5176cdd
 
 List<Keymetrics> parseAnalysisKeymetrics(String responseBody) {
-
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
   return parsed.map<Keymetrics>((json) => new Insider.fromJson(json)).toList();
 }
@@ -153,34 +156,41 @@ class _WhaleBehaviourState extends State<WhaleBehaviour> {
   }
 }
 
-
 class InsiderWidget extends StatelessWidget {
   //Cloudservice
   IEXCloudServiceInsider iexcloudinsider = IEXCloudServiceInsider();
 
   static String? formatter(String number) {
-    try{
+    try {
       // suffix = {' ', 'k', 'M', 'B', 'T', 'P', 'E'};
       double value = double.parse(number);
 
-      if(value < 1000){ // less than a million
+      if (value < 1000) {
+        // less than a million
         return value.toStringAsFixed(2);
-      }else if(value >= 1000 && value < (1000*10*100)){ // less than 1 million
-        double result = value/1000;
-        return result.toStringAsFixed(2)+"K";
-      }else if(value >= 1000000 && value < (1000000*10*100)){ // less than 100 million
-        double result = value/1000000;
-        return result.toStringAsFixed(2)+"M";
-      }else if(value >= (1000000*10*100) && value < (1000000*10*100*100)){ // less than 100 billion
-        double result = value/(1000000*10*100);
-        return result.toStringAsFixed(2)+"B";
-      }else if(value >= (1000000*10*100*100) && value < (1000000*10*100*100*100)){ // less than 100 trillion
-        double result = value/(1000000*10*100*100);
-        return result.toStringAsFixed(2)+"T";
+      } else if (value >= 1000 && value < (1000 * 10 * 100)) {
+        // less than 1 million
+        double result = value / 1000;
+        return result.toStringAsFixed(2) + "K";
+      } else if (value >= 1000000 && value < (1000000 * 10 * 100)) {
+        // less than 100 million
+        double result = value / 1000000;
+        return result.toStringAsFixed(2) + "M";
+      } else if (value >= (1000000 * 10 * 100) &&
+          value < (1000000 * 10 * 100 * 100)) {
+        // less than 100 billion
+        double result = value / (1000000 * 10 * 100);
+        return result.toStringAsFixed(2) + "B";
+      } else if (value >= (1000000 * 10 * 100 * 100) &&
+          value < (1000000 * 10 * 100 * 100 * 100)) {
+        // less than 100 trillion
+        double result = value / (1000000 * 10 * 100 * 100);
+        return result.toStringAsFixed(2) + "T";
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
+    return null;
   }
 
   @override
@@ -290,16 +300,25 @@ class InsiderWidget extends StatelessWidget {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        ChildbuildWhaleBehavior("${snapshot.data![0].fullName}", "${snapshot.data![0].filingDate}",
-                            "${snapshot.data![0].transactionValue}\$", false),
-                        ChildbuildWhaleBehavior("${snapshot.data![1].fullName}", "${snapshot.data![1].filingDate}",
-                            "${snapshot.data![1].transactionValue}\$", false),
-                        ChildbuildWhaleBehavior("${snapshot.data![2].fullName}", "${snapshot.data![2].filingDate}",
-                            "${snapshot.data![2].transactionValue}\$", false),
+                        ChildbuildWhaleBehavior(
+                            "${snapshot.data![0].fullName}",
+                            "${snapshot.data![0].filingDate}",
+                            "${snapshot.data![0].transactionValue}\$",
+                            false),
+                        ChildbuildWhaleBehavior(
+                            "${snapshot.data![1].fullName}",
+                            "${snapshot.data![1].filingDate}",
+                            "${snapshot.data![1].transactionValue}\$",
+                            false),
+                        ChildbuildWhaleBehavior(
+                            "${snapshot.data![2].fullName}",
+                            "${snapshot.data![2].filingDate}",
+                            "${snapshot.data![2].transactionValue}\$",
+                            false),
                       ],
                     );
                   }
-                  if(snapshot.hasError){
+                  if (snapshot.hasError) {
                     return Text(
                       '${snapshot.error}',
                       style: TextStyle(
@@ -308,13 +327,13 @@ class InsiderWidget extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     );
-                  }
-                  else return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: const Text('No results found',
-                        style: TextStyle(color: Colors.grey,
-                            fontWeight: FontWeight.bold)),
-                  );
+                  } else
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text('No results found',
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold)),
+                    );
                 }),
           ],
         ),
@@ -366,57 +385,57 @@ class InsiderWidget extends StatelessWidget {
             ),
             type
                 ? InkWell(
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.green),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 5, right: 5, top: 3, bottom: 3),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.trending_up,
-                          color: Colors.white,
-                          size: 12,
-                        ),
-                        Padding(padding: EdgeInsets.only(left: 5)),
-                        Text("Buy",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold)),
-                      ],
+                    child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.green),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 5, right: 5, top: 3, bottom: 3),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.trending_up,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                          Padding(padding: EdgeInsets.only(left: 5)),
+                          Text("Buy",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                     ),
-                  ),
-                ))
+                  ))
                 : InkWell(
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.redAccent),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 5, right: 5, top: 3, bottom: 3),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.trending_down,
-                          color: Colors.white,
-                          size: 12,
-                        ),
-                        Padding(padding: EdgeInsets.only(left: 5)),
-                        Text("Sell",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold)),
-                      ],
+                    child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.redAccent),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 5, right: 5, top: 3, bottom: 3),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.trending_down,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                          Padding(padding: EdgeInsets.only(left: 5)),
+                          Text("Sell",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                     ),
-                  ),
-                )),
+                  )),
           ],
         ),
       ],

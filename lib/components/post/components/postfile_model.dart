@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/pages/create/create_post_screen.dart';
 
 class PostFile {
   String? text;

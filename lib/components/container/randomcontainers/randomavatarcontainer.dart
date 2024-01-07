@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/models/animatedmodels/animatedavatar.dart';
+import 'package:bitnet/pages/website/widgets/webavatar.dart';
 import 'package:flutter/material.dart';
 
 class RandomAvatarWidget extends StatefulWidget {
@@ -9,13 +9,15 @@ class RandomAvatarWidget extends StatefulWidget {
   final double height;
   final bool start;
 
-  RandomAvatarWidget({required this.width, required this.height, this.start = false});
-
+  RandomAvatarWidget(
+      {required this.width, required this.height, this.start = false});
 
   @override
   _RandomAvatarWidgetState createState() => _RandomAvatarWidgetState();
 }
-class _RandomAvatarWidgetState extends State<RandomAvatarWidget> with TickerProviderStateMixin {
+
+class _RandomAvatarWidgetState extends State<RandomAvatarWidget>
+    with TickerProviderStateMixin {
   List<AnimatedAvatar> animatedAvatars = [];
   Random random = Random();
 
@@ -35,7 +37,10 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget> with TickerProv
     double topBoundary = endRadius * 1;
     double bottomBoundary = widget.height - topBoundary;
 
-    return pos.dx > leftBoundary && pos.dx < rightBoundary && pos.dy > topBoundary && pos.dy < bottomBoundary;
+    return pos.dx > leftBoundary &&
+        pos.dx < rightBoundary &&
+        pos.dy > topBoundary &&
+        pos.dy < bottomBoundary;
   }
 
   Offset generateRandomPosition(double endRadius) {
@@ -52,7 +57,8 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget> with TickerProv
       xPos = minX + random.nextDouble() * (maxX - minX);
       yPos = minY + random.nextDouble() * (maxY - minY);
       newPos = Offset(xPos, yPos);
-    } while (isInsideRedContainer(newPos, endRadius) || isTooCloseToOthers(newPos, endRadius));
+    } while (isInsideRedContainer(newPos, endRadius) ||
+        isTooCloseToOthers(newPos, endRadius));
 
     return newPos;
   }
@@ -62,19 +68,22 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget> with TickerProv
     super.initState();
     int avatarCounter = 0;
 
-    Future.delayed(Duration(milliseconds: 4000)).then((_) async { // Delay by 700 milliseconds initially
+    Future.delayed(Duration(milliseconds: 4000)).then((_) async {
+      // Delay by 700 milliseconds initially
       if (!widget.start) {
-        await Future.delayed(Duration(milliseconds: 125));  // Additional Delay of 100ms if start is false
+        await Future.delayed(Duration(
+            milliseconds: 125)); // Additional Delay of 100ms if start is false
       }
 
       return Future.doWhile(() async {
-
-        await Future.delayed(Duration(milliseconds: 250));  // Delay between each avatar spawn
+        await Future.delayed(
+            Duration(milliseconds: 250)); // Delay between each avatar spawn
 
         if (avatarCounter >= 30) return false;
 
         double baseSize = 50.0 - (avatarCounter * 2.0);
-        double endRadius = AppTheme.cardPadding + baseSize + (random.nextDouble() * 20 - 10);
+        double endRadius =
+            AppTheme.cardPadding + baseSize + (random.nextDouble() * 20 - 10);
 
         if (endRadius < AppTheme.cardPadding) {
           endRadius = AppTheme.cardPadding;
@@ -84,9 +93,12 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget> with TickerProv
         int currentTry = 0;
         Offset newPos;
         do {
-          newPos = generateRandomPosition(endRadius,);
+          newPos = generateRandomPosition(
+            endRadius,
+          );
           currentTry++;
-        } while (isTooCloseToOthers(newPos, endRadius) && currentTry < maxTries);
+        } while (
+            isTooCloseToOthers(newPos, endRadius) && currentTry < maxTries);
 
         final avatar = AnimatedAvatar(
           position: newPos,
@@ -94,7 +106,8 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget> with TickerProv
           uri: 'https://bitnet-test.herokuapp.com/assets/images/avatars/1.png',
         );
 
-        avatar.size = Tween<double>(begin: 0, end: endRadius).animate(avatar.controller);
+        avatar.size =
+            Tween<double>(begin: 0, end: endRadius).animate(avatar.controller);
         avatar.controller.duration = Duration(milliseconds: 1000);
         avatar.controller.addStatusListener((status) {
           if (status == AnimationStatus.dismissed) {
@@ -170,15 +183,14 @@ class AvatarLayout extends StatelessWidget {
           return AnimatedBuilder(
             animation: avatar.controller,
             builder: (context, child) {
-              final avatarWidget = Avatar(
-                mxContent: Uri.parse(avatar.uri),
+              final avatarWidget = WebAvatar(
+                mxContent: avatar.uri,
                 size: avatar.size.value,
                 profileId: avatar.uri,
               );
 
               final avatarPosition = avatar.position -
-                  Offset(
-                      avatarWidget.size / 2, avatarWidget.size / 2);
+                  Offset(avatarWidget.size / 2, avatarWidget.size / 2);
 
               return Positioned(
                 left: avatarPosition.dx,

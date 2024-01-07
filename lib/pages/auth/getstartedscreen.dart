@@ -1,10 +1,8 @@
-import 'dart:ui';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:vrouter/vrouter.dart';
@@ -38,17 +36,38 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
-          bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
-          bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
+      bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-          double bigtextWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
-          double textWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
-          double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
-          double spacingMultiplier = isMidScreen ? isSmallScreen ? 0.5 : 0.75 : 1;
-          double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
+      double bigtextWidth = isMidScreen
+          ? isSmallScreen
+              ? AppTheme.cardPadding * 24
+              : AppTheme.cardPadding * 28
+          : AppTheme.cardPadding * 30;
+      double textWidth = isMidScreen
+          ? isSmallScreen
+              ? AppTheme.cardPadding * 16
+              : AppTheme.cardPadding * 22
+          : AppTheme.cardPadding * 24;
+      double subtitleWidth = isMidScreen
+          ? isSmallScreen
+              ? AppTheme.cardPadding * 14
+              : AppTheme.cardPadding * 18
+          : AppTheme.cardPadding * 22;
+      double spacingMultiplier = isMidScreen
+          ? isSmallScreen
+              ? 0.5
+              : 0.75
+          : 1;
+      double centerSpacing = isMidScreen
+          ? isSmallScreen
+              ? AppTheme.columnWidth * 0.15
+              : AppTheme.columnWidth * 0.65
+          : AppTheme.columnWidth;
 
-          return bitnetScaffold(
+      return bitnetScaffold(
         extendBodyBehindAppBar: true,
         context: context,
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -66,7 +85,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             children: <Widget>[
               Container(
                 color: Colors.transparent,
-                width: AppTheme.cardPadding * 20 * spacingMultiplier, //double.infinity
+                width: AppTheme.cardPadding *
+                    20 *
+                    spacingMultiplier, //double.infinity
                 child: FutureBuilder(
                   future: _compostionBitcoin,
                   builder: (context, snapshot) {

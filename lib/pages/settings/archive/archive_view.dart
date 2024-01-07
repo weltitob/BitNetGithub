@@ -1,5 +1,5 @@
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/items/chat_list_item.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:flutter/material.dart';

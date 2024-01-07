@@ -11,7 +11,6 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 

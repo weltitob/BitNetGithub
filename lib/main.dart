@@ -9,10 +9,9 @@ import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:provider/provider.dart';
 import 'backbone/auth/auth.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:universal_html/html.dart' as html; // Changed from 'dart:html'
+// Changed from 'dart:html'
 import 'package:matrix/matrix.dart';
 //import 'firebase_options.dart';
-
 
 //⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⢀⣀⣤⣴⣶⣶⣶⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⣀⣤⣾⣿⡿⠿⠛⠛⠛⠛⠛⠛⠻⢿⣿⣿⣦⣄⠀⠀⠀⠀⠀⠀
@@ -37,10 +36,8 @@ import 'package:matrix/matrix.dart';
 //██████╦╝██║░░░██║░░░██║░╚███║███████╗░░░██║░░░
 //╚═════╝░╚═╝░░░╚═╝░░░╚═╝░░╚══╝╚══════╝░░░╚═╝░░░
 
-
 // Main function to start the application
 Future<void> main() async {
-
   void onAppLink() {
     print("APPLINK WAS TRIGGERED");
   }
@@ -50,24 +47,24 @@ Future<void> main() async {
   // Initialize Date Formatting
   await initializeDateFormatting();
 
-  // Initialize Firebase
   await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
-        //authDomain: '...',
-        //appId von firebase ist iwie für ios und android unterschiedlich
-        appId: '466393582939',
-        messagingSenderId: '01',
-        projectId: 'bitnet-cb34f',
-        // ... other options
-      ),
+    options: FirebaseOptions(
+      apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
+      //authDomain: '...',
+      //appId von firebase ist iwie für ios und android unterschiedlich
+      appId: '466393582939',
+      messagingSenderId: '01',
+      projectId: 'bitnet-cb34f',
+      // ... other options
+    ),
   );
 
   await FirebaseAppCheck.instance.activate(
     //web
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
     //android
-    androidProvider: AndroidProvider.debug, //AndoroidProvider.playIntegrity nach release
+    androidProvider:
+        AndroidProvider.debug, //AndoroidProvider.playIntegrity nach release
     //ios
     appleProvider: AppleProvider.appAttest,
   );

@@ -11,7 +11,7 @@ Widget currencyPicture(BuildContext context) {
       width: 42,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        color: Theme.of(context).backgroundColor.withOpacity(0.4),
+        color: Theme.of(context).colorScheme.background.withOpacity(0.4),
       ),
       child: CachedNetworkImage(
         imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png',

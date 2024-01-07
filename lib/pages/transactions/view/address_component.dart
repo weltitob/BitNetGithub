@@ -56,7 +56,7 @@ class AddressComponent extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              controller.addressId!,
+                              controller.addressId,
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,

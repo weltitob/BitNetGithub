@@ -16,12 +16,12 @@ class TextBuilderLocal extends StatelessWidget {
         minLines: 1,
         maxLines: 5,
         keyboardType: TextInputType.multiline,
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyMedium,
         initialValue: postFile.text,
         decoration: InputDecoration(
           hintText: "Enter Text Here",
           border: InputBorder.none,
-          hintStyle: Theme.of(context).textTheme.bodyText2,
+          hintStyle: Theme.of(context).textTheme.bodyMedium,
         ),
         onChanged: (value) {
           postFile.text = value;
@@ -43,7 +43,7 @@ class TextBuilderNetwork extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Text(url,
-      style: Theme.of(context).textTheme.bodyText2,),
+      style: Theme.of(context).textTheme.bodyMedium,),
     );
   }
 }

@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 
 class Fees {
   final String fees_low;

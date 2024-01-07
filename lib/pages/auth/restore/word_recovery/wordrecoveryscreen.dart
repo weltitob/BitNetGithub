@@ -2,8 +2,8 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/recoverKeyWithMnemonic.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
@@ -119,134 +119,134 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
     final Size size = MediaQuery.of(context).size;
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          final screenWidth = MediaQuery.of(context).size.width;
-          bool isSuperSmallScreen =
-              constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        return bitnetScaffold(
-          margin: isSuperSmallScreen
-              ? EdgeInsets.symmetric(horizontal: 0)
-              : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
-          extendBodyBehindAppBar: true,
-          backgroundColor: Theme.of(context).colorScheme.background,
-          appBar: bitnetAppBar(
-              text: "Word recovery",
-              context: context,
-              onTap: () {
-                Navigator.of(context).pop();
-              }),
-          body: ListView(
-            physics: BouncingScrollPhysics(),
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 100,
-                    ),
-                    child: Text(
-                      'Enter your 12 words in the right order',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
+      final screenWidth = MediaQuery.of(context).size.width;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      return bitnetScaffold(
+        margin: isSuperSmallScreen
+            ? EdgeInsets.symmetric(horizontal: 0)
+            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+        extendBodyBehindAppBar: true,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        appBar: bitnetAppBar(
+            text: "Word recovery",
+            context: context,
+            onTap: () {
+              Navigator.of(context).pop();
+            }),
+        body: ListView(
+          physics: BouncingScrollPhysics(),
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 100,
                   ),
-                  Container(
-                    height: size.height / 2.5,
-                    child: PageView(
-                      onPageChanged: (val) {
-                        setState(() {
-                          onLastPage = (val == 3);
-                        });
-                      },
-                      controller: _pageController,
-                      children: [
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
-                            child: FormTextField(
-                              hintText: L10n.of(context)!.usernameOrDID,
-                              controller: _usernameController,
-                              isObscure: false,
-                              //das muss eh noch geändert werden gibt ja keine email
-                              validator: (val) =>
-                                  val!.isEmpty ? "Iwas geht nicht" : null,
-                              onChanged: (val) {
-                                setState(() {
-                                  username = val;
-                                });
-                              },
-                            ),
+                  child: Text(
+                    'Enter your 12 words in the right order',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+                Container(
+                  height: size.height / 2.5,
+                  child: PageView(
+                    onPageChanged: (val) {
+                      setState(() {
+                        onLastPage = (val == 3);
+                      });
+                    },
+                    controller: _pageController,
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding * 2),
+                          child: FormTextField(
+                            hintText: L10n.of(context)!.usernameOrDID,
+                            controller: _usernameController,
+                            isObscure: false,
+                            //das muss eh noch geändert werden gibt ja keine email
+                            validator: (val) =>
+                                val!.isEmpty ? "Iwas geht nicht" : null,
+                            onChanged: (val) {
+                              setState(() {
+                                username = val;
+                              });
+                            },
                           ),
                         ),
-                        buildInputFields(
-                            "1.",
-                            textControllers[0],
-                            focusNodes[0],
-                            "2.",
-                            textControllers[1],
-                            focusNodes[1],
-                            "3.",
-                            textControllers[2],
-                            focusNodes[2],
-                            "4.",
-                            textControllers[3],
-                            focusNodes[3],
-                            splittedbipwords),
-                        buildInputFields(
-                            "5.",
-                            textControllers[4],
-                            focusNodes[4],
-                            "6.",
-                            textControllers[5],
-                            focusNodes[5],
-                            "7.",
-                            textControllers[6],
-                            focusNodes[6],
-                            "8.",
-                            textControllers[7],
-                            focusNodes[7],
-                            splittedbipwords),
-                        buildInputFields(
-                            "9.",
-                            textControllers[8],
-                            focusNodes[8],
-                            "10.",
-                            textControllers[9],
-                            focusNodes[9],
-                            "11.",
-                            textControllers[10],
-                            focusNodes[10],
-                            "12.",
-                            textControllers[11],
-                            focusNodes[11],
-                            splittedbipwords),
-                      ],
-                    ),
+                      ),
+                      buildInputFields(
+                          "1.",
+                          textControllers[0],
+                          focusNodes[0],
+                          "2.",
+                          textControllers[1],
+                          focusNodes[1],
+                          "3.",
+                          textControllers[2],
+                          focusNodes[2],
+                          "4.",
+                          textControllers[3],
+                          focusNodes[3],
+                          splittedbipwords),
+                      buildInputFields(
+                          "5.",
+                          textControllers[4],
+                          focusNodes[4],
+                          "6.",
+                          textControllers[5],
+                          focusNodes[5],
+                          "7.",
+                          textControllers[6],
+                          focusNodes[6],
+                          "8.",
+                          textControllers[7],
+                          focusNodes[7],
+                          splittedbipwords),
+                      buildInputFields(
+                          "9.",
+                          textControllers[8],
+                          focusNodes[8],
+                          "10.",
+                          textControllers[9],
+                          focusNodes[9],
+                          "11.",
+                          textControllers[10],
+                          focusNodes[10],
+                          "12.",
+                          textControllers[11],
+                          focusNodes[11],
+                          splittedbipwords),
+                    ],
                   ),
-                  SizedBox(
-                    height: AppTheme.cardPadding,
+                ),
+                SizedBox(
+                  height: AppTheme.cardPadding,
+                ),
+                buildIndicator(pageController: _pageController, count: 4),
+                SizedBox(
+                  height: AppTheme.cardPadding * 2,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppTheme.cardPadding * 2),
+                  child: LongButtonWidget(
+                    title: onLastPage ? "Sign In" : "Next",
+                    onTap: onLastPage ? onSignInPressesd : nextPageFunction,
+                    state: _isLoading ? ButtonState.loading : ButtonState.idle,
                   ),
-                  buildIndicator(pageController: _pageController, count: 4),
-                  SizedBox(
-                    height: AppTheme.cardPadding * 2,
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
-                    child: LongButtonWidget(
-                      title: onLastPage ? "Sign In" : "Next",
-                      onTap: onLastPage ? onSignInPressesd : nextPageFunction,
-                      state: _isLoading ? ButtonState.loading : ButtonState.idle,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          context: context,
-        );
-      }
-    );
+                ),
+              ],
+            ),
+          ],
+        ),
+        context: context,
+      );
+    });
   }
 
   Widget buildInputFields(

@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 //   );
 // }
 
-import 'package:flutter/widgets.dart';
 
 class StrongMouseScrollPhysics extends ScrollPhysics {
   final double scrollSensitivity;

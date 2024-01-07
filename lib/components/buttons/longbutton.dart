@@ -19,19 +19,20 @@ class LongButtonWidget extends StatefulWidget {
   final Gradient? buttonGradient;
   dynamic textColor;
   final ButtonType buttonType;
+  final bool backgroundPainter;
 
-  LongButtonWidget({
-    required this.title,
-    required this.onTap,
-    this.titleStyle,
-    this.buttonGradient,
-    this.textColor,
-    this.state = ButtonState.idle,
-    this.leadingIcon,
-    this.customWidth = AppTheme.cardPadding * 10,
-    this.customHeight = AppTheme.cardPadding * 2.5,
-    this.buttonType = ButtonType.solid,
-  });
+  LongButtonWidget(
+      {required this.title,
+      required this.onTap,
+      this.titleStyle,
+      this.buttonGradient,
+      this.textColor,
+      this.state = ButtonState.idle,
+      this.leadingIcon,
+      this.customWidth = AppTheme.cardPadding * 10,
+      this.customHeight = AppTheme.cardPadding * 2.5,
+      this.buttonType = ButtonType.solid,
+      this.backgroundPainter = true});
 
   @override
   _LongButtonWidgetState createState() => _LongButtonWidgetState();
@@ -40,10 +41,8 @@ class LongButtonWidget extends StatefulWidget {
 class _LongButtonWidgetState extends State<LongButtonWidget> {
   bool _isHovered = false;
 
-
   @override
   Widget build(BuildContext context) {
-
     final borderRadius = BorderRadius.circular(widget.customHeight / 2.5);
     final borderRadiusNum = widget.customHeight / 2.5;
 
@@ -69,6 +68,8 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                   borderRadius: borderRadiusNum,
                   width: widget.customWidth,
                   height: widget.customHeight,
+                  normalPainter: widget.backgroundPainter,
+                  borderWidth: widget.backgroundPainter ? 1.5 : 1,
                   child: Container(),
                 )
               : GlassContainer(

@@ -2,7 +2,6 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/pages/settings/settingsscreen.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class ImpressumScreen extends StatelessWidget {

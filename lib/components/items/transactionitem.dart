@@ -1,11 +1,7 @@
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:bitnet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:bitnet/models/transaction.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/models/user/userwallet.dart';
-import 'package:provider/provider.dart';
 
 class TransactionItem extends StatefulWidget {
   final BitcoinTransaction transaction;
@@ -38,7 +34,7 @@ class _TransactionItemState extends State<TransactionItem> {
         ),
         child: Container(
           height: AppTheme.cardPadding * 3,
-          color: lighten(Theme.of(context).backgroundColor, 10),
+          color: lighten(Theme.of(context).colorScheme.background, 10),
           child: Stack(
             children: [
               Padding(

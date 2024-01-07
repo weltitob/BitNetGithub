@@ -1,8 +1,8 @@
 import 'package:bitnet/backbone/helper/matrix_helpers/other/beautify_string_extension.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:flutter/material.dart';
 
@@ -21,11 +21,14 @@ class SettingsSecurityView extends StatelessWidget {
   Widget build(BuildContext context) {
     return bitnetScaffold(
       context: context,
-      appBar: bitnetAppBar(text: L10n.of(context)!.security, context: context, onTap: (){
-        print("pressed");
-        Provider.of<SettingsProvider>(context, listen: false)
-            .switchTab('main');
-      }),
+      appBar: bitnetAppBar(
+          text: L10n.of(context)!.security,
+          context: context,
+          onTap: () {
+            print("pressed");
+            Provider.of<SettingsProvider>(context, listen: false)
+                .switchTab('main');
+          }),
       body: ListTileTheme(
         iconColor: Theme.of(context).colorScheme.onBackground,
         child: MaxWidthBody(

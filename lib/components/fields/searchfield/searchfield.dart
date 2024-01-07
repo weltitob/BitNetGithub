@@ -6,7 +6,7 @@ class SearchFieldWidget extends StatefulWidget {
   final String hintText;
   final bool isSearchEnabled;
   final dynamic handleSearch;
-  final dynamic? onChanged; // Add an onChanged callback
+  final dynamic onChanged; // Add an onChanged callback
 
   const SearchFieldWidget({
     Key? key,

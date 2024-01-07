@@ -3,14 +3,12 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/fadein.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/components/items/podest.dart';
 import 'package:bitnet/pages/website/contact/submitidea/submitidea.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class SubmitIdeaView extends StatelessWidget {
   final SubmitIdeaController controller;

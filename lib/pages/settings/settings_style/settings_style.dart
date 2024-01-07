@@ -1,19 +1,9 @@
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/main.dart';
-import 'package:bitnet/models/user/usertheme.dart';
-import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
 
-import 'package:collection/collection.dart';
-import 'package:file_picker/file_picker.dart';
 
-import 'package:bitnet/pages/settings/setting_keys.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'settings_style_view.dart';
 
 class SettingsStyle extends StatefulWidget {

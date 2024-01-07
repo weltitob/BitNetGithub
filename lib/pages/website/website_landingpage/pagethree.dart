@@ -1,11 +1,8 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/BitNetFAB.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/components/container/custom_card_landigpage.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/components/indicators/smoothpageindicator.dart';
-import 'dart:math' as math;
 
 class PageThree extends StatefulWidget {
   const PageThree({super.key});
@@ -61,12 +58,13 @@ class _PageThreeState extends State<PageThree> {
                     : 0.5
                 : 0.75
             : 1;
-        double centerSpacing = isMidScreen ? isIntermediateScreen
-            ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.columnWidth * 0.075
-                    : AppTheme.columnWidth * 0.15
-                : AppTheme.columnWidth * 0.35
+        double centerSpacing = isMidScreen
+            ? isIntermediateScreen
+                ? isSmallScreen
+                    ? isSuperSmallScreen
+                        ? AppTheme.columnWidth * 0.075
+                        : AppTheme.columnWidth * 0.15
+                    : AppTheme.columnWidth * 0.35
                 : AppTheme.columnWidth * 0.65
             : AppTheme.columnWidth;
 
@@ -88,7 +86,8 @@ class _PageThreeState extends State<PageThree> {
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
                   SizedBox(
-                    height: AppTheme.cardPadding + AppTheme.cardPadding * 2 * spacingMultiplier,
+                    height: AppTheme.cardPadding +
+                        AppTheme.cardPadding * 2 * spacingMultiplier,
                   ),
                   Container(
                     child: isSmallScreen
@@ -200,11 +199,11 @@ class _PageThreeState extends State<PageThree> {
         child: Center(
           child: SizedBox(
             child: CustomCard(
+              longButtonBackgroundPainter: false,
               isBiggerOnHover: false,
               lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
               mainTitle: "We fight for Bitcoinization!",
-              subTitle:
-                  "We enable people to use bitcoin in a simple manner!",
+              subTitle: "We enable people to use bitcoin in a simple manner!",
               buttonText: "Send BTC",
               onButtonTap: () {},
             ),
@@ -216,11 +215,11 @@ class _PageThreeState extends State<PageThree> {
         child: Center(
           child: SizedBox(
             child: CustomCard(
+              longButtonBackgroundPainter: false,
               isBiggerOnHover: false,
               lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
               mainTitle: "We give the power back to the people!",
-              subTitle:
-                  "We own our data and digital identity!",
+              subTitle: "We own our data and digital identity!",
               buttonText: "Explore BTC",
               onButtonTap: () {},
             ),
@@ -232,10 +231,12 @@ class _PageThreeState extends State<PageThree> {
         child: Center(
           child: SizedBox(
             child: CustomCard(
+              longButtonBackgroundPainter: false,
               isBiggerOnHover: false,
               lottieAssetPath: 'assets/lottiefiles/plant.json',
               mainTitle: "We grow the Bitcoin Network!",
-              subTitle: "We will grow Bitcoin to be much more than just a currency!",
+              subTitle:
+                  "We will grow Bitcoin to be much more than just a currency!",
               buttonText: "Get a profile",
               onButtonTap: () {},
             ),
@@ -248,6 +249,7 @@ class _PageThreeState extends State<PageThree> {
   List<Widget> _buildCards() {
     return [
       CustomCard(
+        longButtonBackgroundPainter: false,
         isBiggerOnHover: true,
         lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
         mainTitle: "Fight for a faster Bitcoinization!",
@@ -257,6 +259,7 @@ class _PageThreeState extends State<PageThree> {
         onButtonTap: () {},
       ), // Abstand für das Spaltenlayout
       CustomCard(
+        longButtonBackgroundPainter: false,
         isBiggerOnHover: true,
         lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
         mainTitle: "Give the power back to the people!",
@@ -266,6 +269,7 @@ class _PageThreeState extends State<PageThree> {
         onButtonTap: () {},
       ), // Abstand für das Spaltenlayout
       CustomCard(
+        longButtonBackgroundPainter: false,
         isBiggerOnHover: true,
         lottieAssetPath: 'assets/lottiefiles/plant.json',
         mainTitle: "Grow a fair Cyberspace!",

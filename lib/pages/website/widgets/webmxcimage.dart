@@ -3,13 +3,13 @@ import 'dart:typed_data';
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_file_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 
-class MxcImage extends StatefulWidget {
-  final Uri? uri;
+class WebMxcImage extends StatefulWidget {
+  final String? ref;
   final Event? event;
   final double? width;
   final double? height;
@@ -23,8 +23,8 @@ class MxcImage extends StatefulWidget {
   final Widget Function(BuildContext context)? placeholder;
   final String? cacheKey;
 
-  const MxcImage({
-    this.uri,
+  const WebMxcImage({
+    this.ref,
     this.event,
     this.width,
     this.height,
@@ -41,10 +41,10 @@ class MxcImage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<MxcImage> createState() => _MxcImageState();
+  State<WebMxcImage> createState() => _MxcImageState();
 }
 
-class _MxcImageState extends State<MxcImage> {
+class _MxcImageState extends State<WebMxcImage> {
   static final Map<String, Uint8List> _imageDataCache = {};
   Uint8List? _imageDataNoCache;
   Uint8List? get _imageData {
@@ -64,7 +64,7 @@ class _MxcImageState extends State<MxcImage> {
 
   Future<void> _load() async {
     final client = Matrix.of(context).client;
-    final uri = widget.uri;
+    final uri = widget.ref;
     final event = widget.event;
 
     if (uri != null) {
@@ -74,20 +74,18 @@ class _MxcImageState extends State<MxcImage> {
       final height = widget.height;
       final realHeight = height == null ? null : height * devicePixelRatio;
 
-      final httpUri = widget.isThumbnail
-          ? uri.getThumbnail(
-              client,
-              width: realWidth,
-              height: realHeight,
-              animated: widget.animated,
-              method: widget.thumbnailMethod,
-            )
-          : uri.getDownloadLink(client);
+      var storageRef = null;
+      try {
+        storageRef = FirebaseStorage.instance.ref(widget.ref);
+      } catch (e) {
+        return;
+      }
+      final httpUri = storageRef.getDownloadURL();
 
-      final storeKey = widget.isThumbnail ? httpUri : uri;
+      final storeKey = await httpUri;
 
       if (_isCached == null) {
-        final cachedData = await client.database?.getFile(storeKey);
+        final cachedData = await client.database?.getFile(Uri.parse(storeKey));
         if (cachedData != null) {
           if (!mounted) return;
           setState(() {
@@ -99,20 +97,20 @@ class _MxcImageState extends State<MxcImage> {
         _isCached = false;
       }
 
-      final response = await http.get(httpUri);
-      if (response.statusCode != 200) {
-        if (response.statusCode == 404) {
-          return;
-        }
-        throw Exception();
+      final response = await storageRef.getData();
+
+      if (response == null) {
+        print(
+            "Something bad happened while trying to download the image off of Firebase Storage");
+        return;
       }
-      final remoteData = response.bodyBytes;
+      final remoteData = response;
 
       if (!mounted) return;
       setState(() {
         _imageData = remoteData;
       });
-      await client.database?.storeFile(storeKey, remoteData, 0);
+      await client.database?.storeFile(Uri.parse(storeKey), remoteData, 0);
     }
 
     if (event != null) {

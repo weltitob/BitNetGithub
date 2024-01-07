@@ -1,7 +1,5 @@
-import 'dart:async';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
-import 'package:bitnet/pages/settings/settingsscreen.dart';
 import 'package:flutter/material.dart';
 
 class WalletTab extends StatefulWidget {
@@ -73,7 +71,7 @@ class _WalletTabState extends State<WalletTab>
                         ),
                         Text(
                           'Total Wallet Balance',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
@@ -91,13 +89,13 @@ class _WalletTabState extends State<WalletTab>
                       children: [
                         Text(
                           '$totalCrypto',
-                          style: Theme.of(context).textTheme.headline2,
+                          style: Theme.of(context).textTheme.displayMedium,
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 10.0),
                           child: Text(
                             '$total',
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
                       ],
@@ -156,7 +154,7 @@ class _WalletTabState extends State<WalletTab>
                 style: Theme
                     .of(context)
                     .textTheme
-                    .bodyText2,
+                    .bodyMedium,
               ),
             ],
           ),
@@ -168,7 +166,7 @@ class _WalletTabState extends State<WalletTab>
                 style: Theme
                     .of(context)
                     .textTheme
-                    .subtitle2,
+                    .titleSmall,
               ),
             ],
           ),

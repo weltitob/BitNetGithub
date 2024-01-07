@@ -94,7 +94,7 @@ class _YouTubeShortState extends State<YouTubeShort> {
             Expanded(
               child: Text(
                 controller.metadata.title,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.titleMedium,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
               ),
@@ -170,7 +170,7 @@ class _YouTubeVideoState extends State<YouTubeVideo> {
               Expanded(
                 child: Text(
                   controller.metadata.title,
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context).textTheme.titleSmall,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),

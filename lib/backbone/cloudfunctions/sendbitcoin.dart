@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:bitnet/backbone/cloudfunctions/getbalance.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/models/cloudfunction_callback.dart';
 import 'package:bitnet/models/transaction.dart';
 import 'package:bitnet/models/user/userwallet.dart';

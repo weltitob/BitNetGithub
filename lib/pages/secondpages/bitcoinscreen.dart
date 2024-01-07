@@ -1,5 +1,5 @@
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:bitnet/pages/secondpages/analystsassesment.dart';
@@ -8,7 +8,6 @@ import 'package:bitnet/pages/secondpages/mempool/view/recentreplacements.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recenttransactions.dart';
 import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/pages/secondpages/newsscreen.dart';
@@ -24,7 +23,8 @@ class BitcoinScreen extends StatefulWidget {
 }
 
 class _BitcoinScreenState extends State<BitcoinScreen>
-    with SingleTickerProviderStateMixin { //TickerProviderStateMixin
+    with SingleTickerProviderStateMixin {
+  //TickerProviderStateMixin
   final _controller = PageController(viewportFraction: 0.9);
   late TabController _tabController;
 
@@ -89,18 +89,18 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           ),
           RoundedContainer(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Hashrate chart",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  SizedBox(
-                    height: AppTheme.elementSpacing,
-                  ),
-                  HashrateChart(),
-                ],
-              )),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Hashrate chart",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              SizedBox(
+                height: AppTheme.elementSpacing,
+              ),
+              HashrateChart(),
+            ],
+          )),
           RoundedContainer(
             contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
             child: Column(
@@ -120,7 +120,6 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               ],
             ),
           ),
-
           RoundedContainer(
             contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
             child: Column(
