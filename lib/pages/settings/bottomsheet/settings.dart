@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/pages/settings/invite/invitation_page.dart';
 import 'package:bitnet/pages/settings/security/security_page.dart';
@@ -17,7 +16,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:matrix/matrix.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:provider/provider.dart';
-import 'package:vrouter/vrouter.dart';
 import 'settings_view.dart';
 
 class SettingsProvider with ChangeNotifier {

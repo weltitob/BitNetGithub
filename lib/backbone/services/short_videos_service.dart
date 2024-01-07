@@ -307,7 +307,7 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
                 Padding(padding: EdgeInsets.symmetric(horizontal: 5.0)),
                 Text(
                   "POST",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 )
               ],
             ),

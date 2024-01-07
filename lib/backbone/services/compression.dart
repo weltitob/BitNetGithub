@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
-import 'package:uuid/uuid.dart';
 
 compressImage(file, postId) async {
   try {

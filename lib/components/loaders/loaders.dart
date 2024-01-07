@@ -5,8 +5,6 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 // Widget to display a spinning animation with three bouncing dots
-import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Container dotProgress(BuildContext context, {Color? color, double? size}) {
   return Container(

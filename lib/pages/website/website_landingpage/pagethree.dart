@@ -1,11 +1,9 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/BitNetFAB.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/components/container/custom_card_landigpage.dart';
+import 'package:bitnet/models/website/carddata.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/components/indicators/smoothpageindicator.dart';
-import 'dart:math' as math;
 
 class PageThree extends StatefulWidget {
   const PageThree({super.key});
@@ -38,39 +36,40 @@ class _PageThreeState extends State<PageThree> {
 
         double bigtextWidth = isMidScreen
             ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.cardPadding * 13
-                    : AppTheme.cardPadding * 24
-                : AppTheme.cardPadding * 28
+            ? isSuperSmallScreen
+            ? AppTheme.cardPadding * 13
+            : AppTheme.cardPadding * 24
+            : AppTheme.cardPadding * 28
             : AppTheme.cardPadding * 30;
         double textWidth = isMidScreen
             ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.cardPadding * 13
-                    : AppTheme.cardPadding * 16
-                : AppTheme.cardPadding * 22
+            ? isSuperSmallScreen
+            ? AppTheme.cardPadding * 13
+            : AppTheme.cardPadding * 16
+            : AppTheme.cardPadding * 22
             : AppTheme.cardPadding * 24;
         double subtitleWidth = isMidScreen
             ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.cardPadding * 13
-                    : AppTheme.cardPadding * 16
-                : AppTheme.cardPadding * 18
+            ? isSuperSmallScreen
+            ? AppTheme.cardPadding * 13
+            : AppTheme.cardPadding * 16
+            : AppTheme.cardPadding * 18
             : AppTheme.cardPadding * 22;
         double spacingMultiplier = isMidScreen
             ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? 0.25
-                    : 0.5
-                : 0.75
+            ? isSuperSmallScreen
+            ? 0.25
+            : 0.5
+            : 0.75
             : 1;
-        double centerSpacing = isMidScreen ? isIntermediateScreen
+        double centerSpacing = isMidScreen
+            ? isIntermediateScreen
             ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.columnWidth * 0.075
-                    : AppTheme.columnWidth * 0.15
-                : AppTheme.columnWidth * 0.35
-                : AppTheme.columnWidth * 0.65
+            ? isSuperSmallScreen
+            ? AppTheme.columnWidth * 0.075
+            : AppTheme.columnWidth * 0.15
+            : AppTheme.columnWidth * 0.35
+            : AppTheme.columnWidth * 0.65
             : AppTheme.columnWidth;
 
         return BackgroundWithContent(
@@ -91,45 +90,46 @@ class _PageThreeState extends State<PageThree> {
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
                   SizedBox(
-                    height: AppTheme.cardPadding + AppTheme.cardPadding * 2 * spacingMultiplier,
+                    height: AppTheme.cardPadding +
+                        AppTheme.cardPadding * 2 * spacingMultiplier,
                   ),
                   Container(
                     child: isSmallScreen
                         ? Container(
-                            height: AppTheme.cardPadding * 20,
-                            child: PageView.builder(
-                              controller: pageController,
-                              onPageChanged: (index) {
-                                setState(() {
-                                  _selectedindex = index;
-                                });
-                              },
-                              itemCount: _buildCards()
-                                  .length, // Set the itemCount to the length of the _buildCards list
-                              itemBuilder: (context, index) {
-                                return _buildCardsSmallScreen()[index];
-                              },
-                            ),
-                          )
+                      height: AppTheme.cardPadding * 20,
+                      child: PageView.builder(
+                        controller: pageController,
+                        onPageChanged: (index) {
+                          setState(() {
+                            _selectedindex = index;
+                          });
+                        },
+                        itemCount: _buildCards()
+                            .length, // Set the itemCount to the length of the _buildCards list
+                        itemBuilder: (context, index) {
+                          return _buildCardsSmallScreen()[index];
+                        },
+                      ),
+                    )
                         : Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: isSmallIntermediateScreen ? MediaQuery.of(context).size.width * 0.045 : centerSpacing * spacingMultiplier),
-                            color: Colors.transparent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children:
-                                  _buildCards(), // Use the complete list of CustomCard widgets
-                            ),
-                          ),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: isSmallIntermediateScreen ? MediaQuery.of(context).size.width * 0.045 : centerSpacing * spacingMultiplier),
+                      color: Colors.transparent,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children:
+                        _buildCards(), // Use the complete list of CustomCard widgets
+                      ),
+                    ),
                   ),
                   SizedBox(
                     height: AppTheme.cardPadding * 2 * spacingMultiplier,
                   ),
                   isSmallScreen
                       ? buildIndicator(
-                          pageController: pageController,
-                          count: 3,
-                        )
+                    pageController: pageController,
+                    count: 3,
+                  )
                       : Container(),
                 ],
               ),
@@ -196,83 +196,60 @@ class _PageThreeState extends State<PageThree> {
   }
 
   List<Widget> _buildCardsSmallScreen() {
-    //the center and sizedbox widget is needed to maintain the widgets custom dimensions
-    return [
-      Container(
+    return cardDataList.map((cardData) {
+      return Container(
         child: Center(
           child: SizedBox(
             child: CustomCard(
               isBiggerOnHover: false,
-              lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
-              mainTitle: "We fight for Bitcoinization!",
-              subTitle:
-                  "We enable people to use bitcoin in a simple manner!",
-              buttonText: "Send BTC",
-              onButtonTap: () {},
+              lottieAssetPath: cardData.lottieAssetPath,
+              mainTitle: cardData.mainTitle,
+              subTitle: cardData.subTitle,
+              buttonText: cardData.buttonText,
+              onButtonTap: cardData.onButtonTap,
             ),
           ),
         ),
-      ), // Abstand für das Spaltenlayout
-
-      Container(
-        child: Center(
-          child: SizedBox(
-            child: CustomCard(
-              isBiggerOnHover: false,
-              lottieAssetPath: 'assets/lottiefiles/plant.json',
-              mainTitle: "We grow the Bitcoin Network!",
-              subTitle: "We will grow Bitcoin to be much more than just a currency!",
-              buttonText: "Get a profile",
-              onButtonTap: () {},
-            ),
-          ),
-        ),
-      ),
-      Container(
-        child: Center(
-          child: SizedBox(
-            child: CustomCard(
-              isBiggerOnHover: false,
-              lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-              mainTitle: "We give the power back to the people!",
-              subTitle:
-              "We own our data and digital identity!",
-              buttonText: "Explore BTC",
-              onButtonTap: () {},
-            ),
-          ),
-        ),
-      ), // Abstand für das Spaltenlayout
-    ];
+      );
+    }).toList();
   }
 
   List<Widget> _buildCards() {
-    return [
-      CustomCard(
+    return cardDataList.map((cardData) {
+      return CustomCard(
         isBiggerOnHover: true,
-        lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
-        mainTitle: "Make Bitcoin easy for everyone!",
-        subTitle:
-            "We offer the easiest, most secure, and most advanced web wallet.",
-        buttonText: "Send BTC",
-        onButtonTap: () {},
-      ), // Abstand für das Spaltenlayout
-      CustomCard(
-        isBiggerOnHover: true,
-        lottieAssetPath: 'assets/lottiefiles/plant.json',
-        mainTitle: "Grow a fair Cyberspace!",
-        subTitle: "We digitize all sorts of assets on top of the Bitcoin Network.",
-        buttonText: "Get a profile",
-        onButtonTap: () {},
-      ),
-      CustomCard(
-        isBiggerOnHover: true,
-        lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-        mainTitle: "Give power back to the people!",
-        subTitle: "We build a transparent platform that uses verification - not trust.",
-        buttonText: "Explore BTC",
-        onButtonTap: () {},
-      ), // Abstand für das Spaltenlayout
-    ];
+        lottieAssetPath: cardData.lottieAssetPath,
+        mainTitle: cardData.mainTitle,
+        subTitle: cardData.subTitle,
+        buttonText: cardData.buttonText,
+        onButtonTap: cardData.onButtonTap,
+      );
+    }).toList();
   }
+
 }
+
+List<CardData> cardDataList = [
+  CardData(
+    lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
+    mainTitle: "Make Bitcoin easy for everyone!",
+    subTitle:
+    "We offer the easiest, most secure, and most advanced web wallet.",
+    buttonText: "Send BTC",
+    onButtonTap: () {},
+  ),
+  CardData(
+    lottieAssetPath: 'assets/lottiefiles/plant.json',
+    mainTitle: "Grow a fair Cyberspace!",
+    subTitle: "We digitize all sorts of assets on top of the Bitcoin Network.",
+    buttonText: "Get a profile",
+    onButtonTap: () {},
+  ),
+  CardData(
+    lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
+    mainTitle: "Give power back to the people!",
+    subTitle: "We build a transparent platform that uses verification - not trust.",
+    buttonText: "Explore BTC",
+    onButtonTap: () {},
+  ),
+];

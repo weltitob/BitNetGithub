@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
-import '../../chat_list/chat/chat.dart';
 
 // class ChatEmojiPicker extends StatelessWidget {
 //   final ChatController controller;

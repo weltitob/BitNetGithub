@@ -41,13 +41,13 @@ class _EditProfileTabState extends State<EditProfileTab> {
           ),
           SizedBox(height: AppTheme.cardPadding,),
           Text("Unchangeable Profile information:",
-            style: Theme.of(context).textTheme.subtitle1,),
+            style: Theme.of(context).textTheme.titleMedium,),
           SizedBox(height: AppTheme.elementSpacing,),
           Text("WalletAdress: Brrjflakjasdkaskldajkdklajdlka",
-            style: Theme.of(context).textTheme.bodyText2,),
+            style: Theme.of(context).textTheme.bodyMedium,),
           SizedBox(height: AppTheme.elementSpacing / 2,),
           Text("Did: 290891280937810237812897310923890",
-            style: Theme.of(context).textTheme.bodyText2,),
+            style: Theme.of(context).textTheme.bodyMedium,),
           SizedBox(height: AppTheme.cardPadding,),
           // Center(
           //   child: LongButtonWidget(

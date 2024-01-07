@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -9,7 +8,8 @@ import 'package:lottie/lottie.dart';
 class IONLoadingScreen extends StatefulWidget {
   final String loadingText;
 
-  const IONLoadingScreen({Key? key, required this.loadingText}) : super(key: key);
+  const IONLoadingScreen({Key? key, required this.loadingText})
+      : super(key: key);
 
   @override
   State<IONLoadingScreen> createState() => _IONLoadingScreenState();
@@ -18,7 +18,8 @@ class IONLoadingScreen extends StatefulWidget {
 class _IONLoadingScreenState extends State<IONLoadingScreen> {
   late final Future<LottieComposition> comp;
 
-  @override void initState() {
+  @override
+  void initState() {
     // TODO: implement initState
     comp = loadComposition('assets/lottiefiles/blockchain_loader.json');
   }
@@ -38,7 +39,8 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding * 2),
                     child: Text(
                       widget.loadingText,
                       style: Theme.of(context).textTheme.titleSmall,
@@ -79,13 +81,11 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
                   children: [
                     Text(
                       L10n.of(context)!.poweredByDIDs,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     Container(
                       margin:
-                      EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                          EdgeInsets.only(left: AppTheme.elementSpacing / 2),
                       height: AppTheme.cardPadding * 2,
                       child: Image.asset("assets/images/ion.png"),
                     ),

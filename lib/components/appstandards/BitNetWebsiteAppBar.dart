@@ -1,10 +1,6 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vrouter/vrouter.dart';

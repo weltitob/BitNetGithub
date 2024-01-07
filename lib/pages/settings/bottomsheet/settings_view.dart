@@ -1,12 +1,10 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:matrix/matrix.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:vrouter/vrouter.dart';
 
 import 'settings.dart';
@@ -47,7 +45,9 @@ class SettingsView extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: AppTheme.elementSpacing * 2,),
+            SizedBox(
+              height: AppTheme.elementSpacing * 2,
+            ),
             // FutureBuilder<Profile>(
             //   future: controller.profileFuture,
             //   builder: (context, snapshot) {

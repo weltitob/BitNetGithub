@@ -1,15 +1,15 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/pages/website/widgets/webmxcimage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:matrix/matrix.dart';
 
 import 'package:bitnet/backbone/helper/matrix_helpers/string_color.dart';
-import 'package:bitnet/pages/matrix/widgets/mxc_image.dart';
 import 'package:vrouter/vrouter.dart';
 
-class Avatar extends StatelessWidget {
+class WebAvatar extends StatelessWidget {
   final String? profileId;
-  final Uri? mxContent;
+  final String? mxContent;
   final String? name;
   final double size;
   final void Function()? onTap;
@@ -17,7 +17,7 @@ class Avatar extends StatelessWidget {
   final Client? client;
   final double fontSize;
 
-  const Avatar({
+  const WebAvatar({
     this.mxContent,
     this.name,
     this.size = defaultSize,
@@ -39,14 +39,15 @@ class Avatar extends StatelessWidget {
         fallbackLetters = name;
       }
     }
-    final noPic = mxContent == null ||
-        mxContent.toString().isEmpty ||
-        mxContent.toString() == 'null';
+    final noPic =
+        mxContent == null || mxContent!.isEmpty || mxContent == 'null';
 
     final textWidget = Center(
-      child:
-
-        Icon(Icons.person_2_rounded, size: size / 2, color: Colors.white,),
+      child: Icon(
+        Icons.person_2_rounded,
+        size: size / 2,
+        color: Colors.white,
+      ),
 
       // Text(
       //   fallbackLetters,
@@ -55,7 +56,6 @@ class Avatar extends StatelessWidget {
       //     fontSize: fontSize,
       //   ),
       // ),
-
     );
     final borderRadius = BorderRadius.circular(size / 2.5);
 
@@ -68,12 +68,13 @@ class Avatar extends StatelessWidget {
           height: size,
           color: noPic
               ? name?.lightColorAvatar
-              : Theme.of(context).secondaryHeaderColor, //getRandomColor(), //getRandomColor(), //Theme.of(context).secondaryHeaderColor
+              : Theme.of(context)
+                  .secondaryHeaderColor, //getRandomColor(), //getRandomColor(), //Theme.of(context).secondaryHeaderColor
           child: noPic
               ? textWidget
-              : MxcImage(
+              : WebMxcImage(
                   key: Key(mxContent.toString()),
-                  uri: mxContent,
+                  ref: mxContent,
                   fit: BoxFit.cover,
                   width: size,
                   height: size,

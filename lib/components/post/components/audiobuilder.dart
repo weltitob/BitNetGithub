@@ -308,7 +308,7 @@ class AudioControlButton extends StatelessWidget {
               size: 20,
               color: Theme.of(context)
                   .textTheme
-                  .bodyText1!
+                  .bodyLarge!
                   .color!
                   .withOpacity(0.64),
             ),
@@ -451,7 +451,7 @@ class _AudioSeekBarState extends State<AudioSeekBar> {
                     .firstMatch("$_remaining")
                     ?.group(1) ??
                     '$_remaining',
-                style: Theme.of(context).textTheme.caption),
+                style: Theme.of(context).textTheme.bodySmall),
           ),
         ],
       ),

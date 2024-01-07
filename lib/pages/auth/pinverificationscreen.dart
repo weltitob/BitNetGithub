@@ -9,8 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/bitnetAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/models/verificationcode.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -308,7 +308,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       : Text(
                           hasError ? _error : "",
                           style:
-                              Theme.of(context).textTheme.bodyText2!.copyWith(
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     color: AppTheme.errorColor,
                                   ),
                         ),

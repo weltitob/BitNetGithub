@@ -2,7 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetFAB.dart';
 import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
-import 'package:bitnet/components/appstandards/bitnetScaffold.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagefooter.dart';
@@ -53,6 +53,7 @@ class WebsiteLandingPageView extends StatelessWidget {
       ),
       context: context,
       body: PageView(
+        padEnds: false,
         //physics: FastScrollPhysics(), //FastScrollPhysics was causing a bug where pagecontroller would jump back up to the first page when it reached the last page
         scrollDirection: Axis.vertical,
         controller: controller.pageController,

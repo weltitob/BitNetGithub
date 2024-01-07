@@ -20,7 +20,6 @@ import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
-import 'package:universal_html/html.dart' as html;
 import 'package:vrouter/vrouter.dart';
 import 'package:matrix/matrix.dart';
 
@@ -366,7 +365,7 @@ class Auth {
           final client = Matrix.of(context).getLoginClient();
           await client.importDump(String.fromCharCodes(file.bytes!));
           Matrix.of(context).initMatrix();
-        } catch (e, s) {
+        } catch (e) {
           print("Auth.dart: This line somehow importet matrix and it messed with the User line $e");
           //This line somehow importet matrix and it messed with the User line
           //Logs().e('Future error:', e, s);

@@ -2,13 +2,10 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'dart:math' as math;
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:bitnet/backbone/cloudfunctions/getbalance.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:provider/provider.dart';
 
 class BalanceCardBtc extends StatelessWidget {
@@ -73,7 +70,7 @@ class BalanceCardBtc extends StatelessWidget {
         width: AppTheme.cardPadding * 2,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2),
-          color: Theme.of(context).backgroundColor.withOpacity(0.25),
+          color: Theme.of(context).colorScheme.background.withOpacity(0.25),
         ),
         child: CachedNetworkImage(
           imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png',

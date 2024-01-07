@@ -14,17 +14,18 @@ class CustomCard extends StatefulWidget {
   final double customWidth;
   final double customHeight;
   final bool isBiggerOnHover; // New parameter
+  final bool longButtonBackgroundPainter;
 
-  CustomCard({
-    required this.lottieAssetPath,
-    required this.mainTitle,
-    required this.subTitle,
-    required this.buttonText,
-    required this.onButtonTap,
-    this.customWidth = AppTheme.cardPadding * 12,
-    this.customHeight = AppTheme.cardPadding * 15,
-    this.isBiggerOnHover = true, // Default value
-  });
+  CustomCard(
+      {required this.lottieAssetPath,
+      required this.mainTitle,
+      required this.subTitle,
+      required this.buttonText,
+      required this.onButtonTap,
+      this.customWidth = AppTheme.cardPadding * 12,
+      this.customHeight = AppTheme.cardPadding * 15,
+      this.isBiggerOnHover = true, // Default value
+      this.longButtonBackgroundPainter = true});
 
   @override
   _CustomCardState createState() => _CustomCardState();
@@ -157,6 +158,7 @@ class _CustomCardState extends State<CustomCard>
                         margin: EdgeInsets.symmetric(
                             horizontal: AppTheme.elementSpacing),
                         child: LongButtonWidget(
+                          backgroundPainter: widget.longButtonBackgroundPainter,
                           buttonType: ButtonType.solid,
                           leadingIcon: Icon(
                             FontAwesomeIcons.circleArrowRight,

@@ -37,7 +37,7 @@ class ReportView extends StatelessWidget {
                     Container(
                       child: Text(
                         "Contact information",
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                     SizedBox(height: AppTheme.elementSpacing,),

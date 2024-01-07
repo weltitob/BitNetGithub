@@ -8,7 +8,6 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -175,7 +174,7 @@ class _CryptoItemState extends State<CryptoItem>
                 child: Container(
                   height: AppTheme.cardPadding * 3,
                   color: lighten(
-                    Theme.of(context).backgroundColor,
+                    Theme.of(context).colorScheme.background,
                     10,
                   ),
                   child: Center(
@@ -187,7 +186,7 @@ class _CryptoItemState extends State<CryptoItem>
             borderRadius: BorderRadius.circular(AppTheme.cardPadding),
             child: Container(
               height: AppTheme.cardPadding * 3,
-              color: lighten(Theme.of(context).backgroundColor, 10),
+              color: lighten(Theme.of(context).colorScheme.background, 10),
               child: Stack(
                 children: [
                   Padding(

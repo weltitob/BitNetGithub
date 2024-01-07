@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
-import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/components/items/userresult.dart';
@@ -14,7 +13,6 @@ import 'package:lottie/lottie.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class UsersList extends StatefulWidget {
   final Function() showError;

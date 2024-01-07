@@ -99,8 +99,10 @@ class _QuotesState extends State<Quotes> {
                             : AppTheme.cardPadding * 5 +
                                 spacingMultiplier +
                                 180,
-                        left: isIntermediateScreen ? isSmallScreen
-                            ? 425 - AppTheme.cardPadding * 6 : 700 - AppTheme.cardPadding
+                        left: isIntermediateScreen
+                            ? isSmallScreen
+                                ? 425 - AppTheme.cardPadding * 6
+                                : 700 - AppTheme.cardPadding
                             : 850 - AppTheme.cardPadding,
                       ),
                       child: quoteText(),
@@ -419,6 +421,7 @@ class _QuotesState extends State<Quotes> {
       scaleRatio: 1.15,
       onTap: () {
         print("User selected: ${userData.displayName}");
+        return null;
       },
       userData: UserData(
         backgroundImageUrl: userData.backgroundImageUrl,

@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
 import 'package:bitnet/backbone/helper/social_share.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:vrouter/vrouter.dart';

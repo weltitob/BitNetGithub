@@ -53,7 +53,7 @@ class WelcomeCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       color:
-                          Theme.of(context).backgroundColor.withOpacity(0.25),
+                          Theme.of(context).colorScheme.background.withOpacity(0.25),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(

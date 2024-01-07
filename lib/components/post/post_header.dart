@@ -8,7 +8,6 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
 
 buildPostHeader(BuildContext context, ownerId, postId) {
@@ -35,12 +34,12 @@ buildPostHeader(BuildContext context, ownerId, postId) {
           onTap: () => VRouter.of(context).to("/showprofile/:${user.did}"),
           child: Text(
             '@${user.username}',
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
         subtitle: Text(
           user.username,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: isPostOwner
             ? IconButton(
@@ -78,11 +77,11 @@ buildCreatePostHeader(BuildContext context) {
     ),
     title: Text(
       '@fixauth',
-      style: Theme.of(context).textTheme.headline6,
+      style: Theme.of(context).textTheme.titleLarge,
     ),
     subtitle: Text(
       'fix die scheiss auth',
-      style: Theme.of(context).textTheme.caption,
+      style: Theme.of(context).textTheme.bodySmall,
     ),
     trailing: IconButton(
       onPressed: () => showDialogueMultipleOptions(
@@ -125,7 +124,7 @@ buildPostHeaderShorts(BuildContext context) {
           children: [
             Text(
               '@fixauth',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             SizedBox(
               width: 10,
@@ -154,13 +153,13 @@ buildPostHeaderShorts(BuildContext context) {
             ),
             Text(
               '@fixauth',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ],
         ),
         subtitle: Text(
           'fix die scheiss auth',
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: IconButton(
           onPressed: () => showDialogueMultipleOptions(

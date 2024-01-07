@@ -1,17 +1,13 @@
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_locals.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:bitnet/pages/chat_list/chat_list.dart';
 import 'package:bitnet/pages/chat_list/navi_rail_item.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:badges/badges.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:keyboard_shortcuts/keyboard_shortcuts.dart';
 import 'package:vrouter/vrouter.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/pages/matrix/widgets/unread_rooms_badge.dart';
 import 'chat_list_body.dart';

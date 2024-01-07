@@ -4,7 +4,6 @@ import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -19,10 +18,8 @@ class PageOne extends StatefulWidget {
 }
 
 class _PageOneState extends State<PageOne> {
-
   @override
   Widget build(BuildContext context) {
-
     final startvalue = 1000000;
     final usercount = Provider.of<int>(context);
     final endvalue = (1000000 - usercount);
@@ -33,23 +30,46 @@ class _PageOneState extends State<PageOne> {
         // Check if the screen width is less than 600 pixels.
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+        bool isSuperSmallScreen =
+            constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen =
+            constraints.maxWidth < AppTheme.isIntermediateScreen;
 
-        double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30 : AppTheme.cardPadding * 33;
-        double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 12 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
-        double subtitleWidth = isMidScreen ? isSmallScreen ? AppTheme.cardPadding * 14 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
-        double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.5 : 0.5 : 0.75 : 1;
-        double centerSpacing = isMidScreen ? isIntermediateScreen
+        double bigtextWidth = isMidScreen
             ? isSmallScreen
-            ? isSuperSmallScreen
-            ? AppTheme.columnWidth * 0.075
-            : AppTheme.columnWidth * 0.15
-            : AppTheme.columnWidth * 0.35
-            : AppTheme.columnWidth * 0.65
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 14
+                    : AppTheme.cardPadding * 28
+                : AppTheme.cardPadding * 30
+            : AppTheme.cardPadding * 33;
+        double textWidth = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 12
+                    : AppTheme.cardPadding * 16
+                : AppTheme.cardPadding * 22
+            : AppTheme.cardPadding * 24;
+        double subtitleWidth = isMidScreen
+            ? isSmallScreen
+                ? AppTheme.cardPadding * 14
+                : AppTheme.cardPadding * 18
+            : AppTheme.cardPadding * 22;
+        double spacingMultiplier = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? 0.5
+                    : 0.5
+                : 0.75
+            : 1;
+        double centerSpacing = isMidScreen
+            ? isIntermediateScreen
+                ? isSmallScreen
+                    ? isSuperSmallScreen
+                        ? AppTheme.columnWidth * 0.075
+                        : AppTheme.columnWidth * 0.15
+                    : AppTheme.columnWidth * 0.35
+                : AppTheme.columnWidth * 0.65
             : AppTheme.columnWidth;
-
-
 
         return Stack(
           children: [
@@ -71,7 +91,9 @@ class _PageOneState extends State<PageOne> {
                       child: Text(
                         "We build the Bitcoin Network!", //We bring Bitcoin to ordinary people! //We digitize the world with Bitcoin!
                         textAlign: TextAlign.center,
-                        style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,
+                        style: isSuperSmallScreen
+                            ? Theme.of(context).textTheme.displayMedium
+                            : Theme.of(context).textTheme.displayLarge,
                       ),
                     ),
                     SizedBox(
@@ -82,13 +104,16 @@ class _PageOneState extends State<PageOne> {
                       child: Text(
                         "We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
                         textAlign: TextAlign.center,
-                        style: isSuperSmallScreen ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge,
+                        style: isSuperSmallScreen
+                            ? Theme.of(context).textTheme.bodyLarge
+                            : Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                     SizedBox(
                       height: AppTheme.cardPadding * 1.5 * spacingMultiplier,
                     ),
                     LongButtonWidget(
+                      backgroundPainter: false,
                       buttonType: ButtonType.solid,
                       title: L10n.of(context)!.register,
                       onTap: () async {
@@ -100,21 +125,27 @@ class _PageOneState extends State<PageOne> {
                       height: AppTheme.cardPadding * 10 * spacingMultiplier,
                     ),
                     TweenAnimationBuilder<num>(
-                          duration: Duration(seconds: 3), // Adjust the duration according to your need
-                          tween: Tween(begin: startvalue, end: endvalue),
-                          builder: (context, value, child) {
-                            return AnimatedFlipCounter(
-                              value: value, // Animated value
-                              duration: Duration(milliseconds: 500), // Adjust the flip duration
-                              curve: Curves.easeOut, // Adjust the animation curve
-                              thousandSeparator: ".",
-                              decimalSeparator: ",",
-                              textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                      duration: Duration(
+                          seconds:
+                              3), // Adjust the duration according to your need
+                      tween: Tween(begin: startvalue, end: endvalue),
+                      builder: (context, value, child) {
+                        return AnimatedFlipCounter(
+                          value: value, // Animated value
+                          duration: Duration(
+                              milliseconds: 500), // Adjust the flip duration
+                          curve: Curves.easeOut, // Adjust the animation curve
+                          thousandSeparator: ".",
+                          decimalSeparator: ",",
+                          textStyle: Theme.of(context)
+                              .textTheme
+                              .displayLarge!
+                              .copyWith(
                                 fontSize: isSuperSmallScreen ? 74 : 84,
                               ),
-                            );
-                          },
-                        ),
+                        );
+                      },
+                    ),
                     SizedBox(
                       height: AppTheme.cardPadding * spacingMultiplier,
                     ),
@@ -123,9 +154,7 @@ class _PageOneState extends State<PageOne> {
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     Row(
-                      children: [
-                        Container()
-                      ],
+                      children: [Container()],
                     )
                   ],
                 ),

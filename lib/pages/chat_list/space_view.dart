@@ -12,7 +12,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import '../../components/fields/searchfield/chat_list_searchbar.dart';
 
 class SpaceView extends StatelessWidget {
   final ChatListController controller;

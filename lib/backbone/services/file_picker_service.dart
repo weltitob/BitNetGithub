@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/pages/create/create_post_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 

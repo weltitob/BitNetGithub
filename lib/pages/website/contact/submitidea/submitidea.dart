@@ -1,6 +1,5 @@
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
 import 'package:bitnet/models/user/ideasubmitters.dart';
-import 'package:bitnet/pages/chat_list/chat/chat.dart';
 import 'package:bitnet/pages/website/contact/submitidea/submitidea_view.dart';
 import 'package:flutter/material.dart';
 

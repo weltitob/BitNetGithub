@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -99,7 +98,8 @@ class _UserResultState extends State<UserResult> {
                             height: AppTheme.cardPadding * 1.5,
                             width: AppTheme.cardPadding * 1.5,
                             child: GlassContainer(
-                              borderThickness: 1.5, // remove border if not active
+                              borderThickness:
+                                  1.5, // remove border if not active
                               blur: 50,
                               opacity: 0.1,
                               borderRadius: AppTheme.cardRadiusMid,
@@ -121,7 +121,7 @@ class _UserResultState extends State<UserResult> {
                               });
                               try {
                                 await widget.onTap();
-                              } catch(e) {
+                              } catch (e) {
                                 print(e);
                               } finally {
                                 setState(() {
@@ -133,7 +133,8 @@ class _UserResultState extends State<UserResult> {
                               height: AppTheme.cardPadding * 1.5,
                               width: AppTheme.cardPadding * 1.5,
                               child: GlassContainer(
-                                borderThickness: 1.5, // remove border if not active
+                                borderThickness:
+                                    1.5, // remove border if not active
                                 blur: 50,
                                 opacity: 0.1,
                                 borderRadius: AppTheme.cardRadiusCircular,

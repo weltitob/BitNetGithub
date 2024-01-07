@@ -182,9 +182,9 @@ class TransactionController extends GetxController {
 
   String inPutDollar(int index) {
     double value = (((transactionModel!.vin![index].prevout!.value!) /
-                100000000 *
-                100000000) *
-            currentUSD.value) /
+        100000000 *
+        100000000) *
+        currentUSD.value) /
         100000000;
     inputDollar.value = double.parse(value.toStringAsFixed(2));
     return formatPrice(int.parse(inputDollar.value.toStringAsFixed(0)));
@@ -326,7 +326,7 @@ class TransactionController extends GetxController {
         height = transactionModel!.status!.blockHeight;
         final homeController = Get.find<HomeController>();
         chainTip = homeController.bitcoinData.first.height;
-        // replaced = true; 
+        // replaced = true;
         await calculateConfirmation();
         await calculateStatus(transactionModel!.status!.confirmed!);
       });
@@ -345,13 +345,13 @@ class TransactionController extends GetxController {
         print(validateAddressComponentModel?.isvalid);
         validateAddressComponentModel!.isvalid
             ? await _dio
-                .get('${baseUrl}/address/$addressId')
-                .then((value) async {
-                print(value.data);
-                addressComponentModel =
-                    AddressComponentModel.fromJson(value.data);
-                await getSubTransaction();
-              })
+            .get('${baseUrl}/address/$addressId')
+            .then((value) async {
+          print(value.data);
+          addressComponentModel =
+              AddressComponentModel.fromJson(value.data);
+          await getSubTransaction();
+        })
             : null;
         isLoadingAddress.value = false;
       });
@@ -559,26 +559,26 @@ class TransactionController extends GetxController {
             : vin.inner_redeemscript_asm;
         var replacementSize = 0;
         if (
-            // single sig
-            isP2pk ||
-                isP2pkh ||
-                isP2wpkh ||
-                isP2shP2Wpkh ||
-                // multisig
-                isBareMultisig ||
-                parseMultisigScript(script!) != null) {
+        // single sig
+        isP2pk ||
+            isP2pkh ||
+            isP2wpkh ||
+            isP2shP2Wpkh ||
+            // multisig
+            isBareMultisig ||
+            parseMultisigScript(script!) != null) {
           // the scriptSig and scriptWitness can all be replaced by a 66 witness WU with taproot
           replacementSize = 66;
         } else if (script != null) {
           final spendingPaths = script
-                  .split(' ')
-                  .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
-                  .length +
+              .split(' ')
+              .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
+              .length +
               1;
           // now assume the script could have been split into ${spendingPaths} equal tapleaves
           replacementSize = int.parse((script.length ~/ 2 ~/ spendingPaths +
-                  32 * math.log((spendingPaths - 1) + 1) +
-                  33)
+              32 * math.log((spendingPaths - 1) + 1) +
+              33)
               .toString());
         }
         potentialTaprootGains +=
@@ -594,7 +594,7 @@ class TransactionController extends GetxController {
       'potentialP2shSegwitGains': potentialP2shSegwitGains / tx.weight!,
       'potentialTaprootGains': potentialTaprootGains / tx.weight!,
       'realizedTaprootGains':
-          realizedTaprootGains / (tx.weight! + realizedTaprootGains),
+      realizedTaprootGains / (tx.weight! + realizedTaprootGains),
     };
   }
 
@@ -652,42 +652,42 @@ class TransactionController extends GetxController {
       await _dio
           .get(url)
           .then((value) async {
-            transactionModel = TransactionModel.fromJson(value.data);
-            // for(int i = 0 ; i< transactionModel!.vin!.length;i++){
-            //   inputDollar.add(0.0);
-            // }
-            height = transactionModel!.status!.blockHeight;
-            final homeController = Get.find<HomeController>();
-            chainTip = homeController.bitcoinData.first.height;
-            // print(height);
-            // print(chainTip);
-            await calculateConfirmation();
-            await calculateStatus(transactionModel!.status!.confirmed!);
-            txDetailsConfirmedF(transactionModel!.txid!);
-          })
+        transactionModel = TransactionModel.fromJson(value.data);
+        // for(int i = 0 ; i< transactionModel!.vin!.length;i++){
+        //   inputDollar.add(0.0);
+        // }
+        height = transactionModel!.status!.blockHeight;
+        final homeController = Get.find<HomeController>();
+        chainTip = homeController.bitcoinData.first.height;
+        // print(height);
+        // print(chainTip);
+        await calculateConfirmation();
+        await calculateStatus(transactionModel!.status!.confirmed!);
+        txDetailsConfirmedF(transactionModel!.txid!);
+      })
           .then((value) => dollarRate())
           .then((value) {
-            segwitEnabled.value = !transactionModel!.status!.confirmed! ||
-                AppUtils.isFeatureActive('mainnet',
-                    transactionModel!.status!.blockHeight!, 'segwit');
-            rbfEnabled.value = !transactionModel!.status!.confirmed! ||
-                AppUtils.isFeatureActive(
-                    'mainnet', transactionModel!.status!.blockHeight!, 'rbf');
-            taprootEnabled.value = !transactionModel!.status!.confirmed! ||
-                AppUtils.isFeatureActive('mainnet',
-                    transactionModel!.status!.blockHeight!, 'taproot');
-            calcSegwitFeeGains(transactionModel!);
-            // ids.first= transactionModel!.txid!;
-            // getOutSpends();
-            isRbfTransaction.value = transactionModel!.vin!
-                .any((element) => element.sequence! < 0xfffffffe);
-            isTaproot.value = transactionModel!.vin!.any((v) =>
-                v.prevout != null && v.prevout!.scriptpubkeyType == 'v1_p2tr');
-          })
+        segwitEnabled.value = !transactionModel!.status!.confirmed! ||
+            AppUtils.isFeatureActive('mainnet',
+                transactionModel!.status!.blockHeight!, 'segwit');
+        rbfEnabled.value = !transactionModel!.status!.confirmed! ||
+            AppUtils.isFeatureActive(
+                'mainnet', transactionModel!.status!.blockHeight!, 'rbf');
+        taprootEnabled.value = !transactionModel!.status!.confirmed! ||
+            AppUtils.isFeatureActive('mainnet',
+                transactionModel!.status!.blockHeight!, 'taproot');
+        calcSegwitFeeGains(transactionModel!);
+        // ids.first= transactionModel!.txid!;
+        // getOutSpends();
+        isRbfTransaction.value = transactionModel!.vin!
+            .any((element) => element.sequence! < 0xfffffffe);
+        isTaproot.value = transactionModel!.vin!.any((v) =>
+        v.prevout != null && v.prevout!.scriptpubkeyType == 'v1_p2tr');
+      })
           .then((value) => startUpdatingTimestamp())
           .then((value) async {
-            await totalBTC();
-          });
+        await totalBTC();
+      });
 
       num bitCoin = transactionModel!.fee! / 100000000;
 
@@ -737,7 +737,7 @@ class TransactionController extends GetxController {
 
   String formatLocalTime(int timestamp) {
     DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
+    DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
 
     // Format DateTime to the desired format
     RxString formattedDateTime = "${dateTime.toLocal()}".split('.')[0].obs;
@@ -774,20 +774,20 @@ class TransactionController extends GetxController {
       await _dio
           .get(url)
           .then((value) async {
-            subTransactionModel.clear();
-            ids.clear();
-            for (int i = 0; i < value.data.length; i++) {
-              subTransactionModel.add(TransactionModel.fromJson(value.data[i]));
-              ids.add(subTransactionModel[i].txid!);
-            }
+        subTransactionModel.clear();
+        ids.clear();
+        for (int i = 0; i < value.data.length; i++) {
+          subTransactionModel.add(TransactionModel.fromJson(value.data[i]));
+          ids.add(subTransactionModel[i].txid!);
+        }
 
-            await getOutSpends();
-          })
+        await getOutSpends();
+      })
           .then((value) => dollarRate())
-          // .then((value) => startUpdatingTimestamp())
+      // .then((value) => startUpdatingTimestamp())
           .then((value) async {
-            await totalBTC();
-          });
+        await totalBTC();
+      });
 
       isLoading.value = false;
       //     });
@@ -823,19 +823,19 @@ class TransactionController extends GetxController {
       await _dio
           .get(url)
           .then((value) async {
-            subTransactionModel.clear();
-            ids.clear();
-            for (int i = 0; i < value.data.length; i++) {
-              subTransactionModel.add(TransactionModel.fromJson(value.data[i]));
-              ids.add(subTransactionModel[i].txid!);
-            }
-            await getOutSpends();
-          })
+        subTransactionModel.clear();
+        ids.clear();
+        for (int i = 0; i < value.data.length; i++) {
+          subTransactionModel.add(TransactionModel.fromJson(value.data[i]));
+          ids.add(subTransactionModel[i].txid!);
+        }
+        await getOutSpends();
+      })
           .then((value) => dollarRate())
-          // .then((value) => startUpdatingTimestamp())
+      // .then((value) => startUpdatingTimestamp())
           .then((value) async {
-            await totalBTC();
-          });
+        await totalBTC();
+      });
 
       isLoading.value = false;
       //     });
@@ -852,7 +852,7 @@ class TransactionController extends GetxController {
     channel.sink.add('{"track-tx":"${txID.value}"}');
     Future.delayed(
       const Duration(minutes: 3),
-      () {
+          () {
         channel.sink.add('{"action":"ping"}');
       },
     );

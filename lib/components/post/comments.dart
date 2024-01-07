@@ -206,7 +206,7 @@ class Comment extends StatelessWidget {
                 children: <TextSpan>[
                   TextSpan(
                       text: '$comment',
-                      style: Theme.of(context).textTheme.bodyText2),
+                      style: Theme.of(context).textTheme.bodyMedium),
                 ]),
           ),
           leading: Avatar(

@@ -13,7 +13,6 @@ import 'package:bitnet/models/verificationcode.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
-import 'package:universal_html/html.dart' as html;
 
 class CreateAccount extends StatefulWidget {
   VerificationCode code;
@@ -221,6 +220,7 @@ class CreateAccountController extends State<CreateAccount> {
       });
       throw Exception("Error: $e");
     }
+    return null;
   }
 
   @override

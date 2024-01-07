@@ -20,10 +20,12 @@ class WebsiteLandingPage extends StatefulWidget {
 }
 
 class WebsiteLandingPageController extends State<WebsiteLandingPage> {
-
   late final Future<LottieComposition> composition;
 
-  PageController pageController = PageController(initialPage: 0, viewportFraction: 0.99); //https://github.com/flutter/flutter/issues/31191 //0.99 causes a background at bottom on the last page
+  PageController pageController = PageController(
+      initialPage: 0,
+      viewportFraction:
+          0.99); //https://github.com/flutter/flutter/issues/31191 //0.99 causes a background at bottom on the last page
   final ValueNotifier<bool> showFab = ValueNotifier<bool>(true);
 
   late ScrollController scrollController;
@@ -31,7 +33,8 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
   late Timer _timer;
   double _offset = 0;
   bool isUserScrolling = false;
-  DateTime? lastUserScrollTime;  // Timestamp of the last time the user manually scrolled
+  DateTime?
+      lastUserScrollTime; // Timestamp of the last time the user manually scrolled
 
   @override
   void initState() {
@@ -46,10 +49,10 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
   void _updateFabVisibility() {
     if (pageController.page != null) {
       final int currentPage = pageController.page!.round();
-      showFab.value = currentPage != 4; // 0-indexed, so 4 corresponds to the fifth page
+      showFab.value =
+          currentPage != 4; // 0-indexed, so 4 corresponds to the fifth page
     }
   }
-
 
   void _handleUserScroll() {
     if (scrollController.position.userScrollDirection == ScrollDirection.idle) {
@@ -59,14 +62,18 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
       // User is scrolling
       isUserScrolling = true;
       lastUserScrollTime = DateTime.now();
-      _offset = scrollController.offset;  // Update _offset to the current scroll position
+      _offset = scrollController
+          .offset; // Update _offset to the current scroll position
     }
   }
 
   void _animateList(Timer timer) {
     if (!scrollController.hasClients) return;
 
-    if (DateTime.now().difference(lastUserScrollTime ?? DateTime.now()).inSeconds >= 1) {
+    if (DateTime.now()
+            .difference(lastUserScrollTime ?? DateTime.now())
+            .inSeconds >=
+        1) {
       // It's been more than 1 second since the last manual scroll, resume auto-scroll
       isUserScrolling = false;
     }
@@ -85,7 +92,6 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     }
   }
 
-
   List<PageData> pageDataList = [
     PageData(
       '"I have always been a Bitcoin enthusiast, so BitNet was a no-brainer for me. Its great to see how far we have come with Bitcoin."',
@@ -99,7 +105,8 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
           customToken: "dsd",
           username: "brianbelt",
           profileImageUrl:
-          "https://static.demilked.com/wp-content/uploads/2019/04/5cb6d34f775c2-stock-models-share-weirdest-stories-photo-use-102-5cb5c725bc378__700.jpg",
+              // "https://static.demilked.com/wp-content/uploads/2019/04/5cb6d34f775c2-stock-models-share-weirdest-stories-photo-use-102-5cb5c725bc378__700.jpg",
+              "pfptest.jpg",
           createdAt: timestamp,
           updatedAt: timestamp,
           isActive: false,
@@ -124,7 +131,8 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
           customToken: "dsd",
           username: "username",
           profileImageUrl:
-          "https://img.freepik.com/free-photo/people-taking-selfie-together-registration-day_23-2149096795.jpg",
+              //"https://img.freepik.com/free-photo/people-taking-selfie-together-registration-day_23-2149096795.jpg",
+              "pfptest.jpg",
           createdAt: timestamp,
           updatedAt: timestamp,
           isActive: false,
@@ -149,7 +157,8 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
           customToken: "dsd",
           username: "fakeusername",
           profileImageUrl:
-          "https://variety.com/wp-content/uploads/2022/08/Jonah-Hill.jpg?w=1000",
+              //"https://variety.com/wp-content/uploads/2022/08/Jonah-Hill.jpg?w=1000",
+              "pfptest.jpg",
           createdAt: timestamp,
           updatedAt: timestamp,
           isActive: false,
@@ -164,7 +173,6 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
     ),
   ];
 
-
   @override
   void dispose() {
     scrollController.removeListener(_handleUserScroll);
@@ -176,22 +184,20 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          //all providers for the website landing page
-          StreamProvider<List<UserData>>(
-            create: (context) => lastUsersStream(),
-            initialData: [], // Initial empty list
-          ),
-          StreamProvider<double>(
-            create: (context) => percentageChangeInUserCountStream(),
-            initialData: 0.0, // Initial percentage change
-          ),
-          StreamProvider<int>(
-            create: (context) => userCountStream(),
-            initialData: 0, // Initial user count
-          ),
-        ],
-        child: WebsiteLandingPageView(controller: this));
+    return MultiProvider(providers: [
+      //all providers for the website landing page
+      StreamProvider<List<UserData>>(
+        create: (context) => lastUsersStream(),
+        initialData: [], // Initial empty list
+      ),
+      StreamProvider<double>(
+        create: (context) => percentageChangeInUserCountStream(),
+        initialData: 0.0, // Initial percentage change
+      ),
+      StreamProvider<int>(
+        create: (context) => userCountStream(),
+        initialData: 0, // Initial user count
+      ),
+    ], child: WebsiteLandingPageView(controller: this));
   }
 }

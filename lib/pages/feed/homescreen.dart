@@ -221,7 +221,7 @@ class _FeedScreenState extends State<FeedScreen>
                   Container(
                     margin: EdgeInsets.only(top: 5),
                     child:
-                        Text(text, style: Theme.of(context).textTheme.button),
+                        Text(text, style: Theme.of(context).textTheme.labelLarge),
                   )
                 ],
               ),

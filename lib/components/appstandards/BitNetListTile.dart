@@ -102,7 +102,7 @@ class BitNetListTile extends StatelessWidget {
                         SizedBox(height: 2),
                         DefaultTextStyle(
                           style: subtitleStyle ??
-                              Theme.of(context).textTheme.bodyText2!.copyWith(
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     color: Colors.grey.shade600,
                                   ),
                           child: subtitle!,

@@ -4,19 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vrouter/vrouter.dart';
 
-import '../../components/appstandards/bitnetAppBar.dart';
-import '../../components/appstandards/bitnetScaffold.dart';
+import '../../components/appstandards/BitNetAppBar.dart';
+import '../../components/appstandards/BitNetScaffold.dart';
 import 'dart:convert';
 import 'dart:ui';
 
-
 import 'package:flutter/services.dart';
-import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/camera/textscanneroverlay.dart';
-
-
 
 class QRScannerView extends StatelessWidget {
   final QRScannerController controller;
@@ -38,7 +33,7 @@ class QRScannerView extends StatelessWidget {
         appBar: bitnetAppBar(
             text: "Scan QR",
             context: context,
-            onTap: (){
+            onTap: () {
               VRouter.of(context).pop();
             }),
         body: Stack(
@@ -57,14 +52,16 @@ class QRScannerView extends StatelessWidget {
 
                   controller.onScannedForSignIn(encodedString);
                 }
-              },),
+              },
+            ),
             controller.isQRScanner
                 ? QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5))
                 : TextScannerOverlay(
-                overlayColour: Colors.black.withOpacity(0.5)),
+                    overlayColour: Colors.black.withOpacity(0.5)),
             buildButtons(),
           ],
-        ), context: context,
+        ),
+        context: context,
       ),
     );
   }
@@ -100,10 +97,10 @@ class QRScannerView extends StatelessWidget {
                           children: [
                             GestureDetector(
                               child: ValueListenableBuilder(
-                                valueListenable:
-                                controller.cameraController.cameraFacingState,
+                                valueListenable: controller
+                                    .cameraController.cameraFacingState,
                                 builder: (context, state, child) {
-                                  switch (state as CameraFacing) {
+                                  switch (state) {
                                     case CameraFacing.front:
                                       return const Icon(Icons.camera_front);
                                     case CameraFacing.back:
@@ -111,16 +108,18 @@ class QRScannerView extends StatelessWidget {
                                   }
                                 },
                               ),
-                              onTap: () => controller.cameraController.switchCamera(),
+                              onTap: () =>
+                                  controller.cameraController.switchCamera(),
                             ),
                             const SizedBox(
                               height: AppTheme.cardPadding * 0.75,
                             ),
                             GestureDetector(
                               child: ValueListenableBuilder(
-                                valueListenable: controller.cameraController.torchState,
+                                valueListenable:
+                                    controller.cameraController.torchState,
                                 builder: (context, state, child) {
-                                  switch (state as TorchState) {
+                                  switch (state) {
                                     case TorchState.off:
                                       return Icon(
                                         Icons.flash_off,
@@ -134,7 +133,8 @@ class QRScannerView extends StatelessWidget {
                                   }
                                 },
                               ),
-                              onTap: () => controller.cameraController.toggleTorch(),
+                              onTap: () =>
+                                  controller.cameraController.toggleTorch(),
                             ),
                           ],
                         ),
@@ -147,8 +147,7 @@ class QRScannerView extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            ],
+            children: [],
           )
         ],
       ),

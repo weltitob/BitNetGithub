@@ -1,7 +1,5 @@
-import 'dart:ui';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:flutter/material.dart';
 
 class SettingsListItem extends StatelessWidget {
@@ -45,7 +43,7 @@ class SettingsListItem extends StatelessWidget {
                         size: AppTheme.iconSize,
                       ),
                       SizedBox(width: AppTheme.cardPadding),
-                      Text(this.text, style: Theme.of(context).textTheme.subtitle2),
+                      Text(this.text, style: Theme.of(context).textTheme.titleSmall),
                       Spacer(),
                       if (this.hasNavigation)
                         Icon(

@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/container/futurelottie.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:http/http.dart' as http;
 
 enum BackgroundType { image, lottie, asset }
 

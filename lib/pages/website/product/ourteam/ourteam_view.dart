@@ -1,9 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
-import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
-import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
-import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/items/teamprofilecard.dart';
 import 'package:bitnet/pages/website/product/ourteam/ourteam.dart';
 import 'package:flutter/material.dart';
