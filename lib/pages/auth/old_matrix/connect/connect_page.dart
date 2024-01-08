@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/models/identityprovider_matrix.dart';
+import 'package:bitnet/models/matrix_models/identityprovider_matrix.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

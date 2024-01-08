@@ -1,0 +1,290 @@
+import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
+import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
+import 'package:bitnet/components/marketplace_widgets/Header.dart';
+import 'package:bitnet/components/marketplace_widgets/MostView.dart';
+import 'package:bitnet/components/marketplace_widgets/NftDropSlider.dart';
+import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
+import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
+import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return bitnetScaffold(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: AppTheme.cardPadding * 2,),
+                Container(
+                  margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
+                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  child: Header(
+                    title: Text(
+                      'Explore',
+                      style: Theme.of(context).textTheme.displaySmall,
+                    ),
+                    rightIcon: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, route.kNotificationScreenRoute);
+                      },
+                      child: Row(
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                                width: AppTheme.cardPadding * 2,
+                                height: AppTheme.cardPadding * 2,
+                                decoration: BoxDecoration(
+                                  color: const Color.fromRGBO(
+                                      255, 255, 255, 0.1),
+                                  borderRadius: AppTheme.cardRadiusCircular,
+                                ),
+                                padding: EdgeInsets.all(AppTheme.elementSpacing),
+                                child: Image.asset(
+                                  notificationIcon,
+                                  width: AppTheme.cardPadding,
+                                  height: AppTheme.cardPadding,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              Positioned(
+                                right: AppTheme.elementSpacing,
+                                top: AppTheme.elementSpacing,
+                                child: Container(
+                                  width: AppTheme.elementSpacing,
+                                  height: AppTheme.elementSpacing,
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromRGBO(97, 90, 232, 1),
+                                    borderRadius: AppTheme.cardRadiusCircular,
+                                    border: Border.all(
+                                      width: 30,
+                                      color:
+                                          const Color.fromRGBO(24, 31, 39, 1),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                CommonHeading(
+                  hasButton: true,
+                  headingText: 'Exclusive Ready NFT Drops',
+                  onPress: route.kListScreenRoute,
+                  isNormalChild: true,
+                  isChild: Container(
+                    width: size.width,
+                    height: 150.w,
+                    margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: AppTheme.elementSpacing, left: AppTheme.elementSpacing),
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: nftDropSliderData.length,
+                      itemBuilder: (context, index) {
+                        return NftDropSlider(
+                          nftImage: nftDropSliderData[index].nftImage,
+                          nftName: nftDropSliderData[index].nftName,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                CommonHeading(
+                  hasButton: true,
+                  headingText: 'Trending Sellers',
+                  onPress: route.kListScreenRoute,
+                  isNormalChild: true,
+                  isChild: Container(
+                    width: size.width,
+                    height: 166.w,
+                    margin: EdgeInsets.only(bottom: 30.h),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: trendingSellersSliderData.length,
+                      itemBuilder: (context, index) {
+                        return TrendingSellersSlider(
+                          nftImage: trendingSellersSliderData[index].nftImage,
+                          userImage: trendingSellersSliderData[index].userImage,
+                          nftName: trendingSellersSliderData[index].nftName,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                CommonHeading(
+                  hasButton: true,
+                  headingText: 'Most Viewed',
+                  onPress: route.kListScreenRoute,
+                  isNormalChild: true,
+                  isChild: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    margin: EdgeInsets.only(bottom: 30.h),
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 15 / 4.2,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15,
+                        crossAxisCount: 2,
+                      ),
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemCount: mostViewListData.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return MostView(
+                          nftImg: mostViewListData[index].nftImg,
+                          nftName: mostViewListData[index].nftName,
+                          nftPrice: mostViewListData[index].nftPrice,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                CommonHeading(
+                  hasButton: true,
+                  headingText: 'Hot New Items',
+                  onPress: route.kListScreenRoute,
+                  isNormalChild: true,
+                  isChild: Container(
+                    width: size.width,
+                    height: 238.w,
+                    margin: EdgeInsets.only(bottom: 30.h),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: nftHotProductSliderData.length,
+                      itemBuilder: (context, index) {
+                        return NftProductSlider(
+                          nftImage: nftHotProductSliderData[index].nftImage,
+                          cryptoImage: nftHotProductSliderData[index].cryptoImage,
+                          nftName: nftHotProductSliderData[index].nftName,
+                          nftMainName: nftHotProductSliderData[index].nftMainName,
+                          cryptoText: nftHotProductSliderData[index].cryptoText,
+                          columnMargin: nftHotProductSliderData[index].columnMargin,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                CommonHeading(
+                  hasButton: true,
+                  headingText: 'Expire Soon',
+                  onPress: route.kListScreenRoute,
+                  isNormalChild: true,
+                  isChild: Container(
+                    width: size.width,
+                    height: 238.w,
+                    margin: EdgeInsets.only(bottom: 30.h),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: nftExpireProductSliderData.length,
+                      itemBuilder: (context, index) {
+                        return NftProductSlider(
+                          nftImage: nftExpireProductSliderData[index].nftImage,
+                          cryptoImage: nftExpireProductSliderData[index].cryptoImage,
+                          nftName: nftExpireProductSliderData[index].nftName,
+                          nftMainName: nftExpireProductSliderData[index].nftMainName,
+                          cryptoText: nftExpireProductSliderData[index].cryptoText,
+                          columnMargin: nftExpireProductSliderData[index].columnMargin,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                CommonHeading(
+                  hasButton: true,
+                  headingText: 'Most Expensive New Deals',
+                  onPress: route.kListScreenRoute,
+                  isNormalChild: true,
+                  isChild: Container(
+                    width: size.width,
+                    height: 238.w,
+                    margin: EdgeInsets.only(bottom: 30.h),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: nftExpensiveProductSliderData.length,
+                      itemBuilder: (context, index) {
+                        return NftProductSlider(
+                          nftImage: nftExpensiveProductSliderData[index].nftImage,
+                          cryptoImage: nftExpensiveProductSliderData[index].cryptoImage,
+                          nftName: nftExpensiveProductSliderData[index].nftName,
+                          nftMainName: nftExpensiveProductSliderData[index].nftMainName,
+                          cryptoText: nftExpensiveProductSliderData[index].cryptoText,
+                          columnMargin: nftExpensiveProductSliderData[index].columnMargin,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                CommonHeading(
+                  hasButton: true,
+                  headingText: 'New Top Sellers',
+                  onPress: route.kListScreenRoute,
+                  isNormalChild: true,
+                  isChild: Container(
+                    width: size.width,
+                    height: 238.w,
+                    margin: EdgeInsets.only(bottom: 20.h),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: nftTopSellersProductSliderData.length,
+                      itemBuilder: (context, index) {
+                        return NftProductSlider(
+                          nftImage: nftTopSellersProductSliderData[index].nftImage,
+                          cryptoImage: nftTopSellersProductSliderData[index].cryptoImage,
+                          nftName: nftTopSellersProductSliderData[index].nftName,
+                          nftMainName: nftTopSellersProductSliderData[index].nftMainName,
+                          cryptoText: nftTopSellersProductSliderData[index].cryptoText,
+                          columnMargin: nftTopSellersProductSliderData[index].columnMargin,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const StatusBarBg()
+        ],
+      ), context: context,
+    );
+  }
+}

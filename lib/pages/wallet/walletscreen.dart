@@ -23,7 +23,6 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClientMixin{
-  late final Future<LottieComposition> _compositionRocket;
   late final Future<LottieComposition> _compositionSend;
   late final Future<LottieComposition> _compositionReceive;
   bool _visible = false;
@@ -31,14 +30,12 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
   @override
   void initState() {
     super.initState();
-    _compositionRocket = loadComposition('assets/lottiefiles/rocket.json');
     _compositionSend = loadComposition('assets/lottiefiles/senden.json');
     _compositionReceive = loadComposition('assets/lottiefiles/erhalten.json');
     updatevisibility();
   }
 
   void updatevisibility() async {
-    await _compositionRocket;
     await _compositionSend;
     await _compositionReceive;
     var timer = Timer(Duration(milliseconds: 50),
@@ -95,34 +92,34 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                       child: Stack(
                         children: [
                           const BalanceBackground2(),
-                          Positioned(
-                            right: -AppTheme.elementSpacing,
-                            bottom: -AppTheme.elementSpacing,
-                            child: SizedBox(
-                              height: AppTheme.cardPadding * 8,
-                              width: AppTheme.cardPadding * 8,
-                              child: FutureBuilder(
-                                future: _compositionRocket,
-                                builder: (context, snapshot) {
-                                  var composition = snapshot.data;
-                                  if (composition != null) {
-                                    return FittedBox(
-                                      fit: BoxFit.fitHeight,
-                                      child: AnimatedOpacity(
-                                        opacity: _visible ? 1.0 : 0.0,
-                                        duration: Duration(milliseconds: 1000),
-                                        child: Lottie(composition: composition),
-                                      ),
-                                    );
-                                  } else {
-                                    return Container(
-                                      color: Colors.transparent,
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
+                          // Positioned(
+                          //   right: -AppTheme.elementSpacing,
+                          //   bottom: -AppTheme.elementSpacing,
+                          //   child: SizedBox(
+                          //     height: AppTheme.cardPadding * 8,
+                          //     width: AppTheme.cardPadding * 8,
+                          //     child: FutureBuilder(
+                          //       future: _compositionRocket,
+                          //       builder: (context, snapshot) {
+                          //         var composition = snapshot.data;
+                          //         if (composition != null) {
+                          //           return FittedBox(
+                          //             fit: BoxFit.fitHeight,
+                          //             child: AnimatedOpacity(
+                          //               opacity: _visible ? 1.0 : 0.0,
+                          //               duration: Duration(milliseconds: 1000),
+                          //               child: Lottie(composition: composition),
+                          //             ),
+                          //           );
+                          //         } else {
+                          //           return Container(
+                          //             color: Colors.transparent,
+                          //           );
+                          //         }
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
                           Padding(
                             padding: const EdgeInsets.all(28),
                             child: Column(

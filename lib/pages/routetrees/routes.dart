@@ -17,7 +17,8 @@ import 'package:bitnet/pages/chat_list/chat_matrixwidgets_settings/chat_matrixwi
 import 'package:bitnet/pages/chat_list/chat_permissions_settings/chat_permissions_settings.dart';
 import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
 import 'package:bitnet/pages/create/createscreen.dart';
-import 'package:bitnet/pages/feed/homescreen.dart';
+import 'package:bitnet/pages/feed/feedscreen.dart';
+import 'package:bitnet/pages/marketplace/HomeScreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
@@ -76,9 +77,9 @@ class AppRoutes {
           nestedRoutes: [
             VRouteRedirector(
               path: '',
-              redirectTo: '/feed',
+              redirectTo: '/feed', // '/feed'
             ),
-            VWidget(path: '/feed', widget: FeedScreen()),
+            VWidget(path: '/feed', widget: HomeScreen()), //(path: '/feed', widget: FeedScreen()),
             VWidget(
                 path: '/create',
                 widget:

@@ -1,7 +1,7 @@
+import 'package:bitnet/models/bitcoin/transaction.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/models/transaction.dart';
 
 /*
 This class provides a stream of transaction data for the currently authenticated user.

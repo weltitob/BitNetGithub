@@ -1,15 +1,15 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
+import 'package:bitnet/models/firebase/verificationcode.dart';
+import 'package:bitnet/models/matrix_models/identityprovider_matrix.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/models/identityprovider_matrix.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/models/user/userwallet.dart';
-import 'package:bitnet/models/verificationcode.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';

@@ -1,7 +1,6 @@
+import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/models/verificationcode.dart';
-
 
 void onPinVerificationSuccess({
   required VerificationCode code,

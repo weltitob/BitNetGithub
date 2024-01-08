@@ -1,3 +1,4 @@
+import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -17,7 +18,6 @@ import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/models/cloudfunction_callback.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:page_transition/page_transition.dart';

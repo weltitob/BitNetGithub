@@ -1,6 +1,6 @@
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/models/bitcoin/transaction.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/models/transaction.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class TransactionItem extends StatefulWidget {

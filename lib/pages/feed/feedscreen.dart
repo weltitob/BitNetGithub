@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/marketplace/HomeScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -165,7 +166,9 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             ];
           },
-          body: searchResultsFuture == null
+          body:
+          //HomeScreen(),
+          searchResultsFuture == null
               ? TabBarView(
                   controller: _tabController,
                   children: <Widget>[

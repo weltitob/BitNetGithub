@@ -44,7 +44,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
             children: [
 
               Text(
-                "Meine Bitcoinadresse",
+                "On-Chain Bitcoinaddress",
                 style: Theme.of(context).textTheme.headline5,
               ),
               RoundedButtonWidget(
@@ -91,7 +91,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
                     ),
                     // SizedBox to add some spacing
                     const SizedBox(
-                      height: AppTheme.cardPadding,
+                      height: AppTheme.cardPadding * 1.5,
                     ),
                   ],
                 ),

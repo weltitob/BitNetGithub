@@ -1,6 +1,6 @@
 // Function to generate and store verification codes
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/models/verificationcode.dart';
+import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<void> generateAndStoreVerificationCodes({

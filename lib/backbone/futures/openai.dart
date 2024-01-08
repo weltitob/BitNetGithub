@@ -1,6 +1,5 @@
 import 'dart:convert';
-
-import 'package:bitnet/models/openai_image.dart';
+import 'package:bitnet/models/openai/openai_image.dart';
 import 'package:flutter/material.dart';
 
 callOpenAiApiPicture() async {

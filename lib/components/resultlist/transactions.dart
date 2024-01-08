@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bitnet/models/bitcoin/transaction.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -7,7 +8,6 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/streams/gettransactionsstream.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
-import 'package:bitnet/models/transaction.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class Transactions extends StatefulWidget {

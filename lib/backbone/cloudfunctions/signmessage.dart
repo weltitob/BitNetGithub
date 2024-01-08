@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
-import 'package:bitnet/models/cloudfunction_callback.dart';
+import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
 import 'package:bitnet/models/keys/privateionkey.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 

@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:bitnet/backbone/security/security.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
@@ -154,74 +155,81 @@ class _WidgetTreeState extends State<WidgetTree> {
               });
             });
           }
-          return VRouter(
-            key: WidgetTree.routerKey,
-            title: AppTheme.applicationName,
-            debugShowCheckedModeBanner: false,
-            themeMode: themeMode,
-            theme:
-                //AppTheme.standardTheme(),
-                AppTheme.customTheme(Brightness.light, primaryColor),
-            darkTheme:
-                //AppTheme.standardTheme(),
-                AppTheme.customTheme(Brightness.dark, primaryColor),
-            scrollBehavior: CustomScrollBehavior(),
-            logs: kReleaseMode ? VLogs.none : VLogs.info,
-            localizationsDelegates: L10n.localizationsDelegates,
-            supportedLocales: L10n.supportedLocales,
-            initialUrl: _initialUrl ?? '/',
-            routes: AppRoutes(columnMode ?? false).routes,
-            builder: (context, child) =>
-                //child,
-                (_isLoadingClients)
-                    ? EmptyPage(loading: true, text: "Clients still loading...")
-                    :
-                    //WebsiteLandingPage(),
-                    Matrix(
-                        context: context,
-                        router: WidgetTree.routerKey,
-                        clients: clients,
-                        child: child,
-                      ),
+          return ScreenUtilInit(
+              designSize: const Size(375, 812),
+              minTextAdapt: false,
+              splitScreenMode: false,
+              builder: (_, child) {
+              return VRouter(
+                key: WidgetTree.routerKey,
+                title: AppTheme.applicationName,
+                debugShowCheckedModeBanner: false,
+                themeMode: themeMode,
+                theme:
+                    //AppTheme.standardTheme(),
+                    AppTheme.customTheme(Brightness.light, primaryColor),
+                darkTheme:
+                    //AppTheme.standardTheme(),
+                    AppTheme.customTheme(Brightness.dark, primaryColor),
+                scrollBehavior: CustomScrollBehavior(),
+                logs: kReleaseMode ? VLogs.none : VLogs.info,
+                localizationsDelegates: L10n.localizationsDelegates,
+                supportedLocales: L10n.supportedLocales,
+                initialUrl: _initialUrl ?? '/',
+                routes: AppRoutes(columnMode ?? false).routes,
+                builder: (context, child) =>
+                    //child,
+                    (_isLoadingClients)
+                        ? EmptyPage(loading: true, text: "Clients still loading...")
+                        :
+                        //WebsiteLandingPage(),
+                        Matrix(
+                            context: context,
+                            router: WidgetTree.routerKey,
+                            clients: clients,
+                            child: child,
+                          ),
 
-            // : StreamBuilder(
-            //     stream: Auth().authStateChanges,
-            //     builder: (context, snapshot) {
-            //       if (snapshot.hasError) {
-            //         return EmptyPage(
-            //           loading: true,
-            //           text: snapshot.error.toString(),
-            //         );
-            //       }
-            //       //causes loading when switched anywhere in the app basically lol
-            //       // if (snapshot.connectionState ==
-            //       //     ConnectionState.waiting) {
-            //       //   return EmptyPage(
-            //       //     loading: true,
-            //       //     text:
-            //       //         "Loading something (authstate changes or request smth etc.)",
-            //       //   );
-            //       // }
-            //       if (snapshot.hasData) {
-            //         return
-            //           //WebsiteLandingPage();
-            //         Matrix(
-            //           context: context,
-            //           router: WidgetTree.routerKey,
-            //           clients: clients,
-            //           child: child,
-            //         );
-            //       }
-            //       return
-            //         //WebsiteLandingPage();
-            //         Matrix(
-            //         context: context,
-            //         router: WidgetTree.routerKey,
-            //         clients: clients,
-            //         child: child,
-            //       );
-            //     },
-            //   ),
+                // : StreamBuilder(
+                //     stream: Auth().authStateChanges,
+                //     builder: (context, snapshot) {
+                //       if (snapshot.hasError) {
+                //         return EmptyPage(
+                //           loading: true,
+                //           text: snapshot.error.toString(),
+                //         );
+                //       }
+                //       //causes loading when switched anywhere in the app basically lol
+                //       // if (snapshot.connectionState ==
+                //       //     ConnectionState.waiting) {
+                //       //   return EmptyPage(
+                //       //     loading: true,
+                //       //     text:
+                //       //         "Loading something (authstate changes or request smth etc.)",
+                //       //   );
+                //       // }
+                //       if (snapshot.hasData) {
+                //         return
+                //           //WebsiteLandingPage();
+                //         Matrix(
+                //           context: context,
+                //           router: WidgetTree.routerKey,
+                //           clients: clients,
+                //           child: child,
+                //         );
+                //       }
+                //       return
+                //         //WebsiteLandingPage();
+                //         Matrix(
+                //         context: context,
+                //         router: WidgetTree.routerKey,
+                //         clients: clients,
+                //         child: child,
+                //       );
+                //     },
+                //   ),
+              );
+            }
           );
         },
       ),

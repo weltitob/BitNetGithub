@@ -293,78 +293,80 @@ abstract class AppTheme {
       color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.4),
     ),
   );
+
+  //.inter
   static final textTheme = TextTheme(
-    displayLarge: GoogleFonts.inter(
+    displayLarge: GoogleFonts.lexend(
       fontSize: 52,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
     ),
-    displayMedium: GoogleFonts.inter(
+    displayMedium: GoogleFonts.lexend(
         fontSize: 40,
         fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
         letterSpacing: -0.5
     ),
-    displaySmall: GoogleFonts.inter(
+    displaySmall: GoogleFonts.lexend(
       fontSize: 28,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.0,
     ),
-    headlineLarge: GoogleFonts.inter(
+    headlineLarge: GoogleFonts.lexend(
       fontSize: 24,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
     ),
-    headlineMedium: GoogleFonts.inter(
+    headlineMedium: GoogleFonts.lexend(
       fontSize: 22,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
     ),
-    headlineSmall: GoogleFonts.inter(
+    headlineSmall: GoogleFonts.lexend(
       fontSize: 20,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
     ),
-    titleLarge: GoogleFonts.inter(
+    titleLarge: GoogleFonts.lexend(
       fontSize: 17,
       fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
     ),
-    titleMedium: GoogleFonts.inter(
+    titleMedium: GoogleFonts.lexend(
       fontSize: 17,
       fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
     ),
-    titleSmall: GoogleFonts.inter(
+    titleSmall: GoogleFonts.lexend(
       fontSize: 15,
       fontWeight: FontWeight.w500, // Changed from FontWeight.w600 to w500
       letterSpacing: 0.0,
     ),
-    bodyLarge: GoogleFonts.inter(
+    bodyLarge: GoogleFonts.lexend(
       fontSize: 17,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
     ),
-    bodyMedium: const TextStyle(
+    bodyMedium: GoogleFonts.lexend(
       fontSize: 15,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.15,
     ),
-    bodySmall: const TextStyle(
+    bodySmall: GoogleFonts.lexend(
       fontSize: 12,
       fontWeight: FontWeight.w400, // Changed from FontWeight.w500 to w400
       letterSpacing: 0.25,
     ),
-    labelLarge: const TextStyle(
+    labelLarge: GoogleFonts.lexend(
       fontSize: 12,
       fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
     ),
-    labelMedium: const TextStyle(
+    labelMedium: GoogleFonts.lexend(
       fontSize: 15,
       fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
     ),
-    labelSmall: GoogleFonts.inter(
+    labelSmall: GoogleFonts.lexend(
       fontSize: 10,
       fontWeight: FontWeight.w300, // Changed from FontWeight.w400 to w300
       letterSpacing: 0.25,
@@ -562,4 +564,4 @@ Color lighten(Color c, [int percent = 10]) {
       c.blue + ((255 - c.blue) * p).round());
 }
 
-dynamic qrCodeSize(BuildContext context) => min(MediaQuery.of(context).size.width - AppTheme.cardPadding, AppTheme.cardPadding * 10).toDouble();
+dynamic qrCodeSize(BuildContext context) => min(AppTheme.cardPadding * 9.5, AppTheme.cardPadding * 9.5).toDouble();

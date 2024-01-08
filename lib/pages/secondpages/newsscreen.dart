@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:bitnet/models/bitcoin/news.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/items/newsitem.dart';
-import 'package:bitnet/models/news.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:webview_flutter/webview_flutter.dart';

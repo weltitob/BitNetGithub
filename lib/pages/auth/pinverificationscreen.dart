@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/pages/routetrees/authroutes.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -12,7 +13,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
-import 'package:bitnet/models/verificationcode.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:vrouter/vrouter.dart';
 
