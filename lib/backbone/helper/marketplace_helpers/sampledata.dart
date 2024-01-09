@@ -44,21 +44,21 @@ final nftHotProductSliderData = [
       nftImage: nftImage1,
       nftName: 'Crypto-Pills',
       nftMainName: 'NFToker #2293',
-      cryptoImage: "assets/marketplace/EthereumIcon.png",
+      cryptoImage: "assets/marketplace/BitCoinIcon.png",
       cryptoText: '1.845',
       columnMargin: true),
   NftProductSliderModal(
       nftImage: nftImage2,
       nftName: 'Guardians of the Metaverse',
       nftMainName: 'Soccer Doge #2649',
-      cryptoImage: "assets/marketplace/EthereumIcon.png",
+      cryptoImage: "assets/marketplace/BitCoinIcon.png",
       cryptoText: '1.845',
       columnMargin: true),
   NftProductSliderModal(
       nftImage: productImg1,
       nftName: 'Dalex-Soccer',
       nftMainName: 'Summer Mediume #9354',
-      cryptoImage: "assets/marketplace/EthereumIcon.png",
+      cryptoImage: "assets/marketplace/BitCoinIcon.png",
       cryptoText: '1.845',
       columnMargin: true),
 ];
@@ -90,21 +90,21 @@ final nftExpensiveProductSliderData = [
       nftImage: nftImage10,
       nftName: 'Crypto-Pills',
       nftMainName: 'NFToker #2293',
-      cryptoImage: "assets/marketplace/EthereumIcon.png",
+      cryptoImage: "assets/marketplace/BitCoinIcon.png",
       cryptoText: '1.845',
       columnMargin: true),
   NftProductSliderModal(
       nftImage: nftImage3,
       nftName: 'Guardians of the Metaverse',
       nftMainName: 'Soccer Doge #2649',
-      cryptoImage: "assets/marketplace/EthereumIcon.png",
+      cryptoImage: "assets/marketplace/BitCoinIcon.png",
       cryptoText: '1.845',
       columnMargin: true),
   NftProductSliderModal(
       nftImage: productImg1,
       nftName: 'Dalex-Soccer',
       nftMainName: 'Summer Mediume #9354',
-      cryptoImage: "assets/marketplace/EthereumIcon.png",
+      cryptoImage: "assets/marketplace/BitCoinIcon.png",
       cryptoText: '1.845',
       columnMargin: true),
 ];
@@ -236,7 +236,7 @@ final tradingHistoryListData = [
     nftName: 'NFToker #2293',
     fromText: 'PapitoChongAMG',
     toText: 'Caxaas',
-    cryptoIcon: ethereumIcon,
+    cryptoIcon: bitCoinIcon,
     cryptoText: '1.845',
     dateText: '15/9/2021',
   ),
@@ -254,7 +254,7 @@ final tradingHistoryListData = [
     nftName: 'NFToker #2956',
     fromText: 'cannonballcam',
     toText: 'yachtingnft',
-    cryptoIcon: ethereumIcon,
+    cryptoIcon: bitCoinIcon,
     cryptoText: '1.845',
     dateText: '15/9/2021',
   ),
@@ -263,7 +263,7 @@ final tradingHistoryListData = [
     nftName: 'NFToker #2996',
     fromText: 'daddywarbucks',
     toText: 'chuckigsterallerchuck',
-    cryptoIcon: ethereumIcon,
+    cryptoIcon: bitCoinIcon,
     cryptoText: '1.845',
     dateText: '15/9/2021',
   )
@@ -274,7 +274,7 @@ final gridListData = [
       nftImage: nftImage1,
       nftName: 'Crypto-Pills',
       nftMainName: 'NFToker #2293',
-      cryptoImage: ethereumIcon,
+      cryptoImage: bitCoinIcon,
       cryptoText: '1.845',
       columnMargin: false),
   GridListModal(
@@ -295,14 +295,14 @@ final gridListData = [
       nftImage: nftImage2,
       nftName: 'Crypto-Pills',
       nftMainName: 'NFToker #2293',
-      cryptoImage: ethereumIcon,
+      cryptoImage: bitCoinIcon,
       cryptoText: '1.845',
       columnMargin: false),
   GridListModal(
       nftImage: nftImage10,
       nftName: 'Crypto-Pills',
       nftMainName: 'NFToker #2293',
-      cryptoImage: ethereumIcon,
+      cryptoImage: bitCoinIcon,
       cryptoText: '1.845',
       columnMargin: false),
   GridListModal(
@@ -323,14 +323,14 @@ final gridListData = [
       nftImage: nftImage13,
       nftName: 'Crypto-Pills',
       nftMainName: 'NFToker #2293',
-      cryptoImage: ethereumIcon,
+      cryptoImage: bitCoinIcon,
       cryptoText: '1.845',
       columnMargin: false),
   GridListModal(
       nftImage: nftImage3,
       nftName: 'Crypto-Pills',
       nftMainName: 'NFToker #2293',
-      cryptoImage: ethereumIcon,
+      cryptoImage: bitCoinIcon,
       cryptoText: '1.845',
       columnMargin: false),
   GridListModal(
@@ -410,7 +410,7 @@ final chainListData = [
   CoinPillLabelModal(
       coinImg: bitCoinIcon, labelText: "Crypto-Pills"),
   CoinPillLabelModal(
-      coinImg: ethereumIcon, labelText: "Dalex-Soccer"),
+      coinImg: bitCoinIcon, labelText: "Dalex-Soccer"),
 ];
 final categoriesLabelListData = [
   PillLabelModal(labelText: "Art"),

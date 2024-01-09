@@ -79,7 +79,7 @@ class AppRoutes {
               path: '',
               redirectTo: '/feed', // '/feed'
             ),
-            VWidget(path: '/feed', widget: HomeScreen()), //(path: '/feed', widget: FeedScreen()),
+            VWidget(path: '/feed', widget: FeedScreen()), //(path: '/feed', widget: FeedScreen()),
             VWidget(
                 path: '/create',
                 widget:

@@ -1,3 +1,6 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/amountwidget.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 
 
@@ -9,14 +12,19 @@ class CreateInvoice extends StatefulWidget {
 }
 
 class _CreateInvoiceState extends State<CreateInvoice> {
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          height: 100,
-          color: Colors.red,
-        )
+          margin: const EdgeInsets.only(
+              left: AppTheme.cardPadding,),
+          alignment: Alignment.centerLeft,
+          child: Text("Create Invoice", style: Theme.of(context).textTheme.titleMedium),
+        ),
+        SizedBox(height: AppTheme.cardPadding,),
+        AmountWidget(),
       ],
     );
   }

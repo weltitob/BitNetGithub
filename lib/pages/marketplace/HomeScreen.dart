@@ -31,67 +31,67 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: AppTheme.cardPadding * 2,),
-                Container(
-                  margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                  child: Header(
-                    title: Text(
-                      'Explore',
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                    rightIcon: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                            context, route.kNotificationScreenRoute);
-                      },
-                      child: Row(
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                width: AppTheme.cardPadding * 2,
-                                height: AppTheme.cardPadding * 2,
-                                decoration: BoxDecoration(
-                                  color: const Color.fromRGBO(
-                                      255, 255, 255, 0.1),
-                                  borderRadius: AppTheme.cardRadiusCircular,
-                                ),
-                                padding: EdgeInsets.all(AppTheme.elementSpacing),
-                                child: Image.asset(
-                                  notificationIcon,
-                                  width: AppTheme.cardPadding,
-                                  height: AppTheme.cardPadding,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                              Positioned(
-                                right: AppTheme.elementSpacing,
-                                top: AppTheme.elementSpacing,
-                                child: Container(
-                                  width: AppTheme.elementSpacing,
-                                  height: AppTheme.elementSpacing,
-                                  decoration: BoxDecoration(
-                                    color: const Color.fromRGBO(97, 90, 232, 1),
-                                    borderRadius: AppTheme.cardRadiusCircular,
-                                    border: Border.all(
-                                      width: 30,
-                                      color:
-                                          const Color.fromRGBO(24, 31, 39, 1),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                SizedBox(height: AppTheme.cardPadding * 1,),
+                // Container(
+                //   margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
+                //   padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                //   child: Header(
+                //     title: Text(
+                //       'Explore',
+                //       style: Theme.of(context).textTheme.displaySmall,
+                //     ),
+                //     rightIcon: GestureDetector(
+                //       onTap: () {
+                //         Navigator.pushNamed(
+                //             context, route.kNotificationScreenRoute);
+                //       },
+                //       child: Row(
+                //         children: [
+                //           Stack(
+                //             children: [
+                //               Container(
+                //                 width: AppTheme.cardPadding * 2,
+                //                 height: AppTheme.cardPadding * 2,
+                //                 decoration: BoxDecoration(
+                //                   color: const Color.fromRGBO(
+                //                       255, 255, 255, 0.1),
+                //                   borderRadius: AppTheme.cardRadiusCircular,
+                //                 ),
+                //                 padding: EdgeInsets.all(AppTheme.elementSpacing),
+                //                 child: Image.asset(
+                //                   notificationIcon,
+                //                   width: AppTheme.cardPadding,
+                //                   height: AppTheme.cardPadding,
+                //                   fit: BoxFit.contain,
+                //                 ),
+                //               ),
+                //               Positioned(
+                //                 right: AppTheme.elementSpacing,
+                //                 top: AppTheme.elementSpacing,
+                //                 child: Container(
+                //                   width: AppTheme.elementSpacing,
+                //                   height: AppTheme.elementSpacing,
+                //                   decoration: BoxDecoration(
+                //                     color: const Color.fromRGBO(97, 90, 232, 1),
+                //                     borderRadius: AppTheme.cardRadiusCircular,
+                //                     border: Border.all(
+                //                       width: 30,
+                //                       color:
+                //                           const Color.fromRGBO(24, 31, 39, 1),
+                //                     ),
+                //                   ),
+                //                 ),
+                //               ),
+                //             ],
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 CommonHeading(
                   hasButton: true,
-                  headingText: 'Exclusive Ready NFT Drops',
+                  headingText: 'Latest NFT Drops',
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
@@ -115,12 +115,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 CommonHeading(
                   hasButton: true,
-                  headingText: 'Trending Sellers',
+                  headingText: 'Trending Collections',
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
                     width: size.width,
-                    height: 166.w,
+                    height: 170.h,
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -174,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   isNormalChild: true,
                   isChild: Container(
                     width: size.width,
-                    height: 238.w,
+                    height: 242.w,
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -197,12 +197,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 CommonHeading(
                   hasButton: true,
-                  headingText: 'Expire Soon',
+                  headingText: 'For sale',
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
                     width: size.width,
-                    height: 238.w,
+                    height: 245.w,
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -225,12 +225,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 CommonHeading(
                   hasButton: true,
-                  headingText: 'Most Expensive New Deals',
+                  headingText: 'Most Hyped New Deals',
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
                     width: size.width,
-                    height: 238.w,
+                    height: 245.w,
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   isNormalChild: true,
                   isChild: Container(
                     width: size.width,
-                    height: 238.w,
+                    height: 245.w,
                     margin: EdgeInsets.only(bottom: 20.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -279,6 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: AppTheme.cardPadding * 3.5),
               ],
             ),
           ),

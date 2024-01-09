@@ -242,6 +242,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/marketplace/
     - assets/lottiefiles/
     - assets/textfiles/
 

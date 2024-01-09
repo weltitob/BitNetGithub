@@ -4,6 +4,7 @@ import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
@@ -163,10 +164,9 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> {
                         // Share the wallet address
                         print("bottom sheet der invoice createn lässt...");
                         //createdInvoice = true;
-                        showModalBottomSheet(
-                          //height: MediaQuery.of(context).size.height * 0.8,
-                          context: context,
-                          builder: (context) => CreateInvoice(),
+                        showModalBottomSheetWidget(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: CreateInvoice(), context: context, title: '', goBack: false,
                         );
                       },
                     ),

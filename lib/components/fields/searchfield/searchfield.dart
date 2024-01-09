@@ -27,7 +27,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-          horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
+          horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
       child: GlassContainer(
         borderRadius: AppTheme.cardRadiusSmall,
         child: Container(

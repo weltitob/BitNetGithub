@@ -61,19 +61,22 @@ class _FeedScreenState extends State<FeedScreen>
   ];
 
   final List<WalletCategory> walletcategorys = [
-    WalletCategory('assets/images/bitcoin.png', 'People', 'People'),
+    WalletCategory(
+        'assets/images/paper_wallet.png',
+        'Assets',
+        'Assets'),
     WalletCategory(
       'assets/images/bitcoin.png',
-      'Trending',
-      'Trending',
+      'Bitcoin',
+      'Bitcoin',
     ),
     WalletCategory(
-      'assets/images/bitcoin.png',
-      'Crypto',
-      'Crypto',
+      'assets/images/friends.png',
+      'People',
+      'People',
     ),
-    WalletCategory('assets/images/bitcoin.png', 'Watchlist', 'Watchlist'),
-    WalletCategory('assets/images/bitcoin.png', 'NFTS', 'NFTS'),
+    WalletCategory('assets/images/new_chat.png', 'Groups', 'Groups'),
+    WalletCategory('assets/marketplace/ActiveHeart.png', 'Liked', 'Liked'),
   ];
 
   late TabController _tabController;
@@ -172,6 +175,7 @@ class _FeedScreenState extends State<FeedScreen>
               ? TabBarView(
                   controller: _tabController,
                   children: <Widget>[
+                    HomeScreen(),
                     Container(
                       child: Center(
                           child: Text(
