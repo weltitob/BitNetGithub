@@ -21,7 +21,9 @@ import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/marketplace/HomeScreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
+import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
+import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
 import 'package:bitnet/pages/wallet/actions/send/sendscreen.dart';
@@ -437,6 +439,16 @@ class AppRoutes {
 
   List<VRouteElement> get _settingsRoutes => [
         VWidget(
+          path: '/settings?tab=language',
+          widget: ChangeLanguage(),
+          buildTransition: _dynamicTransition,
+        ),
+        VWidget(
+          path: '/settings?tab=currency',
+          widget: ChangeCurrency(),
+          buildTransition: _dynamicTransition,
+        ),
+        VWidget(
           path: '/settings?tab=notifications',
           widget: const SettingsNotifications(),
           buildTransition: _dynamicTransition,
@@ -495,6 +507,7 @@ class AppRoutes {
           widget: const LogViewer(),
           buildTransition: _dynamicTransition,
         ),
+
       ];
 
   FadeTransition Function(dynamic, dynamic, dynamic)? get _dynamicTransition =>

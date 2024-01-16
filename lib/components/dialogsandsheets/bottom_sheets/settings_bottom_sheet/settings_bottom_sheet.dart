@@ -18,7 +18,7 @@ showSettingsBottomSheet({
           builder: (BuildContext context, StateSetter setModalState) {
             return Container(
               // Set the desired height
-              height: MediaQuery.of(context).size.height * 0.7, // 80% of screen height
+              height: MediaQuery.of(context).size.height * 0.8, // 80% of screen height
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor, // Add a background color here
                 borderRadius: new BorderRadius.only(

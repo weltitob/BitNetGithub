@@ -171,6 +171,22 @@ class SettingsView extends StatelessWidget {
               },
             ),
             SettingsListItem(
+              icon: Icons.currency_bitcoin,
+              text: "Change language",
+              hasNavigation: true,
+              onTap: () {
+                controller.switchTab('language');
+              },
+            ),
+            SettingsListItem(
+              icon: Icons.language,
+              text: "Change Currency",
+              hasNavigation: true,
+              onTap: () {
+                controller.switchTab('currency');
+              },
+            ),
+            SettingsListItem(
               icon: Icons.login_rounded,
               text: L10n.of(context)!.logout,
               hasNavigation: false,

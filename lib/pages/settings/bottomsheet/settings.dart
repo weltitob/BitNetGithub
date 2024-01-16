@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
+import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/invite/invitation_page.dart';
+import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/settings/security/security_page.dart';
 import 'package:bitnet/pages/settings/settings_chat/settings_chat.dart';
 import 'package:bitnet/pages/settings/settings_notifications/settings_notifications.dart';
@@ -211,6 +213,10 @@ class SettingsController extends State<Settings> {
         return InvitationSettingsPage();
       case 'chat':
         return SettingsChat();
+      case 'language':
+        return ChangeLanguage();
+      case 'currency':
+        return ChangeCurrency();
       default:
         return SettingsView(this);
     }
