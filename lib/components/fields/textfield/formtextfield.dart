@@ -6,6 +6,9 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/services.dart';
 
 class FormTextField extends StatefulWidget {
+  final dynamic? onTapOutside;
+  final int? maxLength;
+  final bool autofocus;
   final Function()? changefocustonext;
   final String hintText;
   final bool isObscure;
@@ -31,6 +34,9 @@ class FormTextField extends StatefulWidget {
     this.focusNode,
     this.validator,
     this.onChanged,
+    this.onTapOutside,
+    this.maxLength,
+    this.autofocus = false,
     this.changefocustonext,
     this.isBIPField = false,
     this.bipwords,
@@ -89,6 +95,9 @@ class _FormTextFieldState extends State<FormTextField> {
                   color: AppTheme.colorGlassContainer,
                 ),
                 child: TextFormField(
+                  onTapOutside: widget.onTapOutside,
+                  maxLength: widget.maxLength,
+                  autofocus: widget.autofocus,
                   maxLines: widget.isMultiline ? null : 1,
                   validator: widget.validator,
                   controller: widget.controller,
@@ -111,6 +120,7 @@ class _FormTextFieldState extends State<FormTextField> {
                     prefixText: widget.prefixText,
                     suffixIcon: widget.suffixIcon,
                     fillColor: AppTheme.white60,
+                    counterText: '', // Hides the counter text
                     focusedBorder: GradientOutlineInputBorder(
                       isFocused: true,
                       borderRadius: AppTheme.cardRadiusMid,

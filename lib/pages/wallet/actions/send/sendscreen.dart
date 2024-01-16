@@ -2,6 +2,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/wallet/actions/send/lightning_send_tab.dart';
 import 'package:bitnet/pages/wallet/actions/send/onchain_send_tab.dart';
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -75,12 +76,46 @@ class _SendBTCScreenState extends State<SendBTCScreen> with SingleTickerProvider
           SizedBox(
             height: AppTheme.cardPadding * 2.5,
           ),
-          TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(text: 'Lightning'),
-              Tab(text: 'On chain'),
-            ],
+          DefaultTabController(
+            length: 2,
+            initialIndex: 0,
+            child: ButtonsTabBar(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: AppTheme.elementSpacing * 0.5,
+                horizontal: AppTheme.elementSpacing,
+              ),
+              borderWidth: 1.5,
+              unselectedBorderColor: Colors.transparent,
+              borderColor: Colors.white.withOpacity(0.2),
+              radius: 100,
+              physics: ClampingScrollPhysics(),
+              controller: _tabController,
+              // give the indicator a decoration (color and border radius)
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.all(Radius.circular(50.0)),
+              ),
+              unselectedDecoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.all(Radius.circular(50.0)),
+              ),
+              tabs: [
+                Tab(
+                  child: Text(
+                    "Lightning",
+                    style: AppTheme.textTheme.bodyMedium!.copyWith(
+                        color: AppTheme.white80, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    "On Chain",
+                    style: AppTheme.textTheme.bodyMedium!.copyWith(
+                        color: AppTheme.white80, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: TabBarView(
