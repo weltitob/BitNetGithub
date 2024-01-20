@@ -2,9 +2,11 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
+import 'package:seo/seo.dart';
 import 'package:vrouter/vrouter.dart';
 
 class PageFour extends StatefulWidget {
@@ -23,7 +25,8 @@ class _PageFourState extends State<PageFour> {
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
         bool isSuperSmallScreen =
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+        bool isIntermediateScreen =
+            constraints.maxWidth < AppTheme.isIntermediateScreen;
 
         double bigtextWidth = isMidScreen
             ? isSmallScreen
@@ -53,15 +56,15 @@ class _PageFourState extends State<PageFour> {
                     : 0.5
                 : 0.75
             : 1;
-        double centerSpacing = isMidScreen ? isIntermediateScreen
-            ? isSmallScreen
-            ? isSuperSmallScreen
-            ? AppTheme.columnWidth * 0.075
-            : AppTheme.columnWidth * 0.15
-            : AppTheme.columnWidth * 0.35
-            : AppTheme.columnWidth * 0.65
+        double centerSpacing = isMidScreen
+            ? isIntermediateScreen
+                ? isSmallScreen
+                    ? isSuperSmallScreen
+                        ? AppTheme.columnWidth * 0.075
+                        : AppTheme.columnWidth * 0.15
+                    : AppTheme.columnWidth * 0.35
+                : AppTheme.columnWidth * 0.65
             : AppTheme.columnWidth;
-
 
         return BackgroundWithContent(
           opacity: 0.7,
@@ -108,9 +111,11 @@ class _PageFourState extends State<PageFour> {
                                   alignment: Alignment.center,
                                   child: Container(
                                     alignment: Alignment.center,
-                                    height:
-                                        MediaQuery.of(context).size.height * 0.9,
-                                    width: MediaQuery.of(context).size.width * 0.3 + 280,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.9,
+                                    width: MediaQuery.of(context).size.width *
+                                            0.3 +
+                                        280,
                                     child: Stack(
                                       children: [
                                         // Align(
@@ -146,7 +151,7 @@ class _PageFourState extends State<PageFour> {
                         Container(
                           height: isSmallScreen
                               ? MediaQuery.of(context).size.height * 0.9
-                            :  500,
+                              : 500,
                           width: isSmallScreen
                               ? MediaQuery.of(context).size.width
                               : MediaQuery.of(context).size.width / 2.6,
@@ -163,9 +168,11 @@ class _PageFourState extends State<PageFour> {
                                         top: AppTheme.cardPadding * 4)
                                     : EdgeInsets.symmetric(horizontal: 0),
                                 width: isSmallScreen
-                                    ? 180 + MediaQuery.of(context).size.width / 3.5
+                                    ? 180 +
+                                        MediaQuery.of(context).size.width / 3.5
                                     : textWidth,
-                                child: Text(
+                                child: SeoText(
+                                  tagStyle: TextTagStyle.h2,
                                   "Be a Part of the Revolution - Download Our App Today!",
                                   style:
                                       Theme.of(context).textTheme.displayMedium,
@@ -178,9 +185,10 @@ class _PageFourState extends State<PageFour> {
                               ),
                               Container(
                                 width: isSmallScreen
-                                    ? 180 + MediaQuery.of(context).size.width / 3.5
+                                    ? 180 +
+                                        MediaQuery.of(context).size.width / 3.5
                                     : subtitleWidth,
-                                child: Text(
+                                child: SeoText(
                                   "More and more decide to join our community each day! Let's build something extraordinary together.",
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
@@ -189,14 +197,16 @@ class _PageFourState extends State<PageFour> {
                                   height: AppTheme.cardPadding *
                                       2.5 *
                                       spacingMultiplier),
-                              buildAllButtons(isSmallScreen, isIntermediateScreen),
+                              buildAllButtons(
+                                  isSmallScreen, isIntermediateScreen),
                             ],
                           ),
                         ),
                         isSmallScreen
                             ? Positioned(
                                 bottom: MediaQuery.of(context).size.height / 12,
-                                left:  MediaQuery.of(context).size.width * 0.65 - 80,
+                                left: MediaQuery.of(context).size.width * 0.65 -
+                                    80,
                                 child: Container(
                                   height:
                                       MediaQuery.of(context).size.width / 2.5,
@@ -230,14 +240,18 @@ class _PageFourState extends State<PageFour> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width:
-              isSmallScreen ? 180 + MediaQuery.of(context).size.width / 3.5 : 500,
+          width: isSmallScreen
+              ? 180 + MediaQuery.of(context).size.width / 3.5
+              : 500,
           child: Row(
-            mainAxisAlignment: isIntermediateScreen ? isSmallScreen
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.start : MainAxisAlignment.center,
+            mainAxisAlignment: isIntermediateScreen
+                ? isSmallScreen
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.start
+                : MainAxisAlignment.center,
             children: [
-              ...downloadFromStores(isIntermediateScreen), // Using the spread operator
+              ...downloadFromStores(
+                  isIntermediateScreen), // Using the spread operator
             ],
           ),
         ),
@@ -332,8 +346,7 @@ class _PageFourState extends State<PageFour> {
               alignment: Alignment.bottomRight,
               child: Container(
                 margin: EdgeInsets.only(
-                    right: 0,
-                    bottom: AppTheme.elementSpacing * 0),
+                    right: 0, bottom: AppTheme.elementSpacing * 0),
                 height: AppTheme.cardPadding * 8,
                 width: AppTheme.cardPadding * 8,
                 child: Lottie.asset(
@@ -347,7 +360,7 @@ class _PageFourState extends State<PageFour> {
     );
   }
 
-  Widget bottomGradientPhone(){
+  Widget bottomGradientPhone() {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Column(
@@ -364,13 +377,13 @@ class _PageFourState extends State<PageFour> {
                 //   topRight: Radius.circular(AppTheme.cardPadding),
                 // ),
                 gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Theme.of(context).colorScheme.background,
-                  ],
-                )),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Theme.of(context).colorScheme.background,
+              ],
+            )),
           ),
         ],
       ),

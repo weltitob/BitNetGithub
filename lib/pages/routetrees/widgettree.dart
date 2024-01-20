@@ -120,14 +120,13 @@ class _WidgetTreeState extends State<WidgetTree> {
     } catch (e) {
       throw Exception("error loading matrix: $e");
     }
-    if(kIsWeb){
+    if (kIsWeb) {
       _initialUrl = '/website';
-    }
-    else {
+    } else {
       if (clients.isNotEmpty) {
         print('Client is not null so this gets triggered...');
         _initialUrl =
-        clients.any((client) => client.isLogged()) ? '/feed' : '/authhome';
+            clients.any((client) => client.isLogged()) ? '/feed' : '/authhome';
       } else {
         print('Client seems to be null...');
         _initialUrl = '/';
@@ -160,77 +159,77 @@ class _WidgetTreeState extends State<WidgetTree> {
               minTextAdapt: false,
               splitScreenMode: false,
               builder: (_, child) {
-              return VRouter(
-                key: WidgetTree.routerKey,
-                title: AppTheme.applicationName,
-                debugShowCheckedModeBanner: false,
-                themeMode: themeMode,
-                theme:
-                    //AppTheme.standardTheme(),
-                    AppTheme.customTheme(Brightness.light, primaryColor),
-                darkTheme:
-                    //AppTheme.standardTheme(),
-                    AppTheme.customTheme(Brightness.dark, primaryColor),
-                scrollBehavior: CustomScrollBehavior(),
-                logs: kReleaseMode ? VLogs.none : VLogs.info,
-                localizationsDelegates: L10n.localizationsDelegates,
-                supportedLocales: L10n.supportedLocales,
-                initialUrl: _initialUrl ?? '/',
-                routes: AppRoutes(columnMode ?? false).routes,
-                builder: (context, child) =>
-                    //child,
-                    (_isLoadingClients)
-                        ? EmptyPage(loading: true, text: "Clients still loading...")
-                        :
-                        //WebsiteLandingPage(),
-                        Matrix(
-                            context: context,
-                            router: WidgetTree.routerKey,
-                            clients: clients,
-                            child: child,
-                          ),
+                return VRouter(
+                  key: WidgetTree.routerKey,
+                  title: AppTheme.applicationName,
+                  debugShowCheckedModeBanner: false,
+                  themeMode: themeMode,
+                  theme:
+                      //AppTheme.standardTheme(),
+                      AppTheme.customTheme(Brightness.light, primaryColor),
+                  darkTheme:
+                      //AppTheme.standardTheme(),
+                      AppTheme.customTheme(Brightness.dark, primaryColor),
+                  scrollBehavior: CustomScrollBehavior(),
+                  logs: kReleaseMode ? VLogs.none : VLogs.info,
+                  localizationsDelegates: L10n.localizationsDelegates,
+                  supportedLocales: L10n.supportedLocales,
+                  initialUrl: _initialUrl ?? '/',
+                  routes: AppRoutes(columnMode ?? false).routes,
+                  builder: (context, child) =>
+                      //child,
+                      (_isLoadingClients)
+                          ? EmptyPage(
+                              loading: true, text: "Clients still loading...")
+                          :
+                          //WebsiteLandingPage(),
+                          Matrix(
+                              context: context,
+                              router: WidgetTree.routerKey,
+                              clients: clients,
+                              child: child,
+                            ),
 
-                // : StreamBuilder(
-                //     stream: Auth().authStateChanges,
-                //     builder: (context, snapshot) {
-                //       if (snapshot.hasError) {
-                //         return EmptyPage(
-                //           loading: true,
-                //           text: snapshot.error.toString(),
-                //         );
-                //       }
-                //       //causes loading when switched anywhere in the app basically lol
-                //       // if (snapshot.connectionState ==
-                //       //     ConnectionState.waiting) {
-                //       //   return EmptyPage(
-                //       //     loading: true,
-                //       //     text:
-                //       //         "Loading something (authstate changes or request smth etc.)",
-                //       //   );
-                //       // }
-                //       if (snapshot.hasData) {
-                //         return
-                //           //WebsiteLandingPage();
-                //         Matrix(
-                //           context: context,
-                //           router: WidgetTree.routerKey,
-                //           clients: clients,
-                //           child: child,
-                //         );
-                //       }
-                //       return
-                //         //WebsiteLandingPage();
-                //         Matrix(
-                //         context: context,
-                //         router: WidgetTree.routerKey,
-                //         clients: clients,
-                //         child: child,
-                //       );
-                //     },
-                //   ),
-              );
-            }
-          );
+                  // : StreamBuilder(
+                  //     stream: Auth().authStateChanges,
+                  //     builder: (context, snapshot) {
+                  //       if (snapshot.hasError) {
+                  //         return EmptyPage(
+                  //           loading: true,
+                  //           text: snapshot.error.toString(),
+                  //         );
+                  //       }
+                  //       //causes loading when switched anywhere in the app basically lol
+                  //       // if (snapshot.connectionState ==
+                  //       //     ConnectionState.waiting) {
+                  //       //   return EmptyPage(
+                  //       //     loading: true,
+                  //       //     text:
+                  //       //         "Loading something (authstate changes or request smth etc.)",
+                  //       //   );
+                  //       // }
+                  //       if (snapshot.hasData) {
+                  //         return
+                  //           //WebsiteLandingPage();
+                  //         Matrix(
+                  //           context: context,
+                  //           router: WidgetTree.routerKey,
+                  //           clients: clients,
+                  //           child: child,
+                  //         );
+                  //       }
+                  //       return
+                  //         //WebsiteLandingPage();
+                  //         Matrix(
+                  //         context: context,
+                  //         router: WidgetTree.routerKey,
+                  //         clients: clients,
+                  //         child: child,
+                  //       );
+                  //     },
+                  //   ),
+                );
+              });
         },
       ),
     );

@@ -21,7 +21,6 @@ class WebsiteLandingPage extends StatefulWidget {
 
 class WebsiteLandingPageController extends State<WebsiteLandingPage> {
   late final Future<LottieComposition> composition;
-
   PageController pageController = PageController(
       initialPage: 0,
       viewportFraction:
