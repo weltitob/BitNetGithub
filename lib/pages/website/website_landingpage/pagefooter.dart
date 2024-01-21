@@ -1,10 +1,12 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/quoteswidget.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:seo/seo.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -18,7 +20,6 @@ class PageFooter extends StatefulWidget {
 
 class _PageFooterState extends State<PageFooter> {
   bool showFab = false;
-
 
   void toggleFooter() {
     setState(() {
@@ -43,7 +44,8 @@ class _PageFooterState extends State<PageFooter> {
       bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
       bool isSuperSmallScreen =
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
-      bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+      bool isIntermediateScreen =
+          constraints.maxWidth < AppTheme.isIntermediateScreen;
 
       double bigtextWidth = isMidScreen
           ? isSmallScreen
@@ -73,15 +75,15 @@ class _PageFooterState extends State<PageFooter> {
                   : 0.5
               : 0.75
           : 1;
-      double centerSpacing = isMidScreen ? isIntermediateScreen
-          ? isSmallScreen
-          ? isSuperSmallScreen
-          ? AppTheme.columnWidth * 0.075
-          : AppTheme.columnWidth * 0.15
-          : AppTheme.columnWidth * 0.35
-          : AppTheme.columnWidth * 0.65
+      double centerSpacing = isMidScreen
+          ? isIntermediateScreen
+              ? isSmallScreen
+                  ? isSuperSmallScreen
+                      ? AppTheme.columnWidth * 0.075
+                      : AppTheme.columnWidth * 0.15
+                  : AppTheme.columnWidth * 0.35
+              : AppTheme.columnWidth * 0.65
           : AppTheme.columnWidth;
-
 
       return Container(
           color: Theme.of(context).colorScheme.background,
@@ -110,7 +112,8 @@ class _PageFooterState extends State<PageFooter> {
             showFab
                 ? Container()
                 : Container(
-                    padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 10 * spacingMultiplier),
+                    padding: EdgeInsets.only(
+                        bottom: AppTheme.cardPadding * 10 * spacingMultiplier),
                     child: Quotes(
                       controller: widget.controller,
                     )), //PageFive(controller: widget.controller,),
@@ -122,95 +125,103 @@ class _PageFooterState extends State<PageFooter> {
 
   Widget buildFooter(
       BuildContext context, centerSpacing, spacingMultiplier, isSmallScreen) {
-        return Positioned(
-          bottom: AppTheme.cardPadding * 3 * spacingMultiplier,
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: centerSpacing),
-            child: Row(
-              mainAxisAlignment: isSmallScreen
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    //mainAxisSize: double.infinity,
-                    //mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: () {
-                            VRouter.of(context).to("/");
-                          },
-                          child: Row(
-                            children: [
-                              isSmallScreen ? RoundedButtonWidget(
-                                buttonType: ButtonType.transparent,
-                                iconData: showFab ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
-                                onTap: () {
-                                  toggleFooter();
-                                  print("showFab: " + showFab.toString());
-                                },
-                              ) : Container(),
-                              isSmallScreen? SizedBox(width: AppTheme.cardPadding) : Container(),
-                              Container(
-                                height: AppTheme.cardPadding * 2.5,
-                                width: AppTheme.cardPadding * 2.5,
-                                child: Image(
-                                    image: AssetImage(
-                                        'assets/images/logotransparent.png')),
-                              ),
-                              SizedBox(
-                                width: AppTheme.cardPadding,
-                              ),
-                              Text(
-                                "BitNet",
-                                style: Theme.of(context).textTheme.displaySmall,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: AppTheme.cardPadding,
-                      ),
-                      Text(
-                        "©2023 by BitNet GmBH, Germany",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                      isSmallScreen
-                          ?  smallScreenFooter(spacingMultiplier)
-                          : SizedBox(
-                              height: 0,
-                            ),
-                    ],
-                  ),
-                ),
-                isSmallScreen
-                    ? Container()
-                    : Row(
+    return Positioned(
+      bottom: AppTheme.cardPadding * 3 * spacingMultiplier,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(horizontal: centerSpacing),
+        child: Row(
+          mainAxisAlignment: isSmallScreen
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                //mainAxisSize: double.infinity,
+                //mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        VRouter.of(context).to("/");
+                      },
+                      child: Row(
                         children: [
-                          product(),
-                          SizedBox(
-                            width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                          isSmallScreen
+                              ? RoundedButtonWidget(
+                                  buttonType: ButtonType.transparent,
+                                  iconData: showFab
+                                      ? Icons.keyboard_arrow_down_rounded
+                                      : Icons.keyboard_arrow_up_rounded,
+                                  onTap: () {
+                                    toggleFooter();
+                                    print("showFab: " + showFab.toString());
+                                  },
+                                )
+                              : Container(),
+                          isSmallScreen
+                              ? SizedBox(width: AppTheme.cardPadding)
+                              : Container(),
+                          Container(
+                            height: AppTheme.cardPadding * 2.5,
+                            width: AppTheme.cardPadding * 2.5,
+                            child: Image(
+                                image: AssetImage(
+                                    'assets/images/logotransparent.png')),
                           ),
-                          helpandSupport(),
                           SizedBox(
-                            width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                            width: AppTheme.cardPadding,
                           ),
-                          socials(spacingMultiplier),
+                          SeoText(
+                            tagStyle: TextTagStyle.h6,
+                            "BitNet",
+                            style: Theme.of(context).textTheme.displaySmall,
+                          ),
                         ],
                       ),
-              ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding,
+                  ),
+                  SeoText(
+                    tagStyle: TextTagStyle.h6,
+                    "©2023 by BitNet GmBH, Germany",
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  isSmallScreen
+                      ? smallScreenFooter(spacingMultiplier)
+                      : SizedBox(
+                          height: 0,
+                        ),
+                ],
+              ),
             ),
-          ),
-        );
+            isSmallScreen
+                ? Container()
+                : Row(
+                    children: [
+                      product(),
+                      SizedBox(
+                        width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                      ),
+                      helpandSupport(),
+                      SizedBox(
+                        width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                      ),
+                      socials(spacingMultiplier),
+                    ],
+                  ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Widget smallScreenFooter(spacingMultiplier){
+  Widget smallScreenFooter(spacingMultiplier) {
     double footerHeight = showFab ? 475 : 0; // Adjust these values as needed
     return AnimatedContainer(
       duration: Duration(milliseconds: 300), // Adjust duration as needed
@@ -220,24 +231,18 @@ class _PageFooterState extends State<PageFooter> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height:
-            AppTheme.cardPadding * 4 * spacingMultiplier,
+            height: AppTheme.cardPadding * 4 * spacingMultiplier,
           ),
           Row(
             children: [
               product(),
               SizedBox(
-                width: AppTheme.cardPadding *
-                    4 *
-                    spacingMultiplier,
+                width: AppTheme.cardPadding * 4 * spacingMultiplier,
               ),
               helpandSupport(),
             ],
           ),
-          SizedBox(
-              height: AppTheme.cardPadding *
-                  2 *
-                  spacingMultiplier),
+          SizedBox(height: AppTheme.cardPadding * 2 * spacingMultiplier),
           socials(spacingMultiplier),
         ],
       ),
@@ -249,7 +254,8 @@ class _PageFooterState extends State<PageFooter> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          SeoText(
+            tagStyle: TextTagStyle.h3,
             "Socials",
             style: Theme.of(context).textTheme.titleMedium,
           ),
@@ -353,7 +359,8 @@ class _PageFooterState extends State<PageFooter> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        SeoText(
+          tagStyle: TextTagStyle.h3,
           "Product",
           style: Theme.of(context).textTheme.titleMedium,
         ),
@@ -394,7 +401,8 @@ class _PageFooterState extends State<PageFooter> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        SeoText(
+          tagStyle: TextTagStyle.h3,
           "Contact",
           style: Theme.of(context).textTheme.titleMedium,
         ),
@@ -457,7 +465,8 @@ class SocialRow extends StatelessWidget {
                 Icon(iconData, size: AppTheme.elementSpacing * 1.5),
               if (iconData != null)
                 SizedBox(width: AppTheme.elementSpacing / 2),
-              Text(platformName, style: Theme.of(context).textTheme.bodyMedium),
+              SeoText(platformName,
+                  style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
         ),

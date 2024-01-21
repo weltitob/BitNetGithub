@@ -18,7 +18,8 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.">
+  <meta name="keywords" content="Bitcoin, Crypto, Cryptocurrency, Digital Wallet">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -40,6 +41,16 @@
   <script src="flutter.js" defer></script>
 </head>
 <body>
+  <script>
+    import("./scripts/botd-1.1.0.js")
+      .then((botd) => botd.load())
+      .then((botd) => botd.detect())
+      .then(function (result) {
+        if (result.bot) {
+          window.flutterWebRenderer = "html";
+        }
+      });
+  </script>
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
