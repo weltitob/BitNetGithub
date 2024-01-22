@@ -8,76 +8,32 @@ import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
 
+
+class BalanceCardLightning extends StatelessWidget {
+  const BalanceCardLightning({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      child: SizedBox(
+        height: 200,
+        child: Stack(
+          children: [
+            const BalanceBackground2(),
+            balanceText(context),
+            currencyPicture(context, "assets/images/lightning.png"),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
 class BalanceCardBtc extends StatelessWidget {
   const BalanceCardBtc({Key? key}) : super(key: key);
 
-  Widget balanceText(BuildContext context) {
-    final userData = Provider.of<UserData>(context);
-    final userWallet = userData.mainWallet;
-    getBalance(userWallet);
-
-    return Padding(
-      padding: const EdgeInsets.all(AppTheme.cardPadding * 1.5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Guthaben',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            "${userWallet.walletBalance} BTC",
-            // NumberFormat.simpleCurrency().format(MockBalance.data.last),
-            style: Theme.of(context).textTheme.headlineMedium),
-          const Spacer(),
-          Text(
-            'Deine Wallet-Adresse:',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          GestureDetector(
-            onTap: () async {
-              await Clipboard.setData(ClipboardData(text: userWallet.walletAddress));
-              // copied successfully
-              displaySnackbar(context, "Wallet-Adresse in Zwischenablage kopiert");
-            },
-            child: Row(
-              children: [
-                Icon(Icons.copy_rounded, color: AppTheme.white80, size: 18,),
-                const SizedBox(width: 4,),
-                Container(
-                  width: AppTheme.cardPadding * 10,
-                  child: Text(
-                    userWallet.walletAddress,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget currencyPicture(BuildContext context) {
-    return Positioned(
-      right: AppTheme.cardPadding * 1.5,
-      top: AppTheme.cardPadding * 1.5,
-      child: Container(
-        height: AppTheme.cardPadding * 2,
-        width: AppTheme.cardPadding * 2,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2),
-          color: Theme.of(context).colorScheme.background.withOpacity(0.25),
-        ),
-        child: CachedNetworkImage(
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png',
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +45,7 @@ class BalanceCardBtc extends StatelessWidget {
           children: [
             const BalanceBackground(),
             balanceText(context),
-            currencyPicture(context)
+            currencyPicture(context, 'assets/images/bitcoin.png')
           ],
         ),
       ),
@@ -453,4 +409,73 @@ class BackgroundGradientPurple extends StatelessWidget {
       ),
     );
   }
+}
+
+
+Widget balanceText(BuildContext context) {
+  final userData = Provider.of<UserData>(context);
+  final userWallet = userData.mainWallet;
+  getBalance(userWallet);
+
+  return Padding(
+    padding: const EdgeInsets.all(AppTheme.cardPadding * 1.5),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Guthaben',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 2),
+        Text(
+            "${userWallet.walletBalance} BTC",
+            // NumberFormat.simpleCurrency().format(MockBalance.data.last),
+            style: Theme.of(context).textTheme.headlineMedium),
+        const Spacer(),
+        Text(
+          'Deine Adresse:',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        GestureDetector(
+          onTap: () async {
+            await Clipboard.setData(ClipboardData(text: userWallet.walletAddress));
+            // copied successfully
+            displaySnackbar(context, "Adresse in Zwischenablage kopiert");
+          },
+          child: Row(
+            children: [
+              Icon(Icons.copy_rounded, color: AppTheme.white80, size: 18,),
+              const SizedBox(width: 4,),
+              Container(
+                width: AppTheme.cardPadding * 10,
+                child: Text(
+                  userWallet.walletAddress,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget currencyPicture(BuildContext context, String imageUrl) {
+  return Positioned(
+    right: AppTheme.cardPadding * 1.5,
+    top: AppTheme.cardPadding * 1.5,
+    child: Container(
+      height: AppTheme.cardPadding * 2,
+      width: AppTheme.cardPadding * 2,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2),
+        color: Theme.of(context).colorScheme.background.withOpacity(0.25),
+      ),
+      child: Image.asset(
+        imageUrl,
+      ),
+    ),
+  );
 }

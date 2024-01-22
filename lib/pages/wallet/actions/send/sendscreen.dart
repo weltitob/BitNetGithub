@@ -1,7 +1,6 @@
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/wallet/actions/send/lightning_send_tab.dart';
-import 'package:bitnet/pages/wallet/actions/send/onchain_send_tab.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/models/user/userwallet.dart';
@@ -22,19 +21,15 @@ class SendBTCScreen extends StatefulWidget {
 }
 
 // Define a state object called _SendBTCScreenState for SendBTCScreen
-class _SendBTCScreenState extends State<SendBTCScreen> with SingleTickerProviderStateMixin{
-
-  late TabController _tabController;
+class _SendBTCScreenState extends State<SendBTCScreen> {
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -65,8 +60,8 @@ class _SendBTCScreenState extends State<SendBTCScreen> with SingleTickerProvider
             Text("Bitcoin versenden",
                 style: Theme.of(context).textTheme.titleLarge),
             // Displays the user's wallet balance
-            Text("${userWallet.walletBalance}BTC verfügbar",
-                style: Theme.of(context).textTheme.bodyMedium),
+            // Text("${userWallet.walletBalance}BTC verfügbar",
+            //     style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
         context: context,
@@ -74,57 +69,10 @@ class _SendBTCScreenState extends State<SendBTCScreen> with SingleTickerProvider
       body: Column(
         children: [
           SizedBox(
-            height: AppTheme.cardPadding * 2.5,
-          ),
-          DefaultTabController(
-            length: 2,
-            initialIndex: 0,
-            child: ButtonsTabBar(
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: AppTheme.elementSpacing * 0.5,
-                horizontal: AppTheme.elementSpacing,
-              ),
-              borderWidth: 1.5,
-              unselectedBorderColor: Colors.transparent,
-              borderColor: Colors.white.withOpacity(0.2),
-              radius: 100,
-              physics: ClampingScrollPhysics(),
-              controller: _tabController,
-              // give the indicator a decoration (color and border radius)
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.all(Radius.circular(50.0)),
-              ),
-              unselectedDecoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.all(Radius.circular(50.0)),
-              ),
-              tabs: [
-                Tab(
-                  child: Text(
-                    "Lightning",
-                    style: AppTheme.textTheme.bodyMedium!.copyWith(
-                        color: AppTheme.white80, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    "On Chain",
-                    style: AppTheme.textTheme.bodyMedium!.copyWith(
-                        color: AppTheme.white80, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
+            height: AppTheme.cardPadding * 1,
           ),
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                LightningSendTab(),
-                OnChainSendTab(bitcoinSenderAdress: widget.bitcoinSenderAdress)
-              ],
-            ),
+            child: LightningSendTab(),
           ),
         ],
       ),
