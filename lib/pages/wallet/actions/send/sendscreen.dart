@@ -1,7 +1,6 @@
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/wallet/actions/send/lightning_send_tab.dart';
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
