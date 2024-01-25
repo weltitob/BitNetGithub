@@ -57,18 +57,22 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getData();
-    getWebSocketData();
-    callApiWithDelay();
-    dollarRate();
-    Future.delayed(Duration(milliseconds: 5000)).then((value) {
-      Scrollable.ensureVisible(
-        containerKey.currentContext!,
-        curve: Curves.bounceIn,
-      );
-      print('called scroll');
-    });
+    allData();
+    // Future.delayed(Duration(milliseconds: 5000)).then((value) {
+    //   Scrollable.ensureVisible(
+    //     containerKey.currentContext!,
+    //     curve: Curves.bounceIn,
+    //   );
+    //   print('called scroll');
+    // });
     // getTransactions();
+  }
+
+  allData() async {
+    await getData();
+    await getWebSocketData();
+    await callApiWithDelay();
+    await dollarRate();
   }
 
   String formatAmount(String price) {
@@ -135,9 +139,9 @@ class HomeController extends GetxController {
       if (prices.isNotEmpty) {
         final latestPrice = prices.last;
         currentUSD.value = latestPrice['USD'];
-        usdPrice= latestPrice['USD'];
-
+        usdPrice = latestPrice['USD'];
       }
+      isLoading.value = false;
     } else {
       throw Exception('Failed to load historical price');
     }
@@ -152,7 +156,6 @@ class HomeController extends GetxController {
   getData() async {
     isLoading.value = true;
     update();
-
     try {
       String url = '${baseUrl}v1/blocks';
       final response = await _dio.get(url);
@@ -160,7 +163,7 @@ class HomeController extends GetxController {
       for (int i = 0; i < response.data.length; i++) {
         bitcoinData.add(BlockData.fromJson(response.data[i]));
       }
-      isLoading.value = false;
+      // isLoading.value = false;
       update();
     } on DioError {
       isLoading.value = false;
@@ -195,7 +198,7 @@ class HomeController extends GetxController {
       },
     );
     subscription = channel.stream.listen((message) {
-      printWrapped('message+ $message');
+      // printWrapped('message+ $message');
       MemPoolModel memPool = MemPoolModel.fromJson(json.decode(message));
       if (memPool.txPosition != null) {
         txPosition.value = memPool.txPosition!.position.block;
@@ -275,7 +278,7 @@ class HomeController extends GetxController {
           bitcoinData.add(BlockData.fromJson(response.data[i]));
         }
         dollarRate();
-        isLoading.value = false;
+        // isLoading.value = false;
         Get.forceAppUpdate();
         update();
       } on DioError {
@@ -294,8 +297,11 @@ class HomeController extends GetxController {
 
       final response = await _dio.get(url);
       txDetailsConfirmed = TransactionConfirmedDetail.fromJson(
-          jsonDecode(jsonEncode(response.data)));
-      isLoading.value = false;
+        jsonDecode(
+          jsonEncode(response.data),
+        ),
+      );
+      // isLoading.value = false;
       update();
     } on DioError {
       isLoading.value = false;
@@ -307,7 +313,6 @@ class HomeController extends GetxController {
       update();
     }
   }
-
 
   txDetailsF(String txId, int page) async {
     try {

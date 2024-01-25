@@ -19,6 +19,7 @@ import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
 import 'package:bitnet/pages/create/createscreen.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/marketplace/HomeScreen.dart';
+import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
@@ -94,6 +95,11 @@ class AppRoutes {
               path: '/wallet',
               widget: WalletScreen(),
               stackedRoutes: [
+                 VWidget(
+                  path: '/wallet/bitcoinscreen',
+                  widget: const BitcoinScreen(),
+                  buildTransition: _fadeTransition,
+                ),
                 VWidget(
                   path: '/wallet/block_transactions',
                   widget: const BlockTransactions(),
