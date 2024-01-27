@@ -1,10 +1,13 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 
-class NftProductSlider extends StatefulWidget {
+class NftProductSliderClickable extends StatefulWidget {
+  final id;
   final nftImage;
   final cryptoImage;
   final nftName;
@@ -12,29 +15,42 @@ class NftProductSlider extends StatefulWidget {
   final nftMainName;
   final columnMargin;
   final rank;
+  final Function(int)? onTap;
+  final Function()? onTapBuy;
+  final selected;
 
-  const NftProductSlider(
+  const NftProductSliderClickable(
       {Key? key,
+      required this.id,
       required this.nftImage,
       required this.nftName,
       required this.cryptoImage,
       required this.cryptoText,
       required this.nftMainName,
       this.columnMargin,
-      required this.rank})
+      required this.rank,
+      required this.selected,
+      this.onTap,
+      this.onTapBuy})
       : super(key: key);
 
   @override
-  State<NftProductSlider> createState() => _NftProductSliderState();
+  State<NftProductSliderClickable> createState() => _NftProductSliderState();
 }
 
-class _NftProductSliderState extends State<NftProductSlider> {
+class _NftProductSliderState extends State<NftProductSliderClickable> {
   bool likeNft = false;
+
+  void onTapHandler() {
+    if (widget.onTap == null) return;
+    widget.onTap!(widget.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return GestureDetector(
-      onTap: () {},
+      onTap: onTapHandler,
       child: Container(
         width: 224.w,
         padding: EdgeInsets.all(10.w),
@@ -42,42 +58,48 @@ class _NftProductSliderState extends State<NftProductSlider> {
             ? EdgeInsets.symmetric(horizontal: 8.w)
             : EdgeInsets.zero,
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(255, 255, 255, 0.1),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
+            color: const Color.fromRGBO(255, 255, 255, 0.1),
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+                color: widget.selected
+                    ? AppTheme.colorBitcoin
+                    : Colors.transparent)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Stack(children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 10.w),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10.r),
-                  ),
-                  child: Image.asset(
-                    widget.nftImage,
-                    width: size.width,
-                    height: 134.w,
-                    fit: BoxFit.cover,
+            Container(
+              height: 140.w,
+              child: Stack(children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 10.w),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.r),
+                    ),
+                    child: Image.asset(
+                      widget.nftImage,
+                      width: size.width,
+                      height: 134.w,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              Positioned(
-                  bottom: 12,
-                  right: 6,
-                  child: GlassContainer(
-                      child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      "Rank - " + widget.rank.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(color: Colors.white),
-                    ),
-                  ))),
-            ]),
+                Positioned(
+                    bottom: 12,
+                    right: 6,
+                    child: GlassContainer(
+                        child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        "Rank - " + widget.rank.toString(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: Colors.white),
+                      ),
+                    ))),
+              ]),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -144,16 +166,30 @@ class _NftProductSliderState extends State<NftProductSlider> {
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(top: 5.h),
-              child: Text(
-                widget.nftName,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color.fromRGBO(255, 255, 255, 0.5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 5.h),
+                  child: Text(
+                    widget.nftName,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      color: const Color.fromRGBO(255, 255, 255, 0.5),
+                    ),
+                  ),
                 ),
-              ),
+                LongButtonWidget(
+                    customWidth: 7 * 10,
+                    customHeight: 7 * 2.5,
+                    title: "Buy",
+                    titleStyle: Theme.of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(fontSize: 12, color: Colors.white),
+                    onTap: widget.onTapBuy)
+              ],
             ),
           ],
         ),

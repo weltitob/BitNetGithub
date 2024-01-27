@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/fields/searchfield/search_field_with_notif.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
@@ -61,10 +62,7 @@ class _FeedScreenState extends State<FeedScreen>
   ];
 
   final List<WalletCategory> walletcategorys = [
-    WalletCategory(
-        'assets/images/paper_wallet.png',
-        'Assets',
-        'Assets'),
+    WalletCategory('assets/images/paper_wallet.png', 'Assets', 'Assets'),
     WalletCategory(
       'assets/images/bitcoin.png',
       'Bitcoin',
@@ -81,11 +79,11 @@ class _FeedScreenState extends State<FeedScreen>
 
   late TabController _tabController;
   late ScrollController _scrollController;
-  late bool fixedScroll;
+  bool fixedScroll = false;
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
     _tabController.addListener(_smoothScrollToTop);
@@ -143,7 +141,7 @@ class _FeedScreenState extends State<FeedScreen>
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    SearchFieldWidget(
+                    SearchFieldWithNotificationsWidget(
                       isSearchEnabled: true,
                       hintText: "Search...",
                       handleSearch: handleSearch,
@@ -170,22 +168,22 @@ class _FeedScreenState extends State<FeedScreen>
             ];
           },
           body:
-          //HomeScreen(),
-          searchResultsFuture == null
-              ? TabBarView(
-                  controller: _tabController,
-                  children: <Widget>[
-                    HomeScreen(),
-                    Container(
-                      child: Center(
-                          child: Text(
-                        "No users found.",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      )),
-                    ),
-                  ],
-                )
-              : buildSearchResults(),
+              //HomeScreen(),
+              searchResultsFuture == null
+                  ? TabBarView(
+                      controller: _tabController,
+                      children: <Widget>[
+                        HomeScreen(),
+                        Container(
+                          child: Center(
+                              child: Text(
+                            "No users found.",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          )),
+                        ),
+                      ],
+                    )
+                  : buildSearchResults(),
         ),
       ),
     );
@@ -210,9 +208,7 @@ class _FeedScreenState extends State<FeedScreen>
         child: Transform.scale(
           scale: index == _tabController.index ? 1 : 0.9,
           child: GlassContainer(
-            borderThickness: index == _tabController.index
-                ? 3
-                : 1.5,
+            borderThickness: index == _tabController.index ? 3 : 1.5,
             child: InkWell(
               borderRadius: AppTheme.cardRadiusMid,
               child: Column(
@@ -227,8 +223,8 @@ class _FeedScreenState extends State<FeedScreen>
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 5),
-                    child:
-                        Text(text, style: Theme.of(context).textTheme.labelLarge),
+                    child: Text(text,
+                        style: Theme.of(context).textTheme.labelLarge),
                   )
                 ],
               ),

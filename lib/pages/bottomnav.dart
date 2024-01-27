@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,13 +15,10 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
-
   String profileId = Auth().currentUser!.uid;
-
 
   @override
   Widget build(BuildContext context) {
-
     final navItems = [
       {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
       {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
@@ -39,67 +37,85 @@ class _BottomNavState extends State<BottomNav> {
         children: [
           widget.child,
           // Body content will be managed by VRouter based on the current route
-          Stack(
-              alignment: Alignment.bottomCenter,
-              children: <Widget>[
-                IgnorePointer(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 30),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 30,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          // Use color stops to create an "exponential" effect
-                          stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
-                          colors: [
-                            Theme.of(context).colorScheme.background.withOpacity(0.0001),
-                            Theme.of(context).colorScheme.background.withOpacity(0.33),
-                            Theme.of(context).colorScheme.background.withOpacity(0.66),
-                            Theme.of(context).colorScheme.background.withOpacity(0.99),
-                            // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
-                            // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
-                            // Theme.of(context).colorScheme.background,
-                            // Theme.of(context).colorScheme.background,
-                            Theme.of(context).colorScheme.background,
-                            Theme.of(context).colorScheme.background
-                          ],
-                        ),
+          if (!context.vRouter.path.contains(kCollectionScreenRoute))
+            Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+              IgnorePointer(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(top: AppTheme.cardPadding * 30),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height -
+                        AppTheme.cardPadding * 30,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        // Use color stops to create an "exponential" effect
+                        stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
+                        colors: [
+                          Theme.of(context)
+                              .colorScheme
+                              .background
+                              .withOpacity(0.0001),
+                          Theme.of(context)
+                              .colorScheme
+                              .background
+                              .withOpacity(0.33),
+                          Theme.of(context)
+                              .colorScheme
+                              .background
+                              .withOpacity(0.66),
+                          Theme.of(context)
+                              .colorScheme
+                              .background
+                              .withOpacity(0.99),
+                          // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
+                          // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
+                          // Theme.of(context).colorScheme.background,
+                          // Theme.of(context).colorScheme.background,
+                          Theme.of(context).colorScheme.background,
+                          Theme.of(context).colorScheme.background
+                        ],
                       ),
                     ),
                   ),
-                )
-              ]
-          ),
-          Positioned(
-            bottom: AppTheme.cardPadding,
-            left: AppTheme.cardPadding * 1,
-            right: AppTheme.cardPadding * 1,
-            child: GlassContainer(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1.25, vertical: AppTheme.elementSpacing * 1.25),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    for (var item in navItems)
-                      InkWell(
-                        onTap: () => onTabTapped(item['route'] as String),
-                        child: Column(
-                          children: [
-                            Icon(
-                              item['icon'] as IconData,  // <--- Here
-                              color: context.vRouter.url.contains(item['route'] as String) ? Colors.orange : Colors.white.withOpacity(0.4),
-                              size: AppTheme.cardPadding,
-                            ),
-                          ],
+                ),
+              )
+            ]),
+          if (!context.vRouter.path.contains(kCollectionScreenRoute))
+            Positioned(
+              bottom: AppTheme.cardPadding,
+              left: AppTheme.cardPadding * 1,
+              right: AppTheme.cardPadding * 1,
+              child: GlassContainer(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing * 1.25,
+                      vertical: AppTheme.elementSpacing * 1.25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      for (var item in navItems)
+                        InkWell(
+                          onTap: () => onTabTapped(item['route'] as String),
+                          child: Column(
+                            children: [
+                              Icon(
+                                item['icon'] as IconData, // <--- Here
+                                color: context.vRouter.url
+                                        .contains(item['route'] as String)
+                                    ? Colors.orange
+                                    : Colors.white.withOpacity(0.4),
+                                size: AppTheme.cardPadding,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
