@@ -19,6 +19,9 @@ import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
 import 'package:bitnet/pages/create/createscreen.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/marketplace/HomeScreen.dart';
+import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
+import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
@@ -75,13 +78,21 @@ class AppRoutes {
         VWidget(path: '/', widget: const LoadingViewAppStart()),
         VNester(
           path: '/home',
-          widgetBuilder: (child) => BottomNav(child: child),
+          widgetBuilder: (child) {
+            return BottomNav(child: child);
+          },
           nestedRoutes: [
             VRouteRedirector(
               path: '',
               redirectTo: '/feed', // '/feed'
             ),
-            VWidget(path: '/feed', widget: FeedScreen()), //(path: '/feed', widget: FeedScreen()),
+            VWidget(path: '/feed', widget: FeedScreen(), stackedRoutes: [
+              VWidget(
+                  path: kNotificationScreenRoute, widget: NotificationScreen()),
+              VWidget(
+                  path: kCollectionScreenRoute + "/:collection_id",
+                  widget: CollectionScreen()),
+            ]), //(path: '/feed', widget: FeedScreen()),
             VWidget(
                 path: '/create',
                 widget:
@@ -105,7 +116,8 @@ class AppRoutes {
                 ),
                 VWidget(
                   path: '/wallet/send',
-                  widget: const SendBTCScreen(bitcoinSenderAdress: "bitcoinSenderAdress"),
+                  widget: const SendBTCScreen(
+                      bitcoinSenderAdress: "bitcoinSenderAdress"),
                   buildTransition: _fadeTransition,
                 ),
               ],
@@ -125,7 +137,6 @@ class AppRoutes {
             ),
           ],
         ),
-
 
         // Chat details and other chat-related routes without BottomNav
         VWidget(
@@ -287,8 +298,7 @@ class AppRoutes {
 
   List<VRouteElement> get _authRoutes => [
         VWidget(path: '/', widget: const LoadingViewAppStart()),
-        VWidget(path: '/website', widget: WebsiteLandingPage(),
-        stackedRoutes: [
+        VWidget(path: '/website', widget: WebsiteLandingPage(), stackedRoutes: [
           VWidget(
             path: '/report',
             widget: const Report(),
@@ -301,18 +311,9 @@ class AppRoutes {
             path: '/ourteam',
             widget: const OurTeam(),
           ),
-          VWidget(
-            path: '/agbs',
-            widget: const AGBScreen()
-          ),
-          VWidget(
-            path: '/impressum',
-            widget: const ImpressumScreen()
-          ),
-          VWidget(
-              path: '/submitidea',
-              widget: const SubmitIdea()
-          ),
+          VWidget(path: '/agbs', widget: const AGBScreen()),
+          VWidget(path: '/impressum', widget: const ImpressumScreen()),
+          VWidget(path: '/submitidea', widget: const SubmitIdea()),
         ]),
         VWidget(
           path: '/authhome',
@@ -507,7 +508,6 @@ class AppRoutes {
           widget: const LogViewer(),
           buildTransition: _dynamicTransition,
         ),
-
       ];
 
   FadeTransition Function(dynamic, dynamic, dynamic)? get _dynamicTransition =>

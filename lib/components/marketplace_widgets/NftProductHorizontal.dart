@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 
-class NftProductSlider extends StatefulWidget {
+class NftProductHorizontal extends StatefulWidget {
   final nftImage;
   final cryptoImage;
   final nftName;
@@ -12,8 +12,9 @@ class NftProductSlider extends StatefulWidget {
   final nftMainName;
   final columnMargin;
   final rank;
+  final Function()? onDelete;
 
-  const NftProductSlider(
+  const NftProductHorizontal(
       {Key? key,
       required this.nftImage,
       required this.nftName,
@@ -21,14 +22,15 @@ class NftProductSlider extends StatefulWidget {
       required this.cryptoText,
       required this.nftMainName,
       this.columnMargin,
-      required this.rank})
+      required this.rank,
+      this.onDelete})
       : super(key: key);
 
   @override
-  State<NftProductSlider> createState() => _NftProductSliderState();
+  State<NftProductHorizontal> createState() => _NftProductHorizontalState();
 }
 
-class _NftProductSliderState extends State<NftProductSlider> {
+class _NftProductHorizontalState extends State<NftProductHorizontal> {
   bool likeNft = false;
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class _NftProductSliderState extends State<NftProductSlider> {
     return GestureDetector(
       onTap: () {},
       child: Container(
-        width: 224.w,
+        width: 300.w,
         padding: EdgeInsets.all(10.w),
         margin: widget.columnMargin
             ? EdgeInsets.symmetric(horizontal: 8.w)
@@ -45,42 +47,39 @@ class _NftProductSliderState extends State<NftProductSlider> {
           color: const Color.fromRGBO(255, 255, 255, 0.1),
           borderRadius: BorderRadius.circular(12.r),
         ),
-        child: Column(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(children: [
               Container(
-                margin: EdgeInsets.only(bottom: 10.w),
+                margin: EdgeInsets.only(bottom: 10.w, right: 25.w),
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(
                     Radius.circular(10.r),
                   ),
                   child: Image.asset(
                     widget.nftImage,
-                    width: size.width,
-                    height: 134.w,
+                    height: 60.w,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              Positioned(
-                  bottom: 12,
-                  right: 6,
-                  child: GlassContainer(
-                      child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      "Rank - " + widget.rank.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(color: Colors.white),
-                    ),
-                  ))),
             ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  margin: EdgeInsets.only(top: 7.h),
+                  child: Text(
+                    widget.nftMainName,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: const Color.fromRGBO(249, 249, 249, 1),
+                    ),
+                  ),
+                ),
                 Container(
                   decoration: BoxDecoration(
                     color: const Color.fromRGBO(255, 255, 255, 0.1),
@@ -109,52 +108,14 @@ class _NftProductSliderState extends State<NftProductSlider> {
                     ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      likeNft = !likeNft;
-                    });
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(255, 255, 255, 0.1),
-                      borderRadius: BorderRadius.circular(100.r),
-                    ),
-                    padding: EdgeInsets.all(6.w),
-                    width: 24.w,
-                    height: 24.w,
-                    child: Image.asset(
-                      likeNft ? activeHeartIcon : unActiveHeartIcon,
-                      width: 12.w,
-                      height: 12.w,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
               ],
             ),
-            Container(
-              margin: EdgeInsets.only(top: 7.h),
-              child: Text(
-                widget.nftMainName,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: const Color.fromRGBO(249, 249, 249, 1),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 5.h),
-              child: Text(
-                widget.nftName,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color.fromRGBO(255, 255, 255, 0.5),
-                ),
-              ),
-            ),
+            Spacer(),
+            if (widget.onDelete != null)
+              IconButton(
+                icon: Icon(Icons.delete_forever),
+                onPressed: widget.onDelete,
+              )
           ],
         ),
       ),

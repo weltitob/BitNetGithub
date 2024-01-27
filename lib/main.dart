@@ -73,8 +73,6 @@ Future<void> main() async {
 
   Logs().nativeColors = !PlatformInfos.isIOS;
 
-  //meta seo setup
-
   // Run the app
   runApp(
     PlatformInfos.isMobile
