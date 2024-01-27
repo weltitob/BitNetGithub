@@ -33,538 +33,522 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.only(
-                  top: AppTheme.cardPadding, left: AppTheme.cardPadding),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Blockchain",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'av. block time:',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      SizedBox(
-                        width: AppTheme.elementSpacing,
-                      ),
-                      Text(
-                        '~ ${(controller.da!.timeAvg! / 60000).toStringAsFixed(1)} minutes',
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      SizedBox(
-                        width: AppTheme.elementSpacing,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: AppTheme.elementSpacing / 2,
-            ),
-            HorizontalFadeListView(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                child: Row(
+    return SingleChildScrollView(
+      physics: NeverScrollableScrollPhysics(),
+      child:  Obx(()=> controller.socketLoading.isTrue?Center(child: CircularProgressIndicator(),): Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+        
+          Container(
+            margin: EdgeInsets.only(
+                top: AppTheme.cardPadding, left: AppTheme.cardPadding),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Blockchain",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Obx(() {
-                      return controller.isLoading.isTrue
-                          ? const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : controller.mempoolBlocks.isEmpty
-                              ? const Text(
-                                  'Something went wrong!',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 22),
-                                )
-                              : SizedBox(
-                                  height: 255,
-                                  child: ListView.builder(
-                                      shrinkWrap: true,
-                                      reverse: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount:
-                                          controller.mempoolBlocks.length,
-                                      itemBuilder: (context, index) {
-                                        var min = (index + 1) *
-                                            (controller.da!.timeAvg! / 60000);
-                                        return GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              controller.showNextBlock.value =
-                                                  true;
-                                              controller.showBlock.value =
-                                                  false;
-                                              controller.indexShowBlock.value =
-                                                  index;
-                                              controller.selectedIndexData =
-                                                  index;
-                                              controller.selectedIndex = -1;
-                                            });
-                                            // controller.getWebSocketData();
-                                          },
-                                          child: Flash(
-                                            infinite: true,
-                                            delay: const Duration(seconds: 10),
-                                            duration:
-                                                const Duration(seconds: 5),
-                                            child: DataWidget.notAccepted(
-                                              key: index == 0
-                                                  ? controller.containerKey
-                                                  : GlobalKey(),
-                                              mempoolBlocks: controller
-                                                  .mempoolBlocks[index],
-                                              mins: min.toStringAsFixed(0),
-                                              index: controller
-                                                          .selectedIndexData ==
-                                                      index
-                                                  ? 1
-                                                  : 0,
-                                              singleTx: false,
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                );
-                    }),
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppTheme.elementSpacing),
-                      decoration: BoxDecoration(
-                        borderRadius: AppTheme.cardRadiusCircular,
-                        color: Colors.grey,
-                      ),
-                      height: AppTheme.cardPadding * 6,
-                      width: AppTheme.elementSpacing / 3,
+                    Text(
+                      'av. block time:',
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    Obx(() {
-                      return controller.isLoading.isTrue
-                          ? const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : controller.bitcoinData.isEmpty
-                              ? const Text(
-                                  'Something went wrong!',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 22),
-                                )
-                              : SizedBox(
-                                  height: 255,
-                                  child: ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: controller.bitcoinData.length,
-                                      itemBuilder: (context, index) {
-                                        double size = controller
-                                                .bitcoinData[index].size! /
-                                            1000000;
-                                        return GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              controller.showBlock.value = true;
-                                              controller.showNextBlock.value =
-                                                  false;
-                                              controller.indexBlock.value =
-                                                  index;
-                                              controller.selectedIndex = index;
-                                              controller.selectedIndexData = -1;
-                                              controller.txDetailsConfirmedF(
-                                                  controller
-                                                      .bitcoinData[index].id!);
-                                              controller.txDetailsF(
-                                                  controller
-                                                      .bitcoinData[index].id!,
-                                                  0);
-                                            });
-                                          },
-                                          child: DataWidget.accepted(
-                                            blockData:
-                                                controller.bitcoinData[index],
-                                            txId: controller
-                                                .bitcoinData[index].id,
-                                            size: size,
-                                            time: controller.formatTimeAgo(
-                                                DateTime
-                                                    .fromMillisecondsSinceEpoch(
-                                                        (controller
-                                                                .bitcoinData[
-                                                                    index]
-                                                                .timestamp! *
-                                                            1000))),
-                                            index: controller.selectedIndex ==
-                                                    index
-                                                ? 1
-                                                : 0,
-                                            singleTx: false,
-                                          ),
-                                        );
-                                      }),
-                                );
-                    }),
+                    SizedBox(
+                      width: AppTheme.elementSpacing,
+                    ),
+                    Text(
+                      '~ ${(controller.da!.timeAvg! / 60000).toStringAsFixed(1)} minutes',
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    SizedBox(
+                      width: AppTheme.elementSpacing,
+                    ),
                   ],
                 ),
-              ),
+              ],
             ),
-            Obx(
-              () => Visibility(
-                visible: controller.showNextBlock.value,
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: AppTheme.cardPadding,
-                        bottom: AppTheme.elementSpacing),
-                    child: Row(
-                      children: [
-                        Text(
-                          controller.selectedIndexData == 0
-                              ? 'Next Block'
-                              : 'Mempool block ${controller.selectedIndexData + 1}',
-                          textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const Spacer(),
-                        IconButton(
-                            onPressed: () {
-                              setState(() {
-                                controller.showNextBlock.value = false;
-                                controller.selectedIndex = -1;
-                                controller.selectedIndexData = -1;
-                              });
-                            },
-                            icon: const Icon(Icons.cancel))
-                      ],
-                    ),
+          ),
+          SizedBox(
+            height: AppTheme.elementSpacing / 2,
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              children: [
+                Obx(() {
+                  return controller.isLoading.isTrue
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : controller.mempoolBlocks.isEmpty
+                          ? const Text(
+                              'Something went wrong!',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 22),
+                            )
+                          : SizedBox(
+                              height: 255,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  reverse: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: controller.mempoolBlocks.length,
+                                  itemBuilder: (context, index) {
+                                    var min = (index + 1) *
+                                        (controller.da!.timeAvg! / 60000);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          controller.showNextBlock.value = true;
+                                          controller.showBlock.value = false;
+                                          controller.indexShowBlock.value =
+                                              index;
+                                          controller.selectedIndexData = index;
+                                          controller.selectedIndex = -1;
+                                        });
+                                        // controller.getWebSocketData();
+                                      },
+                                      child: Flash(
+                                        infinite: true,
+                                        delay: const Duration(seconds: 10),
+                                        duration: const Duration(seconds: 5),
+                                        child: DataWidget.notAccepted(
+                                          key: index == 0
+                                              ? controller.containerKey
+                                              : GlobalKey(),
+                                          mempoolBlocks:
+                                              controller.mempoolBlocks[index],
+                                          mins: min.toStringAsFixed(0),
+                                          index: controller.selectedIndexData ==
+                                                  index
+                                              ? 1
+                                              : 0,
+                                          singleTx: false,
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                            );
+                }),
+                Container(
+                  margin:
+                      EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                  decoration: BoxDecoration(
+                    borderRadius: AppTheme.cardRadiusCircular,
+                    color: Colors.grey,
+                  ),
+                  height: AppTheme.cardPadding * 6,
+                  width: AppTheme.elementSpacing / 3,
+                ),
+                Obx(() {
+                  return controller.isLoading.isTrue
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : controller.bitcoinData.isEmpty
+                          ? const Text(
+                              'Something went wrong!',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 22),
+                            )
+                          : SizedBox(
+                              height: 255,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: controller.bitcoinData.length,
+                                  itemBuilder: (context, index) {
+                                    double size =
+                                        controller.bitcoinData[index].size! /
+                                            1000000;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          controller.showBlock.value = true;
+                                          controller.showNextBlock.value =
+                                              false;
+                                          controller.indexBlock.value = index;
+                                          controller.selectedIndex = index;
+                                          controller.selectedIndexData = -1;
+                                          controller.txDetailsConfirmedF(
+                                              controller
+                                                  .bitcoinData[index].id!);
+                                          controller.txDetailsF(
+                                              controller.bitcoinData[index].id!,
+                                              0);
+                                        });
+                                      },
+                                      child: DataWidget.accepted(
+                                        blockData:
+                                            controller.bitcoinData[index],
+                                        txId: controller.bitcoinData[index].id,
+                                        size: size,
+                                        time: controller.formatTimeAgo(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                (controller.bitcoinData[index]
+                                                        .timestamp! *
+                                                    1000))),
+                                        index: controller.selectedIndex == index
+                                            ? 1
+                                            : 0,
+                                        singleTx: false,
+                                      ),
+                                    );
+                                  }),
+                            );
+                }),
+              ],
+            ),
+          ),
+          Obx(
+            () => Visibility(
+              visible: controller.showNextBlock.value,
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: AppTheme.cardPadding,
+                      bottom: AppTheme.elementSpacing),
+                  child: Row(
+                    children: [
+                      Text(
+                        controller.selectedIndexData == 0
+                            ? 'Next Block'
+                            : 'Mempool block ${controller.selectedIndexData + 1}',
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              controller.showNextBlock.value = false;
+                              controller.selectedIndex = -1;
+                              controller.selectedIndexData = -1;
+                            });
+                          },
+                          icon: const Icon(Icons.cancel))
+                    ],
                   ),
                 ),
               ),
             ),
+          ),
 
-            //----------------------UNACCEPTED BLOCKS--------------
+          //----------------------UNACCEPTED BLOCKS--------------
 
-            Obx(
-              () => Visibility(
-                visible: controller.showNextBlock.value,
-                child: Container(
-                  child: Column(children: [
-                    GestureDetector(
-                      onTap: () {
-                        VRouter.of(context).to("/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
-                      },
-                      //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
-                      child: SearchFieldWidget(
-                        isSearchEnabled: false,
-                        hintText: controller.mempoolBlocks[controller.indexShowBlock.value].nTx!.toStringAsFixed(0) +
-                            " transactions",
-                        handleSearch: handleSearch,
-                      ),
+          Obx(
+            () => Visibility(
+              visible: controller.showNextBlock.value,
+              child: Container(
+                child: Column(children: [
+                  GestureDetector(
+                    onTap: () {
+                      VRouter.of(context).to(
+                          "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
+                    },
+                    //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
+                    child: SearchFieldWidget(
+                      isSearchEnabled: false,
+                      hintText: controller
+                              .mempoolBlocks[controller.indexShowBlock.value]
+                              .nTx!
+                              .toStringAsFixed(0) +
+                          " transactions",
+                      handleSearch: handleSearch,
                     ),
-                    SizedBox(
-                      height: AppTheme.elementSpacing,
+                  ),
+                  SizedBox(
+                    height: AppTheme.elementSpacing,
+                  ),
+                  feeDistributionUnaccepted(),
+                  SizedBox(
+                    height: AppTheme.elementSpacing,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing),
+                    child: MyDivider(),
+                  ),
+                  SizedBox(height: AppTheme.elementSpacing),
+                  Container(
+                    margin:
+                        EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                    controller.txDetailsConfirmed==null?  SizedBox(): blockSizeUnaccepted()],
                     ),
-                    feeDistributionUnaccepted(),
-                    SizedBox(
-                      height: AppTheme.elementSpacing,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.elementSpacing),
-                      child: MyDivider(),
-                    ),
-                    SizedBox(height: AppTheme.elementSpacing),
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [blockSizeUnaccepted()],
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppTheme.cardPadding * 3,
-                    )
-                  ]),
-                ),
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 3,
+                  )
+                ]),
               ),
             ),
+          ),
 
-            //-----------------ACCEPTED BLOCKS-----------------
+          //-----------------ACCEPTED BLOCKS-----------------
 
-            Obx(
-              () => Visibility(
-                visible: controller.showBlock.value,
-                child: controller.bitcoinData.isNotEmpty
-                    ? Align(
-                        alignment: Alignment.topLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: AppTheme.cardPadding,
-                              bottom: AppTheme.elementSpacing),
-                          child: Row(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Block',
-                                    textAlign: TextAlign.left,
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                  Text(
-                                      ' ${controller.bitcoinData[controller.indexBlock.value].height}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(
-                                            color: AppTheme.colorBitcoin,
-                                          ))
-                                ],
-                              ),
-                              const Spacer(),
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Clipboard.setData(ClipboardData(
-                                          text: controller
-                                              .txDetailsConfirmed!.id));
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content:
-                                                  Text('Copied to Clipboard')));
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.copy,
-                                          color: AppTheme.white80,
-                                          size: AppTheme.elementSpacing * 1.5,
-                                        ),
-                                        SizedBox(
-                                          width: AppTheme.elementSpacing / 2,
-                                        ),
-                                        Text(
-                                          '${controller.txDetailsConfirmed!.id.toString().substring(0, 5)}...${controller.txDetailsConfirmed!.id.toString().substring(controller.txDetailsConfirmed!.id.length - 5)}',
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: AppTheme.elementSpacing / 2,
-                                  ),
-                                  IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          controller.showBlock.value = false;
-                                          controller.selectedIndex = -1;
-                                          controller.selectedIndexData = -1;
-                                        });
-                                      },
-                                      icon: const Icon(Icons.cancel)),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    : const SizedBox(),
-              ),
-            ),
-            Obx(
-              () => Visibility(
-                  visible: controller.showBlock.value,
-                  child: controller.mempoolBlocks.isNotEmpty
-                      ? controller.txDetailsConfirmed == null
-                          ? const Center(
-                              child: CircularProgressIndicator.adaptive(),
-                            )
-                          : Column(
+          Obx(
+            () => Visibility(
+              visible: controller.showBlock.value,
+              child: controller.bitcoinData.isNotEmpty
+                  ? Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: AppTheme.cardPadding,
+                            bottom: AppTheme.elementSpacing),
+                        child: Row(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Block',
+                                  textAlign: TextAlign.left,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                Text(
+                                    ' ${controller.bitcoinData[controller.indexBlock.value].height}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge!
+                                        .copyWith(
+                                          color: AppTheme.colorBitcoin,
+                                        ))
+                              ],
+                            ),
+                            const Spacer(),
+                            Row(
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    VRouter.of(context).to(
-                                        "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
+                                    Clipboard.setData(ClipboardData(
+                                        text:
+                                            controller.txDetailsConfirmed!.id));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                                Text('Copied to Clipboard')));
                                   },
-                                  //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
-                                  child: SearchFieldWidget(
-                                    isSearchEnabled: false,
-                                    hintText: '${controller.bitcoinData[controller.indexBlock.value].txCount} transactions',
-                                    handleSearch: handleSearch,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.copy,
+                                        color: AppTheme.white80,
+                                        size: AppTheme.elementSpacing * 1.5,
+                                      ),
+                                      SizedBox(
+                                        width: AppTheme.elementSpacing / 2,
+                                      ),
+                                      Text(
+                                      controller.txDetailsConfirmed==null?'':  '${controller.txDetailsConfirmed?.id.toString().substring(0, 5)}...${controller.txDetailsConfirmed?.id.toString().substring(controller.txDetailsConfirmed!.id.length - 5)}',
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Container(
-                                  child: Column(children: [
-                                    BitNetListTile(
-                                      leading: Icon(Icons.timelapse),
-                                      text: 'Mined at',
-                                      trailing: Container(
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              DateFormat('yyyy-MM-dd hh:mm')
-                                                  .format((DateTime
-                                                      .fromMillisecondsSinceEpoch(
-                                                          controller
-                                                                  .txDetailsConfirmed!
-                                                                  .timestamp *
-                                                              1000))),
+                                SizedBox(
+                                  width: AppTheme.elementSpacing / 2,
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        controller.showBlock.value = false;
+                                        controller.selectedIndex = -1;
+                                        controller.selectedIndexData = -1;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.cancel)),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+            ),
+          ),
+          Obx(
+            () => Visibility(
+                visible: controller.showBlock.value,
+                child: controller.mempoolBlocks.isNotEmpty
+                    ? controller.txDetailsConfirmed == null
+                        ? const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          )
+                        : Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  VRouter.of(context).to(
+                                      "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
+                                },
+                                //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
+                                child: SearchFieldWidget(
+                                  isSearchEnabled: false,
+                                  hintText:
+                                      '${controller.bitcoinData[controller.indexBlock.value].txCount} transactions',
+                                  handleSearch: handleSearch,
+                                ),
+                              ),
+                              Container(
+                                child: Column(children: [
+                                  BitNetListTile(
+                                    leading: Icon(Icons.timelapse),
+                                    text: 'Mined at',
+                                    trailing: Container(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            DateFormat('yyyy-MM-dd hh:mm')
+                                                .format((DateTime
+                                                    .fromMillisecondsSinceEpoch(
+                                                        controller
+                                                                .txDetailsConfirmed!
+                                                                .timestamp *
+                                                            1000))),
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text("time ago..."),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  BitNetListTile(
+                                    leading: Icon(FontAwesomeIcons.truckPickup),
+                                    text: 'Miner',
+                                    trailing: Container(
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal:
+                                                    AppTheme.elementSpacing / 2,
+                                                vertical:
+                                                    AppTheme.elementSpacing /
+                                                        3),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    AppTheme.cardRadiusSmall,
+                                                color: AppTheme.colorBitcoin),
+                                            child: Text(
+                                              (' ${controller.txDetailsConfirmed!.extras.pool.name} '),
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            Text("time ago..."),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    BitNetListTile(
-                                      leading:
-                                          Icon(FontAwesomeIcons.truckPickup),
-                                      text: 'Miner',
-                                      trailing: Container(
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: AppTheme
-                                                              .elementSpacing /
-                                                          2,
-                                                      vertical: AppTheme
-                                                              .elementSpacing /
-                                                          3),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      AppTheme.cardRadiusSmall,
-                                                  color: AppTheme.colorBitcoin),
-                                              child: Text(
-                                                (' ${controller.txDetailsConfirmed!.extras.pool.name} '),
+                                  ),
+                                  BitNetListTile(
+                                    leading: Icon(FontAwesomeIcons.bitcoin),
+                                    text: 'Miner Reward (Subsidy + fees)',
+                                    trailing: Container(
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                (controller.txDetailsConfirmed!
+                                                            .extras.reward /
+                                                        100000000)
+                                                    .toStringAsFixed(3),
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    BitNetListTile(
-                                      leading: Icon(FontAwesomeIcons.bitcoin),
-                                      text: 'Miner Reward (Subsidy + fees)',
-                                      trailing: Container(
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  (controller.txDetailsConfirmed!
-                                                              .extras.reward /
-                                                          100000000)
-                                                      .toStringAsFixed(3),
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                              Transform.translate(
+                                                offset: const Offset(0, 2),
+                                                child: Text(
+                                                  ' BTC  ',
+                                                  style: TextStyle(
+                                                      color:
+                                                          Colors.grey.shade300,
+                                                      fontSize: 12),
                                                 ),
-                                                Transform.translate(
-                                                  offset: const Offset(0, 2),
-                                                  child: Text(
-                                                    ' BTC  ',
-                                                    style: TextStyle(
-                                                        color: Colors
-                                                            .grey.shade300,
-                                                        fontSize: 12),
-                                                  ),
+                                              ),
+                                              Text(
+                                                '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
+                                                style: const TextStyle(
+                                                  color: AppTheme.successColor,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                                Text(
-                                                  '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
-                                                  style: const TextStyle(
-                                                    color:
-                                                        AppTheme.successColor,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: AppTheme.elementSpacing,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: AppTheme.elementSpacing),
-                                      child: MyDivider(),
-                                    ),
-                                    feeDistributionAccepted(),
-                                    SizedBox(
-                                      height: AppTheme.elementSpacing,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: AppTheme.elementSpacing),
-                                      child: MyDivider(),
-                                    ),
-                                    SizedBox(height: AppTheme.elementSpacing),
-                                    Container(
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: AppTheme.cardPadding),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          blockSizeAccepted(),
-                                          blockHealth(),
+                                              ),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ),
-                                  ]),
-                                ),
-                                Container(
-                                  height: AppTheme.cardPadding * 3,
-                                )
-                              ],
-                            )
-                      : const Text('')),
-            ),
-            transactionfees(),
-          ],
-        ),
+                                  ),
+                                  SizedBox(
+                                    height: AppTheme.elementSpacing,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: AppTheme.elementSpacing),
+                                    child: MyDivider(),
+                                  ),
+                                  feeDistributionAccepted(),
+                                  SizedBox(
+                                    height: AppTheme.elementSpacing,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: AppTheme.elementSpacing),
+                                    child: MyDivider(),
+                                  ),
+                                  SizedBox(height: AppTheme.elementSpacing),
+                                  Container(
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: AppTheme.cardPadding),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        blockSizeAccepted(),
+                                        blockHealth(),
+                                      ],
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                              Container(
+                                height: AppTheme.cardPadding * 3,
+                              )
+                            ],
+                          )
+                    : const Text('')),
+          ),
+          transactionfees(),
+        ],
       ),
-    );
+    ));
   }
 
   Widget transactionfees() {
@@ -925,7 +909,8 @@ class _MempoolHomeState extends State<MempoolHome> {
     // Calculate the width based on the ratio
     double maxWidth = AppTheme.cardPadding * 3;
     double ratio = (mbSize / mwu) * maxWidth;
-    double orangeContainerWidth = ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
+    double orangeContainerWidth =
+        ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
 
     return Column(
       children: [
@@ -1013,13 +998,16 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   Widget blockSizeUnaccepted() {
     // Assuming controller.mempoolBlocks[controller.indexShowBlock.value].blockSize and controller.txDetailsConfirmed!.weight are already in MB and MWU units respectively.
-    double mbSize = controller.mempoolBlocks[controller.indexShowBlock.value].blockSize! / 1000000;
-    double mwu = controller.txDetailsConfirmed!.weight / 1000000;
+    double mbSize =
+        controller.mempoolBlocks[controller.indexShowBlock.value].blockSize! /
+            1000000;
+    double mwu = (controller.txDetailsConfirmed?.weight)! / 1000000;
 
     // Calculate the width based on the ratio
     double maxWidth = AppTheme.cardPadding * 3;
     double ratio = (mbSize / mwu) * maxWidth;
-    double orangeContainerWidth = ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
+    double orangeContainerWidth =
+        ratio.clamp(0, maxWidth); // Ensuring it doesn't exceed maxWidth
 
     return Column(
       children: [
@@ -1104,7 +1092,6 @@ class _MempoolHomeState extends State<MempoolHome> {
       ],
     );
   }
-
 
   Widget feeDistributionAccepted() {
     return Column(children: [

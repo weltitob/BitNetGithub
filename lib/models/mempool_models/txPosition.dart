@@ -29,7 +29,7 @@ class TxPosition {
     factory TxPosition.fromJson(Map<String, dynamic> json) => TxPosition(
         txid: json["txid"],
         position: Position.fromJson(json["position"]),
-        cpfp: Cpfp.fromJson(json["cpfp"]),
+        cpfp: Cpfp.fromJson(json["cpfp"]??{}),
     );
 
     Map<String, dynamic> toJson() => {
@@ -57,12 +57,12 @@ class Cpfp {
     });
 
     factory Cpfp.fromJson(Map<String, dynamic> json) => Cpfp(
-        ancestors: List<Ancestor>.from(json["ancestors"].map((x) => Ancestor.fromJson(x))),
+        ancestors: json["ancestors"]!=null?List<Ancestor>.from(json["ancestors"].map((x) => Ancestor.fromJson(x))):[],
         bestDescendant: json["bestDescendant"],
-        descendants: List<dynamic>.from(json["descendants"].map((x) => x)),
-        effectiveFeePerVsize: json["effectiveFeePerVsize"]?.toDouble(),
-        sigops: json["sigops"],
-        adjustedVsize: json["adjustedVsize"]?.toDouble(),
+        descendants:json["descendants"]!=null? List<dynamic>.from(json["descendants"].map((x) => x)):[],
+        effectiveFeePerVsize:json["effectiveFeePerVsize"]!=null? json["effectiveFeePerVsize"]?.toDouble():0.0,
+        sigops: json["sigops"]??0,
+        adjustedVsize: json["adjustedVsize"]?.toDouble()??0.0,
     );
 
     Map<String, dynamic> toJson() => {

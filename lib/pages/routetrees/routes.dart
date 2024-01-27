@@ -19,9 +19,13 @@ import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
 import 'package:bitnet/pages/create/createscreen.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/marketplace/HomeScreen.dart';
+<<<<<<< HEAD
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
+=======
+import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
+>>>>>>> main
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
@@ -29,6 +33,7 @@ import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
+import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/actions/send/sendscreen.dart';
 import 'package:bitnet/pages/website/compliance/agbscreen.dart';
 import 'package:bitnet/pages/website/compliance/impressumscreen.dart';
@@ -104,6 +109,11 @@ class AppRoutes {
               path: '/wallet',
               widget: WalletScreen(),
               stackedRoutes: [
+                 VWidget(
+                  path: '/wallet/bitcoinscreen',
+                  widget: const BitcoinScreen(),
+                  buildTransition: _fadeTransition,
+                ),
                 VWidget(
                   path: '/wallet/block_transactions',
                   widget: const BlockTransactions(),
@@ -112,6 +122,11 @@ class AppRoutes {
                 VWidget(
                   path: '/wallet/receive',
                   widget: const ReceiveScreen(),
+                  buildTransition: _fadeTransition,
+                ),
+                VWidget(
+                  path: '/wallet/send_choose_receiver',
+                  widget: const SearchReceiver(),
                   buildTransition: _fadeTransition,
                 ),
                 VWidget(

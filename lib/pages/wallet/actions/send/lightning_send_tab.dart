@@ -3,16 +3,13 @@ import 'package:bitnet/backbone/cloudfunctions/sendbitcoin.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/components/amountwidget.dart';
-import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
-import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
 import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
 import 'package:bitnet/models/user/userwallet.dart';
-import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
@@ -57,8 +54,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
   }
-
-  // This method is called when the widget is being disposed.
+  
   @override
   void dispose() {
     // Clean up the focus node when the Form is disposed.
@@ -68,10 +64,6 @@ class _LightningSendTabState extends State<LightningSendTab> {
     super.dispose();
   }
 
-  // This function is used to validate a Bitcoin wallet address. If the input value is null or empty,
-  // it displays a Snackbar with an error message. If the input value is a valid Bitcoin wallet address,
-  // it sets the state variables _bitcoinReceiverAdress and _hasReceiver to the input value and true, respectively.
-  // If the input value is not a valid Bitcoin wallet address, it displays a Snackbar with an error message.
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -79,8 +71,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
       child: ListView(
         children: [
           Container(
-            height:
-            MediaQuery.of(context).size.height - AppTheme.cardPadding * 4,
+            height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,6 +90,18 @@ class _LightningSendTabState extends State<LightningSendTab> {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ),
+                        SizedBox(height: AppTheme.elementSpacing * 2,),
+                        Container(
+                          margin: EdgeInsets.only(left: AppTheme.cardPadding, ),
+                          child: Row(
+                            children: [
+                              selectNetworkButtons(context, "Lightning", "assets/images/lightning.png", true),
+                              SizedBox(width: AppTheme.elementSpacing,),
+                              selectNetworkButtons(context, "On-Chain", "assets/images/bitcoin.png", false)
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: AppTheme.elementSpacing,),
                         _hasReceiver
                             ? userTile()
                             : Padding(
@@ -109,72 +112,82 @@ class _LightningSendTabState extends State<LightningSendTab> {
                             mainAxisAlignment:
                             MainAxisAlignment.spaceBetween,
                             children: [
-                              // Adds a text input for the Bitcoin receiver address
                               Container(
-                                width: AppTheme.cardPadding * 8.5,
-                                child: FormTextField(
-                                  hintText: "Bitcoin-Adresse",
-                                  // Unfocuses the input field when tapped outside of it
-                                  onTapOutside: (value) {
-                                    if (myFocusNodeAdress.hasFocus) {
-                                      myFocusNodeAdress.unfocus();
-                                    }
-                                  },
-                                  // Limits the length of the input to 40 characters
-                                  maxLength: 40,
-                                  // Adds a focus node for the input field
-                                  focusNode: myFocusNodeAdress,
-                                  // Binds the controller to the text input
-                                  controller:
-                                  bitcoinReceiverAdressController,
-                                  // Validates the address when the text input is submitted
-                                  onFieldSubmitted: (value) {
-
-                                  },
-                                  autofocus: false,
-                                ),
+                                width: MediaQuery.of(context).size.width - AppTheme.cardPadding * 2,
+                                child: Text("0364913d18a19c671bb36dd04d6ad5be0fe8f2894314c36a9db3f03c2d414907e1",
+                                    maxLines: 4,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium),
                               ),
+                              // UserResult(
+                              //   userData: UserData(
+                              //   username: "Unbekannte Walletadresse",
+                              //   backgroundImageUrl: '',
+                              //   isPrivate: false,
+                              //   showFollowers: false,
+                              //   displayName: '',
+                              //   did: '',
+                              //   bio: '',
+                              //   profileImageUrl: '',
+                              //   customToken: '',
+                              //   createdAt: timestamp,
+                              //   updatedAt: timestamp,
+                              //   isActive: false,
+                              //   dob: 1,
+                              //   mainWallet: UserWallet(
+                              //       walletAddress: "",
+                              //       walletType: "walletType",
+                              //       walletBalance: "walletBalance",
+                              //       privateKey: "privateKey",
+                              //       userdid: "userdid"),
+                              //   wallets: [],),
+                              //   onDelete: (){},
+                              //   onTap: (){
+                              //     print("test");
+                              //   },
+                              // ),
 
-                              // A GestureDetector widget that navigates to a new page when tapped
-                              GestureDetector(
-                                  onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                      const QrScanner(
-                                        //isBottomButtonVisible: true,
-                                      ),
-                                    ),
-                                  ),
-                                  child: avatarGlow(
-                                    context,
-                                    Icons.circle,
-                                  )),
-                              RoundedButtonWidget(iconData: Icons.search, onTap: (){}),
                             ],
                           ),
                         ),
+                        // SizedBox(height: AppTheme.elementSpacing,),
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                        //   child: Row(
+                        //     children: [
+                        //       Icon(
+                        //         FontAwesomeIcons.smile,
+                        //         color: AppTheme.successColor,
+                        //         size: AppTheme.elementSpacing * 1.5,
+                        //       ),
+                        //       SizedBox(
+                        //         width: AppTheme.elementSpacing / 2,
+                        //       ),
+                        //       //look if the adress already has funds if its empty or has no transaction history then it might have an error // then show yellow or red
+                        //       Text(
+                        //         "The address looks valid",
+                        //         style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                        //           fontSize: 14,
+                        //           color: AppTheme.successColor,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // )
                       ],
                     ),
                     // A SizedBox widget with a height of AppTheme.cardPadding * 2
                     const SizedBox(
                       height: AppTheme.cardPadding * 2,
                     ),
-
                     // A Center widget with a child of bitcoinWidget()
                     Center(child: bitcoinWidget()),
-
-                    // A SizedBox widget with a height of AppTheme.cardPadding * 3
-                    const SizedBox(
-                      height: AppTheme.cardPadding * 3,
-                    ),
-
-                    // A Padding widget that contains a Column widget with a few children
-
                   ],
                 ),
                 // A Padding widget that contains a button widget
                 Padding(
-                    padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 4),
+                    padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 2),
                     child: button()),
               ],
             ),
@@ -182,6 +195,55 @@ class _LightningSendTabState extends State<LightningSendTab> {
         ],
       ),
     );
+  }
+
+  Widget selectNetworkButtons(
+      BuildContext context,
+      String text,
+      String imagePath,
+      bool isActive,
+      ){
+    return isActive ? GlassContainer(
+          child:
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: AppTheme.elementSpacing * 0.75,
+                vertical: AppTheme.elementSpacing * 0.5,
+            ),
+            child: Row(
+              children: [
+                Image.asset(imagePath,
+                  width: AppTheme.cardPadding * 1,
+                  height: AppTheme.cardPadding * 1,),
+                Container(
+                  width: AppTheme.elementSpacing,
+                ),
+                Text(
+                  text,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+          )) : Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: AppTheme.elementSpacing * 0.75,
+              vertical: AppTheme.elementSpacing * 0.5,
+            ),
+            child: Row(
+              children: [
+                Image.asset(imagePath,
+                  width: AppTheme.cardPadding * 1,
+                  height: AppTheme.cardPadding * 1,),
+                Container(
+                  width: AppTheme.elementSpacing,
+                ),
+                Text(
+                  text,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+          );
   }
 
   Widget onChainFees(BuildContext context){
@@ -325,7 +387,6 @@ class _LightningSendTabState extends State<LightningSendTab> {
   }
 
   Widget bitcoinWidget() {
-    // Accessing the user wallet object from Provider
     //final userWallet = Provider.of<UserWallet>(context);
     final userWallet = UserWallet(
         walletAddress: "fakewallet",
@@ -339,12 +400,19 @@ class _LightningSendTabState extends State<LightningSendTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Wert eingeben",
-            style: Theme.of(context).textTheme.headline6,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Wert eingeben",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Text("${userWallet.walletBalance}BTC verfügbar",
+                  style: Theme.of(context).textTheme.bodyMedium),
+            ],
           ),
           SizedBox(
-            height: AppTheme.cardPadding,
+            height: AppTheme.cardPadding * 1.5,
           ),
           AmountWidget(),
         ],

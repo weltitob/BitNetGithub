@@ -2456,14 +2456,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.5"
-  seo:
-    dependency: "direct main"
-    description:
-      name: seo
-      sha256: "52f39d31874ff0489890fff70df154d69824e2cd0a1f98ce5c86b2ae18592ce4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.6"
   share_plus:
     dependency: "direct main"
     description:

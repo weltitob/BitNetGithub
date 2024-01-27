@@ -1,5 +1,6 @@
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:bitnet/pages/secondpages/analystsassesment.dart';
@@ -12,6 +13,7 @@ import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/pages/secondpages/newsscreen.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:get/get.dart';
 
 class BitcoinScreen extends StatefulWidget {
   const BitcoinScreen({
@@ -42,6 +44,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(HomeController());
     return bitnetScaffold(
       context: context,
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -54,20 +57,20 @@ class _BitcoinScreenState extends State<BitcoinScreen>
       body: PageView(
         scrollDirection: Axis.vertical,
         controller: _controller,
-        children: <Widget>[
-          Column(
-            children: [
-              ChartWidget(),
-            ],
-          ),
+        children: [
+          ChartWidget(),
           RoundedContainer(
             contentPadding: const EdgeInsets.all(0),
-            child: MempoolHome(),
+            child: Obx(() => controller.isLoading.isTrue
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : MempoolHome()),
           ),
           RoundedContainer(
             contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
             child: Column(
-              children: <Widget>[
+              children: [
                 TabBar(
                   controller: _tabController,
                   tabs: [

@@ -20,13 +20,14 @@ class AddressComponent extends StatelessWidget {
           elevation: 0,
           backgroundColor: Colors.white,
           leading: IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              )),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
+          ),
         ),
         body: Obx(
           () => controller.isLoadingAddress.value
@@ -316,11 +317,9 @@ class AddressComponent extends StatelessWidget {
                                           Expanded(
                                             child: InkWell(
                                               onTap: () async {
-                                                controller.txID.value =
-                                                    controller
-                                                        .subTransactionModel[
-                                                            index]
-                                                        .txid!;
+                                                controller.txID = controller
+                                                    .subTransactionModel[index]
+                                                    .txid!;
                                                 Get.to(
                                                     const SingleTransactionScreen(),
                                                     arguments: controller
