@@ -25,6 +25,7 @@ dependencies:
   web_socket_channel: ^2.4.0
   number_paginator: ^0.4.0
   vector_math: ^2.1.0
+  android_id: ^0.3.6
 
   #von oldbitnet create screen stuff
   flutter_sound: ^9.2.13
@@ -248,6 +249,7 @@ flutter:
     - assets/marketplace/
     - assets/lottiefiles/
     - assets/textfiles/
+    - assets/keys/
 
 msix_config:
   display_name: bitnet

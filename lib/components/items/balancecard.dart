@@ -426,7 +426,7 @@ Widget balanceText(BuildContext context, IconData iconData) {
         Row(
           children: [
             Icon(
-              iconData
+              iconData,
               //Icons.wallet,
               size: AppTheme.elementSpacing * 1.75,
             ),

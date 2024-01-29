@@ -142,7 +142,8 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   GestureDetector(
-                    onTap: () => VRouter.of(context).to('/wallet/send'), //userData.mainWallet.walletAddress,
+                    onTap: () => VRouter.of(context).to('/wallet/send_choose_receiver'),
+                    //onTap: () => VRouter.of(context).to('/wallet/send'), //userData.mainWallet.walletAddress,
                     child: circButtonWidget("Senden", _compositionSend,
                         const BackgroundGradientPurple()),
                   ),

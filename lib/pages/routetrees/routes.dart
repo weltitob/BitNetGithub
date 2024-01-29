@@ -18,14 +18,10 @@ import 'package:bitnet/pages/chat_list/chat_permissions_settings/chat_permission
 import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
 import 'package:bitnet/pages/create/createscreen.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
-import 'package:bitnet/pages/marketplace/HomeScreen.dart';
-<<<<<<< HEAD
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
-=======
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
->>>>>>> main
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';

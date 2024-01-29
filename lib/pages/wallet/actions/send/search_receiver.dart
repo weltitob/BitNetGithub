@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -46,29 +48,35 @@ class _SearchReceiverState extends State<SearchReceiver> {
     } //to indicate the input is valid
   }
 
+  void handleSearch(String value) {
+    print(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
       context: context,
       body: Column(
         children: [
-          SearchFieldWidget(hintText: "Search", isSearchEnabled: true, handleSearch: (){}),
+          SearchFieldWidget(hintText: "Search", isSearchEnabled: true, handleSearch: handleSearch),
           Expanded(
             child: SingleChildScrollView(
               child: Container(), // Ihre scrollbare Liste
             ),
           ),
           Container(
-            height: 100,
+            margin: EdgeInsets.only(bottom: AppTheme.cardPadding * 4),
+            height: 90,
             color: Colors.red,
             child:
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: AppTheme.cardPadding * 5.5,
+                  width: AppTheme.cardPadding * 7.5,
                   child: FormTextField(
-                    hintText: "Bitcoin-Adresse",
+                    hintText: "Adresse kopieren",
                     // Unfocuses the input field when tapped outside of it
                     onTapOutside: (value) {
                     },
@@ -86,21 +94,31 @@ class _SearchReceiverState extends State<SearchReceiver> {
                     autofocus: false,
                   ),
                 ),
+                Container(
+                  margin: EdgeInsets.only(top: AppTheme.elementSpacing, ),
+                  child: LongButtonWidget(
+                    customWidth: AppTheme.cardPadding * 7.5,
+                    onTap: () {
+                      validateAdress(bitcoinReceiverAdressController.text);
+                    },
+                    title: 'Scan QR',
+                  ),
+                ),
 
                 // A GestureDetector widget that navigates to a new page when tapped
-                GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                        const QrScanner(
-                          //isBottomButtonVisible: true,
-                        ),
-                      ),
-                    ),
-                    child: avatarGlow(
-                      context,
-                      Icons.circle,
-                    )),
+                // GestureDetector(
+                //     onTap: () => Navigator.of(context).push(
+                //       MaterialPageRoute(
+                //         builder: (context) =>
+                //         const QrScanner(
+                //           //isBottomButtonVisible: true,
+                //         ),
+                //       ),
+                //     ),
+                //     child: Container(
+                //       width: AppTheme.cardPadding,
+                //       height: AppTheme.cardPadding,
+                //     )),
               ],
             ),
           )
