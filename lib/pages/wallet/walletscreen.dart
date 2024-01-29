@@ -1,17 +1,12 @@
 import 'dart:async';
 import 'package:bitnet/components/resultlist/transactions.dart';
-import 'package:bitnet/models/user/userdata.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
-import 'package:bitnet/backbone/cloudfunctions/getbalance.dart';
-import 'package:bitnet/backbone/cloudfunctions/gettransactions.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -57,10 +52,10 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
   final PageController _controller = PageController();
 
   Future<void> _handleRefresh() async {
-    final userData = Provider.of<UserData>(context, listen: false);
-    final userWallet = userData.mainWallet;
-    await getBalance(userWallet);
-    await getTransactions(userWallet);
+    // final userData = Provider.of<UserData>(context, listen: false);
+    // final userWallet = userData.mainWallet;
+    // await getBalance(userWallet);
+    // await getTransactions(userWallet);
   }
 
   @override
@@ -142,7 +137,8 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   GestureDetector(
-                    onTap: () => VRouter.of(context).to('/wallet/send_choose_receiver'),
+                    onTap: () => VRouter.of(context).to('/wallet/send'),
+                    //onTap: () => VRouter.of(context).to('/wallet/send_choose_receiver'),
                     //onTap: () => VRouter.of(context).to('/wallet/send'), //userData.mainWallet.walletAddress,
                     child: circButtonWidget("Senden", _compositionSend,
                         const BackgroundGradientPurple()),

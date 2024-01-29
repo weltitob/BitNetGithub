@@ -1,73 +1,27 @@
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:bitnet/backbone/cloudfunctions/sendbitcoin.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
 import 'package:bitnet/models/user/userwallet.dart';
+import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:matrix/matrix.dart';
 import 'package:page_transition/page_transition.dart';
 
-class LightningSendTab extends StatefulWidget {
-  const LightningSendTab({super.key});
-
-  @override
-  State<LightningSendTab> createState() => _LightningSendTabState();
-}
-
-class _LightningSendTabState extends State<LightningSendTab> {
-  late FocusNode myFocusNodeAdress;
-  late FocusNode myFocusNodeMoney;
-  late double feesInEur_medium;
-  late double feesInEur_high;
-  late double feesInEur_low;
-  String feesSelected = "Niedrig";
-  late double feesInEur;
-  TextEditingController bitcoinReceiverAdressController =
-  TextEditingController(); // the controller for the Bitcoin receiver address text field
-  TextEditingController moneyController =
-  TextEditingController(); // the controller for the amount text field
-  bool isFinished =
-  false; // a flag indicating whether the send process is finished
-  bool _hasReceiver =
-  false; // a flag indicating whether a receiver address is present
-  String _bitcoinReceiverAdress = ''; // the Bitcoin receiver address
-  dynamic _moneyineur = ''; // the amount in Euro, stored as dynamic type
-  double bitcoinprice = 0.0;
-
-  bool _isLoadingFees =
-  true; // a flag indicating whether the exchange rate is loading
-  // Biometric authentication before sending// a flag indicating whether the security has been checked
-  final GlobalKey<FormState> _formKey =
-  GlobalKey<FormState>(); // a key for the form widget
-
-  @override
-  void initState() {
-    super.initState();
-    moneyController.text = "0.00001"; // set the initial amount to 0.00001
-    myFocusNodeAdress = FocusNode();
-    myFocusNodeMoney = FocusNode();
-  }
-  
-  @override
-  void dispose() {
-    // Clean up the focus node when the Form is disposed.
-    myFocusNodeAdress.dispose();
-    myFocusNodeMoney.dispose();
-    moneyController.dispose();
-    super.dispose();
-  }
+class LightningSendTab extends StatelessWidget {
+  final SendController controller;
+  const LightningSendTab({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: controller.formKey,
       child: ListView(
         children: [
           Container(
@@ -102,8 +56,8 @@ class _LightningSendTabState extends State<LightningSendTab> {
                           ),
                         ),
                         SizedBox(height: AppTheme.elementSpacing,),
-                        _hasReceiver
-                            ? userTile()
+                        controller.hasReceiver
+                            ? userTile(context)
                             : Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: AppTheme.cardPadding,
@@ -182,13 +136,13 @@ class _LightningSendTabState extends State<LightningSendTab> {
                       height: AppTheme.cardPadding * 2,
                     ),
                     // A Center widget with a child of bitcoinWidget()
-                    Center(child: bitcoinWidget()),
+                    Center(child: bitcoinWidget(context)),
                   ],
                 ),
                 // A Padding widget that contains a button widget
                 Padding(
                     padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 2),
-                    child: button()),
+                    child: button(context)),
               ],
             ),
           ),
@@ -204,46 +158,46 @@ class _LightningSendTabState extends State<LightningSendTab> {
       bool isActive,
       ){
     return isActive ? GlassContainer(
-          child:
+        child:
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: AppTheme.elementSpacing * 0.75,
+            vertical: AppTheme.elementSpacing * 0.5,
+          ),
+          child: Row(
+            children: [
+              Image.asset(imagePath,
+                width: AppTheme.cardPadding * 1,
+                height: AppTheme.cardPadding * 1,),
+              Container(
+                width: AppTheme.elementSpacing,
+              ),
+              Text(
+                text,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ],
+          ),
+        )) : Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: AppTheme.elementSpacing * 0.75,
+        vertical: AppTheme.elementSpacing * 0.5,
+      ),
+      child: Row(
+        children: [
+          Image.asset(imagePath,
+            width: AppTheme.cardPadding * 1,
+            height: AppTheme.cardPadding * 1,),
           Container(
-            margin: EdgeInsets.symmetric(
-                horizontal: AppTheme.elementSpacing * 0.75,
-                vertical: AppTheme.elementSpacing * 0.5,
-            ),
-            child: Row(
-              children: [
-                Image.asset(imagePath,
-                  width: AppTheme.cardPadding * 1,
-                  height: AppTheme.cardPadding * 1,),
-                Container(
-                  width: AppTheme.elementSpacing,
-                ),
-                Text(
-                  text,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ],
-            ),
-          )) : Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: AppTheme.elementSpacing * 0.75,
-              vertical: AppTheme.elementSpacing * 0.5,
-            ),
-            child: Row(
-              children: [
-                Image.asset(imagePath,
-                  width: AppTheme.cardPadding * 1,
-                  height: AppTheme.cardPadding * 1,),
-                Container(
-                  width: AppTheme.elementSpacing,
-                ),
-                Text(
-                  text,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ],
-            ),
-          );
+            width: AppTheme.elementSpacing,
+          ),
+          Text(
+            text,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget onChainFees(BuildContext context){
@@ -284,7 +238,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
             height: AppTheme.cardPadding,
           ),
           // A function that returns a widget for choosing fees
-          buildFeesChooser(),
+          buildFeesChooser(context),
           SizedBox(
             height: AppTheme.cardPadding * 2,
           ),
@@ -325,7 +279,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
 
 
   // This widget represents a user tile with an avatar, title, subtitle, and edit button.
-  Widget userTile() {
+  Widget userTile(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
       child: Column(
@@ -334,25 +288,20 @@ class _LightningSendTabState extends State<LightningSendTab> {
           // The ListTile widget is used to display the user tile.
           ListTile(
             // The leading widget is a circle avatar that displays an image.
-            leading: const CircleAvatar(
-              backgroundImage: NetworkImage(
-                  "https://bitfalls.com/wp-content/uploads/2017/09/header-5.png"),
-            ),
+            leading: Avatar(),
             // The title displays the user's name.
             title: Text(
-              "Unbekannte Walletadresse",
+              "Unbekannt",
               style: Theme.of(context).textTheme.subtitle2,
             ),
             // The subtitle displays a card number.
-            subtitle: cardWithNumber(),
+            subtitle: cardWithNumber(context),
             // The trailing widget is an icon button that is used to edit the user's information.
-            trailing: IconButton(
-                icon: const Icon(Icons.edit_rounded,
-                    color: Colors.grey, size: 18),
-                onPressed: () {
-                  setState(() {
-                    _hasReceiver = false;
-                  });
+            trailing: GestureDetector(
+                child: const Icon(Icons.edit_rounded,
+                    color: Colors.grey, size: AppTheme.cardPadding),
+                onTap: () {
+                  controller.hasReceiver = false;
                 }),
           ),
         ],
@@ -361,11 +310,11 @@ class _LightningSendTabState extends State<LightningSendTab> {
   }
 
 // A widget to display the bitcoin receiver address in a row with an icon for copying it to the clipboard
-  Widget cardWithNumber() {
+  Widget cardWithNumber(BuildContext context) {
     return GestureDetector(
       // On tap, copies the receiver address to the clipboard and displays a snackbar
       onTap: () async {
-        await Clipboard.setData(ClipboardData(text: _bitcoinReceiverAdress));
+        await Clipboard.setData(ClipboardData(text: controller.bitcoinReceiverAdress));
         displaySnackbar(context, "Wallet-Adresse in Zwischenablage kopiert");
       },
       child: Row(
@@ -376,7 +325,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
             width: AppTheme.cardPadding * 8,
             child: Text(
               // The receiver address to be displayed
-              _bitcoinReceiverAdress,
+              controller.bitcoinReceiverAdress,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.caption,
             ),
@@ -386,7 +335,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
     );
   }
 
-  Widget bitcoinWidget() {
+  Widget bitcoinWidget(BuildContext context) {
     //final userWallet = Provider.of<UserWallet>(context);
     final userWallet = UserWallet(
         walletAddress: "fakewallet",
@@ -414,13 +363,13 @@ class _LightningSendTabState extends State<LightningSendTab> {
           SizedBox(
             height: AppTheme.cardPadding * 1.5,
           ),
-          AmountWidget(),
+          AmountWidget(controller: controller,),
         ],
       ),
     );
   }
 
-  Widget buildFeesChooser() {
+  Widget buildFeesChooser(BuildContext context) {
     // create a container with top and bottom padding
     return Column(
       children: [
@@ -432,14 +381,17 @@ class _LightningSendTabState extends State<LightningSendTab> {
             children: <Widget>[
               // create a button for "Niedrig" fees
               glassButtonFees(
+                context,
                 "Niedrig",
               ),
               // create a button for "Mittel" fees
               glassButtonFees(
+                context,
                 "Mittel",
               ),
               // create a button for "Hoch" fees
               glassButtonFees(
+                context,
                 "Hoch",
               ),
             ],
@@ -448,10 +400,10 @@ class _LightningSendTabState extends State<LightningSendTab> {
         SizedBox(
           height: AppTheme.elementSpacing,
         ),
-        _isLoadingFees // if exchange rate is still loading
+        controller.isLoadingFees // if exchange rate is still loading
             ? dotProgress(context) // show a loading indicator
             : Text(
-          "≈ ${feesInEur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
+          "≈ ${controller.feesInEur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
           style: Theme.of(context)
               .textTheme
               .bodyLarge, // use the bodyLarge text theme style from the current theme
@@ -460,13 +412,13 @@ class _LightningSendTabState extends State<LightningSendTab> {
     );
   }
 
-  Widget glassButtonFees(String fees) {
+  Widget glassButtonFees(BuildContext context, String fees) {
     // defines a function that takes a string parameter called "fees"
     return Padding(
       padding:
       const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
       child:
-      fees == feesSelected // if the fees parameter equals the selected fees
+      fees == controller.feesSelected // if the fees parameter equals the selected fees
           ? GlassContainer(
         // render a button with glassmorphism effect
         borderThickness: 1.5, // remove border if not active
@@ -501,21 +453,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             alignment: Alignment.centerLeft),
         onPressed: () {
-          setState(() {
-            // update the state with the new selected fees
-            feesSelected = fees;
-            switch (fees) {
-              case "Niedrig":
-                feesInEur = feesInEur_low;
-                break;
-              case "Mittel":
-                feesInEur = feesInEur_medium;
-                break;
-              case "Hoch":
-                feesInEur = feesInEur_high;
-                break;
-            }
-          });
+
         },
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -534,7 +472,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
     );
   }
 
-  Widget button() {
+  Widget button(BuildContext context) {
     // Get the user wallet from the context using Provider
     //final userWallet = Provider.of<UserWallet>(context);
     final userWallet = UserWallet(
@@ -549,7 +487,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SwipeableButtonView(
         // Determine if the button should be active based on whether a receiver has been selected
-          isActive: _hasReceiver,
+          isActive: controller.hasReceiver,
           // Set the text style for the button text
           buttontextstyle: Theme.of(context).textTheme.headline6!.copyWith(
               color: AppTheme.white80, shadows: [AppTheme.boxShadowSmall]),
@@ -559,7 +497,7 @@ class _LightningSendTabState extends State<LightningSendTab> {
           buttonWidget: Container(
             child: Icon(
               // Set the icon to display based on whether a receiver has been selected
-              _hasReceiver
+              controller.hasReceiver
                   ? Icons.double_arrow_rounded
                   : Icons.lock_outline_rounded,
               color: AppTheme.white90,
@@ -571,67 +509,21 @@ class _LightningSendTabState extends State<LightningSendTab> {
           activeColor: Colors.purple.shade800,
           disableColor: Colors.purple.shade800,
           // Determine whether the button has finished its operation
-          isFinished: isFinished,
+          isFinished: controller.isFinished,
           // Define the function to execute while the button is in a waiting state
           onWaitingProcess: () {
             // Wait for 2 seconds, then set isFinished to true
             Future.delayed(const Duration(seconds: 1), () {
-              setState(() {
-                isFinished = true;
-              });
+              controller.isFinished = true;
             });
           },
           // Define the function to execute when the button is finished
-          onFinish: () async {
+          onFinish: () {
+            Logs().w("onFinish() called");
+            controller.sendBTC();
+          }
             // Check if biometric authentication is available
-            await isBiometricsAvailable();
-            setState(() {});
-            if (isBioAuthenticated == true || hasBiometrics == false) {
-              try {
-                // Send bitcoin to the selected receiver using the user's wallet
-                CloudfunctionCallback callback = await sendBitcoin(
-                  receiver_address: "${_bitcoinReceiverAdress}",
-                  amount_to_send: "${moneyController.text}",
-                  fee_size: '$feesSelected',
-                  userWallet: userWallet,
-                );
-                if (callback.statusCode == "success") {
-                  // Display a success message and navigate to the bottom navigation bar
-                  displaySnackbar(
-                      context,
-                      "Deine Bitcoin wurden versendet!"
-                          " Es wird eine Weile dauern bis der Empfänger sie auch erhält.");
-                  await Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.fade,
-                          child: const Scaffold(
-                            body: Center(
-                              child: Text("ADD SCREEN!"),
-                            ),
-                          )));
-                } else {
-                  // Display an error message if the cloud function failed and set isFinished to false
-                  print(
-                      "Fehler in der Cloudfunktion augetreten: ${callback.message}");
-                  displaySnackbar(context, "${callback.message}");
-                  setState(() {
-                    isFinished = false;
-                  });
-                }
-              } catch (e) {
-                // Display an error message if an error occurred and set isFinished to false
-                print(e);
-                displaySnackbar(context, "Ein Fehler ist aufgetreten: $e");
-                setState(() {
-                  isFinished = false;
-                });
-              }
-            } else {
-              // Display an error message if biometric authentication failed
-              print('Biometric authentication failed');
-            }
-          }),
+          ),
     );
   }
 }

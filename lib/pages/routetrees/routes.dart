@@ -30,7 +30,8 @@ import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
-import 'package:bitnet/pages/wallet/actions/send/sendscreen.dart';
+import 'package:bitnet/pages/wallet/actions/send/send.dart';
+import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
 import 'package:bitnet/pages/website/compliance/agbscreen.dart';
 import 'package:bitnet/pages/website/compliance/impressumscreen.dart';
 import 'package:bitnet/pages/website/contact/report/report.dart';
@@ -120,15 +121,14 @@ class AppRoutes {
                   widget: const ReceiveScreen(),
                   buildTransition: _fadeTransition,
                 ),
-                VWidget(
-                  path: '/wallet/send_choose_receiver',
-                  widget: const SearchReceiver(),
-                  buildTransition: _fadeTransition,
-                ),
+                // VWidget(
+                //   path: '/wallet/send_choose_receiver',
+                //   widget: const SearchReceiver(controller: null,),
+                //   buildTransition: _fadeTransition,
+                // ),
                 VWidget(
                   path: '/wallet/send',
-                  widget: const SendBTCScreen(
-                      bitcoinSenderAdress: "bitcoinSenderAdress"),
+                  widget: const Send(),
                   buildTransition: _fadeTransition,
                 ),
               ],

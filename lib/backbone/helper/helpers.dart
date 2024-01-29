@@ -30,6 +30,17 @@ bool isStringaDID(String input) {
   return didPattern.hasMatch(input);
 }
 
+bool isStringALNInvoice(String input) {
+  RegExp lnInvoicePattern = RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$');
+  return lnInvoicePattern.hasMatch(input);
+}
+
+bool isLightningAdressAsMail(String input) {
+  RegExp lightningAddressPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+  return lightningAddressPattern.hasMatch(input);
+}
+
+
 String getRandomString(int length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   return String.fromCharCodes(Iterable.generate(

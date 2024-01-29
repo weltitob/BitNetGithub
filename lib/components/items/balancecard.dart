@@ -416,7 +416,7 @@ class BackgroundGradientPurple extends StatelessWidget {
 Widget balanceText(BuildContext context, IconData iconData) {
   final userData = Provider.of<UserData>(context);
   final userWallet = userData.mainWallet;
-  getBalance(userWallet);
+  // getBalance(userWallet);
 
   return Padding(
     padding: const EdgeInsets.all(AppTheme.cardPadding * 1.5),

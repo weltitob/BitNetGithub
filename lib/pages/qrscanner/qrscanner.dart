@@ -32,6 +32,8 @@ class QRScannerController extends State<QrScanner> {
   }
 
 
+
+
   void onScannedForSignIn(dynamic encodedString) async {
     try{
       //Auth().signOut();
@@ -61,37 +63,21 @@ class QRScannerController extends State<QrScanner> {
 
   void onScannedForSendingBitcoin(dynamic encodedString) async {
 
-    final userData = Provider.of<UserData>(context);
-
     final currentqr = QR_BitcoinAddress.fromJson(encodedString);
 
     /// a simple check if its a BTC wallet or not, regardless of its type
     final bool isValid = isBitcoinWalletValid(currentqr.bitcoinAddress);
     print(isValid);
 
-    /// a bit more complicated check which can return the type of
-    /// BTC wallet and return SegWit (Bech32), Regular, or None if
-    /// the string is not a BTC address
     final walletType = getBitcoinWalletType(currentqr.bitcoinAddress);
     print(walletType);
 
-    /// Detailed check, for those who need to get more details
-    /// of the wallet. Returns the address type, the network, and
-    /// the wallet type along with its address.
-    /// It always returns BitcoinWalletDetails object. To check if it's
-    /// valid or not use bitcoinWalletDetails.isValid getter
-    /// IMPORTANT The BitcoinWalletDetails class overrides an
-    /// equality operators so two BitcoinWalletDetails objects can be
-    /// compared simply like this bwd1 == bwd2
     final walletdetails = getBitcoinWalletDetails(currentqr.bitcoinAddress);
     print(walletdetails);
 
     if(isValid){
       VRouter.of(context).to("wallet/send");
-      //bitcoinReceiverAdress: currentqr.bitcoinAddress,
-      //bitcoinSenderAdress: userData.mainWallet.walletAddress,
     } else {
-      print("Error beim einscannen des QR Codes");
       displaySnackbar(context, "Der eingescannte QR-Code hat kein zugelassenes Format");
     }
   }

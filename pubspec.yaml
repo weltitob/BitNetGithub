@@ -116,6 +116,7 @@ dependencies:
   flash: ^2.0.5+1
   local_auth: ^2.1.6
   flutter_multi_formatter: ^2.11.2
+  bolt11_decoder: ^1.0.2
   rive: ^0.10.0
   mobile_scanner: ^3.4.1
   page_transition: ^2.0.9
@@ -250,6 +251,7 @@ flutter:
     - assets/lottiefiles/
     - assets/textfiles/
     - assets/keys/
+    - assets/keys/lnd_admin.macaroon
 
 msix_config:
   display_name: bitnet

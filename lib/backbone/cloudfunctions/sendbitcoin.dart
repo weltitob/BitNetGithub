@@ -56,7 +56,7 @@ Future<CloudfunctionCallback> sendBitcoin({
           .set(newTransaction.toMap());
 
       // update user's balance after transaction is complete
-      await getBalance(userWallet);
+      // await getBalance(userWallet);
 
       print("Bitcoin senden ist alles erfolgreich durchgelaufen");
       return mydata;
