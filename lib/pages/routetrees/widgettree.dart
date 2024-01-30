@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart'
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_scroll_behaviour.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
+import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/loaders/empty_page.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
@@ -138,6 +139,7 @@ class _WidgetTreeState extends State<WidgetTree> {
   Widget build(BuildContext context) {
     //not sure what about this userData because this gets requested too and must be given when it loads till infinity it probably is because we miss the userData
     final userData = Provider.of<UserData?>(context);
+    final provider = Provider.of<LocalProvider>(context);
 
     return ThemeBuilder(
       builder: (context, themeMode, primaryColor) => LayoutBuilder(
@@ -171,6 +173,7 @@ class _WidgetTreeState extends State<WidgetTree> {
                       //AppTheme.standardTheme(),
                       AppTheme.customTheme(Brightness.dark, primaryColor),
                   scrollBehavior: CustomScrollBehavior(),
+                  locale: provider.locale,
                   logs: kReleaseMode ? VLogs.none : VLogs.info,
                   localizationsDelegates: L10n.localizationsDelegates,
                   supportedLocales: L10n.supportedLocales,

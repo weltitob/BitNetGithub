@@ -1,37 +1,20 @@
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/wallet/actions/send/lightning_send_tab.dart';
+import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 // Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
-class SendBTCScreen extends StatefulWidget {
-  final String?
-      bitcoinReceiverAdress; // the Bitcoin receiver address, can be null
-  final String bitcoinSenderAdress; // the Bitcoin receiver address, can be null
+class SendBTCScreen extends StatelessWidget {
+  final SendController controller;
+
   const SendBTCScreen(
-      {Key? key, this.bitcoinReceiverAdress, required this.bitcoinSenderAdress})
+      {Key? key, required this.controller})
       : super(key: key);
 
   // Create a state object for SendBTCScreen
-  @override
-  State<SendBTCScreen> createState() => _SendBTCScreenState();
-}
-
-// Define a state object called _SendBTCScreenState for SendBTCScreen
-class _SendBTCScreenState extends State<SendBTCScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   // The following function builds the widget tree for the screen
   @override
   Widget build(BuildContext context) {
@@ -71,7 +54,7 @@ class _SendBTCScreenState extends State<SendBTCScreen> {
             height: AppTheme.cardPadding * 1,
           ),
           Expanded(
-            child: LightningSendTab(),
+            child: LightningSendTab(controller: controller,),
           ),
         ],
       ),

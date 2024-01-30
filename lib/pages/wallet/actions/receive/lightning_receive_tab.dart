@@ -166,7 +166,10 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> {
                         //createdInvoice = true;
                         showModalBottomSheetWidget(
                           height: MediaQuery.of(context).size.height * 0.6,
-                          child: CreateInvoice(), context: context, title: '', goBack: false,
+
+                          child: Container(),
+                          //CreateInvoice(controller: null,),
+                          context: context, title: '', goBack: false,
                         );
                       },
                     ),

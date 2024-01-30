@@ -1,50 +1,18 @@
+import 'dart:ffi';
+
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/pages/qrscanner/qrscanner.dart';
+import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
+import 'package:vrouter/vrouter.dart';
 
-class SearchReceiver extends StatefulWidget {
-  const SearchReceiver({super.key});
-
-  @override
-  State<SearchReceiver> createState() => _SearchReceiverState();
-}
-
-class _SearchReceiverState extends State<SearchReceiver> {
-  late FocusNode myFocusNodeAdress;
-  late FocusNode myFocusNodeMoney;
-
-  TextEditingController bitcoinReceiverAdressController =
-  TextEditingController(); // the controller for the Bitcoin receiver address text field
-
-  @override
-  void initState() {
-    super.initState();
-    myFocusNodeAdress = FocusNode();
-    myFocusNodeMoney = FocusNode();
-  }
-
-  void validateAdress(String value) {
-    if (value.isEmpty) {
-      displaySnackbar(
-          context, "Hmm. Diese Walletadresse scheint nicht zu existieren");
-    }
-    final isValid = isBitcoinWalletValid(value);
-    if (isValid) {
-      setState(() {
-
-      });
-    } else {
-      displaySnackbar(
-          context, "Hmm. Diese Walletadresse scheint nicht zu existieren");
-    } //to indicate the input is valid
-  }
+class SearchReceiver extends StatelessWidget {
+  final SendController controller;
+  const SearchReceiver({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -52,55 +20,65 @@ class _SearchReceiverState extends State<SearchReceiver> {
       context: context,
       body: Column(
         children: [
-          SearchFieldWidget(hintText: "Search", isSearchEnabled: true, handleSearch: (){}),
+          SearchFieldWidget(hintText: "Search", isSearchEnabled: true, handleSearch: controller.handleSearch),
           Expanded(
             child: SingleChildScrollView(
               child: Container(), // Ihre scrollbare Liste
             ),
           ),
           Container(
-            height: 100,
+            margin: EdgeInsets.only(bottom: AppTheme.cardPadding * 4),
+            height: 90,
             color: Colors.red,
             child:
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: AppTheme.cardPadding * 5.5,
+                  width: AppTheme.cardPadding * 7.5,
                   child: FormTextField(
-                    hintText: "Bitcoin-Adresse",
+                    hintText: "Adresse kopieren",
                     // Unfocuses the input field when tapped outside of it
                     onTapOutside: (value) {
                     },
                     // Limits the length of the input to 40 characters
                     maxLength: 40,
                     // Adds a focus node for the input field
-                    focusNode: myFocusNodeAdress,
+                    focusNode: controller.myFocusNodeAdress,
                     // Binds the controller to the text input
                     controller:
-                    bitcoinReceiverAdressController,
+                    controller.bitcoinReceiverAdressController,
                     // Validates the address when the text input is submitted
                     onFieldSubmitted: (value) {
-                      validateAdress(value);
+                      controller.validateAdress(value);
                     },
                     autofocus: false,
                   ),
                 ),
+                Container(
+                  margin: EdgeInsets.only(top: AppTheme.elementSpacing, ),
+                  child: LongButtonWidget(
+                    customWidth: AppTheme.cardPadding * 7.5,
+                      onTap: () => VRouter.of(context).to('/wallet/send'),
+                    title: 'Scan QR',
+                  ),
+                ),
 
                 // A GestureDetector widget that navigates to a new page when tapped
-                GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                        const QrScanner(
-                          //isBottomButtonVisible: true,
-                        ),
-                      ),
-                    ),
-                    child: avatarGlow(
-                      context,
-                      Icons.circle,
-                    )),
+                // GestureDetector(
+                //     onTap: () => Navigator.of(context).push(
+                //       MaterialPageRoute(
+                //         builder: (context) =>
+                //         const QrScanner(
+                //           //isBottomButtonVisible: true,
+                //         ),
+                //       ),
+                //     ),
+                //     child: Container(
+                //       width: AppTheme.cardPadding,
+                //       height: AppTheme.cardPadding,
+                //     )),
               ],
             ),
           )
@@ -108,6 +86,4 @@ class _SearchReceiverState extends State<SearchReceiver> {
       ),
     );
   }
-
-
 }
