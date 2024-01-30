@@ -37,7 +37,8 @@ class _BottomNavState extends State<BottomNav> {
         children: [
           widget.child,
           // Body content will be managed by VRouter based on the current route
-          if (!context.vRouter.path.contains(kCollectionScreenRoute))
+          if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
+              !context.vRouter.path.contains(kNftProductScreenRoute))
             Stack(alignment: Alignment.bottomCenter, children: <Widget>[
               IgnorePointer(
                 child: Padding(
@@ -82,7 +83,8 @@ class _BottomNavState extends State<BottomNav> {
                 ),
               )
             ]),
-          if (!context.vRouter.path.contains(kCollectionScreenRoute))
+          if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
+              !context.vRouter.path.contains(kNftProductScreenRoute))
             Positioned(
               bottom: AppTheme.cardPadding,
               left: AppTheme.cardPadding * 1,

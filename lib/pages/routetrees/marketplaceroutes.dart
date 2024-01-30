@@ -9,7 +9,7 @@ import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/marketplace/OwnerDetailScreen.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/ProfileEditScreen.dart';
-import 'package:bitnet/pages/marketplace/RecentlyListedScreen.dart';
+import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/marketplace/SearchScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -22,8 +22,7 @@ Map<String, WidgetBuilder> allRoutes = {
       const CategoriesDetailScreen(),
   kListScreenRoute: (BuildContext context) => const ListScreen(),
   kFilterScreenRoute: (BuildContext context) => const FilterScreen(),
-  kRecentlyListedScreenRoute: (BuildContext context) =>
-      const RecentlyListedScreen(),
+  kNftProductScreenRoute: (BuildContext context) => const NftProductScreen(),
   kOwnerScreenRoute: (BuildContext context) => const CollectionScreen(),
   kSearchScreenRoute: (BuildContext context) => const SearchScreen(),
   kOwnerDetailScreenRoute: (BuildContext context) => const OwnerDetailScreen(),
@@ -47,7 +46,7 @@ const kNotificationScreenRoute = '/notification_screen_route';
 const kCategoriesDetailScreenRoute = '/categories_detail_screen_route';
 const kListScreenRoute = '/list_screen_route';
 const kFilterScreenRoute = '/filter_screen_route';
-const kRecentlyListedScreenRoute = '/recently_listed_screen_route';
+const kNftProductScreenRoute = '/nft_product_screen_route';
 const kOwnerScreenRoute = '/owner_screen_route';
 const kSearchScreenRoute = '/search_screen_route';
 const kOwnerDetailScreenRoute = '/owner_detail_screen_route';

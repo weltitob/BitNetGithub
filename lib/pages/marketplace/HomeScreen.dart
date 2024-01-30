@@ -9,9 +9,11 @@ import 'package:bitnet/components/marketplace_widgets/NftDropSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+import 'package:vrouter/vrouter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -111,9 +113,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       physics: const BouncingScrollPhysics(),
                       itemCount: nftDropSliderData.length,
                       itemBuilder: (context, index) {
-                        return NftDropSlider(
-                          nftImage: nftDropSliderData[index].nftImage,
-                          nftName: nftDropSliderData[index].nftName,
+                        return GestureDetector(
+                          onTap: () => context.vRouter.to(
+                              kNftProductScreenRoute +
+                                  "/${nftDropSliderData[index].nftName}"),
+                          child: NftDropSlider(
+                            nftImage: nftDropSliderData[index].nftImage,
+                            nftName: nftDropSliderData[index].nftName,
+                          ),
                         );
                       },
                     ),
