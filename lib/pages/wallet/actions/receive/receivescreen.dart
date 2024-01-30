@@ -6,6 +6,7 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:vrouter/vrouter.dart';
 
 // This class is a StatefulWidget which displays a screen where a user can receive bitcoin
 class ReceiveScreen extends StatefulWidget {
@@ -40,11 +41,12 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       // The screen background color
       backgroundColor: AppTheme.colorBackground,
       appBar: bitnetAppBar(
+        context: context,
         text: "Bitcoin empfangen",
         onTap: () {
           // Navigate back to the previous screen
-          Navigator.pop(context);
-        }, context: context,
+          VRouter.of(context).to("/wallet");
+        },
       ),
       // The screen's body
       body: Container(

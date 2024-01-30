@@ -31,7 +31,7 @@ Future<CloudfunctionCallback> sendPaymentV2(String invoice_string) async {
   final Map<String, dynamic> data = {
     'timeout_seconds': 60,
     'fee_limit_sat': 1000,
-    'payment_request': "lnbc10u1pjms27wpp5e9tyddqgj97ks0zz88wqurme2quu7z8tw9lv6p70tr4c8nazehqqdqqcqzzsxqyz5vqsp5h77xfzrxkfh60x6wv5ahyyq7te7es48mrjarkcs45f8txdvfj5yq9qyyssqj8h4mwk73ac00prygv8yf74vwdqmv4r20uucsgk6avnyesvfxgk4h7w6t04dyp8x95scg773z6q0ahhgze5j69ckpngrxhxs3f80engp2538ys" //invoice_string,
+    'payment_request': invoice_string //invoice_string,
   };
 
   HttpOverrides.global = MyHttpOverrides();

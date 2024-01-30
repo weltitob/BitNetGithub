@@ -20,6 +20,7 @@ class AmountWidget extends StatelessWidget {
               children: [
                 // Text field to enter Bitcoin value
                 TextField(
+                  enabled: controller.moneyTextFieldIsEnabled,
                   focusNode: controller.myFocusNodeMoney,
                   onTap: () {
                     // Validate Bitcoin address when the text field is tapped

@@ -89,6 +89,10 @@ class AppRoutes {
               path: '',
               redirectTo: '/feed', // '/feed'
             ),
+            VWidget(
+                path: '/qrscanner',
+                widget: const QrScanner(),
+                buildTransition: _dynamicTransition),
             VWidget(path: '/feed', widget: FeedScreen(), stackedRoutes: [
               VWidget(
                   path: kNftProductScreenRoute + "/:nft_id",
@@ -207,10 +211,6 @@ class AppRoutes {
             ),
           ],
         ),
-        VWidget(
-            path: '/qrscanner',
-            widget: const QrScanner(),
-            buildTransition: _dynamicTransition)
       ];
   //
   // List<VRouteElement> get _tabletRoutes => [
