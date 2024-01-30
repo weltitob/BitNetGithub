@@ -9,7 +9,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-
 class BalanceCardLightning extends StatelessWidget {
   const BalanceCardLightning({super.key});
 
@@ -22,7 +21,10 @@ class BalanceCardLightning extends StatelessWidget {
         child: Stack(
           children: [
             const BalanceBackground2(),
-            balanceText(context, FontAwesomeIcons.wallet,),
+            balanceText(
+              context,
+              FontAwesomeIcons.wallet,
+            ),
             currencyPicture(context, "assets/images/lightning.png"),
           ],
         ),
@@ -31,10 +33,8 @@ class BalanceCardLightning extends StatelessWidget {
   }
 }
 
-
 class BalanceCardBtc extends StatelessWidget {
   const BalanceCardBtc({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,10 @@ class BalanceCardBtc extends StatelessWidget {
         child: Stack(
           children: [
             const BalanceBackground(),
-            balanceText(context, FontAwesomeIcons.piggyBank,),
+            balanceText(
+              context,
+              FontAwesomeIcons.piggyBank,
+            ),
             currencyPicture(context, 'assets/images/bitcoin.png')
           ],
         ),
@@ -412,7 +415,6 @@ class BackgroundGradientPurple extends StatelessWidget {
   }
 }
 
-
 Widget balanceText(BuildContext context, IconData iconData) {
   final userData = Provider.of<UserData>(context);
   final userWallet = userData.mainWallet;
@@ -440,11 +442,12 @@ Widget balanceText(BuildContext context, IconData iconData) {
           ],
         ),
         const SizedBox(height: AppTheme.elementSpacing),
-        Text(
-            "${userWallet.walletBalance} BTC",
+        Text("${userWallet.walletBalance} BTC",
             // NumberFormat.simpleCurrency().format(MockBalance.data.last),
             style: Theme.of(context).textTheme.headlineLarge),
-        SizedBox(height: AppTheme.elementSpacing * 0.25,),
+        SizedBox(
+          height: AppTheme.elementSpacing * 0.25,
+        ),
         Container(
           width: AppTheme.cardPadding * 10,
           child: Text(
@@ -463,14 +466,21 @@ Widget balanceText(BuildContext context, IconData iconData) {
             ),
             GestureDetector(
               onTap: () async {
-                await Clipboard.setData(ClipboardData(text: userWallet.walletAddress));
+                await Clipboard.setData(
+                    ClipboardData(text: userWallet.walletAddress));
                 // copied successfully
                 displaySnackbar(context, "Adresse in Zwischenablage kopiert");
               },
               child: Row(
                 children: [
-                  Icon(Icons.copy_rounded, color: AppTheme.white80, size: 18,),
-                  const SizedBox(width: 4,),
+                  Icon(
+                    Icons.copy_rounded,
+                    color: AppTheme.white80,
+                    size: 18,
+                  ),
+                  const SizedBox(
+                    width: 4,
+                  ),
                   Container(
                     child: Text(
                       userWallet.walletAddress,
@@ -483,7 +493,6 @@ Widget balanceText(BuildContext context, IconData iconData) {
             ),
           ],
         ),
-
       ],
     ),
   );

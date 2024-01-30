@@ -10,6 +10,7 @@ import 'package:bitnet/components/marketplace_widgets/NftProductHorizontal.dart'
 import 'package:bitnet/components/marketplace_widgets/NftProductSliderClickable.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -540,6 +541,10 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             columnMargin: sortedGridList[index].columnMargin,
                             rank: sortedGridList[index].rank,
                             onTap: handleProductClick,
+                            onLongTap: () {
+                              context.vRouter.to(kNftProductScreenRoute +
+                                  "/${sortedGridList[index].nftName}");
+                            },
                             onTapBuy: () {
                               setState(() {
                                 this.item_buy = sortedGridList[index].id;

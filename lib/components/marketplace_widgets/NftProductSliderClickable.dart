@@ -17,6 +17,7 @@ class NftProductSliderClickable extends StatefulWidget {
   final rank;
   final Function(int)? onTap;
   final Function()? onTapBuy;
+  final Function()? onLongTap;
   final selected;
 
   const NftProductSliderClickable(
@@ -31,7 +32,8 @@ class NftProductSliderClickable extends StatefulWidget {
       required this.rank,
       required this.selected,
       this.onTap,
-      this.onTapBuy})
+      this.onTapBuy,
+      this.onLongTap})
       : super(key: key);
 
   @override
@@ -51,6 +53,7 @@ class _NftProductSliderState extends State<NftProductSliderClickable> {
     final Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: onTapHandler,
+      onLongPress: widget.onLongTap,
       child: Container(
         width: 224.w,
         padding: EdgeInsets.all(10.w),

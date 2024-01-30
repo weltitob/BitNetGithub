@@ -20,6 +20,7 @@ import 'package:bitnet/pages/create/createscreen.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
+import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
@@ -90,10 +91,18 @@ class AppRoutes {
             ),
             VWidget(path: '/feed', widget: FeedScreen(), stackedRoutes: [
               VWidget(
+                  path: kNftProductScreenRoute + "/:nft_id",
+                  widget: NftProductScreen()),
+              VWidget(
                   path: kNotificationScreenRoute, widget: NotificationScreen()),
               VWidget(
                   path: kCollectionScreenRoute + "/:collection_id",
-                  widget: CollectionScreen()),
+                  widget: CollectionScreen(),
+                  stackedRoutes: [
+                    VWidget(
+                        path: kNftProductScreenRoute + "/:nft_id",
+                        widget: NftProductScreen()),
+                  ]),
             ]), //(path: '/feed', widget: FeedScreen()),
             VWidget(
                 path: '/create',
@@ -106,7 +115,7 @@ class AppRoutes {
               path: '/wallet',
               widget: WalletScreen(),
               stackedRoutes: [
-                 VWidget(
+                VWidget(
                   path: '/wallet/bitcoinscreen',
                   widget: const BitcoinScreen(),
                   buildTransition: _fadeTransition,
