@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
 import 'backbone/auth/auth.dart';
 import 'package:intl/date_symbol_data_local.dart';
-// Changed from 'dart:html'
 import 'package:matrix/matrix.dart';
 //import 'firebase_options.dart';
 
