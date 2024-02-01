@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/cloudfunctions/lnd/routerservice/sendpayment_v2.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
 import 'package:flutter/material.dart';
@@ -157,11 +156,11 @@ class SendController extends State<Send> {
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
         // Send bitcoin to the selected receiver using the user's wallet
-        CloudfunctionCallback callback = await sendPaymentV2(bitcoinReceiverAdress);
+        dynamic restResponse = await sendPaymentV2(bitcoinReceiverAdress);
         setState(() {
           isFinished = true;
         });
-        if (callback.statusCode == "success") {
+        if (restResponse.statusCode == "success") {
           // Display a success message and navigate to the bottom navigation bar
         } else {
           setState(() {

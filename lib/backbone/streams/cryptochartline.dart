@@ -70,7 +70,6 @@ class CryptoChartLine {
     } else {
       Logs().e("Unable to retrieve chart data from Coingecko. Status code: ${res.statusCode} Response: ${res.body}");
       // Throw an error if unable to retrieve chart data from Coingecko
-      throw "Unable to retrieve chart data from Coingecko.";
     }
   }
 }

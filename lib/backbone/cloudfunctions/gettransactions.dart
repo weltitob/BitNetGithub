@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:bitnet/models/bitcoin/transaction.dart';
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'dart:async';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
@@ -22,7 +22,7 @@ dynamic getTransactions(UserWallet userWallet) async {
       final resp = await callable.call(<String, dynamic>{
         'address': userWallet.walletAddress,
       });
-      final mydata = CloudfunctionCallback.fromJson(resp.data);
+      final mydata = RestResponse.fromJson(resp.data);
       if (mydata.statusCode == "success") { // Check if response was successful
         var encodedString = jsonDecode(mydata.message);
         print("Encoded get Transactions response: $encodedString");

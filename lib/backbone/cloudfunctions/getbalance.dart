@@ -1,6 +1,6 @@
 // import 'dart:async';
 //
-// import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
+// import 'package:bitnet/models/firebase/restresponse.dart';
 // import 'package:cloud_functions/cloud_functions.dart';
 // import 'package:bitnet/backbone/helper/databaserefs.dart';
 // import 'package:bitnet/models/user/userwallet.dart';

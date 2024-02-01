@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
 import 'package:bitnet/models/IONdata.dart';
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 createDID(String username, String challenge) async {
@@ -17,7 +17,7 @@ createDID(String username, String challenge) async {
   // Use the deepMapCast utility function to recursively cast the data field
   final Map<String, dynamic> responseData = deepMapCast(response.data as Map<Object?, Object?>);
 
-  final CloudfunctionCallback callback = CloudfunctionCallback.fromJson(responseData);
+  final RestResponse callback = RestResponse.fromJson(responseData);
 
   // Print CloudfunctionCallback object using toString()
   print("CloudfunctionCallback: ${callback.toString()}");

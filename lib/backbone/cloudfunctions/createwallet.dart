@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 
@@ -20,7 +20,7 @@ dynamic createWallet({required String email,}) async {
       'useruid': "null",
     });
     // Parse the response and return the new UserWallet object
-    final mydata = CloudfunctionCallback.fromJson(resp.data);
+    final mydata = RestResponse.fromJson(resp.data);
     if (mydata.statusCode == "success") {
       var encodedString = jsonDecode(mydata.message);
       final newWallet = UserWallet.fromJson(encodedString);

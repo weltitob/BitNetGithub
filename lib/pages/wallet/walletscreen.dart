@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
+import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
+import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
@@ -10,53 +13,9 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:vrouter/vrouter.dart';
 
-class WalletScreen extends StatefulWidget {
-  const WalletScreen({Key? key}) : super(key: key);
-
-  @override
-  State<WalletScreen> createState() => _WalletScreenState();
-}
-
-class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClientMixin{
-  late final Future<LottieComposition> _compositionSend;
-  late final Future<LottieComposition> _compositionReceive;
-  bool _visible = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _compositionSend = loadComposition('assets/lottiefiles/senden.json');
-    _compositionReceive = loadComposition('assets/lottiefiles/erhalten.json');
-    updatevisibility();
-  }
-
-  void updatevisibility() async {
-    await _compositionSend;
-    await _compositionReceive;
-    var timer = Timer(Duration(milliseconds: 50),
-            () {
-          setState(() {
-            _visible = true;
-          });
-        }
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-
-  //die 3 lottiefiles downloaden und anzeigen direkt gespeichert?
-  final PageController _controller = PageController();
-
-  Future<void> _handleRefresh() async {
-    // final userData = Provider.of<UserData>(context, listen: false);
-    // final userWallet = userData.mainWallet;
-    // await getBalance(userWallet);
-    // await getTransactions(userWallet);
-  }
+class WalletScreen extends StatelessWidget {
+  final WalletController controller;
+  const WalletScreen({Key? key, required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -69,25 +28,25 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
         showChildOpacityTransition: false,
         height: 200,
         backgroundColor: lighten(AppTheme.colorBackground, 20),
-        onRefresh: _handleRefresh,
+        onRefresh: controller.handleRefresh,
         child: ListView(
           children: [
             const SizedBox(height: AppTheme.cardPadding * 2),
             SizedBox(
               height: 200,
               child: PageView(
-                controller: _controller,
+                controller: controller.pageController,
                 scrollDirection: Axis.horizontal,
                 children: [
-                  BalanceCardLightning(),
-                  BalanceCardBtc(),
+                  BalanceCardLightning(controller: controller),
+                  BalanceCardBtc(controller: controller),
                 ],
               ),
             ),
             const SizedBox(height: AppTheme.cardPadding),
             Center(
               child: SmoothPageIndicator(
-                controller: _controller,
+                controller: controller.pageController,
                 count: 2,
                 effect: ExpandingDotsEffect(
                   activeDotColor: AppTheme.colorBitcoin,
@@ -140,7 +99,8 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                     onTap: () => VRouter.of(context).to('/wallet/send'),
                     //onTap: () => VRouter.of(context).to('/wallet/send_choose_receiver'),
                     //onTap: () => VRouter.of(context).to('/wallet/send'), //userData.mainWallet.walletAddress,
-                    child: circButtonWidget("Senden", _compositionSend,
+                    child: circButtonWidget(
+                        context, "Senden", controller.compositionSend,
                         const BackgroundGradientPurple()),
                   ),
                   GestureDetector(
@@ -148,8 +108,9 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                       VRouter.of(context).to('/wallet/receive');
                     },
                     child: circButtonWidget(
+                        context,
                         "Erhalten",
-                        _compositionReceive,
+                        controller.compositionReceive,
                         const BackgroundGradientOrange()),
                   ),
                 ],
@@ -173,7 +134,7 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
     );
   }
 
-  Widget circButtonWidget(String text, dynamic comp, Widget background) {
+  Widget circButtonWidget(BuildContext context, String text, dynamic comp, Widget background) {
     return Container(
       height: 120,
       width: 140,
@@ -199,7 +160,7 @@ class _WalletScreenState extends State<WalletScreen> with AutomaticKeepAliveClie
                     return FittedBox(
                       fit: BoxFit.fitHeight,
                       child: AnimatedOpacity(
-                        opacity: _visible ? 1.0 : 0.0,
+                        opacity: controller.visible ? 1.0 : 0.0,
                         duration: Duration(milliseconds: 1000),
                         child: Lottie(composition: composition),
                       ),

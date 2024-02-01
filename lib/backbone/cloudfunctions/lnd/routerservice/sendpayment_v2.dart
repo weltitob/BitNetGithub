@@ -1,17 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
+import 'package:bitnet/backbone/helper/loadmacaroon.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 
-Future<ByteData> loadMacaroonAsset() async {
-  return await rootBundle.load('assets/keys/lnd_admin.macaroon');
-}
 
-Future<CloudfunctionCallback> sendPaymentV2(String invoice_string) async {
+Future<RestResponse> sendPaymentV2(String invoice_string) async {
   const String restHost = 'mybitnet.com:8443'; // Update the host as needed
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   // Make the GET request
@@ -53,10 +49,10 @@ Future<CloudfunctionCallback> sendPaymentV2(String invoice_string) async {
     print(jsonResponse); // The combined JSON response
 
     // Now create the CloudfunctionCallback from the combined JSON
-    return CloudfunctionCallback.fromJson(jsonResponse);
+    return RestResponse.fromJson(jsonResponse);
   } catch (e) {
     print('Error: $e');
-    return CloudfunctionCallback(statusCode: "error", message: "Error during network call: $e", data: {});
+    return RestResponse(statusCode: "error", message: "Error during network call: $e", data: {});
   }
 
   // try {

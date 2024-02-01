@@ -29,10 +29,12 @@ import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
+import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
+import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:bitnet/pages/website/compliance/agbscreen.dart';
 import 'package:bitnet/pages/website/compliance/impressumscreen.dart';
 import 'package:bitnet/pages/website/contact/report/report.dart';
@@ -117,7 +119,7 @@ class AppRoutes {
                 )),
             VWidget(
               path: '/wallet',
-              widget: WalletScreen(),
+              widget: Wallet(),
               stackedRoutes: [
                 VWidget(
                   path: '/wallet/bitcoinscreen',
@@ -131,7 +133,7 @@ class AppRoutes {
                 ),
                 VWidget(
                   path: '/wallet/receive',
-                  widget: const ReceiveScreen(),
+                  widget: Receive(),
                   buildTransition: _fadeTransition,
                 ),
                 // VWidget(

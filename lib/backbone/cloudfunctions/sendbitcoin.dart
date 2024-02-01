@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:bitnet/models/bitcoin/transaction.dart';
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:bitnet/backbone/cloudfunctions/getbalance.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
@@ -10,7 +10,7 @@ import 'package:bitnet/models/user/userwallet.dart';
 The function takes in four required parameters: userWallet, receiver_address, amount_to_send, and fee_size.
 If everything is valid it sends Bitcoin to the receiver_address.
  */
-Future<CloudfunctionCallback> sendBitcoin({
+Future<RestResponse> sendBitcoin({
   required UserWallet userWallet,
   required String receiver_address,
   required String amount_to_send,
@@ -33,7 +33,7 @@ Future<CloudfunctionCallback> sendBitcoin({
     print("noch ist alles gut 1...");
 
     // parse response data into CloudfunctionCallback object
-    final mydata = CloudfunctionCallback.fromJson(resp.data);
+    final mydata = RestResponse.fromJson(resp.data);
 
     // print status of CloudfunctionCallback object
     print("noch ist alles gut 2...");
@@ -71,7 +71,7 @@ Future<CloudfunctionCallback> sendBitcoin({
     // error occurred while calling cloud function
     print('EIN FEHLR IST BEIM AUFRUF DER CLOUD FUNKTION AUFGETRETEN');
     print(e);
-    return CloudfunctionCallback(statusCode: "error",
+    return RestResponse(statusCode: "error",
         message: 'Ein interer Fehler ist aufgetreten, bitte versuche es später erneut', data: {});
   }
 }

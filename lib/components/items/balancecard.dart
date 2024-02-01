@@ -1,4 +1,5 @@
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class BalanceCardLightning extends StatelessWidget {
-  const BalanceCardLightning({super.key});
+  final WalletController controller;
+  const BalanceCardLightning({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +23,11 @@ class BalanceCardLightning extends StatelessWidget {
         child: Stack(
           children: [
             const BalanceBackground2(),
-            balanceText(
-              context,
-              FontAwesomeIcons.wallet,
+            BalanceTextWidget(
+              iconData: FontAwesomeIcons.wallet,
+              balance: controller.lightningBalance.balance,
+              walletAddress: "safdadasdas",
+              currencyEquivalent: 'balanceInEuroOrBTC',
             ),
             currencyPicture(context, "assets/images/lightning.png"),
           ],
@@ -34,7 +38,8 @@ class BalanceCardLightning extends StatelessWidget {
 }
 
 class BalanceCardBtc extends StatelessWidget {
-  const BalanceCardBtc({Key? key}) : super(key: key);
+  final WalletController controller;
+  const BalanceCardBtc({Key? key, required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +50,11 @@ class BalanceCardBtc extends StatelessWidget {
         child: Stack(
           children: [
             const BalanceBackground(),
-            balanceText(
-              context,
-              FontAwesomeIcons.piggyBank,
+            BalanceTextWidget(
+              iconData: FontAwesomeIcons.piggyBank,
+              balance: controller.onchainBalance.confirmedBalance,
+              walletAddress: "safdadasdas",
+              currencyEquivalent: 'balanceInEuroOrBTC',
             ),
             currencyPicture(context, 'assets/images/bitcoin.png')
           ],
@@ -415,89 +422,6 @@ class BackgroundGradientPurple extends StatelessWidget {
   }
 }
 
-Widget balanceText(BuildContext context, IconData iconData) {
-  final userData = Provider.of<UserData>(context);
-  final userWallet = userData.mainWallet;
-  // getBalance(userWallet);
-
-  return Padding(
-    padding: const EdgeInsets.all(AppTheme.cardPadding * 1.5),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(
-              iconData,
-              //Icons.wallet,
-              size: AppTheme.elementSpacing * 1.75,
-            ),
-            SizedBox(
-              width: AppTheme.elementSpacing,
-            ),
-            Text(
-              'Guthaben',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ],
-        ),
-        const SizedBox(height: AppTheme.elementSpacing),
-        Text("${userWallet.walletBalance} BTC",
-            // NumberFormat.simpleCurrency().format(MockBalance.data.last),
-            style: Theme.of(context).textTheme.headlineLarge),
-        SizedBox(
-          height: AppTheme.elementSpacing * 0.25,
-        ),
-        Container(
-          width: AppTheme.cardPadding * 10,
-          child: Text(
-            "= 8918.89€",
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-        const Spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Deine Adresse:',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            GestureDetector(
-              onTap: () async {
-                await Clipboard.setData(
-                    ClipboardData(text: userWallet.walletAddress));
-                // copied successfully
-                displaySnackbar(context, "Adresse in Zwischenablage kopiert");
-              },
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.copy_rounded,
-                    color: AppTheme.white80,
-                    size: 18,
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  Container(
-                    child: Text(
-                      userWallet.walletAddress,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
 Widget currencyPicture(BuildContext context, String imageUrl) {
   return Positioned(
     right: AppTheme.cardPadding * 1.5,
@@ -514,4 +438,98 @@ Widget currencyPicture(BuildContext context, String imageUrl) {
       ),
     ),
   );
+}
+
+
+class BalanceTextWidget extends StatelessWidget {
+  final String balance;
+  final String walletAddress;
+  final IconData iconData;
+  final String currencyEquivalent;
+
+  const BalanceTextWidget({
+    Key? key,
+    required this.balance,
+    required this.walletAddress,
+    required this.iconData,
+    required this.currencyEquivalent,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppTheme.cardPadding * 1.5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                iconData,
+                size: 24, // Replace with your AppTheme.elementSpacing * 1.75 if needed
+              ),
+              const SizedBox(
+                width: 8, // Replace with your AppTheme.elementSpacing if needed
+              ),
+              Text(
+                'Guthaben',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8), // Replace with your AppTheme.elementSpacing if needed
+          Text(
+            "$balance SAT",
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          const SizedBox(
+            height: 4, // Replace with your AppTheme.elementSpacing * 0.25 if needed
+          ),
+          Container(
+            width: 160, // Replace with your AppTheme.cardPadding * 10 if needed
+            child: Text(
+              "= $currencyEquivalent€",
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Deine Adresse:',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              GestureDetector(
+                onTap: () async {
+                  await Clipboard.setData(
+                      ClipboardData(text: walletAddress));
+                  // copied successfully
+                  // Replace with your method to display a snackbar
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.copy_rounded,
+                      color: Colors.grey, // Replace with your AppTheme.white80 if needed
+                      size: 18,
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      walletAddress,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
