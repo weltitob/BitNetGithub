@@ -424,8 +424,8 @@ class BackgroundGradientPurple extends StatelessWidget {
 
 Widget currencyPicture(BuildContext context, String imageUrl) {
   return Positioned(
-    right: AppTheme.cardPadding * 1.5,
-    top: AppTheme.cardPadding * 1.5,
+    right: AppTheme.cardPadding * 1.25,
+    top: AppTheme.cardPadding * 1.25,
     child: Container(
       height: AppTheme.cardPadding * 2,
       width: AppTheme.cardPadding * 2,
@@ -458,7 +458,7 @@ class BalanceTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(AppTheme.cardPadding * 1.5),
+      padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -477,7 +477,7 @@ class BalanceTextWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8), // Replace with your AppTheme.elementSpacing if needed
+          const SizedBox(height: AppTheme.cardPadding * 0.75), // Replace with your AppTheme.elementSpacing if needed
           Text(
             "$balance SAT",
             style: Theme.of(context).textTheme.headlineLarge,
@@ -512,7 +512,7 @@ class BalanceTextWidget extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.copy_rounded,
-                      color: Colors.grey, // Replace with your AppTheme.white80 if needed
+                      color: AppTheme.white80, // Replace with your AppTheme.white80 if needed
                       size: 18,
                     ),
                     const SizedBox(

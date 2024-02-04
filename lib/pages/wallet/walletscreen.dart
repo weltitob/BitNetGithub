@@ -1,12 +1,7 @@
-import 'dart:async';
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
-import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:lottie/lottie.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -23,113 +18,105 @@ class WalletScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: LiquidPullToRefresh(
-        color: lighten(AppTheme.colorBackground, 10),
-        showChildOpacityTransition: false,
-        height: 200,
-        backgroundColor: lighten(AppTheme.colorBackground, 20),
-        onRefresh: controller.handleRefresh,
-        child: ListView(
-          children: [
-            const SizedBox(height: AppTheme.cardPadding * 2),
-            SizedBox(
-              height: 200,
-              child: PageView(
-                controller: controller.pageController,
-                scrollDirection: Axis.horizontal,
-                children: [
-                  BalanceCardLightning(controller: controller),
-                  BalanceCardBtc(controller: controller),
-                ],
+      body: ListView(
+        children: [
+          const SizedBox(height: AppTheme.cardPadding * 2),
+          SizedBox(
+            height: 200,
+            child: PageView(
+              controller: controller.pageController,
+              scrollDirection: Axis.horizontal,
+              children: [
+                BalanceCardLightning(controller: controller),
+                BalanceCardBtc(controller: controller),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppTheme.cardPadding),
+          Center(
+            child: SmoothPageIndicator(
+              controller: controller.pageController,
+              count: 2,
+              effect: ExpandingDotsEffect(
+                activeDotColor: AppTheme.colorBitcoin,
+                dotColor: AppTheme.glassMorphColorLight,
               ),
             ),
-            const SizedBox(height: AppTheme.cardPadding),
-            Center(
-              child: SmoothPageIndicator(
-                controller: controller.pageController,
-                count: 2,
-                effect: ExpandingDotsEffect(
-                  activeDotColor: AppTheme.colorBitcoin,
-                  dotColor: AppTheme.glassMorphColorLight,
+          ),
+          const SizedBox(height: AppTheme.cardPadding),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding),
+            child: Text(
+              "Cryptos",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          const SizedBox(height: AppTheme.cardPadding),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final currency in MockFavorites.data) ...[
+                  CryptoItem(
+                    currency: currency,
+                    context: context,
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: AppTheme.cardPadding * 1.5),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding),
+            child: Text(
+              "Aktionen",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          const SizedBox(height: AppTheme.cardPadding),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () => VRouter.of(context).to('/wallet/send'),
+                  //onTap: () => VRouter.of(context).to('/wallet/send_choose_receiver'),
+                  //onTap: () => VRouter.of(context).to('/wallet/send'), //userData.mainWallet.walletAddress,
+                  child: circButtonWidget(
+                      context, "Senden", controller.compositionSend,
+                      const BackgroundGradientPurple()),
                 ),
-              ),
+                GestureDetector(
+                  onTap: () {
+                    VRouter.of(context).to('/wallet/receive');
+                  },
+                  child: circButtonWidget(
+                      context,
+                      "Erhalten",
+                      controller.compositionReceive,
+                      const BackgroundGradientOrange()),
+                ),
+              ],
             ),
-            const SizedBox(height: AppTheme.cardPadding),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
-              child: Text(
-                "Cryptos",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+          ),
+          const SizedBox(height: AppTheme.cardPadding * 1.5),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding),
+            child: Text(
+              "Transaktionen",
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: AppTheme.cardPadding),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final currency in MockFavorites.data) ...[
-                    CryptoItem(
-                      currency: currency,
-                      context: context,
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            const SizedBox(height: AppTheme.cardPadding * 1.5),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
-              child: Text(
-                "Aktionen",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            const SizedBox(height: AppTheme.cardPadding),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  GestureDetector(
-                    onTap: () => VRouter.of(context).to('/wallet/send'),
-                    //onTap: () => VRouter.of(context).to('/wallet/send_choose_receiver'),
-                    //onTap: () => VRouter.of(context).to('/wallet/send'), //userData.mainWallet.walletAddress,
-                    child: circButtonWidget(
-                        context, "Senden", controller.compositionSend,
-                        const BackgroundGradientPurple()),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      VRouter.of(context).to('/wallet/receive');
-                    },
-                    child: circButtonWidget(
-                        context,
-                        "Erhalten",
-                        controller.compositionReceive,
-                        const BackgroundGradientOrange()),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppTheme.cardPadding * 1.5),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
-              child: Text(
-                "Transaktionen",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            const SizedBox(height: AppTheme.cardPadding),
-            Transactions(),
-          ],
-        ),
-
+          ),
+          const SizedBox(height: AppTheme.cardPadding),
+          Transactions(),
+        ],
       ),
     );
   }

@@ -1,14 +1,17 @@
 import 'dart:async';
 
-import 'package:bitnet/models/bitcoin/transaction.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
+import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
+import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/backbone/streams/gettransactionsstream.dart';
-import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:matrix/matrix.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions({Key? key}) : super(key: key);
@@ -23,7 +26,46 @@ class _TransactionsState extends State<Transactions>
   late final Future<LottieComposition> _searchforfilesComposition;
   bool _visible = false;
 
-  TransactionsStream transactionsStream = TransactionsStream();
+  List<LightningPayment> lightningPayments = [];
+  List<BitcoinTransaction> onchainTransactions = [];
+
+
+  //TransactionsStream transactionsStream = TransactionsStream();
+
+  void getOnchainTransactions() async {
+    Logs().w("Getting onchain transactions");
+    RestResponse restBitcoinTransactions = await getTransactions();
+    BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
+    onchainTransactions = bitcoinTransactions.transactions;
+  }
+
+  void getLightningPayments() async {
+    Logs().w("Getting lightning payments");
+    RestResponse restLightningPayments = await listPayments();
+    LightningPaymentsList lightningPayments = LightningPaymentsList.fromJson(restLightningPayments.data);
+    this.lightningPayments = lightningPayments.payments;
+  }
+
+
+
+  Widget buildPaymentContainer(LightningPayment payment) {
+    // Gelber Container für Lightning-Zahlungen
+    return Container(
+      height: 40,
+      color: Colors.yellow,
+      child: Text(payment.toString()), // Angenommen, PaymentModel hat eine `toString` Methode
+    );
+  }
+
+  Widget buildTransactionContainer(BitcoinTransaction transaction) {
+    // Lila Container für Onchain-Transaktionen
+    return Container(
+      height: 40,
+      color: Colors.purple,
+      child: Text(transaction.toString()), // Angenommen, TransactionModel hat eine `toString` Methode
+    );
+  }
+
 
   @override
   void initState() {
@@ -32,6 +74,8 @@ class _TransactionsState extends State<Transactions>
         loadComposition('assets/lottiefiles/search_for_files.json');
     updatevisibility();
     _tabController = TabController(length: 3, vsync: this);
+    getOnchainTransactions();
+    getLightningPayments();
   }
 
   void updatevisibility() async {
@@ -114,63 +158,71 @@ class _TransactionsState extends State<Transactions>
           padding: EdgeInsets.only(top: AppTheme.elementSpacing),
           child: Container(
             height: AppTheme.cardPadding * 18,
-            child: StreamBuilder<List<BitcoinTransaction>>(
-              stream: transactionsStream.getTransactionsStream(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return SizedBox(
-                      height: AppTheme.cardPadding * 3,
-                      child: Center(child: dotProgress(context)));
-                }
-                List<BitcoinTransaction> all_transactions = snapshot.data!;
-                // Filter transactions by transaction type
-                List<BitcoinTransaction> receive_transactions = all_transactions
-                    .where((t) => t.transactionDirection == "received")
-                    .toList();
+            child: ListView(
+              children: [
+                ...lightningPayments.map(buildPaymentContainer).toList(),
+                ...onchainTransactions.map(buildTransactionContainer).toList(),
+              ]
+            )
 
-                List<BitcoinTransaction> send_transactions = all_transactions
-                    .where((t) => t.transactionDirection == "sent")
-                    .toList();
-                if (all_transactions.length == 0) {
-                  return searchForFilesAnimation(_searchforfilesComposition);
-                } //else =>
-                return TabBarView(
-                  controller: _tabController,
-                  children: [
-                    ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: all_transactions.length,
-                      itemBuilder: (context, index) {
-                        final _transaction = all_transactions[index];
-                        return TransactionItem(
-                            transaction: _transaction, context: context);
-                      },
-                    ),
-                    ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: send_transactions.length,
-                      itemBuilder: (context, index) {
-                        final _transaction = send_transactions[index];
-                        return TransactionItem(
-                            transaction: _transaction, context: context);
-                      },
-                    ),
-                    ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: receive_transactions.length,
-                      itemBuilder: (context, index) {
-                        final _transaction = receive_transactions[index];
-                        return TransactionItem(
-                            transaction: _transaction, context: context);
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
+            //
+            // StreamBuilder<List<BitcoinTransaction>>(
+            //   stream: transactionsStream.getTransactionsStream(),
+            //   builder: (context, snapshot) {
+            //     if (!snapshot.hasData) {
+            //       return SizedBox(
+            //           height: AppTheme.cardPadding * 3,
+            //           child: Center(child: dotProgress(context)));
+            //     }
+            //     List<BitcoinTransaction> all_transactions = snapshot.data!;
+            //     // Filter transactions by transaction type
+            //     List<BitcoinTransaction> receive_transactions = all_transactions
+            //         .where((t) => t.transactionDirection == "received")
+            //         .toList();
+            //
+            //     List<BitcoinTransaction> send_transactions = all_transactions
+            //         .where((t) => t.transactionDirection == "sent")
+            //         .toList();
+            //     if (all_transactions.length == 0) {
+            //       return searchForFilesAnimation(_searchforfilesComposition);
+            //     } //else =>
+            //     return TabBarView(
+            //       controller: _tabController,
+            //       children: [
+            //         ListView.builder(
+            //           physics: NeverScrollableScrollPhysics(),
+            //           shrinkWrap: true,
+            //           itemCount: all_transactions.length,
+            //           itemBuilder: (context, index) {
+            //             final _transaction = all_transactions[index];
+            //             return TransactionItem(
+            //                 transaction: _transaction, context: context);
+            //           },
+            //         ),
+            //         // ListView.builder(
+            //         //   physics: NeverScrollableScrollPhysics(),
+            //         //   shrinkWrap: true,
+            //         //   itemCount: send_transactions.length,
+            //         //   itemBuilder: (context, index) {
+            //         //     final _transaction = send_transactions[index];
+            //         //     return TransactionItem(
+            //         //         transaction: _transaction, context: context);
+            //         //   },
+            //         // ),
+            //         // ListView.builder(
+            //         //   physics: NeverScrollableScrollPhysics(),
+            //         //   shrinkWrap: true,
+            //         //   itemCount: receive_transactions.length,
+            //         //   itemBuilder: (context, index) {
+            //         //     final _transaction = receive_transactions[index];
+            //         //     return TransactionItem(
+            //         //         transaction: _transaction, context: context);
+            //         //   },
+            //         // ),
+            //       ],
+            //     );
+            //   },
+            // ),
           ),
         ),
       ],

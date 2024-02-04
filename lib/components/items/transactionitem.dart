@@ -1,4 +1,5 @@
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -20,9 +21,9 @@ class _TransactionItemState extends State<TransactionItem> {
   @override
   Widget build(BuildContext context) {
     bool _hasReceived =
-        widget.transaction.transactionDirection == "received" ? true : false;
+        widget.transaction.destAddresses == "received" ? true : false;
     bool _isConfirmed =
-        widget.transaction.transactionStatus == "confirmed" ? true : false;
+        widget.transaction.destAddresses == "confirmed" ? true : false;
     return Padding(
       padding: const EdgeInsets.only(
           left: AppTheme.cardPadding,
@@ -108,11 +109,10 @@ class _TransactionItemState extends State<TransactionItem> {
                                 width: AppTheme.cardPadding * 5,
                                 child: Text(
                                   _hasReceived ?
-                                  widget.transaction.transactionSender.toString()
-                                      : widget.transaction.transactionReceiver,
+                                  widget.transaction.destAddresses.toString()
+                                      : widget.transaction.destAddresses.toString(),
                                   overflow: TextOverflow.ellipsis,
-                                  style:
-                                  Theme.of(widget.context).textTheme.titleSmall,
+                                  style: Theme.of(widget.context).textTheme.titleSmall,
                                 ),
                               ),
                             ],
@@ -121,7 +121,7 @@ class _TransactionItemState extends State<TransactionItem> {
                           Row(
                             children: [
                               Text(
-                                widget.transaction.dateFormatted,
+                                widget.transaction.txHash,
                                 style: Theme.of(widget.context).textTheme.bodySmall,
                               ),
                             ],
@@ -134,7 +134,7 @@ class _TransactionItemState extends State<TransactionItem> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            widget.transaction.amountString,
+                            widget.transaction.amount,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!

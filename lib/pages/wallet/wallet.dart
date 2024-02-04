@@ -29,6 +29,8 @@ class WalletController extends State<Wallet> {
     super.initState();
     fetchOnchainWalletBalance();
     fetchLightingWalletBalance();
+
+
     compositionSend = loadComposition('assets/lottiefiles/senden.json');
     compositionReceive = loadComposition('assets/lottiefiles/erhalten.json');
     updatevisibility();
