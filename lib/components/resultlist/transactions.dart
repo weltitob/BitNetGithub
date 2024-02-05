@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
+import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
@@ -25,47 +27,41 @@ class _TransactionsState extends State<Transactions>
   late TabController _tabController;
   late final Future<LottieComposition> _searchforfilesComposition;
   bool _visible = false;
-
   List<LightningPayment> lightningPayments = [];
+  List<ReceivedInvoice> lightningInvoices = [];
   List<BitcoinTransaction> onchainTransactions = [];
-
-
   //TransactionsStream transactionsStream = TransactionsStream();
+  //all transactions in and out of the wallet
 
   void getOnchainTransactions() async {
     Logs().w("Getting onchain transactions");
     RestResponse restBitcoinTransactions = await getTransactions();
-    BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
+    BitcoinTransactionsList bitcoinTransactions =
+        BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
     onchainTransactions = bitcoinTransactions.transactions;
   }
 
+  //what i sent on the lightning network
   void getLightningPayments() async {
     Logs().w("Getting lightning payments");
     RestResponse restLightningPayments = await listPayments();
-    LightningPaymentsList lightningPayments = LightningPaymentsList.fromJson(restLightningPayments.data);
+    LightningPaymentsList lightningPayments =
+        LightningPaymentsList.fromJson(restLightningPayments.data);
     this.lightningPayments = lightningPayments.payments;
   }
 
-
-
-  Widget buildPaymentContainer(LightningPayment payment) {
-    // Gelber Container für Lightning-Zahlungen
-    return Container(
-      height: 40,
-      color: Colors.yellow,
-      child: Text(payment.toString()), // Angenommen, PaymentModel hat eine `toString` Methode
-    );
+  //what I received on the lightning network
+  void getLightningInvoices() async {
+    Logs().w("Getting lightning invoices");
+    RestResponse restLightningInvoices = await listInvoices();
+    // Angenommen, 'restLightningInvoices.data' ist das JSON-Objekt, das Sie erhalten haben.
+    ReceivedInvoicesList lightningInvoices =
+    ReceivedInvoicesList.fromJson(restLightningInvoices.data);
+    // Filtern Sie die Rechnungen, um nur diejenigen zu behalten, die beglichen wurden.
+    List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
+    // Zuweisung der gefilterten Liste zu Ihrer Klassenvariable oder einem anderen Container
+    this.lightningInvoices = settledInvoices;
   }
-
-  Widget buildTransactionContainer(BitcoinTransaction transaction) {
-    // Lila Container für Onchain-Transaktionen
-    return Container(
-      height: 40,
-      color: Colors.purple,
-      child: Text(transaction.toString()), // Angenommen, TransactionModel hat eine `toString` Methode
-    );
-  }
-
 
   @override
   void initState() {
@@ -76,6 +72,7 @@ class _TransactionsState extends State<Transactions>
     _tabController = TabController(length: 3, vsync: this);
     getOnchainTransactions();
     getLightningPayments();
+    getLightningInvoices();
   }
 
   void updatevisibility() async {
@@ -157,73 +154,103 @@ class _TransactionsState extends State<Transactions>
         Padding(
           padding: EdgeInsets.only(top: AppTheme.elementSpacing),
           child: Container(
-            height: AppTheme.cardPadding * 18,
-            child: ListView(
-              children: [
-                ...lightningPayments.map(buildPaymentContainer).toList(),
-                ...onchainTransactions.map(buildTransactionContainer).toList(),
-              ]
-            )
+              height: AppTheme.cardPadding * 18,
+              child: ListView(children: [
+                ...lightningInvoices
+                    .map((transaction) => TransactionItem(
+                  context: context,
+                  type: TransactionType.lightning,
+                  direction: TransactionDirection.received,
+                  receiver: transaction.paymentRequest.toString(),
+                  txHash: transaction.value.toString(),
+                  amount: transaction.amtPaid.toString(),
+                  status: TransactionStatus.failed,
+                  //received: transaction.status == "SUCCEEDED",
+                )).toList(),
+                ...lightningPayments
+                    .map((transaction) => TransactionItem(
+                          context: context,
+                          type: TransactionType.lightning,
+                          direction: TransactionDirection.sent,
+                          receiver: transaction.paymentHash.toString(),
+                          txHash: transaction.paymentHash.toString(),
+                          amount: transaction.valueSat.toString(),
+                          status: transaction.status == "SUCCEEDED" ? TransactionStatus.confirmed : TransactionStatus.pending,
+                          //received: transaction.status == "SUCCEEDED",
+                        ))
+                    .toList(),
+                ...onchainTransactions
+                    .map((transaction) => TransactionItem(
+                          status: TransactionStatus.pending,
+                          type: TransactionType.onChain,
+                          direction: TransactionDirection.sent,
+                          context: context,
+                          receiver: transaction.destAddresses.toString(),
+                          txHash: transaction.txHash.toString(),
+                          amount: transaction.amount.toString(),
+                        ))
+                    .toList(),
+              ])
 
-            //
-            // StreamBuilder<List<BitcoinTransaction>>(
-            //   stream: transactionsStream.getTransactionsStream(),
-            //   builder: (context, snapshot) {
-            //     if (!snapshot.hasData) {
-            //       return SizedBox(
-            //           height: AppTheme.cardPadding * 3,
-            //           child: Center(child: dotProgress(context)));
-            //     }
-            //     List<BitcoinTransaction> all_transactions = snapshot.data!;
-            //     // Filter transactions by transaction type
-            //     List<BitcoinTransaction> receive_transactions = all_transactions
-            //         .where((t) => t.transactionDirection == "received")
-            //         .toList();
-            //
-            //     List<BitcoinTransaction> send_transactions = all_transactions
-            //         .where((t) => t.transactionDirection == "sent")
-            //         .toList();
-            //     if (all_transactions.length == 0) {
-            //       return searchForFilesAnimation(_searchforfilesComposition);
-            //     } //else =>
-            //     return TabBarView(
-            //       controller: _tabController,
-            //       children: [
-            //         ListView.builder(
-            //           physics: NeverScrollableScrollPhysics(),
-            //           shrinkWrap: true,
-            //           itemCount: all_transactions.length,
-            //           itemBuilder: (context, index) {
-            //             final _transaction = all_transactions[index];
-            //             return TransactionItem(
-            //                 transaction: _transaction, context: context);
-            //           },
-            //         ),
-            //         // ListView.builder(
-            //         //   physics: NeverScrollableScrollPhysics(),
-            //         //   shrinkWrap: true,
-            //         //   itemCount: send_transactions.length,
-            //         //   itemBuilder: (context, index) {
-            //         //     final _transaction = send_transactions[index];
-            //         //     return TransactionItem(
-            //         //         transaction: _transaction, context: context);
-            //         //   },
-            //         // ),
-            //         // ListView.builder(
-            //         //   physics: NeverScrollableScrollPhysics(),
-            //         //   shrinkWrap: true,
-            //         //   itemCount: receive_transactions.length,
-            //         //   itemBuilder: (context, index) {
-            //         //     final _transaction = receive_transactions[index];
-            //         //     return TransactionItem(
-            //         //         transaction: _transaction, context: context);
-            //         //   },
-            //         // ),
-            //       ],
-            //     );
-            //   },
-            // ),
-          ),
+              //
+              // StreamBuilder<List<BitcoinTransaction>>(
+              //   stream: transactionsStream.getTransactionsStream(),
+              //   builder: (context, snapshot) {
+              //     if (!snapshot.hasData) {
+              //       return SizedBox(
+              //           height: AppTheme.cardPadding * 3,
+              //           child: Center(child: dotProgress(context)));
+              //     }
+              //     List<BitcoinTransaction> all_transactions = snapshot.data!;
+              //     // Filter transactions by transaction type
+              //     List<BitcoinTransaction> receive_transactions = all_transactions
+              //         .where((t) => t.transactionDirection == "received")
+              //         .toList();
+              //
+              //     List<BitcoinTransaction> send_transactions = all_transactions
+              //         .where((t) => t.transactionDirection == "sent")
+              //         .toList();
+              //     if (all_transactions.length == 0) {
+              //       return searchForFilesAnimation(_searchforfilesComposition);
+              //     } //else =>
+              //     return TabBarView(
+              //       controller: _tabController,
+              //       children: [
+              //         ListView.builder(
+              //           physics: NeverScrollableScrollPhysics(),
+              //           shrinkWrap: true,
+              //           itemCount: all_transactions.length,
+              //           itemBuilder: (context, index) {
+              //             final _transaction = all_transactions[index];
+              //             return TransactionItem(
+              //                 transaction: _transaction, context: context);
+              //           },
+              //         ),
+              //         // ListView.builder(
+              //         //   physics: NeverScrollableScrollPhysics(),
+              //         //   shrinkWrap: true,
+              //         //   itemCount: send_transactions.length,
+              //         //   itemBuilder: (context, index) {
+              //         //     final _transaction = send_transactions[index];
+              //         //     return TransactionItem(
+              //         //         transaction: _transaction, context: context);
+              //         //   },
+              //         // ),
+              //         // ListView.builder(
+              //         //   physics: NeverScrollableScrollPhysics(),
+              //         //   shrinkWrap: true,
+              //         //   itemCount: receive_transactions.length,
+              //         //   itemBuilder: (context, index) {
+              //         //     final _transaction = receive_transactions[index];
+              //         //     return TransactionItem(
+              //         //         transaction: _transaction, context: context);
+              //         //   },
+              //         // ),
+              //       ],
+              //     );
+              //   },
+              // ),
+              ),
         ),
       ],
     );

@@ -6,10 +6,10 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-Future<RestResponse> listPayments() async {
+Future<RestResponse> listInvoices() async {
   const String restHost = 'mybitnet.com:8443'; // Update the host as needed
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
-  String url = 'https://$restHost/v1/payments';
+  String url = 'https://$restHost/v1/invoices';
 
   ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -26,11 +26,11 @@ Future<RestResponse> listPayments() async {
   try {
     var response = await http.get(Uri.parse(url), headers: headers,);
     // Print raw response for debugging
-    print('Raw Response: ${response.body}');
+    print('Raw Response Invoices: ${response.body}');
 
     if (response.statusCode == 200) {
       print(json.decode(response.body));
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrieved Lightning Payments", data: json.decode(response.body));
+      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrieved Lightning Invoices", data: json.decode(response.body));
 
     } else {
       print('Failed to load data: ${response.statusCode}, ${response.body}');
