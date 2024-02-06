@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
+import 'package:bitnet/provider/theme_provider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +116,8 @@ class MyApp extends StatelessWidget {
           )
         : MultiProvider(
             providers: [
+              ChangeNotifierProvider<MyThemeProvider>(
+                  create: (context) => MyThemeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider()),
               StreamProvider<UserData?>(

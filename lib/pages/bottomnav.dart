@@ -1,10 +1,16 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../provider/theme_provider.dart';
 
 class BottomNav extends StatefulWidget {
   final Widget child;
@@ -16,6 +22,13 @@ class BottomNav extends StatefulWidget {
 
 class _BottomNavState extends State<BottomNav> {
   String profileId = Auth().currentUser!.uid;
+
+  @override
+  void initState() {
+    getData();
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,4 +135,54 @@ class _BottomNavState extends State<BottomNav> {
       ),
     );
   }
+
+  final CollectionReference _collectionRef =  FirebaseFirestore.instance.collection('settings');
+
+  Future<void> getData() async {
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+    final allData = querySnapshot.docs.map((doc) => doc.id).toList();
+    print(allData);
+    if(allData.contains(FirebaseAuth.instance.currentUser!.uid)){
+      getUserTheme();
+      getUserLanguage();
+    }else{
+      Map<String,dynamic> data = {
+        "theme" : "System",
+        "lang" : "en",
+      };
+      _collectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
+          .set(data);
+    }
+  }
+
+  void getUserTheme(){
+    _collectionRef.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+      setState(() {
+        String myTheme = value.get("theme");
+        if(myTheme == "System"){
+          updateTheme(ThemeMode.system);
+        }else if(myTheme == "Dark"){
+          updateTheme(ThemeMode.dark);
+        }else{
+          updateTheme(ThemeMode.light);
+        }
+      });
+    });
+  }
+
+  void getUserLanguage(){
+    _collectionRef.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+      setState(() {
+        String myLanguage = value.get("lang");
+        Provider.of<LocalProvider>(context, listen: false)
+            .setLocaleInDatabase(myLanguage,Locale.fromSubtags(languageCode: myLanguage));
+      });
+    });
+  }
+
+  updateTheme(ThemeMode mode){
+    Provider.of<MyThemeProvider>(context, listen: false)
+        .updateThemeInDatabase(mode);
+  }
+
 }

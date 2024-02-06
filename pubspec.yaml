@@ -209,6 +209,8 @@ dependencies:
   seo: ^0.0.6
   popover: ^0.2.8+2
   sliding_up_panel: ^2.0.0+1
+  intl_generator: ^0.4.1
+  build_runner: ^2.4.8
 
 dev_dependencies:
   flutter_test:
@@ -217,7 +219,6 @@ dev_dependencies:
   intl_utils: ^2.4.0
   msix: ^3.6.2
   translations_cleaner: ^0.0.5
-  build_runner:
   flutter_gen_runner:
 
 
@@ -250,8 +251,6 @@ flutter:
     - assets/marketplace/
     - assets/lottiefiles/
     - assets/textfiles/
-    - assets/keys/
-    - assets/keys/lnd_admin.macaroon
 
 msix_config:
   display_name: bitnet

@@ -7,7 +7,6 @@ import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class ChangeLanguage extends StatefulWidget {
   const ChangeLanguage({super.key});
 
@@ -138,7 +137,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
       child: InkWell(
         onTap: (){
           Provider.of<LocalProvider>(context, listen: false)
-              .setLocale(Locale.fromSubtags(languageCode: codeList[index]));
+              .setLocaleInDatabase(codeList[index],Locale.fromSubtags(languageCode: codeList[index]));
           Navigator.pop(context);
         },
         child: Column(
