@@ -1,6 +1,8 @@
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:intl/intl.dart';
 
 enum TransactionType { lightning, onChain, }
 
@@ -16,6 +18,7 @@ class TransactionItem extends StatefulWidget {
   final String txHash;
   final String amount;
   final BuildContext context;
+  final int timestamp; // Add the timestamp property
   const TransactionItem({
     Key? key,
     required this.context,
@@ -25,6 +28,7 @@ class TransactionItem extends StatefulWidget {
     required this.type,
     required this.status,
     required this.direction,
+    required this.timestamp,
   }) : super(key: key);
 
   @override
@@ -34,6 +38,8 @@ class TransactionItem extends StatefulWidget {
 class _TransactionItemState extends State<TransactionItem> {
   @override
   Widget build(BuildContext context) {
+    // Use DateFormat for formatting the timestamp
+    final String formattedDate = displayTimeAgoFromInt(widget.timestamp);
     return Padding(
       padding: const EdgeInsets.only(
           left: AppTheme.cardPadding,
@@ -69,9 +75,7 @@ class _TransactionItemState extends State<TransactionItem> {
                               Container(
                                 width: AppTheme.cardPadding * 5,
                                 child: Text(
-                                  widget.receiver == "" ?
-                                  widget.receiver.toString()
-                                      : widget.receiver.toString(),
+                                  widget.receiver.toString(),
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(widget.context).textTheme.titleSmall,
                                 ),
@@ -80,15 +84,23 @@ class _TransactionItemState extends State<TransactionItem> {
                           ),
                           SizedBox(height: AppTheme.elementSpacing / 4,),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: AppTheme.cardPadding * 5,
-                                child: Text(
-                                  widget.txHash,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(widget.context).textTheme.bodySmall,
-                                ),
+                              // Container(
+                              //   width: AppTheme.cardPadding * 3,
+                              //   child: Text(
+                              //     widget.receiver,
+                              //     overflow: TextOverflow.ellipsis,
+                              //     style: Theme.of(widget.context).textTheme.bodySmall,
+                              //   ),
+                              // ),
+                              Text(
+                                formattedDate,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(widget.context).textTheme.bodyMedium,
                               ),
+
                             ],
                           ),
                         ],

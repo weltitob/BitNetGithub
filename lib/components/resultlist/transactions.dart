@@ -56,9 +56,10 @@ class _TransactionsState extends State<Transactions>
     RestResponse restLightningInvoices = await listInvoices();
     // Angenommen, 'restLightningInvoices.data' ist das JSON-Objekt, das Sie erhalten haben.
     ReceivedInvoicesList lightningInvoices =
-    ReceivedInvoicesList.fromJson(restLightningInvoices.data);
+        ReceivedInvoicesList.fromJson(restLightningInvoices.data);
     // Filtern Sie die Rechnungen, um nur diejenigen zu behalten, die beglichen wurden.
-    List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
+    List<ReceivedInvoice> settledInvoices =
+        lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
     // Zuweisung der gefilterten Liste zu Ihrer Klassenvariable oder einem anderen Container
     this.lightningInvoices = settledInvoices;
   }
@@ -158,37 +159,46 @@ class _TransactionsState extends State<Transactions>
               child: ListView(children: [
                 ...lightningInvoices
                     .map((transaction) => TransactionItem(
-                  context: context,
-                  type: TransactionType.lightning,
-                  direction: TransactionDirection.received,
-                  receiver: transaction.paymentRequest.toString(),
-                  txHash: transaction.value.toString(),
-                  amount: transaction.amtPaid.toString(),
-                  status: TransactionStatus.failed,
-                  //received: transaction.status == "SUCCEEDED",
-                )).toList(),
+                          timestamp: transaction.settleDate,
+                          context: context,
+                          type: TransactionType.lightning,
+                          direction: TransactionDirection.received,
+                          receiver: transaction.paymentRequest.toString(),
+                          txHash: transaction.value.toString(),
+                          amount: "+" + transaction.amtPaid.toString(),
+                          status: TransactionStatus.failed,
+                          //received: transaction.status == "SUCCEEDED",
+                        ))
+                    .toList(),
                 ...lightningPayments
                     .map((transaction) => TransactionItem(
+                          timestamp: transaction.creationDate,
                           context: context,
                           type: TransactionType.lightning,
                           direction: TransactionDirection.sent,
                           receiver: transaction.paymentHash.toString(),
                           txHash: transaction.paymentHash.toString(),
-                          amount: transaction.valueSat.toString(),
-                          status: transaction.status == "SUCCEEDED" ? TransactionStatus.confirmed : TransactionStatus.pending,
+                          amount: "-" + transaction.valueSat.toString(),
+                          status: transaction.status == "SUCCEEDED"
+                              ? TransactionStatus.confirmed
+                              : TransactionStatus.pending,
                           //received: transaction.status == "SUCCEEDED",
                         ))
                     .toList(),
                 ...onchainTransactions
                     .map((transaction) => TransactionItem(
-                          status: TransactionStatus.pending,
-                          type: TransactionType.onChain,
-                          direction: TransactionDirection.sent,
-                          context: context,
-                          receiver: transaction.destAddresses.toString(),
-                          txHash: transaction.txHash.toString(),
-                          amount: transaction.amount.toString(),
-                        ))
+                        timestamp: transaction.timeStamp,
+                        status: TransactionStatus.pending,
+                        type: TransactionType.onChain,
+                        direction: transaction.amount.contains("-")
+                            ? TransactionDirection.sent
+                            : TransactionDirection.received,
+                        context: context,
+                        receiver: transaction.destAddresses.toString(),
+                        txHash: transaction.txHash.toString(),
+                        amount: transaction.amount.contains("-")
+                            ? transaction.amount.toString()
+                            : "+" + transaction.amount.toString()))
                     .toList(),
               ])
 
