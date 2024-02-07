@@ -9,17 +9,20 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/pages/routetrees/routes.dart';
 import 'package:app_links/app_links.dart';
+import 'package:bitnet/provider/theme_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:bitnet/backbone/security/security.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class WidgetTree extends StatefulWidget {
   static GlobalKey<VRouterState> routerKey = GlobalKey<VRouterState>();
@@ -165,18 +168,28 @@ class _WidgetTreeState extends State<WidgetTree> {
                   key: WidgetTree.routerKey,
                   title: AppTheme.applicationName,
                   debugShowCheckedModeBanner: false,
-                  themeMode: themeMode,
-                  theme:
-                      //AppTheme.standardTheme(),
-                      AppTheme.customTheme(Brightness.light, primaryColor),
-                  darkTheme:
-                      //AppTheme.standardTheme(),
-                      AppTheme.customTheme(Brightness.dark, primaryColor),
+                  themeMode: Provider.of<MyThemeProvider>(context).themeMode,
+                  theme: MyThemes.lightTheme,
+                  darkTheme: MyThemes.darkTheme,
+                  // themeMode: themeMode,
+                  // theme:
+                  //     //AppTheme.standardTheme(),
+                  //     AppTheme.customTheme(Brightness.light, primaryColor),
+                  // darkTheme:
+                  //     //AppTheme.standardTheme(),
+                  //     AppTheme.customTheme(Brightness.dark, primaryColor),
                   scrollBehavior: CustomScrollBehavior(),
                   locale: provider.locale,
-                  logs: kReleaseMode ? VLogs.none : VLogs.info,
-                  localizationsDelegates: L10n.localizationsDelegates,
                   supportedLocales: L10n.supportedLocales,
+                  localizationsDelegates: const [
+                    L10n.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
+                  logs: kReleaseMode ? VLogs.none : VLogs.info,
+                  // localizationsDelegates: L10n.localizationsDelegates,
+                  // supportedLocales: L10n.supportedLocales,
                   initialUrl: _initialUrl ?? '/',
                   routes: AppRoutes(columnMode ?? false).routes,
                   builder: (context, child) =>
