@@ -16,22 +16,19 @@ class BalanceCardLightning extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-      child: SizedBox(
-        height: 200,
-        child: Stack(
-          children: [
-            const BalanceBackground2(),
-            BalanceTextWidget(
-              iconData: FontAwesomeIcons.wallet,
-              balance: controller.lightningBalance.balance,
-              walletAddress: "safdadasdas",
-              currencyEquivalent: 'balanceInEuroOrBTC',
-            ),
-            currencyPicture(context, "assets/images/lightning.png"),
-          ],
-        ),
+    return SizedBox(
+      child: Stack(
+        children: [
+          const BalanceBackground2(),
+          BalanceTextWidget(
+            iconData: FontAwesomeIcons.wallet,
+            balance: controller.lightningBalance.balance,
+            walletAddress: "safdadasdas",
+            currencyEquivalent: 'balanceInEuroOrBTC',
+            cardname: 'Lightning',
+          ),
+          paymentNetworkPicture(context, "assets/images/lightning.png"),
+        ],
       ),
     );
   }
@@ -43,22 +40,19 @@ class BalanceCardBtc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-      child: SizedBox(
-        height: 200,
-        child: Stack(
-          children: [
-            const BalanceBackground(),
-            BalanceTextWidget(
-              iconData: FontAwesomeIcons.piggyBank,
-              balance: controller.onchainBalance.confirmedBalance,
-              walletAddress: "safdadasdas",
-              currencyEquivalent: 'balanceInEuroOrBTC',
-            ),
-            currencyPicture(context, 'assets/images/bitcoin.png')
-          ],
-        ),
+    return SizedBox(
+      child: Stack(
+        children: [
+          const BalanceBackground(),
+          BalanceTextWidget(
+            iconData: FontAwesomeIcons.piggyBank,
+            balance: controller.onchainBalance.confirmedBalance,
+            walletAddress: "safdadasdas",
+            currencyEquivalent: 'balanceInEuroOrBTC',
+            cardname: 'On-Chain',
+          ),
+          paymentNetworkPicture(context, 'assets/images/bitcoin.png')
+        ],
       ),
     );
   }
@@ -67,25 +61,15 @@ class BalanceCardBtc extends StatelessWidget {
 class BalanceBackground2 extends StatelessWidget {
   const BalanceBackground2({Key? key}) : super(key: key);
 
-  Widget circleTopRight() {
+  Widget iconLightning() {
     return Positioned(
-      right: 100,
-      top: -80,
-      child: Container(
-        width: 265,
-        height: 265,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment(-0.8, -0.7),
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0x26FFFFFF),
-              Color(0x00FFFFFF),
-            ],
-          ),
-        ),
-      ),
+        right: 0,
+        top: 0,
+        child: Icon(
+          Icons.bolt,
+          size: 150,
+          color: Colors.white.withOpacity(0.1),
+        )
     );
   }
 
@@ -122,7 +106,7 @@ class BalanceBackground2 extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              circleTopRight(),
+              iconLightning(),
             ],
           ),
         ),
@@ -134,49 +118,20 @@ class BalanceBackground2 extends StatelessWidget {
 class BalanceBackground extends StatelessWidget {
   const BalanceBackground({Key? key}) : super(key: key);
 
-  Widget circleTopRight() {
+
+  Widget iconOnchain() {
     return Positioned(
-      right: -100,
-      top: -80,
-      child: Container(
-        width: 265,
-        height: 265,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment(-0.8, -0.7),
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0x26FFFFFF),
-              Color(0x00FFFFFF),
-            ],
-          ),
-        ),
-      ),
+        right: 0,
+        top: 0,
+        child: Icon(
+          FontAwesomeIcons.chain,
+          size: 150,
+          color: Colors.white.withOpacity(0.1),
+        )
     );
   }
 
-  Widget circleBottomLeft() {
-    return Positioned(
-      left: -20,
-      bottom: -140,
-      child: Container(
-        width: 280,
-        height: 280,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment(0.9, -0.2),
-            colors: [
-              Color(0x00FFFFFF),
-              Color(0x4DFFFFFF),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -204,82 +159,14 @@ class BalanceBackground extends StatelessWidget {
               begin: Alignment.bottomLeft,
               end: Alignment.topRight,
               colors: [
-                Color(0xFF522F77),
-                Color(0xFF7127B7),
+                AppTheme.colorBitcoin,
+                AppTheme.colorPrimaryGradient,
               ],
             ),
           ),
           child: Stack(
             children: [
-              circleTopRight(),
-              circleBottomLeft(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class BackgroundGradientPurple2 extends StatelessWidget {
-  const BackgroundGradientPurple2({Key? key}) : super(key: key);
-
-  Widget circleBottomLeft() {
-    return Positioned(
-      left: -40,
-      bottom: 0,
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment(0.9, -0.2),
-            colors: [
-              Color(0x00FFFFFF),
-              Color(0x4DFFFFFF),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(1),
-      decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusBig,
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: [0, 0.25, 0.75, 1],
-          colors: [
-            Color(0x99FFFFFF),
-            Color(0x00FFFFFF),
-            Color(0x00FFFFFF),
-            Color(0x99FFFFFF),
-          ],
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusBig,
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              colors: [
-                Color(0xFF522F77),
-                Color(0xFF7127B7),
-              ],
-            ),
-          ),
-          child: Stack(
-            children: [
-              circleBottomLeft(),
+              iconOnchain(),
             ],
           ),
         ),
@@ -346,7 +233,7 @@ class BackgroundGradientOrange extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              circleBottomLeft(),
+
             ],
           ),
         ),
@@ -358,25 +245,16 @@ class BackgroundGradientOrange extends StatelessWidget {
 class BackgroundGradientPurple extends StatelessWidget {
   const BackgroundGradientPurple({Key? key}) : super(key: key);
 
-  Widget circleBottomLeft() {
+
+  Widget iconLightning() {
     return Positioned(
-      right: -40,
-      top: -20,
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment(0.9, -0.2),
-            colors: [
-              Color(0x00FFFFFF),
-              Color(0x4DFFFFFF),
-            ],
-          ),
-        ),
-      ),
+        right: 0,
+        top: 0,
+        child: Icon(
+          Icons.bolt,
+          size: 150,
+          color: Colors.white.withOpacity(0.1),
+        )
     );
   }
 
@@ -413,7 +291,7 @@ class BackgroundGradientPurple extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              circleBottomLeft(),
+              iconLightning(),
             ],
           ),
         ),
@@ -422,10 +300,10 @@ class BackgroundGradientPurple extends StatelessWidget {
   }
 }
 
-Widget currencyPicture(BuildContext context, String imageUrl) {
+Widget paymentNetworkPicture(BuildContext context, String imageUrl) {
   return Positioned(
     right: AppTheme.cardPadding * 1.25,
-    top: AppTheme.cardPadding * 1.25,
+    bottom: AppTheme.cardPadding * 1.25,
     child: Container(
       height: AppTheme.cardPadding * 2,
       width: AppTheme.cardPadding * 2,
@@ -443,6 +321,7 @@ Widget currencyPicture(BuildContext context, String imageUrl) {
 
 class BalanceTextWidget extends StatelessWidget {
   final String balance;
+  final String cardname;
   final String walletAddress;
   final IconData iconData;
   final String currencyEquivalent;
@@ -453,12 +332,13 @@ class BalanceTextWidget extends StatelessWidget {
     required this.walletAddress,
     required this.iconData,
     required this.currencyEquivalent,
+    required this.cardname,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25),
+      padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25,),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -472,12 +352,12 @@ class BalanceTextWidget extends StatelessWidget {
                 width: 8, // Replace with your AppTheme.elementSpacing if needed
               ),
               Text(
-                'Guthaben',
+                cardname,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ],
           ),
-          const SizedBox(height: AppTheme.cardPadding * 0.75), // Replace with your AppTheme.elementSpacing if needed
+          const Spacer(), // Replace with your AppTheme.elementSpacing if needed
           Text(
             "$balance SAT",
             style: Theme.of(context).textTheme.headlineLarge,
@@ -492,41 +372,6 @@ class BalanceTextWidget extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-          ),
-          const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Deine Adresse:',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              GestureDetector(
-                onTap: () async {
-                  await Clipboard.setData(
-                      ClipboardData(text: walletAddress));
-                  // copied successfully
-                  // Replace with your method to display a snackbar
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.copy_rounded,
-                      color: AppTheme.white80, // Replace with your AppTheme.white80 if needed
-                      size: 18,
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      walletAddress,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ],
       ),

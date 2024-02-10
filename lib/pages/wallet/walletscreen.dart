@@ -1,6 +1,11 @@
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
@@ -16,39 +21,50 @@ class WalletScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     //final UserData userData = Provider.of<UserData>(context);
 
-    return Scaffold(
+    List<Container> cards = [
+          Container(
+              child: BalanceCardLightning(controller: controller)),
+          Container(
+              child: BalanceCardBtc(controller: controller)),
+    ];
+
+    return bitnetScaffold(
+      context: context,
       backgroundColor: Theme.of(context).colorScheme.background,
       body: ListView(
         children: [
-          const SizedBox(height: AppTheme.cardPadding * 2),
-          SizedBox(
-            height: 200,
-            child: PageView(
-              controller: controller.pageController,
-              scrollDirection: Axis.horizontal,
-              children: [
-                BalanceCardLightning(controller: controller),
-                BalanceCardBtc(controller: controller),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppTheme.cardPadding),
-          Center(
-            child: SmoothPageIndicator(
-              controller: controller.pageController,
-              count: 2,
-              effect: ExpandingDotsEffect(
-                activeDotColor: AppTheme.colorBitcoin,
-                dotColor: AppTheme.glassMorphColorLight,
+          const SizedBox(height: AppTheme.cardPadding * 1.5),
+          Padding(
+            padding: const EdgeInsets.only(right: AppTheme.cardPadding),
+            child: SizedBox(
+              height: AppTheme.cardPadding * 10,
+              child: Stack(
+                children: [
+
+                  CardSwiper(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding ),
+                    scale: 1.0,
+                    cardsCount: cards.length,
+                    cardBuilder: (context, index, percentThresholdX,  percentThresholdY) => cards[index],
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: RoundedButtonWidget(
+                        buttonType: ButtonType.transparent,
+                        size: AppTheme.cardPadding * 2.25,
+                        iconData: FontAwesomeIcons.exchange, onTap: (){}),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: AppTheme.cardPadding),
+          const SizedBox(height: AppTheme.cardPadding * 2),
           Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: AppTheme.cardPadding),
             child: Text(
-              "Cryptos",
+              "Chart",
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
@@ -73,7 +89,7 @@ class WalletScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
                 horizontal: AppTheme.cardPadding),
             child: Text(
-              "Aktionen",
+              "Actions",
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
@@ -84,24 +100,31 @@ class WalletScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                GestureDetector(
-                  onTap: () => VRouter.of(context).to('/wallet/send'),
-                  //onTap: () => VRouter.of(context).to('/wallet/send_choose_receiver'),
-                  //onTap: () => VRouter.of(context).to('/wallet/send'), //userData.mainWallet.walletAddress,
-                  child: circButtonWidget(
-                      context, "Senden", controller.compositionSend,
-                      const BackgroundGradientPurple()),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    VRouter.of(context).to('/wallet/receive');
-                  },
-                  child: circButtonWidget(
-                      context,
-                      "Erhalten",
-                      controller.compositionReceive,
-                      const BackgroundGradientOrange()),
-                ),
+                // circButtonWidget(
+                //     context,
+                //     "Erhalten",
+                //     controller.compositionReceive,
+                //     const BackgroundGradientOrange()),
+
+                // circButtonWidget(
+                //     context, "Senden", controller.compositionSend,
+                //     const BackgroundGradientPurple()),
+                LongButtonWidget(
+                    buttonType: ButtonType.solid,
+                    title: "Send",
+                    customWidth: AppTheme.cardPadding * 6.5,
+                    leadingIcon: Icon(Icons.arrow_upward_rounded),
+                    onTap: (){
+                      VRouter.of(context).to('/wallet/send');
+                    }),
+                LongButtonWidget(
+                    buttonType: ButtonType.transparent,
+                    title: "Receive",
+                    customWidth: AppTheme.cardPadding * 6.5,
+                    leadingIcon: Icon(Icons.arrow_downward_rounded),
+                    onTap: (){
+                      VRouter.of(context).to('/wallet/receive');
+                    }),
               ],
             ),
           ),
@@ -110,7 +133,7 @@ class WalletScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
                 horizontal: AppTheme.cardPadding),
             child: Text(
-              "Transaktionen",
+              "Activity",
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
@@ -121,212 +144,7 @@ class WalletScreen extends StatelessWidget {
     );
   }
 
-  Widget circButtonWidget(BuildContext context, String text, dynamic comp, Widget background) {
-    return Container(
-      height: 120,
-      width: 140,
-      decoration: BoxDecoration(
-        color: AppTheme.glassMorphColorLight,
-        borderRadius: AppTheme.cardRadiusBig,
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          background,
-          Positioned(
-            top: -12,
-            right: 0,
-            child: SizedBox(
-              height: 120,
-              width: 120,
-              child: FutureBuilder(
-                future: comp,
-                builder: (context, snapshot) {
-                  dynamic composition = snapshot.data;
-                  if (composition != null) {
-                    return FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: AnimatedOpacity(
-                        opacity: controller.visible ? 1.0 : 0.0,
-                        duration: Duration(milliseconds: 1000),
-                        child: Lottie(composition: composition),
-                      ),
-                    );
-                  } else {
-                    return Container(
-                      color: Colors.transparent,
-                    );
-                  }
-                },
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 12,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                const SizedBox(
-                  width: AppTheme.cardPadding,
-                ),
-                Text(
-                  text,
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      fontWeight: FontWeight.w700, color: AppTheme.white90),
-                ),
-                const SizedBox(
-                  width: AppTheme.elementSpacing,
-                ),
-                const Icon(
-                  Icons.arrow_forward_rounded,
-                  color: Colors.white,
-                  size: 18,
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
-}
-
-class BackgroundGradientOrange extends StatelessWidget {
-  const BackgroundGradientOrange({Key? key}) : super(key: key);
-
-  Widget circleBottomLeft() {
-    return Positioned(
-      left: -40,
-      bottom: 0,
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment(0.9, -0.2),
-            colors: [
-              AppTheme.colorPrimaryGradient,
-              AppTheme.colorBitcoin,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(1),
-      decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusBig,
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: [0, 0.25, 0.75, 1],
-          colors: [
-            Color(0x99FFFFFF),
-            AppTheme.colorPrimaryGradient,
-            AppTheme.colorBitcoin,
-            Color(0x99FFFFFF),
-          ],
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusBig,
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              colors: [
-                AppTheme.colorBitcoin,
-                AppTheme.colorPrimaryGradient,
-              ],
-            ),
-          ),
-          child: Stack(
-            children: [
-              circleBottomLeft(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-
-}
-
-class BackgroundGradientPurple extends StatelessWidget {
-  const BackgroundGradientPurple({Key? key}) : super(key: key);
-
-  Widget circleBottomLeft() {
-    return Positioned(
-      right: -40,
-      top: -20,
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment(0.9, -0.2),
-            colors: [
-              Color(0x00FFFFFF),
-              Color(0x4DFFFFFF),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(1),
-      decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusBig,
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: [0, 0.25, 0.75, 1],
-          colors: [
-            Color(0x99FFFFFF),
-            Color(0x00FFFFFF),
-            Color(0x00FFFFFF),
-            Color(0x99FFFFFF),
-          ],
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusBig,
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              colors: [
-                Color(0xFF522F77),
-                Color(0xFF7127B7),
-              ],
-            ),
-          ),
-          child: Stack(
-            children: [
-              circleBottomLeft(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

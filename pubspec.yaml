@@ -94,7 +94,7 @@ dependencies:
   share_plus: ^7.2.1
   slugify: ^2.0.0
   swipe_to_action: ^0.2.0
-  card_swiper: ^3.0.1
+  flutter_card_swiper: ^7.0.0
   tor_detector_web: ^1.1.0
   uni_links: ^0.5.1
   unifiedpush: ^4.0.3
@@ -252,6 +252,7 @@ flutter:
     - assets/marketplace/
     - assets/lottiefiles/
     - assets/textfiles/
+    - assets/keys/
 
 msix_config:
   display_name: bitnet

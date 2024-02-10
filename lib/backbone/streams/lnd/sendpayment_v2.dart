@@ -5,6 +5,54 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+//
+// //THIS SENDS BITCOIN BE CAREFUL NOT HAT IT SENDS AGAIN AND AGAIN I WANT IT TO RETURN WHAT HAPPENS WITH THE PAYMENT AFTER I CALL IT ONCE FROM THE SERVER
+// Stream<RestResponse> sendPaymentsStream(List<String> invoiceStrings) async* {
+//   const String restHost = 'mybitnet.com:8443'; // Update the host as needed
+//   const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
+//   String url = 'https://$restHost/v2/router/send';
+//
+//   ByteData byteData = await loadMacaroonAsset();
+//   List<int> bytes = byteData.buffer.asUint8List();
+//   String macaroon = bytesToHex(bytes);
+//
+//   Map<String, String> headers = {
+//     'Grpc-Metadata-macaroon': macaroon,
+//   };
+//
+//   for (var invoiceString in invoiceStrings) {
+//     final Map<String, dynamic> data = {
+//       'timeout_seconds': 60,
+//       'fee_limit_sat': 1000,
+//       'payment_request': invoiceString,
+//     };
+//
+//     HttpOverrides.global = MyHttpOverrides();
+//
+//     try {
+//       var request = http.Request('POST', Uri.parse(url))
+//         ..headers.addAll(headers)
+//         ..body = json.encode(data);
+//
+//       var streamedResponse = await request.send();
+//       var completeResponse = StringBuffer();
+//
+//       await for (var chunk in streamedResponse.stream.transform(utf8.decoder)) {
+//         completeResponse.write(chunk);
+//       }
+//
+//       var jsonResponse = json.decode(completeResponse.toString());
+//       yield RestResponse.fromJson(jsonResponse);
+//     } catch (e) {
+//       yield RestResponse(statusCode: "error", message: "Error during network call: $e", data: {});
+//     }
+//
+//     // Implement your logic for when to send the next payment
+//     // For example, wait for some time before sending the next one
+//     await Future.delayed(Duration(seconds: 10)); // Adjust delay as needed
+//   }
+// }
+
 
 
 Future<RestResponse> sendPaymentV2(String invoice_string) async {

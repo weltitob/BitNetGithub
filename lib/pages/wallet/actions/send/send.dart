@@ -1,6 +1,6 @@
-import 'package:bitnet/backbone/cloudfunctions/lnd/routerservice/sendpayment_v2.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
+import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
 import 'package:flutter/material.dart';
