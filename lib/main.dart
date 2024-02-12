@@ -1,18 +1,15 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
-import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
-import 'package:bitnet/provider/theme_provider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
+import 'package:bitnet/pages/routetrees/widgettree.dart';
 import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:provider/provider.dart';
-import 'package:seo/seo.dart';
 import 'backbone/auth/auth.dart';
 import 'package:intl/date_symbol_data_local.dart';
+// Changed from 'dart:html'
 import 'package:matrix/matrix.dart';
 //import 'firebase_options.dart';
 
@@ -73,7 +70,6 @@ Future<void> main() async {
   );
 
   Logs().nativeColors = !PlatformInfos.isIOS;
-
   // Run the app
   runApp(
     PlatformInfos.isMobile
@@ -94,45 +90,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of the application.
   @override
   Widget build(BuildContext context) {
-    return kIsWeb
-        ? SeoController(
-            tree: WidgetTree(context: context),
-            child: MultiProvider(
-              providers: [
-                StreamProvider<UserData?>(
-                  create: (_) => Auth().userWalletStream,
-                  initialData: null,
-                ),
-                // Provide a stream of user wallet data for authentication changes
-                //this has to be below in order to overwrite the null when not authenticated yet from above stream
-                StreamProvider<UserData?>(
-                  create: (_) => Auth().userWalletStreamForAuthChanges,
-                  initialData: null,
-                ),
-                // Provide a stream of user wallet data
-              ],
-              child: bTree.WidgetTree(),
-            ),
-          )
-        : MultiProvider(
-            providers: [
-              ChangeNotifierProvider<MyThemeProvider>(
-                  create: (context) => MyThemeProvider()),
-              ChangeNotifierProvider<LocalProvider>(
-                  create: (context) => LocalProvider()),
-              StreamProvider<UserData?>(
-                create: (_) => Auth().userWalletStream,
-                initialData: null,
-              ),
-              // Provide a stream of user wallet data for authentication changes
-              //this has to be below in order to overwrite the null when not authenticated yet from above stream
-              StreamProvider<UserData?>(
-                create: (_) => Auth().userWalletStreamForAuthChanges,
-                initialData: null,
-              ),
-              // Provide a stream of user wallet data
-            ],
-            child: bTree.WidgetTree(),
-          );
+    return MultiProvider(
+      providers: [
+        StreamProvider<UserData?>(
+          create: (_) => Auth().userWalletStream,
+          initialData: null,
+        ),
+        // Provide a stream of user wallet data for authentication changes
+        //this has to be below in order to overwrite the null when not authenticated yet from above stream
+        StreamProvider<UserData?>(
+          create: (_) => Auth().userWalletStreamForAuthChanges,
+          initialData: null,
+        ),
+        // Provide a stream of user wallet data
+      ],
+      child: WidgetTree(),
+    );
   }
 }

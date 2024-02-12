@@ -131,8 +131,7 @@ class CreateAccountController extends State<CreateAccount> {
           walletType: "walletType",
           walletBalance: "0.0",
           privateKey: "privateKey",
-          userdid: "userdid",
-      );
+          userdid: "userdid");
 
       final List<UserWallet> walletlist = [userwalletdata];
 
@@ -151,8 +150,7 @@ class CreateAccountController extends State<CreateAccount> {
           updatedAt: timestamp,
           isActive: true,
           dob: 0,
-          wallets: walletlist,
-      );
+          wallets: walletlist);
 
       Logs().w("Signing up user for Matrix now...");
       //matrixSignUp();

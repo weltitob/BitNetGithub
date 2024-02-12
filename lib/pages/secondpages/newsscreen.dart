@@ -127,12 +127,12 @@ class _NewsScreenState extends State<NewsScreen> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: WebView(
-          initialUrl: widget.postUrl,
-          onWebViewCreated: (WebViewController webViewController) {
-            _controller.complete(webViewController);
-          },
-        ),
+        // child: WebView(
+        //   initialUrl: widget.postUrl,
+        //   onWebViewCreated: (WebViewController webViewController) {
+        //     _controller.complete(webViewController);
+        //   },
+        // ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(

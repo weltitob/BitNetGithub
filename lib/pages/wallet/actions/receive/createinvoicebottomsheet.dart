@@ -3,13 +3,17 @@ import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 
 
-class CreateInvoice extends StatelessWidget {
-  final SendController controller;
-  const CreateInvoice({super.key, required this.controller});
+class CreateInvoice extends StatefulWidget {
+  const CreateInvoice({super.key});
+
+  @override
+  State<CreateInvoice> createState() => _CreateInvoiceState();
+}
+
+class _CreateInvoiceState extends State<CreateInvoice> {
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +37,7 @@ class CreateInvoice extends StatelessWidget {
             left: AppTheme.cardPadding,
             right: AppTheme.cardPadding,
           ),
-          child: AmountWidget(controller: controller,),
+          child: AmountWidget(),
         ),
         SizedBox(height: AppTheme.cardPadding * 1,),
         Container(

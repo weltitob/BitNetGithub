@@ -25,7 +25,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
           height: 20,
         ),
         GestureDetector(
-          onLongPress: () => Get.to(() => const ViewSockets()),
+          onLongPress: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewSockets())),
           child: Text(
             'Recent transactions'.toUpperCase(),
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -85,7 +85,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                       reverse: true,
                       itemCount: controller.transaction.length,
                       itemBuilder: (context, index) {
-                        double btcValue =
+                         double btcValue =
                             controller.transaction[index].value! / 100000000;
                         double usdValue = btcValue * usdPrice;
                         double feeSatVb = controller.transaction[index].fee! /
@@ -100,11 +100,11 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                                   onTap: () {
                                      final controllerTransaction =   Get.put(
                                         TransactionController(
-                                          txID:controller.transactionReplacements[index].txid
+                                          txID:controller.transaction[index].txid
                                               .toString(),
                                         ),
                                       );
-                                      controllerTransaction.txID = controller.transactionReplacements[index].txid
+                                      controllerTransaction.txID = controller.transaction[index].txid
                                           .toString();
                                           controllerTransaction.getSingleTransaction(controllerTransaction.txID!);
                                           controllerTransaction.changeSocket();

@@ -100,16 +100,14 @@ class _CategoriesDetailScreenState extends State<CategoriesDetailScreen> {
                       margin: EdgeInsets.only(bottom: 30.h),
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.only(
-                            top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                        padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
                         shrinkWrap: true,
                         physics: const BouncingScrollPhysics(),
                         itemCount: trendingSellersSliderData.length,
                         itemBuilder: (context, index) {
                           return TrendingSellersSlider(
                             nftImage: trendingSellersSliderData[index].nftImage,
-                            userImage:
-                                trendingSellersSliderData[index].userImage,
+                            userImage: trendingSellersSliderData[index].userImage,
                             nftName: trendingSellersSliderData[index].nftName,
                           );
                         },
@@ -123,8 +121,7 @@ class _CategoriesDetailScreenState extends State<CategoriesDetailScreen> {
                     isChild: Container(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           childAspectRatio: 4 / 5.9,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
@@ -136,13 +133,13 @@ class _CategoriesDetailScreenState extends State<CategoriesDetailScreen> {
                         itemCount: gridListData.length,
                         itemBuilder: (BuildContext context, int index) {
                           return NftProductSlider(
-                              nftImage: gridListData[index].nftImage,
-                              cryptoImage: gridListData[index].cryptoImage,
-                              nftName: gridListData[index].nftName,
-                              nftMainName: gridListData[index].nftMainName,
-                              cryptoText: gridListData[index].cryptoText,
-                              columnMargin: gridListData[index].columnMargin,
-                              rank: gridListData[index].rank);
+                            nftImage: gridListData[index].nftImage,
+                            cryptoImage: gridListData[index].cryptoImage,
+                            nftName: gridListData[index].nftName,
+                            nftMainName: gridListData[index].nftMainName,
+                            cryptoText: gridListData[index].cryptoText,
+                            columnMargin: gridListData[index].columnMargin,
+                          );
                         },
                       ),
                     ),

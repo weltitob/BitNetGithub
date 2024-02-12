@@ -7,10 +7,7 @@ class PropertieList extends StatelessWidget {
   final peragraph;
 
   const PropertieList(
-      {Key? key,
-      required this.heading,
-      required this.subHeading,
-      this.peragraph})
+      {Key? key, required this.heading, required this.subHeading, this.peragraph})
       : super(key: key);
 
   @override

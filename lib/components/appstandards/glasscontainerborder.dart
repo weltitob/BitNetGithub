@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
+
 class GradientBoxBorder extends BoxBorder {
   final BorderRadius borderRadius;
   final double borderWidth;
@@ -13,11 +14,7 @@ class GradientBoxBorder extends BoxBorder {
   }) : super();
 
   @override
-  BoxBorder copyWith(
-      {BorderSide? top,
-      BorderSide? left,
-      BorderSide? right,
-      BorderSide? bottom}) {
+  BoxBorder copyWith({BorderSide? top, BorderSide? left, BorderSide? right, BorderSide? bottom}) {
     return this;
   }
 
@@ -26,39 +23,26 @@ class GradientBoxBorder extends BoxBorder {
 
   @override
   Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
-    return Path()..addRRect(borderRadius.toRRect(rect).deflate(borderWidth));
+    return Path()
+      ..addRRect(borderRadius.toRRect(rect).deflate(borderWidth));
   }
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    return Path()..addRRect(borderRadius.toRRect(rect));
+    return Path()
+      ..addRRect(borderRadius.toRRect(rect));
   }
 
   @override
   bool get isUniform => true;
 
   @override
-  void paint(Canvas canvas, Rect rect,
-      {BoxShape shape = BoxShape.rectangle,
-      BorderRadius? borderRadius,
-      TextDirection? textDirection}) {
+  void paint(Canvas canvas, Rect rect, {BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius, TextDirection? textDirection}) {
     final paint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: isTransparent
-            ? [
-                Colors.transparent,
-                Colors.transparent,
-                Colors.transparent,
-                Colors.transparent
-              ]
-            : [
-                Colors.white.withOpacity(0.2),
-                Colors.white.withOpacity(0.1),
-                Colors.white.withOpacity(0.1),
-                Colors.white.withOpacity(0.2)
-              ],
+        colors: isTransparent? [Colors.transparent,Colors.transparent,Colors.transparent, Colors.transparent] : [Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.2)],
       ).createShader(rect)
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;
@@ -86,6 +70,7 @@ class GradientBoxBorder extends BoxBorder {
   BorderSide get right => BorderSide.none;
 }
 
+
 class GradientOutlineInputBorder extends InputBorder {
   final BorderRadius borderRadius;
   final double borderWidth;
@@ -102,30 +87,18 @@ class GradientOutlineInputBorder extends InputBorder {
 
   @override
   void paint(
-    Canvas canvas,
-    Rect rect, {
-    double? gapStart,
-    double gapExtent = 0.0,
-    double gapPercentage = 0.0,
-    TextDirection? textDirection,
-  }) {
+      Canvas canvas,
+      Rect rect, {
+        double? gapStart,
+        double gapExtent = 0.0,
+        double gapPercentage = 0.0,
+        TextDirection? textDirection,
+      }) {
     final Paint paint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: isFocused
-            ? [
-                Colors.white.withOpacity(0.5),
-                Colors.white.withOpacity(0.2),
-                Colors.white.withOpacity(0.2),
-                Colors.white.withOpacity(0.5),
-              ]
-            : [
-                Colors.white.withOpacity(0.3),
-                Colors.transparent,
-                Colors.transparent,
-                Colors.white.withOpacity(0.3)
-              ],
+        colors: isFocused ? [Colors.white.withOpacity(0.5), Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.2), Colors.white.withOpacity(0.5),] : [Colors.white.withOpacity(0.3), Colors.transparent, Colors.transparent, Colors.white.withOpacity(0.3)],
       ).createShader(rect)
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;
@@ -143,20 +116,19 @@ class GradientOutlineInputBorder extends InputBorder {
   @override
   Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
     return Path()
-      ..addRRect(borderRadius
-          .resolve(textDirection)
-          .toRRect(rect)
-          .deflate(borderWidth));
+      ..addRRect(borderRadius.resolve(textDirection).toRRect(rect).deflate(borderWidth));
   }
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    return Path()..addRRect(borderRadius.resolve(textDirection).toRRect(rect));
+    return Path()
+      ..addRRect(borderRadius.resolve(textDirection).toRRect(rect));
   }
 
   @override
   bool get isOutline => true;
 }
+
 
 class GradientBorderPainter extends CustomPainter {
   final BorderRadius borderRadius;
@@ -173,19 +145,12 @@ class GradientBorderPainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          lighten(AppTheme.colorBitcoin, 60),
-          AppTheme.colorBitcoin,
-          AppTheme.colorBitcoin,
-          lighten(AppTheme.colorBitcoin, 60)
-        ],
+        colors: [lighten(AppTheme.colorBitcoin, 60), AppTheme.colorBitcoin, AppTheme.colorBitcoin, lighten(AppTheme.colorBitcoin, 60)],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;
 
-    final outer =
-        borderRadius.toRRect(Rect.fromLTWH(0, 0, size.width, size.height));
-
+    final outer = borderRadius.toRRect(Rect.fromLTWH(0, 0, size.width, size.height));
     canvas.drawRRect(outer, paint);
   }
 

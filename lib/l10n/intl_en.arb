@@ -2467,17 +2467,6 @@
             "oldDisplayName": {}
         }
     },
-    "language": "English",
-    "helloWorld": "Hello World!",
-    "searchC": "Search Currency Here",
-    "searchL": "Search Language Here",
-    "cc": "Currency Converter",
-    "convert": "Convert",
-    "enterA": "Enter Amount",
-    "from": "From",
-    "to": "To",
-    "his": "History",
-    "qou": "Currency Rates by Open Exchange Rates",
     "newSpaceDescription": "Spaces allows you to consolidate your chats and build private or public communities.",
     "encryptThisChat": "Encrypt this chat",
     "endToEndEncryption": "End to end encryption",

@@ -5,7 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
 
+
 abstract class AppTheme {
+
   static String _applicationName = 'bitnet';
   static String get applicationName => _applicationName;
   static String? _applicationWelcomeMessage;
@@ -39,6 +41,7 @@ abstract class AppTheme {
   static const Color colorBitcoin = Color(0xfff2a900);
   static const Color colorPrimaryGradient = Color(0xfff25d00);
 
+
   static const Color colorLink = Colors.blueAccent;
   //
   //green and red
@@ -47,21 +50,31 @@ abstract class AppTheme {
   static const Color successColor = Color(0xFF5DE165);
   static const Color successColorGradient = Color(0xFF148C1A);
 
+
   //SOCIALS
   //onTap: () => launchUrlString(AppTheme.supportUrl),
   //Marketing startegie ist EXTREME CONTENT STRATEGIE
 
-  static String instagramUrl = 'https://www.instagram.com/bitnet.ai/';
-  static String twitterUrl = 'https://twitter.com/bitnet_ai';
-  static String facebookUrl = 'https://www.facebook.com/bitnet.ai';
-  static String linkedinUrl = 'https://www.linkedin.com/company/bitnet-ai';
-  static String pinterestUrl = 'https://www.pinterest.com/bitnet_ai';
+  static String instagramUrl =
+      'https://www.instagram.com/bitnet.ai/';
+  static String twitterUrl =
+      'https://twitter.com/bitnet_ai';
+  static String facebookUrl =
+      'https://www.facebook.com/bitnet.ai';
+  static String linkedinUrl =
+      'https://www.linkedin.com/company/bitnet-ai';
+  static String pinterestUrl =
+      'https://www.pinterest.com/bitnet_ai';
   static String youtubeUrl =
       'https://www.youtube.com/channel/UCnrJYplZtmZwDn3ia8J5Obg';
-  static String discordUrl = 'https://discord.gg/9QJ2X8Q';
-  static String telegramUrl = 'https://t.me/bitnet_ai';
-  static String snapchatUrl = 'https://www.snapchat.com/add/bitnet.ai';
-  static String tiktokUrl = 'https://tiktok.com/@bitnet_ai';
+  static String discordUrl =
+      'https://discord.gg/9QJ2X8Q';
+  static String telegramUrl =
+      'https://t.me/bitnet_ai';
+  static String snapchatUrl =
+      'https://www.snapchat.com/add/bitnet.ai';
+  static String tiktokUrl =
+      'https://tiktok.com/@bitnet_ai';
 
   //NEXT 5 TO BE ADDED TO CONTENT MASCHINE
 
@@ -83,6 +96,7 @@ abstract class AppTheme {
   static String goFundMeUrl =
       'https://www.gofundme.com/manage/bitnet-a-decentralized-metaverse-application';
 
+
   static String _privacyUrl =
       'https://gitlab.com/famedly/fluffychat/-/blob/main/PRIVACY.md';
   static String get privacyUrl => _privacyUrl;
@@ -92,8 +106,7 @@ abstract class AppTheme {
       'https://gitlab.com/famedly/fluffychat/-/wikis/How-to-use-end-to-end-encryption-in-FluffyChat';
   static const String appId = 'com.bitnet.bitnet';
   static const String appOpenUrlScheme = 'com.bitnet';
-  static String _webBaseUrl =
-      'https://mybitnet.com'; //'https://fluffychat.im/web';
+  static String _webBaseUrl = 'https://mybitnet.com'; //'https://fluffychat.im/web';
   static String get webBaseUrl => _webBaseUrl;
   static const String supportUrl =
       'https://gitlab.com/famedly/fluffychat/issues';
@@ -193,6 +206,7 @@ abstract class AppTheme {
 
   static const double tabbarBorderWidth = 1.5;
 
+
   static const double navRailWidth = 2 * cardPadding + elementSpacing;
   //spaces
   static const double cardPadding = 24;
@@ -270,62 +284,51 @@ abstract class AppTheme {
 
   static Color colorGlassContainer = const Color(0xFFFFFFFF).withOpacity(0.15);
 
-  static InputDecoration textfieldDecoration(
-          String hintText, BuildContext context) =>
-      InputDecoration(
-        hintText: hintText,
-        contentPadding: const EdgeInsets.all(0.25),
-        border: InputBorder.none,
-        hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .color!
-                  .withOpacity(0.4),
-            ),
-      );
+
+  static InputDecoration textfieldDecoration(String hintText, BuildContext context) => InputDecoration(
+    hintText: hintText,
+    contentPadding: const EdgeInsets.all(0.25),
+    border: InputBorder.none,
+    hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+      color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.4),
+    ),
+  );
 
   //.inter
   static final textTheme = TextTheme(
     displayLarge: GoogleFonts.lexend(
       fontSize: 52,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: -0.5,
     ),
     displayMedium: GoogleFonts.lexend(
         fontSize: 40,
-        fontWeight:
-            FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
-        letterSpacing: -0.5),
+        fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+        letterSpacing: -0.5
+    ),
     displaySmall: GoogleFonts.lexend(
       fontSize: 28,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.0,
     ),
     headlineLarge: GoogleFonts.lexend(
       fontSize: 24,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
     ),
     headlineMedium: GoogleFonts.lexend(
       fontSize: 22,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.25,
     ),
     headlineSmall: GoogleFonts.lexend(
       fontSize: 20,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
     ),
     titleLarge: GoogleFonts.lexend(
       fontSize: 17,
-      fontWeight:
-          FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
+      fontWeight: FontWeight.w700, // Changed from FontWeight.bold (w700) to w600
       letterSpacing: 0.15,
     ),
     titleMedium: GoogleFonts.lexend(
@@ -444,101 +447,102 @@ abstract class AppTheme {
 
   static const Curve animationCurve = Curves.easeInOut;
 
+
   static ThemeData customTheme(Brightness brightness, [Color? seed]) =>
       ThemeData(
-          visualDensity: VisualDensity.standard,
-          useMaterial3: true,
-          brightness: brightness,
-          scaffoldBackgroundColor: AppTheme.colorBackground,
+        visualDensity: VisualDensity.standard,
+        useMaterial3: true,
+        brightness: brightness,
 
-          //colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
-          colorScheme: ColorScheme(
-              //https://m3.material.io/styles/color/the-color-system/color-roles
-              brightness: brightness,
-              primary: AppTheme.colorSchemeSeed ?? Colors.black,
-              onPrimary: AppTheme.white90,
-              //------stays the same always...-------
-              secondary: AppTheme.colorSchemeSeed ?? Colors.black,
-              onSecondary: AppTheme.white90,
-              //------stays the same always...-------
-              tertiary: AppTheme.colorBitcoin,
-              onTertiary: AppTheme.colorPrimaryGradient,
-              //-------------------------------------
-              error: AppTheme.errorColor,
-              onError: AppTheme.errorColor,
-              //------stays the same always...-------
-              background: AppTheme.colorBackground ?? Colors.black,
-              onBackground: AppTheme.white90,
-              //-------------------------------------
-              surface: Colors.deepPurple,
-              onSurface: AppTheme.white90),
-          //textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme)
-          textTheme: brightness == Brightness.light
-              ? textTheme.merge(fallbackTextTheme)
-              : textThemeDarkMode.merge(fallbackTextTheme)
-          // snackBarTheme: const SnackBarThemeData(
-          //   behavior: SnackBarBehavior.floating,
-          // ),
-          // dividerColor: brightness == Brightness.light
-          //     ? Colors.blueGrey.shade50
-          //     : Colors.blueGrey.shade900,
-          // popupMenuTheme: PopupMenuThemeData(
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-          //   ),
-          // ),
-          // inputDecorationTheme: InputDecorationTheme(
-          //   border: UnderlineInputBorder(
-          //     borderSide: BorderSide.none,
-          //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall / 2),
-          //   ),
-          //   filled: true,
-          // ),
-          // appBarTheme: AppBarTheme(
-          //   surfaceTintColor:
-          //   brightness == Brightness.light ? Colors.white : Colors.black,
-          //   shadowColor: Colors.black.withAlpha(64),
-          //   systemOverlayStyle: SystemUiOverlayStyle(
-          //     statusBarColor: Colors.transparent,
-          //     statusBarIconBrightness: brightness.reversed,
-          //     statusBarBrightness: brightness,
-          //   ),
-          // ),
-          // textButtonTheme: TextButtonThemeData(
-          //   style: TextButton.styleFrom(
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(cardPadding / 2),
-          //     ),
-          //   ),
-          // ),
-          // outlinedButtonTheme: OutlinedButtonThemeData(
-          //   style: OutlinedButton.styleFrom(
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(cardPadding / 2),
-          //     ),
-          //   ),
-          // ),
-          // dialogTheme: DialogTheme(
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(cardPadding / 2),
-          //   ),
-          // ),
-          // elevatedButtonTheme: ElevatedButtonThemeData(
-          //   style: ElevatedButton.styleFrom(
-          //     padding: const EdgeInsets.all(AppTheme.elementSpacing),
-          //     textStyle: const TextStyle(fontSize: 16),
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: AppTheme.cardRadiusMid,
-          //     ),
-          //   ),
-          // ),
-          );
+        //colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
+        colorScheme: ColorScheme(
+            //https://m3.material.io/styles/color/the-color-system/color-roles
+            brightness: brightness,
+            primary: AppTheme.colorSchemeSeed ?? Colors.black,
+            onPrimary: AppTheme.white90,
+            //------stays the same always...-------
+            secondary: AppTheme.colorSchemeSeed ?? Colors.black,
+            onSecondary: AppTheme.white90,
+            //------stays the same always...-------
+            tertiary: AppTheme.colorBitcoin,
+            onTertiary: AppTheme.colorPrimaryGradient,
+            //-------------------------------------
+            error: AppTheme.errorColor,
+            onError: AppTheme.errorColor,
+            //------stays the same always...-------
+            background: AppTheme.colorBackground ?? Colors.black,
+            onBackground: AppTheme.white90,
+            //-------------------------------------
+            surface: Colors.deepPurple,
+            onSurface: AppTheme.white90
+
+        ),
+        //textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme)
+        textTheme: brightness == Brightness.light ? textTheme.merge(fallbackTextTheme) : textThemeDarkMode.merge(fallbackTextTheme)
+        // snackBarTheme: const SnackBarThemeData(
+        //   behavior: SnackBarBehavior.floating,
+        // ),
+        // dividerColor: brightness == Brightness.light
+        //     ? Colors.blueGrey.shade50
+        //     : Colors.blueGrey.shade900,
+        // popupMenuTheme: PopupMenuThemeData(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+        //   ),
+        // ),
+        // inputDecorationTheme: InputDecorationTheme(
+        //   border: UnderlineInputBorder(
+        //     borderSide: BorderSide.none,
+        //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall / 2),
+        //   ),
+        //   filled: true,
+        // ),
+        // appBarTheme: AppBarTheme(
+        //   surfaceTintColor:
+        //   brightness == Brightness.light ? Colors.white : Colors.black,
+        //   shadowColor: Colors.black.withAlpha(64),
+        //   systemOverlayStyle: SystemUiOverlayStyle(
+        //     statusBarColor: Colors.transparent,
+        //     statusBarIconBrightness: brightness.reversed,
+        //     statusBarBrightness: brightness,
+        //   ),
+        // ),
+        // textButtonTheme: TextButtonThemeData(
+        //   style: TextButton.styleFrom(
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(cardPadding / 2),
+        //     ),
+        //   ),
+        // ),
+        // outlinedButtonTheme: OutlinedButtonThemeData(
+        //   style: OutlinedButton.styleFrom(
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(cardPadding / 2),
+        //     ),
+        //   ),
+        // ),
+        // dialogTheme: DialogTheme(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(cardPadding / 2),
+        //   ),
+        // ),
+        // elevatedButtonTheme: ElevatedButtonThemeData(
+        //   style: ElevatedButton.styleFrom(
+        //     padding: const EdgeInsets.all(AppTheme.elementSpacing),
+        //     textStyle: const TextStyle(fontSize: 16),
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: AppTheme.cardRadiusMid,
+        //     ),
+        //   ),
+        // ),
+      );
 }
 
 extension on Brightness {
   Brightness get reversed =>
       this == Brightness.dark ? Brightness.light : Brightness.dark;
 }
+
 
 /// Darken a color by [percent] amount (100 = black)
 Color darken(Color c, [int percent = 10]) {
@@ -560,5 +564,4 @@ Color lighten(Color c, [int percent = 10]) {
       c.blue + ((255 - c.blue) * p).round());
 }
 
-dynamic qrCodeSize(BuildContext context) =>
-    min(AppTheme.cardPadding * 9.5, AppTheme.cardPadding * 9.5).toDouble();
+dynamic qrCodeSize(BuildContext context) => min(AppTheme.cardPadding * 9.5, AppTheme.cardPadding * 9.5).toDouble();

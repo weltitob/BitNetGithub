@@ -1,27 +1,28 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
+import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/FilterBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
+import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class OwnerDetailScreen extends StatefulWidget {
-  const OwnerDetailScreen({Key? key}) : super(key: key);
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+
+
+class OwnerScreen extends StatefulWidget {
+  const OwnerScreen({Key? key}) : super(key: key);
   @override
-  State<OwnerDetailScreen> createState() => _OwnerDetailScreenState();
+  State<OwnerScreen> createState() => _OwnerScreenState();
 }
 
-class _OwnerDetailScreenState extends State<OwnerDetailScreen> {
-  bool likeNft1 = false;
-  bool likeNft2 = false;
+class _OwnerScreenState extends State<OwnerScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Container(
@@ -126,123 +127,127 @@ class _OwnerDetailScreenState extends State<OwnerDetailScreen> {
                   Container(
                     margin: EdgeInsets.only(bottom: 15.h),
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Text(
-                      'Crypto-Pills',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 28.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          route.kOwnerDetailScreenRoute
+                        );
+                      },
+                      child: Text(
+                        'Crypto-Pills',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontSize: 28.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                   Container(
+                    margin: EdgeInsets.only(bottom: 15.h),
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    margin: EdgeInsets.only(bottom: 30.h),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '0x316f0fe93ca9dc1e119c2...',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: const Color.fromRGBO(255, 255, 255, 0.7),
-                          ),
+                      children: const [
+                        OwnerDataText(
+                          ownerDataText: '78',
+                          ownerDataTitle: 'Items',
+                          hasText: true,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Clipboard.setData(
-                              const ClipboardData(
-                                  text: "0x316f0fe93ca9dc1e119c2..."),
-                            );
-                          },
-                          child: Container(
-                            width: 24.w,
-                            height: 24.w,
-                            decoration: BoxDecoration(
-                              color: const Color.fromRGBO(255, 255, 255, 0.1),
-                              borderRadius: BorderRadius.circular(100.r),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 6.h, horizontal: 7.w),
-                            margin: EdgeInsets.only(left: 19.w),
-                            child: Image.asset(
-                              paperPlusIcon,
-                              width: 10.w,
-                              height: 12.h,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+                        OwnerDataText(
+                          ownerDataText: '54',
+                          ownerDataTitle: 'Owners',
+                          hasText: true,
+                        ),
+                        OwnerDataText(
+                          ownerDataText: '60',
+                          ownerDataTitle: 'Floor Price',
+                          hasText: true,
+                        ),
+                        OwnerDataText(
+                          ownerDataText: '1.07k',
+                          ownerDataTitle: 'Traded',
+                          hasText: true,
                         ),
                       ],
                     ),
                   ),
                   Container(
+                    margin: EdgeInsets.only(bottom: 20.h),
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    margin: EdgeInsets.only(bottom: 30.h),
-                    child: TextField(
+                    child: Text(
+                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         color: const Color.fromRGBO(255, 255, 255, 0.5),
                       ),
-                      decoration: InputDecoration(
-                        prefixIcon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              searchLineIcon,
-                              width: 24.w,
-                              height: 24.w,
-                              fit: BoxFit.contain,
-                            ),
-                          ],
-                        ),
-                        contentPadding: EdgeInsets.only(
-                            left: 20.w, bottom: 12.h, top: 12.h, right: 20.w),
-                        hintText: "Search items and collections",
-                        hintStyle: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                          color: const Color.fromRGBO(255, 255, 255, 0.5),
-                        ),
-                        filled: true,
-                        fillColor: const Color.fromRGBO(255, 255, 255, 0.1),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: const BorderSide(
-                            width: 0,
-                            style: BorderStyle.none,
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                   Container(
+                    margin: EdgeInsets.only(bottom: 15.h),
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 4 / 5.9,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        crossAxisCount: 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const OwnerDataText(
+                          ownerDataImg: discordIcon,
+                          ownerDataTitle: 'Discord',
+                          hasImage: true,
+                        ),
+                        const OwnerDataText(
+                          ownerDataImg: twitterIcon,
+                          ownerDataTitle: 'Twitter',
+                          hasImage: true,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              route.kActivityScreenRoute
+                            );
+                          },
+                          child: const OwnerDataText(
+                            ownerDataImg: activityIcon,
+                            ownerDataTitle: 'Activity',
+                            hasImage: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  CommonHeading(
+                    headingText: 'Recently Listed',
+                    hasButton: false,
+                    isNormalChild: true,
+                    isChild: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12.w),
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 4 / 5.7,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          crossAxisCount: 2,
+                        ),
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemCount: gridListData.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return NftProductSlider(
+                            nftImage: gridListData[index].nftImage,
+                            nftName: gridListData[index].nftName,
+                            nftMainName: gridListData[index].nftMainName,
+                            cryptoImage: gridListData[index].cryptoImage,
+                            cryptoText: gridListData[index].cryptoText,
+                            columnMargin: gridListData[index].columnMargin,
+                          );
+                        },
                       ),
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      itemCount: gridListData.length.clamp(0, 2),
-                      itemBuilder: (BuildContext context, int index) {
-                        return NftProductSlider(
-                          nftImage: gridListData[index].nftImage,
-                          nftName: gridListData[index].nftName,
-                          nftMainName: gridListData[index].nftMainName,
-                          cryptoImage: gridListData[index].cryptoImage,
-                          cryptoText: gridListData[index].cryptoText,
-                          columnMargin: gridListData[index].columnMargin,
-                        );
-                      },
                     ),
                   ),
                 ],

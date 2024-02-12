@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
@@ -15,7 +15,7 @@ recoverKeyWithMnemonic(String mnemonic, String did) async {
   print("Response: ${response.data}");
 
   final Map<String, dynamic> responseData = deepMapCast(response.data as Map<Object?, Object?>);
-  final RestResponse callback = RestResponse.fromJson(responseData);
+  final CloudfunctionCallback callback = CloudfunctionCallback.fromJson(responseData);
   print("CloudfunctionCallback: ${callback.toString()}");
 
   if (callback.statusCode == "200") {

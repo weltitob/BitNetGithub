@@ -38,8 +38,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       leftIconWidth: 50.w,
                       leftIcon: GestureDetector(
                         onTap: () {
-                          Navigator.pushReplacementNamed(
-                              context, route.kMainScreenRoute);
+                          Navigator.pushReplacementNamed(context, route.kMainScreenRoute);
                         },
                         child: Row(
                           children: [
@@ -132,13 +131,13 @@ class _SearchScreenState extends State<SearchScreen> {
                     itemCount: gridListData.length,
                     itemBuilder: (BuildContext context, int index) {
                       return NftProductSlider(
-                          nftImage: gridListData[index].nftImage,
-                          nftName: gridListData[index].nftName,
-                          nftMainName: gridListData[index].nftMainName,
-                          cryptoImage: gridListData[index].cryptoImage,
-                          cryptoText: gridListData[index].cryptoText,
-                          columnMargin: gridListData[index].columnMargin,
-                          rank: gridListData[index].rank);
+                        nftImage: gridListData[index].nftImage,
+                        nftName: gridListData[index].nftName,
+                        nftMainName: gridListData[index].nftMainName,
+                        cryptoImage: gridListData[index].cryptoImage,
+                        cryptoText: gridListData[index].cryptoText,
+                        columnMargin: gridListData[index].columnMargin,
+                      );
                     },
                   ),
                 ],

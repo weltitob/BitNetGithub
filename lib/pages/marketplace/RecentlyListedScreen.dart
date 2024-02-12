@@ -1,38 +1,34 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/marketplace_widgets/BarChart.dart';
 import 'package:bitnet/components/marketplace_widgets/ChaunInfo.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
-import 'package:bitnet/components/marketplace_widgets/NftProductHorizontal.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:bitnet/components/marketplace_widgets/PropertieList.dart';
 import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class NftProductScreen extends StatefulWidget {
-  const NftProductScreen({Key? key}) : super(key: key);
+class RecentlyListedScreen extends StatefulWidget {
+  const RecentlyListedScreen({Key? key}) : super(key: key);
 
   @override
-  State<NftProductScreen> createState() => _NftProductScreenState();
+  State<RecentlyListedScreen> createState() => _RecentlyListedScreenState();
 }
 
-class _NftProductScreenState extends State<NftProductScreen> {
+class _RecentlyListedScreenState extends State<RecentlyListedScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return bitnetScaffold(
-      context: context,
+    return Scaffold(
       body: Stack(
         children: [
           Container(
             width: size.width,
             height: size.height,
+            color: const Color.fromRGBO(24, 31, 39, 1),
             child: SingleChildScrollView(
               padding: EdgeInsets.only(bottom: 20.w),
               child: Column(
@@ -150,84 +146,6 @@ class _NftProductScreenState extends State<NftProductScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          margin: EdgeInsets.only(bottom: 30.h),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin:
-                                    EdgeInsets.only(bottom: 15.h, top: 30.h),
-                                child: Text(
-                                  'Current Price',
-                                  style: TextStyle(
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Image.asset(
-                                    ethereumIcon,
-                                    height: 13.h,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 8.w),
-                                    child: Text(
-                                      '12.5',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: const Color.fromRGBO(
-                                            255, 255, 255, 0.7),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    ' (\$1717.17)',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color.fromRGBO(
-                                          255, 255, 255, 0.5),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 30.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              LongButtonWidget(
-                                  customWidth: 17 * 10,
-                                  customHeight: 17 * 3.5,
-                                  title: "Buy Now",
-                                  onTap: _buildBuySlidingPanel),
-                              LongButtonWidget(
-                                  customWidth: 17 * 10,
-                                  customHeight: 17 * 3.5,
-                                  buttonType: ButtonType.transparent,
-                                  title: "View Offers",
-                                  onTap: () {}),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
                           margin: EdgeInsets.only(bottom: 15.h),
                           child: Text(
                             'Created By',
@@ -238,51 +156,124 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 30.h),
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12.r),
-                                child: Image.asset(
-                                  user1Image,
-                                  width: 60.w,
-                                  height: 60.w,
-                                  fit: BoxFit.contain,
-                                ),
+                        Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.r),
+                              child: Image.asset(
+                                user1Image,
+                                width: 60.w,
+                                height: 60.w,
+                                fit: BoxFit.contain,
                               ),
-                              Expanded(
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 8.w),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(bottom: 5.w),
-                                        child: Text(
-                                          'Crypto-Pills',
-                                          style: TextStyle(
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 8.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(bottom: 5.w),
+                                      child: Text(
+                                        'Crypto-Pills',
                                         style: TextStyle(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: const Color.fromRGBO(
-                                              255, 255, 255, 0.5),
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Text(
+                                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color.fromRGBO(
+                                            255, 255, 255, 0.5),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    margin: EdgeInsets.only(bottom: 30.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 15.h),
+                          child: Text(
+                            'Current Price',
+                            style: TextStyle(
+                              color: const Color.fromRGBO(249, 249, 249, 1),
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Image.asset(
+                              ethereumIcon,
+                              height: 13.h,
+                              fit: BoxFit.contain,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 8.w),
+                              child: Text(
+                                '12.5',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color:
+                                      const Color.fromRGBO(255, 255, 255, 0.7),
+                                ),
+                              ),
+                            ),
+                            Text(
+                              ' (\$1717.17)',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                color: const Color.fromRGBO(255, 255, 255, 0.5),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    margin: EdgeInsets.only(bottom: 30.h),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: size.width / 2 - 28.w,
+                          margin: EdgeInsets.only(right: 8.w),
+                          child: const CommonBtn(
+                            hasMargin: false,
+                            text: 'Buy Now',
+                            hasOnPress: false
+                          ),
+                        ),
+                        Container(
+                          width: size.width / 2 - 28.w,
+                          margin: EdgeInsets.only(left: 8.w),
+                          child: const CommonBtn(
+                            hasMargin: false,
+                            text: 'View Offers',
+                            hasOnPress: false,
+                            hasBgColor: true,
+                            bgColor: Color.fromRGBO(255, 255, 255, 0.1),
                           ),
                         ),
                       ],
@@ -308,7 +299,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                         child: GridView.builder(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: 1.7, //9.1 / 4.5,
+                            childAspectRatio: 9.1 / 4.5,
                             crossAxisSpacing: 15,
                             mainAxisSpacing: 15,
                             crossAxisCount: 2,
@@ -345,8 +336,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w400,
-                                  color:
-                                      const Color.fromRGBO(255, 255, 255, 0.5),
+                                  color: const Color.fromRGBO(255, 255, 255, 0.5),
                                 ),
                               ),
                             ),
@@ -357,8 +347,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w400,
-                                  color:
-                                      const Color.fromRGBO(255, 255, 255, 0.5),
+                                  color: const Color.fromRGBO(255, 255, 255, 0.5),
                                 ),
                               ),
                             ),
@@ -413,171 +402,6 @@ class _NftProductScreenState extends State<NftProductScreen> {
           ),
           const StatusBarBg()
         ],
-      ),
-    );
-  }
-
-  _buildBuySlidingPanel() {
-    showGeneralDialog(
-        barrierDismissible: true,
-        barrierLabel: "buy_dialog",
-        context: context,
-        pageBuilder: (context, a1, a2) {
-          return AlertDialog(
-            insetPadding: EdgeInsets.zero,
-            backgroundColor: Colors.transparent,
-            content: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: AppTheme.colorBackground,
-                  border: Border.all(color: AppTheme.colorBitcoin, width: 2)),
-              height: 600,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("Buy",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(color: Colors.white)),
-                    Divider(
-                      color: AppTheme.colorBitcoin,
-                      thickness: 2,
-                    ),
-                    _buildHorizontalProductWithId(),
-                    Spacer(),
-                    Container(
-                      width: AppTheme.cardPadding * 10,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Subtotal",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Network Fee",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Market Fee",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Total Price",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          LongButtonWidget(
-                            title: "Cancel",
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            buttonType: ButtonType.transparent,
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                          LongButtonWidget(
-                            title: "Buy Now",
-                            onTap: () {},
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  _buildHorizontalProductWithId() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: NftProductHorizontal(
-        cryptoImage: gridListData[0].cryptoImage,
-        nftImage: gridListData[0].nftImage,
-        nftMainName: gridListData[0].nftMainName,
-        nftName: gridListData[0].nftName,
-        cryptoText: gridListData[0].cryptoText,
-        rank: gridListData[0].rank,
-        columnMargin: gridListData[0].columnMargin,
       ),
     );
   }

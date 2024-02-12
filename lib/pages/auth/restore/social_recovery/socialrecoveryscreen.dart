@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/appbaractions.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
@@ -42,10 +41,30 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                     print("Forwarding to social recovery info sceen...");
                     VRouter.of(context).to('/info_social_recovery');
                   },
-                    child: AppBarActionButton(
-                      iconData: Icons.info_outline_rounded,
-                    )
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: AppTheme.elementSpacing,
+                      bottom: AppTheme.elementSpacing,
+                      right: AppTheme.elementSpacing * 1.5,
+                      left: AppTheme.elementSpacing * 0.5,
+                    ),
+                    child: GlassContainer(
+                        borderThickness: 4, // remove border if not active
+                        blur: 50,
+                        opacity: 0.1,
+                        borderRadius: AppTheme.cardRadiusCircular,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Center(
+                            child: Icon(
+                              Icons.info_outline_rounded,
+                              color: AppTheme.white90,
+                              size: AppTheme.cardPadding * 1,
+                            ),
+                          ),
+                        )),
                   ),
+                ),
               ],
               text: "Social recovery",
               context: context,

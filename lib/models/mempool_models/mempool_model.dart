@@ -47,21 +47,24 @@ class MemPoolModel {
   List<RbfSummary>? rbfSummary;
   List<RbfSummary>? rbfLatestSummary;
   RbfTransaction? rbfTransaction;
+  String? txConfirmed;
 
-  MemPoolModel(
-      {this.mempoolInfo,
-      this.vBytesPerSecond,
-      this.mempoolBlocks,
-      this.transactions,
-      this.fees,
-      this.blocks,
-      this.conversions,
-      this.backendInfo,
-      this.da,
-      this.rbfSummary,
-      this.txPosition,
-      this.rbfLatestSummary,
-      this.rbfTransaction});
+  MemPoolModel({
+    this.mempoolInfo,
+    this.vBytesPerSecond,
+    this.mempoolBlocks,
+    this.transactions,
+    this.fees,
+    this.blocks,
+    this.conversions,
+    this.backendInfo,
+    this.da,
+    this.rbfSummary,
+    this.txPosition,
+    this.rbfLatestSummary,
+    this.txConfirmed,
+    this.rbfTransaction,
+  });
 
   MemPoolModel.fromJson(Map<String, dynamic> json) {
     mempoolInfo = json['mempoolInfo'] != null
@@ -114,6 +117,7 @@ class MemPoolModel {
         rbfSummary!.add(RbfSummary.fromJson(v));
       });
     }
+    txConfirmed = json['txConfirmed'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -121,6 +125,8 @@ class MemPoolModel {
     if (mempoolInfo != null) {
       data['mempoolInfo'] = mempoolInfo!.toJson();
     }
+    data['txConfirmed'] = txConfirmed;
+
     data['vBytesPerSecond'] = vBytesPerSecond;
     if (mempoolBlocks != null) {
       data['mempool-blocks'] = mempoolBlocks!.map((v) => v.toJson()).toList();

@@ -1,3 +1,4 @@
+
 class NftDropSliderModal {
   final nftImage;
   final nftName;
@@ -19,7 +20,6 @@ class TrendingSellersSliderModal {
     required this.nftName,
   });
 }
-
 class NftProductSliderModal {
   final nftImage;
   final cryptoImage;
@@ -27,16 +27,15 @@ class NftProductSliderModal {
   final nftMainName;
   final cryptoText;
   final columnMargin;
-  final rank;
 
-  NftProductSliderModal(
-      {required this.nftImage,
-      required this.cryptoImage,
-      required this.nftName,
-      required this.nftMainName,
-      required this.cryptoText,
-      required this.columnMargin,
-      required this.rank});
+  NftProductSliderModal({
+    required this.nftImage,
+    required this.cryptoImage,
+    required this.nftName,
+    required this.nftMainName,
+    required this.cryptoText,
+    required this.columnMargin,
+  });
 }
 
 class MostViewModal {
@@ -58,22 +57,15 @@ class GridListModal {
   final nftMainName;
   final cryptoText;
   final columnMargin;
-  final sold;
-  final DateTime date;
-  final rank;
-  final id;
 
-  GridListModal(
-      {required this.id,
-      required this.nftImage,
-      required this.cryptoImage,
-      required this.nftName,
-      required this.nftMainName,
-      required this.cryptoText,
-      required this.columnMargin,
-      required this.sold,
-      required this.date,
-      required this.rank});
+  GridListModal({
+    required this.nftImage,
+    required this.cryptoImage,
+    required this.nftName,
+    required this.nftMainName,
+    required this.cryptoText,
+    required this.columnMargin,
+  });
 }
 
 class PillLabelModal {
@@ -83,7 +75,6 @@ class PillLabelModal {
     required this.labelText,
   });
 }
-
 class CoinPillLabelModal {
   final coinImg;
   final labelText;
@@ -93,7 +84,6 @@ class CoinPillLabelModal {
     required this.labelText,
   });
 }
-
 class CollectionFilterListModal {
   final collectionImg;
   final collectionName;

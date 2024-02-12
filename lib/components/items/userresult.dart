@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class UserResult extends StatefulWidget {
   final UserData userData;
-  final dynamic onTap;
+  final Future<void> Function() onTap;
   final VoidCallback onDelete;
 
   UserResult({

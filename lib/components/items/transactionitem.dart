@@ -1,34 +1,15 @@
-import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/models/bitcoin/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:intl/intl.dart';
-
-enum TransactionType { lightning, onChain, }
-
-enum TransactionStatus { failed, pending, confirmed }
-
-enum TransactionDirection { received, sent }
 
 class TransactionItem extends StatefulWidget {
-  final TransactionType type;
-  final TransactionDirection direction;
-  final TransactionStatus status;
-  final String receiver;
-  final String txHash;
-  final String amount;
+  final BitcoinTransaction transaction;
   final BuildContext context;
-  final int timestamp; // Add the timestamp property
   const TransactionItem({
     Key? key,
+    required this.transaction,
     required this.context,
-    required this.receiver,
-    required this.txHash,
-    required this.amount,
-    required this.type,
-    required this.status,
-    required this.direction,
-    required this.timestamp,
   }) : super(key: key);
 
   @override
@@ -38,8 +19,10 @@ class TransactionItem extends StatefulWidget {
 class _TransactionItemState extends State<TransactionItem> {
   @override
   Widget build(BuildContext context) {
-    // Use DateFormat for formatting the timestamp
-    final String formattedDate = displayTimeAgoFromInt(widget.timestamp);
+    bool _hasReceived =
+        widget.transaction.transactionDirection == "received" ? true : false;
+    bool _isConfirmed =
+        widget.transaction.transactionStatus == "confirmed" ? true : false;
     return Padding(
       padding: const EdgeInsets.only(
           left: AppTheme.cardPadding,
@@ -63,8 +46,57 @@ class _TransactionItemState extends State<TransactionItem> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                          child: Avatar()),
-                      const SizedBox(width: AppTheme.elementSpacing * 0.75),
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                              AppTheme.elementSpacing * 1.5),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              stops: [0, 0.075, 0.925, 1],
+                              colors: _hasReceived
+                                  ? [
+                                      Color(0x99FFFFFF),
+                                      AppTheme.colorPrimaryGradient,
+                                      AppTheme.colorBitcoin,
+                                      Color(0x99FFFFFF),
+                                    ]
+                                  : [
+                                      Color(0x99FFFFFF),
+                                      Color(0xFF7127B7),
+                                      Color(0xFF522F77),
+                                      Color(0x99FFFFFF),
+                                    ]),
+                        ),
+                        child: Container(
+                          width: AppTheme.cardPadding * 1.8,
+                          height: AppTheme.cardPadding * 1.8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                                AppTheme.elementSpacing * 1.5),
+                            gradient: LinearGradient(
+                                begin: Alignment.bottomLeft,
+                                end: Alignment.topRight,
+                                colors: _hasReceived
+                                    ? [
+                                        AppTheme.colorBitcoin,
+                                        AppTheme.colorPrimaryGradient,
+                                      ]
+                                    : [
+                                        Color(0xFF522F77),
+                                        Color(0xFF7127B7),
+                                      ]),
+                          ),
+                          child: Icon(
+                            size: AppTheme.cardPadding * 1.75,
+                            _hasReceived
+                                ? Icons.arrow_downward_rounded
+                                : Icons.arrow_upward_rounded,
+                            color: AppTheme.white90,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppTheme.elementSpacing),
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,32 +107,23 @@ class _TransactionItemState extends State<TransactionItem> {
                               Container(
                                 width: AppTheme.cardPadding * 5,
                                 child: Text(
-                                  widget.receiver.toString(),
+                                  _hasReceived ?
+                                  widget.transaction.transactionSender.toString()
+                                      : widget.transaction.transactionReceiver,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(widget.context).textTheme.titleSmall,
+                                  style:
+                                  Theme.of(widget.context).textTheme.titleSmall,
                                 ),
                               ),
                             ],
                           ),
                           SizedBox(height: AppTheme.elementSpacing / 4,),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Container(
-                              //   width: AppTheme.cardPadding * 3,
-                              //   child: Text(
-                              //     widget.receiver,
-                              //     overflow: TextOverflow.ellipsis,
-                              //     style: Theme.of(widget.context).textTheme.bodySmall,
-                              //   ),
-                              // ),
                               Text(
-                                formattedDate,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(widget.context).textTheme.bodyMedium,
+                                widget.transaction.dateFormatted,
+                                style: Theme.of(widget.context).textTheme.bodySmall,
                               ),
-
                             ],
                           ),
                         ],
@@ -111,36 +134,51 @@ class _TransactionItemState extends State<TransactionItem> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            widget.amount,
+                            widget.transaction.amountString,
                             style: Theme.of(context)
                                 .textTheme
-                                .titleMedium!
+                                .titleSmall!
                                 .copyWith(
-                                    color: widget.direction == TransactionDirection.received
-                                        ? AppTheme.successColor
-                                        : AppTheme.errorColor),
+                                    color: _hasReceived
+                                        ? AppTheme.white90
+                                        : AppTheme.white90),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: AppTheme.elementSpacing / 3,
-                                vertical: AppTheme.elementSpacing / 15),
-                            child: Row(
-                              children: [
-                                //only for received transactions
-                                Icon(
-                                     Icons.circle,
-                                  color: widget.status == TransactionStatus.confirmed
-                                       ? AppTheme.successColor : widget.status == TransactionStatus.pending ? AppTheme.colorBitcoin
-                                      : AppTheme.errorColor,
-                                  size: AppTheme.cardPadding * 0.75,
-                                ),
-                                SizedBox(width: AppTheme.elementSpacing / 2,),
-                                Image.asset(
-                                  widget.type == TransactionType.onChain ? "assets/images/bitcoin.png" : "assets/images/lightning.png",
-                                  width: AppTheme.cardPadding * 0.75,
-                                  height: AppTheme.cardPadding * 0.75,
-                                  fit: BoxFit.contain,),
-                              ],
+                          SizedBox(height: AppTheme.elementSpacing / 4,),
+                          GlassContainer(
+                            borderThickness: 1.5, // remove border if not active
+                            blur: 50,
+                            opacity: 0.1,
+                            borderRadius: AppTheme.cardRadiusMid,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: AppTheme.elementSpacing / 3,
+                                  vertical: AppTheme.elementSpacing / 15),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    _isConfirmed
+                                        ? Icons.check_rounded
+                                        : Icons.refresh_rounded,
+                                    color: _isConfirmed
+                                        ? AppTheme.successColor
+                                        : AppTheme.errorColor,
+                                    size: AppTheme.elementSpacing,
+                                  ),
+                                  SizedBox(width: AppTheme.elementSpacing / 4),
+                                  Text(
+                                    _isConfirmed ? "erhalten" : "ausstehend ",
+                                    style: _isConfirmed
+                                        ? Theme.of(widget.context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(color: AppTheme.successColor)
+                                        : Theme.of(widget.context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(color: AppTheme.errorColor),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],

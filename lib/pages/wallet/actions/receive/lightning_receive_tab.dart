@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -6,7 +7,7 @@ import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/models/user/userwallet.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
+import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,9 +15,26 @@ import 'package:matrix/matrix.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
-class LightningReceiveTab extends StatelessWidget {
-  final ReceiveController controller;
-  const LightningReceiveTab({super.key, required this.controller});
+class LightningReceiveTab extends StatefulWidget {
+  const LightningReceiveTab({super.key});
+
+  @override
+  State<LightningReceiveTab> createState() => _LightningReceiveTabState();
+}
+
+class _LightningReceiveTabState extends State<LightningReceiveTab> {
+
+  bool createdInvoice = false;
+
+  final userWallet = UserWallet(
+      walletAddress: "publickeyforkeysend",
+      walletType: "walletType",
+      walletBalance: "0",
+      privateKey: "privateKey",
+      userdid: "userdid");
+
+  // A GlobalKey is used to identify this widget in the widget tree, used to access and modify its properties
+  GlobalKey globalKeyQR = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +51,14 @@ class LightningReceiveTab extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-
+              Text(
+                "Keysend Lightningaddress",
+                style: Theme.of(context).textTheme.headline5,
+              ),
               RoundedButtonWidget(
                   size: AppTheme.cardPadding * 1.5,
                   buttonType: ButtonType.transparent,
-                  iconData: controller.createdInvoice
+                  iconData: createdInvoice
                       ? FontAwesomeIcons.cancel
                       : FontAwesomeIcons.refresh,
                   onTap: () {
@@ -54,7 +75,7 @@ class LightningReceiveTab extends StatelessWidget {
             child: Center(
               child: RepaintBoundary(
                 // The Qr code is generated from this widget's global key
-                key: controller.globalKeyQR,
+                key: globalKeyQR,
                 child: Column(
                   children: [
                     // Custom border painted around the Qr code
@@ -64,23 +85,23 @@ class LightningReceiveTab extends StatelessWidget {
                         margin: const EdgeInsets.all(AppTheme.cardPadding),
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: AppTheme.cardRadiusBigger),
+                            borderRadius: AppTheme.cardRadiusSmall),
                         child: Padding(
                           padding:
-                              const EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                              const EdgeInsets.all(AppTheme.cardPadding / 2),
                           // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
-                          child: PrettyQrView.data(
-                            data: "lightning: ${controller.qrCodeDataString}",
-                            decoration: const PrettyQrDecoration(
-                              shape: PrettyQrSmoothSymbol(
-                                roundFactor: 1,
-                              ),
-                              image: PrettyQrDecorationImage(
-                                image: const AssetImage('assets/images/lightning.png'),
-                              ),)),
+                          child: PrettyQr(
+                            image:
+                                const AssetImage('assets/images/lightning.png'),
+                            typeNumber: null,
+                            size: qrCodeSize(context),
+                            data: "bitcoin: ${userWallet.walletAddress}",
+                            errorCorrectLevel: QrErrorCorrectLevel.M,
+                            roundEdges: true,
                           ),
                         ),
                       ),
+                    ),
                     // SizedBox to add some spacing
                     const SizedBox(
                       height: AppTheme.cardPadding,
@@ -97,7 +118,7 @@ class LightningReceiveTab extends StatelessWidget {
               GestureDetector(
                 onTap: () async {
                   await Clipboard.setData(
-                      ClipboardData(text: controller.qrCodeDataString));
+                      ClipboardData(text: userWallet.walletAddress));
                   // Display a snackbar to indicate that the wallet address has been copied
                   displaySnackbar(
                       context, "Wallet-Adresse in Zwischenablage kopiert");
@@ -112,15 +133,9 @@ class LightningReceiveTab extends StatelessWidget {
                 width: AppTheme.elementSpacing * 0.25,
               ),
               // Display the user's wallet address
-              Container(
-                width: 240,
-                child: Text(
-                  "${controller.qrCodeDataString}",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+              Text(
+                "${userWallet.walletAddress}",
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),
@@ -128,7 +143,7 @@ class LightningReceiveTab extends StatelessWidget {
           const SizedBox(
             height: AppTheme.cardPadding * 1.5,
           ),
-          !controller.createdInvoice
+          !createdInvoice
               ? Row(
                   children: [
                     Expanded(child: MyDivider()),
@@ -151,10 +166,7 @@ class LightningReceiveTab extends StatelessWidget {
                         //createdInvoice = true;
                         showModalBottomSheetWidget(
                           height: MediaQuery.of(context).size.height * 0.6,
-
-                          child: Container(),
-                          //CreateInvoice(controller: null,),
-                          context: context, title: '', goBack: false,
+                          child: CreateInvoice(), context: context, title: '', goBack: false,
                         );
                       },
                     ),
@@ -180,7 +192,7 @@ class LightningReceiveTab extends StatelessWidget {
                       ),
                       onTap: () {
                         // Share the wallet address
-                        Share.share('${controller.qrCodeDataString}');
+                        Share.share('${userWallet.walletAddress}');
                       },
                     ),
                     // Add a button to share the wallet address

@@ -75,7 +75,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       final recoveredprivatkey = await recoverKey(
           "did:ion:EiDzohpJZiOLnibQRpC0mcvh6S6mBBTAGJJcanIY2_-jxg",
           _controllerPassword.text);
-      // final recoveredprivatkey = await recoverKey(did, _controllerPassword.text);
+      //final recoveredprivatkey = await recoverKey(did, _controllerPassword.text);
 
       final signedMessage =
           await Auth().signMessageAuth(did, recoveredprivatkey);

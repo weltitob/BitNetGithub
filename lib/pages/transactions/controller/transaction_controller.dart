@@ -42,6 +42,7 @@ class TransactionController extends GetxController {
   RxInt selectedCardIndex = 0.obs;
 
   var dataOutSpents;
+  var dataOutSpents1;
   final _dio = Dio();
   String baseUrl = 'https://mempool.space/api/';
   String? txID = '';
@@ -84,7 +85,8 @@ class TransactionController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-   
+    isLoading.value = true;
+
     // getSingleTransactionCache(txID.value);
     // getCpfp(txID.value);
 
@@ -158,7 +160,6 @@ class TransactionController extends GetxController {
   String outPutBTC(int index) {
     double value = (transactionModel!.vout![index].value!) / 100000000;
     outputBTC.value = double.parse(value.toStringAsFixed(8));
-
     return outputBTC.value.toString();
   }
 
@@ -170,8 +171,10 @@ class TransactionController extends GetxController {
   }
 
   String outPutDollar(int index) {
+     double value1 = (transactionModel!.vout![index].value!) / 100000000;
+    // outputBTC.value = double.parse(value1.toStringAsFixed(8));
     double value =
-        ((outputBTC.value * 100000000) * currentUSD.value) / 100000000;
+        ((value1 * 100000000) * currentUSD.value) / 100000000;
     outputDollar.value = double.parse(value.toStringAsFixed(2));
     return outputDollar.value.toStringAsFixed(2);
   }
@@ -202,7 +205,7 @@ class TransactionController extends GetxController {
             currentUSD.value) /
         100000000;
     inputDollar.value = double.parse(value.toStringAsFixed(2));
-    return formatPrice(int.parse(inputDollar.value.toStringAsFixed(0)));
+    return formatPrice(inputDollar.value.toStringAsFixed(0));
   }
 
   Color inputIconColor() {
@@ -234,13 +237,10 @@ class TransactionController extends GetxController {
 
   RxInt currentUSD = 0.obs;
 
-  String formatPrice(price) {
+  String formatPrice(String price) {
     print(price);
-    final format = NumberFormat.decimalPatternDigits(
-      // locale: 'en',
-      decimalDigits: 2,
-    );
-    return format.format(price);
+    final format = NumberFormat.decimalPattern('hi');
+    return format.format(int.parse(price));
   }
 
   int? txTime;
@@ -253,10 +253,10 @@ class TransactionController extends GetxController {
     txTime = firstseen;
     localTime.value = formatLocalTime(
         transactionModel!.status!.blockTime?.toInt() ?? currentTime);
-    timerTime = Timer.periodic(const Duration(seconds: 1), (timer) {
-      print(txTime);
+    timerTime = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      // print(txTime);
       confirmationStatus.value = transactionModel!.status!.confirmed!;
-      print('${confirmationStatus.value}' + 'status');
+      // print('${confirmationStatus.value}' + 'status');
       timeST.value = formatTimestamp(firstseen ?? currentTime);
     });
   }
@@ -266,7 +266,7 @@ class TransactionController extends GetxController {
       var local;
       String url =
           'https://mempool.space/api/v1/transaction-times?txId[]=$txID';
-      print(url);
+      // print(url);
       await _dio.get(url).then((value) {
         local = value;
       });
@@ -697,7 +697,7 @@ class TransactionController extends GetxController {
   getSingleTransaction(String txID) async {
     try {
       print('get single transaction called ');
-      isLoading.value = true;
+      // isLoading.value = true;
       String url = '${baseUrl}tx/$txID';
       print(url);
       await _dio
@@ -721,24 +721,27 @@ class TransactionController extends GetxController {
             //     transactionModel!.status!.blockHeight!.toString());
           })
           .then((value) => dollarRate())
-          .then((value) {
-            segwitEnabled.value = !transactionModel!.status!.confirmed! ||
-                AppUtils.isFeatureActive('mainnet',
-                    transactionModel!.status!.blockHeight!, 'segwit');
-            rbfEnabled.value = !transactionModel!.status!.confirmed! ||
-                AppUtils.isFeatureActive(
-                    'mainnet', transactionModel!.status!.blockHeight!, 'rbf');
-            taprootEnabled.value = !transactionModel!.status!.confirmed! ||
-                AppUtils.isFeatureActive('mainnet',
-                    transactionModel!.status!.blockHeight!, 'taproot');
-            calcSegwitFeeGains(transactionModel!);
-            // ids.first= transactionModel!.txid!;
-            // getOutSpends();
-            isRbfTransaction.value = transactionModel!.vin!
-                .any((element) => element.sequence! < 0xfffffffe);
-            isTaproot.value = transactionModel!.vin!.any((v) =>
-                v.prevout != null && v.prevout!.scriptpubkeyType == 'v1_p2tr');
-          })
+          .then(
+            (value) {
+              segwitEnabled.value = !transactionModel!.status!.confirmed! ||
+                  AppUtils.isFeatureActive('mainnet',
+                      transactionModel!.status!.blockHeight!, 'segwit');
+              rbfEnabled.value = !transactionModel!.status!.confirmed! ||
+                  AppUtils.isFeatureActive(
+                      'mainnet', transactionModel!.status!.blockHeight!, 'rbf');
+              taprootEnabled.value = !transactionModel!.status!.confirmed! ||
+                  AppUtils.isFeatureActive('mainnet',
+                      transactionModel!.status!.blockHeight!, 'taproot');
+              calcSegwitFeeGains(transactionModel!);
+              // ids.first = transactionModel!.txid!;
+              getOutSpends1();
+              isRbfTransaction.value = transactionModel!.vin!
+                  .any((element) => element.sequence! < 0xfffffffe);
+              isTaproot.value = transactionModel!.vin!.any((v) =>
+                  v.prevout != null &&
+                  v.prevout!.scriptpubkeyType == 'v1_p2tr');
+            },
+          )
           .then((value) => startUpdatingTimestamp())
           .then((value) async {
             await totalBTC();
@@ -752,7 +755,6 @@ class TransactionController extends GetxController {
       feeUsd = (bitCoin * currentUSD.value).toStringAsFixed(2);
       feeSat =
           (double.parse(feeUsd) / transactionModel!.size!).toStringAsFixed(2);
-
       isLoading.value = false;
     } catch (e, tr) {
       isLoading.value = false;
@@ -874,6 +876,19 @@ class TransactionController extends GetxController {
     }
   }
 
+getOutSpends1() async { 
+    try {
+      isLoadingOutSpends.value = true;
+      String url =
+          'https://mempool.space/api/txs/outspends?txids=${txID}';
+      log(url);
+      dataOutSpents1 = await _dio.get(url);
+      print(dataOutSpents1);
+    } catch (e) {
+      print(e);
+    }
+  }
+  
   getOutSpends() async {
     int turns = ids.length ~/ 10 + 1;
     print('turns $turns');

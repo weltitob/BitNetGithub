@@ -116,20 +116,18 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                               ),
                             Text(
                               widget.title,
-                              style: widget.titleStyle != null
-                                  ? widget.titleStyle
-                                  : Theme.of(context)
-                                      .textTheme
-                                      .titleSmall
-                                      ?.copyWith(
-                                      color: widget.textColor != null
-                                          ? widget.textColor
-                                          : AppTheme.white90,
-                                      shadows: [
-                                        //AppTheme.boxShadowBig,
-                                        AppTheme.boxShadowButton
-                                      ],
-                                    ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                color: widget.textColor != null
+                                    ? widget.textColor
+                                    : AppTheme.white90,
+                                shadows: [
+                                  //AppTheme.boxShadowBig,
+                                  AppTheme.boxShadowButton
+                                ],
+                              ),
                             ),
                           ],
                         ),

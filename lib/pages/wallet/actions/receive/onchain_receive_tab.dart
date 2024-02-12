@@ -73,20 +73,19 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
                         margin: const EdgeInsets.all(AppTheme.cardPadding),
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: AppTheme.cardRadiusBigger),
+                            borderRadius: AppTheme.cardRadiusSmall),
                         child: Padding(
-                          padding:
-                          const EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                          padding: const EdgeInsets.all(AppTheme.cardPadding / 2),
                           // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
-                          child: PrettyQrView.data(
-                              data: "bitcoin: ${userWallet.walletAddress}",
-                              decoration: const PrettyQrDecoration(
-                                shape: PrettyQrSmoothSymbol(
-                                  roundFactor: 1,
-                                ),
-                                image: PrettyQrDecorationImage(
-                                  image: const AssetImage('assets/images/bitcoin.png'),
-                                ),)),
+                          child: PrettyQr(
+                            image: const AssetImage(
+                                'assets/images/bitcoin.png'),
+                            typeNumber: null,
+                            size: qrCodeSize(context),
+                            data: "bitcoin: ${userWallet.walletAddress}",
+                            errorCorrectLevel: QrErrorCorrectLevel.M,
+                            roundEdges: true,
+                          ),
                         ),
                       ),
                     ),

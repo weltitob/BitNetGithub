@@ -2,11 +2,9 @@ import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:seo/seo.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -90,9 +88,8 @@ class _PageOneState extends State<PageOne> {
                     ),
                     Container(
                       width: bigtextWidth,
-                      child: SeoText(
+                      child: Text(
                         "We build the Bitcoin Network!", //We bring Bitcoin to ordinary people! //We digitize the world with Bitcoin!
-                        tagStyle: TextTagStyle.h1,
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen
                             ? Theme.of(context).textTheme.displayMedium
@@ -104,7 +101,7 @@ class _PageOneState extends State<PageOne> {
                     ),
                     Container(
                       width: subtitleWidth,
-                      child: SeoText(
+                      child: Text(
                         "We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen
@@ -152,7 +149,7 @@ class _PageOneState extends State<PageOne> {
                     SizedBox(
                       height: AppTheme.cardPadding * spacingMultiplier,
                     ),
-                    SeoText(
+                    Text(
                       "limited spots left!",
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
