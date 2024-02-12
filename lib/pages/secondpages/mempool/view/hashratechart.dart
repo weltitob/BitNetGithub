@@ -2,7 +2,7 @@ import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_echarts/flutter_echarts.dart' as echarts;
+// import 'package:flutter_echarts/flutter_echarts.dart' as echarts;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
