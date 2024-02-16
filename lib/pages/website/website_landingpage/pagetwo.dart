@@ -7,11 +7,13 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:seo/seo.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -34,23 +36,48 @@ class _PageTwoState extends State<PageTwo> {
         // Check if the screen width is less than 600 pixels.
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+        bool isSuperSmallScreen =
+            constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen =
+            constraints.maxWidth < AppTheme.isIntermediateScreen;
 
-        double bigtextWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 13 : AppTheme.cardPadding * 24 : AppTheme.cardPadding * 28 : AppTheme.cardPadding * 30;
-        double textWidth = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? AppTheme.cardPadding * 13 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 22 : AppTheme.cardPadding * 24;
-        double subtitleWidth = isMidScreen ? isSmallScreen ?isSuperSmallScreen ?  AppTheme.cardPadding * 13 : AppTheme.cardPadding * 16 : AppTheme.cardPadding * 18 : AppTheme.cardPadding * 22;
-        double spacingMultiplier = isMidScreen ? isSmallScreen ? isSuperSmallScreen ? 0.5 : 0.5 : 0.75 : 1;
-        double centerSpacing = isMidScreen ? isIntermediateScreen
+        double bigtextWidth = isMidScreen
             ? isSmallScreen
-            ? isSuperSmallScreen
-            ? AppTheme.columnWidth * 0.075
-            : AppTheme.columnWidth * 0.15
-            : AppTheme.columnWidth * 0.35
-            : AppTheme.columnWidth * 0.65
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 13
+                    : AppTheme.cardPadding * 24
+                : AppTheme.cardPadding * 28
+            : AppTheme.cardPadding * 30;
+        double textWidth = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 13
+                    : AppTheme.cardPadding * 16
+                : AppTheme.cardPadding * 22
+            : AppTheme.cardPadding * 24;
+        double subtitleWidth = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.cardPadding * 13
+                    : AppTheme.cardPadding * 16
+                : AppTheme.cardPadding * 18
+            : AppTheme.cardPadding * 22;
+        double spacingMultiplier = isMidScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? 0.5
+                    : 0.5
+                : 0.75
+            : 1;
+        double centerSpacing = isMidScreen
+            ? isIntermediateScreen
+                ? isSmallScreen
+                    ? isSuperSmallScreen
+                        ? AppTheme.columnWidth * 0.075
+                        : AppTheme.columnWidth * 0.15
+                    : AppTheme.columnWidth * 0.35
+                : AppTheme.columnWidth * 0.65
             : AppTheme.columnWidth;
-
-
 
         return BackgroundWithContent(
           //https://de.fiverr.com/buzzzy/design-a-modern-app-icon-logo?context_referrer=listings_page&source=your_recently_viewed_gigs&ref_ctx_id=1048bfb54f4d89424086c09d740f5724&context=recommendation&pckg_id=1&pos=1&context_alg=recently_viewed&imp_id=43806367-a06d-4aac-8553-a3f253ae12af
@@ -61,7 +88,9 @@ class _PageTwoState extends State<PageTwo> {
           assetPath: "assets/images/x.png",
           opacity: 0.7,
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: centerSpacing + AppTheme.cardPadding * spacingMultiplier),
+            margin: EdgeInsets.symmetric(
+                horizontal:
+                    centerSpacing + AppTheme.cardPadding * spacingMultiplier),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +105,8 @@ class _PageTwoState extends State<PageTwo> {
                       ),
                       Container(
                         width: textWidth,
-                        child: Text(
+                        child: SeoText(
+                          tagStyle: TextTagStyle.h1,
                           "We unlock our future of digital assets!",
                           style: Theme.of(context).textTheme.displayMedium,
                         ),
@@ -86,13 +116,10 @@ class _PageTwoState extends State<PageTwo> {
                       ),
                       Container(
                         width: subtitleWidth,
-                        child: Text(
-                          //Join the Exclusive Circle of the First Million Users - We Embrace the Future with the latest Bitcoin Digital Asset Technology.
-                          "Be among the first million users and secure your exclusive early-bird Bitcoin inscription.",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                        ),
+                        child: SeoText(
+                            //Join the Exclusive Circle of the First Million Users - We Embrace the Future with the latest Bitcoin Digital Asset Technology.
+                            "Be among the first million users and secure your exclusive early-bird Bitcoin inscription.",
+                            style: Theme.of(context).textTheme.bodyLarge),
                       ),
                       SizedBox(
                         height: AppTheme.cardPadding * 1.5 * spacingMultiplier,
@@ -109,25 +136,27 @@ class _PageTwoState extends State<PageTwo> {
                   ),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * 3 + AppTheme.cardPadding * 3 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 3 +
+                      AppTheme.cardPadding * 3 * spacingMultiplier,
                 ),
                 isSmallScreen
                     ? Container(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Claim your free Bitcoin NFT",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      SizedBox(
-                        width: AppTheme.elementSpacing,
-                      ),
-                      Expanded(child: MyDivider()),
-                    ],
-                  ),
-                )
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SeoText(
+                              tagStyle: TextTagStyle.h2,
+                              "Claim your free Bitcoin NFT",
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            SizedBox(
+                              width: AppTheme.elementSpacing,
+                            ),
+                            Expanded(child: MyDivider()),
+                          ],
+                        ),
+                      )
                     : Container(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +170,7 @@ class _PageTwoState extends State<PageTwo> {
                             SizedBox(
                               width: AppTheme.elementSpacing,
                             ),
-                            Text(
+                            SeoText(
                               "History in Making: Claim your free Bitcoin NFT.",
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
@@ -159,45 +188,46 @@ class _PageTwoState extends State<PageTwo> {
                 ),
                 Container(
                   height: AppTheme.cardPadding * 5.5,
-                  child:
-                      latestUserData.isEmpty ? SizedBox(
-                            height: AppTheme.cardPadding * 4,
-                            child: Center(child: dotProgress(context))) :
-                      Container(
-                        alignment: Alignment.center,
-                        height: AppTheme.cardPadding * 5.5,
-                        child: HorizontalFadeListView(
-                          child: ListView.builder(
-                            //physics: NeverScrollableScrollPhysics(),
-                            controller: widget.controller.scrollController,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: latestUserData.length,
-                            itemBuilder: (context, index) {
-                              final userData =
-                              latestUserData.reversed.toList()[index];
-                              return Container(
-                                width: AppTheme.cardPadding * 5.5,
-                                child: Column(
-                                  children: [
-                                    Avatar(
-                                      size: AppTheme.cardPadding * 4,
-                                      mxContent:
-                                          Uri.parse(userData.profileImageUrl),
-                                    ),
-                                    SizedBox(
-                                        height: AppTheme.elementSpacing / 2),
-                                    Text(
-                                      "${userData.username}",
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                  child: latestUserData.isEmpty
+                      ? SizedBox(
+                          height: AppTheme.cardPadding * 4,
+                          child: Center(child: dotProgress(context)))
+                      : Container(
+                          alignment: Alignment.center,
+                          height: AppTheme.cardPadding * 5.5,
+                          child: HorizontalFadeListView(
+                            child: ListView.builder(
+                              //physics: NeverScrollableScrollPhysics(),
+                              controller: widget.controller.scrollController,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: latestUserData.length,
+                              itemBuilder: (context, index) {
+                                final userData =
+                                    latestUserData.reversed.toList()[index];
+                                return Container(
+                                  width: AppTheme.cardPadding * 5.5,
+                                  child: Column(
+                                    children: [
+                                      Avatar(
+                                        size: AppTheme.cardPadding * 4,
+                                        mxContent:
+                                            Uri.parse(userData.profileImageUrl),
+                                      ),
+                                      SizedBox(
+                                          height: AppTheme.elementSpacing / 2),
+                                      Text(
+                                        "${userData.username}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
                 ),
               ],
             ),

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/keys/privateionkey.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
@@ -43,7 +43,7 @@ signMessageFunction(String did, String privateIONKey, String message,) async {
     print("Response: ${response.data}");
 
     final Map<String, dynamic> responseData = deepMapCast(response.data as Map<Object?, Object?>);
-    final CloudfunctionCallback callback = CloudfunctionCallback.fromJson(responseData);
+    final RestResponse callback = RestResponse.fromJson(responseData);
     print("CloudfunctionCallback: ${callback.toString()}");
 
     if (callback.statusCode == "200") {

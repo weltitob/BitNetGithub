@@ -3,22 +3,26 @@ import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart'
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_scroll_behaviour.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
+import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/loaders/empty_page.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/pages/routetrees/routes.dart';
 import 'package:app_links/app_links.dart';
+import 'package:bitnet/provider/theme_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:bitnet/backbone/security/security.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class WidgetTree extends StatefulWidget {
   static GlobalKey<VRouterState> routerKey = GlobalKey<VRouterState>();
@@ -120,14 +124,13 @@ class _WidgetTreeState extends State<WidgetTree> {
     } catch (e) {
       throw Exception("error loading matrix: $e");
     }
-    if(kIsWeb){
+    if (kIsWeb) {
       _initialUrl = '/website';
-    }
-    else {
+    } else {
       if (clients.isNotEmpty) {
         print('Client is not null so this gets triggered...');
         _initialUrl =
-        clients.any((client) => client.isLogged()) ? '/feed' : '/authhome';
+            clients.any((client) => client.isLogged()) ? '/feed' : '/authhome';
       } else {
         print('Client seems to be null...');
         _initialUrl = '/';
@@ -139,6 +142,7 @@ class _WidgetTreeState extends State<WidgetTree> {
   Widget build(BuildContext context) {
     //not sure what about this userData because this gets requested too and must be given when it loads till infinity it probably is because we miss the userData
     final userData = Provider.of<UserData?>(context);
+    final provider = Provider.of<LocalProvider>(context);
 
     return ThemeBuilder(
       builder: (context, themeMode, primaryColor) => LayoutBuilder(
@@ -160,77 +164,88 @@ class _WidgetTreeState extends State<WidgetTree> {
               minTextAdapt: false,
               splitScreenMode: false,
               builder: (_, child) {
-              return VRouter(
-                key: WidgetTree.routerKey,
-                title: AppTheme.applicationName,
-                debugShowCheckedModeBanner: false,
-                themeMode: themeMode,
-                theme:
-                    //AppTheme.standardTheme(),
-                    AppTheme.customTheme(Brightness.light, primaryColor),
-                darkTheme:
-                    //AppTheme.standardTheme(),
-                    AppTheme.customTheme(Brightness.dark, primaryColor),
-                scrollBehavior: CustomScrollBehavior(),
-                logs: kReleaseMode ? VLogs.none : VLogs.info,
-                localizationsDelegates: L10n.localizationsDelegates,
-                supportedLocales: L10n.supportedLocales,
-                initialUrl: _initialUrl ?? '/',
-                routes: AppRoutes(columnMode ?? false).routes,
-                builder: (context, child) =>
-                    //child,
-                    (_isLoadingClients)
-                        ? EmptyPage(loading: true, text: "Clients still loading...")
-                        :
-                        //WebsiteLandingPage(),
-                        Matrix(
-                            context: context,
-                            router: WidgetTree.routerKey,
-                            clients: clients,
-                            child: child,
-                          ),
+                return VRouter(
+                  key: WidgetTree.routerKey,
+                  title: AppTheme.applicationName,
+                  debugShowCheckedModeBanner: false,
+                  themeMode: Provider.of<MyThemeProvider>(context).themeMode,
+                  theme: MyThemes.lightTheme,
+                  darkTheme: MyThemes.darkTheme,
+                  // themeMode: themeMode,
+                  // theme:
+                  //     //AppTheme.standardTheme(),
+                  //     AppTheme.customTheme(Brightness.light, primaryColor),
+                  // darkTheme:
+                  //     //AppTheme.standardTheme(),
+                  //     AppTheme.customTheme(Brightness.dark, primaryColor),
+                  scrollBehavior: CustomScrollBehavior(),
+                  locale: provider.locale,
+                  supportedLocales: L10n.supportedLocales,
+                  localizationsDelegates: const [
+                    L10n.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
+                  logs: kReleaseMode ? VLogs.none : VLogs.info,
+                  // localizationsDelegates: L10n.localizationsDelegates,
+                  // supportedLocales: L10n.supportedLocales,
+                  initialUrl: _initialUrl ?? '/',
+                  routes: AppRoutes(columnMode ?? false).routes,
+                  builder: (context, child) =>
+                      //child,
+                      (_isLoadingClients)
+                          ? EmptyPage(
+                              loading: true, text: "Clients still loading...")
+                          :
+                          //WebsiteLandingPage(),
+                          Matrix(
+                              context: context,
+                              router: WidgetTree.routerKey,
+                              clients: clients,
+                              child: child,
+                            ),
 
-                // : StreamBuilder(
-                //     stream: Auth().authStateChanges,
-                //     builder: (context, snapshot) {
-                //       if (snapshot.hasError) {
-                //         return EmptyPage(
-                //           loading: true,
-                //           text: snapshot.error.toString(),
-                //         );
-                //       }
-                //       //causes loading when switched anywhere in the app basically lol
-                //       // if (snapshot.connectionState ==
-                //       //     ConnectionState.waiting) {
-                //       //   return EmptyPage(
-                //       //     loading: true,
-                //       //     text:
-                //       //         "Loading something (authstate changes or request smth etc.)",
-                //       //   );
-                //       // }
-                //       if (snapshot.hasData) {
-                //         return
-                //           //WebsiteLandingPage();
-                //         Matrix(
-                //           context: context,
-                //           router: WidgetTree.routerKey,
-                //           clients: clients,
-                //           child: child,
-                //         );
-                //       }
-                //       return
-                //         //WebsiteLandingPage();
-                //         Matrix(
-                //         context: context,
-                //         router: WidgetTree.routerKey,
-                //         clients: clients,
-                //         child: child,
-                //       );
-                //     },
-                //   ),
-              );
-            }
-          );
+                  // : StreamBuilder(
+                  //     stream: Auth().authStateChanges,
+                  //     builder: (context, snapshot) {
+                  //       if (snapshot.hasError) {
+                  //         return EmptyPage(
+                  //           loading: true,
+                  //           text: snapshot.error.toString(),
+                  //         );
+                  //       }
+                  //       //causes loading when switched anywhere in the app basically lol
+                  //       // if (snapshot.connectionState ==
+                  //       //     ConnectionState.waiting) {
+                  //       //   return EmptyPage(
+                  //       //     loading: true,
+                  //       //     text:
+                  //       //         "Loading something (authstate changes or request smth etc.)",
+                  //       //   );
+                  //       // }
+                  //       if (snapshot.hasData) {
+                  //         return
+                  //           //WebsiteLandingPage();
+                  //         Matrix(
+                  //           context: context,
+                  //           router: WidgetTree.routerKey,
+                  //           clients: clients,
+                  //           child: child,
+                  //         );
+                  //       }
+                  //       return
+                  //         //WebsiteLandingPage();
+                  //         Matrix(
+                  //         context: context,
+                  //         router: WidgetTree.routerKey,
+                  //         clients: clients,
+                  //         child: child,
+                  //       );
+                  //     },
+                  //   ),
+                );
+              });
         },
       ),
     );

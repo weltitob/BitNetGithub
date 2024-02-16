@@ -30,6 +30,17 @@ bool isStringaDID(String input) {
   return didPattern.hasMatch(input);
 }
 
+bool isStringALNInvoice(String input) {
+  RegExp lnInvoicePattern = RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$');
+  return lnInvoicePattern.hasMatch(input);
+}
+
+bool isLightningAdressAsMail(String input) {
+  RegExp lightningAddressPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+  return lightningAddressPattern.hasMatch(input);
+}
+
+
 String getRandomString(int length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   return String.fromCharCodes(Iterable.generate(
@@ -73,6 +84,43 @@ String displayTimeAgoFromTimestamp(String publishedAt,
     return (numericDates) ? 'Vor 1 Jahr' : 'Letztes Jahr';
   } else if ((difference.inDays / 30).floor() >= 2) {
     return 'vor ${(difference.inDays / 365).floor()} Monaten';
+  } else if ((difference.inDays / 30).floor() >= 1) {
+    return (numericDates) ? 'Vor 1 Monat' : 'Letzter Monat';
+  } else if ((difference.inDays / 7).floor() >= 2) {
+    return 'vor ${(difference.inDays / 7).floor()} Wochen';
+  } else if ((difference.inDays / 7).floor() >= 1) {
+    return (numericDates) ? 'vor 1 Woche' : 'Letzte Woche';
+  } else if (difference.inDays >= 2) {
+    return 'vor ${difference.inDays} Tagen';
+  } else if (difference.inDays >= 1) {
+    return (numericDates) ? 'vor 1 Tag' : 'Gestern';
+  } else if (difference.inHours >= 2) {
+    return 'vor ${difference.inHours} Stunden';
+  } else if (difference.inHours >= 1) {
+    return (numericDates) ? 'vor 1 Stunde' : 'vor einer Stunde';
+  } else if (difference.inMinutes >= 2) {
+    return 'vor ${difference.inMinutes} Minuten';
+  } else if (difference.inMinutes >= 1) {
+    return (numericDates) ? 'vor 1 Minute' : 'vor einer Minute';
+  } else if (difference.inSeconds >= 3) {
+    return 'vor ${difference.inSeconds} Sekunden';
+  } else {
+    return 'Gerade eben';
+  }
+}
+String displayTimeAgoFromInt(int time, {bool numericDates = true}) {
+  // Convert the string timestamp to an integer and then to milliseconds
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
+  final DateTime date2 = DateTime.now();
+  final Duration difference = date2.difference(date);
+
+  // The rest of your logic remains the same
+  if ((difference.inDays / 365).floor() >= 2) {
+    return 'vor ${(difference.inDays / 365).floor()} Jahren';
+  } else if ((difference.inDays / 365).floor() >= 1) {
+    return (numericDates) ? 'Vor 1 Jahr' : 'Letztes Jahr';
+  } else if ((difference.inDays / 30).floor() >= 2) {
+    return 'vor ${(difference.inDays / 30).floor()} Monaten';
   } else if ((difference.inDays / 30).floor() >= 1) {
     return (numericDates) ? 'Vor 1 Monat' : 'Letzter Monat';
   } else if ((difference.inDays / 7).floor() >= 2) {

@@ -1,5 +1,5 @@
 // import 'package:bitnet/models/user/userdata.dart';
-// import 'package:bitnet/pages/profile/actions/sendscreen.dart';
+// import 'package:bitnet/pages/profile/actions/send_view.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';
 // import 'package:bitnet/backbone/auth/auth.dart';

@@ -1,0 +1,16 @@
+import 'dart:convert';
+import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
+import 'package:bitnet/backbone/helper/http_no_ssl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  }
+}
+String bytesToHex(List<int> bytes) {
+  return bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
+}

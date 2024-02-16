@@ -255,22 +255,22 @@ class _MempoolHomeState extends State<MempoolHome> {
               visible: controller.showNextBlock.value,
               child: Container(
                 child: Column(children: [
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     VRouter.of(context).to(
-                  //         "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
-                  //   },
-                  //   //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
-                  //   child: SearchFieldWidget(
-                  //     isSearchEnabled: false,
-                  //     hintText: controller
-                  //             .mempoolBlocks[controller.indexShowBlock.value]
-                  //             .nTx!
-                  //             .toStringAsFixed(0) +
-                  //         " transactions",
-                  //     handleSearch: handleSearch,
-                  //   ),
-                  // ),
+                  GestureDetector(
+                    onTap: () {
+                      VRouter.of(context).to(
+                          "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
+                    },
+                    //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
+                    child: SearchFieldWidget(
+                      isSearchEnabled: false,
+                      hintText: controller
+                              .mempoolBlocks[controller.indexShowBlock.value]
+                              .nTx!
+                              .toStringAsFixed(0) +
+                          " transactions",
+                      handleSearch: handleSearch,
+                    ),
+                  ),
                   SizedBox(
                     height: AppTheme.elementSpacing,
                   ),
@@ -293,9 +293,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                     controller.txDetailsConfirmed==null?  SizedBox(): blockSizeUnaccepted()],
                     ),
                   ),
-                   SizedBox(
+                  SizedBox(
                     height: AppTheme.cardPadding * 3,
-                  ),
+                  )
                 ]),
               ),
             ),
@@ -1089,7 +1089,7 @@ class _MempoolHomeState extends State<MempoolHome> {
             ),
           ],
         ),
-       ],
+      ],
     );
   }
 

@@ -75,7 +75,6 @@ class _BlockTransactionsState extends State<BlockTransactions> {
             ),
             controller.isLoadingTx.value
                 ? const Center(
-                  //so gthere 
                     child: CircularProgressIndicator(),
                   )
                 : controller.txDetails.isEmpty

@@ -33,7 +33,7 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
     final borderRadius = BorderRadius.circular(widget.size / 2.5);
 
     return InkWell(
-      borderRadius: AppTheme.cardRadiusSmall,
+      borderRadius: borderRadius,
       onTap: widget.onTap,
       onHover: (isHovering) {
         if (isHovering != isHovered) {

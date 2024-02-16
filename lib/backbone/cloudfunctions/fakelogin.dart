@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 fakeLoginION(String fakedid,) async {
@@ -14,7 +14,7 @@ fakeLoginION(String fakedid,) async {
   print("Response: ${response.data}");
 
   final Map<String, dynamic> responseData = deepMapCast(response.data as Map<Object?, Object?>);
-  final CloudfunctionCallback callback = CloudfunctionCallback.fromJson(responseData);
+  final RestResponse callback = RestResponse.fromJson(responseData);
   print("CloudfunctionCallback: ${callback.toString()}");
 
   if (callback.statusCode == "200") {

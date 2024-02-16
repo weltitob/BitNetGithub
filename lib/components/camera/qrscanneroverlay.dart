@@ -30,7 +30,7 @@ class QRScannerOverlay extends StatelessWidget {
                 width: scanArea,
                 decoration: BoxDecoration(
                   color: Colors.red,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(42),
                 ),
               ),
             ),
@@ -129,9 +129,9 @@ class BorderPainterSmall extends CustomPainter {
 class BorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    const width = 4.0;
-    const radius = AppTheme.cardPadding;
-    const tRadius = 3 * radius;
+    const width = 5.5;
+    const radius = AppTheme.cardPaddingBigger * 1.5;
+    const tRadius = 1.65 * radius;
     final rect = Rect.fromLTWH(
       width,
       width,

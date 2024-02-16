@@ -5,6 +5,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/colorpicker.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -19,7 +20,6 @@ class SettingsStyleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const colorPickerSize = AppTheme.cardPadding * 1.5;
-
     return bitnetScaffold(
       context: context,
       appBar: bitnetAppBar(
@@ -31,7 +31,7 @@ class SettingsStyleView extends StatelessWidget {
               .switchTab('main');
         },
       ),
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      // backgroundColor: Theme.of(context).colorScheme.surface,
       body: MaxWidthBody(
         withScrolling: true,
         child: Column(
@@ -58,7 +58,9 @@ class SettingsStyleView extends StatelessWidget {
                         padding: const EdgeInsets.all(AppTheme.elementSpacing),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(colorPickerSize),
-                          onTap: () => controller.setChatColor(color),
+                          onTap: (){
+                            controller.setChatColor(color);
+                            },
                           child: color == null
                               ? GestureDetector(
                                   onTap: () => showColorPickerDialouge(
@@ -136,7 +138,8 @@ class SettingsStyleView extends StatelessWidget {
                 OptionContainer(
                   L10n.of(context)!.systemTheme,
                   () {
-                    controller.switchTheme(ThemeMode.system);
+                    Provider.of<MyThemeProvider>(context, listen: false)
+                        .updateThemeInDatabase(ThemeMode.system);
                   },
                   isActive: controller.currentTheme == ThemeMode.system,
                   image: "assets/images/iphone.png",
@@ -149,7 +152,8 @@ class SettingsStyleView extends StatelessWidget {
                 OptionContainer(
                   L10n.of(context)!.lightTheme,
                   () {
-                    controller.switchTheme(ThemeMode.light);
+                    Provider.of<MyThemeProvider>(context, listen: false)
+                        .updateThemeInDatabase(ThemeMode.light);
                   },
                   image: "assets/images/lightmode.png",
                   height: AppTheme.cardPadding * 5.5,
@@ -162,7 +166,8 @@ class SettingsStyleView extends StatelessWidget {
                 OptionContainer(
                   L10n.of(context)!.darkTheme,
                   () {
-                    controller.switchTheme(ThemeMode.dark);
+                    Provider.of<MyThemeProvider>(context, listen: false)
+                        .updateThemeInDatabase(ThemeMode.dark);
                   },
                   image: "assets/images/darkmode.png",
                   height: AppTheme.cardPadding * 5.5,

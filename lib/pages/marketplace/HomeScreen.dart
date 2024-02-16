@@ -9,9 +9,11 @@ import 'package:bitnet/components/marketplace_widgets/NftDropSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+import 'package:vrouter/vrouter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -31,7 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: AppTheme.cardPadding * 1,),
+                SizedBox(
+                  height: AppTheme.cardPadding * 1,
+                ),
                 // Container(
                 //   margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
                 //   padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -100,14 +104,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: AppTheme.elementSpacing, left: AppTheme.elementSpacing),
+                      padding: EdgeInsets.only(
+                          top: 0.0,
+                          bottom: 0.0,
+                          right: AppTheme.elementSpacing,
+                          left: AppTheme.elementSpacing),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: nftDropSliderData.length,
                       itemBuilder: (context, index) {
-                        return NftDropSlider(
-                          nftImage: nftDropSliderData[index].nftImage,
-                          nftName: nftDropSliderData[index].nftName,
+                        return GestureDetector(
+                          onTap: () => context.vRouter.to(
+                              kNftProductScreenRoute +
+                                  "/${nftDropSliderData[index].nftName}"),
+                          child: NftDropSlider(
+                            nftImage: nftDropSliderData[index].nftImage,
+                            nftName: nftDropSliderData[index].nftName,
+                          ),
                         );
                       },
                     ),
@@ -120,11 +133,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   isNormalChild: true,
                   isChild: Container(
                     width: size.width,
-                    height: 170.h,
+                    height: 185.h,
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      padding: EdgeInsets.only(
+                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: trendingSellersSliderData.length,
@@ -147,7 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         childAspectRatio: 15 / 4.2,
                         crossAxisSpacing: 15,
                         mainAxisSpacing: 15,
@@ -178,19 +193,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      padding: EdgeInsets.only(
+                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: nftHotProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                          nftImage: nftHotProductSliderData[index].nftImage,
-                          cryptoImage: nftHotProductSliderData[index].cryptoImage,
-                          nftName: nftHotProductSliderData[index].nftName,
-                          nftMainName: nftHotProductSliderData[index].nftMainName,
-                          cryptoText: nftHotProductSliderData[index].cryptoText,
-                          columnMargin: nftHotProductSliderData[index].columnMargin,
-                        );
+                            nftImage: nftHotProductSliderData[index].nftImage,
+                            cryptoImage:
+                                nftHotProductSliderData[index].cryptoImage,
+                            nftName: nftHotProductSliderData[index].nftName,
+                            nftMainName:
+                                nftHotProductSliderData[index].nftMainName,
+                            cryptoText:
+                                nftHotProductSliderData[index].cryptoText,
+                            columnMargin:
+                                nftHotProductSliderData[index].columnMargin,
+                            rank: nftHotProductSliderData[index].rank);
                       },
                     ),
                   ),
@@ -206,19 +226,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      padding: EdgeInsets.only(
+                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: nftExpireProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                          nftImage: nftExpireProductSliderData[index].nftImage,
-                          cryptoImage: nftExpireProductSliderData[index].cryptoImage,
-                          nftName: nftExpireProductSliderData[index].nftName,
-                          nftMainName: nftExpireProductSliderData[index].nftMainName,
-                          cryptoText: nftExpireProductSliderData[index].cryptoText,
-                          columnMargin: nftExpireProductSliderData[index].columnMargin,
-                        );
+                            nftImage:
+                                nftExpireProductSliderData[index].nftImage,
+                            cryptoImage:
+                                nftExpireProductSliderData[index].cryptoImage,
+                            nftName: nftExpireProductSliderData[index].nftName,
+                            nftMainName:
+                                nftExpireProductSliderData[index].nftMainName,
+                            cryptoText:
+                                nftExpireProductSliderData[index].cryptoText,
+                            columnMargin:
+                                nftExpireProductSliderData[index].columnMargin,
+                            rank: nftExpireProductSliderData[index].rank);
                       },
                     ),
                   ),
@@ -234,19 +260,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      padding: EdgeInsets.only(
+                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: nftExpensiveProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                          nftImage: nftExpensiveProductSliderData[index].nftImage,
-                          cryptoImage: nftExpensiveProductSliderData[index].cryptoImage,
-                          nftName: nftExpensiveProductSliderData[index].nftName,
-                          nftMainName: nftExpensiveProductSliderData[index].nftMainName,
-                          cryptoText: nftExpensiveProductSliderData[index].cryptoText,
-                          columnMargin: nftExpensiveProductSliderData[index].columnMargin,
-                        );
+                            nftImage:
+                                nftExpensiveProductSliderData[index].nftImage,
+                            cryptoImage: nftExpensiveProductSliderData[index]
+                                .cryptoImage,
+                            nftName:
+                                nftExpensiveProductSliderData[index].nftName,
+                            nftMainName: nftExpensiveProductSliderData[index]
+                                .nftMainName,
+                            cryptoText:
+                                nftExpensiveProductSliderData[index].cryptoText,
+                            columnMargin: nftExpensiveProductSliderData[index]
+                                .columnMargin,
+                            rank: nftExpensiveProductSliderData[index].rank);
                       },
                     ),
                   ),
@@ -262,19 +295,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: EdgeInsets.only(bottom: 20.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      padding: EdgeInsets.only(
+                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: nftTopSellersProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                          nftImage: nftTopSellersProductSliderData[index].nftImage,
-                          cryptoImage: nftTopSellersProductSliderData[index].cryptoImage,
-                          nftName: nftTopSellersProductSliderData[index].nftName,
-                          nftMainName: nftTopSellersProductSliderData[index].nftMainName,
-                          cryptoText: nftTopSellersProductSliderData[index].cryptoText,
-                          columnMargin: nftTopSellersProductSliderData[index].columnMargin,
-                        );
+                            nftImage:
+                                nftTopSellersProductSliderData[index].nftImage,
+                            cryptoImage: nftTopSellersProductSliderData[index]
+                                .cryptoImage,
+                            nftName:
+                                nftTopSellersProductSliderData[index].nftName,
+                            nftMainName: nftTopSellersProductSliderData[index]
+                                .nftMainName,
+                            cryptoText: nftTopSellersProductSliderData[index]
+                                .cryptoText,
+                            columnMargin: nftTopSellersProductSliderData[index]
+                                .columnMargin,
+                            rank: nftTopSellersProductSliderData[index].rank);
                       },
                     ),
                   ),
@@ -285,7 +325,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const StatusBarBg()
         ],
-      ), context: context,
+      ),
+      context: context,
     );
   }
 }

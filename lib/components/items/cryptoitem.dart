@@ -10,7 +10,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:vrouter/vrouter.dart';
 
 class Currency {
   final String code;
@@ -165,7 +164,11 @@ class _CryptoItemState extends State<CryptoItem>
   Widget build(BuildContext context) {
     return _loading
         ? GestureDetector(
-            onTap: () => VRouter.of(context).to("/wallet/bitcoinscreen"),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const BitcoinScreen(),
+              ),
+            ),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppTheme.cardPadding),
                 child: Container(

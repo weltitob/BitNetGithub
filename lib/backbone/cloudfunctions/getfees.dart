@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:bitnet/models/bitcoin/fees.dart';
-import 'package:bitnet/models/firebase/cloudfunction_callback.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 // function to get the fees for the transaction
@@ -23,7 +23,7 @@ dynamic getFees({
     });
 
     // Parse the response from the Cloud Function
-    final mydata = CloudfunctionCallback.fromJson(resp.data);
+    final mydata = RestResponse.fromJson(resp.data);
     print(mydata.statusCode);
     if (mydata.statusCode == "success") {
       print('success message was awnser from getfees');

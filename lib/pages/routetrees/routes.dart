@@ -18,7 +18,10 @@ import 'package:bitnet/pages/chat_list/chat_permissions_settings/chat_permission
 import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
 import 'package:bitnet/pages/create/createscreen.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
-import 'package:bitnet/pages/marketplace/HomeScreen.dart';
+import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
+import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
+import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
@@ -26,8 +29,12 @@ import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
+import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
-import 'package:bitnet/pages/wallet/actions/send/sendscreen.dart';
+import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
+import 'package:bitnet/pages/wallet/actions/send/send.dart';
+import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
+import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:bitnet/pages/website/compliance/agbscreen.dart';
 import 'package:bitnet/pages/website/compliance/impressumscreen.dart';
 import 'package:bitnet/pages/website/contact/report/report.dart';
@@ -76,13 +83,33 @@ class AppRoutes {
         VWidget(path: '/', widget: const LoadingViewAppStart()),
         VNester(
           path: '/home',
-          widgetBuilder: (child) => BottomNav(child: child),
+          widgetBuilder: (child) {
+            return BottomNav(child: child);
+          },
           nestedRoutes: [
             VRouteRedirector(
               path: '',
               redirectTo: '/feed', // '/feed'
             ),
-            VWidget(path: '/feed', widget: FeedScreen()), //(path: '/feed', widget: FeedScreen()),
+            VWidget(
+                path: '/qrscanner',
+                widget: const QrScanner(),
+                buildTransition: _dynamicTransition),
+            VWidget(path: '/feed', widget: FeedScreen(), stackedRoutes: [
+              VWidget(
+                  path: kNftProductScreenRoute + "/:nft_id",
+                  widget: NftProductScreen()),
+              VWidget(
+                  path: kNotificationScreenRoute, widget: NotificationScreen()),
+              VWidget(
+                  path: kCollectionScreenRoute + "/:collection_id",
+                  widget: CollectionScreen(),
+                  stackedRoutes: [
+                    VWidget(
+                        path: kNftProductScreenRoute + "/:nft_id",
+                        widget: NftProductScreen()),
+                  ]),
+            ]), //(path: '/feed', widget: FeedScreen()),
             VWidget(
                 path: '/create',
                 widget:
@@ -92,9 +119,9 @@ class AppRoutes {
                 )),
             VWidget(
               path: '/wallet',
-              widget: WalletScreen(),
+              widget: Wallet(),
               stackedRoutes: [
-                 VWidget(
+                VWidget(
                   path: '/wallet/bitcoinscreen',
                   widget: const BitcoinScreen(),
                   buildTransition: _fadeTransition,
@@ -106,12 +133,17 @@ class AppRoutes {
                 ),
                 VWidget(
                   path: '/wallet/receive',
-                  widget: const ReceiveScreen(),
+                  widget: Receive(),
                   buildTransition: _fadeTransition,
                 ),
+                // VWidget(
+                //   path: '/wallet/send_choose_receiver',
+                //   widget: const SearchReceiver(controller: null,),
+                //   buildTransition: _fadeTransition,
+                // ),
                 VWidget(
                   path: '/wallet/send',
-                  widget: const SendBTCScreen(bitcoinSenderAdress: "bitcoinSenderAdress"),
+                  widget: const Send(),
                   buildTransition: _fadeTransition,
                 ),
               ],
@@ -131,7 +163,6 @@ class AppRoutes {
             ),
           ],
         ),
-
 
         // Chat details and other chat-related routes without BottomNav
         VWidget(
@@ -182,10 +213,6 @@ class AppRoutes {
             ),
           ],
         ),
-        VWidget(
-            path: '/qrscanner',
-            widget: const QrScanner(),
-            buildTransition: _dynamicTransition)
       ];
   //
   // List<VRouteElement> get _tabletRoutes => [
@@ -293,8 +320,7 @@ class AppRoutes {
 
   List<VRouteElement> get _authRoutes => [
         VWidget(path: '/', widget: const LoadingViewAppStart()),
-        VWidget(path: '/website', widget: WebsiteLandingPage(),
-        stackedRoutes: [
+        VWidget(path: '/website', widget: WebsiteLandingPage(), stackedRoutes: [
           VWidget(
             path: '/report',
             widget: const Report(),
@@ -307,18 +333,9 @@ class AppRoutes {
             path: '/ourteam',
             widget: const OurTeam(),
           ),
-          VWidget(
-            path: '/agbs',
-            widget: const AGBScreen()
-          ),
-          VWidget(
-            path: '/impressum',
-            widget: const ImpressumScreen()
-          ),
-          VWidget(
-              path: '/submitidea',
-              widget: const SubmitIdea()
-          ),
+          VWidget(path: '/agbs', widget: const AGBScreen()),
+          VWidget(path: '/impressum', widget: const ImpressumScreen()),
+          VWidget(path: '/submitidea', widget: const SubmitIdea()),
         ]),
         VWidget(
           path: '/authhome',
@@ -513,7 +530,6 @@ class AppRoutes {
           widget: const LogViewer(),
           buildTransition: _dynamicTransition,
         ),
-
       ];
 
   FadeTransition Function(dynamic, dynamic, dynamic)? get _dynamicTransition =>
