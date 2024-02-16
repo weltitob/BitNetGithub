@@ -9,8 +9,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
- 
- 
+
 class HashrateChart extends StatefulWidget {
   List<ChartLine> chartData = []; // The fake data will be stored here
 

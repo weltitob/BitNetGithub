@@ -1,3 +1,5 @@
+//address component
+
 import 'package:bitnet/models/mempool_models/outspends_model.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
@@ -436,8 +438,12 @@ class AddressComponent extends StatelessWidget {
                                                                         .prevout!
                                                                         .scriptpubkeyAddress ??
                                                                     '';
-                                                                Get.to(() =>
-                                                                    AddressComponent());
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                AddressComponent()));
                                                               },
                                                               child: Text(
                                                                 '${controller.subTransactionModel[index].vin![index2].prevout!.scriptpubkeyAddress!.substring(0, 15)} ...${controller.subTransactionModel[index].vin![index2].prevout!.scriptpubkeyAddress!.substring(controller.subTransactionModel[index].vin![index2].prevout!.scriptpubkeyAddress!.length - 5)}' ??
@@ -555,8 +561,8 @@ class AddressComponent extends StatelessWidget {
                                                                             controller.getAddressComponent(controller.subTransactionModel[index].vout![index2].scriptpubkeyAddress);
                                                                             controller.addressId =
                                                                                 controller.subTransactionModel[index].vout![index2].scriptpubkeyAddress ?? '';
-                                                                            Get.to(() =>
-                                                                                AddressComponent());
+                                                                            Navigator.push(context,
+                                                                                MaterialPageRoute(builder: (context) => AddressComponent()));
                                                                           },
                                                                           child:
                                                                               Text(
@@ -573,20 +579,23 @@ class AddressComponent extends StatelessWidget {
                                                                       const SizedBox(
                                                                           width:
                                                                               30),
-                                                                      Obx(() {
-                                                                        return controller.isShowBTC.value
-                                                                            ? Text(
-                                                                                '${(controller.subTransactionModel[index].vout![index2].value! / 100000000).toStringAsFixed(8)} BTC' ?? '',
-                                                                                style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.white, fontSize: 12),
-                                                                              )
-                                                                            : Text(
-                                                                                '\$${((controller.subTransactionModel[index].vout![index2].value! / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
-                                                                                style: TextStyle(color: Colors.white),
-                                                                              );
-                                                                      }),
+                                                                      Obx(
+                                                                        () {
+                                                                          return controller.isShowBTC.value
+                                                                              ? Text(
+                                                                                  '${(controller.subTransactionModel[index].vout![index2].value! / 100000000).toStringAsFixed(8)} BTC' ?? '',
+                                                                                  style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.white, fontSize: 12),
+                                                                                )
+                                                                              : Text(
+                                                                                  '\$${((controller.subTransactionModel[index].vout![index2].value! / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
+                                                                                  style: TextStyle(color: Colors.white),
+                                                                                );
+                                                                        },
+                                                                      ),
                                                                       const SizedBox(
-                                                                          width:
-                                                                              10),
+                                                                        width:
+                                                                            10,
+                                                                      ),
                                                                       Container(
                                                                         height:
                                                                             20,
@@ -659,7 +668,7 @@ class AddressComponent extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text(
-                                                  '${(controller.subTransactionModel[index].fee! / (controller.subTransactionModel[index].weight! / 4)).toStringAsFixed(1)} sat/vB -${controller.formatPrice(controller.subTransactionModel[index].fee)} sat',
+                                                  '${(controller.subTransactionModel[index].fee! / (controller.subTransactionModel[index].weight! / 4)).toStringAsFixed(1)} sat/vB -${controller.formatPrice(controller.subTransactionModel[index].fee.toString())} sat',
                                                   style: TextStyle(
                                                       color: Colors.white),
                                                 ),
@@ -801,3 +810,4 @@ class AddressComponent extends StatelessWidget {
         ));
   }
 }
+

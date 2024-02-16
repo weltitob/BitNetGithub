@@ -1,3 +1,5 @@
+//single transaction 
+
 // ignore_for_file: prefer_interpolation_to_compose_strings, prefer_const_constructors
 
 import 'dart:math';
@@ -302,18 +304,20 @@ class SingleTransactionScreen extends StatelessWidget {
                                                         : Colors.red,
                                           ),
                                           child: Center(
-                                              child: Text(
-                                            controllerHome.isRbfTransaction
-                                                        .value ==
-                                                    true
-                                                ? 'Replaced'
-                                                : '${controller.confirmations == 0 ? '' : controller.confirmations} ' +
-                                                    controller.statusTransaction
-                                                        .value,
-                                            style: const TextStyle(
-                                                color: Colors.white),
-                                          )),
-                                        )
+                                            child: Text(
+                                              controllerHome.isRbfTransaction
+                                                          .value ==
+                                                      true
+                                                  ? 'Replaced'
+                                                  : '${controller.confirmations == 0 ? '' : controller.confirmations} ' +
+                                                      controller
+                                                          .statusTransaction
+                                                          .value,
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     const SizedBox(
@@ -340,7 +344,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                             icon: const Icon(Icons.copy))
                                       ],
                                     ),
-                                    controller.confirmationStatus.value
+                                    controllerHome.txConfirmed.value
                                         ? Container(
                                             child: Column(
                                               children: [
@@ -440,7 +444,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                         Row(
                                           children: [
                                             Text(
-                                              '${controller.transactionModel == null ? '' : controller.formatPrice(controller.transactionModel?.fee)} sat ',
+                                              '${controller.transactionModel == null ? '' : controller.formatPrice(controller.transactionModel!.fee.toString())} sat ',
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),
@@ -471,7 +475,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                     // SizedBox(
                                     //   height: 5,
                                     // ),
-                                    controller.confirmationStatus.value
+                                    controllerHome.txConfirmed.value
                                         ? SizedBox()
                                         // : controller.replaced
                                         //     ? SizedBox()
@@ -686,7 +690,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                             SizedBox(
                                               width: 10,
                                             ),
-                                            controller.confirmationStatus.value
+                                            controllerHome.txConfirmed.value
                                                 ? Container(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -842,8 +846,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                               width: 20,
                                                               decoration:
                                                                   BoxDecoration(
-                                                                color: controller
-                                                                    .outputIconColor(),
+                                                                color:
+                                                                    Colors.red,
                                                                 shape: BoxShape
                                                                     .circle,
                                                               ),
@@ -865,40 +869,49 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                       .center,
                                                               children: [
                                                                 Flexible(
-                                                                    flex: 3,
-                                                                    child:
-                                                                        GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        controller.getAddressComponent(controller
-                                                                            .transactionModel!
-                                                                            .vin?[index]
-                                                                            .prevout!
-                                                                            .scriptpubkeyAddress);
-                                                                        controller
-                                                                            .addressId = controller
-                                                                                .transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ??
-                                                                            '';
-                                                                        Navigator.push(
-                                                                            context,
-                                                                            MaterialPageRoute(builder: (context) => AddressComponent()));
-                                                                        // Get.to(() =>
-                                                                        //     AddressComponent());
-                                                                      },
-                                                                      child:
-                                                                          Text(
-                                                                        '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
-                                                                        '... '
-                                                                        '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              Colors.blue,
+                                                                  flex: 3,
+                                                                  child:
+                                                                      GestureDetector(
+                                                                    onTap: () {
+                                                                      controller.getAddressComponent(controller
+                                                                          .transactionModel!
+                                                                          .vin?[
+                                                                              index]
+                                                                          .prevout!
+                                                                          .scriptpubkeyAddress);
+                                                                      controller
+                                                                          .addressId = controller
+                                                                              .transactionModel!
+                                                                              .vin?[index]
+                                                                              .prevout!
+                                                                              .scriptpubkeyAddress ??
+                                                                          '';
+                                                                      Navigator
+                                                                          .push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              AddressComponent(),
                                                                         ),
+                                                                      );
+                                                                    },
+                                                                    child: Text(
+                                                                      controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null &&
+                                                                              controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType == "op_return"
+                                                                          ? 'OP_RETURN (R)'
+                                                                          : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
+                                                                              '... '
+                                                                              '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        color: Colors
+                                                                            .blue,
                                                                       ),
-                                                                    )),
+                                                                    ),
+                                                                  ),
+                                                                ),
                                                                 Flexible(
                                                                   flex: 2,
                                                                   child:
@@ -1106,8 +1119,18 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                 width: 20,
                                                                 decoration:
                                                                     BoxDecoration(
-                                                                  color: controller
-                                                                      .outputIconColor(),
+                                                                  color:controller.dataOutSpents1.data[0][index]
+                                                                              [
+                                                                              'spent'] ==
+                                                                          false
+                                                                      ? Colors
+                                                                          .green
+                                                                      : controller.dataOutSpents1.data[0][index]['spent'] ==
+                                                                              true
+                                                                          ? Colors
+                                                                              .red
+                                                                          : Colors
+                                                                              .grey.shade600,
                                                                   shape: BoxShape
                                                                       .circle,
                                                                 ),
@@ -1149,14 +1172,13 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                         Navigator.push(
                                                                             context,
                                                                             MaterialPageRoute(builder: (context) => AddressComponent()));
-
-                                                                        // Get.to(() =>
-                                                                        //     AddressComponent());
                                                                       },
                                                                       child:
                                                                           Text(
-                                                                        controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ??
-                                                                            '',
+                                                                        controller.transactionModel!.vout?[index].scriptpubkeyAddress == null && controller.transactionModel!.vout?[index].scriptpubkeyType == "op_return"
+                                                                            ? 'OP_RETURN (R)'
+                                                                            : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ??
+                                                                                '',
                                                                         style: const TextStyle(
                                                                             color:
                                                                                 Colors.black,
@@ -1304,7 +1326,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                     color: Colors
                                                                         .white))
                                                             : Text(
-                                                                ' \$ ${controller.totalOutPutDollar.value.toStringAsFixed(0)}  ',
+                                                                ' \$ ${controller.totalOutPutDollar.value.toStringAsFixed(2)}  ',
                                                                 style: TextStyle(
                                                                     color: Colors
                                                                         .white))),
@@ -1365,8 +1387,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                 width: 20,
                                                                 decoration:
                                                                     BoxDecoration(
-                                                                  color: controller
-                                                                      .inputIconColor(),
+                                                                  color: Colors
+                                                                      .red,
                                                                   shape: BoxShape
                                                                       .circle,
                                                                 ),
@@ -1411,9 +1433,12 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                       },
                                                                       child:
                                                                           Text(
-                                                                        '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
-                                                                        '... '
-                                                                        '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
+                                                                        controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null &&
+                                                                                controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType == "op_return"
+                                                                            ? 'OP_RETURN (R)'
+                                                                            : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
+                                                                                '... '
+                                                                                '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
                                                                         style:
                                                                             const TextStyle(
                                                                           fontSize:
@@ -1500,8 +1525,18 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                 width: 20,
                                                                 decoration:
                                                                     BoxDecoration(
-                                                                  color: controller
-                                                                      .outputIconColor(),
+                                                                  color: controller.dataOutSpents1.data[0][index]
+                                                                              [
+                                                                              'spent'] ==
+                                                                          false
+                                                                      ? Colors
+                                                                          .green
+                                                                      : controller.dataOutSpents1.data[0][index]['spent'] ==
+                                                                              true
+                                                                          ? Colors
+                                                                              .red
+                                                                          : Colors
+                                                                              .grey.shade600,
                                                                   shape: BoxShape
                                                                       .circle,
                                                                 ),
@@ -1537,17 +1572,21 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                             .addressId = controller.transactionModel!.vout?[index].scriptpubkeyAddress
                                                                                 .toString() ??
                                                                             '';
-                                                                        Navigator.push(
-                                                                            context,
-                                                                            MaterialPageRoute(builder: (context) => AddressComponent()));
-
-                                                                        // Get.to(() =>
-                                                                        //     AddressComponent());
+                                                                        Navigator
+                                                                            .push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                            builder: (context) =>
+                                                                                AddressComponent(),
+                                                                          ),
+                                                                        );
                                                                       },
                                                                       child:
                                                                           Text(
-                                                                        controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ??
-                                                                            '',
+                                                                        controller.transactionModel!.vout?[index].scriptpubkeyAddress == null && controller.transactionModel!.vout?[index].scriptpubkeyType == "op_return"
+                                                                            ? 'OP_RETURN (R)'
+                                                                            : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ??
+                                                                                '',
                                                                         style: const TextStyle(
                                                                             color:
                                                                                 Colors.black,
@@ -1559,8 +1598,16 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                     flex: 2,
                                                                     child:
                                                                         Container(
-                                                                      color: Colors
-                                                                          .grey,
+                                                                      padding: EdgeInsets.symmetric(
+                                                                          horizontal:
+                                                                              4,
+                                                                          vertical:
+                                                                              2),
+                                                                      decoration: BoxDecoration(
+                                                                          color: Colors
+                                                                              .grey,
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(3)),
                                                                       child: controller
                                                                               .isShowBTC
                                                                               .value
@@ -1604,7 +1651,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                     color: Colors
                                                                         .white))
                                                             : Text(
-                                                                ' \$${controller.formatPrice(int.parse(controller.totalOutPutDollar.value.toStringAsFixed(0)))}',
+                                                                ' \$${controller.formatPrice(controller.totalOutPutDollar.value.toStringAsFixed(0))}',
                                                                 style: TextStyle(
                                                                     color: Colors
                                                                         .white))),
@@ -1853,10 +1900,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                               ),
                                               Text(
                                                 controller.formatPrice(
-                                                    int.parse(controller
-                                                        .transactionModel!
+                                                    controller.transactionModel!
                                                         .locktime
-                                                        .toString())),
+                                                        .toString()),
                                                 style: const TextStyle(
                                                     fontWeight: FontWeight.w500,
                                                     color: Colors.white,
@@ -1893,10 +1939,10 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                 .weight! <
                                                             1000
                                                         ? controller.formatPrice(
-                                                            int.parse(controller
+                                                            controller
                                                                 .transactionModel!
                                                                 .weight
-                                                                .toString()))
+                                                                .toString())
                                                         : (controller
                                                                     .transactionModel!
                                                                     .weight! /
