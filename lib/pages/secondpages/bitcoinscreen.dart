@@ -101,7 +101,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               SizedBox(
                 height: AppTheme.elementSpacing,
               ),
-              HashrateChart(),
+              HashrateChart(chartData: [],),
             ],
           )),
           RoundedContainer(
