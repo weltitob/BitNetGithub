@@ -110,7 +110,7 @@ class _TransactionsState extends State<Transactions>
   void initState() {
     super.initState();
     print("Subscribing to transactions...");
-    subscribeTransactionsStream().listen((data) {
+    subscribeInvoicesStream().listen((data) {
       Logs().w("Received data: $data");
     }, onError: (error) {
       Logs().e("Received error: $error");
@@ -118,6 +118,8 @@ class _TransactionsState extends State<Transactions>
     });
     //subscribeToInvoices();
     //subscribeToTransactions();
+
+    print("Getting transactions...");
     getOnchainTransactions();
     getLightningPayments();
     getLightningInvoices();

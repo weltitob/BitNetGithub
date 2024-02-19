@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings, prefer_const_constructors
 
 import 'dart:math';
-
-import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
@@ -10,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:vrouter/vrouter.dart';
 
 class SingleTransactionScreen extends StatelessWidget {
   const SingleTransactionScreen({Key? key}) : super(key: key);

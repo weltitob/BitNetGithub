@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:matrix/matrix.dart';
 
 Future<RestResponse> listPayments() async {
   const String restHost = 'mybitnet.com:8443'; // Update the host as needed
@@ -26,7 +27,7 @@ Future<RestResponse> listPayments() async {
   try {
     var response = await http.get(Uri.parse(url), headers: headers,);
     // Print raw response for debugging
-    print('Raw Response: ${response.body}');
+    Logs().d('Raw Response Payments: ${response.body}');
 
     if (response.statusCode == 200) {
       print(json.decode(response.body));

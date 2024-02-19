@@ -8,6 +8,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -73,23 +74,26 @@ class _CryptoItemState extends State<CryptoItem>
       days: "1",
       interval: "minuetly",
     );
+    try{
+      await chartClassDay.getChartData();
+      await chartClassDayMin.getChartData();
 
-    await chartClassDay.getChartData();
-    await chartClassDayMin.getChartData();
+      onedaychart = chartClassDay.chartLine;
 
-    onedaychart = chartClassDay.chartLine;
+      _currentPrice = chartClassDayMin.chartLine.last.price;
+      _currentPriceString = _currentPrice.toStringAsFixed(2) + "€";
+      _priceOneTimestampAgo = double.parse(_currentPrice.toStringAsFixed(2));
+      _firstPrice = chartClassDayMin.chartLine.first.price;
 
-    _currentPrice = chartClassDayMin.chartLine.last.price;
-    _currentPriceString = _currentPrice.toStringAsFixed(2) + "€";
-    _priceOneTimestampAgo = double.parse(_currentPrice.toStringAsFixed(2));
-    _firstPrice = chartClassDayMin.chartLine.first.price;
+      priceChange = (_currentPrice - _firstPrice) / _firstPrice;
+      _priceChangeString = toPercent(priceChange);
 
-    priceChange = (_currentPrice - _firstPrice) / _firstPrice;
-    _priceChangeString = toPercent(priceChange);
-
-    setState(() {
-      _loading = false;
-    });
+      setState(() {
+        _loading = false;
+      });
+    } catch (e) {
+      Logs().e("Charts could not be created for cryptoitem resulting in error" + e.toString());
+    }
   }
 
   late AnimationController _controller;

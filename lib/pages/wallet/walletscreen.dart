@@ -1,6 +1,7 @@
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,12 @@ class WalletScreen extends StatelessWidget {
       body: ListView(
         children: [
           const SizedBox(height: AppTheme.cardPadding * 1.5),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1),
+            child: GlassContainer(child: Container(
+              height: AppTheme.cardPadding * 4,
+            )),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: AppTheme.cardPadding),
             child: SizedBox(
