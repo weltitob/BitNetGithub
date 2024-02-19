@@ -12,8 +12,6 @@ import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:matrix/matrix.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:provider/provider.dart';
 
 class LightningSendTab extends StatelessWidget {
   final SendController controller;
@@ -26,7 +24,8 @@ class LightningSendTab extends StatelessWidget {
       child: ListView(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
+            height:
+                MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -44,11 +43,12 @@ class LightningSendTab extends StatelessWidget {
                       height: AppTheme.cardPadding * 5,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding),
                       child: Text(
                         ',,${controller.description}"',
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        ),
+                        style:
+                            Theme.of(context).textTheme.bodyLarge!.copyWith(),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -67,52 +67,57 @@ class LightningSendTab extends StatelessWidget {
   }
 
   Widget selectNetworkButtons(
-      BuildContext context,
-      String text,
-      String imagePath,
-      bool isActive,
-      ){
-    return isActive ? GlassContainer(
-        child:
-        Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: AppTheme.elementSpacing * 0.75,
-            vertical: AppTheme.elementSpacing * 0.5,
-          ),
-          child: Row(
-            children: [
-              Image.asset(imagePath,
-                width: AppTheme.cardPadding * 1,
-                height: AppTheme.cardPadding * 1,),
-              Container(
-                width: AppTheme.elementSpacing,
-              ),
-              Text(
-                text,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-            ],
-          ),
-        )) : Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: AppTheme.elementSpacing * 0.75,
-        vertical: AppTheme.elementSpacing * 0.5,
-      ),
-      child: Row(
-        children: [
-          Image.asset(imagePath,
-            width: AppTheme.cardPadding * 1,
-            height: AppTheme.cardPadding * 1,),
-          Container(
-            width: AppTheme.elementSpacing,
-          ),
-          Text(
-            text,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ],
-      ),
-    );
+    BuildContext context,
+    String text,
+    String imagePath,
+    bool isActive,
+  ) {
+    return isActive
+        ? GlassContainer(
+            child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: AppTheme.elementSpacing * 0.75,
+              vertical: AppTheme.elementSpacing * 0.5,
+            ),
+            child: Row(
+              children: [
+                Image.asset(
+                  imagePath,
+                  width: AppTheme.cardPadding * 1,
+                  height: AppTheme.cardPadding * 1,
+                ),
+                Container(
+                  width: AppTheme.elementSpacing,
+                ),
+                Text(
+                  text,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+          ))
+        : Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: AppTheme.elementSpacing * 0.75,
+              vertical: AppTheme.elementSpacing * 0.5,
+            ),
+            child: Row(
+              children: [
+                Image.asset(
+                  imagePath,
+                  width: AppTheme.cardPadding * 1,
+                  height: AppTheme.cardPadding * 1,
+                ),
+                Container(
+                  width: AppTheme.elementSpacing,
+                ),
+                Text(
+                  text,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+          );
   }
 
   Widget avatarGlow(BuildContext context, IconData icon) {
@@ -144,7 +149,6 @@ class LightningSendTab extends StatelessWidget {
       ),
     );
   }
-
 
   // This widget represents a user tile with an avatar, title, subtitle, and edit button.
   Widget userTile(BuildContext context) {
@@ -180,7 +184,8 @@ class LightningSendTab extends StatelessWidget {
     return GestureDetector(
       // On tap, copies the receiver address to the clipboard and displays a snackbar
       onTap: () async {
-        await Clipboard.setData(ClipboardData(text: controller.bitcoinReceiverAdress));
+        await Clipboard.setData(
+            ClipboardData(text: controller.bitcoinReceiverAdress));
         displaySnackbar(context, "Wallet-Adresse in Zwischenablage kopiert");
       },
       child: Row(
@@ -229,21 +234,20 @@ class LightningSendTab extends StatelessWidget {
           // SizedBox(
           //   height: AppTheme.cardPadding * 1.5,
           // ),
-          AmountWidget(controller: controller,),
-
+          AmountWidget(
+            controller: controller,
+          ),
         ],
       ),
     );
   }
-
-
 
   Widget button(BuildContext context) {
     // Return a Padding widget containing a SwipeableButtonView
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SwipeableButtonView(
-        // Determine if the button should be active based on whether a receiver has been selected
+          // Determine if the button should be active based on whether a receiver has been selected
           isActive: controller.hasReceiver,
           // Set the text style for the button text
           buttontextstyle: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -281,7 +285,7 @@ class LightningSendTab extends StatelessWidget {
           onFinish: () async {
             Logs().w("onFinish() called");
           }
-            // Check if biometric authentication is available
+          // Check if biometric authentication is available
           ),
     );
   }

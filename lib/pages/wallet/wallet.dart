@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
@@ -73,16 +71,9 @@ class WalletController extends State<Wallet> {
     super.dispose();
   }
 
-
   //die 3 lottiefiles downloaden und anzeigen direkt gespeichert?
   final PageController pageController = PageController();
 
-  Future<void> handleRefresh() async {
-    // final userData = Provider.of<UserData>(context, listen: false);
-    // final userWallet = userData.mainWallet;
-    // await getBalance(userWallet);
-    // await getTransactions(userWallet);
-  }
 
   @override
   Widget build(BuildContext context) {

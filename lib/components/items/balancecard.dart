@@ -1,14 +1,8 @@
-import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/services.dart';
-import 'package:bitnet/backbone/cloudfunctions/getbalance.dart';
-import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
 class BalanceCardLightning extends StatelessWidget {
   final WalletController controller;
@@ -75,40 +69,23 @@ class BalanceBackground2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(1),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(34),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: [0, 0.25, 0.75, 1],
-          colors: [
-            Color(0x99FFFFFF),
-            Color(0x00FFFFFF),
-            Color(0x00FFFFFF),
-            Color(0x99FFFFFF),
-          ],
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(34),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              colors: [
-                Color(0xFF522F77),
-                Color(0xFF7127B7),
-              ],
-            ),
-          ),
-          child: Stack(
-            children: [
-              iconLightning(),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(34),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            colors: [
+              Color(0xFF522F77),
+              Color(0xFF7127B7),
             ],
           ),
+        ),
+        child: Stack(
+          children: [
+            iconLightning(),
+          ],
         ),
       ),
     );
@@ -135,40 +112,23 @@ class BalanceBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(1),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(34),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: [0, 0.25, 0.75, 1],
-          colors: [
-            Color(0x99FFFFFF),
-            Color(0x00FFFFFF),
-            Color(0x00FFFFFF),
-            Color(0x99FFFFFF),
-          ],
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(34),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              colors: [
-                AppTheme.colorBitcoin,
-                AppTheme.colorPrimaryGradient,
-              ],
-            ),
-          ),
-          child: Stack(
-            children: [
-              iconOnchain(),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(34),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            colors: [
+              AppTheme.colorBitcoin,
+              AppTheme.colorPrimaryGradient,
             ],
           ),
+        ),
+        child: Stack(
+          children: [
+            iconOnchain(),
+          ],
         ),
       ),
     );

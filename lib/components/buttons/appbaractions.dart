@@ -13,8 +13,6 @@ class AppBarActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: AppTheme.elementSpacing,
-        bottom: AppTheme.elementSpacing,
         right: AppTheme.elementSpacing * 1.5,
         left: AppTheme.elementSpacing * 0.5,
       ),
@@ -24,6 +22,8 @@ class AppBarActionButton extends StatelessWidget {
           opacity: 0.1,
           borderRadius: AppTheme.cardRadiusCircular,
           child: Container(
+            height: AppTheme.cardPadding * 1,
+            width: AppTheme.cardPadding * 1,
             alignment: Alignment.center,
             child: Center(
               // Use the passed IconData for the icon

@@ -57,8 +57,6 @@ class SendController extends State<Send> {
     }
     Logs().w("Invoice: $invoice");
 
-    // Do something with the parameters
-    // ...
   }
 
 
@@ -155,8 +153,10 @@ class SendController extends State<Send> {
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
-        // Send bitcoin to the selected receiver using the user's wallet
-        dynamic restResponse = await sendPaymentV2(bitcoinReceiverAdress);
+
+        final amountInSat = double.parse(moneyController.text) * 100000000;
+        dynamic restResponse = await sendPaymentV2(bitcoinReceiverAdress, amountInSat);
+
         setState(() {
           isFinished = true;
         });
@@ -167,11 +167,9 @@ class SendController extends State<Send> {
             // Display an error message if the cloud function failed and set isFinished to false
             isFinished = false;
           });
-          // Display an error message if the cloud function failed and set isFinished to false
         }
       } catch (e) {
-        // Display an error message if an error occurred and set isFinished to false
-        print(e);
+        Logs().e("Error paying for invoice: " + e.toString());
         setState(() {
           isFinished = false;
         });
