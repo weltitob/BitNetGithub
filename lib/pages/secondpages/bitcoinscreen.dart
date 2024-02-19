@@ -1,3 +1,5 @@
+//bitcoin screen
+
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
@@ -8,6 +10,8 @@ import 'package:bitnet/pages/secondpages/keymetrics.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recentreplacements.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recenttransactions.dart';
 import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
+import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
@@ -29,11 +33,41 @@ class _BitcoinScreenState extends State<BitcoinScreen>
   //TickerProviderStateMixin
   final _controller = PageController(viewportFraction: 0.9);
   late TabController _tabController;
+  List<ChartLine> chartData = []; // The fake data will be stored here
+
+  getData() async {
+    var dio = Dio();
+    try {
+      var response =
+      await dio.get('https://mempool.space/api/v1/mining/hashrate/3m');
+      print(response.data);
+      if (response.statusCode == 200) {
+        print('2---------00000-');
+        List<ChartLine> line = [];
+        line.clear();
+        chartData.clear();
+        HashChartModel hashChartModel = HashChartModel.fromJson(response.data);
+        for (int i = 0; i < hashChartModel.hashrates!.length; i++) {
+          line.add(ChartLine(
+              time: double.parse(
+                  hashChartModel.hashrates![i].timestamp.toString()),
+              price: hashChartModel.hashrates![i].avgHashrate!));
+        }
+        chartData = line;
+        print(chartData);
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      print('----------===========----------');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    getData();
   }
 
   @override
@@ -63,8 +97,8 @@ class _BitcoinScreenState extends State<BitcoinScreen>
             contentPadding: const EdgeInsets.all(0),
             child: Obx(() => controller.isLoading.isTrue
                 ? Center(
-                    child: CircularProgressIndicator(),
-                  )
+              child: CircularProgressIndicator(),
+            )
                 : MempoolHome()),
           ),
           RoundedContainer(
@@ -92,18 +126,20 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           ),
           RoundedContainer(
               child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Hashrate chart",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(
-                height: AppTheme.elementSpacing,
-              ),
-              HashrateChart(),
-            ],
-          )),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hashrate & Difficulty chart",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(
+                    height: AppTheme.elementSpacing,
+                  ),
+                  HashrateChart(
+                    chartData: chartData,
+                  ),
+                ],
+              )),
           RoundedContainer(
             contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
             child: Column(
@@ -163,20 +199,21 @@ class _BitcoinScreenState extends State<BitcoinScreen>
           ),
           RoundedContainer(
               child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "News",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(
-                height: AppTheme.elementSpacing,
-              ),
-              buildNews(),
-            ],
-          )),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "News",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(
+                    height: AppTheme.elementSpacing,
+                  ),
+                  buildNews(),
+                ],
+              )),
         ],
       ),
     );
   }
 }
+

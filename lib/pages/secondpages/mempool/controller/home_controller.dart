@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -109,8 +110,8 @@ class HomeController extends GetxController {
   int getTotalTxOutput(TransactionDetailsModel tx) {
     return tx.vout
         .map((Vout v) =>
-            v.value ??
-            0) // Use the null-aware operator ?? to handle null values
+    v.value ??
+        0) // Use the null-aware operator ?? to handle null values
         .reduce((int a, int b) => a + b);
   }
 
@@ -180,6 +181,7 @@ class HomeController extends GetxController {
   }
 
   RxBool isRbfTransaction = false.obs;
+  RxBool txConfirmed = false.obs;
   RxString replacedTx = ''.obs;
   RxInt txPosition = 0.obs;
   RbfTransaction? rbfTransaction;
@@ -189,11 +191,12 @@ class HomeController extends GetxController {
     transactionLoading.value = true;
     update();
     channel.sink.add('{"action":"init"}');
-    channel.sink.add('{"action":"want", "data":["blocks","mempool-blocks"]}');
+    channel.sink.add(
+        '{"action":"want","data":["blocks","stats","mempool-blocks","live-2h-chart"]}');
     channel.sink.add('{"track-rbf-summary":true}');
     Future.delayed(
       const Duration(minutes: 5),
-      () {
+          () {
         channel.sink.add('{"action":"ping"}');
       },
     );
@@ -203,10 +206,9 @@ class HomeController extends GetxController {
       if (memPool.txPosition != null) {
         txPosition.value = memPool.txPosition!.position.block;
       }
+
       if (memPool.rbfTransaction != null) {
         isRbfTransaction.value = true;
-        print('-------------=============----------');
-        print(memPool.rbfTransaction!.toJson());
         replacedTx.value = memPool.rbfTransaction!.txid;
         Get.forceAppUpdate();
       }
@@ -227,6 +229,11 @@ class HomeController extends GetxController {
         mempoolBlocks.clear();
         mempoolBlocks.addAll(memPool.mempoolBlocks!);
       }
+
+      // if (message['transactions'] != null) {
+      //   print(message['transactions']);
+      //   print('inisde tranaction');
+      // }
       if (memPool.transactions != null) {
         transaction.clear();
         transaction.addAll(memPool.transactions!);
@@ -259,6 +266,12 @@ class HomeController extends GetxController {
       socketLoading.value = false;
       transactionLoading.value = false;
       update();
+      // if (memPool.txConfirmed != null) {
+      //   txConfirmed.value = true;
+      //   print(memPool.txConfirmed);
+      //   print('txConfirmed');
+      //   Get.forceAppUpdate();
+      // }
     }, onError: (error) {
       socketLoading.value = false;
       transactionLoading.value = false;
@@ -352,7 +365,7 @@ class HomeController extends GetxController {
   String timeFormat(int millisecondsString, int median) {
     DateTime medianDate = DateTime.now();
     DateTime targetDate =
-        DateTime.fromMicrosecondsSinceEpoch(millisecondsString);
+    DateTime.fromMicrosecondsSinceEpoch(millisecondsString);
     Duration difference = targetDate.difference(medianDate);
     return formatTimeAgo(targetDate);
   }
@@ -367,3 +380,4 @@ String formatPriceDecimal(price) {
   final format = NumberFormat("#,##0.00", "en_US");
   return format.format(price);
 }
+
