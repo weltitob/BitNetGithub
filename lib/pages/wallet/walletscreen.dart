@@ -6,7 +6,6 @@ import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lottie/lottie.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
