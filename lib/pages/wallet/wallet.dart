@@ -18,28 +18,31 @@ class Wallet extends StatefulWidget {
 class WalletController extends State<Wallet> {
   late final Future<LottieComposition> compositionSend;
   late final Future<LottieComposition> compositionReceive;
-  late OnchainBalance onchainBalance = OnchainBalance(totalBalance: '', confirmedBalance: '', unconfirmedBalance: '', lockedBalance: '', reservedBalanceAnchorChan: '', accountBalance: '');
-  late LightningBalance lightningBalance = LightningBalance(balance: '', pendingOpenBalance: '', localBalance: '', remoteBalance: '', unsettledLocalBalance: '', pendingOpenLocalBalance: '', unsettledRemoteBalance: '', pendingOpenRemoteBalance: '');
+  late OnchainBalance onchainBalance = OnchainBalance(totalBalance: '0', confirmedBalance: '0', unconfirmedBalance: '0', lockedBalance: '0', reservedBalanceAnchorChan: '', accountBalance: '');
+  late LightningBalance lightningBalance = LightningBalance(balance: '0', pendingOpenBalance: '0', localBalance: '0', remoteBalance: '0', unsettledLocalBalance: '0', pendingOpenLocalBalance: '', unsettledRemoteBalance: '', pendingOpenRemoteBalance: '');
   bool visible = false;
+
+  String totalBalanceStr = "0";
+
+  changeTotalBalanceStr(){
+    // Assuming both values are strings and represent numerical values
+    String confirmedBalanceStr = onchainBalance.confirmedBalance;
+    String balanceStr = lightningBalance.balance;
+
+    double confirmedBalance = double.parse(confirmedBalanceStr);
+    double balance = double.parse(balanceStr);
+
+    double totalBalance = confirmedBalance + balance;
+    setState(() {
+      this.totalBalanceStr = totalBalance.toString();
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     fetchOnchainWalletBalance();
     fetchLightingWalletBalance();
-    updatevisibility();
-  }
-
-  void updatevisibility() async {
-    await compositionSend;
-    await compositionReceive;
-    var timer = Timer(Duration(milliseconds: 50),
-            () {
-          setState(() {
-            visible = true;
-          });
-        }
-    );
   }
 
   void fetchOnchainWalletBalance() async {
@@ -61,6 +64,7 @@ class WalletController extends State<Wallet> {
       setState(() {
         this.lightningBalance = lightningBalance;
       });
+      changeTotalBalanceStr();
     } catch (e) {
       print(e);
     }

@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
@@ -99,17 +100,20 @@ class MyApp extends StatelessWidget {
             tree: WidgetTree(context: context),
             child: MultiProvider(
               providers: [
+                ChangeNotifierProvider<MyThemeProvider>(
+                    create: (context) => MyThemeProvider()),
+                ChangeNotifierProvider<LocalProvider>(
+                    create: (context) => LocalProvider()),
+                ChangeNotifierProvider<CurrencyChangeProvider>(
+                    create: (context) => CurrencyChangeProvider()),
                 StreamProvider<UserData?>(
                   create: (_) => Auth().userWalletStream,
                   initialData: null,
                 ),
-                // Provide a stream of user wallet data for authentication changes
-                //this has to be below in order to overwrite the null when not authenticated yet from above stream
                 StreamProvider<UserData?>(
                   create: (_) => Auth().userWalletStreamForAuthChanges,
                   initialData: null,
                 ),
-                // Provide a stream of user wallet data
               ],
               child: bTree.WidgetTree(),
             ),
@@ -120,17 +124,16 @@ class MyApp extends StatelessWidget {
                   create: (context) => MyThemeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider()),
+              ChangeNotifierProvider<CurrencyChangeProvider>(
+                  create: (context) => CurrencyChangeProvider()),
               StreamProvider<UserData?>(
                 create: (_) => Auth().userWalletStream,
                 initialData: null,
               ),
-              // Provide a stream of user wallet data for authentication changes
-              //this has to be below in order to overwrite the null when not authenticated yet from above stream
               StreamProvider<UserData?>(
                 create: (_) => Auth().userWalletStreamForAuthChanges,
                 initialData: null,
               ),
-              // Provide a stream of user wallet data
             ],
             child: bTree.WidgetTree(),
           );
