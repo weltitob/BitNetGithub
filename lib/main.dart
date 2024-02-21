@@ -1,6 +1,8 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
+import 'package:bitnet/backbone/streams/ratesStream.dart';
+import 'package:bitnet/models/currency/rates_model.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
 import 'package:bitnet/provider/theme_provider.dart';
@@ -126,6 +128,10 @@ class MyApp extends StatelessWidget {
                   create: (context) => LocalProvider()),
               ChangeNotifierProvider<CurrencyChangeProvider>(
                   create: (context) => CurrencyChangeProvider()),
+              StreamProvider<RatesModel?>(
+                create: (context) => ratesStream(),
+                initialData: null,
+              ),
               StreamProvider<UserData?>(
                 create: (_) => Auth().userWalletStream,
                 initialData: null,

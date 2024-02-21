@@ -3,37 +3,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CurrencyChangeProvider extends ChangeNotifier {
-  String? _firstCurrency;
-  String? _secondCurrency;
+  String? _selectedCurrency;
 
   // Getters for currencies
-  String? get firstCurrency => _firstCurrency;
-  String? get secondCurrency => _secondCurrency;
+  String? get selectedCurrency => _selectedCurrency;
 
   // Method to update the first currency and its corresponding Firestore document
-  void setFirstCurrencyInDatabase(String firstCurrency) {
+  void setFirstCurrencyInDatabase(String selectedCurrency) {
     FirebaseFirestore.instance.collection("settings")
         .doc(FirebaseAuth.instance.currentUser!.uid).update({
-      "firstCurrency": firstCurrency,
+      "selectedCurrency": selectedCurrency,
     });
-    _firstCurrency = firstCurrency;
+    _selectedCurrency = selectedCurrency;
     notifyListeners();
   }
 
-  // Method to update the second currency and its corresponding Firestore document
-  void setSecondCurrencyInDatabase(String secondCurrency) {
-    FirebaseFirestore.instance.collection("settings")
-        .doc(FirebaseAuth.instance.currentUser!.uid).update({
-      "secondCurrency": secondCurrency,
-    });
-    _secondCurrency = secondCurrency;
-    notifyListeners();
-  }
 
   // Clear method adjusted to reset currency values
   void clearCurrencies() {
-    _firstCurrency = null;
-    _secondCurrency = null;
+    _selectedCurrency = null;
     notifyListeners();
   }
 }

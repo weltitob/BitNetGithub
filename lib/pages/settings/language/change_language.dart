@@ -46,8 +46,11 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
 
   @override
   Widget build(BuildContext context) {
+
+    final currentLanguage = Provider.of<LocalProvider>(context).locale;
     final get = MediaQuery.of(context).size;
     final lang = L10n.of(context);
+
     return Container(
       height: get.height * 0.8,
       width: get.width,
@@ -76,13 +79,13 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
                   itemCount: flagList.length,
                   itemBuilder: (context, index) {
                     if (search.text.isEmpty) {
-                      return languageBox(index);
+                      return languageBox(index, currentLanguage);
                     }
                     if (languageList[index]
                         .toString()
                         .toLowerCase()
                         .startsWith(search.text.toLowerCase())) {
-                      return languageBox(index);
+                      return languageBox(index, currentLanguage);
                     }
                     return Container();
                   },
@@ -95,18 +98,21 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
     );
   }
 
-  Widget languageBox(int index) {
+  Widget languageBox(int index, currentLanguage) {
+    final locale = Locale.fromSubtags(languageCode: codeList[index]);
+
     return BitNetListTile(
       leading: Text(
         flagList[index],
         style: Theme.of(context).textTheme.titleLarge,
       ),
+      selected: currentLanguage == locale ? true : false,
       text: languageList[index],
       onTap: () {
         Provider.of<LocalProvider>(context, listen: false)
             .setLocaleInDatabase(codeList[index],
-                Locale.fromSubtags(languageCode: codeList[index]));
-        Navigator.pop(context);
+            locale);
+        //Navigator.pop(context);
       },
     );
   }

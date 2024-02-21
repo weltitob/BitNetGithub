@@ -63,6 +63,10 @@ abstract class AppTheme {
   static String snapchatUrl = 'https://www.snapchat.com/add/bitnet.ai';
   static String tiktokUrl = 'https://tiktok.com/@bitnet_ai';
 
+  //for exchangerates:
+  static String mykey = 'b16be475b04d4272b9a06fcb2b4c0bbd';
+  static String baseUrl = 'https://openexchangerates.org/api/';
+  static String ratesUrl = '${baseUrl}latest.json?base=USD&app_id=$mykey'; //this only gives usd?
   //NEXT 5 TO BE ADDED TO CONTENT MASCHINE
 
   //twitch
