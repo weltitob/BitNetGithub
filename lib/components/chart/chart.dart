@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -21,12 +23,6 @@ String trackBallValueDate = "${inital_date}";
 String trackBallValuePricechange = "+0";
 Color initAnimationColor = Colors.blue;
 
-class ChartLine {
-  final double time;
-  final double price;
-
-  ChartLine({required this.time, required this.price});
-}
 
 
 class ChartWidget extends StatefulWidget {

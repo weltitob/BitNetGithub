@@ -1,9 +1,10 @@
 import 'package:bitnet/backbone/futures/cryptochartline.dart';
+import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
-import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -11,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 
 class Currency {
   final String code;
@@ -24,15 +26,6 @@ class Currency {
   });
 }
 
-class MockFavorites {
-  static final data = [
-    Currency(
-      code: 'BTC',
-      name: 'Bitcoin',
-      icon: Image.asset('assets/images/ada_icon.png'),
-    ),
-  ];
-}
 
 class CryptoItem extends StatefulWidget {
   final Currency currency;
@@ -53,13 +46,66 @@ class _CryptoItemState extends State<CryptoItem>
   late List<ChartLine> onedaychart;
   bool _loading = true;
   Color _animationColor = Colors.transparent;
-  late String _currentPriceString;
-  late String _priceChangeString;
+  String _currentPriceString = "";
+  String _priceChangeString= "";
 
-  late double _firstPrice;
-  late double _currentPrice;
-  late double _priceOneTimestampAgo;
-  late double priceChange;
+  double _firstPrice = 0.0;
+  double _currentPrice = 0.0;
+  double _priceOneTimestampAgo = 0.0;
+  double priceChange = 0.0;
+
+  late AnimationController _controller;
+  late Animation<Color?> _animation;
+  bool _isBlinking = false;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    getChartLine();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
+    _animation = ColorTween(
+        begin: _animationColor, end: Colors.transparent)
+        .animate(_controller)
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          setState(() {
+            _isBlinking = false;
+          });
+          _controller.reverse();
+          setState(() {
+            _animation = ColorTween(begin: _animationColor, end: Colors.transparent)
+                .animate(_controller);
+            _controller.reset();
+          });
+        }
+      });
+  }
+
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    //final bitcoinPriceStream = Provider.of<BitcoinPriceStream>(context).priceStream;
+    //final chartLine = Provider.of<BitcoinPriceStream>(context).priceStream;
+    if (chartLine != null) {
+      if(mounted){
+        setState(() {
+          //Perform your update logic here
+          _priceOneTimestampAgo = _currentPrice;
+          _currentPrice = chartLine.price;
+          _currentPriceString = "${chartLine.price.toStringAsFixed(2)}€";
+          priceChange = (_currentPrice - _firstPrice) / _firstPrice;
+          _priceChangeString = toPercent(priceChange);
+          colorUpdater();
+          _isBlinking = true;
+          _controller.forward();
+        });
+      }
+      Logs().d("Cryptoitem (bitcoinchart) ui has been updated!");
+    }
+  }
 
   getChartLine() async {
     CryptoChartLine chartClassDay = CryptoChartLine(
@@ -86,19 +132,16 @@ class _CryptoItemState extends State<CryptoItem>
       priceChange = (_currentPrice - _firstPrice) / _firstPrice;
       _priceChangeString = toPercent(priceChange);
 
-      setState(() {
-        _loading = false;
-      });
+      if(mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
     } catch (e) {
       Logs().e("Charts could not be created for cryptoitem resulting in error" + e.toString());
     }
   }
 
-  late AnimationController _controller;
-  late Animation<Color?> _animation;
-  bool _isBlinking = false;
-
-  BitcoinPriceStream _priceStream = BitcoinPriceStream();
 
   void colorUpdater() {
     setState(() {
@@ -113,52 +156,9 @@ class _CryptoItemState extends State<CryptoItem>
     //update animation color
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getChartLine();
-    _priceStream.start();
-    _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
-    _animation = ColorTween(
-        begin: _animationColor, end: Colors.transparent)
-        .animate(_controller)
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          setState(() {
-            _isBlinking = false;
-          });
-          _controller.reverse();
-          setState(() {
-            _animation = ColorTween(begin: _animationColor, end: Colors.transparent)
-                .animate(_controller);
-            _controller.reset();
-          });
-        }
-      });
-    _priceStream.priceStream.listen((newChartLine) {
-      setState(() {
-        //vor dem updaten preis erstmal speichern
-        _priceOneTimestampAgo = _currentPrice;
-        print("Preis vor update: $_priceOneTimestampAgo");
-        //neuen preis anzeigen lassen
-        _currentPrice = newChartLine.price;
-        print("Preis nach update: $_currentPrice");
-        _currentPriceString = newChartLine.price.toStringAsFixed(2) + "€";
-        //auch prozentanzeige updaten
-        priceChange = (_currentPrice - _firstPrice) / _firstPrice;
-        _priceChangeString = toPercent(priceChange);
-        //blinken
-        colorUpdater();
-        _isBlinking = true;
-      });
-      _controller.forward();
-    });
-  }
 
   @override
   void dispose() {
-    _priceStream.stop();
     super.dispose();
   }
 
@@ -292,8 +292,7 @@ class _CryptoItemState extends State<CryptoItem>
   }
 
   Widget price() {
-    final ChartLine? bitcoinPrice = Provider.of<ChartLine?>(context);
-    print(bitcoinPrice);
+    //final ChartLine? bitcoinPrice = Provider.of<ChartLine?>(context, listen: true);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -304,7 +303,7 @@ class _CryptoItemState extends State<CryptoItem>
           children: [
             // const SizedBox(width: AppTheme.elementSpacing / 2),
             Text(
-              _currentPriceString,
+              _currentPriceString,//bitcoinPrice!.price.toString(),
               style: AppTheme.textTheme.bodyMedium,
             ),
           ],

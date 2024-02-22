@@ -1,6 +1,7 @@
 //hashchart rate
 
 import 'package:bitnet/components/chart/chart.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';

@@ -115,16 +115,13 @@ class WalletScreen extends StatelessWidget {
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final currency in MockFavorites.data) ...[
-                          CryptoItem(
-                            currency: currency,
-                            context: context,
-                          ),
-                        ],
-                      ],
+                    child: CryptoItem(
+                      currency: Currency(
+                        code: 'BTC',
+                        name: 'Bitcoin',
+                        icon: Image.asset('assets/images/bitcoin.png'),
+                      ),
+                      context: context,
                     ),
                   ),
                   const SizedBox(height: AppTheme.cardPadding * 1.5),
