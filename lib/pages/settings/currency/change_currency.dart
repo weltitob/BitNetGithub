@@ -1,7 +1,7 @@
-import 'package:bitnet/backbone/futures/fetchRates.dart';
+import 'package:bitnet/backbone/futures/fetchCurrencies.dart';
+import 'package:bitnet/backbone/helper/supported_currencies.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
-import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -51,31 +51,12 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
 
-  late Future<RatesModel> ratesModel;
-  late Future<Map> currenciesModel;
-
-  bool firstSelected = true;
-  bool secondSelected = false;
-
-  void selectFirstCurrency(){
-    setState(() {
-      secondSelected = false;
-      firstSelected = true;
-    });
-  }
-
-  void selectSecondCurrency(){
-    setState(() {
-      secondSelected = true;
-      firstSelected = false;
-    });
-  }
+  late Map<String, String> currenciesModel = supportedCurrencies;
 
   @override
   void initState() {
     getAndroidId();
     super.initState();
-    _fetchData();
   }
 
   final _androidIdPlugin = const AndroidId();
@@ -87,21 +68,13 @@ class _DashboardPageState extends State<DashboardPage> {
     print("ANDROID IDDDD $deviceId");
   }
 
-  Future<void> _fetchData() async {
-    ratesModel = fetchRates();
-    currenciesModel = fetchCurrencies();
-  }
-
   TextEditingController search = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
-    final firstCurrency = Provider.of<CurrencyChangeProvider>(context).firstCurrency;
-    final secondCurrency = Provider.of<CurrencyChangeProvider>(context).secondCurrency;
-
     final lang = L10n.of(context);
-    final Get = MediaQuery.of(context).size;
+
     return bitnetScaffold(
       context: context,
       resizeToAvoidBottomInset: false,
@@ -109,27 +82,6 @@ class _DashboardPageState extends State<DashboardPage> {
         padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
         child: Column(
           children: [
-            BitNetListTile(
-              selected: firstSelected,
-              customTitle: Text("Main Currency"),
-              leading: Text("1."),
-              trailing: Text("$firstCurrency", style: Theme.of(context).textTheme.titleMedium,),
-              //customTitle: Text("Currency"),
-              onTap: () {
-                selectFirstCurrency();
-              },
-            ),
-            BitNetListTile(
-              selected: secondSelected,
-              customTitle: Text("Secondary Currency"),
-              leading: Text("2."),
-              trailing: Text("$secondCurrency", style: Theme.of(context).textTheme.titleMedium,),
-              //customTitle: Text("Currency"),
-              onTap: () {
-                selectSecondCurrency();
-              },
-            ),
-            SizedBox(height: AppTheme.elementSpacing,),
             SearchFieldWidget(
                 hintText: lang!.searchC,
                 isSearchEnabled: true,
@@ -142,34 +94,8 @@ class _DashboardPageState extends State<DashboardPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.5,
               width: double.infinity,
-              child: FutureBuilder<RatesModel>(
-                  future: ratesModel,
-                  builder: (context, snapshot){
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: dotProgress(context),);
-                    } else {
-                      return FutureBuilder<Map>(
-                          future: currenciesModel,
-                          builder: (context, index){
-                            if (index.connectionState == ConnectionState.waiting) {
-                              return Center(child: dotProgress(context),);
-                            } else if (index.hasError) {
-                              return Center(child: Text('Error: ${index.error}'));
-                            } else {
-                              return currencyData(
-                                index.data!,
-                                snapshot.data!.rates,
-                              );
-                              // return ConversionCard(
-                              //   rates: snapshot.data!.rates,
-                              //   currencies: index.data!,
-                              // );
-                            }
-                          }
-                      );
-                    }
-                  }
-              ),
+              child: currencyData(
+                currenciesModel,),
             ),
           ],
         ),
@@ -177,7 +103,10 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget currencyData(Map<dynamic,dynamic> currencies,final rates){
+  Widget currencyData(Map<dynamic,dynamic> currencies,){
+
+    final selectedCurrency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+
     return SizedBox(
       width: double.infinity,
       child: VerticalFadeListView(
@@ -189,56 +118,49 @@ class _DashboardPageState extends State<DashboardPage> {
           itemBuilder: (context,index){
             List<dynamic> entryList = currencies.keys.toList();
             List<dynamic> valueList = currencies.values.toList();
-            return teamData(index, entryList,valueList,rates,currencies);
+            return teamData(index, entryList,valueList,currencies, selectedCurrency);
           },
         ),
       ),
     );
   }
 
-  Widget teamData(int index,List<dynamic> keyList,valueList,final rates,Map<dynamic,dynamic> curr){
+  Widget teamData(int index,List<dynamic> keyList,valueList,Map<dynamic,dynamic> curr, selectedCurrency){
 
     if (search.text.isEmpty) {
-      return myCont(keyList[index], valueList[index],rates,curr);
+      return myCont(keyList[index], valueList[index],curr, selectedCurrency);
     }
     if (valueList[index]
         .toString()
         .toLowerCase()
         .startsWith(search.text.toLowerCase())) {
-      return myCont(keyList[index], valueList[index],rates,curr);
+      return myCont(keyList[index], valueList[index],curr, selectedCurrency);
     }
     return Container();
   }
 
 
-  Widget myCont(String key,value,final rates,Map<dynamic,dynamic> curr){
+  Widget myCont(String key,value,Map<dynamic,dynamic> curr, selectedCurrency){
+
     return BitNetListTile(
-      leading: Text(value.toString(), style: Theme.of(context).textTheme.bodyMedium,),
+      leading: Text(value.toString(), style: Theme.of(context).textTheme.titleMedium,),
       trailing: Text("${getCurrency(key)}", style: Theme.of(context).textTheme.titleMedium,),
+      selected: key == selectedCurrency,
       onTap: () {
-        if(firstSelected){
           print("First Selected");
           print("Key: $key");
           print("Value: $value");
-          print("Rates: $rates");
           print("Curr: $curr");
+
           Provider.of<CurrencyChangeProvider>(context, listen: false)
               .setFirstCurrencyInDatabase(key,);
-        } else {
-          print("Second Selected");
-          print("Key: $key");
-          print("Value: $value");
-          print("Rates: $rates");
-          print("Curr: $curr");
-          Provider.of<CurrencyChangeProvider>(context, listen: false)
-             .setSecondCurrencyInDatabase(key,);
-        }
       },
     );
   }
 
   String getCurrency(String cuName) {
     var format = NumberFormat.simpleCurrency(name: cuName);
+
     return format.currencySymbol;
   }
 
