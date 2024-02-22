@@ -1,8 +1,11 @@
+import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class BalanceCardLightning extends StatelessWidget {
   final WalletController controller;
@@ -18,7 +21,6 @@ class BalanceCardLightning extends StatelessWidget {
             iconData: FontAwesomeIcons.wallet,
             balance: controller.lightningBalance.balance,
             walletAddress: "safdadasdas",
-            currencyEquivalent: 'balanceInEuroOrBTC',
             cardname: 'Lightning',
           ),
           paymentNetworkPicture(context, "assets/images/lightning.png"),
@@ -42,7 +44,6 @@ class BalanceCardBtc extends StatelessWidget {
             iconData: FontAwesomeIcons.piggyBank,
             balance: controller.onchainBalance.confirmedBalance,
             walletAddress: "safdadasdas",
-            currencyEquivalent: 'balanceInEuroOrBTC',
             cardname: 'On-Chain',
           ),
           paymentNetworkPicture(context, 'assets/images/bitcoin.png')
@@ -284,19 +285,23 @@ class BalanceTextWidget extends StatelessWidget {
   final String cardname;
   final String walletAddress;
   final IconData iconData;
-  final String currencyEquivalent;
 
   const BalanceTextWidget({
     Key? key,
     required this.balance,
     required this.walletAddress,
     required this.iconData,
-    required this.currencyEquivalent,
     required this.cardname,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+
+    final bitcoinPrice = chartLine?.price;
+    final currencyEquivalent = bitcoinPrice != null ? (double.parse(balance) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+
     return Padding(
       padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25,),
       child: Column(
@@ -328,7 +333,7 @@ class BalanceTextWidget extends StatelessWidget {
           Container(
             width: 160, // Replace with your AppTheme.cardPadding * 10 if needed
             child: Text(
-              "= $currencyEquivalent€",
+              "= $currencyEquivalent$currency",
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyMedium,
             ),

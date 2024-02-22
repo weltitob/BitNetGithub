@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -87,6 +88,7 @@ class _CryptoItemState extends State<CryptoItem>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     //final bitcoinPriceStream = Provider.of<BitcoinPriceStream>(context).priceStream;
     //final chartLine = Provider.of<BitcoinPriceStream>(context).priceStream;
     if (chartLine != null) {
@@ -95,7 +97,7 @@ class _CryptoItemState extends State<CryptoItem>
           //Perform your update logic here
           _priceOneTimestampAgo = _currentPrice;
           _currentPrice = chartLine.price;
-          _currentPriceString = "${chartLine.price.toStringAsFixed(2)}€";
+          _currentPriceString = "${chartLine.price.toStringAsFixed(2)}${currency}";
           priceChange = (_currentPrice - _firstPrice) / _firstPrice;
           _priceChangeString = toPercent(priceChange);
           colorUpdater();
