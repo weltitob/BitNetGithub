@@ -110,6 +110,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                 (controller.da!.timeAvg! / 60000);
                             return GestureDetector(
                               onTap: () {
+                                channel.sink.add('{"track-mempool-block":$index}');
                                 setState(() {
                                   controller.showNextBlock.value = true;
                                   controller.showBlock.value = false;
@@ -285,7 +286,22 @@ class _MempoolHomeState extends State<MempoolHome> {
                           horizontal: AppTheme.elementSpacing),
                       child: MyDivider(),
                     ),
-                    SizedBox(height: AppTheme.elementSpacing),
+                    SizedBox(
+                      height: AppTheme.elementSpacing,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        VRouter.of(context).to(
+                            "/wallet/unaccepted_block_transactions"); //${controller.txDetailsConfirmed!.id}
+                      },
+                      //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
+                      child: SearchFieldWidget(
+                        isSearchEnabled: false,
+                        hintText:
+                        '${controller.blockTransactions.length} transactions',
+                        handleSearch: handleSearch,
+                      ),
+                    ),                    SizedBox(height: AppTheme.elementSpacing),
                     Container(
                       margin:
                       EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -1197,6 +1213,7 @@ class _MempoolHomeState extends State<MempoolHome> {
           ],
         ),
       ),
+
     ]);
   }
 
