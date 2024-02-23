@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:ui';
+import 'package:flutter/material.dart';
+
 
 Map<String, String> allCurrenciesFromJson(String str) =>
     Map.from(json.decode(str)).map((k, v) => MapEntry<String, String>(k, v));

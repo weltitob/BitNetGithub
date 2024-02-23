@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/streams/cryptochartline.dart';
-import 'package:bitnet/components/container/currencypicture.dart';
+import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -22,12 +23,6 @@ String trackBallValueDate = "${inital_date}";
 String trackBallValuePricechange = "+0";
 Color initAnimationColor = Colors.blue;
 
-class ChartLine {
-  final double time;
-  final double price;
-
-  ChartLine({required this.time, required this.price});
-}
 
 
 class ChartWidget extends StatefulWidget {
@@ -63,31 +58,26 @@ class _ChartWidgetState extends State<ChartWidget> {
       crypto: "bitcoin",
       currency: "eur",
       days: "1",
-      interval: "minuetly",
     );
     CryptoChartLine chartClassWeek = CryptoChartLine(
       crypto: "bitcoin",
       currency: "eur",
       days: "7",
-      interval: "hourly",
     );
     CryptoChartLine chartClassMonth = CryptoChartLine(
       crypto: "bitcoin",
       currency: "eur",
       days: "30",
-      interval: "hourly",
     );
     CryptoChartLine chartClassYear = CryptoChartLine(
       crypto: "bitcoin",
       currency: "eur",
       days: "365",
-      interval: "daily",
     );
     CryptoChartLine chartClassMax = CryptoChartLine(
       crypto: "bitcoin",
       currency: "eur",
       days: "max",
-      interval: "daily",
     );
     await chartClassDay.getChartData();
     await chartClassWeek.getChartData();
@@ -528,7 +518,11 @@ class _CustomWidgetState extends State<CustomWidget> with SingleTickerProviderSt
       children: [
         Row(
           children: [
-            currencyPicture(context),
+            Container(
+              height: AppTheme.elementSpacing * 2,
+              width: AppTheme.elementSpacing * 2,
+              child: Image.asset("assets/images/bitcoin.png"),
+            ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
             Expanded(
               child: Column(

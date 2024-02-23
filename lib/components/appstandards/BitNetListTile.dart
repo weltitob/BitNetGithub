@@ -28,7 +28,7 @@ class BitNetListTile extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.contentPadding = const EdgeInsets.symmetric(
-        horizontal: AppTheme.elementSpacing * 0.5, vertical: AppTheme.elementSpacing * 0.75),
+        horizontal: AppTheme.elementSpacing * 0.75, vertical: AppTheme.elementSpacing * 0.75),
     this.onTap,
     this.onLongPress, // Add this line
     this.tileColor,

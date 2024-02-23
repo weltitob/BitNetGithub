@@ -1,5 +1,4 @@
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/appbaractions.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -59,7 +58,7 @@ class WalletScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: AppTheme.elementSpacing),
                             Text(
-                              "1.7300,32€",
+                              "${controller.totalBalanceStr} SATS",
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ],
@@ -116,16 +115,13 @@ class WalletScreen extends StatelessWidget {
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final currency in MockFavorites.data) ...[
-                          CryptoItem(
-                            currency: currency,
-                            context: context,
-                          ),
-                        ],
-                      ],
+                    child: CryptoItem(
+                      currency: Currency(
+                        code: 'BTC',
+                        name: 'Bitcoin',
+                        icon: Image.asset('assets/images/bitcoin.png'),
+                      ),
+                      context: context,
                     ),
                   ),
                   const SizedBox(height: AppTheme.cardPadding * 1.5),
