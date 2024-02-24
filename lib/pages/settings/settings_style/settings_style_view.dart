@@ -68,7 +68,6 @@ class SettingsStyleView extends StatelessWidget {
                                           .setChatColor(controller.pickerColor);
                                       Navigator.of(context, rootNavigator: true)
                                           .pop();
-                                      //onThemeChange(pickerColor, Theme.of(context).brightness);
                                     },
                                     actionleft: () {
                                       Navigator.of(context, rootNavigator: true)
@@ -106,7 +105,6 @@ class SettingsStyleView extends StatelessWidget {
                                         ? const Center(
                                             child: Icon(
                                               Icons.check,
-                                              size: 16,
                                               color: Colors.white,
                                             ),
                                           )
@@ -137,8 +135,7 @@ class SettingsStyleView extends StatelessWidget {
                 OptionContainer(
                   L10n.of(context)!.systemTheme,
                   () {
-                    Provider.of<ThemeController>(context, listen: false)
-                        .setThemeMode(ThemeMode.system);
+                    controller.switchTheme(ThemeMode.system);
                   },
                   isActive: controller.currentTheme == ThemeMode.system,
                   image: "assets/images/iphone.png",
@@ -151,8 +148,7 @@ class SettingsStyleView extends StatelessWidget {
                 OptionContainer(
                   L10n.of(context)!.lightTheme,
                   () {
-                    Provider.of<ThemeController>(context, listen: false)
-                    .setThemeMode(ThemeMode.light);
+                    controller.switchTheme(ThemeMode.light);
                   },
                   image: "assets/images/lightmode.png",
                   height: AppTheme.cardPadding * 5.5,
@@ -165,8 +161,7 @@ class SettingsStyleView extends StatelessWidget {
                 OptionContainer(
                   L10n.of(context)!.darkTheme,
                   () {
-                    Provider.of<ThemeController>(context, listen: false)
-                        .setThemeMode(ThemeMode.dark);
+                    controller.switchTheme(ThemeMode.dark);
                   },
                   image: "assets/images/darkmode.png",
                   height: AppTheme.cardPadding * 5.5,

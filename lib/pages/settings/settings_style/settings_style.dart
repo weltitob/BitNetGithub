@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
+import 'package:matrix/matrix.dart';
 import 'settings_style_view.dart';
 
 class SettingsStyle extends StatefulWidget {
@@ -75,27 +76,29 @@ class SettingsStyleController extends State<SettingsStyle> {
 
   static final List<Color?> customColors = [
     AppTheme.primaryColor,
-    Colors.indigo,
+    Colors.indigoAccent,
     AppTheme.colorBitcoin,
-    Colors.pink,
+    Colors.pinkAccent,
     null,
   ];
 
   void switchTheme(ThemeMode? newTheme) {
-    print("switchTheme");
+    Logs().w("switchTheme");
     if (newTheme == null) return;
+    setState(() {
+      ThemeController.of(context).setThemeMode(newTheme);
+    });
     switch (newTheme) {
       case ThemeMode.light:
         ThemeController.of(context).setThemeMode(ThemeMode.light);
-        break;
       case ThemeMode.dark:
         ThemeController.of(context).setThemeMode(ThemeMode.dark);
-        break;
       case ThemeMode.system:
         ThemeController.of(context).setThemeMode(ThemeMode.system);
-        break;
     }
-    setState(() {});
+    setState(() {
+
+    });
   }
 
 

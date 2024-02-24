@@ -43,7 +43,10 @@ class _WidgetTreeState extends State<WidgetTree> {
   @override
   initState() {
     super.initState();
+
     getColor();
+    getBrightness();
+
     getclientsfunc();
     isBiometricsAvailable();
     _appLinks = AppLinks(
@@ -147,7 +150,6 @@ class _WidgetTreeState extends State<WidgetTree> {
     final provider = Provider.of<LocalProvider>(context);
 
     return ThemeBuilder(
-      primaryColorSettingsKey: primaryColor.toString(),
       builder: (context, themeMode, primaryColor) => LayoutBuilder(
         builder: (context, constraints) {
           final isColumnMode =
@@ -171,16 +173,9 @@ class _WidgetTreeState extends State<WidgetTree> {
                   key: WidgetTree.routerKey,
                   title: AppTheme.applicationName,
                   debugShowCheckedModeBanner: false,
-                  // themeMode: Provider.of<MyThemeProvider>(context).themeMode,
-                  // theme: MyThemes.lightTheme,
-                  // darkTheme: MyThemes.darkTheme,
                   themeMode: themeMode,
-                  theme:
-                      //AppTheme.standardTheme(),
-                      AppTheme.customTheme(Brightness.light, primaryColor),
-                  darkTheme:
-                      //AppTheme.standardTheme(),
-                      AppTheme.customTheme(Brightness.dark, primaryColor),
+                  theme: AppTheme.customTheme(Brightness.light, primaryColor),
+                  darkTheme: AppTheme.customTheme(Brightness.dark, primaryColor),
                   scrollBehavior: CustomScrollBehavior(),
                   locale: provider.locale,
                   supportedLocales: L10n.supportedLocales,
@@ -256,11 +251,21 @@ class _WidgetTreeState extends State<WidgetTree> {
 
   int? primaryColor;
   SharedPreferences? preferences;
+
   Future getColor() async {
     preferences = await SharedPreferences.getInstance();
     primaryColor = preferences!.getInt("primary_color");
     setState(() {});
     return primaryColor.toString();
+  }
+
+  ThemeMode? theme_mode;
+
+  Future getBrightness() async {
+    preferences = await SharedPreferences.getInstance();
+    theme_mode = preferences!.getString("theme_mode") as ThemeMode;
+    setState(() {});
+    return theme_mode.toString();
   }
 
 }

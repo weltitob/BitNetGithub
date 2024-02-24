@@ -119,7 +119,7 @@ class _BottomNavState extends State<BottomNav> {
                                 color: context.vRouter.url
                                         .contains(item['route'] as String)
                                     ? Colors.orange
-                                    : Colors.white.withOpacity(0.4),
+                                    : Theme.of(context).iconTheme.color?.withOpacity(0.5),
                                 size: AppTheme.cardPadding,
                               ),
                             ],

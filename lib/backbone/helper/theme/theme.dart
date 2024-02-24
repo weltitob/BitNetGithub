@@ -453,12 +453,18 @@ abstract class AppTheme {
   static const Curve animationCurve = Curves.easeInOut;
 
   static ThemeData customTheme(Brightness brightness, [Color? seed]) =>
+      //based of seed make a dark and a light color palette scheme just like google does
+
+
       ThemeData(
           visualDensity: VisualDensity.standard,
           useMaterial3: true,
-          brightness: brightness,
-          scaffoldBackgroundColor: AppTheme.colorBackground,
-
+          iconTheme: IconThemeData(
+            color: brightness == Brightness.light ? AppTheme.black80  : AppTheme.white80,
+          ),
+          scaffoldBackgroundColor: brightness == Brightness.light ? AppTheme.colorSchemeSeed : AppTheme.colorBackground,
+          //brightness: brightness,
+          //scaffoldBackgroundColor: brightness == Brightness.light ? AppTheme.colorSchemeSeed : AppTheme.colorBackground,
           //colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
           colorScheme: ColorScheme(
               //https://m3.material.io/styles/color/the-color-system/color-roles
@@ -478,23 +484,23 @@ abstract class AppTheme {
               background: AppTheme.colorBackground ?? Colors.black,
               onBackground: AppTheme.white90,
               //-------------------------------------
-              surface: Colors.deepPurple,
+              surface: Colors.deepOrangeAccent,
               onSurface: AppTheme.white90),
           //textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme)
           textTheme: brightness == Brightness.light
               ? textTheme.merge(fallbackTextTheme)
-              : textThemeDarkMode.merge(fallbackTextTheme)
+              : textThemeDarkMode.merge(fallbackTextTheme),
           // snackBarTheme: const SnackBarThemeData(
           //   behavior: SnackBarBehavior.floating,
           // ),
-          // dividerColor: brightness == Brightness.light
-          //     ? Colors.blueGrey.shade50
-          //     : Colors.blueGrey.shade900,
-          // popupMenuTheme: PopupMenuThemeData(
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-          //   ),
-          // ),
+          dividerColor: brightness == Brightness.light
+              ? Colors.blueGrey.shade50
+              : Colors.blueGrey.shade900,
+          popupMenuTheme: PopupMenuThemeData(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+            ),
+          ),
           // inputDecorationTheme: InputDecorationTheme(
           //   border: UnderlineInputBorder(
           //     borderSide: BorderSide.none,
