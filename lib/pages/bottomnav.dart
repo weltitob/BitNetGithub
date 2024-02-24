@@ -10,7 +10,6 @@ import 'package:vrouter/vrouter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../provider/theme_provider.dart';
 
 class BottomNav extends StatefulWidget {
   final Widget child;
@@ -159,13 +158,13 @@ class _BottomNavState extends State<BottomNav> {
     _collectionRef.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       setState(() {
         String myTheme = value.get("theme");
-        if(myTheme == "System"){
-          updateTheme(ThemeMode.system);
-        }else if(myTheme == "Dark"){
-          updateTheme(ThemeMode.dark);
-        }else{
-          updateTheme(ThemeMode.light);
-        }
+        // if(myTheme == "System"){
+        //   updateTheme(ThemeMode.system);
+        // }else if(myTheme == "Dark"){
+        //   updateTheme(ThemeMode.dark);
+        // }else{
+        //   updateTheme(ThemeMode.light);
+        // }
       });
     });
   }
@@ -180,9 +179,9 @@ class _BottomNavState extends State<BottomNav> {
     });
   }
 
-  updateTheme(ThemeMode mode){
-    Provider.of<MyThemeProvider>(context, listen: false)
-        .updateThemeInDatabase(mode);
-  }
+  // updateTheme(ThemeMode mode){
+  //   Provider.of<MyThemeProvider>(context, listen: false)
+  //       .updateThemeInDatabase(mode);
+  // }
 
 }
