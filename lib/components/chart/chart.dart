@@ -189,7 +189,6 @@ class _ChartWidgetState extends State<ChartWidget> {
               child: _loading
                   ? Center(
                       child: Container(
-                        color: AppTheme.colorBackground,
                         height: AppTheme.cardPadding * 16,
                         child: avatarGlow(
                           context,
