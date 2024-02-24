@@ -24,6 +24,7 @@ import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
+import 'package:bitnet/pages/secondpages/mempool/view/unaccepted_block_transactions.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
@@ -129,6 +130,11 @@ class AppRoutes {
                 VWidget(
                   path: '/wallet/block_transactions',
                   widget: const BlockTransactions(),
+                  buildTransition: _fadeTransition,
+                ),
+                VWidget(
+                  path: '/wallet/unaccepted_block_transactions',
+                  widget: const UnacceptedBlockTransactions(),
                   buildTransition: _fadeTransition,
                 ),
                 VWidget(
