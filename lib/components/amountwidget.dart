@@ -1,10 +1,13 @@
 import 'package:bitnet/backbone/futures/bitcoinprice.dart';
+import 'package:bitnet/backbone/helper/getcurrency.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class AmountWidget extends StatelessWidget {
   final SendController controller;
@@ -12,6 +15,7 @@ class AmountWidget extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
+
       return Container(
         child: Column(
           children: [
@@ -57,9 +61,9 @@ class AmountWidget extends StatelessWidget {
                   style: Theme.of(context).textTheme.displayLarge,
                 ),
                 // Icon for Bitcoin currency
-                Icon(
-                  Icons.currency_bitcoin_rounded,
-                  size: AppTheme.cardPadding * 1.5,
+                Text(
+                  "BTC",
+                  style: Theme.of(context).textTheme.titleMedium,
                 )
               ],
             ),
@@ -71,10 +75,15 @@ class AmountWidget extends StatelessWidget {
       );
     }
     Widget bitcoinToMoneyWidget(BuildContext context) {
-      return controller.isLoadingExchangeRt == true // if exchange rate is still loading
-          ? dotProgress(context) // show a loading indicator
-          : Text(
-        "≈ ${controller.moneyineur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
+      final chartLine = Provider.of<ChartLine?>(context, listen: true);
+      String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+      currency = currency ?? "USD";
+
+      final bitcoinPrice = chartLine?.price;
+      final currencyEquivalent = bitcoinPrice != null ? (double.parse(controller.moneyController.text) * bitcoinPrice).toStringAsFixed(2) : "0.00";
+
+      return Text(
+        "≈ ${currencyEquivalent}${getCurrency(currency)}", // show the converted value of Bitcoin to Euro with 2 decimal places
         style: Theme.of(context)
             .textTheme
             .bodyLarge, // use the bodyLarge text theme style from the current theme

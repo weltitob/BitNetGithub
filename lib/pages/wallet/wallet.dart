@@ -52,6 +52,7 @@ class WalletController extends State<Wallet> {
       setState(() {
         this.onchainBalance = onchainBalance;
       });
+      changeTotalBalanceStr();
     } catch (e) {
       print(e);
     }

@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/futures/cryptochartline.dart';
+import 'package:bitnet/backbone/helper/getcurrency.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -64,7 +65,10 @@ class _CryptoItemState extends State<CryptoItem>
   @override
   void initState() {
     super.initState();
-    getChartLine();
+    //final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    //final currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+
+    getChartLine("USD");
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
     _animation = ColorTween(
@@ -97,7 +101,7 @@ class _CryptoItemState extends State<CryptoItem>
           //Perform your update logic here
           _priceOneTimestampAgo = _currentPrice;
           _currentPrice = chartLine.price;
-          _currentPriceString = "${chartLine.price.toStringAsFixed(2)}${currency}";
+          _currentPriceString = "${chartLine.price.toStringAsFixed(2)}";
           priceChange = (_currentPrice - _firstPrice) / _firstPrice;
           _priceChangeString = toPercent(priceChange);
           colorUpdater();
@@ -109,15 +113,16 @@ class _CryptoItemState extends State<CryptoItem>
     }
   }
 
-  getChartLine() async {
+  getChartLine(String currency) async {
+
     CryptoChartLine chartClassDay = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "eur",
+      currency: currency,
       days: "1",
     );
     CryptoChartLine chartClassDayMin = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "eur",
+      currency: currency,
       days: "1",
     );
     try{
@@ -127,7 +132,7 @@ class _CryptoItemState extends State<CryptoItem>
       onedaychart = chartClassDay.chartLine;
 
       _currentPrice = chartClassDayMin.chartLine.last.price;
-      _currentPriceString = _currentPrice.toStringAsFixed(2) + "€";
+      _currentPriceString = _currentPrice.toStringAsFixed(2);
       _priceOneTimestampAgo = double.parse(_currentPrice.toStringAsFixed(2));
       _firstPrice = chartClassDayMin.chartLine.first.price;
 
@@ -219,6 +224,7 @@ class _CryptoItemState extends State<CryptoItem>
   }
 
   Widget title() {
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,6 +301,8 @@ class _CryptoItemState extends State<CryptoItem>
 
   Widget price() {
     //final ChartLine? bitcoinPrice = Provider.of<ChartLine?>(context, listen: true);
+    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    currency = currency ?? "USD";
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -305,7 +313,7 @@ class _CryptoItemState extends State<CryptoItem>
           children: [
             // const SizedBox(width: AppTheme.elementSpacing / 2),
             Text(
-              _currentPriceString,//bitcoinPrice!.price.toString(),
+              "${_currentPriceString}${getCurrency(currency)}",//bitcoinPrice!.price.toString(),
               style: AppTheme.textTheme.bodyMedium,
             ),
           ],

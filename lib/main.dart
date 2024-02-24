@@ -138,7 +138,7 @@ class MyApp extends StatelessWidget {
                     // If so, dispose the old stream and create a new one with the updated currency
                     bitcoinPriceStream?.dispose();
                     final newStream = BitcoinPriceStream();
-                    newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'eur');
+                    newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
                     return newStream;
                   }
                   // If the currency hasn't changed, return the existing stream

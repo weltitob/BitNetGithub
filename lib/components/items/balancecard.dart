@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/getcurrency.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
@@ -297,7 +298,8 @@ class BalanceTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
-    final currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null ? (double.parse(balance) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
@@ -333,7 +335,7 @@ class BalanceTextWidget extends StatelessWidget {
           Container(
             width: 160, // Replace with your AppTheme.cardPadding * 10 if needed
             child: Text(
-              "= $currencyEquivalent$currency",
+              "= $currencyEquivalent${getCurrency(currency!)}",
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyMedium,
             ),

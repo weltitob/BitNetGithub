@@ -1,4 +1,4 @@
-import 'package:bitnet/backbone/futures/fetchCurrencies.dart';
+import 'package:bitnet/backbone/helper/getcurrency.dart';
 import 'package:bitnet/backbone/helper/supported_currencies.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
@@ -7,11 +7,7 @@ import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/models/currency/rates_model.dart';
 import 'package:flutter/material.dart';
-import 'package:android_id/android_id.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:provider/provider.dart';
 
@@ -55,17 +51,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void initState() {
-    getAndroidId();
-    super.initState();
-  }
-
-  final _androidIdPlugin = const AndroidId();
-
-  String? deviceId;
-
-  void getAndroidId() async {
-    deviceId = await _androidIdPlugin.getId();
-    print("ANDROID IDDDD $deviceId");
   }
 
   TextEditingController search = TextEditingController();
@@ -156,12 +141,6 @@ class _DashboardPageState extends State<DashboardPage> {
               .setFirstCurrencyInDatabase(key,);
       },
     );
-  }
-
-  String getCurrency(String cuName) {
-    var format = NumberFormat.simpleCurrency(name: cuName);
-
-    return format.currencySymbol;
   }
 
 }

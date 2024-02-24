@@ -5,7 +5,6 @@ import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
@@ -46,7 +45,7 @@ class LightningSendTab extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: AppTheme.cardPadding),
                       child: Text(
-                        ',,${controller.description}"',
+                        controller.description.isEmpty ? "" : ',,${controller.description}"',
                         style:
                             Theme.of(context).textTheme.bodyLarge!.copyWith(),
                         textAlign: TextAlign.center,

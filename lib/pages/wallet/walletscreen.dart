@@ -1,9 +1,12 @@
+import 'package:bitnet/backbone/helper/getcurrency.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -11,6 +14,7 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
 
 class WalletScreen extends StatelessWidget {
@@ -19,7 +23,12 @@ class WalletScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final UserData userData = Provider.of<UserData>(context);
+    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    currency = currency ?? "USD";
+
+    final bitcoinPrice = chartLine?.price;
+    final currencyEquivalent = bitcoinPrice != null ? (double.parse(controller.totalBalanceStr) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
 
     List<Container> cards = [
       Container(child: BalanceCardLightning(controller: controller)),
@@ -57,9 +66,18 @@ class WalletScreen extends StatelessWidget {
                               //image: controller.user.image,
                             ),
                             const SizedBox(width: AppTheme.elementSpacing),
-                            Text(
-                              "${controller.totalBalanceStr} SATS",
-                              style: Theme.of(context).textTheme.titleLarge,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${controller.totalBalanceStr} SATS",
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                Text(
+                                  "= ${currencyEquivalent}${getCurrency(currency)}",
+                                  style: Theme.of(context).textTheme.titleSmall,
+                                ),
+                              ],
                             ),
                           ],
                         ),
