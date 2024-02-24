@@ -103,8 +103,9 @@ class MyApp extends StatelessWidget {
             tree: WidgetTree(context: context),
             child: MultiProvider(
               providers: [
-                ChangeNotifierProvider<MyThemeProvider>(
-                    create: (context) => MyThemeProvider()),
+                //FROM Ahmad remove later once we have a proper implementation
+                // ChangeNotifierProvider<MyThemeProvider>(
+                //     create: (context) => MyThemeProvider()),
                 ChangeNotifierProvider<LocalProvider>(
                     create: (context) => LocalProvider()),
                 ChangeNotifierProvider<CurrencyChangeProvider>(
@@ -151,10 +152,6 @@ class MyApp extends StatelessWidget {
               //   create: (context) => BitcoinPriceStream().priceStream,
               //   initialData: ChartLine(time: 0, price: 0),
               // ),
-              StreamProvider<RatesModel?>(
-                create: (context) => ratesStream(),
-                initialData: null,
-              ),
               StreamProvider<UserData?>(
                 create: (_) => Auth().userWalletStream,
                 initialData: null,
