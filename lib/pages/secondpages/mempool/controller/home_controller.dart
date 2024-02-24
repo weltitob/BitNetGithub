@@ -185,6 +185,7 @@ class HomeController extends GetxController {
   RxString replacedTx = ''.obs;
   RxInt txPosition = 0.obs;
   RbfTransaction? rbfTransaction;
+  List blockTransactions = [];
 
   getWebSocketData() async {
     socketLoading.value = true;
@@ -201,8 +202,45 @@ class HomeController extends GetxController {
       },
     );
     subscription = channel.stream.listen((message) {
-      // printWrapped('message+ $message');
-      MemPoolModel memPool = MemPoolModel.fromJson(json.decode(message));
+       // printWrapped('message+ $message');
+       // print('message+1 ${json.decode(message)}');
+      Map<String, dynamic> data = jsonDecode(message);
+       print('message+2 ${data['projected-block-transactions']}');
+      if(data['projected-block-transactions'] != null){
+        if(data['projected-block-transactions']['blockTransactions'] != null) {
+          blockTransactions.clear();
+          blockTransactions =
+          data['projected-block-transactions']['blockTransactions'];
+          print(
+              'message+3 ${data['projected-block-transactions']['blockTransactions']}');
+        }
+        if(data['projected-block-transactions']['delta']['added'] != null){
+          blockTransactions.addAll(data['projected-block-transactions']['delta']['added']);
+        }
+        // if(data['projected-block-transactions']['delta']['changes'] != null){
+        //   List changed = data['projected-block-transactions']['delta']['changed'];
+        //   for(int i=0; i<blockTransactions.length; i++){
+        //     blockTransactions.
+        //   }
+        //   blockTransactions.addAll(data['projected-block-transactions']['delta']['added']);
+        // }
+        if(data['projected-block-transactions']['delta']['removed'] != null){
+          List remove = data['projected-block-transactions']['delta']['removed'];
+          print(remove.length);
+          for(int i=0; i<blockTransactions.length; i++){
+            String e = blockTransactions[i][0];
+            print(remove.contains(e));
+            if(remove.contains(e)){
+              print('remove');
+              blockTransactions.removeAt(i);
+            }
+
+          }
+        }
+      }
+
+
+       MemPoolModel memPool = MemPoolModel.fromJson(json.decode(message));
       if (memPool.txPosition != null) {
         txPosition.value = memPool.txPosition!.position.block;
       }
