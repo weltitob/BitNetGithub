@@ -37,7 +37,7 @@ class WalletScreen extends StatelessWidget {
 
     return bitnetScaffold(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.background,
+      //backgroundColor: Theme.of(context).colorScheme.background,
       body: ListView(
         children: [
           Stack(

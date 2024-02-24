@@ -452,101 +452,120 @@ abstract class AppTheme {
 
   static const Curve animationCurve = Curves.easeInOut;
 
-  static ThemeData customTheme(Brightness brightness, [Color? seed]) =>
-      //based of seed make a dark and a light color palette scheme just like google does
+  static ThemeData customTheme(Brightness brightness, [Color? seed]) {
+    //based of seed make a dark and a light color palette scheme just like google does
+    Color defaultSeed = seed ??
+        Colors.blue; // Default to blue if no seed provided
 
+    // Generate a ColorScheme based on the seed color and desired brightness
+    ColorScheme colorScheme = ColorScheme.fromSeed(
+      seedColor: defaultSeed,
+      brightness: brightness,
+    );
 
-      ThemeData(
-          visualDensity: VisualDensity.standard,
-          useMaterial3: true,
-          iconTheme: IconThemeData(
-            color: brightness == Brightness.light ? AppTheme.black80  : AppTheme.white80,
-          ),
-          scaffoldBackgroundColor: brightness == Brightness.light ? AppTheme.colorSchemeSeed : AppTheme.colorBackground,
-          //brightness: brightness,
-          //scaffoldBackgroundColor: brightness == Brightness.light ? AppTheme.colorSchemeSeed : AppTheme.colorBackground,
-          //colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
-          colorScheme: ColorScheme(
-              //https://m3.material.io/styles/color/the-color-system/color-roles
-              brightness: brightness,
-              primary: AppTheme.colorSchemeSeed ?? Colors.black,
-              onPrimary: AppTheme.white90,
-              //------stays the same always...-------
-              secondary: AppTheme.colorSchemeSeed ?? Colors.black,
-              onSecondary: AppTheme.white90,
-              //------stays the same always...-------
-              tertiary: AppTheme.colorBitcoin,
-              onTertiary: AppTheme.colorPrimaryGradient,
-              //-------------------------------------
-              error: AppTheme.errorColor,
-              onError: AppTheme.errorColor,
-              //------stays the same always...-------
-              background: AppTheme.colorBackground ?? Colors.black,
-              onBackground: AppTheme.white90,
-              //-------------------------------------
-              surface: Colors.deepOrangeAccent,
-              onSurface: AppTheme.white90),
-          //textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme)
-          textTheme: brightness == Brightness.light
-              ? textTheme.merge(fallbackTextTheme)
-              : textThemeDarkMode.merge(fallbackTextTheme),
-          // snackBarTheme: const SnackBarThemeData(
-          //   behavior: SnackBarBehavior.floating,
-          // ),
-          dividerColor: brightness == Brightness.light
-              ? Colors.blueGrey.shade50
-              : Colors.blueGrey.shade900,
-          popupMenuTheme: PopupMenuThemeData(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-            ),
-          ),
-          // inputDecorationTheme: InputDecorationTheme(
-          //   border: UnderlineInputBorder(
-          //     borderSide: BorderSide.none,
-          //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall / 2),
-          //   ),
-          //   filled: true,
-          // ),
-          // appBarTheme: AppBarTheme(
-          //   surfaceTintColor:
-          //   brightness == Brightness.light ? Colors.white : Colors.black,
-          //   shadowColor: Colors.black.withAlpha(64),
-          //   systemOverlayStyle: SystemUiOverlayStyle(
-          //     statusBarColor: Colors.transparent,
-          //     statusBarIconBrightness: brightness.reversed,
-          //     statusBarBrightness: brightness,
-          //   ),
-          // ),
-          // textButtonTheme: TextButtonThemeData(
-          //   style: TextButton.styleFrom(
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(cardPadding / 2),
-          //     ),
-          //   ),
-          // ),
-          // outlinedButtonTheme: OutlinedButtonThemeData(
-          //   style: OutlinedButton.styleFrom(
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(cardPadding / 2),
-          //     ),
-          //   ),
-          // ),
-          // dialogTheme: DialogTheme(
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(cardPadding / 2),
-          //   ),
-          // ),
-          // elevatedButtonTheme: ElevatedButtonThemeData(
-          //   style: ElevatedButton.styleFrom(
-          //     padding: const EdgeInsets.all(AppTheme.elementSpacing),
-          //     textStyle: const TextStyle(fontSize: 16),
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: AppTheme.cardRadiusMid,
-          //     ),
-          //   ),
-          // ),
-          );
+    // Create ThemeData from the ColorScheme
+    ThemeData themeData = ThemeData.from(
+      colorScheme: colorScheme,
+      textTheme:  brightness == Brightness.light
+          ? textTheme.merge(fallbackTextTheme)
+               : textThemeDarkMode.merge(fallbackTextTheme),
+    );
+
+    return themeData;
+  }
+      //
+      //
+      // ThemeData(
+      //     visualDensity: VisualDensity.standard,
+      //     useMaterial3: true,
+      //     iconTheme: IconThemeData(
+      //       color: brightness == Brightness.light ? AppTheme.black80  : AppTheme.white80,
+      //     ),
+      //     scaffoldBackgroundColor: brightness == Brightness.light ? AppTheme.colorSchemeSeed : AppTheme.colorBackground,
+      //     //brightness: brightness,
+      //     //scaffoldBackgroundColor: brightness == Brightness.light ? AppTheme.colorSchemeSeed : AppTheme.colorBackground,
+      //     //colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
+      //     colorScheme: ColorScheme(
+      //         //https://m3.material.io/styles/color/the-color-system/color-roles
+      //         brightness: brightness,
+      //         primary: AppTheme.colorSchemeSeed ?? Colors.black,
+      //         onPrimary: AppTheme.white90,
+      //         //------stays the same always...-------
+      //         secondary: AppTheme.colorSchemeSeed ?? Colors.black,
+      //         onSecondary: AppTheme.white90,
+      //         //------stays the same always...-------
+      //         tertiary: AppTheme.colorBitcoin,
+      //         onTertiary: AppTheme.colorPrimaryGradient,
+      //         //-------------------------------------
+      //         error: AppTheme.errorColor,
+      //         onError: AppTheme.errorColor,
+      //         //------stays the same always...-------
+      //         background: AppTheme.colorBackground ?? Colors.black,
+      //         onBackground: AppTheme.white90,
+      //         //-------------------------------------
+      //         surface: Colors.deepOrangeAccent,
+      //         onSurface: AppTheme.white90),
+      //     //textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme)
+      //     textTheme: brightness == Brightness.light
+      //         ? textTheme.merge(fallbackTextTheme)
+      //         : textThemeDarkMode.merge(fallbackTextTheme),
+      //     // snackBarTheme: const SnackBarThemeData(
+      //     //   behavior: SnackBarBehavior.floating,
+      //     // ),
+      //     dividerColor: brightness == Brightness.light
+      //         ? Colors.blueGrey.shade50
+      //         : Colors.blueGrey.shade900,
+      //     popupMenuTheme: PopupMenuThemeData(
+      //       shape: RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+      //       ),
+      //     ),
+      //     // inputDecorationTheme: InputDecorationTheme(
+      //     //   border: UnderlineInputBorder(
+      //     //     borderSide: BorderSide.none,
+      //     //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall / 2),
+      //     //   ),
+      //     //   filled: true,
+      //     // ),
+      //     // appBarTheme: AppBarTheme(
+      //     //   surfaceTintColor:
+      //     //   brightness == Brightness.light ? Colors.white : Colors.black,
+      //     //   shadowColor: Colors.black.withAlpha(64),
+      //     //   systemOverlayStyle: SystemUiOverlayStyle(
+      //     //     statusBarColor: Colors.transparent,
+      //     //     statusBarIconBrightness: brightness.reversed,
+      //     //     statusBarBrightness: brightness,
+      //     //   ),
+      //     // ),
+      //     // textButtonTheme: TextButtonThemeData(
+      //     //   style: TextButton.styleFrom(
+      //     //     shape: RoundedRectangleBorder(
+      //     //       borderRadius: BorderRadius.circular(cardPadding / 2),
+      //     //     ),
+      //     //   ),
+      //     // ),
+      //     // outlinedButtonTheme: OutlinedButtonThemeData(
+      //     //   style: OutlinedButton.styleFrom(
+      //     //     shape: RoundedRectangleBorder(
+      //     //       borderRadius: BorderRadius.circular(cardPadding / 2),
+      //     //     ),
+      //     //   ),
+      //     // ),
+      //     // dialogTheme: DialogTheme(
+      //     //   shape: RoundedRectangleBorder(
+      //     //     borderRadius: BorderRadius.circular(cardPadding / 2),
+      //     //   ),
+      //     // ),
+      //     // elevatedButtonTheme: ElevatedButtonThemeData(
+      //     //   style: ElevatedButton.styleFrom(
+      //     //     padding: const EdgeInsets.all(AppTheme.elementSpacing),
+      //     //     textStyle: const TextStyle(fontSize: 16),
+      //     //     shape: RoundedRectangleBorder(
+      //     //       borderRadius: AppTheme.cardRadiusMid,
+      //     //     ),
+      //     //   ),
+      //     // ),
+      //     );
 }
 
 extension on Brightness {
