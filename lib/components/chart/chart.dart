@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/chart/chart.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 var datetime = DateTime.now();
@@ -35,6 +36,8 @@ class ChartWidget extends StatefulWidget {
 }
 
 class _ChartWidgetState extends State<ChartWidget> {
+
+
   late TrackballBehavior _trackballBehavior;
   late List<ChartLine> chartData;
   late List<ChartLine> maxchart;
@@ -53,30 +56,30 @@ class _ChartWidgetState extends State<ChartWidget> {
   // Initialized the global variable
   ChartSeriesController? _chartSeriesController;
 
-  getChartLine() async {
+  getChartLine(String? currency) async {
     CryptoChartLine chartClassDay = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "eur",
+      currency: currency ?? "usd",
       days: "1",
     );
     CryptoChartLine chartClassWeek = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "eur",
+      currency: currency ?? "usd",
       days: "7",
     );
     CryptoChartLine chartClassMonth = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "eur",
+      currency: currency ?? "usd",
       days: "30",
     );
     CryptoChartLine chartClassYear = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "eur",
+      currency: currency ?? "usd",
       days: "365",
     );
     CryptoChartLine chartClassMax = CryptoChartLine(
       crypto: "bitcoin",
-      currency: "eur",
+      currency: currency ?? "usd",
       days: "max",
     );
     await chartClassDay.getChartData();
@@ -145,7 +148,9 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   void initState() {
     super.initState();
-    getChartLine();
+    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    getChartLine(currency);
     _loading = true;
     // _priceStream.start();
     // print('Bitcoin pricestream started');
@@ -307,7 +312,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   Widget buildTimeChooser() {
     return Container(
-      padding: const EdgeInsets.only(top: 15.0, bottom: 10),
+      padding: const EdgeInsets.only(top: AppTheme.elementSpacing, bottom: AppTheme.elementSpacing),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -481,6 +486,7 @@ class CustomWidget extends StatefulWidget {
 }
 
 class _CustomWidgetState extends State<CustomWidget> with SingleTickerProviderStateMixin{
+
   void refresh() {
     if (mounted) {
       setState(() {});
@@ -514,13 +520,15 @@ class _CustomWidgetState extends State<CustomWidget> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     return Column(
       children: [
         Row(
           children: [
             Container(
-              height: AppTheme.elementSpacing * 2,
-              width: AppTheme.elementSpacing * 2,
+              height: AppTheme.elementSpacing * 3.5,
+              width: AppTheme.elementSpacing * 3.5,
               child: Image.asset("assets/images/bitcoin.png"),
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
@@ -532,7 +540,7 @@ class _CustomWidgetState extends State<CustomWidget> with SingleTickerProviderSt
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "BTC",
+                        "",
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       Text(
@@ -597,7 +605,7 @@ class _CustomWidgetState extends State<CustomWidget> with SingleTickerProviderSt
                 // ),
                 // SizedBox(width: AppTheme.elementSpacing,),
                 Text(
-                  "${trackBallValuePrice}€",
+                  "${trackBallValuePrice}${currency ?? "N/A"}",
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
               ],

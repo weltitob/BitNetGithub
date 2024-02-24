@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:http/http.dart';
 import 'package:bitnet/components/chart/chart.dart';
@@ -12,7 +13,7 @@ class CryptoChartLine {
   final String crypto;
   final String days;
   final String currency;
-  final String apiKey = 'CG-12UjARcpudDsAw5CKgGxNRqe';
+  final String apiKey = AppTheme.coinGeckoApiKey;
 
   CryptoChartLine({
     required this.crypto,

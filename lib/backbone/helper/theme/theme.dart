@@ -6,6 +6,7 @@ import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
 
 abstract class AppTheme {
+  static String coinGeckoApiKey = 'CG-12UjARcpudDsAw5CKgGxNRqe';
   static String _applicationName = 'bitnet';
   static String get applicationName => _applicationName;
   static String? _applicationWelcomeMessage;

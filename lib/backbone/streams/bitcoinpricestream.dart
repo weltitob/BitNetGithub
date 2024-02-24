@@ -135,6 +135,7 @@ class BitcoinPriceStream {
         final data = jsonDecode(response.body);
         final double price = double.parse(data['bitcoin'][localCurrency].toString());
         final double time = double.parse(data['bitcoin']['last_updated_at'].toString());
+        Logs().d("Price of bitcoin in $localCurrency: $price");
         final ChartLine latestChartLine = ChartLine(time: time, price: price);
         _priceController.add(latestChartLine);
       } else {
