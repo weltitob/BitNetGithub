@@ -1,13 +1,12 @@
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/colorpicker.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
-import 'package:bitnet/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:provider/provider.dart';
 import 'settings_style.dart';
@@ -138,8 +137,8 @@ class SettingsStyleView extends StatelessWidget {
                 OptionContainer(
                   L10n.of(context)!.systemTheme,
                   () {
-                    Provider.of<MyThemeProvider>(context, listen: false)
-                        .updateThemeInDatabase(ThemeMode.system);
+                    Provider.of<ThemeController>(context, listen: false)
+                        .setThemeMode(ThemeMode.system);
                   },
                   isActive: controller.currentTheme == ThemeMode.system,
                   image: "assets/images/iphone.png",
@@ -152,8 +151,8 @@ class SettingsStyleView extends StatelessWidget {
                 OptionContainer(
                   L10n.of(context)!.lightTheme,
                   () {
-                    Provider.of<MyThemeProvider>(context, listen: false)
-                        .updateThemeInDatabase(ThemeMode.light);
+                    Provider.of<ThemeController>(context, listen: false)
+                    .setThemeMode(ThemeMode.light);
                   },
                   image: "assets/images/lightmode.png",
                   height: AppTheme.cardPadding * 5.5,
@@ -166,8 +165,8 @@ class SettingsStyleView extends StatelessWidget {
                 OptionContainer(
                   L10n.of(context)!.darkTheme,
                   () {
-                    Provider.of<MyThemeProvider>(context, listen: false)
-                        .updateThemeInDatabase(ThemeMode.dark);
+                    Provider.of<ThemeController>(context, listen: false)
+                        .setThemeMode(ThemeMode.dark);
                   },
                   image: "assets/images/darkmode.png",
                   height: AppTheme.cardPadding * 5.5,
