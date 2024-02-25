@@ -88,17 +88,6 @@ class SettingsStyleController extends State<SettingsStyle> {
     setState(() {
       ThemeController.of(context).setThemeMode(newTheme);
     });
-    switch (newTheme) {
-      case ThemeMode.light:
-        ThemeController.of(context).setThemeMode(ThemeMode.light);
-      case ThemeMode.dark:
-        ThemeController.of(context).setThemeMode(ThemeMode.dark);
-      case ThemeMode.system:
-        ThemeController.of(context).setThemeMode(ThemeMode.system);
-    }
-    setState(() {
-
-    });
   }
 
 

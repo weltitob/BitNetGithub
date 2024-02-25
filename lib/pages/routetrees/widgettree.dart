@@ -44,6 +44,8 @@ class _WidgetTreeState extends State<WidgetTree> {
   initState() {
     super.initState();
 
+
+    //language and also currency needs to be fetched aswell but need to implment a solid system that uses firebase instead of sharedprefs
     getColor();
     getBrightness();
 
