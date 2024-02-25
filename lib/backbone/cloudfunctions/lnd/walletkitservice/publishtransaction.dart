@@ -32,10 +32,10 @@ Future<RestResponse> publishTransaction(String tx_hex, String label) async {
 
     if (response.statusCode == 200) {
       print(json.decode(response.body));
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully added invoice", data: json.decode(response.body));
+      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully published transaction", data: json.decode(response.body));
 
     } else {
-      Logs().e('Failed to load data: ${response.statusCode}, ${response.body}');
+      Logs().e('Failed to load data (publishtransaction.dart): ${response.statusCode}, ${response.body}');
       return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.body}", data: {});
     }
   } catch (e) {

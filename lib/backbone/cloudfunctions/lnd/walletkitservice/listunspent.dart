@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 
-Future<RestResponse> listUnspent(String tx_hex, String label) async {
+Future<RestResponse> listUnspent() async {
   const String restHost = 'mybitnet.com:8443';
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/utxos';

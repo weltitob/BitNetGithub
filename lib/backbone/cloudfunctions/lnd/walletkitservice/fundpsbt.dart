@@ -8,15 +8,14 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 
-Future<RestResponse> fundPsbt(TransactionData model, double sat_per_kw, String label) async {
+Future<RestResponse> fundPsbt(TransactionData model) async {
   const String restHost = 'mybitnet.com:8443';
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
-  String url = 'https://$restHost/v2/wallet/utxos';
+  String url = 'https://$restHost/v2/wallet/psbt/fund';
 
   ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
-
 
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,

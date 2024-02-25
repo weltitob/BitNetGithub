@@ -31,10 +31,7 @@ import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
-import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
-import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:bitnet/pages/website/compliance/agbscreen.dart';
 import 'package:bitnet/pages/website/compliance/impressumscreen.dart';
@@ -60,7 +57,6 @@ import 'package:bitnet/pages/settings/settings_ignore_list/settings_ignore_list.
 import 'package:bitnet/pages/settings/settings_multiple_emotes/settings_multiple_emotes.dart';
 import 'package:bitnet/pages/settings/settings_notifications/settings_notifications.dart';
 import 'package:bitnet/pages/settings/settings_style/settings_style.dart';
-import 'package:bitnet/pages/wallet/walletscreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:vrouter/vrouter.dart';
@@ -96,6 +92,11 @@ class AppRoutes {
                 path: '/qrscanner',
                 widget: const QrScanner(),
                 buildTransition: _dynamicTransition),
+            VWidget(
+              path: '/error',
+              widget: Receive(),
+              buildTransition: _dynamicTransition,
+            ),
             VWidget(path: '/feed', widget: FeedScreen(), stackedRoutes: [
               VWidget(
                   path: kNftProductScreenRoute + "/:nft_id",

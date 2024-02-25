@@ -6,6 +6,7 @@ import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
+import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
 
 class SearchReceiver extends StatelessWidget {
@@ -51,6 +52,7 @@ class SearchReceiver extends StatelessWidget {
                     focusNode: controller.myFocusNodeAdress,
                     controller: controller.bitcoinReceiverAdressController,
                     onFieldSubmitted: (value) {
+                      Logs().w("Adress: $value");
                       controller.validateAdress(value);
                     },
                     autofocus: false,

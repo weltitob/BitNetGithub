@@ -26,17 +26,17 @@ final datetime = DateTime.now();
 Timestamp timestamp = Timestamp.fromDate(datetime); //To TimeStamp
 
 bool isStringaDID(String input) {
-  RegExp didPattern = RegExp(r'^did:[a-zA-Z0-9]+:[A-Za-z0-9._-]{22,}$');
+  RegExp didPattern = RegExp(r'^did:[a-zA-Z0-9]+:[A-Za-z0-9._-]{22,}$', caseSensitive: false);
   return didPattern.hasMatch(input);
 }
 
 bool isStringALNInvoice(String input) {
-  RegExp lnInvoicePattern = RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$');
+  RegExp lnInvoicePattern = RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$', caseSensitive: false);
   return lnInvoicePattern.hasMatch(input);
 }
 
 bool isLightningAdressAsMail(String input) {
-  RegExp lightningAddressPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+  RegExp lightningAddressPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', caseSensitive: false);
   return lightningAddressPattern.hasMatch(input);
 }
 

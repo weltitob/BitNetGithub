@@ -9,7 +9,6 @@ import 'package:bitnet/pages/qrscanner/qrscanner_view.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:matrix/matrix.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vrouter/vrouter.dart';
@@ -43,15 +42,31 @@ class QRScannerController extends State<QrScanner> {
   }
 
   QRTyped determineQRType(dynamic encodedString) {
-
     final isLightningMailValid = isLightningAdressAsMail(encodedString);
+    print("isLightingMailValid: $isLightningMailValid");
     final isStringInvoice = isStringALNInvoice(encodedString);
+    print("isStringInvoice: $isStringInvoice");
     final isBitcoinValid = isBitcoinWalletValid(encodedString);
+    print("isBitcoinValid: $isBitcoinValid");
+
+    late QRTyped qrTyped;
 
     Logs().w("Determining the QR type...");
     // Logic to determine the QR type based on the encoded string
     // Return the appropriate QRTyped enum value
-    return QRTyped.Invoice;
+    if(isLightningMailValid){
+      qrTyped = QRTyped.LightningMail;
+    }
+    else if (isStringInvoice){
+      qrTyped = QRTyped.Invoice;
+    }
+    else if (isBitcoinValid){
+      qrTyped = QRTyped.OnChain;
+    }
+    else{
+      qrTyped = QRTyped.Unknown;
+    }
+    return qrTyped;
   }
 
 
@@ -64,9 +79,10 @@ class QRScannerController extends State<QrScanner> {
       // Handle LightningMail QR code
         break;
       case QRTyped.OnChain:
-      // Handle OnChain QR code
+        VRouter.of(context).to("/wallet/send?walletAdress=$encodedString");
         break;
       case QRTyped.Invoice:
+        print("INVIUCE DETECTED!");
         Logs().w("Invoice was detected will forward to Send screen...");
         //have to parse or give the page everything I know about the invoice
         try {
@@ -83,7 +99,8 @@ class QRScannerController extends State<QrScanner> {
       // Handle LightningMail QR code
         break;
       case QRTyped.Unknown:
-      // Handle LightningMail QR code
+        //send to unknown qr code page which shows raw data
+        //VRouter.of(context).to("/error");
         break;
       default:
       // Handle unknown QR code
@@ -93,16 +110,12 @@ class QRScannerController extends State<QrScanner> {
 
   void onScannedForSignIn(dynamic encodedString) async {
     try{
-      //Auth().signOut();
       final privateData = PrivateData.fromJson(encodedString);
 
       final signedMessage = await Auth().signMessageAuth(
           privateData.did,
           privateData.privateKey
       );
-      //login
-
-      // Call the function to store Private data in secure storage
       await storePrivateData(privateData);
 
       await Auth().signIn(
