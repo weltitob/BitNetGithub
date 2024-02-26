@@ -68,13 +68,9 @@ class SendController extends State<Send> {
 
   void processParameters(BuildContext context) {
     Logs().w("Process parameters for sendscreen called");
-    // Access the query parameters
     Map<String, String> queryParams = VRouter.of(context).queryParameters;
-
     String? invoice = VRouter.of(context).queryParameters['invoice'];
-
     String? walletAdress = VRouter.of(context).queryParameters['walletAdress'];
-
 
     if (invoice != null){
       Logs().w("Invoice: $invoice");
@@ -101,7 +97,6 @@ class SendController extends State<Send> {
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
     bitcoinReceiverAdressController = TextEditingController(); // the controller for the Bitcoin receiver address text field
-    processParameters(context);
   }
 
   void resetValues(){
@@ -296,6 +291,8 @@ class SendController extends State<Send> {
 
   @override
   Widget build(BuildContext context) {
+    processParameters(context);
+
     return hasReceiver ?
       SendBTCScreen(controller: this) : SearchReceiver(controller: this);
   }

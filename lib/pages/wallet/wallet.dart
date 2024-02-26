@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
@@ -56,6 +57,49 @@ class WalletController extends State<Wallet> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void showOverlay(BuildContext context) {
+      var overlayEntry = OverlayEntry(
+        builder: (context) => Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset(0, -1),
+              end: Offset.zero,
+            ).animate(
+              CurvedAnimation(
+                parent: AnimationController(
+                  duration: const Duration(milliseconds: 300),
+                  vsync: Navigator.of(context),
+                )..forward(),
+                curve: Curves.easeOut,
+              ),
+            ),
+            child: Material(
+              elevation: 10.0,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                color: Colors.green,
+                child: Text(
+                  'Transaction received!',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Add the overlay entry to the overlay
+      Overlay.of(context)?.insert(overlayEntry);
+
+      // Remove the overlay entry after duration
+      Future.delayed(Duration(seconds: 3), () {
+        overlayEntry.remove();
+      });
   }
 
   void fetchLightingWalletBalance() async {

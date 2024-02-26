@@ -16,6 +16,8 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vrouter/vrouter.dart';
+import 'package:another_flushbar/flushbar.dart';
+
 
 class WalletScreen extends StatelessWidget {
   final WalletController controller;
@@ -37,7 +39,6 @@ class WalletScreen extends StatelessWidget {
 
     return bitnetScaffold(
       context: context,
-      //backgroundColor: Theme.of(context).colorScheme.background,
       body: ListView(
         children: [
           Stack(
@@ -46,7 +47,6 @@ class WalletScreen extends StatelessWidget {
                 borderThickness: 0,
                   child: Container(
                 height: AppTheme.cardPadding * 12,
-
               )),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -90,12 +90,6 @@ class WalletScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Padding(
-                  //   padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1),
-                  //   child: GlassContainer(child: Container(
-                  //     height: AppTheme.cardPadding * 4,
-                  //   )),
-                  // ),
                   SizedBox(
                     height: AppTheme.cardPadding * 10,
                     child: Stack(

@@ -35,6 +35,7 @@ dependencies:
   like_button: ^2.0.5
   marquee: ^2.2.3
   flutter_layout_grid: ^2.0.5
+  another_flushbar: ^1.12.30
 
   #von fluffy
   adaptive_dialog: ^1.9.0-no-macos.2
