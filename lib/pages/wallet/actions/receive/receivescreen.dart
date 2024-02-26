@@ -4,9 +4,7 @@ import 'package:bitnet/components/buttons/appbaractions.dart';
 import 'package:bitnet/pages/wallet/actions/receive/lightning_receive_tab.dart';
 import 'package:bitnet/pages/wallet/actions/receive/onchain_receive_tab.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vrouter/vrouter.dart';
@@ -33,9 +31,11 @@ class ReceiveScreen extends StatelessWidget {
         actions: [
           // Adds a button to the appbar that navigates to the QRScanner screen
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              controller.switchReceiveType();
+            },
             child: AppBarActionButton(
-              iconData: FontAwesomeIcons.boltLightning,
+              iconData: controller.receiveType == ReceiveType.Lightning ? FontAwesomeIcons.boltLightning : FontAwesomeIcons.bitcoin,
             ),
           ),
         ],
@@ -52,13 +52,9 @@ class ReceiveScreen extends StatelessWidget {
               height: AppTheme.cardPadding * 2.5,
             ),
             Expanded(
-              child: TabBarView(
-                controller: controller.tabController,
-                children: [
-                  LightningReceiveTab(controller: controller,),
+              child: controller.receiveType == ReceiveType.Lightning ?
+                  LightningReceiveTab(controller: controller,) :
                   OnChainReceiveTab(controller: controller,),
-                ],
-              ),
             ),
           ],
         ),

@@ -72,15 +72,15 @@ class BalanceBackground2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(34),
+      borderRadius: AppTheme.cardRadiusBigger,
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
             colors: [
-              Color(0xFF522F77),
-              Color(0xFF7127B7),
+              Theme.of(context).colorScheme.onSecondary,
+              Theme.of(context).colorScheme.onTertiary,
             ],
           ),
         ),
@@ -115,7 +115,7 @@ class BalanceBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(34),
+      borderRadius: AppTheme.cardRadiusBigger,
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -131,73 +131,6 @@ class BalanceBackground extends StatelessWidget {
           children: [
             iconOnchain(),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class BackgroundGradientOrange extends StatelessWidget {
-  const BackgroundGradientOrange({Key? key}) : super(key: key);
-
-  Widget circleBottomLeft() {
-    return Positioned(
-      left: -40,
-      bottom: 0,
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment(0.9, -0.2),
-            colors: [
-              Color(0x00FFFFFF),
-              Color(0x4DFFFFFF),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(1),
-      decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusBig,
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: [0, 0.25, 0.75, 1],
-          colors: [
-            Color(0x99FFFFFF),
-            AppTheme.colorPrimaryGradient,
-            AppTheme.colorBitcoin,
-            Color(0x99FFFFFF),
-          ],
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusBig,
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              colors: [
-                AppTheme.colorBitcoin,
-                AppTheme.colorPrimaryGradient,
-              ],
-            ),
-          ),
-          child: Stack(
-            children: [
-
-            ],
-          ),
         ),
       ),
     );

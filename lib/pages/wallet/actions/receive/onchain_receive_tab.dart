@@ -44,7 +44,6 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-
               Text(
                 "On-Chain Bitcoinaddress",
                 style: Theme.of(context).textTheme.headline5,

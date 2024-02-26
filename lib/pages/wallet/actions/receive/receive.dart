@@ -5,6 +5,11 @@ import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
 import 'package:flutter/material.dart';
 
+enum ReceiveType {
+  Lightning,
+  OnChain,
+}
+
 class Receive extends StatefulWidget {
   const Receive({super.key});
 
@@ -16,11 +21,11 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
   late TabController tabController;
   late String qrCodeDataString = "";
 
+  ReceiveType receiveType = ReceiveType.Lightning;
+
   FocusNode myFocusNode = FocusNode();
   late TextEditingController amountController;
-
-
-
+  TextEditingController messageController = TextEditingController();
 
   bool createdInvoice = false;
 
@@ -34,8 +39,8 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
   // A GlobalKey is used to identify this widget in the widget tree, used to access and modify its properties
   GlobalKey globalKeyQR = GlobalKey();
 
-  void getInvoice(int amount) async {
-    RestResponse callback = await addInvoice(amount);
+  void getInvoice(int amount, String? memo) async {
+    RestResponse callback = await addInvoice(amount, memo ?? "");
     print("Response" + callback.data.toString());
     InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
     print("Invoice" + invoiceModel.payment_request.toString());
@@ -45,14 +50,24 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
     });
   }
 
+  void switchReceiveType(){
+    setState(() {
+      switch (receiveType) {
+        case ReceiveType.Lightning:
+          receiveType = ReceiveType.OnChain;
+        case ReceiveType.OnChain:
+          receiveType = ReceiveType.Lightning;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     amountController = TextEditingController();
     amountController.text = "0.001";
     //probably need to check if other keysend invoice is still available and if not create a new one make the logic unflawed
-    getInvoice(0);
-    tabController = TabController(length: 2, vsync: this);
+    getInvoice(0, "");
   }
 
   @override

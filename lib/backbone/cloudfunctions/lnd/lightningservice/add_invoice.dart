@@ -8,7 +8,7 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-Future<RestResponse> addInvoice(int amount) async {
+Future<RestResponse> addInvoice(int amount, String? memo) async {
   const String restHost = 'mybitnet.com:8443'; // Update the host as needed
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   // Make the GET request
@@ -26,7 +26,7 @@ Future<RestResponse> addInvoice(int amount) async {
     'Grpc-Metadata-macaroon': macaroon,
   };
   final Map<String, dynamic> data = {
-    'memo': "Hello World",
+    'memo': memo ?? "",
     'value': amount,
     'expiry': 1000,
     'fallback_addr': 'bc1qtfmrfu3n5vx8jgep5vw2s7z68u0aq40c24e2ps',

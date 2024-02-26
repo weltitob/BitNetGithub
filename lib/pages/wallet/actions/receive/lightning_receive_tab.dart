@@ -34,6 +34,10 @@ class LightningReceiveTab extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Text(
+                "Lightning",
+                style: Theme.of(context).textTheme.headline5,
+              ),
 
               RoundedButtonWidget(
                   size: AppTheme.cardPadding * 1.5,

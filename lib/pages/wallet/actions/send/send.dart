@@ -122,12 +122,11 @@ class SendController extends State<Send> {
         hasReceiver = true;
         bitcoinReceiverAdress = onchainAdress;
         moneyTextFieldIsEnabled = true;
-
       });
     }
     dynamic fundedPsbtResponse = await estimateFee(AppTheme.targetConf.toString());
     final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
-    double sat_per_vbyte = double.parse(sat_per_kw) / 4;
+    double sat_per_vbyte = double.parse(sat_per_kw); // / 4
     feesDouble = sat_per_vbyte;
     print("Estimated fees: $feesDouble");
     setState(() {});
