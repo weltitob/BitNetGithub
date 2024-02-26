@@ -3,13 +3,14 @@ import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
+import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 
 
 class CreateInvoice extends StatelessWidget {
-  final SendController controller;
-  const CreateInvoice({super.key, required this.controller});
+  final ReceiveController controller;
+  const CreateInvoice({super.key, required this.controller,});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,11 @@ class CreateInvoice extends StatelessWidget {
             left: AppTheme.cardPadding,
             right: AppTheme.cardPadding,
           ),
-          child: AmountWidget(controller: controller,),
+          child: AmountWidget(
+            enabled: true,
+            amountController: controller.amountController,
+            focusNode: controller.myFocusNode,
+          ),
         ),
         SizedBox(height: AppTheme.cardPadding * 1,),
         Container(
@@ -46,7 +51,9 @@ class CreateInvoice extends StatelessWidget {
         LongButtonWidget(
             title: "Generate Invoice",
             customWidth: AppTheme.cardPadding * 12,
-            onTap: (){})
+            onTap: (){
+              controller.getInvoice((double.parse(controller.amountController.text) * 100000000).toInt());
+            })
       ],
     );
   }

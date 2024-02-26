@@ -4,6 +4,7 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/models/user/userwallet.dart';
+import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,7 +13,8 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
 class OnChainReceiveTab extends StatefulWidget {
-  const OnChainReceiveTab({super.key});
+  final ReceiveController controller;
+  const OnChainReceiveTab({super.key, required this.controller});
 
   @override
   State<OnChainReceiveTab> createState() => _OnChainReceiveTabState();

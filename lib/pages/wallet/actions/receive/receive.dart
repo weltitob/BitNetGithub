@@ -16,6 +16,11 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
   late TabController tabController;
   late String qrCodeDataString = "";
 
+  FocusNode myFocusNode = FocusNode();
+  late TextEditingController amountController;
+
+
+
 
   bool createdInvoice = false;
 
@@ -43,6 +48,8 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
   @override
   void initState() {
     super.initState();
+    amountController = TextEditingController();
+    amountController.text = "0.001";
     //probably need to check if other keysend invoice is still available and if not create a new one make the logic unflawed
     getInvoice(0);
     tabController = TabController(length: 2, vsync: this);

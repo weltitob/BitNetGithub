@@ -6,6 +6,7 @@ import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/models/user/userwallet.dart';
+import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -128,8 +129,7 @@ class LightningReceiveTab extends StatelessWidget {
           const SizedBox(
             height: AppTheme.cardPadding * 1.5,
           ),
-          !controller.createdInvoice
-              ? Row(
+          if (!controller.createdInvoice) Row(
                   children: [
                     Expanded(child: MyDivider()),
                     SizedBox(
@@ -146,15 +146,14 @@ class LightningReceiveTab extends StatelessWidget {
                         color: AppTheme.white90,
                       ),
                       onTap: () {
-                        // Share the wallet address
-                        print("bottom sheet der invoice createn lässt...");
-                        //createdInvoice = true;
                         showModalBottomSheetWidget(
                           height: MediaQuery.of(context).size.height * 0.6,
-
-                          child: Container(),
-                          //CreateInvoice(controller: null,),
-                          context: context, title: '', goBack: false,
+                          child: CreateInvoice(
+                            controller: controller,
+                          ),
+                          context: context,
+                          title: '',
+                          goBack: false,
                         );
                       },
                     ),
@@ -163,8 +162,7 @@ class LightningReceiveTab extends StatelessWidget {
                     ),
                     Expanded(child: MyDivider()),
                   ],
-                )
-              : Row(
+                ) else Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     // Add a button to copy the wallet address to the clipboard

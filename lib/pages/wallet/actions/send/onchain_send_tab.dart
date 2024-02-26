@@ -1,19 +1,17 @@
+import 'package:bitnet/backbone/helper/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
-
-import 'package:avatar_glow/avatar_glow.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/amountwidget.dart';
-import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:matrix/matrix.dart';
+import 'package:provider/provider.dart';
 
 class OnChainSendTab extends StatelessWidget {
   final SendController controller;
@@ -179,36 +177,34 @@ class OnChainSendTab extends StatelessWidget {
   }
 
   Widget bitcoinWidget(BuildContext context) {
-    //final userWallet = Provider.of<UserWallet>(context);
-    final userWallet = UserWallet(
-        walletAddress: "fakewallet",
-        walletType: "walletType",
-        walletBalance: "0",
-        privateKey: "privateKey",
-        userdid: "userdid");
+    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    currency = currency ?? "USD";
+
+    final bitcoinPrice = chartLine?.price;
+    final currencyEquivalent = bitcoinPrice != null ? (controller.feesDouble / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     Text(
-          //       "Wert eingeben",
-          //       style: Theme.of(context).textTheme.titleLarge,
-          //     ),
-          //     Text("${userWallet.walletBalance}BTC verfügbar",
-          //         style: Theme.of(context).textTheme.bodyMedium),
-          //   ],
-          // ),
-          // SizedBox(
-          //   height: AppTheme.cardPadding * 1.5,
-          // ),
           AmountWidget(
-            controller: controller,
+            enabled: controller.moneyTextFieldIsEnabled,
+            amountController: controller.moneyController,
+            focusNode: controller.myFocusNodeMoney,
           ),
+          const SizedBox(
+            height: AppTheme.cardPadding,
+          ),
+          Container(
+            child: Text(
+              "Fees ≈ ${currencyEquivalent}${getCurrency(currency)}",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          )
         ],
       ),
     );
@@ -262,154 +258,3 @@ class OnChainSendTab extends StatelessWidget {
     );
   }
 }
-
-//
-// Widget buildFeesChooser(BuildContext context) {
-//   // create a container with top and bottom padding
-//   return Column(
-//     children: [
-//       Container(
-//         padding: const EdgeInsets.only(top: 15.0, bottom: 10),
-//         // create a row with evenly distributed children buttons
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//           children: <Widget>[
-//             // create a button for "Niedrig" fees
-//             glassButtonFees(
-//               context,
-//               "Niedrig",
-//             ),
-//             // create a button for "Mittel" fees
-//             glassButtonFees(
-//               context,
-//               "Mittel",
-//             ),
-//             // create a button for "Hoch" fees
-//             glassButtonFees(
-//               context,
-//               "Hoch",
-//             ),
-//           ],
-//         ),
-//       ),
-//       SizedBox(
-//         height: AppTheme.elementSpacing,
-//       ),
-//       controller.isLoadingFees // if exchange rate is still loading
-//           ? dotProgress(context) // show a loading indicator
-//           : Text(
-//         "≈ ${controller.feesInEur.toStringAsFixed(2)}€", // show the converted value of Bitcoin to Euro with 2 decimal places
-//         style: Theme.of(context)
-//             .textTheme
-//             .bodyLarge, // use the bodyLarge text theme style from the current theme
-//       )
-//     ],
-//   );
-// }
-//
-// Widget glassButtonFees(BuildContext context, String fees) {
-//   // defines a function that takes a string parameter called "fees"
-//   return Padding(
-//     padding:
-//     const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
-//     child:
-//     fees == controller.feesSelected // if the fees parameter equals the selected fees
-//         ? GlassContainer(
-//       // render a button with glassmorphism effect
-//       borderThickness: 1.5, // remove border if not active
-//       blur: 50,
-//       opacity: 0.1,
-//       borderRadius: AppTheme.cardRadiusCircular,
-//       child: TextButton(
-//         style: TextButton.styleFrom(
-//             padding: EdgeInsets.zero,
-//             minimumSize: const Size(50, 30),
-//             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-//             alignment: Alignment.centerLeft),
-//         onPressed: () {},
-//         child: Container(
-//           padding: const EdgeInsets.symmetric(
-//             vertical: AppTheme.elementSpacing * 0.5,
-//             horizontal: AppTheme.elementSpacing,
-//           ),
-//           child: Text(fees,
-//               style: Theme.of(context)
-//                   .textTheme
-//                   .titleMedium!
-//                   .copyWith(color: AppTheme.white90)),
-//         ),
-//       ),
-//     )
-//         : TextButton(
-//       // if the fees parameter is not selected
-//       style: TextButton.styleFrom(
-//           padding: EdgeInsets.zero,
-//           minimumSize: const Size(50, 20),
-//           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-//           alignment: Alignment.centerLeft),
-//       onPressed: () {
-//
-//       },
-//       child: Container(
-//         padding: const EdgeInsets.symmetric(
-//           vertical: AppTheme.elementSpacing * 0.5,
-//           horizontal: AppTheme.elementSpacing,
-//         ),
-//         child: Text(
-//           fees,
-//           style: Theme.of(context)
-//               .textTheme
-//               .titleMedium!
-//               .copyWith(color: AppTheme.white60),
-//         ),
-//       ),
-//     ),
-//   );
-// }
-//
-// Widget onChainFees(BuildContext context){
-//   return  Padding(
-//     padding: const EdgeInsets.symmetric(
-//         horizontal: AppTheme.cardPadding),
-//     child: Column(
-//       crossAxisAlignment: CrossAxisAlignment.center,
-//       children: [
-//         // A Row widget with a Text widget, a SizedBox widget, and a GestureDetector widget
-//         Row(
-//           children: [
-//             Text(
-//               "Gebühren",
-//               style: Theme.of(context).textTheme.headline6,
-//             ),
-//             SizedBox(
-//               width: AppTheme.elementSpacing / 2,
-//             ),
-//             GestureDetector(
-//               onTap: () {
-//                 // Displays a snackbar message when tapped
-//                 displaySnackbar(
-//                     context,
-//                     "Die Gebührenhöhe bestimmt über "
-//                         "die Transaktionsgeschwindigkeit. "
-//                         "Wenn du hohe Gebühren zahlst wird deine "
-//                         "Transaktion schneller bei dem Empfänger ankommen");
-//               },
-//               child: Icon(
-//                 Icons.info_outline_rounded,
-//                 color: AppTheme.white90,
-//               ),
-//             ),
-//           ],
-//         ),
-//         SizedBox(
-//           height: AppTheme.cardPadding,
-//         ),
-//         // A function that returns a widget for choosing fees
-//
-//         SizedBox(
-//           height: AppTheme.cardPadding * 2,
-//         ),
-//       ],
-//     ),
-//   );
-// }

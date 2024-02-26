@@ -5,7 +5,6 @@ import 'package:bitnet/pages/wallet/actions/send/lightning_send_tab.dart';
 import 'package:bitnet/pages/wallet/actions/send/onchain_send_tab.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -19,9 +18,6 @@ class SendBTCScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userWallet = UserWallet(walletAddress: "fakewallet",
-        walletType: "walletType", walletBalance: "0", privateKey: "privateKey", userdid: "userdid");
-
     // Builds the screen scaffold
     return bitnetScaffold(
       extendBodyBehindAppBar: true,

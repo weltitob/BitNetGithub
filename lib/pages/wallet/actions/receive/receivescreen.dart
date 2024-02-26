@@ -23,7 +23,6 @@ class ReceiveScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       //extendBodyBehindAppBar: true,
       // The screen background color
-      backgroundColor: AppTheme.colorBackground,
       appBar: bitnetAppBar(
         context: context,
         text: "Bitcoin empfangen",
@@ -52,53 +51,12 @@ class ReceiveScreen extends StatelessWidget {
             SizedBox(
               height: AppTheme.cardPadding * 2.5,
             ),
-            // DefaultTabController(
-            //   length: 2,
-            //   initialIndex: 0,
-            //   child: ButtonsTabBar(
-            //     contentPadding: const EdgeInsets.symmetric(
-            //       vertical: AppTheme.elementSpacing * 0.5,
-            //       horizontal: AppTheme.elementSpacing,
-            //     ),
-            //     borderWidth: 1.5,
-            //     unselectedBorderColor: Colors.transparent,
-            //     borderColor: Colors.white.withOpacity(0.2),
-            //     radius: 100,
-            //     physics: ClampingScrollPhysics(),
-            //     controller: controller.tabController,
-            //     // give the indicator a decoration (color and border radius)
-            //     decoration: BoxDecoration(
-            //       color: Colors.white.withOpacity(0.1),
-            //       borderRadius: BorderRadius.all(Radius.circular(50.0)),
-            //     ),
-            //     unselectedDecoration: BoxDecoration(
-            //       color: Colors.transparent,
-            //       borderRadius: BorderRadius.all(Radius.circular(50.0)),
-            //     ),
-            //     tabs: [
-            //       Tab(
-            //         child: Text(
-            //           "Lightning",
-            //           style: AppTheme.textTheme.bodyMedium!.copyWith(
-            //               color: AppTheme.white80, fontWeight: FontWeight.bold),
-            //         ),
-            //       ),
-            //       Tab(
-            //         child: Text(
-            //           "On Chain",
-            //           style: AppTheme.textTheme.bodyMedium!.copyWith(
-            //               color: AppTheme.white80, fontWeight: FontWeight.bold),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             Expanded(
               child: TabBarView(
                 controller: controller.tabController,
                 children: [
                   LightningReceiveTab(controller: controller,),
-                  OnChainReceiveTab(),
+                  OnChainReceiveTab(controller: controller,),
                 ],
               ),
             ),

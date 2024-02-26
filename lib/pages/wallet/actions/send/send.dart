@@ -1,8 +1,10 @@
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/fundpsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtransaction.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
 import 'package:bitnet/models/bitcoin/walletkit/finalizepsbtresponse.dart';
@@ -54,7 +56,7 @@ class SendController extends State<Send> {
   late SendType sendType;
   String feesSelected = "Niedrig";
   String description = "";
-  late double feesInEur;
+  late double feesDouble;
   TextEditingController moneyController =
   TextEditingController(); // the controller for the amount text field
   bool isFinished = false; // a flag indicating whether the send process is finished
@@ -63,7 +65,8 @@ class SendController extends State<Send> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>(); // a key for the form widget
   String bitcoinReceiverAdress = ""; // the Bitcoin receiver address
 
-  void _processParameters(BuildContext context) {
+
+  void processParameters(BuildContext context) {
     Logs().w("Process parameters for sendscreen called");
     // Access the query parameters
     Map<String, String> queryParams = VRouter.of(context).queryParameters;
@@ -79,6 +82,7 @@ class SendController extends State<Send> {
     }
     else if(walletAdress != null){
       Logs().w("Walletadress: $walletAdress");
+
       giveValuesToOnchainSend(walletAdress!);
     }
     else{
@@ -97,6 +101,7 @@ class SendController extends State<Send> {
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
     bitcoinReceiverAdressController = TextEditingController(); // the controller for the Bitcoin receiver address text field
+    processParameters(context);
   }
 
   void resetValues(){
@@ -110,15 +115,22 @@ class SendController extends State<Send> {
     });
   }
 
-  void giveValuesToOnchainSend(String onchainAdress) {
+  void giveValuesToOnchainSend(String onchainAdress) async {
     {
       setState(() {
         sendType = SendType.OnChain;
         hasReceiver = true;
         bitcoinReceiverAdress = onchainAdress;
         moneyTextFieldIsEnabled = true;
+
       });
     }
+    dynamic fundedPsbtResponse = await estimateFee(AppTheme.targetConf.toString());
+    final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
+    double sat_per_vbyte = double.parse(sat_per_kw) / 4;
+    feesDouble = sat_per_vbyte;
+    print("Estimated fees: $feesDouble");
+    setState(() {});
   }
 
   void giveValuesToInvoice(String invoiceString){
@@ -176,13 +188,13 @@ class SendController extends State<Send> {
       feesSelected = fees;
       switch (fees) {
         case "Niedrig":
-          feesInEur = feesInEur_low;
+          feesDouble = feesInEur_low;
           break;
         case "Mittel":
-          feesInEur = feesInEur_medium;
+          feesDouble = feesInEur_medium;
           break;
         case "Hoch":
-          feesInEur = feesInEur_high;
+          feesDouble = feesInEur_high;
           break;
       }
     });
@@ -230,7 +242,7 @@ class SendController extends State<Send> {
                     }
                 ),
               ),
-              targetConf: 4, //The number of blocks to aim for when confirming the transaction.
+              targetConf: AppTheme.targetConf, //The number of blocks to aim for when confirming the transaction.
               account: "",
               minConfs: 4, //going for safety and not speed because for speed oyu would use the lightning network
               spendUnconfirmed: false, //Whether unconfirmed outputs should be used as inputs for the transaction.
@@ -243,6 +255,7 @@ class SendController extends State<Send> {
           FinalizePsbtResponse finalizedPsbtResponse = FinalizePsbtResponse.fromJson(finalizedPsbtRestResponse.data);
 
           dynamic publishTransactionRestResponse = await publishTransaction(finalizedPsbtResponse.rawFinalTx, ""); //txhex and label
+
 
           setState(() {
             isFinished = true;
@@ -276,7 +289,6 @@ class SendController extends State<Send> {
 
   @override
   void dispose() {
-    // Clean up the focus node when the Form is disposed.
     myFocusNodeAdress.dispose();
     myFocusNodeMoney.dispose();
     moneyController.dispose();
@@ -285,7 +297,6 @@ class SendController extends State<Send> {
 
   @override
   Widget build(BuildContext context) {
-    _processParameters(context);
     return hasReceiver ?
       SendBTCScreen(controller: this) : SearchReceiver(controller: this);
   }

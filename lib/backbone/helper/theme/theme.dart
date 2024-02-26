@@ -14,6 +14,8 @@ abstract class AppTheme {
   static String _defaultHomeserver = 'matrix.org';
   static String get defaultHomeserver => _defaultHomeserver;
 
+  static dynamic targetConf = 4;
+
   static double bubbleSizeFactor = 0.8;
   static double fontSizeFactor = 1;
   static const double messageFontSize = 15;
