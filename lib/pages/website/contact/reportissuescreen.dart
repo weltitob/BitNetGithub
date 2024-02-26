@@ -3,12 +3,12 @@ import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/website/issuereport.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
@@ -34,10 +34,10 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
           useremail: mail, issue: issueController.text);
       // Push issuereport object to Firebase Realtime Database
       await issueCollection.doc(uid).set(issuereport.toMap());
-      displaySnackbar(context, "Deine Fehlermeldung wurde weitergeleitet");
+      showOverlay(context, "Deine Fehlermeldung wurde weitergeleitet");
       Navigator.of(context).pop();
     } else {
-      displaySnackbar(context, "Bitte geben Sie erst einen Fehlertext an");
+      showOverlay(context, "Bitte geben Sie erst einen Fehlertext an");
     }
   }
 

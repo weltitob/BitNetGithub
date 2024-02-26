@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:uuid/uuid.dart';
 
 enum MediaType { image, audio, camera, document, pdf, text, link, sticker, location, wallet }
@@ -179,7 +178,6 @@ class NumericalRangeFormatter extends TextInputFormatter {
     }
     // If the new value is greater than the maximum allowed, display a snackbar and set the value to the old value
     else if (double.parse(newValue.text) > max) {
-      displaySnackbar(context, "You dont have enough Bitcoin");
       return oldValue;
     }
     // Otherwise, return the new value without any modifications

@@ -4,7 +4,7 @@ import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
@@ -185,7 +185,7 @@ class LightningSendTab extends StatelessWidget {
       onTap: () async {
         await Clipboard.setData(
             ClipboardData(text: controller.bitcoinReceiverAdress));
-        displaySnackbar(context, "Wallet-Adresse in Zwischenablage kopiert");
+        showOverlay(context, "Wallet-Adresse in Zwischenablage kopiert");
       },
       child: Row(
         children: [

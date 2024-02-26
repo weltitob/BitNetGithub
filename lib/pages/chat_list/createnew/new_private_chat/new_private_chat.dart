@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/matrix_helpers/url_launcher.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
-import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/chat_list/createnew/new_private_chat/new_private_chat_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -68,7 +68,7 @@ class NewPrivateChatController extends State<NewPrivateChat> {
 
       //hier stattdessen auf eigenen qrscreen mit notwenigen infos forwarden
       if (info.version.sdkInt < 21) {
-        displaySnackbar(
+        showOverlay(
           context,
           L10n.of(context)!.unsupportedAndroidVersionLong,
         );

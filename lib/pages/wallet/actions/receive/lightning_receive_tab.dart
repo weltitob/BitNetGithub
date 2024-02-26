@@ -4,7 +4,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
-import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
@@ -104,7 +104,7 @@ class LightningReceiveTab extends StatelessWidget {
                   await Clipboard.setData(
                       ClipboardData(text: controller.qrCodeDataString));
                   // Display a snackbar to indicate that the wallet address has been copied
-                  displaySnackbar(
+                  showOverlay(
                       context, "Wallet-Adresse in Zwischenablage kopiert");
                 },
                 child: Icon(

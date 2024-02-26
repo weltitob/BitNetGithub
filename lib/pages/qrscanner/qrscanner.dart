@@ -2,7 +2,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/url_launcher.dart';
-import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner_view.dart';
@@ -147,7 +147,7 @@ class QRScannerController extends State<QrScanner> {
     if(isValid){
       VRouter.of(context).to("/wallet/send");
     } else {
-      displaySnackbar(context, "Der eingescannte QR-Code hat kein zugelassenes Format");
+      showOverlay(context, "Der eingescannte QR-Code hat kein zugelassenes Format");
     }
   }
 

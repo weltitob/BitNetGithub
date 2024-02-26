@@ -1,12 +1,12 @@
 import 'package:bitnet/backbone/helper/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
 import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/services.dart';
@@ -156,7 +156,7 @@ class OnChainSendTab extends StatelessWidget {
       onTap: () async {
         await Clipboard.setData(
             ClipboardData(text: controller.bitcoinReceiverAdress));
-        displaySnackbar(context, "Wallet-Adresse in Zwischenablage kopiert");
+        showOverlay(context, "Wallet-Adresse in Zwischenablage kopiert");
       },
       child: Row(
         children: [

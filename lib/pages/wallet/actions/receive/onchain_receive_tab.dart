@@ -2,7 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
-import 'package:bitnet/components/dialogsandsheets/snackbars/snackbar.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +109,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
                   await Clipboard.setData(
                       ClipboardData(text: userWallet.walletAddress));
                   // Display a snackbar to indicate that the wallet address has been copied
-                  displaySnackbar(
+                  showOverlay(
                       context, "Wallet-Adresse in Zwischenablage kopiert");
                 },
                 child: Icon(
@@ -150,7 +150,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
                   await Clipboard.setData(
                       ClipboardData(text: userWallet.walletAddress));
                   // Display a snackbar to indicate that the wallet address has been copied
-                  displaySnackbar(
+                  showOverlay(
                       context, "Wallet-Adresse in Zwischenablage kopiert");
                 },
               ),
