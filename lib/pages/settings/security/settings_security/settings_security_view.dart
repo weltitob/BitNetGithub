@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:flutter/material.dart';
 

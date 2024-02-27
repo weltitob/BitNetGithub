@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/matrix_helpers/other/stream_extension.dar
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/chat_list/chat_list.dart';
 import 'package:bitnet/components/items/chat_list_item.dart';
 import 'package:bitnet/pages/chat_list/chat_spaces_list.dart';
@@ -115,9 +116,9 @@ class ChatListViewBody extends StatelessWidget {
                                           avatar: roomSearchResult
                                               .chunk[i].avatarUrl,
                                           onPressed: () =>
-                                              showAdaptiveBottomSheet(
+                                              BitNetBottomSheet(
                                             context: context,
-                                            builder: (c) =>
+                                            child:
                                                 PublicRoomBottomSheet(
                                               roomAlias: roomSearchResult
                                                       .chunk[i]
@@ -164,9 +165,9 @@ class ChatListViewBody extends StatelessWidget {
                                           avatar: userSearchResult
                                               .results[i].avatarUrl,
                                           onPressed: () =>
-                                              showAdaptiveBottomSheet(
+                                              BitNetBottomSheet(
                                             context: context,
-                                            builder: (c) => ProfileBottomSheet(
+                                            child:  ProfileBottomSheet(
                                               userId: userSearchResult
                                                   .results[i].userId,
                                               outerContext: context,

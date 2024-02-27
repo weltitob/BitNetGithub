@@ -1,6 +1,7 @@
 
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_locals.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/user_bottom_sheet/user_bottom_sheet.dart';
 import 'package:bitnet/pages/chat_list/chat/chat.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
@@ -26,9 +27,9 @@ class ChatAppBarTitle extends StatelessWidget {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: directChatMatrixID != null
-          ? () => showAdaptiveBottomSheet(
+          ? () => BitNetBottomSheet(
                 context: context,
-                builder: (c) => UserBottomSheet(
+                child: UserBottomSheet(
                   user: room
                       .unsafeGetUserFromMemoryOrFallback(directChatMatrixID),
                   outerContext: context,

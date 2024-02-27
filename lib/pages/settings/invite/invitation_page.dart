@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -50,6 +51,7 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
       appBar: bitnetAppBar(
           text: L10n.of(context)!.inviteContact,
           context: context,
+          buttonType: ButtonType.transparent,
           onTap: () {
             print("pressed");
             Provider.of<SettingsProvider>(context, listen: false)

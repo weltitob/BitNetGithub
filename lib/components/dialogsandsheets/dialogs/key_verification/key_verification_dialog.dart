@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,9 +15,9 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom
 import 'package:bitnet/components/container/avatar.dart';
 
 class KeyVerificationDialog extends StatefulWidget {
-  Future<void> show(BuildContext context) => showAdaptiveBottomSheet(
+  Future<void> show(BuildContext context) => BitNetBottomSheet(
         context: context,
-        builder: (context) => this,
+        child: this,
         isDismissible: false,
       );
 

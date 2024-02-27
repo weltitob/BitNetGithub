@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/profile_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/public_room_bottom_sheet.dart';
@@ -165,9 +166,9 @@ class UrlLauncher {
         }
         return;
       } else {
-        await showAdaptiveBottomSheet(
+        await BitNetBottomSheet(
           context: context,
-          builder: (c) => PublicRoomBottomSheet(
+          child: PublicRoomBottomSheet(
             roomAlias: identityParts.primaryIdentifier,
             outerContext: context,
           ),
@@ -205,9 +206,9 @@ class UrlLauncher {
         }
       }
     } else if (identityParts.primaryIdentifier.sigil == '@') {
-      await showAdaptiveBottomSheet(
+      await BitNetBottomSheet(
         context: context,
-        builder: (c) => ProfileBottomSheet(
+        child: ProfileBottomSheet(
           userId: identityParts.primaryIdentifier,
           outerContext: context,
         ),

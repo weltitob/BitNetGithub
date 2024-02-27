@@ -3,6 +3,7 @@ import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/user/userwallet.dart';
@@ -150,14 +151,13 @@ class LightningReceiveTab extends StatelessWidget {
                         color: AppTheme.white90,
                       ),
                       onTap: () {
-                        showModalBottomSheetWidget(
+                        BitNetBottomSheet(
                           height: MediaQuery.of(context).size.height * 0.6,
                           child: CreateInvoice(
                             controller: controller,
                           ),
                           context: context,
                           title: '',
-                          goBack: false,
                         );
                       },
                     ),

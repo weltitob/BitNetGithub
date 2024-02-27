@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:bitnet/models/settings/settingsmodel.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
@@ -119,6 +120,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       appBar: bitnetAppBar(
           text: L10n.of(context)!.security,
           context: context,
+          buttonType: ButtonType.transparent,
           onTap: () {
             print("pressed");
             Provider.of<SettingsProvider>(context, listen: false)

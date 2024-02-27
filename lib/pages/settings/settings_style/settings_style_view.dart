@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/colorpicker.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class SettingsStyleView extends StatelessWidget {
       context: context,
       appBar: bitnetAppBar(
         text: L10n.of(context)!.changeTheme,
+        buttonType: ButtonType.transparent,
         context: context,
         onTap: () {
           print("pressed");
