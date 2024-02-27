@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/settings_bottom_sheet/settings_bottom_sheet.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -10,6 +11,7 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dar
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/profile/profile.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
@@ -281,7 +283,36 @@ class ProfileView extends StatelessWidget {
               buttonType: ButtonType.transparent,
               iconData: Icons.brightness_low_rounded,
               onTap: () {
-                showSettingsBottomSheet(context: context);
+                BitNetBottomSheet(
+                    context: context,
+                    borderRadius: AppTheme.borderRadiusBig,
+                    child: ChangeNotifierProvider(
+                      create: (context) => SettingsProvider(),
+                      child: StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setModalState) {
+                          return Container(
+                            // Set the desired height
+                            height: MediaQuery.of(context).size.height * 0.8, // 80% of screen height
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).canvasColor, // Add a background color here
+                              borderRadius: new BorderRadius.only(
+                                topLeft: AppTheme.cornerRadiusBig,
+                                topRight: AppTheme.cornerRadiusBig,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: new BorderRadius.only(
+                                topLeft: AppTheme.cornerRadiusBig,
+                                topRight: AppTheme.cornerRadiusBig,
+                              ),
+                              child: const Settings(),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                );
+                //showSettingsBottomSheet(context: context);
               },
             )),
       ),
@@ -317,8 +348,7 @@ class ProfileView extends StatelessWidget {
   }
 
   void onQRButtonPressed(BuildContext context) {
-    showModalBottomSheetWidget(
-        goBack: false,
+    BitNetBottomSheet(
         context: context,
         height: 450.0,
         title: "Share Profile",
@@ -377,7 +407,7 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget buildCenterWidget(BuildContext context) {
-    final userData = Provider.of<UserData>(context, listen: false);
+   // final userData = Provider.of<UserData>(context, listen: false);
     // final userData = UserData(
     //     backgroundImageUrl: "backgroundImageUrl",
     //     isPrivate: true,
@@ -402,7 +432,7 @@ class ProfileView extends StatelessWidget {
 
     final String currentUserId = controller.profileId;
 
-    bool isProfileOwner = currentUserId == userData.did;
+    //bool isProfileOwner = currentUserId == userData.did;
 
     return Positioned(
       bottom: AppTheme.cardPadding,
@@ -447,7 +477,8 @@ class ProfileView extends StatelessWidget {
                         // color: Colors.greenAccent[700],
                         borderRadius: AppTheme.cardRadiusSmall),
                     child: Icon(
-                      isProfileOwner ? Icons.edit : Icons.person_add_rounded,
+                      Icons.edit,
+                     // isProfileOwner ? Icons.edit : Icons.person_add_rounded,
                       size: AppTheme.iconSize,
                       color: controller.currentview == 2
                           ? Theme.of(context).colorScheme.onSecondaryContainer

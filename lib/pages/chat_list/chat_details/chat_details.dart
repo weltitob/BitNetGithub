@@ -1,9 +1,10 @@
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_locals.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/chat_list/chat_details/chat_details_view.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/cupertino_widgets_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/widgets_bottom_sheet.dart';
+import 'package:bitnet/pages/matrix/matrix_pages/chat/widgets_bottom_sheet.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -58,15 +59,9 @@ class ChatDetailsController extends State<ChatDetails> {
     );
   }
 
-  void showWidgetsLocal(Room room) => [TargetPlatform.iOS, TargetPlatform.macOS]
-          .contains(Theme.of(context).platform)
-      ? showCupertinoModalPopup(
+  void showWidgetsLocal(Room room) => BitNetBottomSheet(
           context: context,
-          builder: (context) => CupertinoWidgetsBottomSheet(room: room),
-        )
-      : showAdaptiveBottomSheet(
-          context: context,
-          builder: (context) => WidgetsBottomSheet(room: room),
+          child: WidgetsBottomSheet(room: room),
         );
 
   dynamic leaveSpace(Room room) async {

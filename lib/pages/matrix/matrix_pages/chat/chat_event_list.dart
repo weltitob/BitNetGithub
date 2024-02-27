@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/filtered_timeline_extension.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/user_bottom_sheet/user_bottom_sheet.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/events/message.dart';
 import 'package:flutter/material.dart';
@@ -106,9 +107,9 @@ class ChatEventList extends StatelessWidget {
                     onSwipe: (direction) =>
                         controller.replyAction(replyTo: event),
                     onInfoTab: controller.showEventInfo,
-                    onAvatarTab: (Event event) => showAdaptiveBottomSheet(
+                    onAvatarTab: (Event event) => BitNetBottomSheet(
                       context: context,
-                      builder: (c) => UserBottomSheet(
+                      child:  UserBottomSheet(
                         user: event.senderFromMemoryOrFallback,
                         outerContext: context,
                         onMention: () => controller.sendController.text +=

@@ -13,6 +13,7 @@ class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget{ //
   final Widget? customTitle;
   final Widget? customLeading;
   final IconData? customIcon;
+  final ButtonType? buttonType;
 
   bitnetAppBar({
     required this.context,
@@ -23,6 +24,7 @@ class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget{ //
     this.customTitle,
     this.customLeading,
     this.customIcon,
+    this.buttonType = ButtonType.solid
   });
 
   @override
@@ -96,9 +98,11 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
                     top: AppTheme.elementSpacing,
                     bottom: AppTheme.elementSpacing),
                 child: RoundedButtonWidget(
-                  buttonType: ButtonType.solid,
+                  buttonType: widget.buttonType ?? ButtonType.solid,
                   iconData: widget.customIcon ?? Icons.arrow_back,
-                  onTap: () {  },
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
                 ),
               ),
             ),

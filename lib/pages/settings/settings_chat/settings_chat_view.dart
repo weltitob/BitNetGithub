@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:bitnet/components/buttons/client_chooser_button.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
@@ -32,6 +33,7 @@ class SettingsChatView extends StatelessWidget {
       appBar: bitnetAppBar(
           context: context,
           text: L10n.of(context)!.chat,
+          buttonType: ButtonType.transparent,
           onTap: () {
             Logs().w("pressed settings_chat_view.dart");
             Provider.of<SettingsProvider>(context, listen: false)

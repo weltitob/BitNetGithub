@@ -3,6 +3,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/backbone/helper/language.dart';
@@ -25,6 +26,7 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
       appBar: bitnetAppBar(
         text: 'Change Language',
         context: context,
+        buttonType: ButtonType.transparent,
         onTap: () {
           print("pressed");
         },

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bitnet/backbone/helper/matrix_helpers/other/date_time_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -11,9 +12,9 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom
 import 'package:bitnet/components/container/avatar.dart';
 
 extension EventInfoDialogExtension on Event {
-  void showInfoDialog(BuildContext context) => showAdaptiveBottomSheet(
+  void showInfoDialog(BuildContext context) => BitNetBottomSheet(
         context: context,
-        builder: (context) =>
+        child:
             EventInfoDialog(l10n: L10n.of(context)!, event: this),
       );
 }

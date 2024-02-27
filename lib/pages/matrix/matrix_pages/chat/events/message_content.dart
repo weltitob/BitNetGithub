@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/matrix_helpers/other/date_time_extension.
 import 'package:bitnet/backbone/helper/matrix_helpers/url_launcher.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/events/video_player.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -58,9 +59,9 @@ class MessageContent extends StatelessWidget {
     }
     event.requestKey();
     final sender = event.senderFromMemoryOrFallback;
-    await showAdaptiveBottomSheet(
+    await BitNetBottomSheet(
       context: context,
-      builder: (context) => Scaffold(
+      child: Scaffold(
         appBar: AppBar(
           leading: CloseButton(onPressed: Navigator.of(context).pop),
           title: Text(

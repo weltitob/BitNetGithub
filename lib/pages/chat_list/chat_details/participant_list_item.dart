@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/user_bottom_sheet/user_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
@@ -30,9 +31,9 @@ class ParticipantListItem extends StatelessWidget {
     return Opacity(
       opacity: user.membership == Membership.join ? 1 : 0.5,
       child: ListTile(
-        onTap: () => showAdaptiveBottomSheet(
+        onTap: () => BitNetBottomSheet(
           context: context,
-          builder: (c) => UserBottomSheet(
+          child: UserBottomSheet(
             user: user,
             outerContext: context,
           ),

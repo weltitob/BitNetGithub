@@ -8,6 +8,7 @@ import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matr
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_locals.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/error_reporter.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/chat_list/chat/chat_view.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/event_info_dialog.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/recording_dialog.dart';
@@ -536,9 +537,9 @@ class ChatController extends State<ChatPageWithRoom> {
   }
 
   void sendStickerAction() async {
-    final sticker = await showAdaptiveBottomSheet<ImagePackImageContent>(
+    final sticker = await BitNetBottomSheet<ImagePackImageContent>(
       context: context,
-      builder: (c) => StickerPickerDialog(room: room),
+      child: StickerPickerDialog(room: room),
     );
     if (sticker == null) return;
     final eventContent = <String, dynamic>{
