@@ -5,9 +5,10 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:matrix/matrix.dart';
 
 Stream<RestResponse> subscribeInvoicesStream() async* {
-  print("Called subscribeInvoices Stream!"); // The combined JSON response
+  Logs().w("Called subscribeInvoices Stream!"); // The combined JSON response
   const String restHost = 'mybitnet.com:8443'; // Update the host as needed
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
 
@@ -27,7 +28,7 @@ Stream<RestResponse> subscribeInvoicesStream() async* {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    print("Trying to make request to subscribeInvoices Stream!");
+    Logs().w("Trying to make request to subscribeInvoices Stream!");
     var request = http.Request('GET', Uri.parse('https://$restHost/v1/invoices/subscribe'))
       ..headers.addAll(headers)
       ..body = json.encode(data);
@@ -36,13 +37,19 @@ Stream<RestResponse> subscribeInvoicesStream() async* {
     var completeResponse = StringBuffer();
 
     await for (var chunk in streamedResponse.stream.transform(utf8.decoder)) {
-      print("CHUNK RECEIVED!");
+      Logs().d("CHUNK RECEIVED: INVOICE STREAM! Chunk: $chunk");
       completeResponse.write(chunk);
+      try {
+        var jsonResponse = json.decode(chunk.toString());
+        Logs().d("SUBSCRIBE INVOICE: $jsonResponse"); // The combined JSON response
+        yield RestResponse(statusCode: "success", message: "Successfully subscribed to invoices", data: jsonResponse);
+      } catch (e) {
+        Logs().w("Error: $e");
+        // If an error occurs, yield an error RestResponse. Adjust as necessary for your error handling.
+        yield RestResponse(statusCode: "error", message: "Error during network call: $e", data: {});
+      }
     }
 
-    // Here we have the complete response
-    var jsonResponse = json.decode(completeResponse.toString());
-    print(jsonResponse); // The combined JSON response
   } catch (e) {
     print('Error: $e');
     // If an error occurs, yield an error RestResponse. Adjust as necessary for your error handling.

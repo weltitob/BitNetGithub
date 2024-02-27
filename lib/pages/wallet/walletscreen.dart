@@ -63,7 +63,6 @@ class WalletScreen extends StatelessWidget {
                           children: [
                             Avatar(
                               size: AppTheme.cardPadding * 2,
-                              //image: controller.user.image,
                             ),
                             const SizedBox(width: AppTheme.elementSpacing),
                             Column(
@@ -104,13 +103,6 @@ class WalletScreen extends StatelessWidget {
                               (context, index, percentThresholdX, percentThresholdY) =>
                                   cards[index],
                         ),
-                        // Align(
-                        //   alignment: Alignment.centerRight,
-                        //   child: RoundedButtonWidget(
-                        //       buttonType: ButtonType.transparent,
-                        //       size: AppTheme.cardPadding * 2.25,
-                        //       iconData: FontAwesomeIcons.exchange, onTap: (){}),
-                        // ),
                       ],
                     ),
                   ),
@@ -152,15 +144,6 @@ class WalletScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        // circButtonWidget(
-                        //     context,
-                        //     "Erhalten",
-                        //     controller.compositionReceive,
-                        //     const BackgroundGradientOrange()),
-
-                        // circButtonWidget(
-                        //     context, "Senden", controller.compositionSend,
-                        //     const BackgroundGradientPurple()),
                         LongButtonWidget(
                             buttonType: ButtonType.solid,
                             title: "Send",

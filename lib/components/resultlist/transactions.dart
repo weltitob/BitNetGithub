@@ -29,14 +29,11 @@ class _TransactionsState extends State<Transactions>
   List<ReceivedInvoice> lightningInvoices = [];
   List<BitcoinTransaction> onchainTransactions = [];
 
-  StreamSubscription<List<ReceivedInvoice>>? _invoicesSubscription;
-  StreamSubscription<List<BitcoinTransaction>>? _transactionsSubscription;
 
   void getOnchainTransactions() async {
     Logs().w("Getting onchain transactions");
     RestResponse restBitcoinTransactions = await getTransactions();
-    BitcoinTransactionsList bitcoinTransactions =
-        BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
+    BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
     onchainTransactions = bitcoinTransactions.transactions;
     setState(() {});
   }
@@ -45,8 +42,7 @@ class _TransactionsState extends State<Transactions>
   void getLightningPayments() async {
     Logs().w("Getting lightning payments");
     RestResponse restLightningPayments = await listPayments();
-    LightningPaymentsList lightningPayments =
-        LightningPaymentsList.fromJson(restLightningPayments.data);
+    LightningPaymentsList lightningPayments = LightningPaymentsList.fromJson(restLightningPayments.data);
     this.lightningPayments = lightningPayments.payments;
     setState(() {});
   }
@@ -55,56 +51,14 @@ class _TransactionsState extends State<Transactions>
   void getLightningInvoices() async {
     Logs().w("Getting lightning invoices");
     RestResponse restLightningInvoices = await listInvoices();
-    ReceivedInvoicesList lightningInvoices =
-        ReceivedInvoicesList.fromJson(restLightningInvoices.data);
-    List<ReceivedInvoice> settledInvoices =
-        lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
+    ReceivedInvoicesList lightningInvoices = ReceivedInvoicesList.fromJson(restLightningInvoices.data);
+    List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
     this.lightningInvoices = settledInvoices;
     setState(() {});
   }
 
   // Subscriptions
 
-  void subscribeToInvoices() {
-    _invoicesSubscription = subscribeInvoicesStream().map((restResponse) {
-      ReceivedInvoicesList receivedInvoicesList =
-          ReceivedInvoicesList.fromJson(restResponse.data);
-
-      List<ReceivedInvoice> settledInvoices = receivedInvoicesList.invoices
-          .where((invoice) => invoice.settled)
-          .toList();
-
-      return settledInvoices;
-    }).listen((invoices) {
-      setState(() {
-        Logs().w("Updating lightning invoices...");
-        lightningInvoices = invoices;
-      });
-    }, onError: (error) {
-      // Handle any errors here
-      print("Error subscribing to invoices: $error");
-    });
-    setState(() {});
-  }
-
-  void subscribeToTransactions() {
-    // Assuming `subscribeTransactionsStream` is your method that returns a Stream<RestResponse>
-    _transactionsSubscription =
-        subscribeTransactionsStream().map((restResponse) {
-      // Parse the `restResponse.data` to extract `List<BitcoinTransaction>`
-      BitcoinTransactionsList bitcoinTransactionsList =
-          BitcoinTransactionsList.fromJson(restResponse.data);
-      return bitcoinTransactionsList.transactions;
-    }).listen((transactions) {
-      setState(() {
-        Logs().w("Updating onChain transactions...");
-        onchainTransactions = transactions;
-      });
-    }, onError: (error) {
-      Logs().e("Error subscribing to transactions: $error");
-    });
-    setState(() {});
-  }
 
   @override
   void initState() {
@@ -112,20 +66,11 @@ class _TransactionsState extends State<Transactions>
     setState(() {
       transactionsLoaded = false;
     });
-    subscribeInvoicesStream().listen((data) {
-      Logs().w("Invoice-stream received data: $data");
-    }, onError: (error) {
-      Logs().e("Received error for Invoice-stream: $error");
-    });
 
-    subscribeTransactionsStream().listen((data) {
-      Logs().w("Transactions-stream received data: $data");
-    }, onError: (error) {
-      Logs().e("Received error for Transactions-stream: $error");
-    });
     getOnchainTransactions();
     getLightningPayments();
     getLightningInvoices();
+
     setState(() {
       transactionsLoaded = true;
     });
@@ -133,8 +78,7 @@ class _TransactionsState extends State<Transactions>
 
   @override
   void dispose() {
-    _invoicesSubscription?.cancel();
-    _transactionsSubscription?.cancel();
+
     super.dispose();
   }
 

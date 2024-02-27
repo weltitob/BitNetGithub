@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 void showOverlay(BuildContext context, String? message) {
@@ -14,7 +15,7 @@ void showOverlay(BuildContext context, String? message) {
           CurvedAnimation(
             parent: AnimationController(
               duration: const Duration(milliseconds: 300),
-              vsync: Navigator.of(context),
+              vsync: Navigator.of(context), // This needs a TickerProvider
             )..forward(),
             curve: Curves.easeOut,
           ),
@@ -22,11 +23,19 @@ void showOverlay(BuildContext context, String? message) {
         child: Material(
           elevation: 10.0,
           child: Container(
-            padding: EdgeInsets.all(10),
-            color: Colors.green,
-            child: Text(
-              message ?? 'Transaction received!',
-              style: TextStyle(color: Colors.white),
+            height: 200, // Set the height to 200
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(AppTheme.borderRadiusBig),
+                bottomRight: Radius.circular(AppTheme.borderRadiusBig),
+              ),
+            ),
+            child: Center(
+              child: Text(
+                message ?? 'Transaction received!',
+                style: TextStyle(color: Colors.white, fontSize: 16), // Optional: Adjust font size as needed
+              ),
             ),
           ),
         ),
@@ -37,7 +46,7 @@ void showOverlay(BuildContext context, String? message) {
   // Add the overlay entry to the overlay
   Overlay.of(context)?.insert(overlayEntry);
 
-  // Remove the overlay entry after duration
+  // Remove the overlay entry after a duration
   Future.delayed(Duration(seconds: 3), () {
     overlayEntry.remove();
   });

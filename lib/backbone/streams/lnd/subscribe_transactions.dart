@@ -5,9 +5,10 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:matrix/matrix.dart';
 
 Stream<RestResponse> subscribeTransactionsStream() async* {
-  print("Called subscribeTransactions Stream!"); // The combined JSON response
+  Logs().w("Called subscribeTransactions Stream!"); // The combined JSON response
   const String restHost = 'mybitnet.com:8443'; // Update the host as needed
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
 
@@ -27,7 +28,7 @@ Stream<RestResponse> subscribeTransactionsStream() async* {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    print("Subscribe transactions request successful! Making request now"); // The combined JSON response
+    Logs().w("Subscribe transactions request successful! Making request now"); // The combined JSON response
     var request = http.Request('GET', Uri.parse('https://$restHost/v1/transactions/subscribe'))
       ..headers.addAll(headers)
       ..body = json.encode(data);
@@ -36,7 +37,7 @@ Stream<RestResponse> subscribeTransactionsStream() async* {
     var completeResponse = StringBuffer();
 
     await for (var chunk in streamedResponse.stream.transform(utf8.decoder)) {
-      print("CHUNK RECEIVED!");
+      print("CHUNK RECEIVED: TRANSACTION STREAM!");
       completeResponse.write(chunk);
     }
 

@@ -18,7 +18,6 @@ class Receive extends StatefulWidget {
 }
 
 class ReceiveController extends State<Receive> with SingleTickerProviderStateMixin {
-  late TabController tabController;
   late String qrCodeDataString = "";
 
   ReceiveType receiveType = ReceiveType.Lightning;
@@ -72,7 +71,6 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
 
   @override
   void dispose() {
-    tabController.dispose();
     super.dispose();
   }
 
