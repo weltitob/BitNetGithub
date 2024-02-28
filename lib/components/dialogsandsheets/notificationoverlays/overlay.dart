@@ -1,7 +1,14 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
 
-void showOverlay(BuildContext context, String? message) {
+void showOverlay(BuildContext context, String? message) async {
+  // Trigger a simple vibration
+  if (await Vibration.hasVibrator() ?? false) {
+  Vibration.vibrate();
+  }
+
   var overlayEntry = OverlayEntry(
     builder: (context) => Positioned(
       top: 0,
@@ -23,7 +30,7 @@ void showOverlay(BuildContext context, String? message) {
         child: Material(
           elevation: 10.0,
           child: Container(
-            height: 200, // Set the height to 200
+            height: 100, // Set the height to 200
             decoration: BoxDecoration(
               color: Colors.green,
               borderRadius: BorderRadius.only(
@@ -36,6 +43,92 @@ void showOverlay(BuildContext context, String? message) {
                 message ?? 'Transaction received!',
                 style: TextStyle(color: Colors.white, fontSize: 16), // Optional: Adjust font size as needed
               ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  // Add the overlay entry to the overlay
+  Overlay.of(context)?.insert(overlayEntry);
+
+  // Remove the overlay entry after a duration
+  Future.delayed(Duration(seconds: 3), () {
+    overlayEntry.remove();
+  });
+}
+
+
+void showOverlayTransaction(BuildContext context, String? message) async {
+  // Trigger a simple vibration
+  if (await Vibration.hasVibrator() ?? false) {
+    Vibration.vibrate();
+  }
+
+  var overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: Offset(0, -1),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: AnimationController(
+              duration: const Duration(milliseconds: 200),
+              vsync: Navigator.of(context), // This needs a TickerProvider
+            )..forward(),
+            curve: Curves.easeOut,
+          ),
+        ),
+        child: Material(
+          elevation: 10.0,
+          child: Container(
+            height: AppTheme.cardPadding * 8, // Set the height to 200
+            decoration: BoxDecoration(
+              color: AppTheme.successColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(AppTheme.borderRadiusBig),
+                bottomRight: Radius.circular(AppTheme.borderRadiusBig),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: AppTheme.cardPadding),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: AppTheme.cardPadding * 1.25,
+                    ),
+                    SizedBox(
+                      width: AppTheme.elementSpacing / 2,
+                    ),
+                    Text(
+                      message ?? 'Transaction received!',
+                      style: Theme.of(context).textTheme.titleLarge, // Optional: Adjust font size as needed
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppTheme.elementSpacing),
+                TransactionItem(
+                  type: TransactionType.lightning,
+                  context: context,
+                  receiver: 'person',
+                  txHash: 'whatever',
+                  amount: '',
+                  status: TransactionStatus.confirmed,
+                  direction: TransactionDirection.received,
+                  timestamp: 199099,
+                ),
+              ],
             ),
           ),
         ),

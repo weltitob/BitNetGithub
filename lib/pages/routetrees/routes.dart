@@ -153,6 +153,11 @@ class AppRoutes {
                   widget: const Send(),
                   buildTransition: _fadeTransition,
                 ),
+                VWidget(
+                  path: '/wallet/loop',
+                  widget: const Send(),
+                  buildTransition: _fadeTransition,
+                ),
               ],
             ),
             VWidget(

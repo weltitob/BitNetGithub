@@ -106,7 +106,19 @@ class WalletScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppTheme.cardPadding * 2),
+                  Center(
+                    child: LongButtonWidget(
+                      title: 'Loop',
+                      buttonType: ButtonType.transparent,
+                      customWidth: AppTheme.cardPadding * 4.5,
+                        customHeight: AppTheme.cardPadding * 1.5,
+                        leadingIcon: Icon(Icons.loop_rounded),
+                        onTap: (){
+                        VRouter.of(context).to("/wallet/loop");
+                        },
+                    ),
+                  ),
+                  const SizedBox(height: AppTheme.cardPadding * 1),
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
