@@ -15,6 +15,7 @@ import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vibration/vibration.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:another_flushbar/flushbar.dart';
 
@@ -99,6 +100,10 @@ class WalletScreen extends StatelessWidget {
                               vertical: AppTheme.cardPadding),
                           scale: 1.0,
                           cardsCount: cards.length,
+                          onSwipe: (int index, int? previousIndex, CardSwiperDirection direction) {
+                            Vibration.vibrate();
+                            return true;
+                          },
                           cardBuilder:
                               (context, index, percentThresholdX, percentThresholdY) =>
                                   cards[index],

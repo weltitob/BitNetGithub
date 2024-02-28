@@ -8,6 +8,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +32,9 @@ class _ChangeCurrencyState extends State<ChangeCurrency> {
         context: context,
         buttonType: ButtonType.transparent,
         onTap: () {
-          print("pressed");
-        },
+          Provider.of<SettingsProvider>(context, listen: false)
+              .switchTab('main');
+          },
       ),
       body: DashboardPage(),
     );
