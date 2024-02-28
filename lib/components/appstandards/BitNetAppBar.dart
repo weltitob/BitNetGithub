@@ -100,9 +100,7 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
                 child: RoundedButtonWidget(
                   buttonType: widget.buttonType ?? ButtonType.solid,
                   iconData: widget.customIcon ?? Icons.arrow_back,
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: widget.onTap
                 ),
               ),
             ),

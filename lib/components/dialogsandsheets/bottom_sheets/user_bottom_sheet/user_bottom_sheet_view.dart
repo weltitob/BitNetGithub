@@ -25,7 +25,9 @@ class UserBottomSheetView extends StatelessWidget {
             text: user.calcDisplayname(),
             buttonType: ButtonType.transparent,
             context: context,
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context, rootNavigator: false).pop;
+            },
             actions: [
               CloseButton(
                 onPressed: Navigator.of(context, rootNavigator: false).pop,

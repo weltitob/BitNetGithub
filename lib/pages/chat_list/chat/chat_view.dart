@@ -193,7 +193,9 @@ class ChatView extends StatelessWidget {
                     child: RoundedButtonWidget(
                       buttonType: ButtonType.solid,
                       iconData: Icons.close_outlined,
-                      onTap: () {  },
+                      onTap: () {
+                        VRouter.of(context).to('/rooms');
+                      },
                     ),
                   ),
                 ) :
@@ -212,7 +214,9 @@ class ChatView extends StatelessWidget {
                               child: RoundedButtonWidget(
                                 buttonType: ButtonType.solid,
                                 iconData: Icons.arrow_back_outlined,
-                                onTap: () {  },
+                                onTap: () {
+                                  VRouter.of(context).to('/rooms');
+                                },
                               ),
                             ),
                           ),
