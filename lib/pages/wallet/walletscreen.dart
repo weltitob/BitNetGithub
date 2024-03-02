@@ -163,7 +163,7 @@ class WalletScreen extends StatelessWidget {
                             customWidth: AppTheme.cardPadding * 6.5,
                             leadingIcon: Icon(Icons.arrow_downward_rounded),
                             onTap: () {
-                              VRouter.of(context).to('/wallet/receive');
+                              VRouter.of(context).to('/wallet/loop_screen');
                             }),
                       ],
                     ),
