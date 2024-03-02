@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ReceivedInvoice {
-  final String memo;
+  final String? memo;
   final String rPreimage;
   final String rHash;
   final int value;
@@ -16,7 +16,7 @@ class ReceivedInvoice {
   final int amtPaidMsat;
 
   ReceivedInvoice({
-    required this.memo,
+    this.memo,
     required this.rPreimage,
     required this.rHash,
     required this.value,
@@ -30,22 +30,25 @@ class ReceivedInvoice {
     required this.amtPaidSat,
     required this.amtPaidMsat,
   });
-
   factory ReceivedInvoice.fromJson(Map<String, dynamic> json) {
+    // Access the 'result' object within the JSON
+    Map<String, dynamic> result = json['result'];
+
+    // Now parse the data from the 'result' object
     return ReceivedInvoice(
-      memo: json['memo'],
-      rPreimage: json['r_preimage'],
-      rHash: json['r_hash'],
-      value: int.parse(json['value'].toString()),
-      valueMsat: int.parse(json['value_msat'].toString()),
-      settled: json['settled'], //only if true
-      creationDate: int.parse(json['creation_date'].toString()),
-      settleDate: int.parse(json['settle_date'].toString()),
-      paymentRequest: json['payment_request'],
-      state: json['state'],
-      amtPaid: int.parse(json['amt_paid'].toString()),
-      amtPaidSat: int.parse(json['amt_paid_sat'].toString()),
-      amtPaidMsat: int.parse(json['amt_paid_msat'].toString()),
+      memo: result['memo'] as String?,
+      rPreimage: result['r_preimage'],
+      rHash: result['r_hash'],
+      value: int.tryParse(result['value'].toString()) ?? 0,
+      valueMsat: int.tryParse(result['value_msat'].toString()) ?? 0,
+      settled: result['settled'] ?? false,
+      creationDate: int.tryParse(result['creation_date'].toString()) ?? 0,
+      settleDate: int.tryParse(result['settle_date'].toString()) ?? 0,
+      paymentRequest: result['payment_request'],
+      state: result['state'],
+      amtPaid: int.tryParse(result['amt_paid'].toString()) ?? 0,
+      amtPaidSat: int.tryParse(result['amt_paid_sat'].toString()) ?? 0,
+      amtPaidMsat: int.tryParse(result['amt_paid_msat'].toString()) ?? 0,
     );
   }
 }

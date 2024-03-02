@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
+import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
@@ -34,19 +35,24 @@ Stream<RestResponse> subscribeInvoicesStream() async* {
       ..body = json.encode(data);
 
     var streamedResponse = await request.send();
-    var completeResponse = StringBuffer();
+    var accumulatedData = StringBuffer(); // Used to accumulate chunks
 
     await for (var chunk in streamedResponse.stream.transform(utf8.decoder)) {
-      Logs().d("CHUNK RECEIVED: INVOICE STREAM! Chunk: $chunk");
-      completeResponse.write(chunk);
-      try {
-        var jsonResponse = json.decode(chunk.toString());
-        Logs().d("SUBSCRIBE INVOICE: $jsonResponse"); // The combined JSON response
-        yield RestResponse(statusCode: "success", message: "Successfully subscribed to invoices", data: jsonResponse);
-      } catch (e) {
-        Logs().w("Error: $e");
-        // If an error occurs, yield an error RestResponse. Adjust as necessary for your error handling.
-        yield RestResponse(statusCode: "error", message: "Error during network call: $e", data: {});
+      accumulatedData.write(chunk); // Accumulate each chunk
+
+      // Check if accumulated data forms a complete JSON object
+      if (isCompleteJson(accumulatedData.toString())) {
+        try {
+          var jsonResponse = json.decode(accumulatedData.toString());
+          // Clear accumulatedData for the next JSON object
+          accumulatedData.clear();
+
+          // Yield the successful response
+          yield RestResponse(statusCode: "success", message: "Successfully subscribed to invoices", data: jsonResponse);
+        } catch (e) {
+          // Handle JSON decode error or other errors
+          yield RestResponse(statusCode: "error", message: "Error during JSON processing: $e", data: {});
+        }
       }
     }
 

@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:intl/intl.dart';
@@ -10,25 +11,15 @@ enum TransactionStatus { failed, pending, confirmed }
 
 enum TransactionDirection { received, sent }
 
+
 class TransactionItem extends StatefulWidget {
-  final TransactionType type;
-  final TransactionDirection direction;
-  final TransactionStatus status;
-  final String receiver;
-  final String txHash;
-  final String amount;
+  final TransactionItemData data;
   final BuildContext context;
-  final int timestamp; // Add the timestamp property
+
   const TransactionItem({
     Key? key,
     required this.context,
-    required this.receiver,
-    required this.txHash,
-    required this.amount,
-    required this.type,
-    required this.status,
-    required this.direction,
-    required this.timestamp,
+    required this.data,
   }) : super(key: key);
 
   @override
@@ -39,7 +30,7 @@ class _TransactionItemState extends State<TransactionItem> {
   @override
   Widget build(BuildContext context) {
     // Use DateFormat for formatting the timestamp
-    final String formattedDate = displayTimeAgoFromInt(widget.timestamp);
+    final String formattedDate = displayTimeAgoFromInt(widget.data.timestamp);
     return Padding(
       padding: const EdgeInsets.only(
           left: AppTheme.cardPadding,
@@ -75,7 +66,7 @@ class _TransactionItemState extends State<TransactionItem> {
                               Container(
                                 width: AppTheme.cardPadding * 5,
                                 child: Text(
-                                  widget.receiver.toString(),
+                                  widget.data.receiver.toString(),
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(widget.context).textTheme.titleSmall,
                                 ),
@@ -111,12 +102,12 @@ class _TransactionItemState extends State<TransactionItem> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            widget.amount,
+                            widget.data.amount,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
                                 .copyWith(
-                                    color: widget.direction == TransactionDirection.received
+                                    color: widget.data.direction == TransactionDirection.received
                                         ? AppTheme.successColor
                                         : AppTheme.errorColor),
                           ),
@@ -129,14 +120,14 @@ class _TransactionItemState extends State<TransactionItem> {
                                 //only for received transactions
                                 Icon(
                                      Icons.circle,
-                                  color: widget.status == TransactionStatus.confirmed
-                                       ? AppTheme.successColor : widget.status == TransactionStatus.pending ? AppTheme.colorBitcoin
+                                  color: widget.data.status == TransactionStatus.confirmed
+                                       ? AppTheme.successColor : widget.data.status == TransactionStatus.pending ? AppTheme.colorBitcoin
                                       : AppTheme.errorColor,
                                   size: AppTheme.cardPadding * 0.75,
                                 ),
                                 SizedBox(width: AppTheme.elementSpacing / 2,),
                                 Image.asset(
-                                  widget.type == TransactionType.onChain ? "assets/images/bitcoin.png" : "assets/images/lightning.png",
+                                  widget.data.type == TransactionType.onChain ? "assets/images/bitcoin.png" : "assets/images/lightning.png",
                                   width: AppTheme.cardPadding * 0.75,
                                   height: AppTheme.cardPadding * 0.75,
                                   fit: BoxFit.contain,),

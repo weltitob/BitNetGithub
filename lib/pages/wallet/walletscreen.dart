@@ -101,7 +101,7 @@ class WalletScreen extends StatelessWidget {
                           scale: 1.0,
                           cardsCount: cards.length,
                           onSwipe: (int index, int? previousIndex, CardSwiperDirection direction) {
-                            Vibration.vibrate();
+                            //removed because not intended anymore Vibration.vibrate();
                             return true;
                           },
                           cardBuilder:

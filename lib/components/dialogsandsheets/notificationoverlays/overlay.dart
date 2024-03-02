@@ -1,5 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/models/bitcoin/transactiondata.dart';
+import 'package:bitnet/models/bitcoin/walletkit/transactiondata.dart';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 
@@ -60,7 +62,11 @@ void showOverlay(BuildContext context, String? message) async {
 }
 
 
-void showOverlayTransaction(BuildContext context, String? message) async {
+void showOverlayTransaction(
+    BuildContext context,
+    String? message,
+    TransactionItemData itemData
+    ) async {
   // Trigger a simple vibration
   if (await Vibration.hasVibrator() ?? false) {
     Vibration.vibrate();
@@ -119,14 +125,9 @@ void showOverlayTransaction(BuildContext context, String? message) async {
                 ),
                 SizedBox(height: AppTheme.elementSpacing),
                 TransactionItem(
-                  type: TransactionType.lightning,
+                  data: itemData,
                   context: context,
-                  receiver: 'person',
-                  txHash: 'whatever',
-                  amount: '',
-                  status: TransactionStatus.confirmed,
-                  direction: TransactionDirection.received,
-                  timestamp: 199099,
+
                 ),
               ],
             ),

@@ -7,47 +7,49 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 
-Stream<RestResponse> subscribeTransactionsStream() async* {
-  Logs().w("Called subscribeTransactions Stream!"); // The combined JSON response
-  const String restHost = 'mybitnet.com:8443'; // Update the host as needed
-  const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
+// Assuming isCompleteJson is implemented elsewhere and imported correctly
+import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
 
-  // Read the macaroon file and convert it to a hexadecimal string
+Stream<RestResponse> subscribeTransactionsStream() async* {
+  Logs().w("Called subscribeTransactions Stream!");
+  const String restHost = 'mybitnet.com:8443';
+  const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
+
   ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
-  // Prepare the headers
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
   };
 
-  final Map<String, dynamic> data = {
-  };
+  final Map<String, dynamic> data = {};
 
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    Logs().w("Subscribe transactions request successful! Making request now"); // The combined JSON response
     var request = http.Request('GET', Uri.parse('https://$restHost/v1/transactions/subscribe'))
       ..headers.addAll(headers)
       ..body = json.encode(data);
 
     var streamedResponse = await request.send();
-    var completeResponse = StringBuffer();
+    var accumulatedData = StringBuffer();
 
     await for (var chunk in streamedResponse.stream.transform(utf8.decoder)) {
-      print("CHUNK RECEIVED: TRANSACTION STREAM!");
-      completeResponse.write(chunk);
+      accumulatedData.write(chunk); // Accumulate each chunk
+
+      if (isCompleteJson(accumulatedData.toString())) {
+        try {
+          var jsonResponse = json.decode(accumulatedData.toString());
+          accumulatedData.clear(); // Clear accumulatedData for the next JSON object
+
+          yield RestResponse(statusCode: "success", message: "Successfully subscribed to transactions", data: jsonResponse);
+        } catch (e) {
+          yield RestResponse(statusCode: "error", message: "Error during JSON processing: $e", data: {});
+        }
+      }
     }
-
-    // Here we have the complete response
-    var jsonResponse = json.decode(completeResponse.toString());
-    print(jsonResponse); // The combined JSON response
-
   } catch (e) {
-    print('Error: $e');
-    // If an error occurs, yield an error RestResponse. Adjust as necessary for your error handling.
     yield RestResponse(statusCode: "error", message: "Error during network call: $e", data: {});
   }
 }

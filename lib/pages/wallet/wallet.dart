@@ -5,10 +5,12 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balan
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
+import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/walletscreen.dart';
 import 'package:flutter/material.dart';
@@ -44,24 +46,35 @@ class WalletController extends State<Wallet> {
 
     subscribeInvoicesStream().listen((restResponse) {
       Logs().w("Received data from Invoice-stream: $restResponse");
-      showOverlayTransaction(context, "Lightning invoice received");
-      // ReceivedInvoicesList receivedInvoicesList = ReceivedInvoicesList.fromJson(restResponse.data);
-      // List<ReceivedInvoice> settledInvoices = receivedInvoicesList.invoices
-      //.where((invoice) => invoice.settled)
-      //  .toList();
-      //settledInvoices.forEach((invoice) {
-      //});
+      ReceivedInvoice receivedInvoice = ReceivedInvoice.fromJson(restResponse.data);
+      if (receivedInvoice.settled == true) {
+        showOverlayTransaction(context, "Lightning invoice settled", TransactionItemData(
+          amount: receivedInvoice.amtPaidSat.toString(),
+          timestamp: receivedInvoice.settleDate,
+          type: TransactionType.lightning,
+          status: TransactionStatus.confirmed,
+          direction: TransactionDirection.received,
+          receiver: receivedInvoice.paymentRequest,
+          txHash: receivedInvoice.rHash,
+        ));
+      } else {
+        Logs().w("Invoice received but not settled yet: ${receivedInvoice.settled}");
+      }
     }, onError: (error) {
       Logs().e("Received error for Invoice-stream: $error");
     });
 
     subscribeTransactionsStream().listen((restResponse) {
-      // showOverlayTransaction(context, "Transaction received");
-      // BitcoinTransactionsList bitcoinTransactionsList = BitcoinTransactionsList.fromJson(restResponse.data);
-      // List<BitcoinTransaction> transactions = bitcoinTransactionsList.transactions;
-      // Logs().w("Transactions-stream received data: $restResponse");
-      // transactions.forEach((transaction) {
-      showOverlayTransaction(context, "Lightning invoice received");
+      BitcoinTransaction bitcoinTransaction = BitcoinTransaction.fromJson(restResponse.data);
+      showOverlayTransaction(context, "Onchain transaction settled", TransactionItemData(
+        amount: bitcoinTransaction.amount.toString(),
+        timestamp: bitcoinTransaction.timeStamp,
+        type: TransactionType.onChain,
+        status: TransactionStatus.confirmed,
+        direction: TransactionDirection.received,
+        receiver: bitcoinTransaction.destAddresses[0],
+        txHash: bitcoinTransaction.txHash,
+      ));
       //});
     }, onError: (error) {
       Logs().e("Received error for Transactions-stream: $error");

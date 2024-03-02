@@ -9,6 +9,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
+import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -86,8 +87,9 @@ class _TransactionsState extends State<Transactions>
   Widget build(BuildContext context) {
     var combinedTransactions = [
       ...lightningInvoices.map((transaction) => TransactionItem(
+        context: context,
+        data: TransactionItemData(
             timestamp: transaction.settleDate,
-            context: context,
             type: TransactionType.lightning,
             direction: TransactionDirection.received,
             receiver: transaction.paymentRequest.toString(),
@@ -95,10 +97,11 @@ class _TransactionsState extends State<Transactions>
             amount: "+" + transaction.amtPaid.toString(),
             status: TransactionStatus.failed,
             // other properties
-          )),
+    ))),
       ...lightningPayments.map((transaction) => TransactionItem(
+          context: context,
+          data: TransactionItemData(
             timestamp: transaction.creationDate,
-            context: context,
             type: TransactionType.lightning,
             direction: TransactionDirection.sent,
             receiver: transaction.paymentHash.toString(),
@@ -107,15 +110,17 @@ class _TransactionsState extends State<Transactions>
             status: transaction.status == "SUCCEEDED"
                 ? TransactionStatus.confirmed
                 : TransactionStatus.pending,
-          )),
+          ))),
       ...onchainTransactions.map((transaction) => TransactionItem(
+    context: context,
+          data: TransactionItemData(
+
           timestamp: transaction.timeStamp,
           status: TransactionStatus.pending,
           type: TransactionType.onChain,
           direction: transaction.amount.contains("-")
               ? TransactionDirection.sent
               : TransactionDirection.received,
-          context: context,
           receiver: transaction.amount.contains("-")
               ? transaction.destAddresses.last.toString()
               : transaction.destAddresses.first.toString(),
@@ -123,10 +128,10 @@ class _TransactionsState extends State<Transactions>
           amount: transaction.amount.contains("-")
               ? transaction.amount.toString()
               : "+" + transaction.amount.toString()
-          )),
+          ))),
     ].toList();
 
-    combinedTransactions.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    combinedTransactions.sort((a, b) => a.data.timestamp.compareTo(b.data.timestamp));
     combinedTransactions = combinedTransactions.reversed.toList();
 
     return Column(
