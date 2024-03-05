@@ -1,4 +1,5 @@
-import 'package:bitnet/backbone/helper/getcurrency.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -31,7 +32,8 @@ class WalletScreen extends StatelessWidget {
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null ? (double.parse(controller.totalBalanceStr) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+
+    final currencyEquivalent = bitcoinPrice != null ? (controller.totalBalanceSAT / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
 
     List<Container> cards = [
       Container(child: BalanceCardLightning(controller: controller)),
@@ -70,7 +72,7 @@ class WalletScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "${controller.totalBalanceStr} SATS",
+                                  "${controller.totalBalanceStr}",
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 Text(

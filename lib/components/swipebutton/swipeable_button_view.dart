@@ -152,7 +152,7 @@ class _SwipeableButtonViewState extends State<SwipeableButtonView>
     return Container(
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(34),
+          borderRadius: AppTheme.cardRadiusMid,
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -168,12 +168,12 @@ class _SwipeableButtonViewState extends State<SwipeableButtonView>
         child: Container(
           width: isAccepted
               ? (MediaQuery.of(context).size.width -
-                  ((MediaQuery.of(context).size.width - 60) *
+                  ((MediaQuery.of(context).size.width - AppTheme.cardPadding * 2.5) *
                       _controller.value))
               : double.infinity,
-          height: 60,
+          height: AppTheme.cardPadding * 2.5,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(34),
+            borderRadius: AppTheme.cardRadiusMid,
             gradient: LinearGradient(
               begin: Alignment.bottomLeft,
               end: Alignment.topRight,
@@ -200,14 +200,14 @@ class _SwipeableButtonViewState extends State<SwipeableButtonView>
               !isAccepted
                   ? SwipeableWidget(
                       isActive: widget.isActive,
-                      height: 60.0,
+                      height: AppTheme.cardPadding * 2.5,
                       onSwipeValueCallback: (value) {
                         setState(() {
                           opacity = value;
                         });
                       },
                       child: Container(
-                        height: 60.0,
+                        height: AppTheme.cardPadding * 2.5,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: Row(

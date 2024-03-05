@@ -1,6 +1,8 @@
-import 'package:bitnet/backbone/helper/getcurrency.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 
@@ -14,13 +16,16 @@ class BalanceCardLightning extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(double.parse(controller.lightningBalance.balance), BitcoinUnits.SAT);
+    final balanceStr = unitModel.amount.toString() + " " + unitModel.bitcoinUnitAsString;
     return SizedBox(
       child: Stack(
         children: [
           const BalanceBackground2(),
           BalanceTextWidget(
+            balanceStr: balanceStr,
             iconData: FontAwesomeIcons.wallet,
-            balance: controller.lightningBalance.balance,
+            balanceSAT: controller.lightningBalance.balance,
             walletAddress: "safdadasdas",
             cardname: 'Lightning',
           ),
@@ -37,13 +42,17 @@ class BalanceCardBtc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(double.parse(controller.onchainBalance.confirmedBalance), BitcoinUnits.SAT);
+    final balanceStr = unitModel.amount.toString() + " " + unitModel.bitcoinUnitAsString;
+
     return SizedBox(
       child: Stack(
         children: [
           const BalanceBackground(),
           BalanceTextWidget(
+            balanceStr: balanceStr,
             iconData: FontAwesomeIcons.piggyBank,
-            balance: controller.onchainBalance.confirmedBalance,
+            balanceSAT: controller.onchainBalance.confirmedBalance,
             walletAddress: "safdadasdas",
             cardname: 'On-Chain',
           ),
@@ -215,14 +224,16 @@ Widget paymentNetworkPicture(BuildContext context, String imageUrl) {
 
 
 class BalanceTextWidget extends StatelessWidget {
-  final String balance;
+  final String balanceSAT;
+  final String balanceStr;
   final String cardname;
   final String walletAddress;
   final IconData iconData;
 
   const BalanceTextWidget({
     Key? key,
-    required this.balance,
+    required this.balanceSAT,
+    required this.balanceStr,
     required this.walletAddress,
     required this.iconData,
     required this.cardname,
@@ -235,7 +246,7 @@ class BalanceTextWidget extends StatelessWidget {
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null ? (double.parse(balance) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+    final currencyEquivalent = bitcoinPrice != null ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
 
     return Padding(
       padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25,),
@@ -259,7 +270,7 @@ class BalanceTextWidget extends StatelessWidget {
           ),
           const Spacer(), // Replace with your AppTheme.elementSpacing if needed
           Text(
-            "$balance SAT",
+            balanceStr,
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           const SizedBox(

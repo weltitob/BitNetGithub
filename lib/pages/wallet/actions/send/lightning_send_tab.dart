@@ -119,36 +119,6 @@ class LightningSendTab extends StatelessWidget {
           );
   }
 
-  Widget avatarGlow(BuildContext context, IconData icon) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          AvatarGlow(
-            glowColor: darken(Colors.orange, 14),
-            endRadius: AppTheme.cardPadding * 1.25,
-            duration: const Duration(milliseconds: 2000),
-            repeatPauseDuration: const Duration(milliseconds: 100),
-            repeat: true,
-            showTwoGlows: true,
-            child: CustomPaint(
-              foregroundPainter: BorderPainterSmall(),
-              child: Container(
-                margin: const EdgeInsets.all(AppTheme.elementSpacing),
-                child: Icon(
-                  icon,
-                  size: AppTheme.cardPadding,
-                  color: Colors.orange,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // This widget represents a user tile with an avatar, title, subtitle, and edit button.
   Widget userTile(BuildContext context) {
     return Column(
@@ -268,8 +238,8 @@ class LightningSendTab extends StatelessWidget {
             ),
           ),
           // Set the active and disabled colors for the button
-          activeColor: Colors.purple.shade800,
-          disableColor: Colors.purple.shade800,
+          activeColor: Theme.of(context).colorScheme.onSecondary,
+          disableColor: Theme.of(context).colorScheme.onSecondary,
           // Determine whether the button has finished its operation
           isFinished: controller.isFinished,
           // Define the function to execute while the button is in a waiting state

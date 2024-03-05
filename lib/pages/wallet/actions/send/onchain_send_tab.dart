@@ -1,4 +1,4 @@
-import 'package:bitnet/backbone/helper/getcurrency.dart';
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -235,8 +235,8 @@ class OnChainSendTab extends StatelessWidget {
             ),
           ),
           // Set the active and disabled colors for the button
-          activeColor: Colors.purple.shade800,
-          disableColor: Colors.purple.shade800,
+          activeColor: Theme.of(context).colorScheme.onSecondary,
+          disableColor: Theme.of(context).colorScheme.onSecondary,
           // Determine whether the button has finished its operation
           isFinished: controller.isFinished,
           // Define the function to execute while the button is in a waiting state

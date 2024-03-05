@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -11,6 +12,7 @@ import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/walletscreen.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,7 @@ class WalletController extends State<Wallet> {
   StreamSubscription<List<BitcoinTransaction>>? _transactionsSubscription;
 
   String totalBalanceStr = "0";
+  double totalBalanceSAT = 0;
 
 
 
@@ -118,12 +121,17 @@ class WalletController extends State<Wallet> {
     String confirmedBalanceStr = onchainBalance.confirmedBalance;
     String balanceStr = lightningBalance.balance;
 
-    double confirmedBalance = double.parse(confirmedBalanceStr);
-    double balance = double.parse(balanceStr);
+    double confirmedBalanceSAT = double.parse(confirmedBalanceStr);
+    double balanceSAT = double.parse(balanceStr);
 
-    double totalBalance = confirmedBalance + balance;
+    totalBalanceSAT = confirmedBalanceSAT + balanceSAT;
+
+    BitcoinUnitModel bitcoinUnit = CurrencyConverter.convertToBitcoinUnit(totalBalanceSAT, BitcoinUnits.SAT);
+    final balance = bitcoinUnit.amount;
+    final unit = bitcoinUnit.bitcoinUnitAsString;
+
     setState(() {
-      this.totalBalanceStr = totalBalance.toString();
+      this.totalBalanceStr = balance.toString() + " " + unit;
     });
   }
 
