@@ -2,6 +2,7 @@
 
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
@@ -34,28 +35,33 @@ class _BitcoinScreenState extends State<BitcoinScreen>
   //TickerProviderStateMixin
   final _controller = PageController(viewportFraction: 0.9);
   late TabController _tabController;
-  List<ChartLine> chartData = []; // The fake data will be stored here
-
+  List<ChartLine> chartData = [];
+  List<Difficulty> difficulty = [];
+// The fake data will be stored here
+  String selectedMonth = '3M';
   getData() async {
     var dio = Dio();
     try {
       var response =
-      await dio.get('https://mempool.space/api/v1/mining/hashrate/3m');
+      await dio.get('https://mempool.space/api/v1/mining/hashrate/${selectedMonth.toLowerCase()}');
       print(response.data);
       if (response.statusCode == 200) {
         print('2---------00000-');
         List<ChartLine> line = [];
         line.clear();
         chartData.clear();
+        difficulty.clear();
         HashChartModel hashChartModel = HashChartModel.fromJson(response.data);
+        difficulty.addAll(hashChartModel.difficulty ?? []);
         for (int i = 0; i < hashChartModel.hashrates!.length; i++) {
           line.add(ChartLine(
               time: double.parse(
                   hashChartModel.hashrates![i].timestamp.toString()),
-              price: hashChartModel.hashrates![i].avgHashrate!));
+              price: hashChartModel.hashrates![i].avgHashrate!,
+          ));
         }
         chartData = line;
-        print(chartData);
+        print(chartData.length);
         setState(() {});
       }
     } catch (e) {
@@ -129,15 +135,42 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Hashrate & Difficulty chart",
-                    style: Theme.of(context).textTheme.titleLarge,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Hashrate & Difficulty chart",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      GlassContainer(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                  value: selectedMonth,
+                                  onChanged: (String? newValue) {
+                                    selectedMonth = newValue!;
+                                    getData();
+                                    setState(() {
+                                    });
+                                  },
+                                  items: <String>['3M', '6M', '1Y', '2Y', '3Y']
+                                      .map<DropdownMenuItem<String>>((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList()),
+                            ),
+                          )),
+                    ],
                   ),
                   SizedBox(
                     height: AppTheme.elementSpacing,
                   ),
                   HashrateChart(
                     chartData: chartData,
+                    difficulty: difficulty,
                   ),
                 ],
               )),

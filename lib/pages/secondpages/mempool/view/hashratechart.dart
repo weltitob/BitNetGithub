@@ -1,7 +1,9 @@
 //hashchart rate
 
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/pages/secondpages/analystsassesment.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +12,13 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:universal_html/html.dart';
 
 class HashrateChart extends StatefulWidget {
   List<ChartLine> chartData = []; // The fake data will be stored here
+  List<Difficulty> difficulty = [];
 
-  HashrateChart({required this.chartData, super.key});
+  HashrateChart({required this.chartData, required this.difficulty, super.key});
 
   @override
   State<HashrateChart> createState() => _HashrateChartState();
@@ -23,21 +27,11 @@ class HashrateChart extends StatefulWidget {
 class _HashrateChartState extends State<HashrateChart> {
   late TrackballBehavior _trackballBehavior;
 
-  // Generate fake data for the chart
-  // void generateFakeData() {
-  //   chartData = List.generate(100, (index) {
-  //     double fakeTime = index.toDouble();
-  //     double fakePrice = index * 5.0;
-  //     return ChartLine(time: fakeTime, price: fakePrice);
-  //   });
-  // }
-
   List<ChartLine> chartData = [];
 
   @override
   void initState() {
     super.initState();
-    // generateFakeData();
     _trackballBehavior = TrackballBehavior(
       lineColor: Colors.grey[400],
       enable: true,
@@ -54,49 +48,44 @@ class _HashrateChartState extends State<HashrateChart> {
 
   @override
   Widget build(BuildContext context) {
-    return  Container(height: 400,child: Column(
-      children: [
-        Row(children: [
-          Text('Price'),
-          Spacer(),
-          Text('  Time'),
-          Spacer()
-        ]),
-        Expanded(
-          child: ListView.builder(
-            itemCount: widget.chartData.length,
-            itemBuilder: (context,index)=>Row(children: [
-              Text((widget.chartData[index].price).toString().substring(0,3)+' EH/s'),
-              SizedBox(width: 100,),
-              Text(DateFormat('d MMM').format( DateTime.fromMillisecondsSinceEpoch(int.parse(((widget.chartData[index].time*1000).round()).toString()))))
-            ],),
+    print('ab ${widget.difficulty.length}');
+    return SizedBox(
+      height: AppTheme.cardPadding * 16,
+      child: SfCartesianChart(
+          trackballBehavior: _trackballBehavior,
+          primaryXAxis: DateTimeAxis(
+            intervalType: DateTimeIntervalType.days,
+            majorGridLines: MajorGridLines(width: 0),
           ),
-        )
-      ],
-    ),);
-    // SfCartesianChart(
-    //   trackballBehavior: _trackballBehavior,
-    //   series: <ChartSeries>[
-    //     LineSeries<ChartLine, double>(
-    //         dataSource: widget.chartData,
-    //         xValueMapper: (ChartLine data, _) =>  data.time,
-    //         yValueMapper: (ChartLine data, _) =>
-    //             data.price / 1000000000000000000),
-    //   ],
-    // );
-
-    // return SfCartesianChart(
-    //   trackballBehavior: _trackballBehavior,
-    // series: <ChartSeries>[
-    //     LineSeries<ChartLine, double>(
-    //       dataSource: chartData,
-    //       xValueMapper: (ChartLine data, _) => data.time,
-    //       yValueMapper: (ChartLine data, _) => data.price,
-    //       // Other series settings
-    //     )
-    //   ],
-    //   // Other chart settings
-    // );
+          primaryYAxis: NumericAxis(
+            axisLine: AxisLine(width: 1),
+            majorTickLines: MajorTickLines(size: 0),
+            numberFormat: NumberFormat.compact(),
+          ),
+          series: <CartesianSeries>[
+            StackedLineSeries<ChartLine, DateTime>(
+              name: 'Hashrate',
+              enableTooltip: true,
+              dataSource: widget.chartData,
+              xValueMapper: (ChartLine sales, _) =>
+                  DateTime.fromMillisecondsSinceEpoch(
+                      sales.time.toInt() * 1000,
+                      isUtc: true),
+              yValueMapper: (ChartLine sales, _) =>
+                  double.parse(sales.price.toString().substring(0, 4)),
+            ),
+            StackedLineSeries<Difficulty, DateTime>(
+              name: 'Difficulty',
+              enableTooltip: true,
+              dataSource: widget.difficulty,
+              xValueMapper: (Difficulty sales, _) =>
+                  DateTime.fromMillisecondsSinceEpoch(sales.time! * 1000,
+                      isUtc: true),
+              yValueMapper: (Difficulty sales, _) => double.parse(
+                  (sales.difficulty! / 100000000000).toStringAsFixed(
+                      2)), // Assuming price is double type
+            ),
+          ]),
+    );
   }
 }
-
