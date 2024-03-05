@@ -119,7 +119,7 @@ class WalletScreen extends StatelessWidget {
                         customHeight: AppTheme.cardPadding * 1.5,
                         leadingIcon: Icon(Icons.loop_rounded),
                         onTap: (){
-                        VRouter.of(context).to("/wallet/loop");
+                        VRouter.of(context).to("/wallet/loop_screen");
                         },
                     ),
                   ),
@@ -175,7 +175,7 @@ class WalletScreen extends StatelessWidget {
                             customWidth: AppTheme.cardPadding * 6.5,
                             leadingIcon: Icon(Icons.arrow_downward_rounded),
                             onTap: () {
-                              VRouter.of(context).to('/wallet/loop_screen');
+                              VRouter.of(context).to('/wallet/receive');
                             }),
                       ],
                     ),
