@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
-import 'package:bitnet/models/bitcoin/walletkit/transactiondata.dart';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 

@@ -16,6 +16,7 @@ import 'package:bitnet/pages/chat_list/chat_list.dart';
 import 'package:bitnet/pages/chat_list/chat_matrixwidgets_settings/chat_matrixwidgets.dart';
 import 'package:bitnet/pages/chat_list/chat_permissions_settings/chat_permissions_settings.dart';
 import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
+import 'package:bitnet/pages/create/createasset.dart';
 import 'package:bitnet/pages/create/createscreen.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
@@ -118,9 +119,7 @@ class AppRoutes {
                 path: '/create',
                 widget:
                     //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
-                    CreatePage(
-                  currentUserUID: currentUserUID,
-                )),
+                CreateAsset(),),
             VWidget(
               path: '/wallet',
               widget: Wallet(),
