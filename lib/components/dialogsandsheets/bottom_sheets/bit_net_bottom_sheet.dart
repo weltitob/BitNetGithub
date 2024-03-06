@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 Future<T?>  BitNetBottomSheet<T>(
     {required BuildContext context,
-    double borderRadius = AppTheme.borderRadiusSmall,
+    double borderRadius = AppTheme.borderRadiusBigger,
     required Widget child,
     double? height,
     String title = '',
@@ -18,11 +18,11 @@ Future<T?>  BitNetBottomSheet<T>(
   }
   return showModalBottomSheet(
       context: context,
-      backgroundColor: backgroundColor,
+      backgroundColor: Colors.transparent,
       isDismissible: isDismissible,
       isScrollControlled: isScrollControlled,
       constraints: BoxConstraints(
-        maxHeight: height ?? 500,
+        maxHeight: height ?? AppTheme.cardPadding * 25,
         maxWidth: AppTheme.columnWidth * 1.5,
       ),
       shape: RoundedRectangleBorder(
@@ -35,53 +35,78 @@ Future<T?>  BitNetBottomSheet<T>(
         return Column(
           children: [
             Container(
-              margin: EdgeInsets.only(
-                  left: AppTheme.cardPadding,
-                  right: AppTheme.cardPadding,
-                  top: AppTheme.elementSpacing),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              height: AppTheme.elementSpacing / 1.5,
+              width: AppTheme.cardPadding * 2,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onBackground,
+                borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+              ),
+            ),
+            SizedBox(height: AppTheme.elementSpacing / 2),
+            Container(
+              height: height ?? AppTheme.cardPadding * 24 - AppTheme.cardPadding * 2,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.background,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(borderRadius),
+                  topRight: Radius.circular(borderRadius),
+                ),
+              ),
+              child: Column(
                 children: [
-                  goBack
-                      ? Icon(
-                          Icons.arrow_back_rounded,
-                          size: AppTheme.cardPadding,
-                          color: AppTheme.white70,
-                        )
-                      : Container(
-                          width: 20,
-                        ),
-                  Row(
-                    children: [
-                      _hasIcon
-                          ? Padding(
-                              padding: const EdgeInsets.only(
-                                  right: AppTheme.elementSpacing * 0.5),
-                              child: Icon(
-                                iconData,
+                  Container(
+
+                    padding: EdgeInsets.only(
+                        left: AppTheme.cardPadding,
+                        right: AppTheme.cardPadding,
+                        top: AppTheme.elementSpacing),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        goBack
+                            ? Icon(
+                                Icons.arrow_back_rounded,
                                 size: AppTheme.cardPadding,
                                 color: AppTheme.white70,
+                              )
+                            : Container(
+                                width: 20,
                               ),
-                            )
-                          : Container(),
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ],
-                  ),
-                  GestureDetector(
-                    child: Icon(
-                      Icons.clear_rounded,
-                      size: AppTheme.cardPadding,
-                      color: AppTheme.white70,
+                        Row(
+                          children: [
+                            _hasIcon
+                                ? Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: AppTheme.elementSpacing * 0.5),
+                                    child: Icon(
+                                      iconData,
+                                      size: AppTheme.cardPadding,
+                                      color: AppTheme.white70,
+                                    ),
+                                  )
+                                : Container(),
+                            Text(
+                              title,
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                          ],
+                        ),
+                        GestureDetector(
+                          child: Icon(
+                            Icons.clear_rounded,
+                            size: AppTheme.cardPadding,
+                            color: AppTheme.white70,
+                          ),
+                          onTap: () => Navigator.pop(context),
+                        )
+                      ],
                     ),
-                    onTap: () => Navigator.pop(context),
-                  )
+                  ),
+                  Expanded(child: child),
                 ],
               ),
             ),
-            Expanded(child: child),
+
           ],
         );
       });
