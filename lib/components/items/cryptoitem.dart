@@ -1,5 +1,5 @@
 import 'package:bitnet/backbone/futures/cryptochartline.dart';
-import 'package:bitnet/backbone/helper/getcurrency.dart';
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
