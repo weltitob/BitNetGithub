@@ -16,6 +16,9 @@ Future<T?>  BitNetBottomSheet<T>(
   if (iconData != null) {
     _hasIcon = true;
   }
+
+  // this should use the appbar for bottomsheets by deafult and the appbar should be build in a way wher eit can have 3 values backbutton, centertext and right a action
+
   return showModalBottomSheet(
       context: context,
       elevation: 0.0,

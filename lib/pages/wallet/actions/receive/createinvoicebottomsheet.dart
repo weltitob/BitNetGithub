@@ -18,13 +18,6 @@ class CreateInvoice extends StatelessWidget {
           margin: const EdgeInsets.only(
               left: AppTheme.cardPadding,),
           alignment: Alignment.centerLeft,
-          child: Row(
-            children: [
-              Text("Create Invoice", style: Theme.of(context).textTheme.titleMedium),
-              SizedBox(width: AppTheme.elementSpacing / 2,),
-              Icon(Icons.help_outline),
-            ],
-          ),
         ),
         Padding(
           padding: const EdgeInsets.only(
@@ -33,6 +26,7 @@ class CreateInvoice extends StatelessWidget {
             right: AppTheme.cardPadding,
           ),
           child: AmountWidget(
+            bitcoinUnit: controller.bitcoinUnit,
             enabled: true,
             amountController: controller.amountController,
             focusNode: controller.myFocusNode,

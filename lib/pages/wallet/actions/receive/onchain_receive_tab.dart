@@ -12,21 +12,11 @@ import 'package:matrix/matrix.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
-class OnChainReceiveTab extends StatefulWidget {
+class OnChainReceiveTab extends StatelessWidget {
   final ReceiveController controller;
-  const OnChainReceiveTab({super.key, required this.controller});
+  OnChainReceiveTab({super.key, required this.controller});
 
-  @override
-  State<OnChainReceiveTab> createState() => _OnChainReceiveTabState();
-}
-
-class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
   // Get the current user's wallet from a provider
-  //final userWallet = Provider.of<UserWallet>(context);
-  final userWallet = UserWallet(walletAddress: "fakewallet",
-      walletType: "walletType", walletBalance: "0", privateKey: "privateKey", userdid: "userdid");
-
-  // A GlobalKey is used to identify this widget in the widget tree, used to access and modify its properties
   GlobalKey globalKeyQR = GlobalKey();
 
   @override
@@ -45,7 +35,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "On-Chain Bitcoinaddress",
+                "On-Chain",
                 style: Theme.of(context).textTheme.headline5,
               ),
               RoundedButtonWidget(
@@ -80,7 +70,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
                           const EdgeInsets.all(AppTheme.cardPadding / 1.25),
                           // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
                           child: PrettyQrView.data(
-                              data: "bitcoin: ${userWallet.walletAddress}",
+                              data: "bitcoin: ${controller.qrCodeDataStringOnchain}",
                               decoration: const PrettyQrDecoration(
                                 shape: PrettyQrSmoothSymbol(
                                   roundFactor: 1,
@@ -100,33 +90,37 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Add an icon to copy the wallet address to the clipboard
-              GestureDetector(
-                onTap: () async {
-                  await Clipboard.setData(
-                      ClipboardData(text: userWallet.walletAddress));
-                  // Display a snackbar to indicate that the wallet address has been copied
-                  showOverlay(
-                      context, "Wallet-Adresse in Zwischenablage kopiert");
-                },
-                child: Icon(
+          GestureDetector(
+            onTap: () async {
+              await Clipboard.setData(
+                  ClipboardData(text: controller.qrCodeDataStringOnchain));
+              // Display a snackbar to indicate that the wallet address has been copied
+              showOverlay(
+                  context, "Wallet-Adresse in Zwischenablage kopiert");
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Add an icon to copy the wallet address to the clipboard
+                Icon(
                   Icons.copy_rounded,
                   size: 18,
                   color: AppTheme.white60,
                 ),
-              ),
-              const SizedBox(
-                width: AppTheme.elementSpacing * 0.25,
-              ),
-              // Display the user's wallet address
-              Text(
-                "${userWallet.walletAddress}",
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
+                const SizedBox(
+                  width: AppTheme.elementSpacing * 0.25,
+                ),
+                // Display the user's wallet address
+                Container(
+                  width: AppTheme.cardPadding * 10,
+                  child: Text(
+                    "${controller.qrCodeDataStringOnchain}",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
           // Add some space between the rows
           const SizedBox(
@@ -148,7 +142,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
                 ),
                 onTap: () async {
                   await Clipboard.setData(
-                      ClipboardData(text: userWallet.walletAddress));
+                      ClipboardData(text: controller.qrCodeDataStringOnchain));
                   // Display a snackbar to indicate that the wallet address has been copied
                   showOverlay(
                       context, "Wallet-Adresse in Zwischenablage kopiert");
@@ -166,7 +160,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> {
                 ),
                 onTap: () {
                   // Share the wallet address
-                  Share.share('${userWallet.walletAddress}');
+                  Share.share('${controller.qrCodeDataStringOnchain}');
                 },
               ),
               // Add a button to share the wallet address

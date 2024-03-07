@@ -9,6 +9,7 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -76,7 +77,7 @@ class LightningReceiveTab extends StatelessWidget {
                               const EdgeInsets.all(AppTheme.cardPadding / 1.25),
                           // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
                           child: PrettyQrView.data(
-                            data: "lightning: ${controller.qrCodeDataString}",
+                            data: "lightning: ${controller.qrCodeDataStringLightning}",
                             decoration: const PrettyQrDecoration(
                               shape: PrettyQrSmoothSymbol(
                                 roundFactor: 1,
@@ -96,39 +97,39 @@ class LightningReceiveTab extends StatelessWidget {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Add an icon to copy the wallet address to the clipboard
-              GestureDetector(
-                onTap: () async {
-                  await Clipboard.setData(
-                      ClipboardData(text: controller.qrCodeDataString));
-                  // Display a snackbar to indicate that the wallet address has been copied
-                  showOverlay(
-                      context, "Wallet-Adresse in Zwischenablage kopiert");
-                },
-                child: Icon(
+          GestureDetector(
+            onTap: () async {
+              await Clipboard.setData(
+                  ClipboardData(text: controller.qrCodeDataStringLightning));
+              // Display a snackbar to indicate that the wallet address has been copied
+              showOverlay(
+                  context, "Wallet-Adresse in Zwischenablage kopiert");
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Add an icon to copy the wallet address to the clipboard
+                Icon(
                   Icons.copy_rounded,
                   size: 18,
                   color: AppTheme.white60,
                 ),
-              ),
-              const SizedBox(
-                width: AppTheme.elementSpacing * 0.25,
-              ),
-              // Display the user's wallet address
-              Container(
-                width: 240,
-                child: Text(
-                  "${controller.qrCodeDataString}",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-
-                  ),
-                  overflow: TextOverflow.ellipsis,
+                const SizedBox(
+                  width: AppTheme.elementSpacing * 0.25,
                 ),
-              ),
-            ],
+                // Display the user's wallet address
+                Container(
+                  width: AppTheme.cardPadding * 10,
+                  child: Text(
+                    "${controller.qrCodeDataStringLightning}",
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
           // Add some space between the rows
           const SizedBox(
@@ -146,18 +147,19 @@ class LightningReceiveTab extends StatelessWidget {
                       buttonType: ButtonType.transparent,
                       title: "Create invoice",
                       leadingIcon: Icon(
-                        FontAwesomeIcons.getPocket,
+                        FontAwesomeIcons.fileInvoiceDollar,
                         size: AppTheme.cardPadding,
                         color: AppTheme.white90,
                       ),
                       onTap: () {
                         BitNetBottomSheet(
-                          height: MediaQuery.of(context).size.height * 0.6,
+                          //also add a help button as an action at the right once bitnetbottomsheet is fixed
+                          title: "Create Invoice",
+                          height: MediaQuery.of(context).size.height * 0.7,
                           child: CreateInvoice(
                             controller: controller,
                           ),
                           context: context,
-                          title: '',
                         );
                       },
                     ),
@@ -182,7 +184,7 @@ class LightningReceiveTab extends StatelessWidget {
                       ),
                       onTap: () {
                         // Share the wallet address
-                        Share.share('${controller.qrCodeDataString}');
+                        Share.share('${controller.qrCodeDataStringLightning}');
                       },
                     ),
                     // Add a button to share the wallet address

@@ -100,7 +100,7 @@ class LogoutModal extends StatelessWidget {
                                 Navigator.pop(context);
                               },
                               style: OutlinedButton.styleFrom(
-                                primary: const Color.fromRGBO(24, 31, 39, 1),
+                                //primary: const Color.fromRGBO(24, 31, 39, 1),
                                 backgroundColor:
                                     const Color.fromRGBO(255, 255, 255, 0.1),
                                 shape: RoundedRectangleBorder(
@@ -142,7 +142,7 @@ class LogoutModal extends StatelessWidget {
                                 );
                               },
                               style: TextButton.styleFrom(
-                                primary: const Color.fromRGBO(24, 31, 39, 1),
+                                //primary: const Color.fromRGBO(24, 31, 39, 1),
                                 backgroundColor:
                                     const Color.fromRGBO(97, 90, 232, 1),
                                 padding: EdgeInsets.zero,

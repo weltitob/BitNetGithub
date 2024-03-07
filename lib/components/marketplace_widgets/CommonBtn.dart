@@ -36,7 +36,6 @@ class CommonBtn extends StatelessWidget {
           hasBackPress ? Navigator.pop(context) : null;
         },
         style: TextButton.styleFrom(
-          primary: const Color.fromRGBO(24, 31, 39, 1),
           backgroundColor:
               hasBgColor ? bgColor : const Color.fromRGBO(97, 90, 232, 1),
           padding: EdgeInsets.zero,

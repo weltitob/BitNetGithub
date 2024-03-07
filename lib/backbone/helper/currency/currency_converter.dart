@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 class CurrencyConverter {
 
   static String convertCurrency(String inputCurrency, double amount,
-      String outputCurrency, double? exchangeRate) {
+      String outputCurrency, double? bitcoinPrice) {
     try {
       if (inputCurrency == outputCurrency) {
         return amount.toStringAsFixed(2);
       } else if (inputCurrency == "BTC") {
-        return (amount * exchangeRate!).toStringAsFixed(8);
+        return (amount * bitcoinPrice!).toStringAsFixed(8);
       }
       else if (inputCurrency == "BTC" && outputCurrency == "SATS") {
         return convertBitcoinToSats(amount).toStringAsFixed(8);
@@ -18,7 +18,7 @@ class CurrencyConverter {
         return convertSatoshiToBTC(amount).toStringAsFixed(0);
       }
       else {
-        return (amount * exchangeRate!).toStringAsFixed(2);
+        return (amount * bitcoinPrice! / 100000000).toStringAsFixed(2);
       }
     } catch (e) {
       throw Exception("Error converting currency: $e");

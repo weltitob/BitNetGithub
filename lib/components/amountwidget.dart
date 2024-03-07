@@ -1,22 +1,38 @@
 import 'package:bitnet/backbone/futures/bitcoinprice.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class AmountWidget extends StatelessWidget {
+class AmountWidget extends StatefulWidget {
   final bool enabled;
   final TextEditingController amountController;
   final FocusNode focusNode;
+  final BitcoinUnits bitcoinUnit;
 
-  const AmountWidget({super.key, required this.enabled, required this.amountController, required this.focusNode});
+  const AmountWidget({
+    super.key,
+    required this.enabled,
+    required this.amountController,
+    required this.focusNode,
+    this.bitcoinUnit = BitcoinUnits.BTC});
 
   @override
+  State<AmountWidget> createState() => _AmountWidgetState();
+}
+
+class _AmountWidgetState extends State<AmountWidget> {
+  @override
   Widget build(BuildContext context) {
+
+    //String unit = bitcoinUnitAsString(bitcoinUnit);
+
     return Container(
       child: Column(
         children: [
@@ -25,15 +41,15 @@ class AmountWidget extends StatelessWidget {
             children: [
               // Text field to enter Bitcoin value
               TextField(
-                enabled: enabled,
-                focusNode: focusNode,
+                enabled: widget.enabled,
+                focusNode: widget.focusNode,
                 onTap: () {
                   // Validate Bitcoin address when the text field is tapped
                 },
                 onTapOutside: (value) {
                   // Unfocus the text field when tapped outside
-                  if (focusNode.hasFocus) {
-                    focusNode.unfocus();
+                  if (widget.focusNode.hasFocus) {
+                    widget.focusNode.unfocus();
                   }
                 },
                 textAlign: TextAlign.center,
@@ -47,7 +63,7 @@ class AmountWidget extends StatelessWidget {
                   FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
                   // Restrict the range of input to be within 0 and 2000
                   NumericalRangeFormatter(
-                      min: 0, max: double.parse("2.000"), context: context),
+                      min: 0, max: double.parse("100000000"), context: context),
                 ],
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -55,7 +71,7 @@ class AmountWidget extends StatelessWidget {
                   hintText: "0.0",
                   hintStyle: TextStyle(color: AppTheme.white60),
                 ),
-                controller: amountController,
+                controller: widget.amountController,
                 autofocus: false,
                 style: Theme.of(context).textTheme.displayLarge,
               ),
@@ -96,7 +112,9 @@ class AmountWidget extends StatelessWidget {
               // ),
               // Icon for Bitcoin currency
               Text(
-                "BTC",
+                widget.bitcoinUnit.name,
+                //BitcoinUnitModel().bitcoinUnitAsString(bitcoinUnit),
+              //BitcoinUnitModel.bitcoinUnitAsString(),
                 style: Theme.of(context).textTheme.titleMedium,
               )
             ],
@@ -105,13 +123,13 @@ class AmountWidget extends StatelessWidget {
             height: AppTheme.elementSpacing,
           ),
           // A Center widget with a child of bitcoinToMoneyWidget()
-          Center(child: bitcoinToMoneyWidget(context)),
+          Center(child: bitcoinToMoneyWidget(context, widget.bitcoinUnit)),
         ],
       ),
     );
   }
 
-  Widget bitcoinToMoneyWidget(BuildContext context) {
+  Widget bitcoinToMoneyWidget(BuildContext context, BitcoinUnits bitcoinUnit) {
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
@@ -119,8 +137,7 @@ class AmountWidget extends StatelessWidget {
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
-        ? (double.parse(amountController.text) * bitcoinPrice)
-            .toStringAsFixed(2)
+        ? CurrencyConverter.convertCurrency(bitcoinUnit.name, double.parse(widget.amountController.text), currency, bitcoinPrice)
         : "0.00";
 
     return Text(
