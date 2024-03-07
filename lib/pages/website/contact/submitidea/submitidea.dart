@@ -1,4 +1,5 @@
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/user/ideasubmitters.dart';
 import 'package:bitnet/pages/website/contact/submitidea/submitidea_view.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +34,9 @@ class SubmitIdeaController extends State<SubmitIdea> {
   }
 
   onAddButtonTap(){
-      showModalBottomSheet(
-          backgroundColor: Colors.transparent,
+    BitNetBottomSheet(
           context: context,
-          builder: (builder) => AddContentWidget(controller: this));
+         child: AddContentWidget(controller: this));
     print("Add Button tapped");
   }
 

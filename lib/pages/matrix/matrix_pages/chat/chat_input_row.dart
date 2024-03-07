@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -125,10 +126,10 @@ class ChatInputRow extends StatelessWidget {
                   child: TextFieldButtonMorph(
                     iconData: Icons.add_rounded,
                     onTap: () {
-                      showModalBottomSheet(
+                      BitNetBottomSheet(
                           backgroundColor: Colors.transparent,
                           context: context,
-                          builder: (builder) => AddContentWidget(controller: controller,));
+                          child: AddContentWidget(controller: controller,));
                     },
                   ),
                 ),

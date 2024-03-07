@@ -18,6 +18,7 @@ Future<T?>  BitNetBottomSheet<T>(
   }
   return showModalBottomSheet(
       context: context,
+      elevation: 0.0,
       backgroundColor: Colors.transparent,
       isDismissible: isDismissible,
       isScrollControlled: isScrollControlled,
@@ -34,6 +35,7 @@ Future<T?>  BitNetBottomSheet<T>(
       builder: (context) {
         return Column(
           children: [
+            SizedBox(height: AppTheme.elementSpacing),
             Container(
               height: AppTheme.elementSpacing / 1.5,
               width: AppTheme.cardPadding * 2,
@@ -42,9 +44,9 @@ Future<T?>  BitNetBottomSheet<T>(
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
               ),
             ),
-            SizedBox(height: AppTheme.elementSpacing / 2),
+            SizedBox(height: AppTheme.elementSpacing * 0.75),
             Container(
-              height: height ?? AppTheme.cardPadding * 24 - AppTheme.cardPadding * 2,
+              height: height ?? AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.background,
                 borderRadius: BorderRadius.only(
@@ -91,14 +93,15 @@ Future<T?>  BitNetBottomSheet<T>(
                             ),
                           ],
                         ),
-                        GestureDetector(
+                        Container(),
+                        /*GestureDetector(
                           child: Icon(
                             Icons.clear_rounded,
                             size: AppTheme.cardPadding,
                             color: AppTheme.white70,
                           ),
                           onTap: () => Navigator.pop(context),
-                        )
+                        )*/
                       ],
                     ),
                   ),

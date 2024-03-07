@@ -57,7 +57,6 @@ class _AddContentWidgetState extends State<AddContentWidget> {
 
   Widget iconCreation(IconData icons, Color color, String text, MediaType mediaType) {
     return InkWell(
-
       borderRadius: BorderRadius.circular(24),
       onTap: () => widget.controller.onAddPopupMenuButtonSelected(mediaType),
       child: Container(
