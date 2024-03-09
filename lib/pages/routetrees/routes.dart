@@ -146,7 +146,7 @@ class AppRoutes {
                 ),
                 VWidget(
                   path: '/wallet/loop_screen',
-                  widget: LoopScreen(),
+                  widget: Loop(),
                   buildTransition: _fadeTransition,
                 ),
                 // VWidget(
@@ -156,11 +156,6 @@ class AppRoutes {
                 // ),
                 VWidget(
                   path: '/wallet/send',
-                  widget: const Send(),
-                  buildTransition: _fadeTransition,
-                ),
-                VWidget(
-                  path: '/wallet/loop',
                   widget: const Send(),
                   buildTransition: _fadeTransition,
                 ),
