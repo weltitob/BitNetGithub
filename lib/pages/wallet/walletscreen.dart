@@ -167,7 +167,7 @@ class WalletScreen extends StatelessWidget {
                             buttonType: ButtonType.solid,
                             title: "Send",
                             customWidth: AppTheme.cardPadding * 6.5,
-                            leadingIcon: Icon(Icons.arrow_upward_rounded),
+                            leadingIcon: Icon(FontAwesomeIcons.circleUp),
                             onTap: () {
                               VRouter.of(context).to('/wallet/send');
                             }),
@@ -175,7 +175,7 @@ class WalletScreen extends StatelessWidget {
                             buttonType: ButtonType.transparent,
                             title: "Receive",
                             customWidth: AppTheme.cardPadding * 6.5,
-                            leadingIcon: Icon(Icons.arrow_downward_rounded),
+                            leadingIcon: Icon(FontAwesomeIcons.circleDown),
                             onTap: () {
                               VRouter.of(context).to('/wallet/receive');
                             }),

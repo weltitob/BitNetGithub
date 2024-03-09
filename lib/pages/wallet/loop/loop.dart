@@ -9,6 +9,10 @@ class Loop extends StatefulWidget {
 }
 
 class LoopController extends State<Loop> {
+
+  bool animate = false;
+
+
   @override
   Widget build(BuildContext context) {
     return LoopScreen(controller: this);
