@@ -25,7 +25,8 @@ class LoopController extends State<Loop> {
         margin: EdgeInsets.symmetric(
           horizontal: AppTheme.cardPadding,
         ),
-        child: BalanceCardLightning(controller: WalletController())),
+        child: BalanceCardLightning(
+            controller: WalletController())),
   ];
 
 

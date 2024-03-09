@@ -118,7 +118,7 @@ class _BottomNavState extends State<BottomNav> {
                                 item['icon'] as IconData, // <--- Here
                                 color: context.vRouter.url
                                         .contains(item['route'] as String)
-                                    ? Colors.orange
+                                    ? AppTheme.colorBitcoin
                                     : Theme.of(context).iconTheme.color?.withOpacity(0.5),
                                 size: AppTheme.cardPadding,
                               ),

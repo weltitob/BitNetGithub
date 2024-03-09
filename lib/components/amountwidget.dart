@@ -111,8 +111,8 @@ class AmountWidget extends StatelessWidget {
               // Icon for Bitcoin currency
 
               Icon(
-                bitcoinUnit == BitcoinUnits.BTC ? FontAwesomeIcons.bitcoin : AppTheme.satoshiIcon,
-                    size: AppTheme.cardPadding * 1.25,
+                getCurrencyIcon(bitcoinUnit.name),
+                size: AppTheme.cardPadding * 1.25,
                   ),
             ],
           ),

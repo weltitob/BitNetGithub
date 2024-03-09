@@ -17,7 +17,7 @@ class BalanceCardLightning extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(double.parse(controller.lightningBalance.balance), BitcoinUnits.SAT);
-    final balanceStr = unitModel.amount.toString() + " " + unitModel.bitcoinUnitAsString;
+    final balanceStr = unitModel.amount.toString();
     return SizedBox(
       child: Stack(
         children: [
@@ -28,6 +28,7 @@ class BalanceCardLightning extends StatelessWidget {
             balanceSAT: controller.lightningBalance.balance,
             walletAddress: "safdadasdas",
             cardname: 'Lightning',
+            iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
           ),
           paymentNetworkPicture(context, "assets/images/lightning.png"),
         ],
@@ -43,7 +44,7 @@ class BalanceCardBtc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(double.parse(controller.onchainBalance.confirmedBalance), BitcoinUnits.SAT);
-    final balanceStr = unitModel.amount.toString() + " " + unitModel.bitcoinUnitAsString;
+    final balanceStr = unitModel.amount.toString();
 
     return SizedBox(
       child: Stack(
@@ -51,6 +52,7 @@ class BalanceCardBtc extends StatelessWidget {
           const BalanceBackground(),
           BalanceTextWidget(
             balanceStr: balanceStr,
+            iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
             iconData: FontAwesomeIcons.piggyBank,
             balanceSAT: controller.onchainBalance.confirmedBalance,
             walletAddress: "safdadasdas",
@@ -171,6 +173,7 @@ class BalanceTextWidget extends StatelessWidget {
   final String cardname;
   final String walletAddress;
   final IconData iconData;
+  final IconData iconDataUnit;
 
   const BalanceTextWidget({
     Key? key,
@@ -178,6 +181,7 @@ class BalanceTextWidget extends StatelessWidget {
     required this.balanceStr,
     required this.walletAddress,
     required this.iconData,
+    required this.iconDataUnit,
     required this.cardname,
   }) : super(key: key);
 
@@ -211,12 +215,22 @@ class BalanceTextWidget extends StatelessWidget {
             ],
           ),
           const Spacer(), // Replace with your AppTheme.elementSpacing if needed
-          Text(
-            balanceStr,
-            style: Theme.of(context).textTheme.headlineLarge,
+          Row(
+            children: [
+              Text(
+                balanceStr,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              // const SizedBox(
+              //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+              // ),
+              Icon(
+                iconDataUnit,
+              ),
+            ],
           ),
           const SizedBox(
-            height: 4, // Replace with your AppTheme.elementSpacing * 0.25 if needed
+            height: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing * 0.25 if needed
           ),
           Container(
             width: 160, // Replace with your AppTheme.cardPadding * 10 if needed

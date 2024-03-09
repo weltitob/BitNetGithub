@@ -33,7 +33,7 @@ import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
-import 'package:bitnet/pages/wallet/loop_screen.dart';
+import 'package:bitnet/pages/wallet/loop/loop.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:bitnet/pages/website/compliance/agbscreen.dart';
 import 'package:bitnet/pages/website/compliance/impressumscreen.dart';
@@ -149,11 +149,6 @@ class AppRoutes {
                   widget: Loop(),
                   buildTransition: _fadeTransition,
                 ),
-                // VWidget(
-                //   path: '/wallet/send_choose_receiver',
-                //   widget: const SearchReceiver(controller: null,),
-                //   buildTransition: _fadeTransition,
-                // ),
                 VWidget(
                   path: '/wallet/send',
                   widget: const Send(),
