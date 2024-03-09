@@ -8,9 +8,11 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-class AmountWidget extends StatefulWidget {
+class AmountWidget extends StatelessWidget {
+  final BuildContext context;
   final bool enabled;
   final TextEditingController amountController;
   final FocusNode focusNode;
@@ -21,13 +23,9 @@ class AmountWidget extends StatefulWidget {
     required this.enabled,
     required this.amountController,
     required this.focusNode,
-    this.bitcoinUnit = BitcoinUnits.BTC});
+    this.bitcoinUnit = BitcoinUnits.BTC,
+    required this.context});
 
-  @override
-  State<AmountWidget> createState() => _AmountWidgetState();
-}
-
-class _AmountWidgetState extends State<AmountWidget> {
   @override
   Widget build(BuildContext context) {
 
@@ -41,15 +39,15 @@ class _AmountWidgetState extends State<AmountWidget> {
             children: [
               // Text field to enter Bitcoin value
               TextField(
-                enabled: widget.enabled,
-                focusNode: widget.focusNode,
+                enabled: enabled,
+                focusNode: focusNode,
                 onTap: () {
                   // Validate Bitcoin address when the text field is tapped
                 },
                 onTapOutside: (value) {
                   // Unfocus the text field when tapped outside
-                  if (widget.focusNode.hasFocus) {
-                    widget.focusNode.unfocus();
+                  if (focusNode.hasFocus) {
+                    focusNode.unfocus();
                   }
                 },
                 textAlign: TextAlign.center,
@@ -63,7 +61,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                   FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
                   // Restrict the range of input to be within 0 and 2000
                   NumericalRangeFormatter(
-                      min: 0, max: double.parse("100000000"), context: context),
+                      min: 0, max: double.parse("99999999999"), context: context),
                 ],
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -71,7 +69,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                   hintText: "0.0",
                   hintStyle: TextStyle(color: AppTheme.white60),
                 ),
-                controller: widget.amountController,
+                controller: amountController,
                 autofocus: false,
                 style: Theme.of(context).textTheme.displayLarge,
               ),
@@ -111,24 +109,24 @@ class _AmountWidgetState extends State<AmountWidget> {
               //   style: Theme.of(context).textTheme.displayLarge,
               // ),
               // Icon for Bitcoin currency
-              Text(
-                widget.bitcoinUnit.name,
-                //BitcoinUnitModel().bitcoinUnitAsString(bitcoinUnit),
-              //BitcoinUnitModel.bitcoinUnitAsString(),
-                style: Theme.of(context).textTheme.titleMedium,
-              )
+
+              Icon(
+                bitcoinUnit == BitcoinUnits.BTC ? FontAwesomeIcons.bitcoin : AppTheme.satoshiIcon,
+                    size: AppTheme.cardPadding * 1.25,
+                  ),
             ],
           ),
           SizedBox(
             height: AppTheme.elementSpacing,
           ),
           // A Center widget with a child of bitcoinToMoneyWidget()
-          Center(child: bitcoinToMoneyWidget(context, widget.bitcoinUnit)),
+          Center(child: bitcoinToMoneyWidget(context, bitcoinUnit)),
         ],
       ),
     );
   }
 
+  //this automatically needs to update once there is a new value for the controller
   Widget bitcoinToMoneyWidget(BuildContext context, BitcoinUnits bitcoinUnit) {
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
     String? currency =
@@ -137,7 +135,7 @@ class _AmountWidgetState extends State<AmountWidget> {
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
-        ? CurrencyConverter.convertCurrency(bitcoinUnit.name, double.parse(widget.amountController.text), currency, bitcoinPrice)
+        ? CurrencyConverter.convertCurrency(bitcoinUnit.name, double.parse(amountController.text), currency, bitcoinPrice)
         : "0.00";
 
     return Text(

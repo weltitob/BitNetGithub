@@ -80,7 +80,7 @@ class _LoopScreenState extends State<LoopScreen> {
                   ),
                 ),        ],
             ),
-            AmountWidget(enabled: true, amountController: TextEditingController(text: '123'), focusNode: FocusNode())
+            AmountWidget(enabled: true, amountController: TextEditingController(text: '123'), focusNode: FocusNode(), context: context,)
           ],
         ),
       ),

@@ -191,9 +191,11 @@ class OnChainSendTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           AmountWidget(
+            bitcoinUnit: controller.bitcoinUnit,
             enabled: controller.moneyTextFieldIsEnabled,
             amountController: controller.moneyController,
             focusNode: controller.myFocusNodeMoney,
+            context: context,
           ),
           const SizedBox(
             height: AppTheme.cardPadding,

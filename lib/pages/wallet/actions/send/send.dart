@@ -14,6 +14,7 @@ import 'package:bitnet/models/bitcoin/walletkit/output.dart';
 import 'package:bitnet/models/bitcoin/walletkit/rawtransactiondata.dart';
 import 'package:bitnet/models/bitcoin/walletkit/transactiondata.dart';
 import 'package:bitnet/models/bitcoin/walletkit/utxorequest.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class SendController extends State<Send> {
     print(value);
   }
 
+  BitcoinUnits bitcoinUnit = BitcoinUnits.BTC;
   bool isLoadingExchangeRt =  true; // a flag indicating whether the exchange rate is loading
   bool isLoadingFees = false;
   bool hasReceiver = false;
