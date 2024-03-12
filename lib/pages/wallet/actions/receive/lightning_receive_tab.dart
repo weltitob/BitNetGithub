@@ -153,13 +153,13 @@ class LightningReceiveTab extends StatelessWidget {
                       ),
                       onTap: () {
                         BitNetBottomSheet(
+                          context: context,
                           //also add a help button as an action at the right once bitnetbottomsheet is fixed
                           title: "Create Invoice",
                           height: MediaQuery.of(context).size.height * 0.7,
                           child: CreateInvoice(
                             controller: controller,
                           ),
-                          context: context,
                         );
                       },
                     ),

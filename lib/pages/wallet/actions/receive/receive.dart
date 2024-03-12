@@ -45,6 +45,7 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
   GlobalKey globalKeyQR = GlobalKey();
 
   void getInvoice(int amount, String? memo) async {
+    bitcoinUnit == BitcoinUnits.SAT ? amount = amount : amount = CurrencyConverter.convertBitcoinToSats(amount.toDouble()).toInt();
     RestResponse callback = await addInvoice(amount, memo ?? "");
     print("Response" + callback.data.toString());
     InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
@@ -101,24 +102,24 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
           bitcoinUnit = BitcoinUnits.BTC;
           print(bitcoinUnit);
           amountController.text = btcAmount.toString(); // Update text to BTC
-          //setState(() {});
-          if (mounted) {
-            setState(() {
-              // Your state update logic here
-            });
-          }
+          setState(() {});
+          // if (mounted) {
+          //   setState(() {
+          //     // Your state update logic here
+          //   });
+          // }
         } else if (currentAmountDouble < 1 && currentAmountDouble != 0 && bitcoinUnit == BitcoinUnits.BTC) {
           // Convert to SATS if in BTC and amount is < 1 BTC
           double sats = CurrencyConverter.convertBitcoinToSats(currentAmountDouble);
           bitcoinUnit = BitcoinUnits.SAT;
           print(bitcoinUnit);
           amountController.text = sats.toInt().toString(); // Update text to SATS
-          //setState(() {});
-          if (mounted) {
-            setState(() {
-              // Your state update logic here
-            });
-          }
+          setState(() {});
+          // if (mounted) {
+          //   setState(() {
+          //     // Your state update logic here
+          //   });
+          // }
         }
         else{
           print("ELSE STATEMENT WAS TRIGGERED: " + bitcoinUnit.toString() + " " + currentAmountDouble.toString());
@@ -130,8 +131,8 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
 
   @override
   void dispose() {
-    //amountController.removeListener(updateAmountDisplay);
-    //amountController.dispose();
+    amountController.removeListener(updateAmountDisplay);
+    amountController.dispose();
     super.dispose();
   }
 

@@ -16,6 +16,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   flutter_localizations:
     sdk: flutter
 
@@ -245,6 +246,11 @@ flutter_launcher_icons:
   intl:
 
 flutter:
+  fonts:
+    - family: SatoshiSymbol
+      fonts:
+        - asset: assets/fonts/Satoshi Symbol.ttf
+
   generate: true
   uses-material-design: true
   assets:

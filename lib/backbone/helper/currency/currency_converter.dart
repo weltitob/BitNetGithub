@@ -9,7 +9,7 @@ class CurrencyConverter {
       if (inputCurrency == outputCurrency) {
         return amount.toStringAsFixed(2);
       } else if (inputCurrency == "BTC") {
-        return (amount * bitcoinPrice!).toStringAsFixed(8);
+        return (amount * bitcoinPrice!).toStringAsFixed(2);
       }
       else if (inputCurrency == "BTC" && outputCurrency == "SATS") {
         return convertBitcoinToSats(amount).toStringAsFixed(8);
