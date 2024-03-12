@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
+import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
@@ -103,6 +104,8 @@ class MyApp extends StatelessWidget {
             tree: WidgetTree(context: context),
             child: MultiProvider(
               providers: [
+                ChangeNotifierProvider<CardChangeProvider>(
+                    create: (context) => CardChangeProvider()),
                 //FROM Ahmad remove later once we have a proper implementation
                 // ChangeNotifierProvider<MyThemeProvider>(
                 //     create: (context) => MyThemeProvider()),
@@ -124,6 +127,8 @@ class MyApp extends StatelessWidget {
           )
         : MultiProvider(
             providers: [
+              ChangeNotifierProvider<CardChangeProvider>(
+                  create: (context) => CardChangeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider()),
               ChangeNotifierProvider<CurrencyChangeProvider>(

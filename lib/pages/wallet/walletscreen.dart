@@ -1,5 +1,7 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -9,6 +11,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:bitnet/components/items/balancecard.dart';
@@ -20,25 +23,37 @@ import 'package:vibration/vibration.dart';
 import 'package:vrouter/vrouter.dart';
 import 'package:another_flushbar/flushbar.dart';
 
-
-class WalletScreen extends StatelessWidget {
+class WalletScreen extends StatefulWidget {
   final WalletController controller;
   const WalletScreen({Key? key, required this.controller}) : super(key: key);
 
   @override
+  State<WalletScreen> createState() => _WalletScreenState();
+}
+
+
+class _WalletScreenState extends State<WalletScreen> {
+
+
+  @override
   Widget build(BuildContext context) {
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
-
     final bitcoinPrice = chartLine?.price;
+    String? card = Provider.of<CardChangeProvider>(context).selectedCard;
+    print(card);
+    final currencyEquivalent = bitcoinPrice != null
+        ? (widget.controller.totalBalanceSAT / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
+        : "0.00";
 
-    final currencyEquivalent = bitcoinPrice != null ? (controller.totalBalanceSAT / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
-
-    List<Container> cards = [
-      Container(child: BalanceCardLightning(controller: controller)),
-      Container(child: BalanceCardBtc(controller: controller)),
-    ];
+    List<Container> cards =  [
+            Container(
+                child: BalanceCardLightning(controller: widget.controller)),
+            Container(child: BalanceCardBtc(controller: widget.controller)),
+          ];
 
     return bitnetScaffold(
       context: context,
@@ -47,18 +62,18 @@ class WalletScreen extends StatelessWidget {
           Stack(
             children: [
               GlassContainer(
-                borderThickness: 0,
+                  borderThickness: 0,
                   child: Container(
-                height: AppTheme.cardPadding * 12,
-              )),
+                    height: AppTheme.cardPadding * 12,
+                  )),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: AppTheme.cardPadding * 1.5),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -72,7 +87,7 @@ class WalletScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "${controller.totalBalanceStr}",
+                                  "${widget.controller.totalBalanceStr}",
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 Text(
@@ -87,8 +102,7 @@ class WalletScreen extends StatelessWidget {
                             size: AppTheme.cardPadding * 1.25,
                             buttonType: ButtonType.transparent,
                             iconData: FontAwesomeIcons.eye,
-                            onTap: () {
-                            }),
+                            onTap: () {}),
                       ],
                     ),
                   ),
@@ -101,15 +115,23 @@ class WalletScreen extends StatelessWidget {
                               horizontal: AppTheme.cardPadding,
                               vertical: AppTheme.cardPadding),
                           scale: 1.0,
+                          initialIndex: card == 'lightning' ? 0 : 1,
                           cardsCount: cards.length,
-                          onSwipe: (int index, int? previousIndex, CardSwiperDirection direction) {
-                            //removed because not intended anymore Vibration.vibrate();
+                          onSwipe: (int index, int? previousIndex,
+                              CardSwiperDirection direction) {
+                            print('card');
+                            print(card);
+                            Provider.of<CardChangeProvider>(context,
+                                    listen: false)
+                                .setCardInDatabase(card == 'onChain'
+                                    ? 'lightning'
+                                    : 'onChain');
                             return true;
                           },
-                          cardBuilder:
-                              (context, index, percentThresholdX, percentThresholdY) =>
-                                  cards[index],
-                        ),
+                          cardBuilder: (context, index, percentThresholdX,
+                                  percentThresholdY) =>
+                              cards[index],
+                        )
                       ],
                     ),
                   ),
@@ -118,17 +140,17 @@ class WalletScreen extends StatelessWidget {
                       title: 'Loop',
                       buttonType: ButtonType.transparent,
                       customWidth: AppTheme.cardPadding * 4.5,
-                        customHeight: AppTheme.cardPadding * 1.5,
-                        leadingIcon: Icon(Icons.loop_rounded),
-                        onTap: (){
+                      customHeight: AppTheme.cardPadding * 1.5,
+                      leadingIcon: Icon(Icons.loop_rounded),
+                      onTap: () {
                         VRouter.of(context).to("/wallet/loop_screen");
-                        },
+                      },
                     ),
                   ),
                   const SizedBox(height: AppTheme.cardPadding * 1),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
                     child: Text(
                       "Chart",
                       style: Theme.of(context).textTheme.titleLarge,
@@ -136,8 +158,8 @@ class WalletScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppTheme.cardPadding),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
                     child: CryptoItem(
                       currency: Currency(
                         code: 'BTC',
@@ -149,8 +171,8 @@ class WalletScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppTheme.cardPadding * 1.5),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
                     child: Text(
                       "Actions",
                       style: Theme.of(context).textTheme.titleLarge,
@@ -158,8 +180,8 @@ class WalletScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppTheme.cardPadding),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -184,8 +206,8 @@ class WalletScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppTheme.cardPadding * 2),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -200,13 +222,15 @@ class WalletScreen extends StatelessWidget {
                                 buttonType: ButtonType.transparent,
                                 iconData: FontAwesomeIcons.filter,
                                 onTap: () {}),
-                            SizedBox(width: AppTheme.elementSpacing,),
+                            SizedBox(
+                              width: AppTheme.elementSpacing,
+                            ),
                             LongButtonWidget(
                                 title: "All",
                                 buttonType: ButtonType.transparent,
                                 customWidth: AppTheme.cardPadding * 2.5,
                                 customHeight: AppTheme.cardPadding * 1.25,
-                                onTap: (){}),
+                                onTap: () {}),
                           ],
                         ),
                       ],
