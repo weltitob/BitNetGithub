@@ -8,6 +8,7 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
+import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -121,6 +122,8 @@ class MyApp extends StatelessWidget {
                   create: (_) => Auth().userWalletStreamForAuthChanges,
                   initialData: null,
                 ),
+                ChangeNotifierProvider<BalanceHideProvider>(
+                    create: (context) => BalanceHideProvider()),
               ],
               child: bTree.WidgetTree(),
             ),
@@ -165,6 +168,8 @@ class MyApp extends StatelessWidget {
                 create: (_) => Auth().userWalletStreamForAuthChanges,
                 initialData: null,
               ),
+              ChangeNotifierProvider<BalanceHideProvider>(
+                  create: (context) => BalanceHideProvider()),
             ],
             child: bTree.WidgetTree(),
           );

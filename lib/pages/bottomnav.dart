@@ -45,8 +45,8 @@ class _BottomNavState extends State<BottomNav> {
           .singleWhereOrNull((value) => value.name == data.data()?['theme_mode']) ?? ThemeMode.system);
       ThemeController.of(context).setPrimaryColor(Color(data.data()?['primary_color']));
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
-      Provider.of<LocalProvider>(context).setLocaleInDatabase(data.data()?['lang'], locale);
-      Provider.of<CardChangeProvider>(context).setCardInDatabase(data.data()?['selected_card']);
+      Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
+      Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card']);
       setState(() {
       });
     }else{
@@ -95,52 +95,52 @@ class _BottomNavState extends State<BottomNav> {
         children: [
           widget.child,
           // Body content will be managed by VRouter based on the current route
-          if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
-              !context.vRouter.path.contains(kNftProductScreenRoute))
-            Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-              IgnorePointer(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(top: AppTheme.cardPadding * 30),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height -
-                        AppTheme.cardPadding * 30,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        // Use color stops to create an "exponential" effect
-                        stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
-                        colors: [
-                          Theme.of(context)
-                              .colorScheme
-                              .background
-                              .withOpacity(0.0001),
-                          Theme.of(context)
-                              .colorScheme
-                              .background
-                              .withOpacity(0.33),
-                          Theme.of(context)
-                              .colorScheme
-                              .background
-                              .withOpacity(0.66),
-                          Theme.of(context)
-                              .colorScheme
-                              .background
-                              .withOpacity(0.99),
-                          // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
-                          // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
-                          // Theme.of(context).colorScheme.background,
-                          // Theme.of(context).colorScheme.background,
-                          Theme.of(context).colorScheme.background,
-                          Theme.of(context).colorScheme.background
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            ]),
+          // if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
+          //     !context.vRouter.path.contains(kNftProductScreenRoute))
+          //   Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+          //     IgnorePointer(
+          //       child: Padding(
+          //         padding:
+          //             const EdgeInsets.only(top: AppTheme.cardPadding * 30),
+          //         child: Container(
+          //           height: MediaQuery.of(context).size.height -
+          //               AppTheme.cardPadding * 30,
+          //           decoration: BoxDecoration(
+          //             gradient: LinearGradient(
+          //               begin: Alignment.topCenter,
+          //               end: Alignment.bottomCenter,
+          //               // Use color stops to create an "exponential" effect
+          //               stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
+          //               colors: [
+          //                 Theme.of(context)
+          //                     .colorScheme
+          //                     .background
+          //                     .withOpacity(0.0001),
+          //                 Theme.of(context)
+          //                     .colorScheme
+          //                     .background
+          //                     .withOpacity(0.33),
+          //                 Theme.of(context)
+          //                     .colorScheme
+          //                     .background
+          //                     .withOpacity(0.66),
+          //                 Theme.of(context)
+          //                     .colorScheme
+          //                     .background
+          //                     .withOpacity(0.99),
+          //                 // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
+          //                 // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
+          //                 // Theme.of(context).colorScheme.background,
+          //                 // Theme.of(context).colorScheme.background,
+          //                 Theme.of(context).colorScheme.background,
+          //                 Theme.of(context).colorScheme.background
+          //               ],
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     )
+          //   ]),
           if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
               !context.vRouter.path.contains(kNftProductScreenRoute))
             Positioned(

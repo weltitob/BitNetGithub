@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 
@@ -194,54 +195,58 @@ class BalanceTextWidget extends StatelessWidget {
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
 
-    return Padding(
-      padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25,),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return   Consumer<BalanceHideProvider>(
+        builder: (context, balanceHideProvider, _) {
+          return  Padding(
+          padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25,),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                iconData,
-                size: 24, // Replace with your AppTheme.elementSpacing * 1.75 if needed
+              Row(
+                children: [
+                  Icon(
+                    iconData,
+                    size: 24, // Replace with your AppTheme.elementSpacing * 1.75 if needed
+                  ),
+                  const SizedBox(
+                    width: 8, // Replace with your AppTheme.elementSpacing if needed
+                  ),
+                  Text(
+                    cardname,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
+              ),
+              const Spacer(), // Replace with your AppTheme.elementSpacing if needed
+              balanceHideProvider.hideBalance! ? Text('*****'): Row(
+                children: [
+                  Text(
+                    balanceStr,
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                  // const SizedBox(
+                  //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                  // ),
+                  Icon(
+                    iconDataUnit,
+                  ),
+                ],
               ),
               const SizedBox(
-                width: 8, // Replace with your AppTheme.elementSpacing if needed
+                height: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing * 0.25 if needed
               ),
-              Text(
-                cardname,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ],
-          ),
-          const Spacer(), // Replace with your AppTheme.elementSpacing if needed
-          Row(
-            children: [
-              Text(
-                balanceStr,
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              // const SizedBox(
-              //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-              // ),
-              Icon(
-                iconDataUnit,
+              balanceHideProvider.hideBalance! ? Text('*****'): Container(
+                width: 160, // Replace with your AppTheme.cardPadding * 10 if needed
+                child: Text(
+                  "= $currencyEquivalent${getCurrency(currency!)}",
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
             ],
           ),
-          const SizedBox(
-            height: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing * 0.25 if needed
-          ),
-          Container(
-            width: 160, // Replace with your AppTheme.cardPadding * 10 if needed
-            child: Text(
-              "= $currencyEquivalent${getCurrency(currency!)}",
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-        ],
-      ),
+        );
+      }
     );
   }
 }

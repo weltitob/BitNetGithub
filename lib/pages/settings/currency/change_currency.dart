@@ -69,24 +69,22 @@ class _DashboardPageState extends State<DashboardPage> {
       resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-        child: Column(
-          children: [
-            SearchFieldWidget(
-                hintText: lang!.searchC,
-                isSearchEnabled: true,
-                onChanged: (val) {
-                  setState(() {
-                    search.text = val;
-                  });
-                },
-                handleSearch: (dynamic){}),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.35,
-              width: double.infinity,
-              child: currencyData(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SearchFieldWidget(
+                  hintText: lang!.searchC,
+                  isSearchEnabled: true,
+                  onChanged: (val) {
+                    setState(() {
+                      search.text = val;
+                    });
+                  },
+                  handleSearch: (dynamic){}),
+              currencyData(
                 currenciesModel,),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
