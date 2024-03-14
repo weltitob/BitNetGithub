@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ class CurrencyChangeProvider extends ChangeNotifier {
 
   // Method to update the first currency and its corresponding Firestore document
   void setFirstCurrencyInDatabase(String selectedCurrency) {
-    FirebaseFirestore.instance.collection("settings")
+    settingsCollection
         .doc(FirebaseAuth.instance.currentUser!.uid).update({
       "selectedCurrency": selectedCurrency,
     });

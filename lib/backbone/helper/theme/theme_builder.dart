@@ -1,5 +1,10 @@
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/streams/card_provider.dart';
+import 'package:bitnet/backbone/streams/locale_provider.dart';
+import 'package:bitnet/pages/routetrees/widgettree.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:matrix/matrix.dart';
@@ -43,39 +48,74 @@ class ThemeController extends State<ThemeBuilder> {
       );
 
   void _loadData(_) async {
-    final preferences =
-        _sharedPreferences ??= await SharedPreferences.getInstance();
-
-    final rawThemeMode = preferences.getString(widget.themeModeSettingsKey);
-    final rawColor = preferences.getInt(widget.primaryColorSettingsKey);
-
-    setState(() {
-      _themeMode = ThemeMode.values
-          .singleWhereOrNull((value) => value.name == rawThemeMode);
-      _primaryColor = rawColor == null ? null : Color(rawColor);
-    });
+    QuerySnapshot querySnapshot = await settingsCollection.get();
+    final allData = querySnapshot.docs.map((doc) => doc.id).toList();
+    print('rawTheme');
+    print(allData);
+    if(allData.contains(FirebaseAuth.instance.currentUser!.uid)){
+      var data = await settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get();
+      print(data.data());
+      final rawThemeMode = data.data()?['theme_mode'];
+      final rawColor = data.data()?['primary_color'];
+      final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
+      Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
+      Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card'] ?? 'lightning');
+      setState(() {
+        _themeMode = ThemeMode.values
+            .singleWhereOrNull((value) => value.name == rawThemeMode);
+        _primaryColor = rawColor == null ? null : Color(rawColor);
+      });
+    }else{
+      print('id');
+      print(FirebaseAuth.instance.currentUser!.uid);
+      Map<String,dynamic> data = {
+        "theme_mode" : "system",
+        "lang" : "en",
+        "primary_color": 4283657726,
+        "selected_currency":"USD",
+        "selected_card":"lightning"
+      };
+      settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid)
+          .set(data);
+    }
+    // final preferences =
+    //     _sharedPreferences ??= await SharedPreferences.getInstance();
+    //
+    // final rawThemeMode = preferences.getString(widget.themeModeSettingsKey);
+    // final rawColor = preferences.getInt(widget.primaryColorSettingsKey);
+    // print('rawTheme');
+    // print(rawThemeMode);
+    // print(rawColor);
+    // setState(() {
+    //   _themeMode = ThemeMode.values
+    //       .singleWhereOrNull((value) => value.name == rawThemeMode);
+    //   _primaryColor = rawColor == null ? null : Color(rawColor);
+    // });
   }
 
   Future<void> setThemeMode(ThemeMode newThemeMode) async {
     Logs().d('setThemeMode: $newThemeMode');
-    final preferences =
-        _sharedPreferences ??= await SharedPreferences.getInstance();
-    await preferences.setString(widget.themeModeSettingsKey, newThemeMode.name);
+    // final preferences =
+    //     _sharedPreferences ??= await SharedPreferences.getInstance();
+   // await preferences.setString(widget.themeModeSettingsKey, newThemeMode.name);
+    await settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({widget.themeModeSettingsKey : newThemeMode.name});
     setState(() {
       _themeMode = newThemeMode;
     });
   }
 
   Future<void> setPrimaryColor(Color? newPrimaryColor) async {
-    final preferences =
-        _sharedPreferences ??= await SharedPreferences.getInstance();
+    // final preferences =
+    //     _sharedPreferences ??= await SharedPreferences.getInstance();
     if (newPrimaryColor == null) {
-      await preferences.remove(widget.primaryColorSettingsKey);
+      //await preferences.remove(widget.primaryColorSettingsKey);
+      await settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
     } else {
-      await preferences.setInt(
-        widget.primaryColorSettingsKey,
-        newPrimaryColor.value,
-      );
+      await settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({widget.primaryColorSettingsKey: newPrimaryColor.value});
+      // await preferences.setInt(
+      //   widget.primaryColorSettingsKey,
+      //   newPrimaryColor.value,
+      // );
     }
     setState(() {
       _primaryColor = newPrimaryColor;

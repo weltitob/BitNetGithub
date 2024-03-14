@@ -1,3 +1,5 @@
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/background_push.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_scroll_behaviour.dart';
@@ -24,6 +26,7 @@ import 'package:vrouter/vrouter.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 
+
 class WidgetTree extends StatefulWidget {
   static GlobalKey<VRouterState> routerKey = GlobalKey<VRouterState>();
 
@@ -44,10 +47,6 @@ class _WidgetTreeState extends State<WidgetTree> {
   initState() {
     super.initState();
 
-
-    //language and also currency needs to be fetched aswell but need to implment a solid system that uses firebase instead of sharedprefs
-    getColor();
-    getBrightness();
 
     getclientsfunc();
     isBiometricsAvailable();
@@ -254,20 +253,23 @@ class _WidgetTreeState extends State<WidgetTree> {
   int? primaryColor;
   SharedPreferences? preferences;
 
-  Future getColor() async {
-    preferences = await SharedPreferences.getInstance();
-    primaryColor = preferences!.getInt("primary_color");
-    setState(() {});
-    return primaryColor.toString();
-  }
-
-  ThemeMode? theme_mode;
-
-  Future getBrightness() async {
-    preferences = await SharedPreferences.getInstance();
-    theme_mode = preferences!.getString("theme_mode") as ThemeMode;
-    setState(() {});
-    return theme_mode.toString();
-  }
+  // Future getColor() async {
+  //   preferences = await SharedPreferences.getInstance();
+  //   var data = await settingsCollection.doc(profileId).get();
+  //   primaryColor = data['primary_color'];
+  //   setState(() {});
+  //   return primaryColor.toString();
+  // }
+  //
+  // ThemeMode? theme_mode;
+  //
+  // Future getBrightness() async {
+  //   preferences = await SharedPreferences.getInstance();
+  //   String theme = preferences!.getString("theme_mode") ?? '';
+  //   print('theeme');
+  //   print(theme);
+  //   setState(() {});
+  //   return theme_mode.toString();
+  // }
 
 }
