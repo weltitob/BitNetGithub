@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/l10n/l10n.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +10,7 @@ class LocalProvider extends ChangeNotifier{
 
   void setLocaleInDatabase(String langCode,Locale locale){
     if(!L10n.all.contains(locale)) return;
-    FirebaseFirestore.instance.collection("settings")
+    settingsCollection
         .doc(FirebaseAuth.instance.currentUser!.uid).update({
       "lang" : langCode,
     });

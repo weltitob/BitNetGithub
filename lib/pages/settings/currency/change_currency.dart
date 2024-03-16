@@ -81,7 +81,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 },
                 handleSearch: (dynamic){}),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.5,
+              height: MediaQuery.of(context).size.height * 0.35,
               width: double.infinity,
               child: currencyData(
                 currenciesModel,),
