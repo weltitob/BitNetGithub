@@ -14,7 +14,16 @@ class CreateInvoice extends StatefulWidget {
   State<CreateInvoice> createState() => _CreateInvoiceState();
 }
 
+
 class _CreateInvoiceState extends State<CreateInvoice> {
+
+  @override
+void initState() {
+widget.controller.receiveState.addListener(() {
+  setState((){});
+});
+super.initState();
+}
   @override
   Widget build(BuildContext context) {
     return Column(

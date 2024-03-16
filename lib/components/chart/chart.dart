@@ -289,11 +289,14 @@ class _ChartWidgetState extends State<ChartWidget> {
               majorTickLines: const MajorTickLines(width: 0)),
           series: <ChartSeries>[
             // Renders line chart
-            LineSeries<ChartLine, double>(
+            SplineSeries<ChartLine, double>(
               onRendererCreated: (ChartSeriesController controller) {
                 _chartSeriesController = controller;
               },
               dataSource: currentline,
+                  splineType: SplineType.natural,
+                  cardinalSplineTension: 0.6,
+
               animationDuration: 0,
               xValueMapper: (ChartLine crypto, _) => crypto.time,
               yValueMapper: (ChartLine crypto, _) => crypto.price,

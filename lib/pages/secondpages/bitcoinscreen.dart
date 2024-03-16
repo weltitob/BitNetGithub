@@ -132,38 +132,44 @@ class _BitcoinScreenState extends State<BitcoinScreen>
             ),
           ),
           RoundedContainer(
+            contentPadding: const EdgeInsets.all(0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Hashrate & Difficulty chart",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      GlassContainer(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                  value: selectedMonth,
-                                  onChanged: (String? newValue) {
-                                    selectedMonth = newValue!;
-                                    getData();
-                                    setState(() {
-                                    });
-                                  },
-                                  items: <String>['3M', '6M', '1Y', '2Y', '3Y']
-                                      .map<DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList()),
-                            ),
-                          )),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(left:AppTheme.cardPadding,
+                    right: AppTheme.cardPadding ,
+                    top: AppTheme.cardPadding),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Hashrate & Difficulty chart",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        GlassContainer(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                    value: selectedMonth,
+                                    onChanged: (String? newValue) {
+                                      selectedMonth = newValue!;
+                                      getData();
+                                      setState(() {
+                                      });
+                                    },
+                                    items: <String>['3M', '6M', '1Y', '2Y', '3Y']
+                                        .map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList()),
+                              ),
+                            )),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: AppTheme.elementSpacing,
