@@ -1,8 +1,12 @@
 //bitcoin screen
 
+import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/mydivider.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
@@ -99,7 +103,55 @@ class _BitcoinScreenState extends State<BitcoinScreen>
         scrollDirection: Axis.vertical,
         controller: _controller,
         children: [
-          ChartWidget(),
+          Column(
+            children: [
+              ChartWidget(),
+              SizedBox(height: AppTheme.elementSpacing * 2,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  LongButtonWidget(
+                      customWidth: AppTheme.cardPadding * 6.5,
+                      customHeight: AppTheme.cardPadding * 2.5,
+                      title: "Buy", onTap: (){
+                        BitNetBottomSheet(context: context, child:
+                        Column(
+                          children: [
+                            AmountWidget(
+                                enabled: true,
+                                amountController: TextEditingController(),
+                                focusNode: FocusNode(),
+                                context: context
+                            ),
+                          ],
+                        )
+                        );
+                  }),
+                  SizedBox(width: AppTheme.elementSpacing,),
+                  LongButtonWidget(
+                      buttonType: ButtonType.transparent,
+                      customWidth: AppTheme.cardPadding * 6.5,
+                      customHeight: AppTheme.cardPadding * 2.5,
+                      title: "Sell",
+                      onTap: (){
+                        BitNetBottomSheet(context: context, child:
+                        Column(
+                        children: [
+                        AmountWidget(
+                            enabled: true,
+                            amountController: TextEditingController(),
+                        focusNode: FocusNode(),
+                        context: context
+                        ),
+                        ],
+                        ));
+                      }),
+                ],
+              )
+            ],
+          ),
           RoundedContainer(
             contentPadding: const EdgeInsets.all(0),
             child: Obx(() => controller.isLoading.isTrue

@@ -136,8 +136,9 @@ class LightningReceiveTab extends StatelessWidget {
             height: AppTheme.cardPadding * 1.5,
           ),
           if (!controller.createdInvoice) Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(child: MyDivider()),
                     SizedBox(
                       width: AppTheme.elementSpacing / 2,
                     ),
@@ -163,33 +164,24 @@ class LightningReceiveTab extends StatelessWidget {
                         );
                       },
                     ),
-                    SizedBox(
-                      width: AppTheme.elementSpacing / 2,
-                    ),
-                    Expanded(child: MyDivider()),
-                  ],
-                ) else Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    // Add a button to copy the wallet address to the clipboard
-                    LongButtonWidget(
-                      customHeight: AppTheme.cardPadding * 2,
-                      customWidth: AppTheme.cardPadding * 6,
-                      buttonType: ButtonType.transparent,
-                      title: "Teilen",
-                      leadingIcon: Icon(
-                        Icons.share_rounded,
-                        size: AppTheme.cardPadding,
-                        color: AppTheme.white90,
-                      ),
+                    RoundedButtonWidget(iconData: Icons.share_rounded,
                       onTap: () {
                         // Share the wallet address
                         Share.share('${controller.qrCodeDataStringLightning}');
                       },
+                      buttonType: ButtonType.transparent,),
+                    RoundedButtonWidget(iconData: FontAwesomeIcons.copy, onTap: () async {
+                      await Clipboard.setData(
+                          ClipboardData(text: controller.qrCodeDataStringLightning));
+                      // Display a snackbar to indicate that the wallet address has been copied
+                      showOverlay(
+                          context, "Wallet-Adresse in Zwischenablage kopiert");
+                    }, buttonType: ButtonType.transparent,),
+                    SizedBox(
+                      width: AppTheme.elementSpacing / 2,
                     ),
-                    // Add a button to share the wallet address
                   ],
-                ),
+                ) else Container()
         ],
       ),
     );
