@@ -4,6 +4,8 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoice
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
@@ -16,7 +18,8 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:matrix/matrix.dart';
 
 class Transactions extends StatefulWidget {
-  const Transactions({Key? key}) : super(key: key);
+  bool fullList;
+   Transactions({Key? key, this.fullList = false}) : super(key: key);
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -133,22 +136,13 @@ class _TransactionsState extends State<Transactions>
 
     combinedTransactions.sort((a, b) => a.data.timestamp.compareTo(b.data.timestamp));
     combinedTransactions = combinedTransactions.reversed.toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: AppTheme.elementSpacing),
-          child: transactionsLoaded
-              ? Container(
-                  height: AppTheme.cardPadding * 18,
-                  child: ListView(children: combinedTransactions))
-              : Container(
-                  height: AppTheme.cardPadding * 18,
-                  child: dotProgress(context),
-                ),
-        ),
-      ],
-    );
+    var filterList = widget.fullList ? combinedTransactions : combinedTransactions.sublist(0,4);
+    return transactionsLoaded && filterList.isNotEmpty ? widget.fullList ? bitnetScaffold(
+      context: context,
+      appBar: bitnetAppBar(context: context, onTap: (){Navigator.pop(context);},),
+      body: ListView(children: filterList)
+    ) : Container(
+        height: AppTheme.cardPadding * 18,
+        child: ListView(children: filterList)) : Container(height: AppTheme.cardPadding * 18, child: dotProgress(context),);
   }
 }

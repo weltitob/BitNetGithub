@@ -235,7 +235,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                 buttonType: ButtonType.transparent,
                                 customWidth: AppTheme.cardPadding * 2.5,
                                 customHeight: AppTheme.cardPadding * 1.25,
-                                onTap: () {}),
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Transactions(fullList: true)));
+                                }),
                           ],
                         ),
                       ],

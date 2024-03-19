@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -11,7 +12,10 @@ import 'package:vrouter/vrouter.dart';
 
 class SearchReceiver extends StatelessWidget {
   final SendController controller;
+
   const SearchReceiver({super.key, required this.controller});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +57,8 @@ class SearchReceiver extends StatelessWidget {
                     controller: controller.bitcoinReceiverAdressController,
                     onFieldSubmitted: (value) {
                       Logs().w("Adress: $value");
-                      controller.validateAdress(value);
+                      QRScannerController().onQRCodeScanned(value);
+                      //controller.validateAdress(value);
                     },
                     autofocus: false,
                   ),

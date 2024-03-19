@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/components/items/lightning_transaction_details.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -143,7 +144,15 @@ class _TransactionItemState extends State<TransactionItem> {
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => print("Transaction tapped"),
+                  onTap: () {
+                    if(widget.data.type == TransactionType.lightning) {
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) =>
+                              LightningTransactionDetails(data: widget.data,)));
+                    } else {
+
+                    }
+                    },
                 ),
               )
             ],
