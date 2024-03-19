@@ -24,8 +24,6 @@ class UserData extends Equatable {
   final Timestamp updatedAt;
   final bool isActive;
   final int dob;
-  final UserWallet mainWallet;
-  final List<UserWallet> wallets;
 
   const UserData({
     required this.backgroundImageUrl,
@@ -42,8 +40,6 @@ class UserData extends Equatable {
     required this.updatedAt,
     required this.isActive,
     required this.dob,
-    required this.mainWallet,
-    required this.wallets,
   });
 
   @override
@@ -63,8 +59,6 @@ class UserData extends Equatable {
       updatedAt,
       isActive,
       dob,
-      mainWallet,
-      wallets
     ];
   }
 
@@ -83,8 +77,6 @@ class UserData extends Equatable {
     bool? isPrivate,
     bool? showFollowers,
     int? dob,
-    UserWallet? mainWallet,
-    List<UserWallet>? wallets,
   }) {
     return UserData(
       did: did ?? this.did,
@@ -101,8 +93,6 @@ class UserData extends Equatable {
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
       dob: dob ?? this.dob,
-      mainWallet: mainWallet ?? this.mainWallet,
-      wallets: wallets ?? this.wallets,
     );
   }
 
@@ -122,8 +112,6 @@ class UserData extends Equatable {
       'updatedAt': updatedAt,
       'isActive': isActive,
       'dob': dob,
-      'mainWallet': mainWallet.toMap(),
-      'wallets': wallets.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -143,9 +131,9 @@ class UserData extends Equatable {
       showFollowers: map['showFollowers'] ?? false,
       isPrivate: map['isPrivate'] ?? false,
       dob: map['dob']?.toInt() ?? 0,
-      mainWallet: UserWallet.fromMap(map['mainWallet'] ?? {}),
-      wallets: List<UserWallet>.from(
-          map['wallets']?.map((x) => UserWallet.fromMap(x))),
+      // mainWallet: UserWallet.fromMap(map['mainWallet'] ?? {}),
+      // wallets: List<UserWallet>.from(
+      //     map['wallets']?.map((x) => UserWallet.fromMap(x))),
     );
   }
 
@@ -165,9 +153,9 @@ class UserData extends Equatable {
       showFollowers: doc['showFollowers'],
       isPrivate: doc['isPrivate'],
       dob: doc['dob'],
-      mainWallet: UserWallet.fromMap(doc['mainWallet'] ?? {}),
-      wallets: List<UserWallet>.from(
-          doc['wallets'].map((x) => UserWallet.fromMap(x))),
+      // mainWallet: UserWallet.fromMap(doc['mainWallet'] ?? {}),
+      // wallets: List<UserWallet>.from(
+      //     doc['wallets'].map((x) => UserWallet.fromMap(x))),
     );
   }
 
@@ -178,6 +166,6 @@ class UserData extends Equatable {
 
   @override
   String toString() {
-    return 'User(did: $did, displayName: $displayName, bio: $bio, backgroundImageUrl: $backgroundImageUrl, customToken: $customToken, username: $username, profileImageUrl: $profileImageUrl, wallets: $wallets, mainWallet: $mainWallet, createdAt: $createdAt, updatedAt: $updatedAt, isPrivate: $isPrivate, showFollowers: $showFollowers, isActive: $isActive, dob: $dob)';
+    return 'User(did: $did, displayName: $displayName, bio: $bio, backgroundImageUrl: $backgroundImageUrl, customToken: $customToken, username: $username, profileImageUrl: $profileImageUrl, createdAt: $createdAt, updatedAt: $updatedAt, isPrivate: $isPrivate, showFollowers: $showFollowers, isActive: $isActive, dob: $dob)';
   }
 }

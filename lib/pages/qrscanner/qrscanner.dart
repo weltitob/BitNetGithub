@@ -6,7 +6,6 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner_view.dart';
-import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:matrix/matrix.dart';
@@ -96,8 +95,7 @@ class QRScannerController extends State<QrScanner> {
       // Handle Profile QR code
         break;
       case QRTyped.RestoreLogin:
-      // Handle LightningMail QR code
-        break;
+        onScannedForSignIn(encodedString);
       case QRTyped.Unknown:
         //send to unknown qr code page which shows raw data
         //VRouter.of(context).to("/error");

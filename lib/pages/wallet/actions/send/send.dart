@@ -209,8 +209,11 @@ class SendController extends State<Send> {
             isFinished = true;
           });
 
+          //VRouter.of(context).to("/wallet");
+
           if (restResponse.statusCode == "success") {
             // Display a success message and navigate to the bottom navigation bar
+            VRouter.of(context).to("/wallet");
           } else {
             setState(() {
               // Display an error message if the cloud function failed and set isFinished to false
