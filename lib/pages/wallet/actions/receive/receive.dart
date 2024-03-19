@@ -26,6 +26,7 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
   late String qrCodeDataStringOnchain = "";
   BitcoinUnits bitcoinUnit = BitcoinUnits.SAT;
   ReceiveType receiveType = ReceiveType.Lightning;
+  ReceiveState receiveState = ReceiveState(0);
   bool _updatingText = false;
 
   FocusNode myFocusNode = FocusNode();
@@ -103,6 +104,7 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
           print(bitcoinUnit);
           amountController.text = btcAmount.toString(); // Update text to BTC
           setState(() {});
+          receiveState.value +=1;
           // if (mounted) {
           //   setState(() {
           //     // Your state update logic here
@@ -115,6 +117,8 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
           print(bitcoinUnit);
           amountController.text = sats.toInt().toString(); // Update text to SATS
           setState(() {});
+                    receiveState.value +=1;
+
           // if (mounted) {
           //   setState(() {
           //     // Your state update logic here
@@ -140,4 +144,10 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     return ReceiveScreen(controller: this);
   }
+
+}
+
+class ReceiveState extends ValueNotifier<int> {
+  ReceiveState(super.value);
+  
 }

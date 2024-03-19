@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
@@ -127,43 +128,48 @@ class OnChainReceiveTab extends StatelessWidget {
             height: AppTheme.cardPadding,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Add a button to copy the wallet address to the clipboard
-              LongButtonWidget(
-                customHeight: AppTheme.cardPadding * 2,
-                customWidth: AppTheme.cardPadding * 6,
-                buttonType: ButtonType.transparent,
-                title: "Kopieren",
-                leadingIcon: Icon(
-                  Icons.copy_rounded,
-                  size: AppTheme.cardPadding,
-                  color: AppTheme.white90,
-                ),
-                onTap: () async {
-                  await Clipboard.setData(
-                      ClipboardData(text: controller.qrCodeDataStringOnchain));
-                  // Display a snackbar to indicate that the wallet address has been copied
-                  showOverlay(
-                      context, "Wallet-Adresse in Zwischenablage kopiert");
-                },
+              SizedBox(
+                width: AppTheme.elementSpacing / 2,
               ),
               LongButtonWidget(
                 customHeight: AppTheme.cardPadding * 2,
-                customWidth: AppTheme.cardPadding * 6,
+                customWidth: AppTheme.cardPadding * 8,
                 buttonType: ButtonType.transparent,
-                title: "Teilen",
+                title: "Wallet-type",
                 leadingIcon: Icon(
-                  Icons.share_rounded,
+                  FontAwesomeIcons.bitcoin,
                   size: AppTheme.cardPadding,
                   color: AppTheme.white90,
                 ),
                 onTap: () {
-                  // Share the wallet address
-                  Share.share('${controller.qrCodeDataStringOnchain}');
+                  BitNetBottomSheet(
+                    context: context,
+                    //also add a help button as an action at the right once bitnetbottomsheet is fixed
+                    title: "Change Wallet Type",
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: Container(),
+                  );
                 },
               ),
-              // Add a button to share the wallet address
+              RoundedButtonWidget(iconData: Icons.share_rounded,
+                onTap: () {
+                  // Share the wallet address
+                  Share.share('${controller.qrCodeDataStringLightning}');
+                },
+                buttonType: ButtonType.transparent,),
+              RoundedButtonWidget(iconData: FontAwesomeIcons.copy, onTap: () async {
+                await Clipboard.setData(
+                    ClipboardData(text: controller.qrCodeDataStringLightning));
+                // Display a snackbar to indicate that the wallet address has been copied
+                showOverlay(
+                    context, "Wallet-Adresse in Zwischenablage kopiert");
+              }, buttonType: ButtonType.transparent,),
+              SizedBox(
+                width: AppTheme.elementSpacing / 2,
+              ),
             ],
           ),
           // Add some space between the rows

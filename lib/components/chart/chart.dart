@@ -189,7 +189,7 @@ class _ChartWidgetState extends State<ChartWidget> {
               child: _loading
                   ? Center(
                       child: Container(
-                        height: AppTheme.cardPadding * 16,
+                        height: AppTheme.cardPadding * 14,
                         child: avatarGlow(
                           context,
                           Icons.currency_bitcoin,
@@ -213,7 +213,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     double _firstpriceexact = currentline.first.price;
 
     return SizedBox(
-      height: AppTheme.cardPadding * 16,
+      height: AppTheme.cardPadding * 14,
       child: SfCartesianChart(
           trackballBehavior: _trackballBehavior,
           onTrackballPositionChanging: (args) {
@@ -289,11 +289,14 @@ class _ChartWidgetState extends State<ChartWidget> {
               majorTickLines: const MajorTickLines(width: 0)),
           series: <ChartSeries>[
             // Renders line chart
-            LineSeries<ChartLine, double>(
+            SplineSeries<ChartLine, double>(
               onRendererCreated: (ChartSeriesController controller) {
                 _chartSeriesController = controller;
               },
               dataSource: currentline,
+                  splineType: SplineType.natural,
+                  cardinalSplineTension: 0.6,
+
               animationDuration: 0,
               xValueMapper: (ChartLine crypto, _) => crypto.time,
               yValueMapper: (ChartLine crypto, _) => crypto.price,

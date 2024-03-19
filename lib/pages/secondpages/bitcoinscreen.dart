@@ -1,8 +1,12 @@
 //bitcoin screen
 
+import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/mydivider.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
@@ -99,7 +103,55 @@ class _BitcoinScreenState extends State<BitcoinScreen>
         scrollDirection: Axis.vertical,
         controller: _controller,
         children: [
-          ChartWidget(),
+          Column(
+            children: [
+              ChartWidget(),
+              SizedBox(height: AppTheme.elementSpacing * 2,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  LongButtonWidget(
+                      customWidth: AppTheme.cardPadding * 6.5,
+                      customHeight: AppTheme.cardPadding * 2.5,
+                      title: "Buy", onTap: (){
+                        BitNetBottomSheet(context: context, child:
+                        Column(
+                          children: [
+                            AmountWidget(
+                                enabled: true,
+                                amountController: TextEditingController(),
+                                focusNode: FocusNode(),
+                                context: context
+                            ),
+                          ],
+                        )
+                        );
+                  }),
+                  SizedBox(width: AppTheme.elementSpacing,),
+                  LongButtonWidget(
+                      buttonType: ButtonType.transparent,
+                      customWidth: AppTheme.cardPadding * 6.5,
+                      customHeight: AppTheme.cardPadding * 2.5,
+                      title: "Sell",
+                      onTap: (){
+                        BitNetBottomSheet(context: context, child:
+                        Column(
+                        children: [
+                        AmountWidget(
+                            enabled: true,
+                            amountController: TextEditingController(),
+                        focusNode: FocusNode(),
+                        context: context
+                        ),
+                        ],
+                        ));
+                      }),
+                ],
+              )
+            ],
+          ),
           RoundedContainer(
             contentPadding: const EdgeInsets.all(0),
             child: Obx(() => controller.isLoading.isTrue
@@ -132,38 +184,44 @@ class _BitcoinScreenState extends State<BitcoinScreen>
             ),
           ),
           RoundedContainer(
+            contentPadding: const EdgeInsets.all(0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Hashrate & Difficulty chart",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      GlassContainer(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                  value: selectedMonth,
-                                  onChanged: (String? newValue) {
-                                    selectedMonth = newValue!;
-                                    getData();
-                                    setState(() {
-                                    });
-                                  },
-                                  items: <String>['3M', '6M', '1Y', '2Y', '3Y']
-                                      .map<DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList()),
-                            ),
-                          )),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(left:AppTheme.cardPadding,
+                    right: AppTheme.cardPadding ,
+                    top: AppTheme.cardPadding),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Hashrate & Difficulty chart",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        GlassContainer(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                    value: selectedMonth,
+                                    onChanged: (String? newValue) {
+                                      selectedMonth = newValue!;
+                                      getData();
+                                      setState(() {
+                                      });
+                                    },
+                                    items: <String>['3M', '6M', '1Y', '2Y', '3Y']
+                                        .map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList()),
+                              ),
+                            )),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: AppTheme.elementSpacing,
