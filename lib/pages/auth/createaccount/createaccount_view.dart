@@ -54,7 +54,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                 }
               }),
           body: BackgroundWithContent(
-            backgroundType: BackgroundType.image,
+            backgroundType: BackgroundType.asset,
             opacity: 0.8,
             child: Form(
               key: widget.controller.form,
@@ -69,7 +69,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                     height: AppTheme.cardPadding * 4,
                   ),
                   Container(
-                    height: AppTheme.cardPadding * 4.5,
+                    height: AppTheme.cardPadding * 5,
                     child: AnimatedTextKit(
                       animatedTexts: [
                         TypewriterAnimatedText(
@@ -83,21 +83,6 @@ class _CreateAccountViewState extends State<CreateAccountView>
                       displayFullTextOnTap: false,
                       stopPauseOnTap: false,
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        L10n.of(context)!.poweredByDIDs,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Container(
-                        margin:
-                            EdgeInsets.only(left: AppTheme.elementSpacing / 2),
-                        height: AppTheme.cardPadding * 1.5,
-                        child: Image.asset("assets/images/ion.png"),
-                      ),
-                    ],
                   ),
                   SizedBox(
                     height: AppTheme.cardPadding,
