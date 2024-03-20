@@ -6,6 +6,8 @@ import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
@@ -15,6 +17,7 @@ import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:matrix/matrix.dart';
 
 class Transactions extends StatefulWidget {
@@ -88,6 +91,7 @@ class _TransactionsState extends State<Transactions>
 
   @override
   Widget build(BuildContext context) {
+    var filterList;
     var combinedTransactions = [
       ...lightningInvoices.map((transaction) => TransactionItem(
         context: context,
@@ -136,10 +140,18 @@ class _TransactionsState extends State<Transactions>
 
     combinedTransactions.sort((a, b) => a.data.timestamp.compareTo(b.data.timestamp));
     combinedTransactions = combinedTransactions.reversed.toList();
-    var filterList = widget.fullList ? combinedTransactions : combinedTransactions.sublist(0,4);
-    return transactionsLoaded && filterList.isNotEmpty ? widget.fullList ? bitnetScaffold(
+    filterList = widget.fullList ? combinedTransactions : combinedTransactions.sublist(0,4);
+
+    return transactionsLoaded  ? widget.fullList ? bitnetScaffold(
       context: context,
-      appBar: bitnetAppBar(context: context, onTap: (){Navigator.pop(context);},),
+      appBar: bitnetAppBar(context: context, text: 'Activity',actions: [ Padding(
+        padding: const EdgeInsets.only(right: 20.0),
+        child: RoundedButtonWidget(
+            size: AppTheme.cardPadding * 1.25,
+            buttonType: ButtonType.transparent,
+            iconData: FontAwesomeIcons.filter,
+            onTap: () {}),
+      ),], onTap: (){Navigator.pop(context);},),
       body: ListView(children: filterList)
     ) : Container(
         height: AppTheme.cardPadding * 18,
