@@ -57,7 +57,7 @@ class SearchReceiver extends StatelessWidget {
                     controller: controller.bitcoinReceiverAdressController,
                     onFieldSubmitted: (value) {
                       Logs().w("Adress: $value");
-                      QRScannerController().onQRCodeScanned(value);
+                      QRScannerController().onQRCodeScanned(value, context);
                       //controller.validateAdress(value);
                     },
                     autofocus: false,

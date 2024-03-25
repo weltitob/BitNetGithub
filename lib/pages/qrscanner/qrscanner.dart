@@ -6,9 +6,11 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner_view.dart';
+import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
+import 'package:get/get.dart';
 import 'package:matrix/matrix.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vrouter/vrouter.dart';
@@ -70,7 +72,7 @@ class QRScannerController extends State<QrScanner> {
   }
 
 
-  void onQRCodeScanned(dynamic encodedString) {
+  void onQRCodeScanned(dynamic encodedString, BuildContext cxt) {
     // Logic to determine the type of QR code
     QRTyped type = determineQRType(encodedString);
 
@@ -79,14 +81,16 @@ class QRScannerController extends State<QrScanner> {
       // Handle LightningMail QR code
         break;
       case QRTyped.OnChain:
-        VRouter.of(context).to("/wallet/send?walletAdress=$encodedString");
+       // Navigator.push(cxt, MaterialPageRoute(builder: (context)=>Send()));
+        VRouter.of(cxt).to("/wallet/send?walletAdress=$encodedString");
         break;
       case QRTyped.Invoice:
         print("INVIUCE DETECTED!");
         Logs().w("Invoice was detected will forward to Send screen...");
         //have to parse or give the page everything I know about the invoice
         try {
-          VRouter.of(context).to("/wallet/send?invoice=$encodedString");
+          //Navigator.push(context, MaterialPageRoute(builder: (context)=>Send()));
+          VRouter.of(cxt).to("/wallet/send?invoice=$encodedString");
           //VRouter.of(context).to("/wallet/receive");
         } catch (e) {
           Logs().e("Failed forwarding with error: $e");
