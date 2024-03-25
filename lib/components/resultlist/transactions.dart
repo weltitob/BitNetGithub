@@ -91,7 +91,6 @@ class _TransactionsState extends State<Transactions>
 
   @override
   Widget build(BuildContext context) {
-    var filterList;
     var combinedTransactions = [
       ...lightningInvoices.map((transaction) => TransactionItem(
         context: context,
@@ -140,7 +139,7 @@ class _TransactionsState extends State<Transactions>
 
     combinedTransactions.sort((a, b) => a.data.timestamp.compareTo(b.data.timestamp));
     combinedTransactions = combinedTransactions.reversed.toList();
-    filterList = widget.fullList ? combinedTransactions : combinedTransactions.sublist(0,4);
+
 
     return transactionsLoaded  ? widget.fullList ? bitnetScaffold(
       context: context,
@@ -152,9 +151,10 @@ class _TransactionsState extends State<Transactions>
             iconData: FontAwesomeIcons.filter,
             onTap: () {}),
       ),], onTap: (){Navigator.pop(context);},),
-      body: ListView(children: filterList)
+      body: ListView(children: combinedTransactions)
     ) : Container(
         height: AppTheme.cardPadding * 18,
-        child: ListView(children: filterList)) : Container(height: AppTheme.cardPadding * 18, child: dotProgress(context),);
+        child: ListView(
+            children: combinedTransactions)) : Container(height: AppTheme.cardPadding * 18, child: dotProgress(context),);
   }
 }
