@@ -350,7 +350,6 @@ class ProfileView extends StatelessWidget {
   void onQRButtonPressed(BuildContext context) {
     BitNetBottomSheet(
         context: context,
-        height: 450.0,
         title: "Share Profile",
         iconData: Icons.qr_code_rounded,
         child: Center(

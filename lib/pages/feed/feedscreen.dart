@@ -136,7 +136,7 @@ class _FeedScreenState extends State<FeedScreen>
                 ndef.cachedMessage!.records.first.payload);
             print(message.substring(3, message.length));
             QRScannerController().onQRCodeScanned(
-                message.substring(3, message.length));
+                message.substring(3, message.length), context);
             }
           }
           // Do something with an NfcTag instance.

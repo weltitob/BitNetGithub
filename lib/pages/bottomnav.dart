@@ -91,9 +91,9 @@ class _BottomNavState extends State<BottomNav> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
-      body: Stack(
+      body: Column(
         children: [
-          widget.child,
+          Expanded(child: widget.child),
           // Body content will be managed by VRouter based on the current route
           // if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
           //     !context.vRouter.path.contains(kNftProductScreenRoute))
@@ -141,37 +141,40 @@ class _BottomNavState extends State<BottomNav> {
           //       ),
           //     )
           //   ]),
-          if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
-              !context.vRouter.path.contains(kNftProductScreenRoute))
+          if (context.vRouter.path == '/feed' || context.vRouter.path == '/rooms' ||
+        context.vRouter.path == '/create' || context.vRouter.path == '/wallet' || context.vRouter.path.contains('/profile'))
             Positioned(
               bottom: AppTheme.cardPadding,
               left: AppTheme.cardPadding * 1,
               right: AppTheme.cardPadding * 1,
-              child: GlassContainer(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppTheme.elementSpacing * 1.25,
-                      vertical: AppTheme.elementSpacing * 1.25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      for (var item in navItems)
-                        InkWell(
-                          onTap: () => onTabTapped(item['route'] as String),
-                          child: Column(
-                            children: [
-                              Icon(
-                                item['icon'] as IconData, // <--- Here
-                                color: context.vRouter.url
-                                        .contains(item['route'] as String)
-                                    ? AppTheme.colorBitcoin
-                                    : Theme.of(context).iconTheme.color?.withOpacity(0.5),
-                                size: AppTheme.cardPadding,
-                              ),
-                            ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                child: GlassContainer(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing * 1.25,
+                        vertical: AppTheme.elementSpacing * 1.25),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        for (var item in navItems)
+                          InkWell(
+                            onTap: () => onTabTapped(item['route'] as String),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  item['icon'] as IconData, // <--- Here
+                                  color: context.vRouter.url
+                                          .contains(item['route'] as String)
+                                      ? AppTheme.colorBitcoin
+                                      : Theme.of(context).iconTheme.color?.withOpacity(0.5),
+                                  size: AppTheme.cardPadding,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

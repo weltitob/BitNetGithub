@@ -39,7 +39,7 @@ class SearchReceiver extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: AppTheme.cardPadding * 4),
+            margin: EdgeInsets.only(bottom: AppTheme.cardPadding ),
             height: 85,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
