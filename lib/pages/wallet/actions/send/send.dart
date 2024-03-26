@@ -148,35 +148,35 @@ class SendController extends State<Send> {
     // dynamic paymentHash = req.tags[0].data;
   }
 
-  void validateAdress(String value) {
-    if (value.isEmpty) {
-      Logs().w("Value: $value... Diese Walletadresse scheint nicht zu existieren");
-    }
-    Logs().w("Value: ->$value");
-    //https://pub.dev/packages/bolt11_decoder
-    final isLightningMailValid = isLightningAdressAsMail(value);
-    final isStringInvoice = isStringALNInvoice(value);
-    final isBitcoinValid = isBitcoinWalletValid(value);
-
-    if (isBitcoinValid) {
-      final walletType = getBitcoinWalletType(value);
-      Logs().w(walletType.toString());
-      final walletdetails = getBitcoinWalletDetails(value);
-      Logs().w(walletdetails.toString());
-    }
-    if (isLightningMailValid) {
-
-    }
-    if (isStringInvoice) {
-      giveValuesToInvoice(value);
-      setState(() {
-
-      });
-    }
-    else {
-      Logs().w("Value: $value... Diese Walletadresse scheint nicht zu existieren");
-    } //to indicate the input is valid
-  }
+  // void validateAdress(String value) {
+  //   if (value.isEmpty) {
+  //     Logs().w("Value: $value... Diese Walletadresse scheint nicht zu existieren");
+  //   }
+  //   Logs().w("Value: ->$value");
+  //   //https://pub.dev/packages/bolt11_decoder
+  //   final isLightningMailValid = isLightningAdressAsMail(value);
+  //   final isStringInvoice = isStringALNInvoice(value);
+  //   final isBitcoinValid = isBitcoinWalletValid(value);
+  //
+  //   if (isBitcoinValid) {
+  //     final walletType = getBitcoinWalletType(value);
+  //     Logs().w(walletType.toString());
+  //     final walletdetails = getBitcoinWalletDetails(value);
+  //     Logs().w(walletdetails.toString());
+  //   }
+  //   if (isLightningMailValid) {
+  //
+  //   }
+  //   if (isStringInvoice) {
+  //     giveValuesToInvoice(value);
+  //     setState(() {
+  //
+  //     });
+  //   }
+  //   else {
+  //     Logs().w("Value: $value... Diese Walletadresse scheint nicht zu existieren");
+  //   } //to indicate the input is valid
+  // }
 
   changeFees(String fees){
     setState(() {

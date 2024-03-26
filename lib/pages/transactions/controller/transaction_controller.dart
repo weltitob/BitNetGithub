@@ -30,7 +30,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 class TransactionController extends GetxController {
   TransactionController({this.txID});
-  final HomeController homeController = Get.find();
+  final HomeController homeController = Get.put(HomeController());
   TransactionModel? transactionModel;
   RxList<TransactionModel> subTransactionModel = <TransactionModel>[].obs;
   AddressComponentModel? addressComponentModel;

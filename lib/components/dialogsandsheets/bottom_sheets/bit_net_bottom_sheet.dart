@@ -26,7 +26,7 @@ Future<T?>  BitNetBottomSheet<T>(
       isDismissible: isDismissible,
       isScrollControlled: isScrollControlled,
       constraints: BoxConstraints(
-        maxHeight: height ?? AppTheme.cardPadding * 25,
+        maxHeight: height ?? AppTheme.cardPadding * 22.5,
         maxWidth: AppTheme.columnWidth * 1.5,
       ),
       shape: RoundedRectangleBorder(

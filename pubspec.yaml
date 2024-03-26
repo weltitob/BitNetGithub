@@ -217,6 +217,9 @@ dependencies:
   intl_generator: ^0.4.1
   build_runner: ^2.4.8
 
+  #nfc_manager:
+  nfc_manager: ^3.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
