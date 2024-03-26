@@ -100,8 +100,7 @@ class QRScannerController extends State<QrScanner> {
       // Handle Profile QR code
         break;
       case QRTyped.RestoreLogin:
-      // Handle LightningMail QR code
-        break;
+        onScannedForSignIn(encodedString);
       case QRTyped.Unknown:
         //send to unknown qr code page which shows raw data
         //VRouter.of(context).to("/error");

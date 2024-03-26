@@ -152,7 +152,7 @@ class _SwipeableButtonViewState extends State<SwipeableButtonView>
     return Container(
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
-          borderRadius: AppTheme.cardRadiusMid,
+          borderRadius: AppTheme.cardRadiusBig,
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -173,7 +173,7 @@ class _SwipeableButtonViewState extends State<SwipeableButtonView>
               : double.infinity,
           height: AppTheme.cardPadding * 2.5,
           decoration: BoxDecoration(
-            borderRadius: AppTheme.cardRadiusMid,
+            borderRadius: AppTheme.cardRadiusBig,
             gradient: LinearGradient(
               begin: Alignment.bottomLeft,
               end: Alignment.topRight,
@@ -220,7 +220,7 @@ class _SwipeableButtonViewState extends State<SwipeableButtonView>
                                   child: Container(
                                     padding: const EdgeInsets.all(1),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(34),
+                                      borderRadius: AppTheme.cardRadiusMid,
                                       gradient: const LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,

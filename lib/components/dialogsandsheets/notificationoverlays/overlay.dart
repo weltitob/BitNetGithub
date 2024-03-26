@@ -4,7 +4,7 @@ import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 
-void showOverlay(BuildContext context, String? message) async {
+void showOverlay(BuildContext context, String? message, {Color color = AppTheme.successColor}) async {
   // Trigger a simple vibration
   if (await Vibration.hasVibrator() ?? false) {
   Vibration.vibrate();
@@ -33,7 +33,7 @@ void showOverlay(BuildContext context, String? message) async {
           child: Container(
             height: 100, // Set the height to 200
             decoration: BoxDecoration(
-              color: Colors.green,
+              color: color ?? AppTheme.successColor,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(AppTheme.borderRadiusBig),
                 bottomRight: Radius.circular(AppTheme.borderRadiusBig),

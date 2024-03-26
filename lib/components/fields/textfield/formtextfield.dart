@@ -25,6 +25,10 @@ class FormTextField extends StatefulWidget {
   final String? prefixText;
   final Widget? suffixIcon;
   final bool isMultiline;
+  final bool readOnly; // Add read-only property
+  final double? width; // Customizable width
+  final double? height; // Customizable height
+
 
   const FormTextField({
     Key? key,
@@ -47,6 +51,9 @@ class FormTextField extends StatefulWidget {
     this.prefixText,
     this.suffixIcon,
     this.isMultiline = false,
+    this.readOnly = false,
+    this.width, // Add width to constructor
+    this.height, // Add height to constructor
   }) : super(key: key);
 
   @override
@@ -80,6 +87,8 @@ class _FormTextFieldState extends State<FormTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: widget.width, // Use the custom or default width
+      height: widget.height, // Use the custom or default height
       margin: EdgeInsets.only(top: AppTheme.elementSpacing),
       child: ClipRRect(
         borderRadius: AppTheme.cardRadiusMid,
@@ -95,6 +104,7 @@ class _FormTextFieldState extends State<FormTextField> {
                   color: AppTheme.colorGlassContainer,
                 ),
                 child: TextFormField(
+                  readOnly: widget.readOnly, // Set the read-only property
                   onTapOutside: widget.onTapOutside,
                   maxLength: widget.maxLength,
                   autofocus: widget.autofocus,

@@ -1,22 +1,17 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
-import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:bitnet/models/matrix_models/identityprovider_matrix.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
 import 'package:vrouter/vrouter.dart';
 
 class CreateAccount extends StatefulWidget {
-  VerificationCode code;
-  CreateAccount({required this.code});
+  CreateAccount({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<CreateAccount> createState() => CreateAccountController();
@@ -24,14 +19,26 @@ class CreateAccount extends StatefulWidget {
 
 class CreateAccountController extends State<CreateAccount> {
 
+  late String code;
+  late String issuer;
+
   @override
   void initState() {
     super.initState();
-    //vllt genau hier crap iwie
+  }
+
+  void processParameters(BuildContext context) {
+    Logs().w("Process parameters for createAccount called");
+    final Map<String, String> parameters = VRouter.of(context).queryParameters;
+    if (parameters.containsKey('code')) {
+      code = parameters['code']!;
+    }
+    if(parameters.containsKey('issuer')) {
+      issuer = parameters['issuer']!;
+    }
   }
 
   final GlobalKey<FormState> form = GlobalKey<FormState>();
-  String profileimageurl = "https://media.discordapp.net/attachments/1077885354608177222/1111142365340635206/weltitob_a_corud_of_people_holding_their_fist_up_recolution_str_c5102adf-bf30-4478-aacf-acdd5d618e83.png?width=548&height=548";
 
   String? errorMessage = null;
   String? username = '';
@@ -76,7 +83,6 @@ class CreateAccountController extends State<CreateAccount> {
       isLoading = true;
     });
 
-
     localpart = controllerUsername.text.trim().toLowerCase().replaceAll(' ', '_');
     if (localpart.isEmpty) {
       setState(() {
@@ -92,10 +98,21 @@ class CreateAccountController extends State<CreateAccount> {
 
       if (!usernameExists) {
         // You can create the user here since they don't exist yet.
-        print("Username is still available");
-        await createUserLocal();
+        Logs().w("Username is still available");
+
+        //VRouter.of(context).queryParameters.clear();
+
+        Logs().w("Queryparameters that will be passed: $code, $issuer, $localpart");
+
+        VRouter.of(context).to('/mnemonicgen', queryParameters: {
+          'code': code,
+          'issuer': issuer,
+          'username': localpart,
+        });
+
+        //await createUserLocal();
       } else {
-        print("Username already exists.");
+        Logs().e("Username already exists.");
         errorMessage = "This username is already taken.";
         // The username already exists.
       }
@@ -122,111 +139,13 @@ class CreateAccountController extends State<CreateAccount> {
     // Matrix.of(context).loginAvatar = picked;
   }
 
-  Future<void> createUserLocal() async {
-    try {
-      //final userwalletdata = await createWallet(email: _controllerEmail.text);
-      //create ION wallet for the user with all abilities
-      final userwalletdata = UserWallet(
-          walletAddress: "abcde",
-          walletType: "walletType",
-          walletBalance: "0.0",
-          privateKey: "privateKey",
-          userdid: "userdid",
-      );
-
-      final List<UserWallet> walletlist = [userwalletdata];
-
-      final userdata = UserData(
-          backgroundImageUrl: profileimageurl,
-          isPrivate: false,
-          showFollowers: false,
-          did: "",
-          mainWallet: userwalletdata,
-          displayName: controllerUsername.text,
-          bio: "Hey there Bitcoiners! I joined the revolution!",
-          customToken: "customToken",
-          username: localpart,
-          profileImageUrl: profileimageurl,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          isActive: true,
-          dob: 0,
-          wallets: walletlist,
-      );
-
-      Logs().w("Signing up user for Matrix now...");
-      //matrixSignUp();
-      Logs().w("For now simply login in own matrix client until own sever is setup and can register there somehow.");
-
-      //dieser call leitet uns iwie bereits weiter zur matrix page da das muss verhindert werden
-      Auth().loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
-
-      Logs().w("Making firebase auth now...");
-
-      final UserData? currentuserwallet = await firebaseAuthentication(
-          userdata,
-          VerificationCode(
-              used: false,
-              code: widget.code.code,
-              issuer: widget.code.issuer,
-              receiver: widget.code.receiver));
 
 
-      Logs().w("Navigating to homescreen now...");
-      VRouter.of(context).to('/');
-
-    } on MatrixException catch(e){
-      print("Matrix Exception: $e");
-      throw Exception(e);
-    }
-    on FirebaseException catch (e) {
-      print("Firebase Exception: $e");
-      throw Exception(
-          "We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");
-    } catch (e) {
-      //implement error throw
-      print("STILL NEED TO ADD ERROR TEXT IN SOME WAY");
-      throw Exception(e);
-    }
-  }
-
-  Future<UserData?> firebaseAuthentication(
-      UserData userData, VerificationCode code) async {
-    try {
-      //blablabla
-      Logs().w("Creating firebase user now...");
-
-      final UserData currentuserwallet = await Auth().createUserFake(
-        user: userData,
-        code: code,
-      );
-
-      // final UserData currentuserwallet = await Auth().createUser(
-      //   user: userData,
-      //   code: code,
-      // );
-
-
-      return currentuserwallet;
-    }on FirebaseException catch (e) {
-      Logs().e("Firebase Exception: $e");
-      setState(() {
-        errorMessage =
-        "We currently have troubles reaching our servers which connect with the blockchain. Please try again later.";
-        throw Exception("Error: $e");
-      });
-    }
-    catch (e) {
-      setState(() {
-        errorMessage = "${L10n.of(context)!.errorSomethingWrong}: ${e}";
-      });
-      throw Exception("Error: $e");
-    }
-    return null;
-  }
 
   @override
   Widget build(BuildContext context) {
+    processParameters(context);
+
     return CreateAccountView(controller: this,);
   }
 }

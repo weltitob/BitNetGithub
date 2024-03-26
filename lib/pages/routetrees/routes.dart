@@ -1,6 +1,9 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 import 'package:bitnet/pages/auth/getstartedscreen.dart';
 import 'package:bitnet/pages/auth/ionloadingscreen.dart';
+import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
+import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
 import 'package:bitnet/pages/auth/old_matrix/connect/connect_page.dart';
 import 'package:bitnet/pages/auth/pinverificationscreen.dart';
 import 'package:bitnet/pages/auth/restore/chooserestorescreen.dart';
@@ -17,7 +20,6 @@ import 'package:bitnet/pages/chat_list/chat_matrixwidgets_settings/chat_matrixwi
 import 'package:bitnet/pages/chat_list/chat_permissions_settings/chat_permissions_settings.dart';
 import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
 import 'package:bitnet/pages/create/createasset.dart';
-import 'package:bitnet/pages/create/createscreen.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
@@ -354,9 +356,14 @@ class AppRoutes {
               widget: const PinVerificationScreen(),
               stackedRoutes: [
                 VWidget(
-                  path: '/register/:pin',
-                  widget: const ChatDetails(),
+                  path: '/createaccount',
+                  widget: CreateAccount(),
                 ),
+                VWidget(
+                  path: '/mnemonicgen',
+                  widget: const MnemonicGen(),
+                ),
+
               ],
             ),
             VWidget(
