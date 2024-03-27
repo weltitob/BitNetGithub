@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
@@ -10,6 +11,7 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +44,15 @@ class _WalletScreenState extends State<WalletScreen> {
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
     final bitcoinPrice = chartLine?.price;
+        final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
+
     String? card = Provider.of<CardChangeProvider>(context).selectedCard;
     print(card);
     final currencyEquivalent = bitcoinPrice != null
         ? (widget.controller.totalBalanceSAT / 100000000 * bitcoinPrice)
             .toStringAsFixed(2)
         : "0.00";
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(double.parse(widget.controller.onchainBalance.confirmedBalance), BitcoinUnits.SAT);
 
     List<Container> cards =  [
             Container(
@@ -83,18 +88,33 @@ class _WalletScreenState extends State<WalletScreen> {
                               size: AppTheme.cardPadding * 2,
                             ),
                             const SizedBox(width: AppTheme.elementSpacing),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${widget.controller.totalBalanceStr}",
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                Text(
-                                  "= ${currencyEquivalent}${getCurrency(currency)}",
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                ),
-                              ],
+                            GestureDetector(
+                                onTap:() => coin.setCurrencyType(coin.coin != null ? !coin.coin!: false),
+
+                              child: Container(
+                                
+                                child: 
+                                  (coin.coin ?? true) ?
+                                 Row(
+                children: [
+                  Text(
+                    widget.controller.totalBalanceStr,
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                  // const SizedBox(
+                  //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                  // ),
+                  Icon(
+                    getCurrencyIcon(unitModel.bitcoinUnitAsString),
+                  ),
+                ],
+              ) :
+                                  Text(
+                                    "${currencyEquivalent}${getCurrency(currency)}",
+                                    style: Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                
+                              ),
                             ),
                           ],
                         ),

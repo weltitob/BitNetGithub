@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -129,6 +130,7 @@ class MyApp extends StatelessWidget {
             providers: [
               ChangeNotifierProvider<CardChangeProvider>(
                   create: (context) => CardChangeProvider()),
+              ChangeNotifierProvider<CurrencyTypeProvider>(create:(context)=> CurrencyTypeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider()),
               ChangeNotifierProvider<CurrencyChangeProvider>(

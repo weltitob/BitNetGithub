@@ -1195,22 +1195,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.2"
-  flutter_olm:
-    dependency: "direct main"
-    description:
-      name: flutter_olm
-      sha256: fef0c9476d02c0df25ef0a66680bc23ac529a36b4911505910bcd8711b449c81
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
-  flutter_openssl_crypto:
-    dependency: "direct main"
-    description:
-      name: flutter_openssl_crypto
-      sha256: b64a0825d79f10b6d5f5951f7ce2d5ddc12ed532129fc5a7e0ce472f5b97d78e
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -2488,22 +2472,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.9"
-  rive:
-    dependency: "direct main"
-    description:
-      name: rive
-      sha256: c4293ea52f9bf45edeebad3b1eb0bddc284bd11f14ede54780bf5efa1c491b4a
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.10.1"
-  rive_common:
-    dependency: transitive
-    description:
-      name: rive_common
-      sha256: f98a451a5d6c8c82693b4eab1dd65413800bab69ac7f9f8fad79fd39bb5ba3ab
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   rxdart:
     dependency: transitive
     description:

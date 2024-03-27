@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
@@ -189,6 +190,7 @@ class BalanceTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
     String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
@@ -214,32 +216,45 @@ class BalanceTextWidget extends StatelessWidget {
               ),
             ],
           ),
-          const Spacer(), // Replace with your AppTheme.elementSpacing if needed
-          Row(
-            children: [
-              Text(
-                balanceStr,
+          const Spacer(), // Replace with AppTheme.elementSpacing if needed
+          if(coin.coin ?? true) ...[
+GestureDetector(
+  onTap:() => coin.setCurrencyType(coin.coin != null ? !coin.coin!: false),
+  child: Container(
+    width: 160,
+    child: Row(
+                children: [
+                  Text(
+                    balanceStr,
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                  // const SizedBox(
+                  //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                  // ),
+                  Icon(
+                    iconDataUnit,
+                  ),
+                ],
+              ),
+  ),
+),
+          ] else ...[
+              GestureDetector(
+                  onTap:() => coin.setCurrencyType(coin.coin != null ? !coin.coin!: false),
+
+                child: Container(
+                            width: 160, // Replace with your AppTheme.cardPadding * 10 if needed
+                            child: Text(
+                "$currencyEquivalent${getCurrency(currency!)}",
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                          ),
               ),
-              // const SizedBox(
-              //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-              // ),
-              Icon(
-                iconDataUnit,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing * 0.25 if needed
-          ),
-          Container(
-            width: 160, // Replace with your AppTheme.cardPadding * 10 if needed
-            child: Text(
-              "= $currencyEquivalent${getCurrency(currency!)}",
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
+          ]
+          
+        
+        
         ],
       ),
     );
