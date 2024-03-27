@@ -292,7 +292,7 @@ class ProfileView extends StatelessWidget {
                         builder: (BuildContext context, StateSetter setModalState) {
                           return Container(
                             // Set the desired height
-                            height: MediaQuery.of(context).size.height * 0.8, // 80% of screen height
+                            //height: MediaQuery.of(context).size.height * 0.8, // 80% of screen height
                             decoration: BoxDecoration(
                               color: Theme.of(context).canvasColor, // Add a background color here
                               borderRadius: new BorderRadius.only(
@@ -350,7 +350,6 @@ class ProfileView extends StatelessWidget {
   void onQRButtonPressed(BuildContext context) {
     BitNetBottomSheet(
         context: context,
-        height: 450.0,
         title: "Share Profile",
         iconData: Icons.qr_code_rounded,
         child: Center(

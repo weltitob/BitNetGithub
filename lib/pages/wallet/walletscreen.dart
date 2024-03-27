@@ -11,6 +11,7 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -88,7 +89,10 @@ class _WalletScreenState extends State<WalletScreen> {
                               size: AppTheme.cardPadding * 2,
                             ),
                             const SizedBox(width: AppTheme.elementSpacing),
-                            GestureDetector(
+                            Consumer<BalanceHideProvider>(
+                                builder: (context, balanceHideProvider, _) {
+                                return balanceHideProvider.hideBalance! ? Text('*****') :        
+                                GestureDetector(
                                 onTap:() => coin.setCurrencyType(coin.coin != null ? !coin.coin!: false),
 
                               child: Container(
@@ -110,11 +114,13 @@ class _WalletScreenState extends State<WalletScreen> {
                 ],
               ) :
                                   Text(
-                                    "${currencyEquivalent}${getCurrency(currency)}",
+                                    "${currencyEquivalent}${getCurrency(currency!)}",
                                     style: Theme.of(context).textTheme.titleLarge,
                                   ),
                                 
-                              ),
+                              ));
+                              }
+                    
                             ),
                           ],
                         ),
@@ -122,7 +128,9 @@ class _WalletScreenState extends State<WalletScreen> {
                             size: AppTheme.cardPadding * 1.25,
                             buttonType: ButtonType.transparent,
                             iconData: FontAwesomeIcons.eye,
-                            onTap: () {}),
+                            onTap: () {
+                              Provider.of<BalanceHideProvider>(context, listen: false).setHideBalance();
+                            }),
                       ],
                     ),
                   ),
@@ -139,8 +147,6 @@ class _WalletScreenState extends State<WalletScreen> {
                           cardsCount: cards.length,
                           onSwipe: (int index, int? previousIndex,
                               CardSwiperDirection direction) {
-                            print('card');
-                            print(card);
                             Provider.of<CardChangeProvider>(context,
                                     listen: false)
                                 .setCardInDatabase(card == 'onChain'
@@ -250,7 +256,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                 buttonType: ButtonType.transparent,
                                 customWidth: AppTheme.cardPadding * 2.5,
                                 customHeight: AppTheme.cardPadding * 1.25,
-                                onTap: () {}),
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Transactions(fullList: true)));
+                                }),
                           ],
                         ),
                       ],

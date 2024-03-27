@@ -110,13 +110,7 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
           updatedAt: timestamp,
           isActive: false,
           dob: 2,
-          mainWallet: UserWallet(
-              walletAddress: "walletAddress",
-              walletType: "walletType",
-              walletBalance: "",
-              privateKey: "privateKey",
-              userdid: "userdid"),
-          wallets: []),
+          ),
     ),
     PageData(
       '"So happy to be part of the club 1 million! Lightning is the future."',
@@ -136,13 +130,7 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
           updatedAt: timestamp,
           isActive: false,
           dob: 2,
-          mainWallet: UserWallet(
-              walletAddress: "walletAddress",
-              walletType: "walletType",
-              walletBalance: "",
-              privateKey: "privateKey",
-              userdid: "userdid"),
-          wallets: []),
+          ),
     ),
     PageData(
       '"Wow! Bitnet is the part that I was always missing for bitcoin. Now we will only see more and more bitcoin adoption."',
@@ -162,13 +150,7 @@ class WebsiteLandingPageController extends State<WebsiteLandingPage> {
           updatedAt: timestamp,
           isActive: false,
           dob: 2,
-          mainWallet: UserWallet(
-              walletAddress: "walletAddress",
-              walletType: "walletType",
-              walletBalance: "",
-              privateKey: "privateKey",
-              userdid: "userdid"),
-          wallets: []),
+          ),
     ),
   ];
 

@@ -57,7 +57,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
     final lang = L10n.of(context);
 
     return Container(
-      height: get.height * 0.8,
+      //height: get.height * 0.8,
       width: get.width,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
@@ -76,7 +76,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
             VerticalFadeListView(
               child: SizedBox(
                 width: get.width,
-                height: get.height * 0.62,
+               // height: get.height * 0.62,
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,

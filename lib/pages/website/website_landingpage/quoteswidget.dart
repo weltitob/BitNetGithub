@@ -437,14 +437,6 @@ class _QuotesState extends State<Quotes> {
         updatedAt: userData.updatedAt,
         isActive: userData.isActive,
         dob: userData.dob,
-        mainWallet: UserWallet(
-          walletAddress: userData.mainWallet.walletAddress,
-          walletType: userData.mainWallet.walletType,
-          walletBalance: userData.mainWallet.walletBalance,
-          privateKey: userData.mainWallet.privateKey,
-          userdid: userData.mainWallet.userdid,
-        ),
-        wallets: userData.wallets,
       ),
     );
   }

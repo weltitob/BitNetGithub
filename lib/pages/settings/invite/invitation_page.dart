@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
@@ -73,10 +74,13 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
             }
             return Column(
               children: [
-                SettingsListItem(
-                  icon: Icons.share_outlined,
+                BitNetListTile(
+                  leading: Icon(Icons.share_outlined),
                   text: L10n.of(context)!.inviteContact,
-                  hasNavigation: true,
+                  trailing: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: AppTheme.iconSize * 0.75,
+                  ),
                   onTap: () {
                     print("Share button pressed");
                     SettingsAction.invite;

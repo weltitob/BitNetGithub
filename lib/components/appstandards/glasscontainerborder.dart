@@ -12,7 +12,6 @@ class GradientBoxBorder extends BoxBorder {
     this.isTransparent = false,
   }) : super();
 
-  @override
   BoxBorder copyWith(
       {BorderSide? top,
       BorderSide? left,
