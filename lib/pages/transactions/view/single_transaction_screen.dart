@@ -32,7 +32,7 @@ class SingleTransactionScreen extends StatelessWidget {
                 channel.sink
                     .add('{"action":"want","data":["blocks","mempool-blocks"]}');
                 // VRouter.of(context).previousUrl;
-                // VRouter.of(context).to('/wallet/bitcoinscreen');
+                // context.go('/wallet/bitcoinscreen');
                 // Get.delete<TransactionController>();
                 Navigator.pop(context);
                 controller.homeController.isRbfTransaction.value = false;
@@ -52,7 +52,7 @@ class SingleTransactionScreen extends StatelessWidget {
       //       channel.sink
       //           .add('{"action":"want","data":["blocks","mempool-blocks"]}');
       //       // VRouter.of(context).previousUrl;
-      //       // VRouter.of(context).to('/wallet/bitcoinscreen');
+      //       // context.go('/wallet/bitcoinscreen');
       //       // Get.delete<TransactionController>();
       //       Navigator.pop(context);
       //       controller.homeController.isRbfTransaction.value = false;
@@ -77,7 +77,7 @@ class SingleTransactionScreen extends StatelessWidget {
           channel.sink
               .add('{"action":"want","data":["blocks","mempool-blocks"]}');
           // controller.homeController.isRbfTransaction.value = false;
-          // VRouter.of(context).to('/wallet/bitcoinscreen');
+          // context.go('/wallet/bitcoinscreen');
           // Get.delete<TransactionController>();
           controller.homeController.isRbfTransaction.value = false;
           //Navigator.pop(context);

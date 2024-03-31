@@ -8,8 +8,9 @@ import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'settings_security.dart';
@@ -40,13 +41,13 @@ class SettingsSecurityView extends StatelessWidget {
               //   leading: const Icon(Icons.camera_outlined),
               //   trailing: const Icon(Icons.chevron_right_outlined),
               //   title: Text(L10n.of(context)!.whoCanSeeMyStories),
-              //   onTap: () => VRouter.of(context).to('stories'),
+              //   onTap: () => context.go('stories'),
               // ),
               ListTile(
                 leading: const Icon(Icons.block_outlined),
                 trailing: const Icon(Icons.chevron_right_outlined),
                 title: Text(L10n.of(context)!.ignoredUsers),
-                onTap: () => VRouter.of(context).to('ignorelist'),
+                onTap: () => context.go('/rooms/settings/settings?tab=security/settings?tab=security&subtab=ignorelist'),
               ),
               ListTile(
                 leading: const Icon(Icons.password_outlined),
@@ -60,7 +61,7 @@ class SettingsSecurityView extends StatelessWidget {
                 leading: const Icon(Icons.mail_outlined),
                 trailing: const Icon(Icons.chevron_right_outlined),
                 title: Text(L10n.of(context)!.passwordRecovery),
-                onTap: () => VRouter.of(context).to('3pid'),
+                onTap: () => context.go('/rooms/settings/settings?tab=security/settings?tab=security&subtab=3pid'),
               ),
               if (Matrix.of(context).client.encryption != null) ...{
                 const Divider(thickness: 1),

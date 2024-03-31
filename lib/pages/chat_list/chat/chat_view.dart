@@ -12,8 +12,9 @@ import 'package:badges/badges.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import 'package:bitnet/pages/chat_list/chat/chat.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/chat_app_bar_title.dart';
@@ -152,239 +153,241 @@ class ChatView extends StatelessWidget {
         : AppTheme.elementSpacing * 0.75;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return VWidgetGuard(
-      onSystemPop: (redirector) async {
-        if (controller.selectedEvents.isNotEmpty) {
+      return WillPopScope(
+        onWillPop: ()async {
+                  if (controller.selectedEvents.isNotEmpty) {
           controller.clearSelectedEvents();
-          redirector.stopRedirection();
+          return false;
         } else if (controller.showEmojiPicker) {
           controller.emojiPickerAction();
-          redirector.stopRedirection();
+          return false;
         } else {
-          redirector.stopRedirection();
-          VRouter.of(context).to('/rooms');
-        }
-      },
-      child: GestureDetector(
-        onTapDown: (_) => controller.setReadMarker(),
-        behavior: HitTestBehavior.opaque,
-        child: bitnetScaffold(
-              extendBodyBehindAppBar: true,
-              context: context,
-              appBar: bitnetAppBar(
-                //titleSpacing: 0,
-                //elevation: 3,
-                // actionsIconTheme: IconThemeData(
-                //   color: controller.selectedEvents.isEmpty
-                //       ? null
-                //       : Theme.of(context).colorScheme.primary,
-                // ),
-                context: context,
-                customLeading: controller.selectMode
-                    ?
-                GestureDetector(
-                  onTap: controller.clearSelectedEvents,
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                        left: AppTheme.elementSpacing * 1.5,
-                        right: AppTheme.elementSpacing * 0.5,
-                        top: AppTheme.elementSpacing,
-                        bottom: AppTheme.elementSpacing),
-                    child: RoundedButtonWidget(
-                      buttonType: ButtonType.solid,
-                      iconData: Icons.close_outlined,
-                      onTap: () {
-                        VRouter.of(context).to('/rooms');
-                      },
-                    ),
-                  ),
-                ) :
-                InkWell(
-                        onTap: () => VRouter.of(context).to('/rooms'),
-                        child: UnreadRoomsBadge(
-                          filter: (r) => r.id != controller.roomId,
-                          badgePosition: BadgePosition.topEnd(end: 8, top: 4),
-                          child: Center(
-                            child:  Container(
-                              margin: const EdgeInsets.only(
-                                  left: AppTheme.elementSpacing * 1.5,
-                                  right: AppTheme.elementSpacing * 0.5,
-                                  top: AppTheme.elementSpacing,
-                                  bottom: AppTheme.elementSpacing),
-                              child: RoundedButtonWidget(
-                                buttonType: ButtonType.solid,
-                                iconData: Icons.arrow_back_outlined,
-                                onTap: () {
-                                  VRouter.of(context).to('/rooms');
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                customTitle: ChatAppBarTitle(controller),
-                actions: _appBarActions(context),
-              ),
-              floatingActionButton: Padding(
-                    padding: const EdgeInsets.only(bottom: AppTheme.cardPadding * 2),
-                    child: AnimatedOpacity(
-                      opacity: controller.showScrollDownButton &&
-                          controller.selectedEvents.isEmpty ? 1 : 0,
-                      duration: Duration(milliseconds: 200),
-                      child: BitNetFAB(
-                          onPressed: controller.scrollDown,
-                        ),
-                    ),
-                  ),
-              body: DropTarget(
-                onDragDone: controller.onDragDone,
-                onDragEntered: controller.onDragEntered,
-                onDragExited: controller.onDragExited,
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      color: Theme.of(context).colorScheme.background,
-                      ),
-                    // if (Matrix.of(context).wallpaper != null)
-                    //   Image.file(
-                    //     Matrix.of(context).wallpaper!,
-                    //     width: double.infinity,
-                    //     height: double.infinity,
-                    //     fit: BoxFit.cover,
-                    //     filterQuality: FilterQuality.medium,
-                    //   )
-                    // else
-                    //   Container(
-                    //     decoration: BoxDecoration(
-                    //       gradient: LinearGradient(
-                    //         begin: Alignment.topCenter,
-                    //         colors: [
-                    //           colorScheme.primaryContainer.withAlpha(64),
-                    //           colorScheme.secondaryContainer.withAlpha(64),
-                    //           colorScheme.tertiaryContainer.withAlpha(64),
-                    //           colorScheme.primaryContainer.withAlpha(64),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    StreamBuilder(
-                        stream: controller.room.onUpdate.stream
-                            .rateLimit(const Duration(seconds: 1)),
-                        builder: (context, snapshot) => FutureBuilder(
-                            future: controller.loadTimelineFuture,
-                            builder: (BuildContext context, snapshot) {
-                        return Column(
-                          children: <Widget>[
-                            TombstoneDisplay(controller),
-                            PinnedEvents(controller),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: controller.clearSingleSelectedEvent,
-                                child: Builder(
-                                  builder: (context) {
-                                    if (controller.timeline == null) {
-                                      return Center(
-                                        child: dotProgress(context),
-                                      );
-                                    }
+                    context.go('/rooms');
 
-                                    return ChatEventList(
-                                      controller: controller,
-                                    );
+          return false;
+        }
+
+        },
+        child: GestureDetector(
+          onTapDown: (_) => controller.setReadMarker(),
+          behavior: HitTestBehavior.opaque,
+          child: bitnetScaffold(
+                extendBodyBehindAppBar: true,
+                context: context,
+                appBar: bitnetAppBar(
+                  //titleSpacing: 0,
+                  //elevation: 3,
+                  // actionsIconTheme: IconThemeData(
+                  //   color: controller.selectedEvents.isEmpty
+                  //       ? null
+                  //       : Theme.of(context).colorScheme.primary,
+                  // ),
+                  context: context,
+                  customLeading: controller.selectMode
+                      ?
+                  GestureDetector(
+                    onTap: controller.clearSelectedEvents,
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          left: AppTheme.elementSpacing * 1.5,
+                          right: AppTheme.elementSpacing * 0.5,
+                          top: AppTheme.elementSpacing,
+                          bottom: AppTheme.elementSpacing),
+                      child: RoundedButtonWidget(
+                        buttonType: ButtonType.solid,
+                        iconData: Icons.close_outlined,
+                        onTap: () {
+                          context.go('/rooms');
+                        },
+                      ),
+                    ),
+                  ) :
+                  InkWell(
+                          onTap: () => context.go('/rooms'),
+                          child: UnreadRoomsBadge(
+                            filter: (r) => r.id != controller.roomId,
+                            badgePosition: BadgePosition.topEnd(end: 8, top: 4),
+                            child: Center(
+                              child:  Container(
+                                margin: const EdgeInsets.only(
+                                    left: AppTheme.elementSpacing * 1.5,
+                                    right: AppTheme.elementSpacing * 0.5,
+                                    top: AppTheme.elementSpacing,
+                                    bottom: AppTheme.elementSpacing),
+                                child: RoundedButtonWidget(
+                                  buttonType: ButtonType.solid,
+                                  iconData: Icons.arrow_back_outlined,
+                                  onTap: () {
+                                    context.go('/rooms');
                                   },
                                 ),
                               ),
                             ),
-                            if (controller.room.canSendDefaultMessages &&
-                                controller.room.membership == Membership.join)
-                              Container(
-                                margin: EdgeInsets.only(
-                                  left: bottomSheetPadding,
-                                  right: bottomSheetPadding,
-                                  bottom: bottomSheetPadding
-                                ),
-                                constraints: const BoxConstraints(
-                                  maxWidth: AppTheme.columnWidth * 2.5,
-                                ),
-                                alignment: Alignment.center,
-                                child: Material(
-                                  borderRadius: AppTheme.cardRadiusMid,
-                                  elevation: 4,
-                                  shadowColor: Colors.black.withAlpha(64),
-                                  clipBehavior: Clip.hardEdge,
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.light
-                                      ? Colors.white
-                                      : AppTheme.colorSchemeSeed,
-                                  child: controller.room.isAbandonedDMRoom ==
-                                          true
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            TextButton.icon(
-                                              style: TextButton.styleFrom(
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                                foregroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .error,
-                                              ),
-                                              icon: const Icon(
-                                                Icons.archive_outlined,
-                                              ),
-                                              onPressed: controller.leaveChat,
-                                              label: Text(
-                                                L10n.of(context)!.leave,
-                                              ),
-                                            ),
-                                            TextButton.icon(
-                                              style: TextButton.styleFrom(
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                              ),
-                                              icon: const Icon(
-                                                Icons.forum_outlined,
-                                              ),
-                                              onPressed:
-                                                  controller.recreateChat,
-                                              label: Text(
-                                                L10n.of(context)!.reopenChat,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const ConnectionStatusHeader(),
-                                            ReactionsPicker(controller),
-                                            ReplyDisplay(controller),
-                                            ChatInputRow(controller),
-                                          ],
-                                        ),
+                          ),
+                        ),
+                  customTitle: ChatAppBarTitle(controller),
+                  actions: _appBarActions(context),
+                ),
+                floatingActionButton: Padding(
+                      padding: const EdgeInsets.only(bottom: AppTheme.cardPadding * 2),
+                      child: AnimatedOpacity(
+                        opacity: controller.showScrollDownButton &&
+                            controller.selectedEvents.isEmpty ? 1 : 0,
+                        duration: Duration(milliseconds: 200),
+                        child: BitNetFAB(
+                            onPressed: controller.scrollDown,
+                          ),
+                      ),
+                    ),
+                body: DropTarget(
+                  onDragDone: controller.onDragDone,
+                  onDragEntered: controller.onDragEntered,
+                  onDragExited: controller.onDragExited,
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        color: Theme.of(context).colorScheme.background,
+                        ),
+                      // if (Matrix.of(context).wallpaper != null)
+                      //   Image.file(
+                      //     Matrix.of(context).wallpaper!,
+                      //     width: double.infinity,
+                      //     height: double.infinity,
+                      //     fit: BoxFit.cover,
+                      //     filterQuality: FilterQuality.medium,
+                      //   )
+                      // else
+                      //   Container(
+                      //     decoration: BoxDecoration(
+                      //       gradient: LinearGradient(
+                      //         begin: Alignment.topCenter,
+                      //         colors: [
+                      //           colorScheme.primaryContainer.withAlpha(64),
+                      //           colorScheme.secondaryContainer.withAlpha(64),
+                      //           colorScheme.tertiaryContainer.withAlpha(64),
+                      //           colorScheme.primaryContainer.withAlpha(64),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      StreamBuilder(
+                          stream: controller.room.onUpdate.stream
+                              .rateLimit(const Duration(seconds: 1)),
+                          builder: (context, snapshot) => FutureBuilder(
+                              future: controller.loadTimelineFuture,
+                              builder: (BuildContext context, snapshot) {
+                          return Column(
+                            children: <Widget>[
+                              TombstoneDisplay(controller),
+                              PinnedEvents(controller),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: controller.clearSingleSelectedEvent,
+                                  child: Builder(
+                                    builder: (context) {
+                                      if (controller.timeline == null) {
+                                        return Center(
+                                          child: dotProgress(context),
+                                        );
+                                      }
+        
+                                      return ChatEventList(
+                                        controller: controller,
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
-                          ],
-                        );
-                      }),
-                    ),
-                    if (controller.dragging)
-                      Container(
-                        color: Theme.of(context)
-                            .scaffoldBackgroundColor
-                            .withOpacity(0.9),
-                        alignment: Alignment.center,
-                        child: const Icon(
-                          Icons.upload_outlined,
-                          size: 100,
-                        ),
+                              if (controller.room.canSendDefaultMessages &&
+                                  controller.room.membership == Membership.join)
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    left: bottomSheetPadding,
+                                    right: bottomSheetPadding,
+                                    bottom: bottomSheetPadding
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    maxWidth: AppTheme.columnWidth * 2.5,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Material(
+                                    borderRadius: AppTheme.cardRadiusMid,
+                                    elevation: 4,
+                                    shadowColor: Colors.black.withAlpha(64),
+                                    clipBehavior: Clip.hardEdge,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : AppTheme.colorSchemeSeed,
+                                    child: controller.room.isAbandonedDMRoom ==
+                                            true
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              TextButton.icon(
+                                                style: TextButton.styleFrom(
+                                                  padding:
+                                                      const EdgeInsets.all(16),
+                                                  foregroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .error,
+                                                ),
+                                                icon: const Icon(
+                                                  Icons.archive_outlined,
+                                                ),
+                                                onPressed: controller.leaveChat,
+                                                label: Text(
+                                                  L10n.of(context)!.leave,
+                                                ),
+                                              ),
+                                              TextButton.icon(
+                                                style: TextButton.styleFrom(
+                                                  padding:
+                                                      const EdgeInsets.all(16),
+                                                ),
+                                                icon: const Icon(
+                                                  Icons.forum_outlined,
+                                                ),
+                                                onPressed:
+                                                    controller.recreateChat,
+                                                label: Text(
+                                                  L10n.of(context)!.reopenChat,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const ConnectionStatusHeader(),
+                                              ReactionsPicker(controller),
+                                              ReplyDisplay(controller),
+                                              ChatInputRow(controller),
+                                            ],
+                                          ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        }),
                       ),
-                  ],
-                ),
-              )),
-      ),
-    );
+                      if (controller.dragging)
+                        Container(
+                          color: Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(0.9),
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.upload_outlined,
+                            size: 100,
+                          ),
+                        ),
+                    ],
+                  ),
+                )),
+        ),
+      );
   }
 }

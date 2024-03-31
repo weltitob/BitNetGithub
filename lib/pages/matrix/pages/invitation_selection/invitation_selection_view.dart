@@ -4,8 +4,9 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import 'package:bitnet/pages/matrix/pages/invitation_selection/invitation_selection.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -25,9 +26,9 @@ class InvitationSelectionView extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         context: context,
-        onTap: () => VRouter.of(context)
-            .toSegments(['rooms', controller.roomId!]),
-        customIcon: VRouter.of(context).path.startsWith('/spaces/')
+        onTap: () => 
+            context.goNamed('rooms', pathParameters: {'roomid': controller.roomId!}),
+        customIcon: (controller.routerState.path != null && controller.routerState.path!.startsWith('/spaces/'))
             ? null
             : Icons.close_outlined,
         customTitle: SizedBox(

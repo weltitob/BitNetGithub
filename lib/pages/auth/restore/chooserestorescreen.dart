@@ -6,7 +6,8 @@ import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/components/resultlist/users.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 class ChooseRestoreScreen extends StatefulWidget {
   ChooseRestoreScreen({
@@ -66,7 +67,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             text: L10n.of(context)!.restoreAccount,
             context: context,
             onTap: () {
-              VRouter.of(context).to('/authhome');
+              context.go('/authhome');
             }),
         body: ListView(
           children: [
@@ -89,10 +90,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 OptionContainer("Word recovery", () {
-                  VRouter.of(context).to('/word_recovery');
+                  context.go('/authhome/login/word_recovery');
                 }, image: "assets/images/wallet.png"),
                 OptionContainer("Connect with other device", () {
-                  VRouter.of(context).to('/device_recovery');
+                  context.go('/authhome/login/device_recovery');
                 }, image: "assets/images/scan_qr_device.png"),
               ],
             ),
@@ -103,10 +104,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 OptionContainer("Social recovery", () {
-                  VRouter.of(context).to('/social_recovery');
+                  context.go('/authhome/login/social_recovery');
                 }, image: "assets/images/friends.png"),
                 OptionContainer("Use DID and Private Key", () {
-                  VRouter.of(context).to('/did_recovery');
+                  context.go('/authhome/login/did_recovery');
                 }, image: "assets/images/key_removed_bck.png"),
               ],
             ),

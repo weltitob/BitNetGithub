@@ -26,12 +26,13 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matrix/matrix.dart';
 import 'package:record/record.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import '../../matrix/matrix_pages/chat/send_file_dialog.dart';
 import '../../matrix/matrix_pages/chat/send_location_dialog.dart';
@@ -39,12 +40,12 @@ import '../../matrix/matrix_pages/chat/sticker_picker_dialog.dart';
 
 class ChatPage extends StatelessWidget {
   final Widget? sideView;
-
-  const ChatPage({Key? key, this.sideView}) : super(key: key);
+  final GoRouterState routerState;
+  const ChatPage({Key? key, this.sideView, required this.routerState}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final roomId = context.vRouter.pathParameters['roomid'];
+    final roomId = routerState.pathParameters['roomid'];
     final room =
     roomId == null ? null : Matrix.of(context).client.getRoomById(roomId);
     if (room == null) {
@@ -189,7 +190,7 @@ class ChatController extends State<ChatPageWithRoom> {
     );
     final roomId = success.result;
     if (roomId == null) return;
-    VRouter.of(context).toSegments(['rooms', roomId]);
+    context.goNamed('rooms', pathParameters: {'roomid': roomId});
   }
 
   void leaveChat() async {
@@ -198,7 +199,7 @@ class ChatController extends State<ChatPageWithRoom> {
       future: room.leave,
     );
     if (success.error != null) return;
-    VRouter.of(context).to('/rooms');
+    context.go('/rooms');
   }
 
   EmojiPickerType emojiPickerType = EmojiPickerType.keyboard;
@@ -334,7 +335,7 @@ class ChatController extends State<ChatPageWithRoom> {
     // "load more" button is visible on the screen
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       if (mounted) {
-        final event = VRouter.of(context).queryParameters['event'];
+        final event = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters['event'];
         if (event != null) {
           scrollToEventId(event);
         }
@@ -790,7 +791,7 @@ class ChatController extends State<ChatPageWithRoom> {
       };
     }
     setState(() => selectedEvents.clear());
-    VRouter.of(context).to('/rooms');
+    context.go('/rooms');
   }
 
   void sendAgainAction() {
@@ -885,7 +886,7 @@ class ChatController extends State<ChatPageWithRoom> {
       future: room.forget,
     );
     if (result.error != null) return;
-    VRouter.of(context).to('/archive');
+    context.go('/rooms/archive');
   }
 
   void typeEmoji(Emoji? emoji) {
@@ -1001,7 +1002,7 @@ class ChatController extends State<ChatPageWithRoom> {
       future: room.leave,
     );
     if (result.error == null) {
-      VRouter.of(context).toSegments(['rooms', result.result!]);
+      context.goNamed('rooms', pathParameters: {'roomid': result.result!});
     }
   }
 

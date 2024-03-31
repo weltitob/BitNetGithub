@@ -6,9 +6,10 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import 'settings.dart';
 
@@ -117,7 +118,7 @@ class SettingsView extends StatelessWidget {
             //   icon: Icons.devices_outlined,
             //   text: L10n.of(context)!.devices,
             //   hasNavigation: true,
-            //   onTap: () => VRouter.of(context).to('/settings/devices'),
+            //   onTap: () => context.go('/settings/devices'),
             // ),
             //Privacy and Security
             // SettingsListItem(
@@ -229,7 +230,7 @@ class SettingsView extends StatelessWidget {
                 //my logout
                 await Auth().signOut();
                 //pop
-                VRouter.of(context).pop();
+                context.pop();
               },
             ),
             SizedBox(

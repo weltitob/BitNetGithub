@@ -8,7 +8,8 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 buildPostHeader(BuildContext context, ownerId, postId) {
   return FutureBuilder<DocumentSnapshot>(
@@ -28,10 +29,10 @@ buildPostHeader(BuildContext context, ownerId, postId) {
           mxContent: Uri.parse(user.profileImageUrl),
           size: AppTheme.cardPadding * 2,
           fontSize: 18,
-          onTap: () => VRouter.of(context).to("/showprofile/:${user.did}"),
+          onTap: () => context.go("/showprofile/:${user.did}"),
         ),
         title: GestureDetector(
-          onTap: () => VRouter.of(context).to("/showprofile/:${user.did}"),
+          onTap: () => context.go("/showprofile/:${user.did}"),
           child: Text(
             '@${user.username}',
             style: Theme.of(context).textTheme.titleLarge,

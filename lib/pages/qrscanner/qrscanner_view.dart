@@ -1,8 +1,9 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import '../../components/appstandards/BitNetAppBar.dart';
 import '../../components/appstandards/BitNetScaffold.dart';
@@ -22,7 +23,7 @@ class QRScannerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        VRouter.of(context).pop();
+        context.pop();
         return true;
       },
       child: bitnetScaffold(
@@ -34,7 +35,7 @@ class QRScannerView extends StatelessWidget {
             text: "Scan QR",
             context: context,
             onTap: () {
-              VRouter.of(context).pop();
+              context.pop();
             }),
         body: Stack(
           children: [

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:url_launcher/link.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class WidgetsBottomSheet extends StatelessWidget {
   final Room room;
@@ -20,7 +21,7 @@ class WidgetsBottomSheet extends StatelessWidget {
             leading: const Icon(Icons.edit),
             title: Text(L10n.of(context)!.editWidgets),
             onTap: () {
-              VRouter.of(context).to("/add_widget");
+              context.go("/add_widget");
             },
           );
         }

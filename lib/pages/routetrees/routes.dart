@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 import 'package:bitnet/pages/auth/getstartedscreen.dart';
@@ -62,15 +64,15 @@ import 'package:bitnet/pages/settings/settings_multiple_emotes/settings_multiple
 import 'package:bitnet/pages/settings/settings_notifications/settings_notifications.dart';
 import 'package:bitnet/pages/settings/settings_style/settings_style.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import 'package:vrouter/vrouter.dart';
 
 class AppRoutes {
   final bool columnMode;
 
   AppRoutes(this.columnMode);
 
-  List<VRouteElement> get routes => [
+  List<RouteBase> get routes => [
         ...bottomnav_routes,
         ..._authRoutes,
         //if (columnMode) ..._tabletRoutes,
@@ -80,146 +82,156 @@ class AppRoutes {
   final currentUserUID = Auth().currentUser?.uid ?? '';
 
   // Define your routes like this
-  List<VRouteElement> get bottomnav_routes => [
-        VWidget(path: '/', widget: const LoadingViewAppStart()),
+  List<dynamic> get bottomnav_routes => [
+        GoRoute(path: '/loading', builder: (ctx,state) => const LoadingViewAppStart()),
 
-    VNester(
-          path: '/home',
-          widgetBuilder: (child) {
-            return BottomNav(child: child);
+    ShellRoute(
+          builder: (ctx, state, child) {
+            
+            return BottomNav(child: child, routerState: state);
           },
-          nestedRoutes: [
-            VRouteRedirector(
-              path: '',
-              redirectTo: '/feed', // '/feed'
-            ),
-            VWidget(
+          routes: [
+            // GoRoute(
+            //   path: '',
+            //   redirect: (context, state) => '/feed', // '/feed'
+            // ),
+            GoRoute(
                 path: '/qrscanner',
-                widget: const QrScanner(),
-                buildTransition: _dynamicTransition),
-            VWidget(
+                builder: _dynamicTransition == null ? (ctx,state) => const QrScanner() : null,
+                pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: const QrScanner(), transitionsBuilder: _dynamicTransition!) : null),
+            GoRoute(
               path: '/error',
-              widget: Receive(),
-              buildTransition: _dynamicTransition,
+              builder: _dynamicTransition == null ? (ctx,state) => Receive() : null,
+              pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: Receive(), transitionsBuilder: _dynamicTransition!) : null,
             ),
-            VWidget(path: '/feed', widget: FeedScreen(), stackedRoutes: [
-              VWidget(
+            GoRoute(path: '/feed', builder: (ctx,state) => FeedScreen(), routes: [
+              GoRoute(
                   path: kNftProductScreenRoute + "/:nft_id",
-                  widget: NftProductScreen()),
-              VWidget(
-                  path: kNotificationScreenRoute, widget: NotificationScreen()),
-              VWidget(
+                  name: kNftProductScreenRoute,
+                  builder: (ctx,state) => NftProductScreen()),
+              GoRoute(
+                  path: kNotificationScreenRoute, builder: (ctx,state) => NotificationScreen()),
+              GoRoute(
                   path: kCollectionScreenRoute + "/:collection_id",
-                  widget: CollectionScreen(),
-                  stackedRoutes: [
-                    VWidget(
+                  name: kCollectionScreenRoute,
+                  builder: (ctx,state) => CollectionScreen(routerState: state,),
+                  routes: [
+                    GoRoute(
                         path: kNftProductScreenRoute + "/:nft_id",
-                        widget: NftProductScreen()),
+                        name: '$kCollectionScreenRoute/$kNftProductScreenRoute',
+                        builder: (ctx,state) => NftProductScreen()),
                   ]),
-            ]), //(path: '/feed', widget: FeedScreen()),
-            VWidget(
+            ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
+            GoRoute(
                 path: '/create',
-                widget:
+                builder: (ctx,state) =>
                     //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
                 CreateAsset(),),
-            VWidget(
+            GoRoute(
               path: '/wallet',
-              widget: Wallet(),
-              stackedRoutes: [
-                VWidget(
-                  path: '/wallet/bitcoinscreen',
-                  widget: const BitcoinScreen(),
-                  buildTransition: _fadeTransition,
+              builder: (ctx,state) => Wallet(),
+              routes: [
+                GoRoute(
+                  path: 'bitcoinscreen',
+                  builder: _dynamicTransition == null ? (ctx,state) => const BitcoinScreen() : null,
+                                pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: const BitcoinScreen(), transitionsBuilder: _dynamicTransition!) : null,
                 ),
-                VWidget(
-                  path: '/wallet/block_transactions',
-                  widget: const BlockTransactions(),
-                  buildTransition: _fadeTransition,
+                GoRoute(
+                  path: 'block_transactions',
+                  builder: _dynamicTransition == null ? (ctx,state) => const BlockTransactions() : null,
+                                pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  const BlockTransactions(), transitionsBuilder: _dynamicTransition!) : null,
                 ),
-                VWidget(
-                  path: '/wallet/unaccepted_block_transactions',
-                  widget: const UnacceptedBlockTransactions(),
-                  buildTransition: _fadeTransition,
+                GoRoute(
+                  path: 'unaccepted_block_transactions',
+                  builder: _dynamicTransition == null ? (ctx,state) => const UnacceptedBlockTransactions() : null,
+                                pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: const UnacceptedBlockTransactions(), transitionsBuilder: _dynamicTransition!) : null,
                 ),
-                VWidget(
-                  path: '/wallet/receive',
-                  widget: Receive(),
-                  buildTransition: _fadeTransition,
+                GoRoute(
+                  path: 'receive',
+                  builder:_dynamicTransition == null ?  (ctx,state) => Receive() : null,
+                                pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:Receive() , transitionsBuilder: _dynamicTransition!) : null,
                 ),
-                VWidget(
-                  path: '/wallet/loop_screen',
-                  widget: Loop(),
-                  buildTransition: _fadeTransition,
+                GoRoute(
+                  path: 'loop_screen',
+                  builder:_dynamicTransition == null ?  (ctx,state) => Loop() : null,
+                                pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:Loop() , transitionsBuilder: _dynamicTransition!) : null,
                 ),
-                VWidget(
-                  path: '/wallet/send',
-                  widget: const Send(),
-                  buildTransition: _fadeTransition,
+                GoRoute(
+                  path: 'send',
+                  builder: _dynamicTransition == null ? (ctx,state) => const Send() : null,
+                                pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: const Send(), transitionsBuilder: _dynamicTransition!) : null,
                 ),
               ],
             ),
-            VWidget(
+            GoRoute(
                 path: '/profile/:profileId',
-                widget: Profile(),
-                stackedRoutes: []),
-            VWidget(
+               name: '/profile',
+                builder: (ctx,state) => Profile(),
+                routes: []),
+            GoRoute(
               path: '/single_transaction',
-              widget: const SingleTransactionScreen(),
-              buildTransition: _fadeTransition,
+              builder: _dynamicTransition == null ? (ctx,state) => const SingleTransactionScreen() : null,
+                            pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: const SingleTransactionScreen(), transitionsBuilder: _dynamicTransition!) : null,
             ),
-            VWidget(
+            GoRoute(
               path: '/rooms',
-              widget: const ChatList(),
+              builder: (ctx,state) => ChatList(routerState: state,),
             ),
           ],
         ),
 
         // Chat details and other chat-related routes without BottomNav
-        VWidget(
+        GoRoute(
           path: '/rooms/create',
-          widget: const CreateNewScreen(
+       
+              builder: _dynamicTransition == null ?(ctx,state) => const CreateNewScreen(
             initialIndex: 0,
-          ),
-          buildTransition: _fadeTransition,
-          stackedRoutes: _chatCreateRoutes,
+          ) : null,
+              pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: const CreateNewScreen(
+            initialIndex: 0,
+          ) , transitionsBuilder: _dynamicTransition!) : null,
+          routes: _chatCreateRoutes,
         ),
-        VWidget(
+        GoRoute(
           path: '/rooms/spaces/:roomid',
-          widget: const ChatDetails(),
-          stackedRoutes: _chatDetailsRoutes,
+          name: '/rooms/spaces',
+          builder: (ctx,state) =>  ChatDetails(routerState: state,),
+          routes: _chatDetailsRoutes1,
         ),
-        VWidget(
+        GoRoute(
           path: '/rooms/:roomid',
-          widget: const ChatPage(),
-          stackedRoutes: [
-            VWidget(
+          name: 'rooms',
+          builder: (ctx,state) =>  ChatPage(routerState: state,),
+          routes: [
+            GoRoute(
               path: 'encryption',
-              widget: const ChatEncryptionSettings(),
+              builder: (ctx,state) =>  ChatEncryptionSettings(routerState: state,),
             ),
-            VWidget(
+            GoRoute(
               path: 'invite',
-              widget: const InvitationSelection(),
+              builder: (ctx,state) =>  InvitationSelection(routerState: state,),
             ),
-            VWidget(
+            GoRoute(
               path: 'details',
-              widget: const ChatDetails(),
-              stackedRoutes: _chatDetailsRoutes,
+              builder: (ctx,state) =>  ChatDetails(routerState: state,),
+              routes: _chatDetailsRoutes2,
             ),
           ],
         ),
-        VWidget(
+        GoRoute(
           path: '/rooms/settings',
-          widget: const Settings(),
-          stackedRoutes: _settingsRoutes,
+          builder: (ctx,state) => const Settings(),
+          routes: _settingsRoutes,
         ),
-        VWidget(
+        GoRoute(
           path: '/rooms/archive',
-          widget: const Archive(),
-          stackedRoutes: [
-            VWidget(
+          builder: (ctx,state) => const Archive(),
+          routes: [
+            GoRoute(
               path: ':roomid',
-              widget: const ChatPage(),
-              buildTransition: _dynamicTransition,
+              name: 'archive',
+              builder: _dynamicTransition == null ?(ctx,state) =>  ChatPage(routerState: state,) : null,
+              pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  ChatPage(routerState: state,), transitionsBuilder: _dynamicTransition!) : null,
             ),
           ],
         ),
@@ -232,18 +244,18 @@ class AppRoutes {
   //           mainView: const ChatList(),
   //           sideView: child,
   //         ),
-  //         buildTransition: _fadeTransition,
+  //                       pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
   //         nestedRoutes: [
-  //           VWidget(
+  //           GoRoute(
   //             path: '',
-  //             widget: const EmptyPage(),
-  //             buildTransition: _fadeTransition,
-  //             stackedRoutes: [
-  //               VWidget(
+  //             builder: (ctx,state) => const EmptyPage(),
+  //                           pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
+  //             routes: [
+  //               GoRoute(
   //                 path: '/spaces/:roomid',
-  //                 widget: const ChatDetails(),
-  //                 buildTransition: _fadeTransition,
-  //                 stackedRoutes: _chatDetailsRoutes,
+  //                 builder: (ctx,state) => const ChatDetails(),
+  //                               pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
+  //                 routes: _chatDetailsRoutes,
   //               ),
   //               VNester(
   //                 path: ':roomid',
@@ -251,28 +263,28 @@ class AppRoutes {
   //                   mainView: const ChatPage(),
   //                   sideView: child,
   //                 ),
-  //                 buildTransition: _fadeTransition,
+  //                               pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
   //                 nestedRoutes: [
-  //                   VWidget(
+  //                   GoRoute(
   //                     path: '',
-  //                     widget: const ChatPage(),
-  //                     buildTransition: _fadeTransition,
+  //                     builder: (ctx,state) => const ChatPage(),
+  //                                   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
   //                   ),
-  //                   VWidget(
+  //                   GoRoute(
   //                     path: 'encryption',
-  //                     widget: const ChatEncryptionSettings(),
-  //                     buildTransition: _fadeTransition,
+  //                     builder: (ctx,state) => const ChatEncryptionSettings(),
+  //                                   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
   //                   ),
-  //                   VWidget(
+  //                   GoRoute(
   //                     path: 'details',
-  //                     widget: const ChatDetails(),
-  //                     buildTransition: _fadeTransition,
-  //                     stackedRoutes: _chatDetailsRoutes,
+  //                     builder: (ctx,state) => const ChatDetails(),
+  //                                   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
+  //                     routes: _chatDetailsRoutes,
   //                   ),
-  //                   VWidget(
+  //                   GoRoute(
   //                     path: 'invite',
-  //                     widget: const InvitationSelection(),
-  //                     buildTransition: _fadeTransition,
+  //                     builder: (ctx,state) => const InvitationSelection(),
+  //                                   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
   //                   ),
   //                 ],
   //               ),
@@ -280,27 +292,27 @@ class AppRoutes {
   //           ),
   //         ],
   //       ),
-  //       VWidget(
+  //       GoRoute(
   //         path: '/rooms',
-  //         widget: const TwoColumnLayout(
+  //         builder: (ctx,state) => const TwoColumnLayout(
   //           mainView: ChatList(),
   //           sideView: EmptyPage(),
   //         ),
-  //         buildTransition: _fadeTransition,
-  //         stackedRoutes: [
+  //                       pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
+  //         routes: [
   //           VNester(
   //             path: '/settings',
   //             widgetBuilder: (child) => TwoColumnLayout(
   //               mainView: const Settings(),
   //               sideView: child,
   //             ),
-  //             buildTransition: _dynamicTransition,
+  //             pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
   //             nestedRoutes: [
-  //               VWidget(
+  //               GoRoute(
   //                 path: '',
-  //                 widget: const EmptyPage(),
-  //                 buildTransition: _dynamicTransition,
-  //                 stackedRoutes: _settingsRoutes,
+  //                 builder: (ctx,state) => const EmptyPage(),
+  //                 pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
+  //                 routes: _settingsRoutes,
   //               ),
   //             ],
   //           ),
@@ -310,17 +322,17 @@ class AppRoutes {
   //               mainView: const Archive(),
   //               sideView: child,
   //             ),
-  //             buildTransition: _fadeTransition,
+  //                           pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
   //             nestedRoutes: [
-  //               VWidget(
+  //               GoRoute(
   //                 path: '',
-  //                 widget: const EmptyPage(),
-  //                 buildTransition: _dynamicTransition,
+  //                 builder: (ctx,state) => const EmptyPage(),
+  //                 pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
   //               ),
-  //               VWidget(
+  //               GoRoute(
   //                 path: ':roomid',
-  //                 widget: const ChatPage(),
-  //                 buildTransition: _dynamicTransition,
+  //                 builder: (ctx,state) => const ChatPage(),
+  //                 pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
   //               ),
   //             ],
   //           ),
@@ -328,92 +340,92 @@ class AppRoutes {
   //       ),
   //     ];
 
-  List<VRouteElement> get _authRoutes => [
-        VWidget(path: '/', widget: const LoadingViewAppStart()),
-        VWidget(path: '/website', widget: WebsiteLandingPage(), stackedRoutes: [
-          VWidget(
-            path: '/report',
-            widget: const Report(),
+  List<GoRoute> get _authRoutes => [
+        GoRoute(path: '/', builder: (ctx,state) => const LoadingViewAppStart()),
+        GoRoute(path: '/website', builder: (ctx,state) => WebsiteLandingPage(), routes: [
+          GoRoute(
+            path: 'report',
+            builder: (ctx,state) => const Report(),
           ),
-          VWidget(
-            path: '/aboutus',
-            widget: const AboutUs(),
+          GoRoute(
+            path: 'aboutus',
+            builder: (ctx,state) => const AboutUs(),
           ),
-          VWidget(
-            path: '/ourteam',
-            widget: const OurTeam(),
+          GoRoute(
+            path: 'ourteam',
+            builder: (ctx,state) => const OurTeam(),
           ),
-          VWidget(path: '/agbs', widget: const AGBScreen()),
-          VWidget(path: '/impressum', widget: const ImpressumScreen()),
-          VWidget(path: '/submitidea', widget: const SubmitIdea()),
+          GoRoute(path: 'agbs', builder: (ctx,state) => const AGBScreen()),
+          GoRoute(path: 'impressum', builder: (ctx,state) => const ImpressumScreen()),
+          GoRoute(path: 'submitidea', builder: (ctx,state) => const SubmitIdea()),
         ]),
-        VWidget(
+        GoRoute(
           path: '/authhome',
-          widget: GetStartedScreen(),
-          stackedRoutes: [
-            VWidget(
-              path: '/pinverification',
-              widget: const PinVerificationScreen(),
-              stackedRoutes: [
-                VWidget(
-                  path: '/createaccount',
-                  widget: CreateAccount(),
+          builder: (ctx,state) => GetStartedScreen(),
+          routes: [
+            GoRoute(
+              path: 'pinverification',
+              builder: (ctx,state) => const PinVerificationScreen(),
+              routes: [
+                GoRoute(
+                  path: 'createaccount',
+                  builder: (ctx,state) => CreateAccount(),
                 ),
-                VWidget(
-                  path: '/mnemonicgen',
-                  widget: const MnemonicGen(),
+                GoRoute(
+                  path: 'mnemonicgen',
+                  builder: (ctx,state) => const MnemonicGen(),
                 ),
 
               ],
             ),
-            VWidget(
-              path: '/ionloading',
-              widget: IONLoadingScreen(
+            GoRoute(
+              path: 'ionloading',
+              builder: (ctx,state) => IONLoadingScreen(
                 loadingText:
                     "Patience, please. We're validating your account on the blockchain...",
               ),
             ),
-            VWidget(
-              path: '/login',
-              widget: ChooseRestoreScreen(),
-              stackedRoutes: [
-                VWidget(
-                  path: '/word_recovery',
-                  widget: WordRecoveryScreen(),
+            GoRoute(
+              path: 'login',
+              builder: (ctx,state) => ChooseRestoreScreen(),
+              routes: [
+                GoRoute(
+                  path: 'word_recovery',
+                  builder: (ctx,state) => WordRecoveryScreen(),
                 ),
-                VWidget(
-                  path: '/device_recovery',
-                  widget: OtherDeviceScreen(),
+                GoRoute(
+                  path: 'device_recovery',
+                  builder: (ctx,state) => OtherDeviceScreen(),
                 ),
-                VWidget(
-                  path: '/social_recovery',
-                  widget: SocialRecoveryScreen(),
-                  stackedRoutes: [
-                    VWidget(
-                      path: '/info_social_recovery',
-                      widget: InfoSocialRecoveryScreen(),
+                GoRoute(
+                  path: 'social_recovery',
+                  builder: (ctx,state) => SocialRecoveryScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'info_social_recovery',
+                      builder: (ctx,state) => InfoSocialRecoveryScreen(),
                     ),
                   ],
                 ),
-                VWidget(
-                  path: '/did_recovery',
-                  widget: DidAndPrivateKeyScreen(),
+                GoRoute(
+                  path: 'did_recovery',
+                  builder: (ctx,state) => DidAndPrivateKeyScreen(),
                 ),
               ],
             ),
 
-            // VWidget(
+            // GoRoute(
             //   path: 'logs',
-            //   widget: const LogViewer(),
-            //   buildTransition: _dynamicTransition,
+            //   builder: (ctx,state) => const LogViewer(),
+            //   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
             // ),
-            VWidget(
+            GoRoute(
               path: 'connect',
-              widget: const ConnectPage(),
-              stackedRoutes: [
-                VWidget(
+              builder: (ctx,state) => const ConnectPage(),
+              routes: [
+                GoRoute(
                   path: 'signup',
-                  widget: Container(),
+                  builder: (ctx,state) => Container(),
                 ),
               ],
             ),
@@ -421,135 +433,261 @@ class AppRoutes {
         ),
       ];
 
-  List<VRouteElement> get _chatCreateRoutes => [
-        VWidget(
-          path: '/chat',
-          widget: const CreateNewScreen(
+  List<GoRoute> get _chatCreateRoutes => [
+        GoRoute(
+          path: 'chat',
+          builder: (ctx,state) => const CreateNewScreen(
             initialIndex: 0,
           ),
         ),
-        VWidget(
-          path: '/group',
-          widget: const CreateNewScreen(
+        GoRoute(
+          path: 'group',
+          builder: (ctx,state) => const CreateNewScreen(
             initialIndex: 1,
           ),
         ),
-        VWidget(
-          path: '/space',
-          widget: const CreateNewScreen(
+        GoRoute(
+          path: 'space',
+          builder: (ctx,state) => const CreateNewScreen(
             initialIndex: 2,
           ),
         ),
       ];
 
-  List<VRouteElement> get _chatDetailsRoutes => [
-        VWidget(
+  List<GoRoute> get _chatDetailsRoutes1 => [
+        GoRoute(
           path: 'permissions',
-          widget: const ChatPermissionsSettings(),
-          buildTransition: _dynamicTransition,
+          builder:_dynamicTransition == null ?  (ctx,state) =>  ChatPermissionsSettings(routerState: state,) : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:ChatPermissionsSettings(routerState: state,) , transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
+        GoRoute(
           path: 'widgets',
-          widget: const ChatMatrixWidgets(),
-          buildTransition: _dynamicTransition,
+          builder: _dynamicTransition == null ?  (ctx,state) =>  ChatMatrixWidgets(routerState: state,) : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: ChatMatrixWidgets(routerState: state,) , transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
+        GoRoute(
           path: 'invite',
-          widget: const InvitationSelection(),
-          buildTransition: _dynamicTransition,
+          builder: _dynamicTransition == null ?  (ctx,state) =>  InvitationSelection(routerState: state,):null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: InvitationSelection(routerState: state,) , transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
+        GoRoute(
           path: 'multiple_emotes',
-          widget: const MultipleEmotesSettings(),
-          buildTransition: _dynamicTransition,
+          builder: _dynamicTransition == null ? (ctx,state) =>  MultipleEmotesSettings(routerState: state,):null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: MultipleEmotesSettings(routerState: state) , transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
+        GoRoute(
           path: 'emotes',
-          widget: const EmotesSettings(),
-          buildTransition: _dynamicTransition,
+          builder: _dynamicTransition == null ? (ctx,state) =>  EmotesSettings(routerState: state):null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  EmotesSettings(routerState: state), transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
+        GoRoute(
           path: 'emotes/:state_key',
-          widget: const EmotesSettings(),
-          buildTransition: _dynamicTransition,
+          name: 'emotes',
+          builder: _dynamicTransition == null ? (ctx,state) =>  EmotesSettings(routerState: state) : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  EmotesSettings(routerState: state), transitionsBuilder: _dynamicTransition!) : null,
+        ),
+      ];
+  List<GoRoute> get _chatDetailsRoutes2 => [
+        GoRoute(
+          path: 'permissions',
+          builder:_dynamicTransition == null ?  (ctx,state) =>  ChatPermissionsSettings(routerState: state,) : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:ChatPermissionsSettings(routerState: state,) , transitionsBuilder: _dynamicTransition!) : null,
+        ),
+        GoRoute(
+          path: 'widgets',
+          builder: _dynamicTransition == null ?  (ctx,state) =>  ChatMatrixWidgets(routerState: state,) : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: ChatMatrixWidgets(routerState: state,) , transitionsBuilder: _dynamicTransition!) : null,
+        ),
+        GoRoute(
+          path: 'invite',
+          builder: _dynamicTransition == null ?  (ctx,state) =>  InvitationSelection(routerState: state,):null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: InvitationSelection(routerState: state,) , transitionsBuilder: _dynamicTransition!) : null,
+        ),
+        GoRoute(
+          path: 'multiple_emotes',
+          builder: _dynamicTransition == null ? (ctx,state) =>  MultipleEmotesSettings(routerState: state,):null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: MultipleEmotesSettings(routerState: state) , transitionsBuilder: _dynamicTransition!) : null,
+        ),
+        GoRoute(
+          path: 'emotes',
+          builder: _dynamicTransition == null ? (ctx,state) =>  EmotesSettings(routerState: state):null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  EmotesSettings(routerState: state), transitionsBuilder: _dynamicTransition!) : null,
+        ),
+        GoRoute(
+          path: 'emotes/:state_key',
+          name: 'emotes2',
+          builder: _dynamicTransition == null ? (ctx,state) =>  EmotesSettings(routerState: state) : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  EmotesSettings(routerState: state), transitionsBuilder: _dynamicTransition!) : null,
         ),
       ];
 
-  List<VRouteElement> get _settingsRoutes => [
-        VWidget(
-          path: '/settings?tab=language',
-          widget: ChangeLanguage(),
-          buildTransition: _dynamicTransition,
+  List<GoRoute> get _settingsRoutes => [
+        GoRoute(
+          path: 'settings?tab=language',
+          builder: _dynamicTransition == null ? (ctx,state) => ChangeLanguage():null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: ChangeLanguage(), transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
-          path: '/settings?tab=currency',
-          widget: ChangeCurrency(),
-          buildTransition: _dynamicTransition,
+        GoRoute(
+          path: 'settings?tab=currency',
+          builder: _dynamicTransition == null ? (ctx,state) => ChangeCurrency():null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: ChangeCurrency(), transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
-          path: '/settings?tab=notifications',
-          widget: const SettingsNotifications(),
-          buildTransition: _dynamicTransition,
+        GoRoute(
+          path: 'settings?tab=notifications',
+          builder: _dynamicTransition == null ? (ctx,state) => const SettingsNotifications():null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: SettingsNotifications(), transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
-          path: '/settings?tab=style',
-          widget: const SettingsStyle(),
-          buildTransition: _dynamicTransition,
+        GoRoute(
+          path: 'settings?tab=style',
+          builder: _dynamicTransition == null ? (ctx,state) => const SettingsStyle() : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: SettingsStyle(), transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
-          path: '/settings?tab=devices',
-          widget: const DevicesSettings(),
-          buildTransition: _dynamicTransition,
+        GoRoute(
+          path: 'settings?tab=devices',
+          builder: _dynamicTransition == null ? (ctx,state) => const DevicesSettings() : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: DevicesSettings(), transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
-          path: '/settings?tab=invite_friends',
-          widget: InvitationSettingsPage(),
-          buildTransition: _dynamicTransition,
+        GoRoute(
+          path: 'settings?tab=invite_friends',
+          builder: _dynamicTransition == null ? (ctx,state) => InvitationSettingsPage() : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: InvitationSettingsPage(), transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
-          path: '/settings?tab=security_own',
-          widget: SecuritySettingsPage(),
-          buildTransition: _dynamicTransition,
+        GoRoute(
+          path: 'settings?tab=security_own',
+          builder: _dynamicTransition == null ? (ctx,state) => SecuritySettingsPage() : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: SecuritySettingsPage(), transitionsBuilder: _dynamicTransition!) : null,
         ),
-        VWidget(
-          path: '/settings?tab=chat',
-          widget: const SettingsChat(),
-          buildTransition: _dynamicTransition,
-          stackedRoutes: [
-            VWidget(
-              path: '/settings?tab=chat&subtab=emotes',
-              widget: const EmotesSettings(),
-              buildTransition: _dynamicTransition,
+        GoRoute(
+          path: 'settings?tab=chat',
+          builder: _dynamicTransition == null ? (ctx,state) => const SettingsChat() : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: const SettingsChat(), transitionsBuilder: _dynamicTransition!) : null,
+          routes: [
+            GoRoute(
+              path: 'settings?tab=chat&subtab=emotes',
+              builder: _dynamicTransition == null ? (ctx,state) =>  EmotesSettings(routerState: state) : null,
+              pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  EmotesSettings(routerState: state), transitionsBuilder: _dynamicTransition!) : null,
             ),
           ],
         ),
-        VWidget(
-          path: '/settings?tab=security',
-          widget: const SettingsSecurity(),
-          buildTransition: _dynamicTransition,
-          stackedRoutes: [
-            VWidget(
-              path: '/settings?tab=security&subtab=ignorelist',
-              widget: const SettingsIgnoreList(),
-              buildTransition: _dynamicTransition,
+        GoRoute(
+          path: 'settings?tab=security',
+          builder: _dynamicTransition == null ? (ctx,state) => const SettingsSecurity() : null,
+          pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: const SettingsSecurity(), transitionsBuilder: _dynamicTransition!) : null,
+          routes: [
+            GoRoute(
+              path: 'settings?tab=security&subtab=ignorelist',
+              builder: _dynamicTransition == null ? (ctx,state) => const SettingsIgnoreList() : null,
+              pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: SettingsIgnoreList(), transitionsBuilder: _dynamicTransition!) : null,
             ),
-            VWidget(
-              path: '/settings?tab=security&subtab=3pid',
-              widget: const Settings3Pid(),
-              buildTransition: _dynamicTransition,
+            GoRoute(
+              path: 'settings?tab=security&subtab=3pid',
+              builder: _dynamicTransition == null ? (ctx,state) => const Settings3Pid() : null,
+              pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  Settings3Pid(), transitionsBuilder: _dynamicTransition!) : null,
             ),
           ],
         ),
-        VWidget(
-          path: '/settings?tab=logs',
-          widget: const LogViewer(),
-          buildTransition: _dynamicTransition,
+        GoRoute(
+          path: 'settings?tab=logs',
+          builder:_dynamicTransition == null ? (ctx, state)=> const LogViewer() : null,
+          pageBuilder:_dynamicTransition != null ? (ctx, state) => CustomTransitionPage(key: state.pageKey ,child:LogViewer(), transitionsBuilder: _dynamicTransition!) : null,
         ),
       ];
 
-  FadeTransition Function(dynamic, dynamic, dynamic)? get _dynamicTransition =>
+  FadeTransition Function(BuildContext, Animation<double>, Animation<double>, Widget)? get _dynamicTransition =>
       columnMode ? _fadeTransition : null;
 
-  FadeTransition _fadeTransition(animation1, _, child) =>
+  FadeTransition _fadeTransition(ctx, animation1, _, child,) =>
       FadeTransition(opacity: animation1, child: child);
 }
+
+
+
+/**
+ * 
+ * => /loading
+             => /qrscanner
+             => /error
+             => /feed
+             =>   /feed/nft_product_screen_route/:nft_id
+             =>   /feed/notification_screen_route
+             =>   /feed/collection_screen_route/:collection_id
+             =>     /feed/collection_screen_route/:collection_id/nft_product_screen_route/:nft_id
+             => /create
+             => /wallet
+             =>   /wallet/bitcoinscreen
+             =>   /wallet/block_transactions
+             =>   /wallet/unaccepted_block_transactions
+             =>   /wallet/receive
+             =>   /wallet/loop_screen
+             =>   /wallet/send
+             => /profile/:profileId
+             => /single_transaction
+             => /rooms
+             => /rooms/create
+             =>   /rooms/create/chat
+             =>   /rooms/create/group
+             =>   /rooms/create/space
+             => /rooms/spaces/:roomid
+             =>   /rooms/spaces/:roomid/permissions
+             =>   /rooms/spaces/:roomid/widgets
+             =>   /rooms/spaces/:roomid/invite
+             =>   /rooms/spaces/:roomid/multiple_emotes
+             =>   /rooms/spaces/:roomid/emotes
+             =>   /rooms/spaces/:roomid/emotes/:state_key
+             => /rooms/:roomid
+             =>   /rooms/:roomid/encryption
+             =>   /rooms/:roomid/invite
+             =>   /rooms/:roomid/details
+             =>     /rooms/:roomid/details/permissions
+             =>     /rooms/:roomid/details/widgets
+             =>     /rooms/:roomid/details/invite
+             =>     /rooms/:roomid/details/multiple_emotes
+             =>     /rooms/:roomid/details/emotes
+             =>     /rooms/:roomid/details/emotes/:state_key
+             => /rooms/settings
+             =>   /rooms/settings/settings?tab=language
+             =>   /rooms/settings/settings?tab=currency
+             =>   /rooms/settings/settings?tab=notifications
+             =>   /rooms/settings/settings?tab=style
+             =>   /rooms/settings/settings?tab=devices
+             =>   /rooms/settings/settings?tab=invite_friends
+             =>   /rooms/settings/settings?tab=security_own
+             =>   /rooms/settings/settings?tab=chat
+             =>     /rooms/settings/settings?tab=chat/settings?tab=chat&subtab=emotes
+             =>   /rooms/settings/settings?tab=security
+             =>     /rooms/settings/settings?tab=security/settings?tab=security&subtab=ignorelist
+             =>     /rooms/settings/settings?tab=security/settings?tab=security&subtab=3pid
+             =>   /rooms/settings/settings?tab=logs
+             => /rooms/archive
+             =>   /rooms/archive/:roomid
+             => /
+             => /website
+             =>   /website/report
+             =>   /website/aboutus
+             =>   /website/ourteam
+             =>   /website/agbs
+             =>   /website/impressum
+             =>   /website/submitidea
+             => /authhome
+             =>   /authhome/pinverification
+             =>     /authhome/pinverification/createaccount
+             =>     /authhome/pinverification/mnemonicgen
+             =>   /authhome/ionloading
+             =>   /authhome/login
+             =>     /authhome/login/word_recovery
+             =>     /authhome/login/device_recovery
+             =>     /authhome/login/social_recovery
+             =>       /authhome/login/social_recovery/info_social_recovery
+             =>     /authhome/login/did_recovery
+             =>   /authhome/connect
+             =>     /authhome/connect/signup
+           known full paths for route names:
+             nft_product_screen_route => /feed/nft_product_screen_route/:nft_id
+             collection_screen_route/nft_product_screen_route => /feed/collection_screen_route/:collection_id/nft_product_screen_route/:nft_id
+             /profile => /profile/:profileId
+             /rooms/spaces => /rooms/spaces/:roomid
+             emotes => /rooms/spaces/:roomid/emotes/:state_key
+             rooms => /rooms/:roomid
+             emotes2 => /rooms/:roomid/details/emotes/:state_key
+             archive => /rooms/archive/:roomid
+ */

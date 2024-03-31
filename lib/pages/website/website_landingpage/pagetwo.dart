@@ -12,9 +12,10 @@ import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dar
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageTwo extends StatefulWidget {
@@ -129,7 +130,7 @@ class _PageTwoState extends State<PageTwo> {
                         child: LongButtonWidget(
                             title: L10n.of(context)!.register,
                             onTap: () async {
-                              VRouter.of(context).to('/pinverification');
+                              context.go('/authhome/pinverification');
                             }),
                       ),
                     ],

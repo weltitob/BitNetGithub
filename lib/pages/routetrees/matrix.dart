@@ -22,6 +22,7 @@ import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:matrix/encryption.dart';
@@ -30,7 +31,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:vrouter/vrouter.dart';
 
 import '../matrix/widgets/local_notifications_extension.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -39,14 +39,13 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 class Matrix extends StatefulWidget {
   final Widget? child;
 
-  final GlobalKey<VRouterState>? router;
   final BuildContext context;
   final List<Client> clients;
   final Map<String, String>? queryParameters;
 
   const Matrix({
     this.child,
-    required this.router,
+
     required this.context,
     required this.clients,
     this.queryParameters,
@@ -245,7 +244,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
   bool webHasFocus = true;
 
-  String? get activeRoomId => navigatorContext.vRouter.pathParameters['roomid'];
+  String? get activeRoomId => GoRouter.of(context).routerDelegate.currentConfiguration.pathParameters['roomid'];
 
   final linuxNotifications =
       PlatformInfos.isLinux ? NotificationsClient() : null;
@@ -298,7 +297,6 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
       backgroundPush = BackgroundPush(
         client,
         context,
-        widget.router,
         onFcmError: (errorMsg, {Uri? link}) async {
           final result = await showOkCancelAlertDialog(
             barrierDismissible: true,
@@ -393,7 +391,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
         );
 
         if (state != LoginState.loggedIn) {
-          widget.router?.currentState?.to(
+          context.go(
             //'/rooms',
             //queryParameters: widget.router?.currentState?.queryParameters ?? {},
             '/authhome'
@@ -405,7 +403,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
           //queryParameters: widget.router?.currentState?.queryParameters ?? {},
         //);
         print("MATRIX.dart ELSE STATEMENT WAS TRIGGERED !!!! LOOK!");
-        widget.router?.currentState?.to(
+        context.go(
             '/feed'
         );
       }

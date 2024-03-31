@@ -19,8 +19,9 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/profile_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/public_room_bottom_sheet.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 import '../../components/fields/searchfield/chat_list_searchbar.dart';
 
 class ChatListViewBody extends StatelessWidget {
@@ -199,10 +200,9 @@ class ChatListViewBody extends StatelessWidget {
                                         onTap: () {
                                           print(
                                               "Create new space screen forward");
-                                          VRouter.of(context)
-                                              .to('/rooms/create');
+                                          context.go('/rooms/create');
                                           //richtig forwarden
-                                          //VRouter.of(context).to('/rooms/newspace');
+                                          //context.go('/rooms/newspace');
                                         },
                                         iconData: Icons.add,
                                       ),

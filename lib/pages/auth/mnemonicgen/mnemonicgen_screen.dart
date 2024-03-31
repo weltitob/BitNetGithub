@@ -6,7 +6,7 @@ import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class MnemonicGenScreen extends StatelessWidget {
   MnemonicController mnemonicController;

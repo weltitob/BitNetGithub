@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
+import 'package:go_router/go_router.dart';
 
 import 'package:bitnet/pages/routetrees/matrix.dart';
 
@@ -51,8 +52,10 @@ class MultipleEmotesSettingsView extends StatelessWidget {
               return ListTile(
                 title: Text(packName!),
                 onTap: () async {
-                  VRouter.of(context).toSegments(
-                    ['rooms', room.id, 'details', 'emotes', keys[i]],
+                  //TODO: segmented routing doesnt exist for Go Router, potential bugs
+                  context.go(
+                    context.namedLocation('emotes2', pathParameters: {'roomid': room.id, 'state_key': keys[i]}) 
+                    // + '/details/'  '/rooms/:'+ room.id+'/details/'+ 'emotes/'+ keys[i],
                   );
                 },
               );

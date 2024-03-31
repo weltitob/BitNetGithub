@@ -7,22 +7,24 @@ import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'settings_emotes_view.dart';
 
 class EmotesSettings extends StatefulWidget {
-  const EmotesSettings({Key? key}) : super(key: key);
+  final GoRouterState routerState;
+  const EmotesSettings({Key? key, required this.routerState}) : super(key: key);
 
   @override
   EmotesSettingsController createState() => EmotesSettingsController();
 }
 
 class EmotesSettingsController extends State<EmotesSettings> {
-  String? get roomId => VRouter.of(context).pathParameters['roomid'];
+  String? get roomId => widget.routerState.pathParameters['roomid'];
   Room? get room =>
       roomId != null ? Matrix.of(context).client.getRoomById(roomId!) : null;
-  String? get stateKey => VRouter.of(context).pathParameters['state_key'];
+  String? get stateKey => widget.routerState.pathParameters['state_key'];
 
   bool showSave = false;
   TextEditingController newImageCodeController = TextEditingController();

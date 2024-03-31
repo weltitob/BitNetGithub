@@ -21,9 +21,9 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:another_flushbar/flushbar.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -169,7 +169,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       customHeight: AppTheme.cardPadding * 1.5,
                       leadingIcon: Icon(Icons.loop_rounded),
                       onTap: () {
-                        VRouter.of(context).to("/wallet/loop_screen");
+                        context.go("/wallet/loop_screen");
                       },
                     ),
                   ),
@@ -217,7 +217,7 @@ class _WalletScreenState extends State<WalletScreen> {
                             customWidth: AppTheme.cardPadding * 6.5,
                             leadingIcon: Icon(FontAwesomeIcons.circleUp),
                             onTap: () {
-                              VRouter.of(context).to('/wallet/send');
+                              context.go('/wallet/send');
                             }),
                         LongButtonWidget(
                             buttonType: ButtonType.transparent,
@@ -225,7 +225,7 @@ class _WalletScreenState extends State<WalletScreen> {
                             customWidth: AppTheme.cardPadding * 6.5,
                             leadingIcon: Icon(FontAwesomeIcons.circleDown),
                             onTap: () {
-                              VRouter.of(context).to('/wallet/receive');
+                              context.go('/wallet/receive');
                             }),
                       ],
                     ),

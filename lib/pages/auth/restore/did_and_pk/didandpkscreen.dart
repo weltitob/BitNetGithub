@@ -12,10 +12,11 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'dart:math';
 
-import 'package:vrouter/vrouter.dart';
+
 
 Random random = new Random();
 
@@ -255,7 +256,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                           bottom: AppTheme.cardPadding),
                       child: GestureDetector(
                         onTap: () {
-                          VRouter.of(context).to("/pinverification");
+                          context.go("/authhome/pinverification");
                         },
                         child: Text(
                           L10n.of(context)!.register,

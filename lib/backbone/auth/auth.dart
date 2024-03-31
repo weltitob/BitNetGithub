@@ -20,7 +20,8 @@ import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:matrix/matrix.dart';
 
 /*
@@ -238,7 +239,7 @@ class Auth {
 
     try{
       //showLoadingScreen
-      //VRouter.of(context).to('/ionloading');
+      //context.go('/ionloading');
       final String randomstring = generateRandomString(20); // length 20
 
       Logs().w("For now simply login in own matrix client until own sever is setup and can register there somehow.");
@@ -260,11 +261,11 @@ class Auth {
 
       if(currentuser == null){
         // Remove the loading screen
-        VRouter.of(context).pop();
+        context.pop();
         throw Exception("User couldnt be signed in with custom Token!");
       } else {
         //if successfull push back to homescreen
-        VRouter.of(context).to("/");
+        context.go("/");
       }
 
     } catch(e){
@@ -345,9 +346,9 @@ class Auth {
 
       if (!ssoSupported && matrix.loginRegistrationSupported == false) {
         // Server does not support SSO or registration. We can skip to login page:
-        VRouter.of(context).to('login');
+        context.go('/authhome/login');
       } else {
-        VRouter.of(context).to('connect');
+        context.go('/authhome/connect');
       }
     } catch (e) {
       Logs().e('Error in checkHomeserverAction', (e).toLocalizedString(context));
@@ -481,7 +482,7 @@ class Auth {
       }
       Matrix.of(context).loginUsername = username;
 
-      //VRouter.of(context).to('signup');
+      //context.go('signup');
 
     } catch (e, s) {
       final signupError = e.toLocalizedString(context);

@@ -11,9 +11,10 @@ import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 enum QRTyped {
   LightningMail,
@@ -82,7 +83,7 @@ class QRScannerController extends State<QrScanner> {
         break;
       case QRTyped.OnChain:
        // Navigator.push(cxt, MaterialPageRoute(builder: (context)=>Send()));
-        VRouter.of(cxt).to("/wallet/send?walletAdress=$encodedString");
+        context.go("/wallet/send?walletAdress=$encodedString");
         break;
       case QRTyped.Invoice:
         print("INVIUCE DETECTED!");
@@ -90,8 +91,8 @@ class QRScannerController extends State<QrScanner> {
         //have to parse or give the page everything I know about the invoice
         try {
           //Navigator.push(context, MaterialPageRoute(builder: (context)=>Send()));
-          VRouter.of(cxt).to("/wallet/send?invoice=$encodedString");
-          //VRouter.of(context).to("/wallet/receive");
+          context.go("/wallet/send?invoice=$encodedString");
+          //context.go("/wallet/receive");
         } catch (e) {
           Logs().e("Failed forwarding with error: $e");
         }
@@ -103,7 +104,7 @@ class QRScannerController extends State<QrScanner> {
         onScannedForSignIn(encodedString);
       case QRTyped.Unknown:
         //send to unknown qr code page which shows raw data
-        //VRouter.of(context).to("/error");
+        //context.go("/error");
         break;
       default:
       // Handle unknown QR code
@@ -148,7 +149,7 @@ class QRScannerController extends State<QrScanner> {
     print(walletdetails);
 
     if(isValid){
-      VRouter.of(context).to("/wallet/send");
+      context.go("/wallet/send");
     } else {
       showOverlay(context, "Der eingescannte QR-Code hat kein zugelassenes Format");
     }

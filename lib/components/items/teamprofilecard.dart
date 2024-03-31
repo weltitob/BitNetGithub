@@ -3,7 +3,8 @@ import 'package:bitnet/components/appstandards/BitNetShaderMask.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 
 
@@ -97,7 +98,7 @@ class _TeamProfileCardState extends State<TeamProfileCard> {
                   customHeight: AppTheme.cardPadding * 1.5,
                   customWidth: AppTheme.cardPadding * 7.5,
                   onTap: (){
-                VRouter.of(context).to('/submitidea');
+                context.go('/website/submitidea');
               }) : Container(),
             ],
           ),

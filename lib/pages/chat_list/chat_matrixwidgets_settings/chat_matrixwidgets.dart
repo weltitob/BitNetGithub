@@ -1,19 +1,21 @@
 import 'package:bitnet/pages/chat_list/chat_matrixwidgets_settings/chat_matrixwidgets_view.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class ChatMatrixWidgets extends StatefulWidget {
-  const ChatMatrixWidgets({super.key});
+  final GoRouterState routerState;
+  const ChatMatrixWidgets({super.key, required this.routerState});
 
   @override
   State<ChatMatrixWidgets> createState() => ChatMatrixWidgetController();
 }
 
 class ChatMatrixWidgetController extends State<ChatMatrixWidgets> with SingleTickerProviderStateMixin{
-  String? get roomId => VRouter.of(context).pathParameters['roomid'];
+  String? get roomId => widget.routerState.pathParameters['roomid'];
   final TextEditingController urlController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   String widgetType = 'm.etherpad';

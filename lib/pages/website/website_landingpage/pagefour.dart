@@ -5,9 +5,10 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:seo/seo.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class PageFour extends StatefulWidget {
   const PageFour({super.key});
@@ -297,7 +298,7 @@ class _PageFourState extends State<PageFour> {
               title: "Download .apk",
               buttonType: ButtonType.solid,
               onTap: () async {
-                VRouter.of(context).to('/pinverification');
+                context.go('/authhome/pinverification');
               }),
         ),
       ],
@@ -407,7 +408,7 @@ class _PageFourState extends State<PageFour> {
                   title: "Google Play",
                   buttonType: ButtonType.transparent,
                   onTap: () async {
-                    VRouter.of(context).to('/pinverification');
+                    context.go('/authhome/pinverification');
                   }),
             ),
       SizedBox(
@@ -427,7 +428,7 @@ class _PageFourState extends State<PageFour> {
                   title: "Apple Store",
                   buttonType: ButtonType.transparent,
                   onTap: () async {
-                    VRouter.of(context).to('/pinverification');
+                    context.go('/authhome/pinverification');
                   }),
             ),
       isIntermediateScreen

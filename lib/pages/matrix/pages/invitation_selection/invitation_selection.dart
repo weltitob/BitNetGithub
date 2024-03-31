@@ -6,15 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import 'package:bitnet/pages/matrix/pages/invitation_selection/invitation_selection_view.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import '../../../../backbone/helper/localized_exception_extension.dart';
 
 class InvitationSelection extends StatefulWidget {
-  const InvitationSelection({Key? key}) : super(key: key);
+  final GoRouterState routerState;
+  const InvitationSelection({Key? key, required this.routerState}) : super(key: key);
 
   @override
   InvitationSelectionController createState() =>
@@ -27,9 +29,16 @@ class InvitationSelectionController extends State<InvitationSelection> {
   bool loading = false;
   List<Profile> foundProfiles = [];
   Timer? coolDown;
+  late GoRouterState routerState;
 
-  String? get roomId => VRouter.of(context).pathParameters['roomid'];
 
+  String? get roomId => widget.routerState.pathParameters['roomid'];
+
+@override
+void initState() {
+  routerState = widget.routerState;
+  super.initState();
+}
   Future<List<User>> getContacts(BuildContext context) async {
     final client = Matrix.of(context).client;
     final room = client.getRoomById(roomId!)!;

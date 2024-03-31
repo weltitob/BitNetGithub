@@ -11,8 +11,9 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class Quotes extends StatefulWidget {
   final WebsiteLandingPageController controller;
@@ -147,7 +148,7 @@ class _QuotesState extends State<Quotes> {
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                     onTap: () {
-                      VRouter.of(context).to("/register");
+                      context.go("/register");
                     },
                     child: GlassContainer(
                       borderThickness: 1.5, // remove border if not active

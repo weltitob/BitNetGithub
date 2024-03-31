@@ -12,9 +12,10 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class PinVerificationScreen extends StatefulWidget {
   const PinVerificationScreen({Key? key}) : super(key: key);
@@ -80,11 +81,8 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       if (code.used == false) {
         _loading = false;
         //passing code to SignUp that it can be flagged as used later on
-        VRouter.of(context).to('/createaccount', queryParameters: {
-          'code': code.code,
-          'issuer': code.issuer,
-        });
-
+context.go(Uri(path: '/authhome/pinverification/createaccount', queryParameters: { 'code': code.code,
+          'issuer': code.issuer,}).toString());
       } else {
         errorController
             .add(ErrorAnimationType.shake); // Triggering error shake animation
@@ -143,7 +141,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         context: context,
         appBar: bitnetAppBar(
           onTap: () {
-            VRouter.of(context).to('/authhome');
+            context.go('/authhome');
           },
           text: L10n.of(context)!.pinCodeVerification,
           context: context,

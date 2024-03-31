@@ -9,8 +9,9 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class MnemonicGen extends StatefulWidget {
   const MnemonicGen({super.key});
@@ -42,7 +43,7 @@ class MnemonicController extends State<MnemonicGen> {
 
   void processParameters(BuildContext context) {
     Logs().w("Process parameters for mnemonicgen called");
-    final Map<String, String> parameters = VRouter.of(context).queryParameters;
+    final Map<String, String> parameters = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
 
     if (parameters.containsKey('code')) {
       code = parameters['code']!;
@@ -117,7 +118,7 @@ class MnemonicController extends State<MnemonicGen> {
       );
 
       Logs().w("Navigating to homescreen now...");
-      VRouter.of(context).to('/');
+      context.go('/');
 
     } on MatrixException catch(e){
       print("Matrix Exception: $e");

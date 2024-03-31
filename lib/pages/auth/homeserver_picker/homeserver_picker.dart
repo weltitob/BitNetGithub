@@ -14,7 +14,7 @@
 // import 'package:hive_flutter/hive_flutter.dart';
 // import 'package:matrix/matrix.dart';
 // import 'package:matrix_homeserver_recommendations/matrix_homeserver_recommendations.dart';
-// import 'package:vrouter/vrouter.dart';
+// 
 // import 'package:bitnet/pages/matrix/utils/other/adaptive_bottom_sheet.dart';
 // import 'package:bitnet/pages/routetrees/matrix.dart';
 // import '../../../../backbone/helper/localized_exception_extension.dart';
@@ -153,9 +153,9 @@
 //
 //       if (!ssoSupported && matrix.loginRegistrationSupported == false) {
 //         // Server does not support SSO or registration. We can skip to login page:
-//         VRouter.of(context).to('login');
+//         context.go('login');
 //       } else {
-//         VRouter.of(context).to('connect');
+//         context.go('connect');
 //       }
 //     } catch (e) {
 //       setState(() => error = (e).toLocalizedString(context));

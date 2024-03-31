@@ -80,7 +80,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         title: 'Recovery phrases',
       ),
       SettingsPageModel(
-        widget: Container(), //VRouter.of(context).to('/settings/security'),
+        widget: Container(), //context.go('/settings/security'),
         goBack: true,
         iconData: Icons.security,
         title: 'Extended Sec',

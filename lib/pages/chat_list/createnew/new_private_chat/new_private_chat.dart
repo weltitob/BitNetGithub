@@ -7,10 +7,11 @@ import 'package:flutter/services.dart';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:bitnet/backbone/helper/social_share.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class NewPrivateChat extends StatefulWidget {
   const NewPrivateChat({Key? key}) : super(key: key);
@@ -78,7 +79,7 @@ class NewPrivateChatController extends State<NewPrivateChat> {
 
     }
 
-    VRouter.of(context).push('/qrscanner');
+    context.push('/qrscanner');
 
     // await showAdaptiveBottomSheet(
     //   context: context,

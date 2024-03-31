@@ -2,8 +2,9 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:popover/popover.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class SearchFieldWithNotificationsWidget extends StatefulWidget {
   final String hintText;
@@ -105,7 +106,7 @@ class _SearchFieldWithNotificationsWidgetState
                 ],
                 onSelected: (val) {
                   if (val == -1) {
-                    context.vRouter.to(kNotificationScreenRoute);
+                    context.go('/feed/notification_screen_route');
                   }
                 },
                 icon: Icon(

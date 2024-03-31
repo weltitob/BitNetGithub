@@ -148,13 +148,13 @@ class _FeedScreenState extends State<FeedScreen>
   getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      watchlist = prefs.getString('watchlist')!;
+      watchlist = prefs.getString('watchlist');
       print(watchlist);
       _loading = false;
     });
   }
 
-  String watchlist = "";
+  String? watchlist = "";
   bool _loading = true;
 
   @override

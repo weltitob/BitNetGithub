@@ -8,11 +8,12 @@ import 'package:flutter/foundation.dart';
 
 import 'package:desktop_lifecycle/desktop_lifecycle.dart';
 import 'package:desktop_notifications/desktop_notifications.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:vrouter/vrouter.dart';
+
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 extension LocalNotificationsExtension on MatrixState {
@@ -112,7 +113,7 @@ extension LocalNotificationsExtension on MatrixState {
             room.setReadMarker(event.eventId, mRead: event.eventId);
             break;
           case DesktopNotificationActions.openChat:
-            VRouter.of(navigatorContext).toSegments(['rooms', room.id]);
+            navigatorContext.goNamed('rooms', pathParameters: {'roomid': room.id});
             break;
         }
       });
