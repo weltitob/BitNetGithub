@@ -154,7 +154,9 @@ class _TransactionsState extends State<Transactions>
       body: ListView(children: combinedTransactions)
     ) : Container(
         height: AppTheme.cardPadding * 18,
-        child: ListView(
-            children: combinedTransactions)) : Container(height: AppTheme.cardPadding * 18, child: dotProgress(context),);
+        child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: combinedTransactions.length > 5 ? 5 : combinedTransactions.length,
+            itemBuilder:(context, index)=> combinedTransactions[index])) : Container(height: AppTheme.cardPadding * 18, child: dotProgress(context),);
   }
 }

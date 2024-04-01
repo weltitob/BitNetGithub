@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/pages/routetrees/widgettree.dart';
+import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,7 @@ class ThemeController extends State<ThemeBuilder> {
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
       Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
       Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card'] ?? 'lightning');
+      Provider.of<BalanceHideProvider>(context, listen: false).setHideBalance(hide:data.data()?['hide_balance'] ?? false);
       setState(() {
         _themeMode = ThemeMode.values
             .singleWhereOrNull((value) => value.name == rawThemeMode);
@@ -73,7 +75,8 @@ class ThemeController extends State<ThemeBuilder> {
         "lang" : "en",
         "primary_color": 4283657726,
         "selected_currency":"USD",
-        "selected_card":"lightning"
+        "selected_card":"lightning",
+        "hide_balance": false
       };
       settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid)
           .set(data);
