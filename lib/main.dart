@@ -2,10 +2,8 @@ import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
-import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
@@ -20,7 +18,6 @@ import 'package:seo/seo.dart';
 import 'backbone/auth/auth.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:matrix/matrix.dart';
-//import 'firebase_options.dart';
 
 //⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⢀⣀⣤⣴⣶⣶⣶⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⣀⣤⣾⣿⡿⠿⠛⠛⠛⠛⠛⠛⠻⢿⣿⣿⣦⣄⠀⠀⠀⠀⠀⠀

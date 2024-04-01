@@ -29,7 +29,7 @@ class SettingsChatView extends StatelessWidget {
     final wallpaper = Matrix.of(context).wallpaper;
 
     return bitnetScaffold(
-      extendBodyBehindAppBar: true,
+      //extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
           context: context,
           text: L10n.of(context)!.chat,

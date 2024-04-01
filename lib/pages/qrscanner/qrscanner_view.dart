@@ -48,7 +48,7 @@ class QRScannerView extends StatelessWidget {
                   debugPrint('Barcode found! ${barcode.rawValue}');
                   //final String code = barcode.rawValue.toString();
                   //var encodedString = jsonDecode(codeinjson);
-                  controller.onQRCodeScanned(barcode.rawValue!);
+                  controller.onQRCodeScanned(barcode.rawValue!, context);
                   //check what type we scanned somehow and then call the according functions
                   //controller.onScannedForSignIn(encodedString);
                 }

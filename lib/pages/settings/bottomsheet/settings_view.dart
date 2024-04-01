@@ -1,6 +1,9 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:flutter/material.dart';
 
@@ -18,36 +21,41 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return bitnetScaffold(
       context: context,
+      appBar: bitnetAppBar(
+        text: L10n.of(context)!.settings,
+        context: context,
+        hasBackButton: false,
+      ),
       body: ListTileTheme(
         iconColor: Theme.of(context).colorScheme.onBackground,
         child: ListView(
           key: const Key('SettingsListViewContent'),
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(
-                top: AppTheme.elementSpacing,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.settings,
-                    color: Colors.white,
-                    size: AppTheme.iconSize / 1.25,
-                  ),
-                  SizedBox(
-                    width: AppTheme.elementSpacing / 2,
-                  ),
-                  Text(
-                    'Einstellungen',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: AppTheme.elementSpacing * 2,
-            ),
+            // Container(
+            //   margin: EdgeInsets.only(
+            //     top: AppTheme.elementSpacing,
+            //   ),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Icon(
+            //         Icons.settings,
+            //         color: Colors.white,
+            //         size: AppTheme.iconSize / 1.25,
+            //       ),
+            //       SizedBox(
+            //         width: AppTheme.elementSpacing / 2,
+            //       ),
+            //       Text(
+            //         'Einstellungen',
+            //         style: Theme.of(context).textTheme.titleSmall,
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: AppTheme.elementSpacing * 2,
+            // ),
             // FutureBuilder<Profile>(
             //   future: controller.profileFuture,
             //   builder: (context, snapshot) {
@@ -130,66 +138,90 @@ class SettingsView extends StatelessWidget {
             //   hasNavigation: true,
             //   onTap: () => PlatformInfos.showDialog(context),
             // ),
-            SettingsListItem(
-              icon: Icons.color_lens,
+            BitNetListTile(
+              leading: Icon(Icons.color_lens),
               text: L10n.of(context)!.changeTheme,
-              hasNavigation: true,
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
               onTap: () {
                 controller.switchTab('style');
               },
             ),
-            SettingsListItem(
-              icon: Icons.security,
+            BitNetListTile(
+              leading: Icon(Icons.security),
               text: "Own Security",
-              hasNavigation: true,
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
               onTap: () {
                 controller.switchTab('security');
               },
             ),
-            SettingsListItem(
-              icon: Icons.key_rounded,
+            BitNetListTile(
+              leading: Icon(Icons.key_rounded),
               text: L10n.of(context)!.inviteContact,
-              hasNavigation: true,
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
               onTap: () {
                 controller.switchTab('invite');
               },
             ),
-            SettingsListItem(
-              icon: Icons.notifications_outlined,
+            BitNetListTile(
+              leading: Icon(Icons.notifications_outlined),
               text: L10n.of(context)!.notifications,
-              hasNavigation: true,
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
               onTap: () {
                 controller.switchTab('notifications');
               },
             ),
-            SettingsListItem(
-              icon: Icons.forum_outlined,
+            BitNetListTile(
+              leading: Icon(Icons.forum_outlined),
               text: L10n.of(context)!.chat,
-              hasNavigation: true,
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
               onTap: () {
                 controller.switchTab('chat');
               },
             ),
-            SettingsListItem(
-              icon: Icons.currency_bitcoin,
+            BitNetListTile(
+              leading: Icon(Icons.currency_bitcoin),
               text: "Change language",
-              hasNavigation: true,
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
               onTap: () {
                 controller.switchTab('language');
               },
             ),
-            SettingsListItem(
-              icon: Icons.language,
+            BitNetListTile(
+              leading: Icon(Icons.language),
               text: "Change Currency",
-              hasNavigation: true,
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
               onTap: () {
                 controller.switchTab('currency');
               },
             ),
-            SettingsListItem(
-              icon: Icons.login_rounded,
+            BitNetListTile(
+              leading: Icon(Icons.login_rounded),
               text: L10n.of(context)!.logout,
-              hasNavigation: false,
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
               onTap: () async {
                 //matrix logout
                 //need to implement the chatbackup in our normal key first

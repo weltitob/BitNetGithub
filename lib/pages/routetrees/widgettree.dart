@@ -1,5 +1,3 @@
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/background_push.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_scroll_behaviour.dart';

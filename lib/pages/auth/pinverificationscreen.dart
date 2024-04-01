@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:bitnet/pages/routetrees/authroutes.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
@@ -13,6 +12,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
+import 'package:matrix/matrix.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -61,7 +61,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         textEditingController.text = data.text!;
       });
     } else {
-      throw Exception('no code in users clipboard could be found');
+      Logs().w('No code in users clipboard could be found');
     }
   }
 
@@ -80,10 +80,11 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       if (code.used == false) {
         _loading = false;
         //passing code to SignUp that it can be flagged as used later on
-        onPinVerificationSuccess(
-          code: code,
-          context: context,
-        );
+        VRouter.of(context).to('/createaccount', queryParameters: {
+          'code': code.code,
+          'issuer': code.issuer,
+        });
+
       } else {
         errorController
             .add(ErrorAnimationType.shake); // Triggering error shake animation

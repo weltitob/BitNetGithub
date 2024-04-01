@@ -91,13 +91,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                           updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                           isActive: true,
                           dob: 10,
-                          mainWallet: UserWallet(
-                              walletAddress: "walletAddress",
-                              walletType: "walletType",
-                              walletBalance: "walletBalance",
-                              privateKey: "privateKey",
-                              userdid: "userdid"),
-                          wallets: []),
+                          ),
                     ),
                     Container(
                       height: AppTheme.elementSpacing,
@@ -138,13 +132,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                             updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                             isActive: true,
                             dob: 10,
-                            mainWallet: UserWallet(
-                                walletAddress: "walletAddress",
-                                walletType: "walletType",
-                                walletBalance: "walletBalance",
-                                privateKey: "privateKey",
-                                userdid: "userdid"),
-                            wallets: []),
+                            ),
                       ),
                     ),
                     Container(
@@ -169,13 +157,8 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                           updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                           isActive: true,
                           dob: 10,
-                          mainWallet: UserWallet(
-                              walletAddress: "walletAddress",
-                              walletType: "walletType",
-                              walletBalance: "walletBalance",
-                              privateKey: "privateKey",
-                              userdid: "userdid"),
-                          wallets: []),
+
+                          ),
                     ),
                     Container(
                       height: AppTheme.elementSpacing,
@@ -199,13 +182,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                           updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                           isActive: true,
                           dob: 10,
-                          mainWallet: UserWallet(
-                              walletAddress: "walletAddress",
-                              walletType: "walletType",
-                              walletBalance: "walletBalance",
-                              privateKey: "privateKey",
-                              userdid: "userdid"),
-                          wallets: []),
+                        ),
                     ),
                     Container(
                       height: AppTheme.cardPadding,

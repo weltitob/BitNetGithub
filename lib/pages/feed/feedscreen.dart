@@ -8,8 +8,10 @@ import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/marketplace/HomeScreen.dart';
+import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -89,6 +91,7 @@ class _FeedScreenState extends State<FeedScreen>
     _tabController.addListener(_smoothScrollToTop);
     TextFieldController.addListener(() => setState(() {}));
     getData();
+    _initNFC();
 
     super.initState();
   }
@@ -116,6 +119,30 @@ class _FeedScreenState extends State<FeedScreen>
     setState(() {
       fixedScroll = _tabController.index == 0;
     });
+  }
+
+  Future<void> _initNFC() async {
+    bool isAvailable = await NfcManager.instance.isAvailable();
+    if(isAvailable){
+
+      // Start Session
+      NfcManager.instance.startSession(
+        onDiscovered: (NfcTag tag) async {
+          print('asdd');
+          var ndef = Ndef.from(tag);
+          if(ndef != null) {
+            if(ndef.cachedMessage != null){
+            String message = String.fromCharCodes(
+                ndef.cachedMessage!.records.first.payload);
+            print(message.substring(3, message.length));
+            QRScannerController().onQRCodeScanned(
+                message.substring(3, message.length), context);
+            }
+          }
+          // Do something with an NfcTag instance.
+        },
+      );
+    }
   }
 
   getData() async {

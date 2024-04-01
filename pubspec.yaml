@@ -130,6 +130,8 @@ dependencies:
   asn1lib: ^1.0.0
   jose: ^0.3.0
 
+  bip39_mnemonic: ^3.0.6
+
   #doesnt work
   line_awesome_flutter: ^2.0.0
   community_material_icon: ^5.9.55
@@ -214,6 +216,9 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   intl_generator: ^0.4.1
   build_runner: ^2.4.8
+
+  #nfc_manager:
+  nfc_manager: ^3.4.0
 
 dev_dependencies:
   flutter_test:

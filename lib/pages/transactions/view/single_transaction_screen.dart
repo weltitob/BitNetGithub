@@ -3,6 +3,8 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings, prefer_const_constructors
 
 import 'dart:math';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
@@ -18,33 +20,51 @@ class SingleTransactionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(TransactionController());
     final controllerHome = Get.put(HomeController());
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            controller.timer?.cancel();
-            controller.timerLatest?.cancel();
-            controller.timerTime?.cancel();
-            channel.sink.add('{"track-rbf-summary":true}');
-            channel.sink.add('{"track-tx":"stop"}');
-            channel.sink
-                .add('{"action":"want","data":["blocks","mempool-blocks"]}');
-            // VRouter.of(context).previousUrl;
-            // VRouter.of(context).to('/wallet/bitcoinscreen');
-            // Get.delete<TransactionController>();
-            Navigator.pop(context);
-            controller.homeController.isRbfTransaction.value = false;
-            // controller.txID = '';
-            print('arrow pop');
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-        ),
-      ),
+    return bitnetScaffold(
+      context: context,
+      appBar: bitnetAppBar(context: context,
+        onTap: (){
+          controller.timer?.cancel();
+                controller.timerLatest?.cancel();
+                controller.timerTime?.cancel();
+                channel.sink.add('{"track-rbf-summary":true}');
+                channel.sink.add('{"track-tx":"stop"}');
+                channel.sink
+                    .add('{"action":"want","data":["blocks","mempool-blocks"]}');
+                // VRouter.of(context).previousUrl;
+                // VRouter.of(context).to('/wallet/bitcoinscreen');
+                // Get.delete<TransactionController>();
+                Navigator.pop(context);
+                controller.homeController.isRbfTransaction.value = false;
+                // controller.txID = '';
+                print('arrow pop');
+      },) ,
+      // AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Colors.white,
+      //   leading: IconButton(
+      //     onPressed: () {
+      //       controller.timer?.cancel();
+      //       controller.timerLatest?.cancel();
+      //       controller.timerTime?.cancel();
+      //       channel.sink.add('{"track-rbf-summary":true}');
+      //       channel.sink.add('{"track-tx":"stop"}');
+      //       channel.sink
+      //           .add('{"action":"want","data":["blocks","mempool-blocks"]}');
+      //       // VRouter.of(context).previousUrl;
+      //       // VRouter.of(context).to('/wallet/bitcoinscreen');
+      //       // Get.delete<TransactionController>();
+      //       Navigator.pop(context);
+      //       controller.homeController.isRbfTransaction.value = false;
+      //       // controller.txID = '';
+      //       print('arrow pop');
+      //     },
+      //     icon: const Icon(
+      //       Icons.arrow_back_ios,
+      //       color: Colors.black,
+      //     ),
+      //   ),
+      // ),
       body: PopScope(
         canPop: true,
         onPopInvoked: (bool didPop) {
@@ -60,7 +80,7 @@ class SingleTransactionScreen extends StatelessWidget {
           // VRouter.of(context).to('/wallet/bitcoinscreen');
           // Get.delete<TransactionController>();
           controller.homeController.isRbfTransaction.value = false;
-          Navigator.pop(context);
+          //Navigator.pop(context);
           // VRouter.of(context).previousUrl;
           // controller.txID = '';
           print('will pop');
@@ -77,7 +97,7 @@ class SingleTransactionScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: 0.0, vertical: 0.0),
               child: Container(
-                decoration: BoxDecoration(color: primaryColor),
+               // decoration: BoxDecoration(color: primaryColor),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

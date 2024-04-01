@@ -96,18 +96,16 @@ class _DashboardPageState extends State<DashboardPage> {
 
     return SizedBox(
       width: double.infinity,
-      child: VerticalFadeListView(
-        child: ListView.builder(
-          itemCount: currencies.length,
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          physics: const BouncingScrollPhysics(),
-          itemBuilder: (context,index){
-            List<dynamic> entryList = currencies.keys.toList();
-            List<dynamic> valueList = currencies.values.toList();
-            return teamData(index, entryList,valueList,currencies, selectedCurrency);
-          },
-        ),
+      child: ListView.builder(
+        itemCount: currencies.length,
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (context,index){
+          List<dynamic> entryList = currencies.keys.toList();
+          List<dynamic> valueList = currencies.values.toList();
+          return teamData(index, entryList,valueList,currencies, selectedCurrency);
+        },
       ),
     );
   }

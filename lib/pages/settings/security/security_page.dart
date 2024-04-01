@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
@@ -135,8 +136,8 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          SettingsListItem(
-            icon: FontAwesomeIcons.buildingLock,
+          BitNetListTile(
+            leading: Icon(FontAwesomeIcons.buildingLock),
             text: 'DID and private key',
             onTap: () {
               setState(() {
@@ -144,8 +145,8 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
               });
             },
           ),
-          SettingsListItem(
-            icon: FontAwesomeIcons.book,
+          BitNetListTile(
+            leading: Icon(FontAwesomeIcons.book),
             text: '12 Word recovery',
             onTap: () {
               setState(() {
@@ -153,16 +154,16 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
               });
             },
           ),
-          SettingsListItem(
-              icon: FontAwesomeIcons.qrcode,
+          BitNetListTile(
+              leading: Icon(FontAwesomeIcons.qrcode),
               text: 'Recover with QR Code',
               onTap: () {
                 setState(() {
                   currentview = 1;
                 });
               }),
-          SettingsListItem(
-            icon: FontAwesomeIcons.person,
+          BitNetListTile(
+            leading: Icon(FontAwesomeIcons.person),
             text: 'Social Recovery',
             onTap: () {
               setState(() {
@@ -175,20 +176,26 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
               //         builder: (context) => InvitationSettingsPage()));
             },
           ),
-          SettingsListItem(
-            icon: Icons.shield_outlined,
+          BitNetListTile(
+            leading: Icon(Icons.shield_outlined),
             text: 'Extended sec', //L10n.of(context)!.security
-            hasNavigation: true,
+            trailing: Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: AppTheme.iconSize * 0.75,
+            ),
             onTap: () {
               setState(() {
                 currentview = 5;
               });
             },
           ),
-          SettingsListItem(
-            icon: FontAwesomeIcons.trash,
+          BitNetListTile(
+            leading: Icon(FontAwesomeIcons.trash),
             text: 'Delete account',
-            hasNavigation: false,
+            trailing: Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: AppTheme.iconSize * 0.75,
+            ),
             onTap: () {},
           ),
         ],
