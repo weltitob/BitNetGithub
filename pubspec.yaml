@@ -264,7 +264,6 @@ flutter:
     - assets/marketplace/
     - assets/lottiefiles/
     - assets/textfiles/
-    - assets/keys/
 
 msix_config:
   display_name: bitnet

@@ -72,7 +72,7 @@ Future<void> main() async {
     androidProvider:
         AndroidProvider.debug, //AndoroidProvider.playIntegrity nach release
     //ios
-    appleProvider: AppleProvider.appAttest,
+    appleProvider: AppleProvider.debug,
   );
 
   Logs().nativeColors = !PlatformInfos.isIOS;
@@ -132,25 +132,31 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider()),
               ChangeNotifierProvider<CurrencyChangeProvider>(
-                  create: (context) => CurrencyChangeProvider(),
+                create: (context) => CurrencyChangeProvider(),
               ),
               ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
                 update: (context, currencyChangeProvider, bitcoinPriceStream) {
                   // Check if bitcoinPriceStream is null or currency has changed
-                  if (bitcoinPriceStream == null || bitcoinPriceStream.localCurrency != currencyChangeProvider.selectedCurrency) {
+                  if (bitcoinPriceStream == null ||
+                      bitcoinPriceStream.localCurrency !=
+                          currencyChangeProvider.selectedCurrency) {
                     // If so, dispose the old stream and create a new one with the updated currency
                     bitcoinPriceStream?.dispose();
                     final newStream = BitcoinPriceStream();
-                    newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
+                    newStream.updateCurrency(
+                        currencyChangeProvider.selectedCurrency ?? 'usd');
                     return newStream;
                   }
                   // If the currency hasn't changed, return the existing stream
                   return bitcoinPriceStream;
                 },
-                dispose: (context, bitcoinPriceStream) => bitcoinPriceStream.dispose(),
+                dispose: (context, bitcoinPriceStream) =>
+                    bitcoinPriceStream.dispose(),
               ),
               StreamProvider<ChartLine?>(
-                create: (context) => Provider.of<BitcoinPriceStream>(context, listen: false).priceStream,
+                create: (context) =>
+                    Provider.of<BitcoinPriceStream>(context, listen: false)
+                        .priceStream,
                 initialData: ChartLine(time: 0, price: 0),
               ),
               // StreamProvider<ChartLine?>(
