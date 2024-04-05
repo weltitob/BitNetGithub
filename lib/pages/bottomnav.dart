@@ -95,9 +95,9 @@ class _BottomNavState extends State<BottomNav> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(child: widget.child),
+          widget.child,
           // Body content will be managed by VRouter based on the current route
           // if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
           //     !context.vRouter.path.contains(kNftProductScreenRoute))
@@ -145,8 +145,8 @@ class _BottomNavState extends State<BottomNav> {
           //       ),
           //     )
           //   ]),
-          if (context.vRouter.path == '/feed' || context.vRouter.path == '/rooms' ||
-        context.vRouter.path == '/create' || context.vRouter.path == '/wallet' || context.vRouter.path.contains('/profile'))
+          if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
+              !context.vRouter.path.contains(kNftProductScreenRoute))
             Positioned(
               bottom: AppTheme.cardPadding,
               left: AppTheme.cardPadding * 1,
