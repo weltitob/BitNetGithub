@@ -8,8 +8,16 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/marketplace_widgets/CommonBtn.dart';
+import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
+import 'package:bitnet/components/marketplace_widgets/FilterPillList.dart';
+import 'package:bitnet/components/marketplace_widgets/PillLabel.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/models/marketplace/modals.dart';
+import 'package:bitnet/pages/marketplace/FilterScreen.dart';
+import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,6 +26,7 @@ import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
@@ -226,7 +235,10 @@ class _WalletScreenState extends State<WalletScreen> {
                                 size: AppTheme.cardPadding * 1.25,
                                 buttonType: ButtonType.transparent,
                                 iconData: FontAwesomeIcons.filter,
-                                onTap: () {}),
+                                onTap: () {
+                                  BitNetBottomSheet(context: context,
+                                      child: WalletFilterScreen());
+                                }),
                             SizedBox(
                               width: AppTheme.elementSpacing,
                             ),

@@ -216,7 +216,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   intl_generator: ^0.4.1
   build_runner: ^2.4.8
-
+  gauge_indicator: ^0.4.3
   #nfc_manager:
   nfc_manager: ^3.4.0
 

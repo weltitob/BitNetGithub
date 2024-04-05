@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
+import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -47,6 +48,8 @@ class _BottomNavState extends State<BottomNav> {
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
       Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
       Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card']);
+      Provider.of<BalanceHideProvider>(context, listen: false).setHideBalance(hide:data.data()?['hide_balance'] ?? false);
+
       setState(() {
       });
     }else{
@@ -55,7 +58,8 @@ class _BottomNavState extends State<BottomNav> {
         "lang" : "en",
         "primary_color": 4283657726,
         "selected_currency":"USD",
-        "selected_card":"lightning"
+        "selected_card":"lightning",
+        "hide_balance" : false
       };
       settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid)
           .set(data);
