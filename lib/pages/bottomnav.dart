@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
+import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -48,6 +49,8 @@ class _BottomNavState extends State<BottomNav> {
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
       Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
       Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card']);
+      Provider.of<BalanceHideProvider>(context, listen: false).setHideBalance(hide:data.data()?['hide_balance'] ?? false);
+
       setState(() {
       });
     }else{
@@ -56,7 +59,8 @@ class _BottomNavState extends State<BottomNav> {
         "lang" : "en",
         "primary_color": 4283657726,
         "selected_currency":"USD",
-        "selected_card":"lightning"
+        "selected_card":"lightning",
+        "hide_balance" : false
       };
       settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid)
           .set(data);
@@ -92,9 +96,9 @@ class _BottomNavState extends State<BottomNav> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(child: widget.child),
+          widget.child,
           // Body content will be managed by VRouter based on the current route
           // if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
           //     !context.vRouter.path.contains(kNftProductScreenRoute))
@@ -142,10 +146,12 @@ class _BottomNavState extends State<BottomNav> {
           //       ),
           //     )
           //   ]),
+
           if (widget.routerState.fullPath!= null && (widget.routerState.fullPath == '/feed' || widget.routerState.fullPath == '/rooms' ||
         widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')))
             Padding(
               padding: EdgeInsets.only(              bottom: AppTheme.cardPadding,
+
               left: AppTheme.cardPadding * 1,
               right: AppTheme.cardPadding * 1,
 ),

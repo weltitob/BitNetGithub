@@ -206,7 +206,7 @@ class SendController extends State<Send> {
         if(sendType == SendType.Invoice){
           final amountInSat = double.parse(moneyController.text) * 100000000;
           dynamic restResponse = await sendPaymentV2(bitcoinReceiverAdress, amountInSat);
-
+          print('res ${restResponse.statusCode}');
           setState(() {
             isFinished = true;
           });
@@ -217,6 +217,7 @@ class SendController extends State<Send> {
             // Display a success message and navigate to the bottom navigation bar
             context.go("/wallet");
           } else {
+            VRouter.of(context).to("/wallet");
             setState(() {
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;
@@ -262,9 +263,11 @@ class SendController extends State<Send> {
             isFinished = true;
           });
           if (publishTransactionRestResponse.statusCode == "success") {
+            VRouter.of(context).to("/wallet");
             // Display a success message and navigate to the bottom navigation bar
           } else {
             setState(() {
+              VRouter.of(context).to("/wallet");
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;
             });
