@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:bitnet/components/container/avatar.dart';
 
 class SpaceView extends StatelessWidget {
@@ -27,7 +27,7 @@ class SpaceView extends StatelessWidget {
     final client = Matrix.of(context).client;
     final activeSpaceId = controller.activeSpaceId;
     final allSpaces = client.rooms.where((room) => room.isSpace);
-
+    var parentSpace = null;
     if (activeSpaceId == null) {
       final rootSpaces = allSpaces
           .where(
@@ -38,43 +38,48 @@ class SpaceView extends StatelessWidget {
           )
           .toList();
 
-      return CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, i) {
-                final rootSpace = rootSpaces[i];
-                final displayname = rootSpace.getLocalizedDisplayname(
-                  MatrixLocals(L10n.of(context)!),
-                );
-                return Material(
-                  color: Theme.of(context).colorScheme.background,
-                  child: BitNetListTile(
-                    leading: Avatar(
-                      mxContent: rootSpace.avatar,
-                      name: displayname,
+      return PopScope(
+        canPop: parentSpace != null ? false:true,
+        onPopInvoked: (a) {if(!a) {              controller.setActiveSpace(parentSpace.id);
+}},
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, i) {
+                  final rootSpace = rootSpaces[i];
+                  final displayname = rootSpace.getLocalizedDisplayname(
+                    MatrixLocals(L10n.of(context)!),
+                  );
+                  return Material(
+                    color: Theme.of(context).colorScheme.background,
+                    child: BitNetListTile(
+                      leading: Avatar(
+                        mxContent: rootSpace.avatar,
+                        name: displayname,
+                      ),
+                      customTitle: Text(
+                        displayname,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        L10n.of(context)!
+                            .numChats(rootSpace.spaceChildren.length.toString()),
+                      ),
+                      onTap: () => controller.setActiveSpace(rootSpace.id),
+                      onLongPress: () =>
+                          controller.onSpaceChildContextMenu(null, rootSpace),
+                      trailing: const Icon(Icons.chevron_right_outlined),
                     ),
-                    customTitle: Text(
-                      displayname,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(
-                      L10n.of(context)!
-                          .numChats(rootSpace.spaceChildren.length.toString()),
-                    ),
-                    onTap: () => controller.setActiveSpace(rootSpace.id),
-                    onLongPress: () =>
-                        controller.onSpaceChildContextMenu(null, rootSpace),
-                    trailing: const Icon(Icons.chevron_right_outlined),
-                  ),
-                );
-              },
-              childCount: rootSpaces.length,
+                  );
+                },
+                childCount: rootSpaces.length,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     }
 
@@ -118,15 +123,9 @@ class SpaceView extends StatelessWidget {
         );
         final spaceChildren = response.rooms;
         final canLoadMore = response.nextBatch != null;
-        return VWidgetGuard(
-          onSystemPop: (redirector) async {
-            if (parentSpace != null) {
-              controller.setActiveSpace(parentSpace.id);
-              redirector.stopRedirection();
-              return;
-            }
-          },
-          child: CustomScrollView(
+        return 
+         
+           CustomScrollView(
             controller: scrollController,
             slivers: [
               //ChatListSearchbar(controller: controller),
@@ -259,8 +258,7 @@ class SpaceView extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        );
+          );
       },
     );
   }

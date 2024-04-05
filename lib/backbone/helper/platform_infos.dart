@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 abstract class PlatformInfos {
   static bool get isWeb => kIsWeb;
@@ -52,7 +53,7 @@ abstract class PlatformInfos {
           child: const Text(AppTheme.emojiFontName),
         ),
         OutlinedButton(
-          onPressed: () => VRouter.of(context).to('logs'),
+          onPressed: () => context.go('logs'),
           child: const Text('Logs'),
         ),
       ],

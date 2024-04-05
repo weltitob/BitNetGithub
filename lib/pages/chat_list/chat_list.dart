@@ -23,10 +23,11 @@ import 'package:flutter/material.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
 
 import 'package:bitnet/backbone/helper/matrix_helpers/tor_stub.dart';
@@ -55,8 +56,9 @@ enum ActiveFilter {
 
 class ChatList extends StatefulWidget {
   static BuildContext? contextForVoip;
+  final GoRouterState routerState;
 
-  const ChatList({Key? key}) : super(key: key);
+  const ChatList({Key? key, required this.routerState}) : super(key: key);
 
   @override
   ChatListController createState() => ChatListController();
@@ -258,7 +260,7 @@ class ChatListController extends State<ChatList>
 
   Stream<Client> get clientStream => _clientStream.stream;
 
-  void addAccountAction() => VRouter.of(context).to('/settings/account');
+  void addAccountAction() => context.go('/settings/account');
 
   void _onScroll() {
     final newScrolledToTop = scrollController.position.pixels <= 0;
@@ -270,7 +272,7 @@ class ChatListController extends State<ChatList>
   void editSpace(BuildContext context, String spaceId) async {
     await Matrix.of(context).client.getRoomById(spaceId)!.postLoad();
     if (mounted) {
-      VRouter.of(context).toSegments(['spaces', spaceId]);
+      context.goNamed('/rooms/spaces', pathParameters: {'roomid': spaceId});
     }
   }
 
@@ -280,7 +282,7 @@ class ChatListController extends State<ChatList>
 
   final selectedRoomIds = <String>{};
 
-  String? get activeChat => VRouter.of(context).pathParameters['roomid'];
+  String? get activeChat => widget.routerState.pathParameters['roomid'];
 
   SelectMode get selectMode => Matrix.of(context).shareContent != null
       ? SelectMode.share
@@ -299,7 +301,7 @@ class ChatListController extends State<ChatList>
         name: file.path,
       ).detectFileType,
     };
-    VRouter.of(context).to('/rooms');
+    context.go('/rooms');
   }
 
   void processIncomingSharedText(String? text) {
@@ -314,12 +316,12 @@ class ChatListController extends State<ChatList>
       'msgtype': 'm.text',
       'body': text,
     };
-    VRouter.of(context).to('/rooms');
+    context.go('/rooms');
   }
 
   void processIncomingUris(String? text) async {
     if (text == null) return;
-    VRouter.of(context).to('/rooms');
+    context.go('/rooms');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       UrlLauncher(context, text).openMatrixToUrl();
     });
@@ -422,13 +424,13 @@ class ChatListController extends State<ChatList>
     }
     if (spaceChild.roomType == 'm.space') {
       if (spaceChild.roomId == activeSpaceId) {
-        VRouter.of(context).toSegments(['spaces', spaceChild.roomId]);
+        context.goNamed('/rooms/spaces', pathParameters: {'roomid': spaceChild.roomId});
       } else {
         setActiveSpace(spaceChild.roomId);
       }
       return;
     }
-    VRouter.of(context).toSegments(['rooms', spaceChild.roomId]);
+        context.goNamed('/rooms', pathParameters: {'roomid': spaceChild.roomId});
   }
 
   void onSpaceChildContextMenu([
@@ -692,7 +694,7 @@ class ChatListController extends State<ChatList>
   }
 
   void setActiveClient(Client client) {
-    VRouter.of(context).to('/rooms');
+    context.go('/rooms');
     setState(() {
       activeFilter = AppTheme.separateChatTypes
           ? ActiveFilter.messages
@@ -705,7 +707,7 @@ class ChatListController extends State<ChatList>
   }
 
   void setActiveBundle(String bundle) {
-    VRouter.of(context).to('/rooms');
+    context.go('/rooms');
     setState(() {
       selectedRoomIds.clear();
       Matrix.of(context).activeBundle = bundle;

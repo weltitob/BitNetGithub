@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import '../../../routetrees/matrix.dart';
+import 'package:go_router/go_router.dart';
 
 class EncryptionButton extends StatelessWidget {
   final Room room;
@@ -38,8 +39,8 @@ class EncryptionButton extends StatelessWidget {
                       ? Colors.orange
                       : null,
             ),
-            onPressed: () => VRouter.of(context)
-                .toSegments(['rooms', room.id, 'encryption']),
+            onPressed: () => context.go
+                (context.namedLocation('rooms', pathParameters: {'roomid':room.id})+"/encryption"),
           ),
         );
       },

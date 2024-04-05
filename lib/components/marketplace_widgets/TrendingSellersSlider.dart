@@ -2,7 +2,8 @@ import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 class TrendingSellersSlider extends StatelessWidget {
   final nftImage;
@@ -18,7 +19,8 @@ class TrendingSellersSlider extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        context.vRouter.to(kCollectionScreenRoute + "/${this.nftName}");
+        context.goNamed(kCollectionScreenRoute,
+        pathParameters: {'collection_id': this.nftName});
       },
       child: Container(
         width: 224.w,

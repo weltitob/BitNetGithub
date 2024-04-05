@@ -9,7 +9,8 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 class SocialRecoveryScreen extends StatefulWidget {
   const SocialRecoveryScreen({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                 GestureDetector(
                   onTap: () {
                     print("Forwarding to social recovery info sceen...");
-                    VRouter.of(context).to('/info_social_recovery');
+                    context.go('/authhome/login/social_recovery/info_social_recovery');
                   },
                     child: AppBarActionButton(
                       iconData: Icons.info_outline_rounded,
@@ -50,7 +51,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
               text: "Social recovery",
               context: context,
               onTap: () {
-                VRouter.of(context).pop();
+                context.pop();
               }),
           body: Stack(children: [
             SingleChildScrollView(

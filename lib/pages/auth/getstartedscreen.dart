@@ -1,12 +1,13 @@
 //import 'package:bitnet/l10n/l10n.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class GetStartedScreen extends StatefulWidget {
   // function to toggle between login and reset password screens
@@ -118,7 +119,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 buttonType: ButtonType.transparent,
                 title: L10n.of(context)!.restoreAccount,
                 onTap: () {
-                  VRouter.of(context).to('/login');
+                  context.go('/authhome/login');
                 },
               ),
               // creating the signup button
@@ -127,7 +128,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   customWidth: AppTheme.cardPadding * 12,
                   title: L10n.of(context)!.register,
                   onTap: () async {
-                    VRouter.of(context).to('/pinverification');
+                    context.go('/authhome/pinverification');
                   })
             ],
           ),

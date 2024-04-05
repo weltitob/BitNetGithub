@@ -13,9 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class MempoolHome extends StatefulWidget {
   const MempoolHome({Key? key}) : super(key: key);
@@ -260,7 +261,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                   child: Column(children: [
                     // GestureDetector(
                     //   onTap: () {
-                    //     VRouter.of(context).to(
+                    //     context.go(
                     //         "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
                     //   },
                     //   //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
@@ -291,7 +292,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        VRouter.of(context).to(
+                        context.go(
                             "/wallet/unaccepted_block_transactions"); //${controller.txDetailsConfirmed!.id}
                       },
                       //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
@@ -417,7 +418,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          VRouter.of(context).to(
+                          context.go(
                               "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
                         },
                         //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...

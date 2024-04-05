@@ -14,16 +14,18 @@ import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'dart:async';
 
 enum AliasActions { copy, delete, setCanonical }
 
 class ChatDetails extends StatefulWidget {
-  const ChatDetails({Key? key}) : super(key: key);
+  final GoRouterState routerState;
+  const ChatDetails({Key? key, required this.routerState}) : super(key: key);
 
   @override
   ChatDetailsController createState() => ChatDetailsController();
@@ -39,7 +41,7 @@ class ChatDetailsController extends State<ChatDetails> {
     if (room.widgets.isNotEmpty) {
       showWidgetsLocal(room);
     } else {
-      VRouter.of(context).to('matrixwidget');
+      context.go('matrixwidget');
     }
   }
 
@@ -78,7 +80,7 @@ class ChatDetailsController extends State<ChatDetails> {
         future: () => room.leave(),
       );
       if (success.error == null) {
-        VRouter.of(context).to('/rooms');
+        context.go('/rooms');
       }
     }
   }
@@ -86,7 +88,7 @@ class ChatDetailsController extends State<ChatDetails> {
   void toggleDisplaySettings() =>
       setState(() => displaySettings = !displaySettings);
 
-  String? get roomId => VRouter.of(context).pathParameters['roomid'];
+  String? get roomId => widget.routerState.pathParameters['roomid'];
 
   void setDisplaynameAction() async {
     final room = Matrix.of(context).client.getRoomById(roomId!)!;
@@ -309,9 +311,9 @@ class ChatDetailsController extends State<ChatDetails> {
     if ((room.states['im.ponies.room_emotes'] ?? <String, Event>{})
         .keys
         .any((String s) => s.isNotEmpty)) {
-      VRouter.of(context).to('multiple_emotes');
+      context.go(GoRouter.of(context).routerDelegate.currentConfiguration.fullPath + '/multiple_emotes');
     } else {
-      VRouter.of(context).to('emotes');
+      context.go(GoRouter.of(context).routerDelegate.currentConfiguration.fullPath + '/emotes');
     }
   }
 
@@ -421,7 +423,7 @@ class ChatDetailsController extends State<ChatDetails> {
         Matrix.of(context).client.getRoomById(roomId!)!.getParticipants();
     return SizedBox(
       width: fixedWidth,
-      child: ChatDetailsView(this),
+      child: ChatDetailsView(this, routerState: widget.routerState,),
     );
   }
 }

@@ -3,7 +3,8 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 class bitnetWebsiteAppBar extends StatelessWidget
     implements PreferredSizeWidget {
@@ -102,7 +103,7 @@ class bitnetWebsiteAppBar extends StatelessWidget
                         color: AppTheme.white90,
                       ),
                       onTap: () {
-                        VRouter.of(context).to('/authhome');
+                        context.go('/authhome');
                       },
                     ),
                   ),

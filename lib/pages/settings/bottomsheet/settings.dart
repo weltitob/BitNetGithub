@@ -182,7 +182,7 @@ class SettingsController extends State<Settings> {
   void switchTab(String newTab) {
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
     settingsProvider.switchTab(newTab);
-    // VRouter.of(context).to(
+    // context.go(
     //   VRouter.of(context).url,
     //   isReplacement: true,
     //   queryParameters: {'tab': newTab},

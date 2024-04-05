@@ -12,6 +12,7 @@ import 'package:bitnet/pages/marketplace/ProfileEditScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/marketplace/SearchScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 Map<String, WidgetBuilder> allRoutes = {
   kInitialRoute: (BuildContext context) => const HomeScreen(),
@@ -23,7 +24,7 @@ Map<String, WidgetBuilder> allRoutes = {
   kListScreenRoute: (BuildContext context) => const ListScreen(),
   kFilterScreenRoute: (BuildContext context) => const FilterScreen(),
   kNftProductScreenRoute: (BuildContext context) => const NftProductScreen(),
-  kOwnerScreenRoute: (BuildContext context) => const CollectionScreen(),
+  kOwnerScreenRoute: (BuildContext context) => const CollectionScreen(routerState: null),
   kSearchScreenRoute: (BuildContext context) => const SearchScreen(),
   kOwnerDetailScreenRoute: (BuildContext context) => const OwnerDetailScreen(),
   kActivityScreenRoute: (BuildContext context) => const ActivityScreen(),
@@ -33,25 +34,25 @@ Map<String, WidgetBuilder> allRoutes = {
 };
 
 const kInitialRoute = '/';
-const kForgotPasswordScreenRoute = '/forgot_password_screen_route';
-const kCreateNewAccountScreenRoute = '/create_new_account_screen_route';
+const kForgotPasswordScreenRoute = 'forgot_password_screen_route';
+const kCreateNewAccountScreenRoute = 'create_new_account_screen_route';
 const kLoginVerifyMobileNumberScreenRoute =
-    '/login_verify_mobile_number_screen_route';
-const kLoginSetPasswordScreenRoute = '/login_set_password_screen_route';
+    'login_verify_mobile_number_screen_route';
+const kLoginSetPasswordScreenRoute = 'login_set_password_screen_route';
 const kSignupVerifyMobileNumberScreenRoute =
-    '/signup_verify_mobile_number_screen_route';
-const kSignupSetPasswordScreenRoute = '/signup_set_password_screen_route';
-const kMainScreenRoute = '/main_screen_route';
-const kNotificationScreenRoute = '/notification_screen_route';
-const kCategoriesDetailScreenRoute = '/categories_detail_screen_route';
-const kListScreenRoute = '/list_screen_route';
-const kFilterScreenRoute = '/filter_screen_route';
-const kNftProductScreenRoute = '/nft_product_screen_route';
-const kOwnerScreenRoute = '/owner_screen_route';
-const kSearchScreenRoute = '/search_screen_route';
-const kOwnerDetailScreenRoute = '/owner_detail_screen_route';
-const kActivityScreenRoute = '/activity_screen_route';
-const kProfileEditScreenRoute = '/profile_edit_screen_route';
-const kFavouriteScreenRoute = '/favourite_screen_route';
-const kAboutScreenRoute = '/about_screen_route';
-const kCollectionScreenRoute = '/collection_screen_route';
+    'signup_verify_mobile_number_screen_route';
+const kSignupSetPasswordScreenRoute = 'signup_set_password_screen_route';
+const kMainScreenRoute = 'main_screen_route';
+const kNotificationScreenRoute = 'notification_screen_route';
+const kCategoriesDetailScreenRoute = 'categories_detail_screen_route';
+const kListScreenRoute = 'list_screen_route';
+const kFilterScreenRoute = 'filter_screen_route';
+const kNftProductScreenRoute = 'nft_product_screen_route';
+const kOwnerScreenRoute = 'owner_screen_route';
+const kSearchScreenRoute = 'search_screen_route';
+const kOwnerDetailScreenRoute = 'owner_detail_screen_route';
+const kActivityScreenRoute = 'activity_screen_route';
+const kProfileEditScreenRoute = 'profile_edit_screen_route';
+const kFavouriteScreenRoute = 'favourite_screen_route';
+const kAboutScreenRoute = 'about_screen_route';
+const kCollectionScreenRoute = 'collection_screen_route';

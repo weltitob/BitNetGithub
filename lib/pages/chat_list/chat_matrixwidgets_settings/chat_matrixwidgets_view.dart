@@ -7,9 +7,10 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/pages/chat_list/chat_matrixwidgets_settings/chat_matrixwidgets.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class ChatMatrixWidgetsView extends StatelessWidget {
   final ChatMatrixWidgetController controller;
@@ -21,7 +22,7 @@ class ChatMatrixWidgetsView extends StatelessWidget {
     return bitnetScaffold(
       context: context,
       appBar: bitnetAppBar(
-        onTap: () => VRouter.of(context).pop(),
+        onTap: () => context.pop(),
         context: context,
         text: L10n.of(context)!.editWidgets,
       ),

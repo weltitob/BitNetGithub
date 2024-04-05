@@ -3,9 +3,10 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class LoadingViewAppStart extends StatelessWidget {
   const LoadingViewAppStart({Key? key}) : super(key: key);
@@ -27,11 +28,12 @@ class LoadingViewAppStart extends StatelessWidget {
           // User is authenticated and user data is loaded
           Future.delayed(Duration.zero, () {
             if(kIsWeb){
-              VRouter.of(context).to('/website');
+              context.go('/website');
             } else{
-              VRouter.of(context).to(
-                Matrix.of(context).widget.clients.any((client) => client.onLoginStateChanged.value == LoginState.loggedIn,) ?  '/home' : '/authhome', //'/website' : '/website', //'/feed' : '/authhome'
-                queryParameters: VRouter.of(context).queryParameters,
+              context.go(
+                Uri(
+                path: Matrix.of(context).widget.clients.any((client) => client.onLoginStateChanged.value == LoginState.loggedIn,) ?  '/feed' : '/authhome', //'/website' : '/website', //'/feed' : '/authhome'
+                queryParameters: GoRouter.of(context).routeInformationProvider.value.uri.queryParameters,).toString()
               );
             }
           });
@@ -40,9 +42,9 @@ class LoadingViewAppStart extends StatelessWidget {
         } else {
           // No user authenticated
           if(kIsWeb){
-            VRouter.of(context).to('/website');
+            context.go('/website');
           } else{
-            VRouter.of(context).to('/authhome');
+            context.go('/authhome');
           }
           return Container(); // Or another redirect
         }

@@ -15,8 +15,9 @@ import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class InvitationSettingsPage extends StatefulWidget {
@@ -148,8 +149,8 @@ class _KeyItemState extends State<_KeyItem> {
     return GestureDetector(
       onTap: widget.verificationkey.used
           ? () {
-              VRouter.of(context)
-                  .to("/profile/:${widget.verificationkey.receiver}");
+              context.goNamed("/profile",
+              pathParameters: {'profileId':widget.verificationkey.receiver });
             }
           : () {
               //copy the key

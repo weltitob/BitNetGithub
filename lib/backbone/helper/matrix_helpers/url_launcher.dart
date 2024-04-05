@@ -10,10 +10,11 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:punycode/punycode.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import '../platform_infos.dart';
 
@@ -152,17 +153,18 @@ class UrlLauncher {
       if (room != null) {
         if (room.isSpace) {
           // TODO: Implement navigate to space
-          VRouter.of(context).toSegments(['rooms']);
+          context.go('rooms');
           return;
         }
         // we have the room, so....just open it
         if (event != null) {
-          VRouter.of(context).toSegments(
-            ['rooms', room.id],
-            queryParameters: {'event': event},
+          context.goNamed(
+           'rooms',
+           queryParameters: {'event': event},
+           pathParameters: {'roomid': room.id}
           );
         } else {
-          VRouter.of(context).toSegments(['rooms', room.id]);
+          context.goNamed('rooms', pathParameters: {'roomid': room.id});
         }
         return;
       } else {
@@ -196,12 +198,14 @@ class UrlLauncher {
             future: () => Future.delayed(const Duration(seconds: 2)),
           );
           if (event != null) {
-            VRouter.of(context).toSegments(
-              ['rooms', response.result!],
-              queryParameters: {'event': event},
+         
+            context.goNamed(
+              'rooms',
+              pathParameters: {'roomid': response.result!},
+              queryParameters: {'event': event}
             );
           } else {
-            VRouter.of(context).toSegments(['rooms', response.result!]);
+            context.goNamed('rooms', pathParameters: {'roomid': response.result!});
           }
         }
       }

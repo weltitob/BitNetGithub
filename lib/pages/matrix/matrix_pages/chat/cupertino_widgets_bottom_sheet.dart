@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:url_launcher/link.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 
 class CupertinoWidgetsBottomSheet extends StatelessWidget {
@@ -32,7 +33,7 @@ class CupertinoWidgetsBottomSheet extends StatelessWidget {
         CupertinoActionSheetAction(
           child: Text(L10n.of(context)!.editWidgets),
           onPressed: () {
-           VRouter.of(context).to("/add_widget");
+           context.go("/add_widget");
           },
         ),
         CupertinoActionSheetAction(

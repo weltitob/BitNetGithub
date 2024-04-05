@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class CreateAccount extends StatefulWidget {
   CreateAccount({
@@ -29,7 +30,7 @@ class CreateAccountController extends State<CreateAccount> {
 
   void processParameters(BuildContext context) {
     Logs().w("Process parameters for createAccount called");
-    final Map<String, String> parameters = VRouter.of(context).queryParameters;
+    final Map<String, String> parameters = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
     if (parameters.containsKey('code')) {
       code = parameters['code']!;
     }
@@ -58,7 +59,7 @@ class CreateAccountController extends State<CreateAccount> {
 
   bool get supportsLogin => _supportsFlow('m.login.password');
 
-  void login() => VRouter.of(context).to('login');
+  void login() => context.go('/authhome/login');
 
   Map<String, dynamic>? _rawLoginTypes;
 
@@ -104,11 +105,11 @@ class CreateAccountController extends State<CreateAccount> {
 
         Logs().w("Queryparameters that will be passed: $code, $issuer, $localpart");
 
-        VRouter.of(context).to('/mnemonicgen', queryParameters: {
+        context.go(Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
           'code': code,
           'issuer': issuer,
           'username': localpart,
-        });
+        }).toString());
 
         //await createUserLocal();
       } else {

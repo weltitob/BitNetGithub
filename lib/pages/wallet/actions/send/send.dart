@@ -21,7 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:matrix/matrix.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 enum SendType {
   Lightning,
@@ -70,9 +71,10 @@ class SendController extends State<Send> {
 
   void processParameters(BuildContext context) {
     Logs().w("Process parameters for sendscreen called");
-    Map<String, String> queryParams = VRouter.of(context).queryParameters;
-    String? invoice = VRouter.of(context).queryParameters['invoice'];
-    String? walletAdress = VRouter.of(context).queryParameters['walletAdress'];
+    
+    Map<String, String> queryParams = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
+    String? invoice = queryParams['invoice'];
+    String? walletAdress = queryParams['walletAdress'];
 
     if (invoice != null){
       Logs().w("Invoice: $invoice");
@@ -108,7 +110,7 @@ class SendController extends State<Send> {
     moneyTextFieldIsEnabled = true;
     description = "";
     setState(() {
-      VRouter.of(context).to("/wallet/send");
+      context.go("/wallet/send");
     });
   }
 
@@ -209,11 +211,11 @@ class SendController extends State<Send> {
             isFinished = true;
           });
 
-          //VRouter.of(context).to("/wallet");
+          //context.go("/wallet");
 
           if (restResponse.statusCode == "success") {
             // Display a success message and navigate to the bottom navigation bar
-            VRouter.of(context).to("/wallet");
+            context.go("/wallet");
           } else {
             VRouter.of(context).to("/wallet");
             setState(() {

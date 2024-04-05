@@ -10,14 +10,16 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class BottomNav extends StatefulWidget {
   final Widget child;
-  const BottomNav({Key? key, required this.child}) : super(key: key);
+  final GoRouterState routerState;
+  const BottomNav({Key? key, required this.child, required this.routerState}) : super(key: key);
 
   @override
   State<BottomNav> createState() => _BottomNavState();
@@ -27,7 +29,6 @@ class _BottomNavState extends State<BottomNav> {
   String profileId = Auth().currentUser?.uid ?? '';
   @override
   void initState() {
-    print('new profile');
     loadData();
     //getData();
     // TODO: implement initState
@@ -90,7 +91,7 @@ class _BottomNavState extends State<BottomNav> {
     ];
 
     void onTabTapped(String route) {
-      context.vRouter.to(route);
+      context.go(route);
     }
 
     return Scaffold(
@@ -145,12 +146,15 @@ class _BottomNavState extends State<BottomNav> {
           //       ),
           //     )
           //   ]),
-          if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
-              !context.vRouter.path.contains(kNftProductScreenRoute))
-            Positioned(
-              bottom: AppTheme.cardPadding,
+
+          if (widget.routerState.fullPath!= null && (widget.routerState.fullPath == '/feed' || widget.routerState.fullPath == '/rooms' ||
+        widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')))
+            Padding(
+              padding: EdgeInsets.only(              bottom: AppTheme.cardPadding,
+
               left: AppTheme.cardPadding * 1,
               right: AppTheme.cardPadding * 1,
+),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 child: GlassContainer(
@@ -168,7 +172,7 @@ class _BottomNavState extends State<BottomNav> {
                               children: [
                                 Icon(
                                   item['icon'] as IconData, // <--- Here
-                                  color: context.vRouter.url
+                                  color: widget.routerState.fullPath != null && widget.routerState.fullPath!
                                           .contains(item['route'] as String)
                                       ? AppTheme.colorBitcoin
                                       : Theme.of(context).iconTheme.color?.withOpacity(0.5),

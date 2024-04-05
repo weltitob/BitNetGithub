@@ -5,9 +5,10 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageOne extends StatefulWidget {
@@ -120,7 +121,7 @@ class _PageOneState extends State<PageOne> {
                       buttonType: ButtonType.solid,
                       title: L10n.of(context)!.register,
                       onTap: () async {
-                        VRouter.of(context).to('/pinverification');
+                        context.go('/authhome/pinverification');
                       },
                     ),
                     SizedBox(

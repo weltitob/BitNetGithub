@@ -7,7 +7,8 @@ import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 // Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
 class SendBTCScreen extends StatelessWidget {
@@ -28,7 +29,7 @@ class SendBTCScreen extends StatelessWidget {
       // Disables resizing when the keyboard is shown
 
       appBar: bitnetAppBar(
-        onTap: (){          VRouter.of(context).to("/feed");
+        onTap: (){          context.go("/feed");
         },
         customTitle: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

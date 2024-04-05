@@ -13,15 +13,17 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 
 class ChatDetailsView extends StatelessWidget {
   final ChatDetailsController controller;
+  final GoRouterState routerState;
 
-  const ChatDetailsView(this.controller, {Key? key}) : super(key: key);
+  const ChatDetailsView(this.controller, {Key? key, required this.routerState}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class ChatDetailsView extends StatelessWidget {
       return bitnetScaffold(
         extendBodyBehindAppBar: true,
         appBar: bitnetAppBar(
-          onTap: () => VRouter.of(context).toSegments(['rooms']),
+          onTap: () => context.go('rooms'),
             context: context, text: L10n.of(context)!.oopsSomethingWentWrong),
         body: Center(
           child: Text(L10n.of(context)!.youAreNoLongerParticipatingInThisChat),
@@ -52,9 +54,9 @@ class ChatDetailsView extends StatelessWidget {
       context: context,
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
-        onTap: () => VRouter.of(context).path.startsWith('/spaces/')
-            ? VRouter.of(context).pop()
-            : VRouter.of(context).toSegments(['rooms', controller.roomId!]),
+        onTap: () => (routerState.path != null && routerState.path!.startsWith('/spaces/'))
+            ? context.pop()
+            : context.goNamed('rooms', pathParameters: {'roomid': controller.roomId!}),
         text: "Group Info",
         context: context,
       ),
@@ -129,7 +131,7 @@ class ChatDetailsView extends StatelessWidget {
                                 OptionContainer(
                                   L10n.of(context)!.inviteContact,
                                   () {
-                                    VRouter.of(context).to('invite');
+                                    context.go(GoRouter.of(context).routerDelegate.currentConfiguration.fullPath + '/invite');
                                   },
                                   isActive: true,
                                   image: "assets/images/iphone.png",
@@ -473,13 +475,12 @@ class ChatDetailsView extends StatelessWidget {
                                 Icons.edit_attributes_outlined,
                               ),
                             ),
-                            onTap: () => VRouter.of(context).to('permissions'),
+                            onTap: () => context.go(GoRouter.of(context).routerDelegate.currentConfiguration.fullPath + '/permissions'),
                           ),
                           BitNetListTile(
                             text: L10n.of(context)!.matrixWidgets,
                             subtitle: Text(L10n.of(context)!.editWidgets),
-                            onTap: () => VRouter.of(context)
-                                .to('widgets'), //controller.showWidgets(room),
+                            onTap: () => context.go(GoRouter.of(context).routerDelegate.currentConfiguration.fullPath + '/widgets'), //controller.showWidgets(room),
                             leading: CircleAvatar(
                               backgroundColor:
                                   Theme.of(context).scaffoldBackgroundColor,
@@ -531,7 +532,7 @@ class ChatDetailsView extends StatelessWidget {
                         //                 radius: Avatar.defaultSize / 2,
                         //                 child: const Icon(Icons.add),
                         //               ),
-                        //               onTap: () => VRouter.of(context).to('invite'),
+                        //               onTap: () => context.go('invite'),
                         //             ),
                         //         ),
                         //         Container(
@@ -543,7 +544,7 @@ class ChatDetailsView extends StatelessWidget {
                         //               radius:  Avatar.defaultSize / 2,
                         //               child: const Icon(Icons.link_rounded),
                         //             ),
-                        //             onTap: () => VRouter.of(context).to('invite'),
+                        //             onTap: () => context.go('invite'),
                         //           ),
                         //         )
                         //       ],

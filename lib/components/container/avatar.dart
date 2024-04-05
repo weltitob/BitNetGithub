@@ -1,11 +1,12 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:matrix/matrix.dart';
 
 import 'package:bitnet/backbone/helper/matrix_helpers/string_color.dart';
 import 'package:bitnet/pages/matrix/widgets/mxc_image.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class Avatar extends StatelessWidget {
   final String? profileId;
@@ -85,7 +86,7 @@ class Avatar extends StatelessWidget {
     );
     if (onTap == null) return container;
     return InkWell(
-      onTap: onTap ?? () => VRouter.of(context).to("/showprofile/:$profileId"),
+      onTap: onTap ?? () => context.go("/showprofile/:$profileId"),
       borderRadius: borderRadius,
       child: container,
     );

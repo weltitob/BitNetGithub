@@ -7,9 +7,10 @@ import 'package:bitnet/pages/chat_list/chat/chat.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 
 class ChatAppBarTitle extends StatelessWidget {
@@ -40,7 +41,7 @@ class ChatAppBarTitle extends StatelessWidget {
           : controller.isArchived
               ? null
               : () =>
-                  VRouter.of(context).toSegments(['rooms', room.id, 'details']),
+                  context.go(context.namedLocation('rooms', pathParameters: {'roomid': room.id})+"/details"),
       child: Row(
         children: [
           Hero(

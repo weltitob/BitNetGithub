@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:seo/seo.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 class PageFooter extends StatefulWidget {
   final WebsiteLandingPageController controller;
@@ -146,7 +147,7 @@ class _PageFooterState extends State<PageFooter> {
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
                       onTap: () {
-                        VRouter.of(context).to("/");
+                        context.go("/");
                       },
                       child: Row(
                         children: [
@@ -369,15 +370,15 @@ class _PageFooterState extends State<PageFooter> {
         ),
         SocialRow(
           platformName: "Get Started",
-          onTap: () => VRouter.of(context).to('/website'),
+          onTap: () => context.go('/website'),
         ), // VRouter auth
         SocialRow(
           platformName: "About us",
-          onTap: () => VRouter.of(context).to('/aboutus'),
+          onTap: () => context.go('/website/aboutus'),
         ), // About us page (nur ich lol)make roadmap how the app should develop
         SocialRow(
           platformName: "Our Team",
-          onTap: () => VRouter.of(context).to('/ourteam'),
+          onTap: () => context.go('/website/ourteam'),
         ),
         SocialRow(
             platformName: "Fund us",
@@ -413,7 +414,7 @@ class _PageFooterState extends State<PageFooter> {
           platformName: "Help Center",
           onTap: () {
             print("Help and Support");
-            VRouter.of(context).to("/help");
+            context.go("/help");
           },
         ), //vrouter help page (faq voreingetsellt)
         SocialRow(
@@ -421,20 +422,20 @@ class _PageFooterState extends State<PageFooter> {
               "Report issue", //bugs, incidents, security issues etc abuse and fraud etc problems in general
           onTap: () {
             print("Help and Support");
-            VRouter.of(context).to("/report");
+            context.go("/website/report");
           },
         ), //vrouter reporting page (bug voreingetsellt)
         SocialRow(
             platformName: "Submit Idea",
             onTap: () {
-              VRouter.of(context).to('/submitidea');
+              context.go('/website/submitidea');
             }), //vrouter reporting page (fraud voreingetsellt)//vrouter reporting page (security voreingetsellt)
         SocialRow(
             platformName: "AGBS",
-            onTap: () => VRouter.of(context).to('/agbs')), //
+            onTap: () => context.go('/website/agbs')), //
         SocialRow(
             platformName: "Impressum",
-            onTap: () => VRouter.of(context).to('/impressum')), //
+            onTap: () => context.go('/website/impressum')), //
       ],
     );
   }

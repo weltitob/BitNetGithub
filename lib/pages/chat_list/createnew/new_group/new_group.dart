@@ -3,8 +3,9 @@ import 'package:bitnet/pages/chat_list/createnew/new_group/new_group_view.dart';
 import 'package:flutter/material.dart';
 
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart' as sdk;
-import 'package:vrouter/vrouter.dart';
+
 
 import 'package:bitnet/pages/routetrees/matrix.dart';
 
@@ -38,7 +39,8 @@ class NewGroupController extends State<NewGroup> {
       },
     );
     if (roomID.error == null) {
-      VRouter.of(context).toSegments(['rooms', roomID.result!, 'invite']);
+          final String location = context.namedLocation('rooms', pathParameters: {'roomid': roomID.result!});
+      context.go(location + '/invite');
     }
   }
 

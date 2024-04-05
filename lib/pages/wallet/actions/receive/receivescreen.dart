@@ -7,7 +7,8 @@ import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 // This class is a StatefulWidget which displays a screen where a user can receive bitcoin
 class ReceiveScreen extends StatelessWidget {
@@ -26,7 +27,7 @@ class ReceiveScreen extends StatelessWidget {
         text: "Bitcoin empfangen",
         onTap: () {
           // Navigate back to the previous screen
-          VRouter.of(context).to("/wallet");
+          context.go("/wallet");
         },
         actions: [
           // Adds a button to the appbar that navigates to the QRScanner screen

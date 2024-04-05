@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 abstract class AppTheme {
 
@@ -453,7 +454,7 @@ abstract class AppTheme {
   );
 
   static bool getDisplayNavigationRail(BuildContext context) =>
-      !VRouter.of(context).path.startsWith('/settings');
+      GoRouter.of(context).routeInformationProvider.value.uri.path.startsWith('/settings');
 
   static const Curve animationCurve = Curves.easeInOut;
 

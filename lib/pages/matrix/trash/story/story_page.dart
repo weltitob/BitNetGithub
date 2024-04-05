@@ -9,7 +9,7 @@
 // import 'package:matrix/matrix.dart';
 // import 'package:path_provider/path_provider.dart';
 // import 'package:video_player/video_player.dart';
-// import 'package:vrouter/vrouter.dart';
+// 
 //
 // class StoryPage extends StatefulWidget {
 //   const StoryPage({Key? key}) : super(key: key);
@@ -108,7 +108,7 @@
 //   void share() async {
 //     Matrix.of(context).shareContent = currentEvent?.content;
 //     hold();
-//     VRouter.of(context).to('share');
+//     context.go('share');
 //   }
 //
 //   void displaySeenByUsers() async {
@@ -216,9 +216,9 @@
 //   void skip() {
 //     if (index + 1 >= max) {
 //       if (isOwnStory) {
-//         VRouter.of(context).to('/stories/create');
+//         context.go('/stories/create');
 //       } else {
-//         VRouter.of(context).to('/rooms');
+//         context.go('/rooms');
 //       }
 //       return;
 //     }
@@ -487,7 +487,7 @@
 //               currentEvent!.senderFromMemoryOrFallback.startDirectChat(),
 //         );
 //         if (roomIdResult.error != null) return;
-//         VRouter.of(context).toSegments(['rooms', roomIdResult.result!]);
+//         context.goSegments(['rooms', roomIdResult.result!]);
 //         break;
 //     }
 //   }

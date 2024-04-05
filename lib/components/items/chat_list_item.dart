@@ -12,8 +12,9 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 import '../../../../components/container/avatar.dart';
 
 enum ArchivedRoomAction { delete, rejoin }
@@ -62,7 +63,7 @@ class ChatListItem extends StatelessWidget {
     }
 
     if (room.membership == Membership.leave) {
-      VRouter.of(context).toSegments(['archive', room.id]);
+      context.goNamed('archive', pathParameters: {'roomid': room.id});
     }
 
     if (room.membership == Membership.join) {
@@ -87,7 +88,7 @@ class ChatListItem extends StatelessWidget {
         Matrix.of(context).shareContent = null;
       }
 
-      VRouter.of(context).toSegments(['rooms', room.id]);
+      context.goNamed('rooms', pathParameters: {'roomid': room.id});
     }
   }
 

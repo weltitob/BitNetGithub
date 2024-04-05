@@ -8,7 +8,8 @@ import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 class SearchReceiver extends StatelessWidget {
   final SendController controller;
@@ -67,7 +68,7 @@ class SearchReceiver extends StatelessWidget {
                   margin: EdgeInsets.only(top: AppTheme.elementSpacing),
                   child: LongButtonWidget(
                     customWidth: AppTheme.cardPadding * 7,
-                    onTap: () => VRouter.of(context).to("/qrscanner"),
+                    onTap: () => context.go("/qrscanner"),
                     title: 'Scan QR',
                   ),
                 ),

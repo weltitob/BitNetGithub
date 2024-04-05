@@ -198,7 +198,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
                       child: GestureDetector(
                         onTap: () {
                           Logs().w("Skip at own risk pressed");
-                          //VRouter.of(context).to("/pinverification");
+                          //context.go("/pinverification");
                           widget.mnemonicController.signUp();
                         },
                         child: Text(

@@ -8,7 +8,8 @@ import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 //import 'package:universal_html/html.dart' as html;
 
 class CreateAccountView extends StatefulWidget {
@@ -29,7 +30,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
     return WillPopScope(
       onWillPop: () async {
         if (!widget.controller.isLoading) {
-          VRouter.of(context).to('/authhome');
+          context.go('/authhome');
         }
         return false; // Prevent the system from popping the current route.
       },
@@ -50,7 +51,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
               context: context,
               onTap: () {
                 if (!widget.controller.isLoading) {
-                  VRouter.of(context).to('/authhome');
+                  context.go('/authhome');
                 }
               }),
           body: BackgroundWithContent(
@@ -162,7 +163,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                         child: GestureDetector(
                           onTap: () {
                             if (!widget.controller.isLoading) {
-                              VRouter.of(context).to('/login');
+                              context.go('/authhome/login');
                             }
                           },
                           child: Text(

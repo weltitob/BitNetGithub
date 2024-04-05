@@ -15,12 +15,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+import 'package:go_router/go_router.dart';
 import 'package:popover/popover.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 class CollectionScreen extends StatefulWidget {
-  const CollectionScreen({Key? key}) : super(key: key);
+  final GoRouterState? routerState;
+  const CollectionScreen({Key? key, required this.routerState}) : super(key: key);
   @override
   State<CollectionScreen> createState() => _CollectionScreenState();
 }
@@ -44,7 +46,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final name = context.vRouter.pathParameters['collection_id'];
+    final name = widget.routerState!.pathParameters['collection_id'];
     return bitnetScaffold(
       context: context,
       body: Stack(
@@ -542,8 +544,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             rank: sortedGridList[index].rank,
                             onTap: handleProductClick,
                             onLongTap: () {
-                              context.vRouter.to(kNftProductScreenRoute +
-                                  "/${sortedGridList[index].nftName}");
+                              context.goNamed('$kCollectionScreenRoute/$kNftProductScreenRoute',
+                                  pathParameters: {'nft_id':sortedGridList[index].nftName });
                             },
                             onTapBuy: () {
                               setState(() {

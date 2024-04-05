@@ -1203,22 +1203,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.2"
-  flutter_olm:
-    dependency: "direct main"
-    description:
-      name: flutter_olm
-      sha256: fef0c9476d02c0df25ef0a66680bc23ac529a36b4911505910bcd8711b449c81
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
-  flutter_openssl_crypto:
-    dependency: "direct main"
-    description:
-      name: flutter_openssl_crypto
-      sha256: b64a0825d79f10b6d5f5951f7ce2d5ddc12ed532129fc5a7e0ce472f5b97d78e
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -1471,6 +1455,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  go_router:
+    dependency: "direct main"
+    description:
+      name: go_router
+      sha256: "5ed2687bc961f33a752017ccaa7edead3e5601b28b6376a5901bf24728556b85"
+      url: "https://pub.dev"
+    source: hosted
+    version: "13.2.2"
   google_fonts:
     dependency: "direct main"
     description:
@@ -2024,14 +2016,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
-  move_to_background:
-    dependency: transitive
-    description:
-      name: move_to_background
-      sha256: "00caad17a6ce149910777131503f43f8ed80025681f94684e3a6a87d979b914c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   mpv_dart:
     dependency: transitive
     description:
@@ -2064,6 +2048,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  nfc_manager:
+    dependency: "direct main"
+    description:
+      name: nfc_manager
+      sha256: "25b3ed2a3806619e9a44416964b29db178f94bd22651941fd99cbc15687f08c5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.0"
   nm:
     dependency: transitive
     description:
@@ -2496,22 +2488,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.9"
-  rive:
-    dependency: "direct main"
-    description:
-      name: rive
-      sha256: c4293ea52f9bf45edeebad3b1eb0bddc284bd11f14ede54780bf5efa1c491b4a
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.10.1"
-  rive_common:
-    dependency: transitive
-    description:
-      name: rive_common
-      sha256: f98a451a5d6c8c82693b4eab1dd65413800bab69ac7f9f8fad79fd39bb5ba3ab
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   rxdart:
     dependency: transitive
     description:
@@ -3021,14 +2997,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.6"
-  url_strategy:
-    dependency: transitive
-    description:
-      name: url_strategy
-      sha256: "42b68b42a9864c4d710401add17ad06e28f1c1d5500c93b98c431f6b0ea4ab87"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0"
   uuid:
     dependency: "direct main"
     description:
@@ -3141,14 +3109,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "13.0.0"
-  vrouter:
-    dependency: "direct main"
-    description:
-      name: vrouter
-      sha256: "5eff3c2f1371c9e11c50334522b35a31e6d42290273d022e944544d4e177cea0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.1"
   wakelock:
     dependency: "direct main"
     description:
@@ -3311,5 +3271,5 @@ packages:
     source: hosted
     version: "8.1.2"
 sdks:
-  dart: ">=3.2.0-0 <4.0.0"
-  flutter: ">=3.13.0"
+  dart: ">=3.2.0 <4.0.0"
+  flutter: ">=3.16.0"

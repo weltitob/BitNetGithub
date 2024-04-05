@@ -8,15 +8,17 @@ import 'package:bitnet/pages/chat_list/chat_permissions_settings/permission_list
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import 'package:bitnet/pages/routetrees/matrix.dart';
 
 class ChatPermissionsSettingsView extends StatelessWidget {
+  final GoRouterState routerState;
   final ChatPermissionsSettingsController controller;
 
-  const ChatPermissionsSettingsView(this.controller, {Key? key})
+  const ChatPermissionsSettingsView(this.controller, {Key? key, required this.routerState})
       : super(key: key);
 
   @override
@@ -25,10 +27,9 @@ class ChatPermissionsSettingsView extends StatelessWidget {
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
-        onTap: () => VRouter.of(context)
-            .toSegments(['rooms', controller.roomId!]),
+        onTap: () => context.goNamed('rooms',pathParameters: {'roomid': controller.roomId!}),
         context: context,
-        customIcon: VRouter.of(context).path.startsWith('/spaces/')
+        customIcon: (routerState.path != null && routerState.path!.startsWith('/spaces/'))
             ? null
             : Icons.close_outlined,
         text: L10n.of(context)!.editChatPermissions,

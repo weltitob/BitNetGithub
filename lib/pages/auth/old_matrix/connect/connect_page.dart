@@ -8,10 +8,11 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matrix/matrix.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:vrouter/vrouter.dart';
+
 import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 
@@ -85,7 +86,7 @@ class ConnectPageController extends State<ConnectPage> {
         loading = false;
       });
       Matrix.of(context).loginUsername = usernameController.text;
-      VRouter.of(context).to('signup');
+      context.go('/authhome/connect/signup');
     } catch (e, s) {
       Logs().d('Sign up failed', e, s);
       setState(() {
@@ -109,7 +110,7 @@ class ConnectPageController extends State<ConnectPage> {
 
   bool get supportsLogin => _supportsFlow('m.login.password');
 
-  void login() => VRouter.of(context).to('login');
+  void login() => context.go('/authhome/login');
 
   Map<String, dynamic>? _rawLoginTypes;
 

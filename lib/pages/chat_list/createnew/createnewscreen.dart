@@ -8,7 +8,8 @@ import 'package:bitnet/pages/chat_list/createnew/new_private_chat/new_private_ch
 import 'package:bitnet/pages/chat_list/createnew/new_space/new_space.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:go_router/go_router.dart';
+
 
 class CreateNewScreen extends StatefulWidget {
   final int initialIndex;
@@ -75,7 +76,7 @@ class _CreateNewScreenState extends State<CreateNewScreen>
       context: context,
       appBar: bitnetAppBar(
         context: context,
-        onTap: () => VRouter.of(context).to('/rooms'),
+        onTap: () => context.go('/rooms'),
         text: _title,
       ),
       body: SingleChildScrollView(

@@ -6,14 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:vrouter/vrouter.dart';
+
 
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/pages/matrix/widgets/permission_slider_dialog.dart';
 
 class ChatPermissionsSettings extends StatefulWidget {
-  const ChatPermissionsSettings({Key? key}) : super(key: key);
+  final GoRouterState routerState;
+  const ChatPermissionsSettings({Key? key, required this.routerState}) : super(key: key);
 
   @override
   ChatPermissionsSettingsController createState() =>
@@ -21,7 +23,7 @@ class ChatPermissionsSettings extends StatefulWidget {
 }
 
 class ChatPermissionsSettingsController extends State<ChatPermissionsSettings> {
-  String? get roomId => VRouter.of(context).pathParameters['roomid'];
+  String? get roomId => widget.routerState.pathParameters['roomid'];
   void editPowerLevel(
     BuildContext context,
     String key,
@@ -103,9 +105,9 @@ class ChatPermissionsSettingsController extends State<ChatPermissionsSettings> {
     await showFutureLoadingDialog(
       context: context,
       future: () => room.client.upgradeRoom(roomId!, newVersion),
-    ).then((_) => VRouter.of(context).pop());
+    ).then((_) => context.pop());
   }
 
   @override
-  Widget build(BuildContext context) => ChatPermissionsSettingsView(this);
+  Widget build(BuildContext context) => ChatPermissionsSettingsView(this, routerState: widget.routerState,);
 }
