@@ -217,7 +217,7 @@ class SendController extends State<Send> {
             // Display a success message and navigate to the bottom navigation bar
             context.go("/wallet");
           } else {
-            VRouter.of(context).to("/wallet");
+            context.go("/wallet");
             setState(() {
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;
@@ -263,11 +263,11 @@ class SendController extends State<Send> {
             isFinished = true;
           });
           if (publishTransactionRestResponse.statusCode == "success") {
-            VRouter.of(context).to("/wallet");
+            context.go("/wallet");
             // Display a success message and navigate to the bottom navigation bar
           } else {
             setState(() {
-              VRouter.of(context).to("/wallet");
+              context.go("/wallet");
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;
             });
