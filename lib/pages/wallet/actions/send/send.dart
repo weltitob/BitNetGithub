@@ -71,10 +71,9 @@ class SendController extends State<Send> {
 
   void processParameters(BuildContext context) {
     Logs().w("Process parameters for sendscreen called");
-    
-    Map<String, String> queryParams = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
-    String? invoice = queryParams['invoice'];
-    String? walletAdress = queryParams['walletAdress'];
+    Map<String, String> queryParams = VRouter.of(context).queryParameters;
+    String? invoice = VRouter.of(context).queryParameters['invoice'];
+    String? walletAdress = VRouter.of(context).queryParameters['walletAdress'];
 
     if (invoice != null){
       Logs().w("Invoice: $invoice");
@@ -110,7 +109,7 @@ class SendController extends State<Send> {
     moneyTextFieldIsEnabled = true;
     description = "";
     setState(() {
-      context.go("/wallet/send");
+      GoRouter.of(context).pushNamed("/wallet/send");
     });
   }
 
@@ -206,18 +205,18 @@ class SendController extends State<Send> {
         if(sendType == SendType.Invoice){
           final amountInSat = double.parse(moneyController.text) * 100000000;
           dynamic restResponse = await sendPaymentV2(bitcoinReceiverAdress, amountInSat);
-          print('res ${restResponse.statusCode}');
+
           setState(() {
             isFinished = true;
           });
 
-          //context.go("/wallet");
+          //VRouter.of(context).to("/wallet");
 
           if (restResponse.statusCode == "success") {
             // Display a success message and navigate to the bottom navigation bar
-            context.go("/wallet");
+            GoRouter.of(context).pushNamed("/wallet");
           } else {
-            context.go("/wallet");
+            GoRouter.of(context).pushNamed("/wallet");
             setState(() {
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;
@@ -263,11 +262,15 @@ class SendController extends State<Send> {
             isFinished = true;
           });
           if (publishTransactionRestResponse.statusCode == "success") {
-            context.go("/wallet");
+            GoRouter.of(context).pushNamed("/wallet");
             // Display a success message and navigate to the bottom navigation bar
           } else {
             setState(() {
-              context.go("/wallet");
+            GoRouter.of(context).pushNamed("/wallet");
+            // Display a success message and navigate to the bottom navigation bar
+          } else {
+             GoRouter.of(context).pushNamed("/wallet");
+            setState(() {
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;
             });
