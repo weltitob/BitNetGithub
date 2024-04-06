@@ -149,39 +149,42 @@ class _BottomNavState extends State<BottomNav> {
 
           if (widget.routerState.fullPath!= null && (widget.routerState.fullPath == '/feed' || widget.routerState.fullPath == '/rooms' ||
               widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')))
-            Padding(
-              padding: EdgeInsets.only(              bottom: AppTheme.cardPadding,
-
-                left: AppTheme.cardPadding * 1,
-                right: AppTheme.cardPadding * 1,
-              ),
+            Align(
+              alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                padding: EdgeInsets.only(              bottom: AppTheme.cardPadding,
+
+                  left: AppTheme.cardPadding * 1,
+                  right: AppTheme.cardPadding * 1,
+                ),
                 child: GlassContainer(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.elementSpacing * 1.25,
-                        vertical: AppTheme.elementSpacing * 1.25),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        for (var item in navItems)
-                          InkWell(
-                            onTap: () => onTabTapped(item['route'] as String),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  item['icon'] as IconData, // <--- Here
-                                  color: widget.routerState.fullPath != null && widget.routerState.fullPath!
-                                      .contains(item['route'] as String)
-                                      ? AppTheme.colorBitcoin
-                                      : Theme.of(context).iconTheme.color?.withOpacity(0.5),
-                                  size: AppTheme.cardPadding,
-                                ),
-                              ],
+                  child: Container(
+                    height: AppTheme.cardPadding * 2.25,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.elementSpacing * 1.25,
+                          vertical: AppTheme.elementSpacing * 1.25),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          for (var item in navItems)
+                            InkWell(
+                              onTap: () => onTabTapped(item['route'] as String),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    item['icon'] as IconData, // <--- Here
+                                    color: widget.routerState.fullPath != null && widget.routerState.fullPath!
+                                        .contains(item['route'] as String)
+                                        ? AppTheme.colorBitcoin
+                                        : Theme.of(context).iconTheme.color?.withOpacity(0.5),
+                                    size: AppTheme.cardPadding,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
