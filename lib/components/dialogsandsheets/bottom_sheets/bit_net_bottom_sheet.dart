@@ -59,60 +59,11 @@ Future<T?>  BitNetBottomSheet<T>(
               ),
               child: Column(
                 children: [
-                  Container(
-
-                    padding: EdgeInsets.only(
-                        left: AppTheme.cardPadding,
-                        right: AppTheme.cardPadding,
-                        top: AppTheme.elementSpacing),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        goBack
-                            ? Icon(
-                                Icons.arrow_back_rounded,
-                                size: AppTheme.cardPadding,
-                                color: AppTheme.white70,
-                              )
-                            : Container(
-                                width: 20,
-                              ),
-                        Row(
-                          children: [
-                            _hasIcon
-                                ? Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: AppTheme.elementSpacing * 0.5),
-                                    child: Icon(
-                                      iconData,
-                                      size: AppTheme.cardPadding,
-                                      color: AppTheme.white70,
-                                    ),
-                                  )
-                                : Container(),
-                            Text(
-                              title,
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                          ],
-                        ),
-                        Container(),
-                        /*GestureDetector(
-                          child: Icon(
-                            Icons.clear_rounded,
-                            size: AppTheme.cardPadding,
-                            color: AppTheme.white70,
-                          ),
-                          onTap: () => Navigator.pop(context),
-                        )*/
-                      ],
-                    ),
-                  ),
+                  SizedBox(height: AppTheme.elementSpacing / 2),
                   Expanded(child: child),
                 ],
               ),
             ),
-
           ],
         );
       });

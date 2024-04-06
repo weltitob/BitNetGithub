@@ -5,7 +5,7 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-//
+
 // //THIS SENDS BITCOIN BE CAREFUL NOT HAT IT SENDS AGAIN AND AGAIN I WANT IT TO RETURN WHAT HAPPENS WITH THE PAYMENT AFTER I CALL IT ONCE FROM THE SERVER
 // Stream<RestResponse> sendPaymentsStream(List<String> invoiceStrings) async* {
 //   const String restHost = 'mybitnet.com:8443'; // Update the host as needed
