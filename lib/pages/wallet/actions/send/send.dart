@@ -3,7 +3,6 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/fundpsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtransaction.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
@@ -71,9 +70,10 @@ class SendController extends State<Send> {
 
   void processParameters(BuildContext context) {
     Logs().w("Process parameters for sendscreen called");
-    Map<String, String> queryParams = VRouter.of(context).queryParameters;
-    String? invoice = VRouter.of(context).queryParameters['invoice'];
-    String? walletAdress = VRouter.of(context).queryParameters['walletAdress'];
+
+    Map<String, String> queryParams = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
+    String? invoice = queryParams['invoice'];
+    String? walletAdress = queryParams['walletAdress'];
 
     if (invoice != null){
       Logs().w("Invoice: $invoice");
@@ -93,6 +93,7 @@ class SendController extends State<Send> {
 
 
 
+
   @override
   void initState() {
     super.initState();
@@ -109,7 +110,7 @@ class SendController extends State<Send> {
     moneyTextFieldIsEnabled = true;
     description = "";
     setState(() {
-      GoRouter.of(context).pushNamed("/wallet/send");
+      context.go("/wallet/send");
     });
   }
 
@@ -210,11 +211,10 @@ class SendController extends State<Send> {
             isFinished = true;
           });
 
-          //VRouter.of(context).to("/wallet");
-
           if (restResponse.statusCode == "success") {
             // Display a success message and navigate to the bottom navigation bar
             GoRouter.of(context).pushNamed("/wallet");
+            context.go("/wallet");
           } else {
             GoRouter.of(context).pushNamed("/wallet");
             setState(() {
@@ -262,14 +262,10 @@ class SendController extends State<Send> {
             isFinished = true;
           });
           if (publishTransactionRestResponse.statusCode == "success") {
-            GoRouter.of(context).pushNamed("/wallet");
+            context.go("/wallet");
             // Display a success message and navigate to the bottom navigation bar
           } else {
-            setState(() {
-            GoRouter.of(context).pushNamed("/wallet");
-            // Display a success message and navigate to the bottom navigation bar
-          } else {
-             GoRouter.of(context).pushNamed("/wallet");
+            context.go("/wallet");
             setState(() {
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;

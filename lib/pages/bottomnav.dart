@@ -29,7 +29,6 @@ class _BottomNavState extends State<BottomNav> {
   String profileId = Auth().currentUser?.uid ?? '';
   @override
   void initState() {
-    print('new profile');
     loadData();
     //getData();
     // TODO: implement initState
@@ -50,6 +49,8 @@ class _BottomNavState extends State<BottomNav> {
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
       Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
       Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card']);
+      Provider.of<BalanceHideProvider>(context, listen: false).setHideBalance(hide:data.data()?['hide_balance'] ?? false);
+
       setState(() {
       });
     }else{
@@ -58,7 +59,8 @@ class _BottomNavState extends State<BottomNav> {
         "lang" : "en",
         "primary_color": 4283657726,
         "selected_currency":"USD",
-        "selected_card":"lightning"
+        "selected_card":"lightning",
+        "hide_balance" : false
       };
       settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid)
           .set(data);
@@ -89,14 +91,14 @@ class _BottomNavState extends State<BottomNav> {
     ];
 
     void onTabTapped(String route) {
-      context.vRouter.to(route);
+      context.go(route);
     }
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(child: widget.child),
+          widget.child,
           // Body content will be managed by VRouter based on the current route
           // if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
           //     !context.vRouter.path.contains(kNftProductScreenRoute))
@@ -144,12 +146,15 @@ class _BottomNavState extends State<BottomNav> {
           //       ),
           //     )
           //   ]),
-          if (context.vRouter.path == '/feed' || context.vRouter.path == '/rooms' ||
-        context.vRouter.path == '/create' || context.vRouter.path == '/wallet' || context.vRouter.path.contains('/profile'))
-            Positioned(
-              bottom: AppTheme.cardPadding,
-              left: AppTheme.cardPadding * 1,
-              right: AppTheme.cardPadding * 1,
+
+          if (widget.routerState.fullPath!= null && (widget.routerState.fullPath == '/feed' || widget.routerState.fullPath == '/rooms' ||
+              widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')))
+            Padding(
+              padding: EdgeInsets.only(              bottom: AppTheme.cardPadding,
+
+                left: AppTheme.cardPadding * 1,
+                right: AppTheme.cardPadding * 1,
+              ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 child: GlassContainer(
@@ -167,8 +172,8 @@ class _BottomNavState extends State<BottomNav> {
                               children: [
                                 Icon(
                                   item['icon'] as IconData, // <--- Here
-                                  color: context.vRouter.url
-                                          .contains(item['route'] as String)
+                                  color: widget.routerState.fullPath != null && widget.routerState.fullPath!
+                                      .contains(item['route'] as String)
                                       ? AppTheme.colorBitcoin
                                       : Theme.of(context).iconTheme.color?.withOpacity(0.5),
                                   size: AppTheme.cardPadding,
@@ -224,19 +229,19 @@ class _BottomNavState extends State<BottomNav> {
     });
   }
 
-  // void getUserLanguage(){
-  //   _collectionRef.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
-  //     setState(() {
-  //       String myLanguage = value.get("lang");
-  //       Provider.of<LocalProvider>(context, listen: false)
-  //           .setLocaleInDatabase(myLanguage,Locale.fromSubtags(languageCode: myLanguage));
-  //     });
-  //   });
-  // }
+// void getUserLanguage(){
+//   _collectionRef.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+//     setState(() {
+//       String myLanguage = value.get("lang");
+//       Provider.of<LocalProvider>(context, listen: false)
+//           .setLocaleInDatabase(myLanguage,Locale.fromSubtags(languageCode: myLanguage));
+//     });
+//   });
+// }
 
-  // updateTheme(ThemeMode mode){
-  //   Provider.of<MyThemeProvider>(context, listen: false)
-  //       .updateThemeInDatabase(mode);
-  // }
+// updateTheme(ThemeMode mode){
+//   Provider.of<MyThemeProvider>(context, listen: false)
+//       .updateThemeInDatabase(mode);
+// }
 
 }
