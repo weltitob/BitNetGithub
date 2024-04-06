@@ -134,7 +134,7 @@ class SettingsStyleView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                OptionContainer(
+                BitNetImageWithTextContainer(
                   L10n.of(context)!.systemTheme,
                   () {
                     controller.switchTheme(ThemeMode.system);
@@ -147,7 +147,7 @@ class SettingsStyleView extends StatelessWidget {
                 SizedBox(
                   width: AppTheme.cardPadding,
                 ),
-                OptionContainer(
+                BitNetImageWithTextContainer(
                   L10n.of(context)!.lightTheme,
                   () {
                     controller.switchTheme(ThemeMode.light);
@@ -160,7 +160,7 @@ class SettingsStyleView extends StatelessWidget {
                 SizedBox(
                   width: AppTheme.cardPadding,
                 ),
-                OptionContainer(
+                BitNetImageWithTextContainer(
                   L10n.of(context)!.darkTheme,
                   () {
                     controller.switchTheme(ThemeMode.dark);

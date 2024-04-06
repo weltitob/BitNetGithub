@@ -18,7 +18,8 @@ class BalanceCardLightning extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(double.parse(controller.lightningBalance.balance), BitcoinUnits.SAT);
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
+        double.parse(controller.lightningBalance.balance), BitcoinUnits.SAT);
     final balanceStr = unitModel.amount.toString();
     return SizedBox(
       child: Stack(
@@ -29,7 +30,7 @@ class BalanceCardLightning extends StatelessWidget {
             iconData: FontAwesomeIcons.wallet,
             balanceSAT: controller.lightningBalance.balance,
             walletAddress: "safdadasdas",
-            cardname: 'Lightning',
+            cardname: 'Lightning Balance',
             iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
           ),
           paymentNetworkPicture(context, "assets/images/lightning.png"),
@@ -45,7 +46,9 @@ class BalanceCardBtc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(double.parse(controller.onchainBalance.confirmedBalance), BitcoinUnits.SAT);
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
+        double.parse(controller.onchainBalance.confirmedBalance),
+        BitcoinUnits.SAT);
     final balanceStr = unitModel.amount.toString();
 
     return SizedBox(
@@ -58,7 +61,7 @@ class BalanceCardBtc extends StatelessWidget {
             iconData: FontAwesomeIcons.piggyBank,
             balanceSAT: controller.onchainBalance.confirmedBalance,
             walletAddress: "safdadasdas",
-            cardname: 'On-Chain',
+            cardname: 'On-Chain Balance',
           ),
           paymentNetworkPicture(context, 'assets/images/bitcoin.png')
         ],
@@ -78,14 +81,12 @@ class CardBackgroundLightning extends StatelessWidget {
           Icons.bolt,
           size: 150,
           color: Colors.white.withOpacity(0.1),
-        )
-    );
+        ));
   }
-
 
   Widget topLeftGradient() {
     return Positioned(
-      left: - AppTheme.cardPadding * 7.5,
+      left: -AppTheme.cardPadding * 7.5,
       top: -AppTheme.cardPadding * 7.5,
       child: Container(
         width: AppTheme.cardPadding * 15,
@@ -108,8 +109,8 @@ class CardBackgroundLightning extends StatelessWidget {
 
   Widget bottomRightGradient() {
     return Positioned(
-      right: - AppTheme.cardPadding * 7.5,
-      bottom: - AppTheme.cardPadding * 7.5,
+      right: -AppTheme.cardPadding * 7.5,
+      bottom: -AppTheme.cardPadding * 7.5,
       child: Container(
         width: AppTheme.cardPadding * 15,
         height: AppTheme.cardPadding * 15,
@@ -128,7 +129,6 @@ class CardBackgroundLightning extends StatelessWidget {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +159,6 @@ class CardBackgroundLightning extends StatelessWidget {
               colors: [
                 Theme.of(context).colorScheme.primaryContainer,
                 Theme.of(context).colorScheme.tertiaryContainer,
-
               ],
             ),
           ),
@@ -181,7 +180,7 @@ class CardBackgroundOnchain extends StatelessWidget {
 
   Widget topLeftGradient() {
     return Positioned(
-      left: - AppTheme.cardPadding * 7.5,
+      left: -AppTheme.cardPadding * 7.5,
       top: -AppTheme.cardPadding * 7.5,
       child: Container(
         width: AppTheme.cardPadding * 15,
@@ -204,8 +203,8 @@ class CardBackgroundOnchain extends StatelessWidget {
 
   Widget bottomRightGradient() {
     return Positioned(
-      right: - AppTheme.cardPadding * 7.5,
-      bottom: - AppTheme.cardPadding * 7.5,
+      right: -AppTheme.cardPadding * 7.5,
+      bottom: -AppTheme.cardPadding * 7.5,
       child: Container(
         width: AppTheme.cardPadding * 15,
         height: AppTheme.cardPadding * 15,
@@ -225,8 +224,6 @@ class CardBackgroundOnchain extends StatelessWidget {
     );
   }
 
-
-
   Widget iconOnchain() {
     return Positioned(
         right: 0,
@@ -235,8 +232,7 @@ class CardBackgroundOnchain extends StatelessWidget {
           FontAwesomeIcons.chain,
           size: 150,
           color: Colors.white.withOpacity(0.1),
-        )
-    );
+        ));
   }
 
   @override
@@ -302,7 +298,6 @@ Widget paymentNetworkPicture(BuildContext context, String imageUrl) {
   );
 }
 
-
 class BalanceTextWidget extends StatelessWidget {
   final String balanceSAT;
   final String balanceStr;
@@ -324,78 +319,81 @@ class BalanceTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+    final currencyEquivalent = bitcoinPrice != null
+        ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
+        : "0.00";
 
-    return   Consumer<BalanceHideProvider>(
+    return Consumer<BalanceHideProvider>(
         builder: (context, balanceHideProvider, _) {
-          return  Padding(
-          padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25,),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    iconData,
-                    size: 24, // Replace with your AppTheme.elementSpacing * 1.75 if needed
-                  ),
-                  const SizedBox(
-                    width: 8, // Replace with your AppTheme.elementSpacing if needed
-                  ),
-                  Text(
-                    cardname,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ],
-              ),
-              const Spacer(), // Replace with AppTheme.elementSpacing if needed
-          if(coin.coin ?? true) ...[
-balanceHideProvider.hideBalance! ? Text('*****'): GestureDetector(
-  onTap:() => coin.setCurrencyType(coin.coin != null ? !coin.coin!: false),
-  child: Container(
-    width: 160,
-    child:     Row(
-                    children: [
-                      Text(
-                        balanceStr,
-                        style: Theme.of(context).textTheme.headlineLarge,
-                      ),
-                      // const SizedBox(
-                      //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-                      // ),
-                      Icon(
-                        iconDataUnit,
-                      ),
-                    ],
-                  ),
-      ),
-),
-          ] else ...[
-                 balanceHideProvider.hideBalance! ? Text('*****') :     GestureDetector(
-                      onTap:() => coin.setCurrencyType(coin.coin != null ? !coin.coin!: false),
-
-                 child: Container(
-                                width: 160, // Replace with your AppTheme.cardPadding * 10 if needed
-                                child: Text(
-                    "$currencyEquivalent${getCurrency(currency!)}",
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.headlineLarge,
+      return Padding(
+        padding: const EdgeInsets.all(
+          AppTheme.cardPadding * 1.25,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  cardname,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: AppTheme.elementSpacing * 0.75,
+            ),
+            if (coin.coin ?? true) ...[
+              balanceHideProvider.hideBalance!
+                  ? Text('*****')
+                  : GestureDetector(
+                      onTap: () => coin.setCurrencyType(
+                          coin.coin != null ? !coin.coin! : false),
+                      child: Container(
+                        width: 160,
+                        child: Row(
+                          children: [
+                            Text(
+                              balanceStr,
+                              style: Theme.of(context).textTheme.headlineLarge,
                             ),
-                              ),
-                  ),
-              ]
-          
-        
-        
-        ],
-          ),
-        );
-      }
-    );
+                            // const SizedBox(
+                            //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                            // ),
+                            Icon(
+                              iconDataUnit,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+            ] else ...[
+              balanceHideProvider.hideBalance!
+                  ? Text('*****')
+                  : GestureDetector(
+                      onTap: () => coin.setCurrencyType(
+                          coin.coin != null ? !coin.coin! : false),
+                      child: Container(
+                        width:
+                            160, // Replace with your AppTheme.cardPadding * 10 if needed
+                        child: Text(
+                          "$currencyEquivalent${getCurrency(currency!)}",
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.headlineLarge,
+                        ),
+                      ),
+                    ),
+            ]
+          ],
+        ),
+      );
+    });
   }
 }

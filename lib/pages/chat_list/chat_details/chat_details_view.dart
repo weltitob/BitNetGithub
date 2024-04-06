@@ -128,7 +128,7 @@ class ChatDetailsView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               if (room.canInvite)
-                                OptionContainer(
+                                BitNetImageWithTextContainer(
                                   L10n.of(context)!.inviteContact,
                                   () {
                                     context.go(GoRouter.of(context).routerDelegate.currentConfiguration.fullPath + '/invite');
@@ -139,7 +139,7 @@ class ChatDetailsView extends StatelessWidget {
                                   width: AppTheme.cardPadding * 3.5,
                                 ),
                               room.pushRuleState == PushRuleState.notify
-                                  ? OptionContainer(
+                                  ? BitNetImageWithTextContainer(
                                       L10n.of(context)!.muteChat,
                                       () {
                                         Logs().w("pressed Mute button");
@@ -150,7 +150,7 @@ class ChatDetailsView extends StatelessWidget {
                                       width: AppTheme.cardPadding * 3.5,
                                       isActive: true,
                                     )
-                                  : OptionContainer(
+                                  : BitNetImageWithTextContainer(
                                       L10n.of(context)!.unmuteChat,
                                       () {
                                         controller.unmuteroom(room);
@@ -161,7 +161,7 @@ class ChatDetailsView extends StatelessWidget {
                                       isActive: true,
                                     ),
                               if (room.canonicalAlias.isNotEmpty)
-                                OptionContainer(
+                                BitNetImageWithTextContainer(
                                   L10n.of(context)!.share,
                                   () {
                                     SocialShare.share(

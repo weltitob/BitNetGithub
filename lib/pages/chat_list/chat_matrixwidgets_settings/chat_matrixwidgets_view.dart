@@ -59,7 +59,7 @@ class ChatMatrixWidgetsView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        OptionContainer(
+                        BitNetImageWithTextContainer(
                             height: AppTheme.cardPadding * 4,
                             width: AppTheme.cardPadding * 4,
                             L10n.of(context)!.widgetEtherpad,
@@ -67,21 +67,21 @@ class ChatMatrixWidgetsView extends StatelessWidget {
                             image: "assets/images/etherpad.png", () {
                           controller.setWidgetType('m.etherpad');
                         }),
-                        OptionContainer(L10n.of(context)!.widgetJitsi,
+                        BitNetImageWithTextContainer(L10n.of(context)!.widgetJitsi,
                             height: AppTheme.cardPadding * 4,
                             width: AppTheme.cardPadding * 4,
                             isActive: controller.widgetType == 'm.jitsi',
                             image: "assets/images/jitsi.png", () {
                           controller.setWidgetType('m.jitsi');
                         }),
-                        OptionContainer(L10n.of(context)!.widgetVideo,
+                        BitNetImageWithTextContainer(L10n.of(context)!.widgetVideo,
                             height: AppTheme.cardPadding * 4,
                             width: AppTheme.cardPadding * 4,
                             isActive: controller.widgetType == 'm.video',
                             image: "assets/images/video.png", () {
                           controller.setWidgetType('m.video');
                         }),
-                        OptionContainer(L10n.of(context)!.widgetCustom,
+                        BitNetImageWithTextContainer(L10n.of(context)!.widgetCustom,
                             height: AppTheme.cardPadding * 4,
                             width: AppTheme.cardPadding * 4,
                             isActive: controller.widgetType == 'm.custom',

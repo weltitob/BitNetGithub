@@ -169,7 +169,7 @@ Future<bool?> showDialogueMultipleOptions({
               texts[index] != null &&
               images[index] != null &&
               actions[index] != null) {
-            return OptionContainer(
+            return BitNetImageWithTextContainer(
               isActive: index < isActives.length ? isActives[index] : true,
               height: AppTheme.cardPadding * 4.5,
               width: AppTheme.cardPadding * 4.5,

@@ -2,7 +2,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
-class OptionContainer extends StatelessWidget {
+class BitNetImageWithTextContainer extends StatelessWidget {
   final String text;
   final Function() action;
   final IconData? fallbackIcon;
@@ -11,7 +11,7 @@ class OptionContainer extends StatelessWidget {
   final double height;
   final bool isActive;
 
-  OptionContainer(
+  BitNetImageWithTextContainer(
     this.text,
     this.action, {
     this.fallbackIcon,
@@ -86,7 +86,8 @@ class OptionContainer extends StatelessWidget {
                           ? Image.asset(image!)
                           : Icon(
                               fallbackIcon ?? Icons.error,
-                              size: 50,
+                              size: AppTheme.cardPadding * 1.75,
+                              color: AppTheme.white80,
                             ),
                     ),
                     Container(

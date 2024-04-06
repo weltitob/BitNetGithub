@@ -89,10 +89,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                OptionContainer("Word recovery", () {
+                BitNetImageWithTextContainer("Word recovery", () {
                   context.go('/authhome/login/word_recovery');
                 }, image: "assets/images/wallet.png"),
-                OptionContainer("Connect with other device", () {
+                BitNetImageWithTextContainer("Connect with other device", () {
                   context.go('/authhome/login/device_recovery');
                 }, image: "assets/images/scan_qr_device.png"),
               ],
@@ -103,10 +103,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                OptionContainer("Social recovery", () {
+                BitNetImageWithTextContainer("Social recovery", () {
                   context.go('/authhome/login/social_recovery');
                 }, image: "assets/images/friends.png"),
-                OptionContainer("Use DID and Private Key", () {
+                BitNetImageWithTextContainer("Use DID and Private Key", () {
                   context.go('/authhome/login/did_recovery');
                 }, image: "assets/images/key_removed_bck.png"),
               ],
