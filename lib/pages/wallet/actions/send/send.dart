@@ -216,6 +216,7 @@ class SendController extends State<Send> {
             // Display a success message and navigate to the bottom navigation bar
             GoRouter.of(context).pushNamed("/wallet");
           } else {
+            GoRouter.of(context).pushNamed("/wallet");
             setState(() {
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;
@@ -261,8 +262,14 @@ class SendController extends State<Send> {
             isFinished = true;
           });
           if (publishTransactionRestResponse.statusCode == "success") {
+            GoRouter.of(context).pushNamed("/wallet");
             // Display a success message and navigate to the bottom navigation bar
           } else {
+            setState(() {
+            GoRouter.of(context).pushNamed("/wallet");
+            // Display a success message and navigate to the bottom navigation bar
+          } else {
+             GoRouter.of(context).pushNamed("/wallet");
             setState(() {
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;
