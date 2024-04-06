@@ -23,7 +23,7 @@ class BalanceCardLightning extends StatelessWidget {
     return SizedBox(
       child: Stack(
         children: [
-          const BalanceBackground2(),
+          const CardBackgroundLightning(),
           BalanceTextWidget(
             balanceStr: balanceStr,
             iconData: FontAwesomeIcons.wallet,
@@ -51,7 +51,7 @@ class BalanceCardBtc extends StatelessWidget {
     return SizedBox(
       child: Stack(
         children: [
-          const BalanceBackground(),
+          const CardBackgroundOnchain(),
           BalanceTextWidget(
             balanceStr: balanceStr,
             iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
@@ -67,8 +67,8 @@ class BalanceCardBtc extends StatelessWidget {
   }
 }
 
-class BalanceBackground2 extends StatelessWidget {
-  const BalanceBackground2({Key? key}) : super(key: key);
+class CardBackgroundLightning extends StatelessWidget {
+  const CardBackgroundLightning({Key? key}) : super(key: key);
 
   Widget iconLightning() {
     return Positioned(
@@ -82,33 +82,149 @@ class BalanceBackground2 extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: AppTheme.cardRadiusBigger,
+
+  Widget topLeftGradient() {
+    return Positioned(
+      left: - AppTheme.cardPadding * 7.5,
+      top: -AppTheme.cardPadding * 7.5,
       child: Container(
-        decoration: BoxDecoration(
+        width: AppTheme.cardPadding * 15,
+        height: AppTheme.cardPadding * 15,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
           gradient: LinearGradient(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0, 0.7],
             colors: [
-              Theme.of(context).colorScheme.secondaryContainer,
-              Theme.of(context).colorScheme.tertiaryContainer,
+              Color(0x99FFFFFF),
+              Color(0x00FFFFFF),
             ],
           ),
         ),
-        child: Stack(
-          children: [
-            iconLightning(),
+      ),
+    );
+  }
+
+  Widget bottomRightGradient() {
+    return Positioned(
+      right: - AppTheme.cardPadding * 7.5,
+      bottom: - AppTheme.cardPadding * 7.5,
+      child: Container(
+        width: AppTheme.cardPadding * 15,
+        height: AppTheme.cardPadding * 15,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.bottomRight,
+            end: Alignment.topLeft,
+            stops: [0, 0.7],
+            colors: [
+              Color(0x99FFFFFF),
+              Color(0x00FFFFFF),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(0.5),
+      decoration: BoxDecoration(
+        borderRadius: AppTheme.cardRadiusBigger,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0, 0.25, 0.75, 1],
+          colors: [
+            Color(0x99FFFFFF),
+            Color(0x00FFFFFF),
+            Color(0x00FFFFFF),
+            Color(0x99FFFFFF),
           ],
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: AppTheme.cardRadiusBigger,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomLeft,
+              end: Alignment.topRight,
+              stops: [0.25, 1],
+              colors: [
+                Theme.of(context).colorScheme.primaryContainer,
+                Theme.of(context).colorScheme.tertiaryContainer,
+
+              ],
+            ),
+          ),
+          child: Stack(
+            children: [
+              iconLightning(),
+              topLeftGradient(),
+              bottomRightGradient(),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class BalanceBackground extends StatelessWidget {
-  const BalanceBackground({Key? key}) : super(key: key);
+class CardBackgroundOnchain extends StatelessWidget {
+  const CardBackgroundOnchain({Key? key}) : super(key: key);
+
+  Widget topLeftGradient() {
+    return Positioned(
+      left: - AppTheme.cardPadding * 7.5,
+      top: -AppTheme.cardPadding * 7.5,
+      child: Container(
+        width: AppTheme.cardPadding * 15,
+        height: AppTheme.cardPadding * 15,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0, 0.7],
+            colors: [
+              Color(0x99FFFFFF),
+              Color(0x00FFFFFF),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget bottomRightGradient() {
+    return Positioned(
+      right: - AppTheme.cardPadding * 7.5,
+      bottom: - AppTheme.cardPadding * 7.5,
+      child: Container(
+        width: AppTheme.cardPadding * 15,
+        height: AppTheme.cardPadding * 15,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.bottomRight,
+            end: Alignment.topLeft,
+            stops: [0, 0.7],
+            colors: [
+              Color(0x99FFFFFF),
+              Color(0x00FFFFFF),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 
 
   Widget iconOnchain() {
@@ -123,27 +239,45 @@ class BalanceBackground extends StatelessWidget {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: AppTheme.cardRadiusBigger,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
-            colors: [
-              Theme.of(context).colorScheme.primaryContainer,
-              Theme.of(context).colorScheme.secondaryContainer,
+    return Container(
+      padding: const EdgeInsets.all(0.5),
+      decoration: BoxDecoration(
+        borderRadius: AppTheme.cardRadiusBigger,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0, 0.25, 0.75, 1],
+          colors: [
+            Color(0x99FFFFFF),
+            Color(0x00FFFFFF),
+            Color(0x00FFFFFF),
+            Color(0x99FFFFFF),
+          ],
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: AppTheme.cardRadiusBigger,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomLeft,
+              end: Alignment.topRight,
+              //stops: [0.25, 1],
+              colors: [
+                Theme.of(context).colorScheme.secondaryContainer,
+                Theme.of(context).colorScheme.background,
+              ],
+            ),
+          ),
+          child: Stack(
+            children: [
+              iconOnchain(),
+              topLeftGradient(),
+              bottomRightGradient(),
             ],
           ),
-        ),
-        child: Stack(
-          children: [
-            iconOnchain(),
-          ],
         ),
       ),
     );
@@ -153,7 +287,7 @@ class BalanceBackground extends StatelessWidget {
 Widget paymentNetworkPicture(BuildContext context, String imageUrl) {
   return Positioned(
     right: AppTheme.cardPadding * 1.25,
-    bottom: AppTheme.cardPadding * 1.25,
+    top: AppTheme.cardPadding * 1.25,
     child: Container(
       height: AppTheme.cardPadding * 2,
       width: AppTheme.cardPadding * 2,
