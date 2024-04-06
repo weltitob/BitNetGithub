@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

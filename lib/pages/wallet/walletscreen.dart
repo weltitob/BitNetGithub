@@ -1,6 +1,5 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
@@ -10,30 +9,20 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/marketplace_widgets/CommonBtn.dart';
-import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
-import 'package:bitnet/components/marketplace_widgets/FilterPillList.dart';
-import 'package:bitnet/components/marketplace_widgets/PillLabel.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:bitnet/models/marketplace/modals.dart';
-import 'package:bitnet/pages/marketplace/FilterScreen.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
-import 'package:another_flushbar/flushbar.dart';
 
 class WalletScreen extends StatefulWidget {
   final WalletController controller;
@@ -43,10 +32,7 @@ class WalletScreen extends StatefulWidget {
   State<WalletScreen> createState() => _WalletScreenState();
 }
 
-
 class _WalletScreenState extends State<WalletScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
@@ -54,7 +40,7 @@ class _WalletScreenState extends State<WalletScreen> {
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
     final bitcoinPrice = chartLine?.price;
-        final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
+    final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
 
     String? card = Provider.of<CardChangeProvider>(context).selectedCard;
     print(card);
@@ -62,13 +48,14 @@ class _WalletScreenState extends State<WalletScreen> {
         ? (widget.controller.totalBalanceSAT / 100000000 * bitcoinPrice)
             .toStringAsFixed(2)
         : "0.00";
-    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(double.parse(widget.controller.onchainBalance.confirmedBalance), BitcoinUnits.SAT);
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
+        double.parse(widget.controller.onchainBalance.confirmedBalance),
+        BitcoinUnits.SAT);
 
-    List<Container> cards =  [
-            Container(
-                child: BalanceCardLightning(controller: widget.controller)),
-            Container(child: BalanceCardBtc(controller: widget.controller)),
-          ];
+    List<Container> cards = [
+      Container(child: BalanceCardLightning(controller: widget.controller)),
+      Container(child: BalanceCardBtc(controller: widget.controller)),
+    ];
 
     return bitnetScaffold(
       context: context,
@@ -100,37 +87,41 @@ class _WalletScreenState extends State<WalletScreen> {
                             const SizedBox(width: AppTheme.elementSpacing),
                             Consumer<BalanceHideProvider>(
                                 builder: (context, balanceHideProvider, _) {
-                                return balanceHideProvider.hideBalance! ? Text('*****') :        
-                                GestureDetector(
-                                onTap:() => coin.setCurrencyType(coin.coin != null ? !coin.coin!: false),
-
-                              child: Container(
-                                
-                                child: 
-                                  (coin.coin ?? true) ?
-                                 Row(
-                children: [
-                  Text(
-                    widget.controller.totalBalanceStr,
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                  // const SizedBox(
-                  //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-                  // ),
-                  Icon(
-                    getCurrencyIcon(unitModel.bitcoinUnitAsString),
-                  ),
-                ],
-              ) :
-                                  Text(
-                                    "${currencyEquivalent}${getCurrency(currency!)}",
-                                    style: Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                
-                              ));
-                              }
-                    
-                            ),
+                              return balanceHideProvider.hideBalance!
+                                  ? Text('*****')
+                                  : GestureDetector(
+                                      onTap: () => coin.setCurrencyType(
+                                          coin.coin != null
+                                              ? !coin.coin!
+                                              : false),
+                                      child: Container(
+                                        child: (coin.coin ?? true)
+                                            ? Row(
+                                                children: [
+                                                  Text(
+                                                    widget.controller
+                                                        .totalBalanceStr,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headlineMedium,
+                                                  ),
+                                                  // const SizedBox(
+                                                  //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                                                  // ),
+                                                  Icon(
+                                                    getCurrencyIcon(unitModel
+                                                        .bitcoinUnitAsString),
+                                                  ),
+                                                ],
+                                              )
+                                            : Text(
+                                                "${currencyEquivalent}${getCurrency(currency!)}",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineMedium,
+                                              ),
+                                      ));
+                            }),
                           ],
                         ),
                         RoundedButtonWidget(
@@ -138,7 +129,9 @@ class _WalletScreenState extends State<WalletScreen> {
                             buttonType: ButtonType.transparent,
                             iconData: FontAwesomeIcons.eye,
                             onTap: () {
-                              Provider.of<BalanceHideProvider>(context, listen: false).setHideBalance();
+                              Provider.of<BalanceHideProvider>(context,
+                                      listen: false)
+                                  .setHideBalance();
                             }),
                       ],
                     ),
@@ -257,7 +250,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                 buttonType: ButtonType.transparent,
                                 iconData: FontAwesomeIcons.filter,
                                 onTap: () {
-                                  BitNetBottomSheet(context: context,
+                                  BitNetBottomSheet(
+                                      context: context,
                                       child: WalletFilterScreen());
                                 }),
                             SizedBox(
@@ -269,7 +263,11 @@ class _WalletScreenState extends State<WalletScreen> {
                                 customWidth: AppTheme.cardPadding * 2.5,
                                 customHeight: AppTheme.cardPadding * 1.25,
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Transactions(fullList: true)));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Transactions(fullList: true)));
                                 }),
                           ],
                         ),

@@ -284,6 +284,7 @@ class ProfileView extends StatelessWidget {
               iconData: Icons.brightness_low_rounded,
               onTap: () {
                 BitNetBottomSheet(
+                  height: MediaQuery.of(context).size.height * 0.8,
                     context: context,
                     borderRadius: AppTheme.borderRadiusBig,
                     child: ChangeNotifierProvider(
