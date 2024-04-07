@@ -89,7 +89,7 @@ class _BottomNavState extends State<BottomNav> {
     void onTabTapped(String route) {
       context.go(route);
     }
-
+    print(widget.routerState.fullPath);
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
       body: Column(
@@ -143,7 +143,7 @@ class _BottomNavState extends State<BottomNav> {
           //     )
           //   ]),
           if (widget.routerState.fullPath!= null && (widget.routerState.fullPath == '/feed' || widget.routerState.fullPath == '/rooms' ||
-        widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')))
+        widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile') || widget.routerState.fullPath != '/wallet/bitcoinscreen'))
             Padding(
               padding: EdgeInsets.only(              bottom: AppTheme.cardPadding,
               left: AppTheme.cardPadding * 1,

@@ -11,6 +11,7 @@ Future<T?>  BitNetBottomSheet<T>(
     bool isDismissible = true,
     bool isScrollControlled = true,
     bool goBack = false,
+    bool hasAppBar = true,
     IconData? iconData}) {
   bool _hasIcon = false;
   if (iconData != null) {
@@ -59,6 +60,7 @@ Future<T?>  BitNetBottomSheet<T>(
               ),
               child: Column(
                 children: [
+                  if(hasAppBar)
                   Container(
 
                     padding: EdgeInsets.only(

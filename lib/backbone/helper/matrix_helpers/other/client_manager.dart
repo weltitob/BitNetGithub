@@ -124,7 +124,7 @@ abstract class ClientManager {
         AuthenticationTypes.sso,
       },
       nativeImplementations: nativeImplementations,
-      customImageResizer: PlatformInfos.isMobile ? customImageResizer : null,
+      customImageResizer: null //PlatformInfos.isMobile ? customImageResizer : null,
     );
   }
 }

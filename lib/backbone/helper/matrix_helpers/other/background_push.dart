@@ -13,7 +13,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
-import 'package:unifiedpush/unifiedpush.dart';
+//import 'package:unifiedpush/unifiedpush.dart';
 
 import 'famedlysdk_store.dart';
 import '../../platform_infos.dart';
@@ -66,12 +66,12 @@ class BackgroundPush {
       ),
     );
     if (Platform.isAndroid) {
-      UnifiedPush.initialize(
-        onNewEndpoint: _newUpEndpoint,
-        onRegistrationFailed: _upUnregistered,
-        onUnregistered: _upUnregistered,
-        onMessage: _onUpMessage,
-      );
+      // UnifiedPush.initialize(
+      //   onNewEndpoint: _newUpEndpoint,
+      //   onRegistrationFailed: _upUnregistered,
+      //   onUnregistered: _upUnregistered,
+      //   onMessage: _onUpMessage,
+      // );
     }
   }
 
@@ -198,12 +198,12 @@ class BackgroundPush {
     if (upAction) {
       return;
     }
-    if (!PlatformInfos.isIOS &&
-        (await UnifiedPush.getDistributors()).isNotEmpty) {
-      await setupUp();
-    } else {
-      await setupFirebase();
-    }
+    // if (!PlatformInfos.isIOS &&
+    //     (await UnifiedPush.getDistributors()).isNotEmpty) {
+    //   await setupUp();
+    // } else {
+    //   await setupFirebase();
+    // }
 
     // ignore: unawaited_futures
     _flutterLocalNotificationsPlugin
@@ -283,7 +283,7 @@ class BackgroundPush {
   }
 
   Future<void> setupUp() async {
-    await UnifiedPush.registerAppWithDialog(context!);
+    // await UnifiedPush.registerAppWithDialog(context!);
   }
 
   Future<void> _newUpEndpoint(String newEndpoint, String i) async {

@@ -23,6 +23,7 @@ import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/pages/secondpages/newsscreen.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class BitcoinScreen extends StatefulWidget {
@@ -105,8 +106,8 @@ class _BitcoinScreenState extends State<BitcoinScreen>
         children: [
           Column(
             children: [
-              ChartWidget(),
-              SizedBox(height: AppTheme.elementSpacing * 2,),
+               ChartWidget(),
+              SizedBox(height: AppTheme.elementSpacing * 1.5,),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -116,17 +117,8 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                       customWidth: AppTheme.cardPadding * 6.5,
                       customHeight: AppTheme.cardPadding * 2.5,
                       title: "Buy", onTap: (){
-                        BitNetBottomSheet(context: context, child:
-                        Column(
-                          children: [
-                            AmountWidget(
-                                enabled: true,
-                                amountController: TextEditingController(),
-                                focusNode: FocusNode(),
-                                context: context
-                            ),
-                          ],
-                        )
+                        BitNetBottomSheet(context: context,hasAppBar: false, child:
+                        PurchaseSheet()
                         );
                   }),
                   SizedBox(width: AppTheme.elementSpacing,),
@@ -141,7 +133,8 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                         children: [
                         AmountWidget(
                             enabled: true,
-                            amountController: TextEditingController(),
+                            btcController: TextEditingController(),
+                            currController: TextEditingController(),
                         focusNode: FocusNode(),
                         context: context
                         ),
@@ -304,6 +297,202 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                 ],
               )),
         ],
+      ),
+    );
+  }
+}
+
+class PurchaseSheet extends StatefulWidget {
+  const PurchaseSheet({
+    super.key,
+  });
+
+  @override
+  State<PurchaseSheet> createState() => _PurchaseSheetState();
+}
+
+class _PurchaseSheetState extends State<PurchaseSheet> with TickerProviderStateMixin{
+  late TabController controller;
+  @override
+ void initState() {
+  controller = TabController(length: 2, vsync: this);
+  super.initState();
+ }
+ @override 
+ void dispose() {
+  controller.dispose();
+  super.dispose();
+ }
+  @override
+  Widget build(BuildContext context) {
+    return TabBarView(
+      physics: NeverScrollableScrollPhysics(),
+      controller: controller,
+      children:[ 
+        
+        Column(
+        children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                        left: AppTheme.cardPadding,
+                        right: AppTheme.cardPadding,
+                        top: AppTheme.elementSpacing),
+                                        child: Text(
+                                                                      "Purchase Bitcoin",
+                                                                      style: Theme.of(context).textTheme.titleSmall,
+                                                                    ),
+                                      ),
+
+          AmountWidget(
+              enabled: true,
+              btcController: TextEditingController(),
+              currController: TextEditingController(),
+              focusNode: FocusNode(),
+              context: context
+          ),
+          SizedBox(height: AppTheme.cardPadding * 2,),
+
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                Text('Payment Method',
+                style: Theme.of(context).textTheme.titleSmall,
+            
+                ),                
+              ],
+            ),
+          ),
+          SizedBox(height: 16),
+
+          PaymentCardHorizontalWidget(controller: controller),
+                          SizedBox(height: AppTheme.elementSpacing * 8),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: LongButtonWidget(title: "Buy Bitcoin", onTap: (){}, customWidth: double.infinity,))
+
+        ],
+      ),
+
+      Column(children: [
+                                   Padding(
+                                        padding: EdgeInsets.only(
+                        left: AppTheme.cardPadding,
+                        right: AppTheme.cardPadding,
+                        top: AppTheme.elementSpacing),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            IconButton(icon: Icon(Icons.arrow_back), onPressed: (){controller.animateTo(0);},),
+                                            Text(
+                                                                          "Purchase Bitcoin",
+                                                                          style: Theme.of(context).textTheme.titleSmall,
+                                                                        ),
+                                           SizedBox(width: 32)
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: AppTheme.elementSpacing * 2,),
+                                      Container(
+                                        height: 400,
+                                        child: ListView(children: [
+                                                    PaymentCardHorizontalWidget(controller: controller, check: true),
+                                        
+                                                    SizedBox(height: AppTheme.elementSpacing,),
+                                                                                                      PaymentCardHorizontalWidget(controller: controller, forward: false,),
+                                        
+                                                    SizedBox(height: AppTheme.elementSpacing,),
+                                                    PaymentCardHorizontalWidget(controller: controller, forward: false,),
+                                        
+                                                    SizedBox(height: AppTheme.elementSpacing,),
+                                                    NewPaymentCardHorizontalWidget()
+                                        
+                                        ],),
+                                      )
+
+      ],)
+      ]
+    );
+  }
+}
+
+class NewPaymentCardHorizontalWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: InkWell(
+        child: Container(
+          height: 60,
+          width: double.infinity,
+          decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.3),
+        
+          borderRadius: BorderRadius.circular(12),
+        ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add),
+                        SizedBox(width: AppTheme.elementSpacing),
+                        Text("Add New Card", style: Theme.of(context).textTheme.titleSmall)
+                    ],)
+        ),
+      ),
+    );
+  }
+}
+
+class PaymentCardHorizontalWidget extends StatelessWidget {
+  const PaymentCardHorizontalWidget({
+    super.key,
+    required this.controller,
+    this.check = false,
+    this.forward = true
+  });
+
+  final TabController controller;
+  final bool check;
+  final bool forward;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        height: 60,
+        width: double.infinity,
+        decoration: BoxDecoration(
+                      color: AppTheme.primaryColor,
+      
+        borderRadius: BorderRadius.circular(12),
+      ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Image.asset("assets/images/paypal.png",
+                      height: 48),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("**** **** **** 4531"),
+                        Text('03/2030'),
+                      ],
+                    ),
+                   SizedBox(width: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: check ? Icon(Icons.check, color: Colors.blue): forward ? IconButton(icon: Icon(Icons.arrow_right,), onPressed: (){
+                        print("controller is moving");
+                        controller.animateTo(1);
+  },) : SizedBox(width: 32,),
+                    )
+                    
+                  ],)
       ),
     );
   }

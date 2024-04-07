@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:matrix/matrix.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_compress/video_compress.dart';
+import 'package:video_compress_v2/video_compress_v2.dart';
+//import 'package:video_compress/video_compress.dart';
 
 extension ResizeImage on MatrixFile {
   static const int max = 1200;
@@ -15,12 +16,12 @@ extension ResizeImage on MatrixFile {
     await tmpFile.writeAsBytes(bytes);
     try {
       // will throw an error e.g. on Android SDK < 18
-      mediaInfo = await VideoCompress.compressVideo(tmpFile.path);
+      mediaInfo = await VideoCompressV2.compressVideo(tmpFile.path);
     } catch (e, s) {
       Logs().w('Error while compressing video', e, s);
     }
     return MatrixVideoFile(
-      bytes: (await mediaInfo?.file?.readAsBytes()) ?? bytes,
+      bytes:(await mediaInfo?.file?.readAsBytes()) ?? bytes,
       name: name,
       mimeType: mimeType,
       width: mediaInfo?.width,
@@ -37,7 +38,7 @@ extension ResizeImage on MatrixFile {
       await tmpFile.writeAsBytes(bytes);
     }
     try {
-      final bytes = await VideoCompress.getByteThumbnail(tmpFile.path);
+      final bytes = await VideoCompressV2.getByteThumbnail(tmpFile.path);
       if (bytes == null) return null;
       return MatrixImageFile(
         bytes: bytes,

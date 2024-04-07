@@ -41,11 +41,17 @@ class LoadingViewAppStart extends StatelessWidget {
           // Or some kind of splash screen
         } else {
           // No user authenticated
-          if(kIsWeb){
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {          if(kIsWeb){
             context.go('/website');
           } else{
             context.go('/authhome');
           }
+ });
+          // if(kIsWeb){
+          //   context.go('/website');
+          // } else{
+          //   context.go('/authhome');
+          // }
           return Container(); // Or another redirect
         }
       },

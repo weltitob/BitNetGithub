@@ -22,10 +22,12 @@ import 'package:flutter/material.dart';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
+import 'package:flutter_sharing_intent/model/sharing_file.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+//import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:uni_links/uni_links.dart';
 
 import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
@@ -290,9 +292,9 @@ class ChatListController extends State<ChatList>
           ? SelectMode.normal
           : SelectMode.select;
 
-  void _processIncomingSharedFiles(List<SharedMediaFile> files) {
+  void _processIncomingSharedFiles(List<SharedFile> files) {
     if (files.isEmpty) return;
-    final file = File(files.first.path.replaceFirst('file://', ''));
+    final file = File(files.first.value!.replaceFirst('file://', ''));
 
     Matrix.of(context).shareContent = {
       'msgtype': 'chat.fluffy.shared_file',
@@ -304,8 +306,12 @@ class ChatListController extends State<ChatList>
     context.go('/rooms');
   }
 
-  void processIncomingSharedText(String? text) {
-    if (text == null) return;
+  void processIncomingSharedText(List<SharedFile> media) {
+    String text = '';
+    for (SharedFile file in media) {
+      text+=file.value ?? '';
+    }
+    if (text == '') return;
     if (text.toLowerCase().startsWith(AppTheme.deepLinkPrefix) ||
         text.toLowerCase().startsWith(AppTheme.inviteLinkPrefix) ||
         (text.toLowerCase().startsWith(AppTheme.schemePrefix) &&
@@ -331,18 +337,18 @@ class ChatListController extends State<ChatList>
     if (!PlatformInfos.isMobile) return;
 
     // For sharing images coming from outside the app while the app is in the memory
-    _intentFileStreamSubscription = ReceiveSharingIntent.getMediaStream()
+    _intentFileStreamSubscription = FlutterSharingIntent.instance.getMediaStream()
         .listen(_processIncomingSharedFiles, onError: print);
 
     // For sharing images coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialMedia().then(_processIncomingSharedFiles);
+    FlutterSharingIntent.instance.getInitialSharing().then(_processIncomingSharedFiles);
 
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream()
+    _intentDataStreamSubscription = FlutterSharingIntent.instance.getMediaStream()
         .listen(processIncomingSharedText, onError: print);
 
     // For sharing or opening urls/text coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialText().then(processIncomingSharedText);
+    FlutterSharingIntent.instance.getInitialSharing().then(processIncomingSharedText);
 
     // For receiving shared Uris
     _intentUriStreamSubscription = linkStream.listen(processIncomingUris);
@@ -354,12 +360,12 @@ class ChatListController extends State<ChatList>
 
   @override
   void initState() {
-    _initReceiveSharingIntent();
+     _initReceiveSharingIntent();
 
     scrollController.addListener(_onScroll);
     _waitForFirstSync();
     _hackyWebRTCFixForWeb();
-    CallKeepManager().initialize();
+    //  CallKeepManager().initialize();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (mounted) {
         searchServer = await Store().getItem(_serverStoreNamespace);

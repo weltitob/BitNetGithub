@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:bitnet/components/items/newsitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -111,8 +112,8 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  final Completer<InAppWebViewController> _controller =
+      Completer<InAppWebViewController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,9 +128,9 @@ class _NewsScreenState extends State<NewsScreen> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: WebView(
-          initialUrl: widget.postUrl,
-          onWebViewCreated: (WebViewController webViewController) {
+        child: InAppWebView(
+          initialUrlRequest: URLRequest(url: Uri.parse(widget.postUrl)),
+          onWebViewCreated: (InAppWebViewController webViewController) {
             _controller.complete(webViewController);
           },
         ),

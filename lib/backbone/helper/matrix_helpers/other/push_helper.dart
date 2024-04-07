@@ -128,7 +128,7 @@ Future<void> _tryPushHelper(
   }
 
   if (event.type == EventTypes.CallInvite) {
-    CallKeepManager().initialize();
+    // CallKeepManager().initialize();
   } else if (event.type == EventTypes.CallHangup) {
     client.backgroundSync = false;
   }

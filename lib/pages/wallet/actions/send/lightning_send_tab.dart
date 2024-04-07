@@ -206,7 +206,8 @@ class LightningSendTab extends StatelessWidget {
           AmountWidget(
             bitcoinUnit: controller.bitcoinUnit,
             enabled: controller.moneyTextFieldIsEnabled,
-            amountController: controller.moneyController,
+            btcController: controller.moneyController,
+            currController: TextEditingController(),
             focusNode: controller.myFocusNodeMoney,
             context: context,
           ),

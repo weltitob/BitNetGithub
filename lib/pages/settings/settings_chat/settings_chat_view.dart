@@ -124,8 +124,7 @@ class SettingsChatView extends StatelessWidget {
               if (Matrix.of(context).webrtcIsSupported && !kIsWeb)
                 ListTile(
                   title: Text(L10n.of(context)!.callingPermissions),
-                  onTap: () =>
-                      CallKeepManager().checkoutPhoneAccountSetting(context),
+                  // onTap: () =>  CallKeepManager().checkoutPhoneAccountSetting(context),
                   trailing: const Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Icon(Icons.call),
