@@ -14,6 +14,7 @@ import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:bitnet/components/items/balancecard.dart';
@@ -141,14 +142,19 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: AppTheme.cardPadding * 10,
+              SizedBox(height: AppTheme.cardPadding,),
+              Container(
+                height: AppTheme.cardPadding * 9,
                 child: Stack(
                   children: [
                     CardSwiper(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding,
-                          vertical: AppTheme.cardPadding),
+                      backCardOffset: const Offset(0, -AppTheme.cardPadding),
+                      // maxAngle: 0.0,
+                      // threshold: 10,
+                      padding: const EdgeInsets.only(
+                          left: AppTheme.cardPadding,
+                          right: AppTheme.cardPadding,
+                          top: AppTheme.cardPadding),
                       scale: 1.0,
                       initialIndex: card == 'lightning' ? 0 : 1,
                       cardsCount: cards.length,
@@ -188,16 +194,16 @@ class _WalletScreenState extends State<WalletScreen> {
                       context.go('/wallet/send');
                     },
                       //image: "assets/images/friends.png",
-                      width: AppTheme.cardPadding * 3.75,
-                      height: AppTheme.cardPadding * 3.75,
+                      width: AppTheme.cardPadding * 3.5,
+                      height: AppTheme.cardPadding * 3.5,
                       fallbackIcon: Icons.arrow_upward_rounded,
                     ),
                     BitNetImageWithTextContainer("Receive", () {
                       context.go('/wallet/receive');
                     },
                       //image: "assets/images/key_removed_bck.png",
-                      width: AppTheme.cardPadding * 3.75,
-                      height: AppTheme.cardPadding * 3.75,
+                      width: AppTheme.cardPadding * 3.5,
+                      height: AppTheme.cardPadding * 3.5,
                       fallbackIcon: Icons.arrow_downward_rounded,
                     ),
                     BitNetImageWithTextContainer(
@@ -206,8 +212,8 @@ class _WalletScreenState extends State<WalletScreen> {
                       context.go("/wallet/loop_screen");
                     },
                       //image: "assets/images/key_removed_bck.png",
-                    width: AppTheme.cardPadding * 3.75,
-                    height: AppTheme.cardPadding * 3.75,
+                    width: AppTheme.cardPadding * 3.5,
+                    height: AppTheme.cardPadding * 3.5,
                     fallbackIcon: Icons.sync_rounded,
                     ),
                     // LongButtonWidget(
@@ -229,7 +235,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: AppTheme.cardPadding * 1),
+              const SizedBox(height: AppTheme.cardPadding * 1.5),
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding),
@@ -251,7 +257,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   context: context,
                 ),
               ),
-              const SizedBox(height: AppTheme.cardPadding * 2),
+              const SizedBox(height: AppTheme.cardPadding * 1.5),
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding),

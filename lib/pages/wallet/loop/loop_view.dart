@@ -19,7 +19,7 @@ class LoopScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       context: context,
       resizeToAvoidBottomInset: false,
-      backgroundColor: AppTheme.colorBackground,
+      //backgroundColor: AppTheme.colorBackground,
       appBar: bitnetAppBar(
         text: 'Loop Screen',
         context: context,

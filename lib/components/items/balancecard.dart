@@ -73,17 +73,6 @@ class BalanceCardBtc extends StatelessWidget {
 class CardBackgroundLightning extends StatelessWidget {
   const CardBackgroundLightning({Key? key}) : super(key: key);
 
-  Widget iconLightning() {
-    return Positioned(
-        right: 0,
-        top: 0,
-        child: Icon(
-          Icons.bolt,
-          size: 150,
-          color: Colors.white.withOpacity(0.1),
-        ));
-  }
-
   Widget topLeftGradient() {
     return Positioned(
       left: -AppTheme.cardPadding * 7.5,
@@ -155,7 +144,7 @@ class CardBackgroundLightning extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.bottomLeft,
               end: Alignment.topRight,
-              stops: [0.25, 1],
+              stops: [0, 0.75],
               colors: [
                 Theme.of(context).colorScheme.primaryContainer,
                 Theme.of(context).colorScheme.tertiaryContainer,
@@ -164,9 +153,12 @@ class CardBackgroundLightning extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              iconLightning(),
               topLeftGradient(),
               bottomRightGradient(),
+              CustomPaint(
+                size: Size(double.infinity, double.infinity), // nimmt die Größe des Containers an
+                painter: WavyGleamPainter(),
+              ),
             ],
           ),
         ),
@@ -174,6 +166,58 @@ class CardBackgroundLightning extends StatelessWidget {
     );
   }
 }
+
+class WavyGleamPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.025) // Mehr Opazität für bessere Sichtbarkeit
+      ..style = PaintingStyle.fill;
+
+    // Erste Welle breiter machen
+    Path path1 = Path()
+      ..moveTo(0, 0) // Startpunkt oben links
+      ..lineTo(0, size.height * 0.0) // Beginn der Welle ein Drittel des Weges nach unten
+      ..cubicTo(
+        size.width * 0.25, size.height * 0.0, // Erster Kontrollpunkt leicht rechts von Start
+        size.width * 0.3, size.height * 0.0, // Zweiter Kontrollpunkt für den Aufstieg der Welle
+        size.width * 0.4, size.height * 0.4, // Höhepunkt der Welle in der Mitte der Karte
+      )
+      ..cubicTo(
+        size.width * 0.6, size.height * 0.9, // Dritter Kontrollpunkt für den Abstieg
+        size.width * 0.8, size.height * 0.7, // Vierter Kontrollpunkt weiter rechts für die Rundung
+        size.width, size.height * 0.75, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
+      )
+      ..lineTo(size.width, size.height) // Linie nach unten zum unteren rechten Eckpunkt
+      ..lineTo(0, size.height) // Linie zurück zum unteren linken Eckpunkt
+      ..close(); // Pfad schließen
+
+    // Zweite Welle breiter machen, etwas unterhalb der ersten
+    Path path2 = Path()
+      ..moveTo(0, 0) // Startpunkt oben links
+      ..lineTo(0, size.height * 0.0) // Beginn der Welle ein Drittel des Weges nach unten
+      ..cubicTo(
+        size.width * 0.25, size.height * 0.1, // Erster Kontrollpunkt leicht rechts von Start
+        size.width * 0.3, size.height * 0.1, // Zweiter Kontrollpunkt für den Aufstieg der Welle
+        size.width * 0.4, size.height * 0.5, // Höhepunkt der Welle in der Mitte der Karte
+      )
+      ..cubicTo(
+        size.width * 0.6, size.height * 1, // Dritter Kontrollpunkt für den Abstieg
+        size.width * 0.8, size.height * 0.8, // Vierter Kontrollpunkt weiter rechts für die Rundung
+        size.width, size.height * 0.85, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
+      )
+      ..lineTo(size.width, size.height) // Linie nach unten zum unteren rechten Eckpunkt
+      ..lineTo(0, size.height) // Linie zurück zum unteren linken Eckpunkt
+      ..close(); // Pfad schließen
+
+    canvas.drawPath(path1, paint);
+    canvas.drawPath(path2, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
 
 class CardBackgroundOnchain extends StatelessWidget {
   const CardBackgroundOnchain({Key? key}) : super(key: key);
@@ -226,11 +270,11 @@ class CardBackgroundOnchain extends StatelessWidget {
 
   Widget iconOnchain() {
     return Positioned(
-        right: 0,
-        top: 0,
+        right: AppTheme.cardPadding,
+        top: AppTheme.cardPadding,
         child: Icon(
-          FontAwesomeIcons.chain,
-          size: 150,
+          FontAwesomeIcons.bank,
+          size: AppTheme.cardPadding * 4,
           color: Colors.white.withOpacity(0.1),
         ));
   }
@@ -261,6 +305,7 @@ class CardBackgroundOnchain extends StatelessWidget {
               begin: Alignment.bottomLeft,
               end: Alignment.topRight,
               //stops: [0.25, 1],
+              stops: [0, 0.75],
               colors: [
                 Theme.of(context).colorScheme.secondaryContainer,
                 Theme.of(context).colorScheme.background,
@@ -269,9 +314,13 @@ class CardBackgroundOnchain extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              iconOnchain(),
+              //iconOnchain(),
               topLeftGradient(),
               bottomRightGradient(),
+              CustomPaint(
+                size: Size(double.infinity, double.infinity), // nimmt die Größe des Containers an
+                painter: WavyGleamPainter(),
+              ),
             ],
           ),
         ),
