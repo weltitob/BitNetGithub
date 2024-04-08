@@ -147,7 +147,7 @@ class _BottomNavState extends State<BottomNav> {
           //   ]),
 
           if (widget.routerState.fullPath!= null && (widget.routerState.fullPath == '/feed' || widget.routerState.fullPath == '/rooms' ||
-              widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')))
+              widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')) || widget.routerState.fullPath != '/wallet/bitcoinscreen')
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(

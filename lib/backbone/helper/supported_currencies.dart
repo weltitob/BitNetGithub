@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 const Map<String, String> supportedCurrencies = {
-  "BTC": "Bitcoin",
   "USD": "United States Dollar",
   "AED": "United Arab Emirates Dirham",
   "ARS": "Argentine Peso",

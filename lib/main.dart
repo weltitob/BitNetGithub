@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
 import 'package:flutter_app_lock/flutter_app_lock.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
 import 'backbone/auth/auth.dart';
@@ -54,7 +55,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();
-
+  Stripe.publishableKey = 'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
+  await Stripe.instance.applySettings();
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',

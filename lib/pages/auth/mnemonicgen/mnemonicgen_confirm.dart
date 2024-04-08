@@ -231,6 +231,37 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
       FocusNode _focusNode4,
       List<String> splittedbipwords,
       ) {
+    return MnemonicPage(text1: text1, text2: text2, text3: text3, text4: text4, textController1: _textController1, textController2: _textController2, textController3: _textController3, textController4: _textController4, focusNode1: _focusNode1, focusNode2: _focusNode2, focusNode3: _focusNode3, focusNode4: _focusNode4, splittedbipwords: splittedbipwords);
+  }
+
+}
+
+class MnemonicPage extends StatefulWidget {
+  const MnemonicPage({super.key, required this.text1, required this.text2, required this.text3, required this.text4, required this.textController1, required this.textController2, required this.textController3, required this.textController4, required this.focusNode1, required this.focusNode2, required this.focusNode3, required this.focusNode4, required this.splittedbipwords, this.moveToNext});
+  final String text1;
+  final String text2;
+  final String text3;
+  final String text4;
+  final TextEditingController textController1;
+  final TextEditingController textController2;
+    final TextEditingController textController3;
+  final TextEditingController textController4;
+  final FocusNode focusNode1;
+    final FocusNode focusNode2;
+  final FocusNode focusNode3;
+  final FocusNode focusNode4;
+  final List<String> splittedbipwords;
+  final Function()? moveToNext;
+
+
+  @override
+  State<MnemonicPage> createState() => _MnemonicPageState();
+}
+
+class _MnemonicPageState extends State<MnemonicPage> with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: EdgeInsets.only(
         left: AppTheme.cardPadding * 2,
@@ -241,43 +272,46 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FormTextField(
-            hintText: text1,
-            controller: _textController1,
-            focusNode: _focusNode1,
-            bipwords: splittedbipwords,
+            hintText: widget.text1,
+            controller: widget.textController1,
+            focusNode: widget.focusNode1,
+            bipwords: widget.splittedbipwords,
             isObscure: false,
             isBIPField: true,
-            changefocustonext: moveToNext,
+            changefocustonext: widget.moveToNext,
           ),
           FormTextField(
-            hintText: text2,
-            controller: _textController2,
-            focusNode: _focusNode2,
-            bipwords: splittedbipwords,
+            hintText: widget.text2,
+            controller: widget.textController2,
+            focusNode: widget.focusNode2,
+            bipwords: widget.splittedbipwords,
             isObscure: false,
             isBIPField: true,
-            changefocustonext: moveToNext,
+            changefocustonext: widget.moveToNext,
           ),
           FormTextField(
-            hintText: text3,
-            controller: _textController3,
-            focusNode: _focusNode3,
-            bipwords: splittedbipwords,
+            hintText: widget.text3,
+            controller: widget.textController3,
+            focusNode: widget.focusNode3,
+            bipwords: widget.splittedbipwords,
             isObscure: false,
             isBIPField: true,
-            changefocustonext: moveToNext,
+            changefocustonext: widget.moveToNext,
           ),
           FormTextField(
-            hintText: text4,
-            controller: _textController4,
-            focusNode: _focusNode4,
-            bipwords: splittedbipwords,
+            hintText: widget.text4,
+            controller: widget.textController4,
+            focusNode: widget.focusNode4,
+            bipwords: widget.splittedbipwords,
             isObscure: false,
             isBIPField: true,
-            changefocustonext: moveToNext,
+            changefocustonext: widget.moveToNext,
           ),
         ],
       ),
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }
