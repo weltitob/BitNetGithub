@@ -231,6 +231,7 @@ class SettingsView extends StatelessWidget {
                 await Auth().signOut();
                 //pop
                 context.pop();
+                context.go('/authhome');
               },
             ),
             SizedBox(

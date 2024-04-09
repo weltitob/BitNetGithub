@@ -14,14 +14,16 @@ import 'package:provider/provider.dart';
 class AmountWidget extends StatefulWidget {
   final BuildContext context;
   final bool enabled;
-  final TextEditingController amountController;
+  final TextEditingController btcController;
+  final TextEditingController currController;
   final FocusNode focusNode;
   final BitcoinUnits bitcoinUnit;
 
   const AmountWidget({
     super.key,
     required this.enabled,
-    required this.amountController,
+    required this.btcController,
+    required this.currController,
     required this.focusNode,
     this.bitcoinUnit = BitcoinUnits.BTC,
     required this.context});
@@ -31,31 +33,29 @@ class AmountWidget extends StatefulWidget {
 }
 
 class _AmountWidgetState extends State<AmountWidget> {
-  late TextEditingController swappedController;
   bool swapped = true;
   var amtControllerFunc;
   var currencyAmt = 0.0;
   var coinAmt = 0.0;
   @override
   void initState(){
-    swappedController = TextEditingController();
-    swappedController.addListener((){
-      currencyAmt = double.parse(swappedController.text.isEmpty ? "0.0" : swappedController.text);
-      coinAmt = double.parse(widget.amountController.text.isEmpty ? "0.0" : widget.amountController.text);
+    widget.currController.addListener((){
+      currencyAmt = double.parse(widget.currController.text.isEmpty ? "0.0" : widget.currController.text);
+      coinAmt = double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text);
       setState((){});
     });
     amtControllerFunc = (){
       setState((){});
     };
-    widget.amountController.addListener(amtControllerFunc
+    widget.btcController.addListener(amtControllerFunc
     );
   super.initState();
   }
 
   @override
   void dispose(){
-    widget.amountController.removeListener(amtControllerFunc);
-    swappedController.dispose();
+    widget.btcController.removeListener(amtControllerFunc);
+    widget.currController.dispose();
     super.dispose();
   }
   @override
@@ -100,7 +100,6 @@ class _AmountWidgetState extends State<AmountWidget> {
                 ],
                 decoration: InputDecoration(
                   prefixIcon: IconButton(onPressed: (){
-                  print("clicked");
                   this.swapped = !this.swapped;
                   if(this.swapped) {
                      final chartLine = Provider.of<ChartLine?>(context, listen: false);
@@ -108,21 +107,19 @@ class _AmountWidgetState extends State<AmountWidget> {
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
-        ? CurrencyConverter.convertCurrency(widget.bitcoinUnit.name, double.parse(widget.amountController.text.isEmpty ? "0.0" : widget.amountController.text), currency!, bitcoinPrice)
+        ? CurrencyConverter.convertCurrency(widget.bitcoinUnit.name, double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text), currency!, bitcoinPrice)
         : "0.00";
-        print(currencyEquivalent);
-                    this.swappedController.text = currencyEquivalent;
+                    this.widget.currController.text = currencyEquivalent;
                   } else {
                                    final chartLine = Provider.of<ChartLine?>(context, listen: false);
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
-        ? CurrencyConverter.convertCurrency(currency!, double.parse(swappedController.text.isEmpty ? "0.0" : swappedController.text), widget.bitcoinUnit.name, bitcoinPrice)
+        ? CurrencyConverter.convertCurrency(currency!, double.parse(widget.currController.text.isEmpty ? "0.0" : widget.currController.text), widget.bitcoinUnit.name, bitcoinPrice)
         : "0.00";
-                print("2" + currencyEquivalent);
 
-                    widget.amountController.text = currencyEquivalent;
+                    widget.btcController.text = currencyEquivalent;
                   }
                   widget.focusNode.unfocus();
                   setState((){});
@@ -136,7 +133,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                   hintText: "0.0",
                   hintStyle: TextStyle(color: AppTheme.white60),
                 ),
-                controller: swapped ? swappedController :  widget.amountController,
+                controller: swapped ? widget.currController :  widget.btcController,
                 autofocus: false,
                 
                 style: Theme.of(context).textTheme.displayLarge,
@@ -206,10 +203,9 @@ class _AmountWidgetState extends State<AmountWidget> {
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
-        ? CurrencyConverter.convertCurrency(bitcoinUnit.name, double.parse(widget.amountController.text.isEmpty ? "0.0" : widget.amountController.text), currency, bitcoinPrice)
+        ? CurrencyConverter.convertCurrency(bitcoinUnit.name, double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text), currency, bitcoinPrice)
         : "0.00";
-                print("3" + currencyEquivalent);
-
+  
 
 
     return Text(
@@ -228,10 +224,9 @@ class _AmountWidgetState extends State<AmountWidget> {
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
-        ? CurrencyConverter.convertCurrency(currency, double.parse(this.swappedController.text.isEmpty ? "0.0" : this.swappedController.text), bitcoinUnit.name, bitcoinPrice)
+        ? CurrencyConverter.convertCurrency(currency, double.parse(this.widget.currController.text.isEmpty ? "0.0" : this.widget.currController.text), bitcoinUnit.name, bitcoinPrice)
         : "0.00";
-        print("4" + currencyEquivalent);
-
+    widget.btcController.text = currencyEquivalent;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [

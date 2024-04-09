@@ -19,7 +19,7 @@ class LoopScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       context: context,
       resizeToAvoidBottomInset: false,
-      //backgroundColor: AppTheme.colorBackground,
+      // backgroundColor: AppTheme.colorBackground,
       appBar: bitnetAppBar(
         text: 'Loop Screen',
         context: context,
@@ -83,7 +83,8 @@ class LoopScreen extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: AmountWidget(
                 enabled: true,
-                amountController: TextEditingController(text: '123'),
+                btcController: TextEditingController(text: '123'),
+                currController: TextEditingController(),
                 focusNode: FocusNode(),
                 context: context,
               ),

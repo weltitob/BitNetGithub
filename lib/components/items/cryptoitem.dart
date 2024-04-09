@@ -11,6 +11,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -173,11 +174,12 @@ class _CryptoItemState extends State<CryptoItem>
   Widget build(BuildContext context) {
     return _loading
         ? GestureDetector(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const BitcoinScreen(),
-              ),
-            ),
+          onTap: ()=> context.push('/wallet/bitcoinscreen'),
+            // onTap: () => Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (context) => const BitcoinScreen(),
+            //   ),
+            // ),
             child: GlassContainer(
               height: AppTheme.cardPadding * 3,
               child: Center(
@@ -211,11 +213,13 @@ class _CryptoItemState extends State<CryptoItem>
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const BitcoinScreen(),
-                    ),
-                  ),
+                  // onTap: () => Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const BitcoinScreen(),
+                  //   ),
+                  // ),
+                            onTap: ()=> context.push('/wallet/bitcoinscreen'),
+
                 ),
               )
             ],
