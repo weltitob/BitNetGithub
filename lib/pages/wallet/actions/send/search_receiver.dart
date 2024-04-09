@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
@@ -16,11 +17,16 @@ class SearchReceiver extends StatelessWidget {
 
   const SearchReceiver({super.key, required this.controller});
 
-
-
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      appBar: bitnetAppBar(
+        text: "Choose Recipient",
+        context: context,
+        onTap: () {
+          context.pop();
+        },
+      ),
       context: context,
       body: Column(
         children: [
