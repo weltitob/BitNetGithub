@@ -182,6 +182,7 @@ class _CryptoItemState extends State<CryptoItem>
             // ),
             child: GlassContainer(
               height: AppTheme.cardPadding * 3,
+              borderRadius: AppTheme.cardRadiusBig,
               child: Center(
                 child: dotProgress(context),
               ),
@@ -189,6 +190,7 @@ class _CryptoItemState extends State<CryptoItem>
           )
         : GlassContainer(
           height: AppTheme.cardPadding * 3,
+          borderRadius: AppTheme.cardRadiusBig,
           child: Stack(
             children: [
               Padding(

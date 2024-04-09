@@ -1,13 +1,13 @@
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/services.dart';
 import 'package:matrix/matrix.dart';
@@ -57,7 +57,13 @@ class OnChainSendTab extends StatelessWidget {
                 // A Padding widget that contains a button widget
                 Padding(
                     padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
-                    child: button(context)),
+                    child: LongButtonWidget(
+                      title: "JETZT SENDEN!",
+                      onTap: () async {
+                        Logs().w("onchain SendBTC getting called");
+                        await controller.sendBTC();
+                      },
+                    )),
               ],
             ),
           ),
@@ -213,51 +219,4 @@ class OnChainSendTab extends StatelessWidget {
     );
   }
 
-  Widget button(BuildContext context) {
-    // Return a Padding widget containing a SwipeableButtonView
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-      child: SwipeableButtonView(
-        // Determine if the button should be active based on whether a receiver has been selected
-          isActive: controller.hasReceiver,
-          // Set the text style for the button text
-          buttontextstyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-              color: AppTheme.white80, shadows: [AppTheme.boxShadowSmall]),
-          // Set the text to display on the button
-          buttonText: "JETZT SENDEN!",
-          // Set the widget to display inside the button
-          buttonWidget: Container(
-            child: Icon(
-              // Set the icon to display based on whether a receiver has been selected
-              controller.hasReceiver
-                  ? Icons.double_arrow_rounded
-                  : Icons.lock_outline_rounded,
-              color: AppTheme.white90,
-              size: 33,
-              shadows: [AppTheme.boxShadowProfile],
-            ),
-          ),
-          // Set the active and disabled colors for the button
-          activeColor: Theme.of(context).colorScheme.onSecondary,
-          disableColor: Theme.of(context).colorScheme.onSecondary,
-          // Determine whether the button has finished its operation
-          isFinished: controller.isFinished,
-          // Define the function to execute while the button is in a waiting state
-          onWaitingProcess: () async {
-            Logs().w("onWaitingProcess() called");
-            await controller.sendBTC();
-            controller.isFinished = true;
-            // Wait for 2 seconds, then set isFinished to true
-            // Future.delayed(const Duration(seconds: 1), () {
-            //   controller.isFinished = true;
-            // });
-          },
-          // Define the function to execute when the button is finished
-          onFinish: () async {
-            Logs().w("onFinish() called");
-          }
-        // Check if biometric authentication is available
-      ),
-    );
-  }
 }

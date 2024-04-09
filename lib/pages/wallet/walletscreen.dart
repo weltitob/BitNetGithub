@@ -133,7 +133,8 @@ class _WalletScreenState extends State<WalletScreen> {
                     RoundedButtonWidget(
                         size: AppTheme.cardPadding * 1.25,
                         buttonType: ButtonType.transparent,
-                        iconData: FontAwesomeIcons.eye,
+                        iconData: Provider.of<BalanceHideProvider>(context,
+                            listen: false).hideBalance == true ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
                         onTap: () {
                           Provider.of<BalanceHideProvider>(context,
                                   listen: false)
