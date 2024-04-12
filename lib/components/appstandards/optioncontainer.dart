@@ -16,7 +16,7 @@ class BitNetImageWithTextContainer extends StatelessWidget {
     this.action, {
     this.fallbackIcon,
     this.image,
-    this.width = AppTheme.cardPadding * 5.5,
+    this.width = AppTheme.cardPadding * 6,
     this.height = AppTheme.cardPadding * 7,
     this.isActive = true, // default value is true
     Key? key,

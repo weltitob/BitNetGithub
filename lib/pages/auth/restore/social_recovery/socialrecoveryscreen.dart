@@ -3,10 +3,8 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/appbaractions.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -198,9 +196,11 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding),
                   child: Container(
+                    alignment: Alignment.center,
                     height: AppTheme.cardPadding * 2.5,
                     width: screenWidth - AppTheme.cardPadding * 2,
                     child: LongButtonWidget(
+                      customWidth: AppTheme.cardPadding * 14,
                       title: "RECOVER ACCOUNT",
                       onTap: () {  },
                     )
