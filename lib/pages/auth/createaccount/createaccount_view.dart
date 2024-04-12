@@ -93,6 +93,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       FormTextField(
+                        width: AppTheme.cardPadding * 14,
                         hintText: "Username",
                         validator: (val) => val!.isEmpty
                             ? 'The username you entered is not valid'
@@ -109,7 +110,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                         height: AppTheme.cardPadding,
                       ),
                       LongButtonWidget(
-                        customWidth: AppTheme.cardPadding * 12,
+                        customWidth: AppTheme.cardPadding * 14,
                         title: L10n.of(context)!.register,
                         onTap: () {
                           //no sso removed sso (single-sign-on) buttons because we have own system

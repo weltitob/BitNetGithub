@@ -29,7 +29,7 @@ class LongButtonWidget extends StatefulWidget {
       this.textColor,
       this.state = ButtonState.idle,
       this.leadingIcon,
-      this.customWidth = AppTheme.cardPadding * 10,
+      this.customWidth = AppTheme.cardPadding * 12,
       this.customHeight = AppTheme.cardPadding * 2.5,
       this.buttonType = ButtonType.solid,
       this.backgroundPainter = true});

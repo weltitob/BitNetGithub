@@ -163,7 +163,6 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      width: AppTheme.cardPadding * 12,
                       child: FormTextField(
                         hintText: L10n.of(context)!.usernameOrDID,
                         controller: _controllerUsername,
@@ -182,7 +181,6 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                       padding:
                           const EdgeInsets.only(bottom: AppTheme.cardPadding),
                       child: Container(
-                        width: AppTheme.cardPadding * 12,
                         child: FormTextField(
                           validator: (val) {
                             if (val!.isEmpty) {
@@ -205,7 +203,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                       ),
                     ),
                     LongButtonWidget(
-                      customWidth: AppTheme.cardPadding * 12,
+                      customWidth: AppTheme.cardPadding * 14,
                       title: L10n.of(context)!.restoreAccount,
                       onTap: () {
                         if (_form.currentState!.validate()) {

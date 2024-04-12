@@ -32,7 +32,5 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
     return MnemonicFieldWidget(mnemonicController: MnemonicController(), triggerMnemonicCheck: triggerMnemonicCheck,);
   }
 
- 
-
 }
 
