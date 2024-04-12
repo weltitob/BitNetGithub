@@ -76,7 +76,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
         margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
         body: Container(
           margin: EdgeInsets.only(
-              top: AppTheme.cardPadding * 6,
+              top: AppTheme.cardPadding * 8,
               bottom: AppTheme.cardPadding * 2,
               left: AppTheme.cardPadding,
               right: AppTheme.cardPadding),
@@ -115,7 +115,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 height: AppTheme.cardPadding * 6,
               ),
               LongButtonWidget(
-                customWidth: AppTheme.cardPadding * 12,
+                customWidth: AppTheme.cardPadding * 14,
                 buttonType: ButtonType.transparent,
                 title: L10n.of(context)!.restoreAccount,
                 onTap: () {
@@ -125,7 +125,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               // creating the signup button
               SizedBox(height: AppTheme.cardPadding),
               LongButtonWidget(
-                  customWidth: AppTheme.cardPadding * 12,
+                  customWidth: AppTheme.cardPadding * 14,
                   title: L10n.of(context)!.register,
                   onTap: () async {
                     context.go('/authhome/pinverification');
