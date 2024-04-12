@@ -88,7 +88,5 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
           );});
   }
 
- 
-
 }
 

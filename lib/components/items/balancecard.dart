@@ -21,6 +21,7 @@ class BalanceCardLightning extends StatelessWidget {
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
         double.parse(controller.lightningBalance.balance), BitcoinUnits.SAT);
     final balanceStr = unitModel.amount.toString();
+
     return SizedBox(
       child: Stack(
         children: [
@@ -124,7 +125,7 @@ class CardBackgroundLightning extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(0.5),
       decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusBigger,
+        borderRadius: AppTheme.cardRadiusBiggest,
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -138,7 +139,7 @@ class CardBackgroundLightning extends StatelessWidget {
         ),
       ),
       child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusBigger,
+        borderRadius: AppTheme.cardRadiusBiggest,
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -268,23 +269,14 @@ class CardBackgroundOnchain extends StatelessWidget {
     );
   }
 
-  Widget iconOnchain() {
-    return Positioned(
-        right: AppTheme.cardPadding,
-        top: AppTheme.cardPadding,
-        child: Icon(
-          FontAwesomeIcons.bank,
-          size: AppTheme.cardPadding * 4,
-          color: Colors.white.withOpacity(0.1),
-        ));
-  }
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: const EdgeInsets.all(0.5),
       decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusBigger,
+        borderRadius: AppTheme.cardRadiusBiggest,
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -298,7 +290,7 @@ class CardBackgroundOnchain extends StatelessWidget {
         ),
       ),
       child: ClipRRect(
-        borderRadius: AppTheme.cardRadiusBigger,
+        borderRadius: AppTheme.cardRadiusBiggest,
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(

@@ -14,7 +14,6 @@ import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:bitnet/components/items/balancecard.dart';
@@ -130,15 +129,19 @@ class _WalletScreenState extends State<WalletScreen> {
                         ),
                       ],
                     ),
-                    RoundedButtonWidget(
-                        size: AppTheme.cardPadding * 1.25,
-                        buttonType: ButtonType.transparent,
-                        iconData: FontAwesomeIcons.eye,
-                        onTap: () {
-                          Provider.of<BalanceHideProvider>(context,
-                                  listen: false)
-                              .setHideBalance();
-                        }),
+                    Consumer<BalanceHideProvider>(
+                        builder: (context, balanceHideProvider, _) {
+                        return RoundedButtonWidget(
+                            size: AppTheme.cardPadding * 1.25,
+                            buttonType: ButtonType.transparent,
+                            iconData: balanceHideProvider.hideBalance == false ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
+                            onTap: () {
+                              Provider.of<BalanceHideProvider>(context,
+                                      listen: false)
+                                  .setHideBalance();
+                            });
+                      }
+                    ),
                   ],
                 ),
               ),

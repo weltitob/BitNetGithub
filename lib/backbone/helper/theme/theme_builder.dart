@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
-import 'package:bitnet/pages/routetrees/widgettree.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -65,7 +65,7 @@ class ThemeController extends State<ThemeBuilder> {
       setState(() {
         _themeMode = ThemeMode.values
             .singleWhereOrNull((value) => value.name == rawThemeMode);
-        _primaryColor = rawColor == null ? null : Color(rawColor);
+        _primaryColor = rawColor == null ? AppTheme.colorSchemeSeed : Color(rawColor);
       });
     }else{
       print('id');

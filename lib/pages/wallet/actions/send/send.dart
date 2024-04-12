@@ -17,7 +17,6 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:matrix/matrix.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:go_router/go_router.dart';
@@ -82,7 +81,7 @@ class SendController extends State<Send> {
     else if(walletAdress != null){
       Logs().w("Walletadress: $walletAdress");
 
-      giveValuesToOnchainSend(walletAdress!);
+      giveValuesToOnchainSend(walletAdress);
     }
     else{
       Logs().w("No parameters found");
@@ -90,9 +89,6 @@ class SendController extends State<Send> {
     Logs().w("Invoice: $invoice");
 
   }
-
-
-
 
   @override
   void initState() {

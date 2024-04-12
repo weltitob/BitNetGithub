@@ -59,7 +59,8 @@ class SendBTCScreen extends StatelessWidget {
           Expanded(
             child: controller.sendType == SendType.Invoice
                 ? LightningSendTab(
-              controller: controller,) : OnChainSendTab(
+              controller: controller,)
+                : OnChainSendTab(
               controller: controller,
             )
           ),

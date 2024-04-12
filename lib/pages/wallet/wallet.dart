@@ -32,15 +32,11 @@ class WalletController extends State<Wallet> {
   late LightningBalance lightningBalance = LightningBalance(balance: '0', pendingOpenBalance: '0', localBalance: '0', remoteBalance: '0', unsettledLocalBalance: '0', pendingOpenLocalBalance: '', unsettledRemoteBalance: '', pendingOpenRemoteBalance: '');
   bool visible = false;
 
-
   StreamSubscription<List<ReceivedInvoice>>? _invoicesSubscription;
   StreamSubscription<List<BitcoinTransaction>>? _transactionsSubscription;
 
   String totalBalanceStr = "0";
   double totalBalanceSAT = 0;
-
-
-
 
   @override
   void initState() {
@@ -86,7 +82,6 @@ class WalletController extends State<Wallet> {
     fetchLightingWalletBalance();
   }
 
-
   void fetchOnchainWalletBalance() async {
     try{
       RestResponse onchainBalanceRest = await walletBalance();
@@ -100,7 +95,6 @@ class WalletController extends State<Wallet> {
     }
   }
 
-
   void fetchLightingWalletBalance() async {
     try{
       RestResponse lightningBalanceRest = await channelBalance();
@@ -113,7 +107,6 @@ class WalletController extends State<Wallet> {
       print(e);
     }
   }
-
 
   changeTotalBalanceStr(){
     // Assuming both values are strings and represent numerical values
@@ -143,7 +136,6 @@ class WalletController extends State<Wallet> {
 
   //die 3 lottiefiles downloaden und anzeigen direkt gespeichert?
   final PageController pageController = PageController();
-
 
   @override
   Widget build(BuildContext context) {

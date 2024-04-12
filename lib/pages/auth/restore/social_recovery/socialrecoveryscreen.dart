@@ -2,11 +2,9 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/appbaractions.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/userresult.dart';
-import 'package:bitnet/components/swipebutton/swipeable_button_view.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -198,50 +196,14 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding),
                   child: Container(
+                    alignment: Alignment.center,
                     height: AppTheme.cardPadding * 2.5,
                     width: screenWidth - AppTheme.cardPadding * 2,
-                    child: SwipeableButtonView(
-                        // Determine if the button should be active based on whether a receiver has been selected
-                        isActive: false,
-                        // Set the text style for the button text
-                        buttontextstyle: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(
-                                color: AppTheme.white80,
-                                shadows: [AppTheme.boxShadowSmall]),
-                        // Set the text to display on the button
-                        buttonText: "Unlock account",
-                        // Set the widget to display inside the button
-                        buttonWidget: Container(
-                          child: Icon(
-                            // Set the icon to display based on whether a receiver has been selected
-                            readyForLogin
-                                ? Icons.double_arrow_rounded
-                                : Icons.lock_outline_rounded,
-                            color: AppTheme.white90,
-                            size: 33,
-                            shadows: [AppTheme.boxShadowProfile],
-                          ),
-                        ),
-                        // Set the active and disabled colors for the button
-                        activeColor: Theme.of(context).primaryColor,
-                        disableColor: Theme.of(context).primaryColor,
-                        // Determine whether the button has finished its operation
-                        isFinished: isFinished,
-                        // Define the function to execute while the button is in a waiting state
-                        onWaitingProcess: () {
-                          // Wait for 2 seconds, then set isFinished to true
-                          Future.delayed(const Duration(seconds: 1), () {
-                            setState(() {
-                              isFinished = true;
-                            });
-                          });
-                        },
-                        // Define the function to execute when the button is finished
-                        onFinish: () async {
-                          // Check if biometric authentication is available
-                        }),
+                    child: LongButtonWidget(
+                      customWidth: AppTheme.cardPadding * 14,
+                      title: "RECOVER ACCOUNT",
+                      onTap: () {  },
+                    )
                   ),
                 )),
           ]),

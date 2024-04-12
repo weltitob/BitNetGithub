@@ -157,7 +157,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
               ),
               Center(
                 child: LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 12,
+                    customWidth: AppTheme.cardPadding * 14,
                     title: "Scan QR",
                     onTap: () {
                       Navigator.of(context).push(

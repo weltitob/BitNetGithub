@@ -5,7 +5,6 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
-import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:matrix/matrix.dart';
@@ -33,11 +32,9 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
   List<FocusNode> focusNodes = List.generate(24, (index) => FocusNode());
 
   void triggerCheck() {
-    if(widget.triggerMnemonicCheck != null) {
-    widget.triggerMnemonicCheck!(widget.mnemonicController, textControllers);
+  widget.triggerMnemonicCheck(widget.mnemonicController, textControllers);
 
     }
-  }
   @override
   Widget build(BuildContext context) {
         final Size size = MediaQuery.of(context).size;
@@ -264,6 +261,7 @@ class _MnemonicPageState extends State<MnemonicPage> with AutomaticKeepAliveClie
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FormTextField(
+            width: AppTheme.cardPadding * 14,
             hintText: widget.text1,
             controller: widget.textController1,
             focusNode: widget.focusNode1,
@@ -273,6 +271,7 @@ class _MnemonicPageState extends State<MnemonicPage> with AutomaticKeepAliveClie
             changefocustonext: widget.moveToNext,
           ),
           FormTextField(
+            width: AppTheme.cardPadding * 14,
             hintText: widget.text2,
             controller: widget.textController2,
             focusNode: widget.focusNode2,
@@ -282,6 +281,7 @@ class _MnemonicPageState extends State<MnemonicPage> with AutomaticKeepAliveClie
             changefocustonext: widget.moveToNext,
           ),
           FormTextField(
+            width: AppTheme.cardPadding * 14,
             hintText: widget.text3,
             controller: widget.textController3,
             focusNode: widget.focusNode3,
@@ -291,6 +291,7 @@ class _MnemonicPageState extends State<MnemonicPage> with AutomaticKeepAliveClie
             changefocustonext: widget.moveToNext,
           ),
           FormTextField(
+            width: AppTheme.cardPadding * 14,
             hintText: widget.text4,
             controller: widget.textController4,
             focusNode: widget.focusNode4,

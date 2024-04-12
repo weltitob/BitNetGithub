@@ -16,7 +16,6 @@ import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-
 class PinVerificationScreen extends StatefulWidget {
   const PinVerificationScreen({Key? key}) : super(key: key);
   @override
@@ -81,8 +80,12 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       if (code.used == false) {
         _loading = false;
         //passing code to SignUp that it can be flagged as used later on
-context.go(Uri(path: '/authhome/pinverification/createaccount', queryParameters: { 'code': code.code,
-          'issuer': code.issuer,}).toString());
+        context.go(Uri(
+            path: '/authhome/pinverification/createaccount',
+            queryParameters: {
+              'code': code.code,
+              'issuer': code.issuer,
+            }).toString());
       } else {
         errorController
             .add(ErrorAnimationType.shake); // Triggering error shake animation

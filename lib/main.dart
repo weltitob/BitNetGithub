@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
@@ -55,7 +56,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();
-  Stripe.publishableKey = 'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
+  Stripe.publishableKey = AppTheme.stripeLiveKey;
   await Stripe.instance.applySettings();
   await Firebase.initializeApp(
     options: FirebaseOptions(
