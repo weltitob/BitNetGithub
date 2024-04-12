@@ -15,6 +15,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 
 class WordRecoveryScreen extends StatefulWidget {
@@ -24,7 +25,6 @@ class WordRecoveryScreen extends StatefulWidget {
 
 class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   // PageController _pageController = PageController();
-  late MnemonicController mnemonicController;
 
   // bool onLastPage = false;
   bool _isLoading = false;
@@ -67,14 +67,12 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
 
   @override
   void initState() {
-    mnemonicController = new MnemonicController();
     super.initState();
     // getBIPWords();
   }
 
   @override
   void dispose() {
-    mnemonicController.dispose();
     // textControllers.forEach((controller) => controller.dispose());
     // focusNodes.forEach((node) => node.dispose());
     super.dispose();
@@ -130,7 +128,28 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
 
   @override
   Widget build(BuildContext context) {
-     return MnemonicFieldWidget(mnemonicController: mnemonicController, triggerMnemonicCheck: onSignInPressesd,);
+    final Size size = MediaQuery.of(context).size;
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final screenWidth = MediaQuery.of(context).size.width;
+          bool isSuperSmallScreen =
+              constraints.maxWidth < AppTheme.isSuperSmallScreen;
+          return bitnetScaffold(
+            context: context,
+            margin: isSuperSmallScreen
+                ? EdgeInsets.symmetric(horizontal: 0)
+                : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+            extendBodyBehindAppBar: true,
+            backgroundColor: Theme.of(context).colorScheme.background,
+            appBar: bitnetAppBar(
+                text: "Confirm your mnemonic",
+                context: context,
+                onTap: () {
+                  context.go('/authhome/login');
+                }),
+
+     body: MnemonicFieldWidget(mnemonicController: null, triggerMnemonicCheck: onSignInPressesd,),
+          );});
   }
 
 

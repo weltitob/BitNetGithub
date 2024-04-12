@@ -79,6 +79,8 @@ class _FormTextFieldState extends State<FormTextField> {
           print("should changefocustonext");
           widget.changefocustonext?.call();
           movedToNext = true;
+        } else {
+          movedToNext = false;
         }
       });
     }
