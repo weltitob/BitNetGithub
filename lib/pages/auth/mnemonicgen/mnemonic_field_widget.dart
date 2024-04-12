@@ -12,8 +12,8 @@ import 'package:matrix/matrix.dart';
 
 class MnemonicFieldWidget extends StatefulWidget {
   
-  final MnemonicController mnemonicController;
-  final Function(MnemonicController, List<TextEditingController>) triggerMnemonicCheck;
+  final MnemonicController? mnemonicController;
+  final Function(MnemonicController?, List<TextEditingController>) triggerMnemonicCheck;
   const MnemonicFieldWidget({super.key, required this.mnemonicController, required this.triggerMnemonicCheck});
 
   @override
@@ -42,144 +42,131 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
   Widget build(BuildContext context) {
         final Size size = MediaQuery.of(context).size;
 
-    return   LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          final screenWidth = MediaQuery.of(context).size.width;
-          bool isSuperSmallScreen =
-              constraints.maxWidth < AppTheme.isSuperSmallScreen;
-          return bitnetScaffold(
-            margin: isSuperSmallScreen
-                ? EdgeInsets.symmetric(horizontal: 0)
-                : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
-            extendBodyBehindAppBar: true,
-            backgroundColor: Theme.of(context).colorScheme.background,
-            appBar: bitnetAppBar(
-                text: "Confirm your mnemonic",
-                context: context,
-                onTap: () {
-                  widget.mnemonicController.changeWrittenDown();
-                }),
-            body: ListView(
-              physics: BouncingScrollPhysics(),
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: AppTheme.cardPadding * 3,
-                      ),
-                      child: Text(
-                        'Enter your 24 words in the right order',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ),
-                    Container(
-                      height: size.height / 2.5,
-                      child: PageView(
-                        onPageChanged: (val) {
-                          setState(() {
-                            onLastPage = (val == 5); // Update this to check if the last page is reached
-                          });
-                        },
-                        controller: _pageController,
-                        children: [
-                          buildInputFields(
-                              "1.", textControllers[0], focusNodes[0],
-                              "2.", textControllers[1], focusNodes[1],
-                              "3.", textControllers[2], focusNodes[2],
-                              "4.", textControllers[3], focusNodes[3],
-                              splittedbipwords),
-                          buildInputFields(
-                              "5.", textControllers[4], focusNodes[4],
-                              "6.", textControllers[5], focusNodes[5],
-                              "7.", textControllers[6], focusNodes[6],
-                              "8.", textControllers[7], focusNodes[7],
-                              splittedbipwords),
-                          buildInputFields(
-                              "9.", textControllers[8], focusNodes[8],
-                              "10.", textControllers[9], focusNodes[9],
-                              "11.", textControllers[10], focusNodes[10],
-                              "12.", textControllers[11], focusNodes[11],
-                              splittedbipwords),
-                          // New set of input fields for 13-16
-                          buildInputFields(
-                              "13.", textControllers[12], focusNodes[12],
-                              "14.", textControllers[13], focusNodes[13],
-                              "15.", textControllers[14], focusNodes[14],
-                              "16.", textControllers[15], focusNodes[15],
-                              splittedbipwords),
-                          // New set of input fields for 17-20
-                          buildInputFields(
-                              "17.", textControllers[16], focusNodes[16],
-                              "18.", textControllers[17], focusNodes[17],
-                              "19.", textControllers[18], focusNodes[18],
-                              "20.", textControllers[19], focusNodes[19],
-                              splittedbipwords),
-                          // New set of input fields for 21-24
-                          buildInputFields(
-                              "21.", textControllers[20], focusNodes[20],
-                              "22.", textControllers[21], focusNodes[21],
-                              "23.", textControllers[22], focusNodes[22],
-                              "24.", textControllers[23], focusNodes[23],
-                              splittedbipwords),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppTheme.cardPadding,
-                    ),
-                    buildIndicator(pageController: _pageController, count: 6),
-                    SizedBox(
-                      height: AppTheme.cardPadding * 2,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding * 2),
-                      child: LongButtonWidget(
-                        title: onLastPage ? "Confirm Key" : "Next",
-                        onTap: onLastPage ? triggerCheck : nextPageFunction,
-                        state: widget.mnemonicController.isLoadingSignUp ? ButtonState.loading : ButtonState.idle,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: AppTheme.cardPadding),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppTheme.white60,
-                          width: 2,
+    return   
+
+            Container(
+              height: size.height * 0.75,
+              child: ListView(
+                physics: BouncingScrollPhysics(),
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: AppTheme.cardPadding * 3,
                         ),
-                        borderRadius: AppTheme.cardRadiusCircular,
-                      ),
-                      child: SizedBox(
-                        height: 0,
-                        width: 65,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          top: AppTheme.cardPadding,
-                          bottom: AppTheme.cardPadding),
-                      child: GestureDetector(
-                        onTap: () {
-                          Logs().w("Skip at own risk pressed");
-                          //context.go("/pinverification");
-                          widget.mnemonicController.signUp();
-                        },
                         child: Text(
-                          "Skip at own risk",
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          'Enter your 24 words in the right order',
+                          style: Theme.of(context).textTheme.titleSmall,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            context: context,
-          );
-        });
+                      Container(
+                        height: size.height / 2.5,
+                        child: PageView(
+                          onPageChanged: (val) {
+                            setState(() {
+                              onLastPage = (val == 5); // Update this to check if the last page is reached
+                            });
+                          },
+                          controller: _pageController,
+                          children: [
+                            buildInputFields(
+                                "1.", textControllers[0], focusNodes[0],
+                                "2.", textControllers[1], focusNodes[1],
+                                "3.", textControllers[2], focusNodes[2],
+                                "4.", textControllers[3], focusNodes[3],
+                                splittedbipwords),
+                            buildInputFields(
+                                "5.", textControllers[4], focusNodes[4],
+                                "6.", textControllers[5], focusNodes[5],
+                                "7.", textControllers[6], focusNodes[6],
+                                "8.", textControllers[7], focusNodes[7],
+                                splittedbipwords),
+                            buildInputFields(
+                                "9.", textControllers[8], focusNodes[8],
+                                "10.", textControllers[9], focusNodes[9],
+                                "11.", textControllers[10], focusNodes[10],
+                                "12.", textControllers[11], focusNodes[11],
+                                splittedbipwords),
+                            // New set of input fields for 13-16
+                            buildInputFields(
+                                "13.", textControllers[12], focusNodes[12],
+                                "14.", textControllers[13], focusNodes[13],
+                                "15.", textControllers[14], focusNodes[14],
+                                "16.", textControllers[15], focusNodes[15],
+                                splittedbipwords),
+                            // New set of input fields for 17-20
+                            buildInputFields(
+                                "17.", textControllers[16], focusNodes[16],
+                                "18.", textControllers[17], focusNodes[17],
+                                "19.", textControllers[18], focusNodes[18],
+                                "20.", textControllers[19], focusNodes[19],
+                                splittedbipwords),
+                            // New set of input fields for 21-24
+                            buildInputFields(
+                                "21.", textControllers[20], focusNodes[20],
+                                "22.", textControllers[21], focusNodes[21],
+                                "23.", textControllers[22], focusNodes[22],
+                                "24.", textControllers[23], focusNodes[23],
+                                splittedbipwords),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: AppTheme.cardPadding,
+                      ),
+                      buildIndicator(pageController: _pageController, count: 6),
+                      SizedBox(
+                        height: AppTheme.cardPadding * 2,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: AppTheme.cardPadding * 2),
+                        child: LongButtonWidget(
+                          title: onLastPage ? "Confirm Key" : "Next",
+                          onTap: onLastPage ? triggerCheck : nextPageFunction,
+                          state: (widget.mnemonicController!= null && widget.mnemonicController!.isLoadingSignUp) ? ButtonState.loading : ButtonState.idle,
+                        ),
+                      ),
+                      // Container(
+                      //   margin: EdgeInsets.only(top: AppTheme.cardPadding),
+                      //   decoration: BoxDecoration(
+                      //     border: Border.all(
+                      //       color: AppTheme.white60,
+                      //       width: 2,
+                      //     ),
+                      //     borderRadius: AppTheme.cardRadiusCircular,
+                      //   ),
+                      //   child: SizedBox(
+                      //     height: 0,
+                      //     width: 65,
+                      //   ),
+                      // ),
+                      // Container(
+                      //   margin: EdgeInsets.only(
+                      //       top: AppTheme.cardPadding,
+                      //       bottom: AppTheme.cardPadding),
+                      //   child: GestureDetector(
+                      //     onTap: () {
+                      //       Logs().w("Skip at own risk pressed");
+                      //       //context.go("/pinverification");
+                      //       widget.mnemonicController.signUp();
+                      //     },
+                      //     child: Text(
+                      //       "Skip at own risk",
+                      //       style: Theme.of(context).textTheme.bodyMedium,
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          
+      
 
   }
 
@@ -198,7 +185,7 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
       FocusNode _focusNode4,
       List<String> splittedbipwords,
       ) {
-    return MnemonicPage(text1: text1, text2: text2, text3: text3, text4: text4, textController1: _textController1, textController2: _textController2, textController3: _textController3, textController4: _textController4, focusNode1: _focusNode1, focusNode2: _focusNode2, focusNode3: _focusNode3, focusNode4: _focusNode4, splittedbipwords: splittedbipwords);
+    return MnemonicPage(text1: text1, text2: text2, text3: text3, text4: text4, textController1: _textController1, textController2: _textController2, textController3: _textController3, textController4: _textController4, focusNode1: _focusNode1, focusNode2: _focusNode2, focusNode3: _focusNode3, focusNode4: _focusNode4, splittedbipwords: splittedbipwords, moveToNext: moveToNext);
   }
 
   void moveToNext() async {

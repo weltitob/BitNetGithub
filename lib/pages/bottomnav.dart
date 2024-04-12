@@ -174,7 +174,7 @@ class _BottomNavState extends State<BottomNav> {
                                   Icon(
                                     item['icon'] as IconData, // <--- Here
                                     color: widget.routerState.fullPath != null && widget.routerState.fullPath!
-                                        .contains(item['route'] as String)
+                                        .contains((item['route'] as String).split('/')[1])
                                         ? AppTheme.colorBitcoin
                                         : Theme.of(context).iconTheme.color?.withOpacity(0.5),
                                     size: AppTheme.cardPadding,

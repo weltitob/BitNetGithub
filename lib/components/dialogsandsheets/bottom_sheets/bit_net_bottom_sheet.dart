@@ -49,7 +49,7 @@ Future<T?>  BitNetBottomSheet<T>(
             ),
             SizedBox(height: AppTheme.elementSpacing * 0.75),
             Container(
-              height: height ?? AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
+              height: height != null ? (height - AppTheme.cardPadding*3): AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.background,
                 borderRadius: BorderRadius.only(
