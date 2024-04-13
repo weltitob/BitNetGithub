@@ -70,12 +70,14 @@ class _FormTextFieldState extends State<FormTextField> {
   }
 
   void _isinsideList() {
-    if (widget.isBIPField) {
+    if (widget.isBIPField && widget.controller != null) {
       isInsideList = widget.bipwords
               ?.any((bipword) => (bipword == widget.controller?.text)) ??
           false;
+      List<String> matches = widget.bipwords?.where((s) {return s.startsWith(widget.controller!.text);}).toList() ?? [];
+      List<String> longestMatches = findLongestWords(matches);
       setState(() {
-        if (isInsideList && !movedToNext) {
+        if (isInsideList && !movedToNext && (longestMatches.contains(widget.controller!.text))) {
           print("should changefocustonext");
           widget.changefocustonext?.call();
           movedToNext = true;
@@ -85,7 +87,21 @@ class _FormTextFieldState extends State<FormTextField> {
       });
     }
   }
+List<String> findLongestWords(List<String> words) {
+  int maxLength = 0;
+  List<String> longestWords = [];
 
+  for (String word in words) {
+    if (word.length > maxLength) {
+      maxLength = word.length;
+      longestWords = [word]; // Reset the list with a single longest word
+    } else if (word.length == maxLength) {
+      longestWords.add(word); // Add another longest word if found
+    }
+  }
+
+  return longestWords;
+}
   @override
   Widget build(BuildContext context) {
     return Container(
