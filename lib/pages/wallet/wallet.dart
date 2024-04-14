@@ -52,8 +52,8 @@ class WalletController extends State<Wallet> {
           type: TransactionType.lightning,
           status: TransactionStatus.confirmed,
           direction: TransactionDirection.received,
-          receiver: receivedInvoice.paymentRequest,
-          txHash: receivedInvoice.rHash,
+          receiver: receivedInvoice.paymentRequest!,
+          txHash: receivedInvoice.rHash!,
         ));
       } else {
         Logs().w("Invoice received but not settled yet: ${receivedInvoice.settled}");

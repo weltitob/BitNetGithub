@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtrans
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/walletkit/finalizepsbtresponse.dart';
 import 'package:bitnet/models/bitcoin/walletkit/fundpsbtresponse.dart';
 import 'package:bitnet/models/bitcoin/walletkit/input.dart';
@@ -14,6 +15,7 @@ import 'package:bitnet/models/bitcoin/walletkit/rawtransactiondata.dart';
 import 'package:bitnet/models/bitcoin/walletkit/transactiondata.dart';
 import 'package:bitnet/models/bitcoin/walletkit/utxorequest.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
 import 'package:flutter/material.dart';
@@ -199,25 +201,39 @@ class SendController extends State<Send> {
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
-        if(sendType == SendType.Invoice){
+        if (sendType == SendType.Invoice) {
           final amountInSat = double.parse(moneyController.text) * 100000000;
-          dynamic restResponse = await sendPaymentV2(bitcoinReceiverAdress, amountInSat);
+          List<String> invoiceStrings = [bitcoinReceiverAdress]; // Assuming you want to send a list containing a single invoice for now
 
-          setState(() {
-            isFinished = true;
-          });
-
-          if (restResponse.statusCode == "success") {
-            // Display a success message and navigate to the bottom navigation bar
-            GoRouter.of(context).pushNamed("/wallet");
-            context.go("/wallet");
-          } else {
-            GoRouter.of(context).pushNamed("/wallet");
-            setState(() {
-              // Display an error message if the cloud function failed and set isFinished to false
-              isFinished = false;
-            });
-          }
+          Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings);
+          paymentStream.listen(
+                  (RestResponse response) {
+                setState(() {
+                  isFinished = true; // Assuming you might want to update UI on each response
+                });
+                if (response.statusCode == "success") {
+                  // Handle success
+                  showOverlay(context, "Payment successful!");
+                  GoRouter.of(context).pushNamed("/wallet");
+                } else {
+                  // Handle error
+                  showOverlay(context, "Payment failed: ${response.message}");
+                  setState(() {
+                    isFinished = false; // Keep the user on the same page to possibly retry or show error
+                  });
+                }
+              },
+              onError: (error) {
+                setState(() {
+                  isFinished = false;
+                });
+                showOverlay(context, "An error occurred: $error");
+              },
+              onDone: () {
+                // Handle stream completion if necessary
+              },
+              cancelOnError: true // Cancel the subscription upon first error
+          );
         }
 
         else if(sendType == SendType.OnChain){

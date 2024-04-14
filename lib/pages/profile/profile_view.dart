@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/settings_bottom_sheet/settings_bottom_sheet.dart';
@@ -119,7 +120,8 @@ class ProfileView extends StatelessWidget {
                     color: Colors.black,
                     boxShadow: [AppTheme.boxShadowProfile],
                     image: DecorationImage(
-                      image: NetworkImage(controller.userData.backgroundImageUrl),
+                      image:
+                          NetworkImage(controller.userData.backgroundImageUrl),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
                           Colors.black.withOpacity(0.25), BlendMode.dstATop),
@@ -135,11 +137,11 @@ class ProfileView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           controller.currentview == 2
-                              ? buildCountColumn(
-                                  context, controller.followingCount, 'Following')
+                              ? buildCountColumn(context,
+                                  controller.followingCount, 'Following')
                               : controller.userData.showFollowers
-                                  ? buildCountColumn(
-                                      context, controller.followingCount, 'Following')
+                                  ? buildCountColumn(context,
+                                      controller.followingCount, 'Following')
                                   : Container(
                                       width: 100,
                                     ),
@@ -161,10 +163,10 @@ class ProfileView extends StatelessWidget {
                                           true,
                                         ],
                                         actions: [
-                                          (){},
-                                          (){},
-                                          (){},
-                                          (){},
+                                          () {},
+                                          () {},
+                                          () {},
+                                          () {},
                                         ],
                                         images: [
                                           'assets/images/bitcoin.png',
@@ -183,7 +185,12 @@ class ProfileView extends StatelessWidget {
                                     },
                               child: Stack(
                                 children: [
-                                  buildImage(context, controller.userData.profileImageUrl),
+                                  Avatar(
+                                    mxContent: Uri.parse(
+                                        controller.userData.profileImageUrl),
+                                    size: 120,
+                                    type: profilePictureType.lightning,
+                                  ),
                                   Positioned(
                                     bottom: 0,
                                     right: 4,
@@ -197,11 +204,11 @@ class ProfileView extends StatelessWidget {
                             width: AppTheme.elementSpacing,
                           ),
                           controller.currentview == 2
-                              ? buildCountColumn(
-                                  context, controller.followerCount, 'Followers')
+                              ? buildCountColumn(context,
+                                  controller.followerCount, 'Followers')
                               : controller.userData.showFollowers
-                                  ? buildCountColumn(
-                                      context, controller.followerCount, 'Followers')
+                                  ? buildCountColumn(context,
+                                      controller.followerCount, 'Followers')
                                   : Container(
                                       width: 100,
                                     ),
@@ -238,11 +245,13 @@ class ProfileView extends StatelessWidget {
               child: IconButton(
                   color: AppTheme.white90,
                   onPressed: () {
-                      controller.showFollwers = !controller.showFollwers;
-                      controller.updateShowFollowers(controller.showFollwers);
+                    controller.showFollwers = !controller.showFollwers;
+                    controller.updateShowFollowers(controller.showFollwers);
                   },
                   icon: Icon(
-                    controller.showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
+                    controller.showFollwers
+                        ? Icons.remove_red_eye_rounded
+                        : Icons.cancel,
                   )),
             )
           : Container(),
@@ -258,11 +267,13 @@ class ProfileView extends StatelessWidget {
               child: IconButton(
                   color: AppTheme.white90,
                   onPressed: () {
-                      controller.showFollwers = ! controller.showFollwers;
-                      controller.updateShowFollowers(controller.showFollwers);
+                    controller.showFollwers = !controller.showFollwers;
+                    controller.updateShowFollowers(controller.showFollwers);
                   },
                   icon: Icon(
-                    controller.showFollwers ? Icons.remove_red_eye_rounded : Icons.cancel,
+                    controller.showFollwers
+                        ? Icons.remove_red_eye_rounded
+                        : Icons.cancel,
                   )),
             )
           : Container(),
@@ -284,18 +295,20 @@ class ProfileView extends StatelessWidget {
               iconData: Icons.brightness_low_rounded,
               onTap: () {
                 BitNetBottomSheet(
-                  height: MediaQuery.of(context).size.height * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.8,
                     context: context,
                     borderRadius: AppTheme.borderRadiusBig,
                     child: ChangeNotifierProvider(
                       create: (context) => SettingsProvider(),
                       child: StatefulBuilder(
-                        builder: (BuildContext context, StateSetter setModalState) {
+                        builder:
+                            (BuildContext context, StateSetter setModalState) {
                           return Container(
                             // Set the desired height
                             //height: MediaQuery.of(context).size.height * 0.8, // 80% of screen height
                             decoration: BoxDecoration(
-                              color: Theme.of(context).canvasColor, // Add a background color here
+                              color: Theme.of(context)
+                                  .canvasColor, // Add a background color here
                               borderRadius: new BorderRadius.only(
                                 topLeft: AppTheme.cornerRadiusBig,
                                 topRight: AppTheme.cornerRadiusBig,
@@ -311,8 +324,7 @@ class ProfileView extends StatelessWidget {
                           );
                         },
                       ),
-                    )
-                );
+                    ));
                 //showSettingsBottomSheet(context: context);
               },
             )),
@@ -407,29 +419,6 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget buildCenterWidget(BuildContext context) {
-   // final userData = Provider.of<UserData>(context, listen: false);
-    // final userData = UserData(
-    //     backgroundImageUrl: "backgroundImageUrl",
-    //     isPrivate: true,
-    //     showFollowers: true,
-    //     did: "did",
-    //     displayName: "displayName",
-    //     bio: "bio",
-    //     customToken: "customToken",
-    //     username: "username",
-    //     profileImageUrl: "profileImageUrl",
-    //     createdAt: timestamp,
-    //     updatedAt: timestamp,
-    //     isActive: true,
-    //     dob: 1,
-    //     mainWallet: UserWallet(
-    //         walletAddress: "walletAddress",
-    //         walletType: "walletType",
-    //         walletBalance: "walletBalance",
-    //         privateKey: "privateKey",
-    //         userdid: "userdid"),
-    //     wallets: []);
-
     final String currentUserId = controller.profileId;
 
     //bool isProfileOwner = currentUserId == userData.did;
@@ -441,9 +430,7 @@ class ProfileView extends StatelessWidget {
         width: AppTheme.cardPadding * 10,
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusBigger,
-          boxShadow: [
-            AppTheme.boxShadowProfile
-          ],
+          boxShadow: [AppTheme.boxShadowProfile],
         ),
         child: GlassContainer(
           borderThickness: 1.5, // remove border if not active
@@ -471,14 +458,15 @@ class ProfileView extends StatelessWidget {
               ),
               GestureDetector(
                   onTap: () {
-                    controller.currentview = 2; },
+                    controller.currentview = 2;
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         // color: Colors.greenAccent[700],
                         borderRadius: AppTheme.cardRadiusSmall),
                     child: Icon(
                       Icons.edit,
-                     // isProfileOwner ? Icons.edit : Icons.person_add_rounded,
+                      // isProfileOwner ? Icons.edit : Icons.person_add_rounded,
                       size: AppTheme.iconSize,
                       color: controller.currentview == 2
                           ? Theme.of(context).colorScheme.onSecondaryContainer
@@ -489,47 +477,6 @@ class ProfileView extends StatelessWidget {
                     ),
                   )),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildImage(BuildContext context, String imagePath) {
-    return Container(
-      width: 120,
-      height: 120,
-      decoration: BoxDecoration(
-        gradient: controller.currentview != 2
-            ? LinearGradient(colors: [
-                Color.fromRGBO(199, 77, 77, 1.0),
-                Color.fromRGBO(242, 169, 0, 1.0),
-              ])
-            : LinearGradient(colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary
-              ]),
-        borderRadius: AppTheme.cardRadiusBigger * 1.5,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.elementSpacing / 4),
-        child: ClipRRect(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: AppTheme.cardRadiusBigger * 1.5,
-              child: Ink(
-                decoration: BoxDecoration(
-                  borderRadius: AppTheme.cardRadiusBigger * 1.5,
-                  image: DecorationImage(
-                    image: NetworkImage(imagePath == ''
-                        ? 'http://ev-evgym.at/wp-content/uploads/2018/12/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'
-                        : imagePath),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-              ),
-            ),
           ),
         ),
       ),
@@ -573,7 +520,9 @@ class ProfileView extends StatelessWidget {
               ),
             );
 
-  Widget buildUserInformation(BuildContext context, String username, String displayName) => Padding(
+  Widget buildUserInformation(
+          BuildContext context, String username, String displayName) =>
+      Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
         child: Column(
@@ -606,8 +555,9 @@ class ProfileView extends StatelessWidget {
                   fillColor: Colors.transparent,
                   isDense: true,
                   border: InputBorder.none,
-                  errorText:
-                  controller.displayNameValid ? null : "Couldn't change username"),
+                  errorText: controller.displayNameValid
+                      ? null
+                      : "Couldn't change username"),
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall!

@@ -90,7 +90,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                       '*****',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headlineLarge,
+                                          .displaySmall,
                                     )
                                   : GestureDetector(
                                       onTap: () => coin.setCurrencyType(
@@ -106,7 +106,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                         .totalBalanceStr,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headlineLarge,
+                                                        .displaySmall,
                                                   ),
                                                   // const SizedBox(
                                                   //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
@@ -121,7 +121,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 "${currencyEquivalent}${getCurrency(currency!)}",
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .headlineLarge,
+                                                    .displaySmall,
                                               ),
                                       ));
                             }),

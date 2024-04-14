@@ -7,8 +7,10 @@ import 'package:matrix/matrix.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/string_color.dart';
 import 'package:bitnet/pages/matrix/widgets/mxc_image.dart';
 
+enum profilePictureType { none, lightning, onchain }
 
 class Avatar extends StatelessWidget {
+  final profilePictureType? type;
   final String? profileId;
   final Uri? mxContent;
   final String? name;
@@ -19,6 +21,7 @@ class Avatar extends StatelessWidget {
   final double fontSize;
 
   const Avatar({
+    this.type = profilePictureType.none,
     this.mxContent,
     this.name,
     this.size = defaultSize,
@@ -46,19 +49,14 @@ class Avatar extends StatelessWidget {
 
     final textWidget = Center(
       child:
-
         Icon(Icons.person_2_rounded, size: size / 2, color: Colors.white,),
-
-      // Text(
-      //   fallbackLetters,
-      //   style: TextStyle(
-      //     color: noPic ? Colors.white : null,
-      //     fontSize: fontSize,
-      //   ),
-      // ),
-
     );
     final borderRadius = BorderRadius.circular(size / 2.5);
+
+    // Apply the orange gradient when profilePictureType is either onchain or lightning
+    final isSpecialType = type == profilePictureType.onchain || type == profilePictureType.lightning;
+    //final containerColor = isSpecialType ? Colors.orange : (noPic ? name?.lightColorAvatar : Theme.of(context).secondaryHeaderColor);
+    final borderPadding =  isSpecialType ?  size / 30 : 0.0;
 
     final container = ClipRRect(
       borderRadius: borderRadius,
@@ -67,20 +65,34 @@ class Avatar extends StatelessWidget {
         child: Container(
           width: size,
           height: size,
-          color: noPic
-              ? name?.lightColorAvatar
-              : Theme.of(context).secondaryHeaderColor, //getRandomColor(), //getRandomColor(), //Theme.of(context).secondaryHeaderColor
-          child: noPic
-              ? textWidget
-              : MxcImage(
-                  key: Key(mxContent.toString()),
-                  uri: mxContent,
-                  fit: BoxFit.cover,
-                  width: size,
-                  height: size,
-                  placeholder: (_) => textWidget,
-                  cacheKey: mxContent.toString(),
-                ),
+          decoration: BoxDecoration(
+           gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                isSpecialType ? AppTheme.colorBitcoin : Theme.of(context).secondaryHeaderColor,
+                isSpecialType ? AppTheme.colorPrimaryGradient : Theme.of(context).secondaryHeaderColor,
+              ],
+            ),
+          ),
+          child: Container(
+            margin: EdgeInsets.all(borderPadding),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular((size - borderPadding * 2) / 2.5,)),
+              color: Theme.of(context).secondaryHeaderColor,
+            ),
+            child: noPic
+                ? textWidget
+                : MxcImage(
+                    key: Key(mxContent.toString()),
+                    uri: mxContent,
+                    fit: BoxFit.cover,
+                    width: size,
+                    height: size,
+                    placeholder: (_) => textWidget,
+                    cacheKey: mxContent.toString(),
+                  ),
+          ),
         ),
       ),
     );
