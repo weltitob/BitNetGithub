@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 
 Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings) async* {
-  const String restHost = 'mybitnet.com:8443';  // Update the host as needed
+  String restHost = AppTheme.baseUrlLightningTerminal;
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon';  // Update the path to the macaroon file
 
   ByteData byteData = await loadMacaroonAsset();

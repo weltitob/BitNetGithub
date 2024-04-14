@@ -2,12 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:http/http.dart' as http;
 
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
 
-  const String restHost = 'mybitnet.com:8443'; // Update the host as needed
+  String restHost = AppTheme.baseUrlLightningTerminal;
   const String macaroonPath = './assets/keys/tapd_admin.macaroon'; // Update the path to the macaroon file
 
   // Read the macaroon file and convert it to a hexadecimal string

@@ -10,6 +10,8 @@ abstract class AppTheme {
 
   static IconData satoshiIcon = IconData(0x0021, fontFamily: 'SatoshiSymbol');
 
+  static String baseUrlLightningTerminal = 'mybitnet.com:8443';
+
   static String coinGeckoApiKey = 'CG-12UjARcpudDsAw5CKgGxNRqe';
   static String _applicationName = 'bitnet';
   static String get applicationName => _applicationName;
