@@ -206,16 +206,16 @@ class _WalletScreenState extends State<WalletScreen> {
                       context.go('/wallet/send');
                     },
                       //image: "assets/images/friends.png",
-                      width: AppTheme.cardPadding * 3.75,
-                      height: AppTheme.cardPadding * 3.75,
+                      width: AppTheme.cardPadding * 3.85,
+                      height: AppTheme.cardPadding * 3.85,
                       fallbackIcon: Icons.arrow_upward_rounded,
                     ),
                     BitNetImageWithTextContainer("Receive", () {
                       context.go('/wallet/receive');
                     },
                       //image: "assets/images/key_removed_bck.png",
-                      width: AppTheme.cardPadding * 3.75,
-                      height: AppTheme.cardPadding * 3.75,
+                      width: AppTheme.cardPadding * 3.85,
+                      height: AppTheme.cardPadding * 3.85,
                       fallbackIcon: Icons.arrow_downward_rounded,
                     ),
                     BitNetImageWithTextContainer(
@@ -224,8 +224,8 @@ class _WalletScreenState extends State<WalletScreen> {
                       context.go("/wallet/loop_screen");
                     },
                       //image: "assets/images/key_removed_bck.png",
-                    width: AppTheme.cardPadding * 3.5,
-                    height: AppTheme.cardPadding * 3.5,
+                    width: AppTheme.cardPadding * 3.85,
+                    height: AppTheme.cardPadding * 3.85,
                     fallbackIcon: Icons.sync_rounded,
                     ),
                     // LongButtonWidget(

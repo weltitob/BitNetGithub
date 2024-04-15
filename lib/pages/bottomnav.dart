@@ -11,7 +11,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -98,9 +97,6 @@ class _BottomNavState extends State<BottomNav> {
       body: Stack(
         children: [
           widget.child,
-          //Body content will be managed by VRouter based on the current route
-          // if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
-          //     !context.vRouter.path.contains(kNftProductScreenRoute))
             Stack(alignment: Alignment.bottomCenter, children: <Widget>[
               IgnorePointer(
                 child: Padding(
