@@ -39,7 +39,7 @@ class GlassContainer extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 Colors.white.withOpacity(opacity + 0.1),
-                Colors.white.withOpacity(opacity - 0.05),
+                Colors.white.withOpacity(opacity - 0.025),
               ],
             ),
             borderRadius: borderRadius,

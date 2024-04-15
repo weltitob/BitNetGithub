@@ -46,62 +46,49 @@ class BitNetImageWithTextContainer extends StatelessWidget {
         borderRadius: borderRadius,
         child: ClipRRect(
           borderRadius: borderRadius,
-          child: ColorFiltered(
-            colorFilter: isActive
-                ? ColorFilter.mode(
-                    Colors.transparent,
-                    BlendMode.color,
-                  )
-                : ColorFilter.mode(
-                    Colors.black.withOpacity(0.5),
-                    BlendMode.color,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              boxShadow: [AppTheme.boxShadowProfile],
+            ),
+            child: GlassContainer(
+              borderThickness: isActive ? 1 : 0,
+              borderRadius: borderRadius,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: height / 40,
+                    ),
+                    height: width / 1.5,
+                    width: width / 1.5,
+                    decoration: BoxDecoration(
+                      borderRadius: borderRadius / 1.5,
+                      boxShadow: [AppTheme.boxShadowSmall],
+                    ),
+                    child: image != null
+                        ? Image.asset(image!)
+                        : Icon(
+                            fallbackIcon ?? Icons.error,
+                            size: AppTheme.cardPadding * 1.75,
+                            color: AppTheme.white80,
+                          ),
                   ),
-            child: Container(
-              width: width,
-              height: height,
-              decoration: BoxDecoration(
-                borderRadius: borderRadius,
-                boxShadow: [AppTheme.boxShadowProfile],
-              ),
-              child: GlassContainer(
-                borderThickness: isActive ? 1.5 : 0,
-                blur: 50,
-                opacity: 0.1,
-                borderRadius: borderRadius,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: height / 40,
-                      ),
-                      height: width / 1.5,
-                      width: width / 1.5,
-                      decoration: BoxDecoration(
-                        borderRadius: borderRadius / 1.5,
-                        boxShadow: [AppTheme.boxShadowSmall],
-                      ),
-                      child: image != null
-                          ? Image.asset(image!)
-                          : Icon(
-                              fallbackIcon ?? Icons.error,
-                              size: AppTheme.cardPadding * 1.75,
-                              color: AppTheme.white80,
-                            ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      right: AppTheme.elementSpacing,
+                      left: AppTheme.elementSpacing,
                     ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        right: AppTheme.elementSpacing,
-                        left: AppTheme.elementSpacing,
-                      ),
-                      child: Text(text,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center, style: textstyle),
-                    ),
-                  ],
-                ),
+                    child: Text(text,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center, style: textstyle),
+                  ),
+                ],
               ),
             ),
           ),

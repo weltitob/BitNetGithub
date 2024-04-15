@@ -98,53 +98,53 @@ class _BottomNavState extends State<BottomNav> {
       body: Stack(
         children: [
           widget.child,
-          // Body content will be managed by VRouter based on the current route
+          //Body content will be managed by VRouter based on the current route
           // if (!context.vRouter.path.contains(kCollectionScreenRoute) &&
           //     !context.vRouter.path.contains(kNftProductScreenRoute))
-          //   Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-          //     IgnorePointer(
-          //       child: Padding(
-          //         padding:
-          //             const EdgeInsets.only(top: AppTheme.cardPadding * 30),
-          //         child: Container(
-          //           height: MediaQuery.of(context).size.height -
-          //               AppTheme.cardPadding * 30,
-          //           decoration: BoxDecoration(
-          //             gradient: LinearGradient(
-          //               begin: Alignment.topCenter,
-          //               end: Alignment.bottomCenter,
-          //               // Use color stops to create an "exponential" effect
-          //               stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
-          //               colors: [
-          //                 Theme.of(context)
-          //                     .colorScheme
-          //                     .background
-          //                     .withOpacity(0.0001),
-          //                 Theme.of(context)
-          //                     .colorScheme
-          //                     .background
-          //                     .withOpacity(0.33),
-          //                 Theme.of(context)
-          //                     .colorScheme
-          //                     .background
-          //                     .withOpacity(0.66),
-          //                 Theme.of(context)
-          //                     .colorScheme
-          //                     .background
-          //                     .withOpacity(0.99),
-          //                 // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
-          //                 // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
-          //                 // Theme.of(context).colorScheme.background,
-          //                 // Theme.of(context).colorScheme.background,
-          //                 Theme.of(context).colorScheme.background,
-          //                 Theme.of(context).colorScheme.background
-          //               ],
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     )
-          //   ]),
+            Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+              IgnorePointer(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(top: AppTheme.cardPadding * 30),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height -
+                        AppTheme.cardPadding * 30,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        // Use color stops to create an "exponential" effect
+                        stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
+                        colors: [
+                          Theme.of(context)
+                              .colorScheme
+                              .background
+                              .withOpacity(0.0001),
+                          Theme.of(context)
+                              .colorScheme
+                              .background
+                              .withOpacity(0.33),
+                          Theme.of(context)
+                              .colorScheme
+                              .background
+                              .withOpacity(0.66),
+                          Theme.of(context)
+                              .colorScheme
+                              .background
+                              .withOpacity(0.99),
+                          // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
+                          // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
+                          // Theme.of(context).colorScheme.background,
+                          // Theme.of(context).colorScheme.background,
+                          Theme.of(context).colorScheme.background,
+                          Theme.of(context).colorScheme.background
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ]),
 
           if (widget.routerState.fullPath!= null && (widget.routerState.fullPath == '/feed' || widget.routerState.fullPath == '/rooms' ||
               widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')) || widget.routerState.fullPath != '/wallet/bitcoinscreen')
@@ -157,33 +157,32 @@ class _BottomNavState extends State<BottomNav> {
                   right: AppTheme.cardPadding * 1,
                 ),
                 child: GlassContainer(
+                  // borderRadius: AppTheme.cardRadiusBig,
                   child: Container(
-                    height: AppTheme.cardPadding * 2.25,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.elementSpacing * 1.25,
-                          vertical: AppTheme.elementSpacing * 1.25),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          for (var item in navItems)
-                            InkWell(
-                              onTap: () => onTabTapped(item['route'] as String),
-                              child: Column(
-                                children: [
-                                  Icon(
-                                    item['icon'] as IconData, // <--- Here
-                                    color: widget.routerState.fullPath != null && widget.routerState.fullPath!
-                                        .contains((item['route'] as String).split('/')[1])
-                                        ? AppTheme.colorBitcoin
-                                        : Theme.of(context).iconTheme.color?.withOpacity(0.5),
-                                    size: AppTheme.cardPadding,
-                                  ),
-                                ],
-                              ),
+                    height: AppTheme.cardPadding * 2.5,
+                    //alignment: Alignment.center,
+                    margin: EdgeInsets.only(
+                      left: AppTheme.elementSpacing * 1,
+                      right: AppTheme.elementSpacing * 1,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        for (var item in navItems)
+                          InkWell(
+                            onTap: () => onTabTapped(item['route'] as String),
+                            child: Icon(
+                              item['icon'] as IconData, // <--- Here
+                              color: widget.routerState.fullPath != null && widget.routerState.fullPath!
+                                  .contains((item['route'] as String).split('/')[1])
+                                  ? AppTheme.colorBitcoin
+                                  : Theme.of(context).iconTheme.color?.withOpacity(0.5),
+                              size: AppTheme.cardPadding,
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
                   ),
                 ),

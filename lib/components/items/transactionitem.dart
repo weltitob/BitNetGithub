@@ -48,7 +48,6 @@ class _TransactionItemState extends State<TransactionItem> {
           borderRadius: AppTheme.cardRadiusBig,
           child: Container(
             height: AppTheme.cardPadding * 3,
-            color: lighten(Theme.of(context).colorScheme.background, 10),
             child: Stack(
               children: [
                 Padding(
@@ -84,14 +83,7 @@ class _TransactionItemState extends State<TransactionItem> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Container(
-                                //   width: AppTheme.cardPadding * 3,
-                                //   child: Text(
-                                //     widget.receiver,
-                                //     overflow: TextOverflow.ellipsis,
-                                //     style: Theme.of(widget.context).textTheme.bodySmall,
-                                //   ),
-                                // ),
+
                                 Text(
                                   formattedDate,
                                   overflow: TextOverflow.ellipsis,
