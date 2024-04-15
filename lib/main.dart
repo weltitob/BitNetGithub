@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
-import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/user/userdata.dart';

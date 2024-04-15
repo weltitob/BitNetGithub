@@ -151,8 +151,8 @@ class _BottomNavState extends State<BottomNav> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(              bottom: AppTheme.cardPadding,
-
+                padding: EdgeInsets.only(
+                  bottom: AppTheme.cardPadding,
                   left: AppTheme.cardPadding * 1,
                   right: AppTheme.cardPadding * 1,
                 ),
