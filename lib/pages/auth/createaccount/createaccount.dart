@@ -141,8 +141,6 @@ class CreateAccountController extends State<CreateAccount> {
   }
 
 
-
-
   @override
   Widget build(BuildContext context) {
     processParameters(context);
