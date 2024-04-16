@@ -1,6 +1,7 @@
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class BitcoinCardInformationScreen extends StatefulWidget {
   const BitcoinCardInformationScreen({super.key});
@@ -15,6 +16,9 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
     return bitnetScaffold(
         body: Container(),
         appBar: bitnetAppBar(
+          onTap: (){
+            context.pop();
+          },
           text: "Bitcoin Card Information",
           context: context,
         ),

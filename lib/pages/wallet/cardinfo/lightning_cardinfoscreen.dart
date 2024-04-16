@@ -1,6 +1,7 @@
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LightningCardInformationScreen extends StatefulWidget {
   const LightningCardInformationScreen({super.key});
@@ -17,6 +18,9 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
         appBar: bitnetAppBar(
           text: "Lightning Card Information",
           context: context,
+          onTap: () {
+            context.pop();
+          },
         ),
         context: context
     );
