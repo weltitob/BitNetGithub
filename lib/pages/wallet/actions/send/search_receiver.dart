@@ -17,6 +17,8 @@ class SearchReceiver extends StatelessWidget {
 
   const SearchReceiver({super.key, required this.controller});
 
+
+
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
@@ -64,7 +66,7 @@ class SearchReceiver extends StatelessWidget {
                     controller: controller.bitcoinReceiverAdressController,
                     onFieldSubmitted: (value) {
                       Logs().w("Adress: $value");
-                      QRScannerController().onQRCodeScanned(value, context);
+                      controller.onQRCodeScanned(value, context);
                       //controller.validateAdress(value);
                     },
                     autofocus: false,
