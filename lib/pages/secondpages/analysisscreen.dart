@@ -6,10 +6,16 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 
 
-class AnalysisWidget extends StatelessWidget {
+class AnalysisScreen extends StatefulWidget {
 
+  @override
+  State<AnalysisScreen> createState() => _AnalysisScreenState();
+}
+
+class _AnalysisScreenState extends State<AnalysisScreen> {
   //Cloudservices
   IEXCloudServicePrice iexcloudprice = IEXCloudServicePrice();
+
   IEXCloudServiceAnalysts iexcloudanalysts = IEXCloudServiceAnalysts();
 
   @override
@@ -289,7 +295,6 @@ class AnalysisWidget extends StatelessWidget {
       ),
     );
   }
-
 
   Widget ChildbuildAnalysis2(String text, double assesment) {
     return Row(

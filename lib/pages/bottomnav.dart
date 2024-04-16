@@ -97,50 +97,51 @@ class _BottomNavState extends State<BottomNav> {
       body: Stack(
         children: [
           widget.child,
-            Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-              IgnorePointer(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(top: AppTheme.cardPadding * 30),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height -
-                        AppTheme.cardPadding * 30,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        // Use color stops to create an "exponential" effect
-                        stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
-                        colors: [
-                          Theme.of(context)
-                              .colorScheme
-                              .background
-                              .withOpacity(0.0001),
-                          Theme.of(context)
-                              .colorScheme
-                              .background
-                              .withOpacity(0.33),
-                          Theme.of(context)
-                              .colorScheme
-                              .background
-                              .withOpacity(0.66),
-                          Theme.of(context)
-                              .colorScheme
-                              .background
-                              .withOpacity(0.99),
-                          // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
-                          // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
-                          // Theme.of(context).colorScheme.background,
-                          // Theme.of(context).colorScheme.background,
-                          Theme.of(context).colorScheme.background,
-                          Theme.of(context).colorScheme.background
-                        ],
-                      ),
+
+          if (widget.routerState.fullPath!= null && (widget.routerState.fullPath == '/feed' || widget.routerState.fullPath == '/rooms' ||
+              widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')) || widget.routerState.fullPath != '/wallet/bitcoinscreen')
+            IgnorePointer(
+              child: Padding(
+                padding:
+                const EdgeInsets.only(top: AppTheme.cardPadding * 32),
+                child: Container(
+                  height: MediaQuery.of(context).size.height -
+                      AppTheme.cardPadding * 32,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      // Use color stops to create an "exponential" effect
+                      stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
+                      colors: [
+                        Theme.of(context)
+                            .colorScheme
+                            .background
+                            .withOpacity(0.0001),
+                        Theme.of(context)
+                            .colorScheme
+                            .background
+                            .withOpacity(0.33),
+                        Theme.of(context)
+                            .colorScheme
+                            .background
+                            .withOpacity(0.66),
+                        Theme.of(context)
+                            .colorScheme
+                            .background
+                            .withOpacity(0.99),
+                        // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
+                        // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
+                        // Theme.of(context).colorScheme.background,
+                        // Theme.of(context).colorScheme.background,
+                        Theme.of(context).colorScheme.background,
+                        Theme.of(context).colorScheme.background
+                      ],
                     ),
                   ),
                 ),
-              )
-            ]),
+              ),
+            ),
 
           if (widget.routerState.fullPath!= null && (widget.routerState.fullPath == '/feed' || widget.routerState.fullPath == '/rooms' ||
               widget.routerState.fullPath == '/create' || widget.routerState.fullPath == '/wallet' || widget.routerState.fullPath!.contains('/profile')) || widget.routerState.fullPath != '/wallet/bitcoinscreen')

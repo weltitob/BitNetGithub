@@ -1,18 +1,10 @@
-//hashchart rate
-
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:bitnet/pages/secondpages/analystsassesment.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_echarts/flutter_echarts.dart' as echarts;
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 GlobalKey<_HashRealTimeValuesState> hashKey = GlobalKey<_HashRealTimeValuesState>();
@@ -20,6 +12,7 @@ String hashTrackBallValuePrice = "-----.--";
 String hashTrackBallValueTime = "${inital_time}";
 String hashTrackBallValueDate = "${inital_date}";
 String hashTrackBallValuePricechange = "+0";
+
 class HashrateChart extends StatefulWidget {
   List<ChartLine> chartData = []; // The fake data will be stored here
   List<Difficulty> difficulty = [];

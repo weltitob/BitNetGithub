@@ -8,12 +8,12 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class buildNews extends StatefulWidget {
+class NewsScreen extends StatefulWidget {
   @override
-  _buildNewsState createState() => _buildNewsState();
+  _NewsScreenState createState() => _NewsScreenState();
 }
 
-class _buildNewsState extends State<buildNews> {
+class _NewsScreenState extends State<NewsScreen> {
   List<Article> newslist = [];
   bool _loading = true;
 
@@ -99,68 +99,5 @@ class _buildNewsState extends State<buildNews> {
                   }),
             ),
           );
-  }
-}
-
-class NewsScreen extends StatefulWidget {
-  final String postUrl;
-  NewsScreen({required this.postUrl});
-
-  @override
-  _NewsScreenState createState() => _NewsScreenState();
-}
-
-class _NewsScreenState extends State<NewsScreen> {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        title: Text("NextNews"),
-        backgroundColor: lighten(AppTheme.colorBackground, 10),
-        elevation: 0.0,
-        automaticallyImplyLeading: false,
-        actions: [],
-      ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: WebView(
-          initialUrl: widget.postUrl,
-          onWebViewCreated: (WebViewController webViewController) {
-            _controller.complete(webViewController);
-          },
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: AppTheme.cardPadding),
-        child: FloatingActionButton.extended(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100.0),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          label: const Text('Zurück'),
-          elevation: 500,
-          icon: const Icon(Icons.arrow_back_rounded),
-          backgroundColor: Colors.purple.shade800,
-        ),
-      ),
-    );
-  }
-
-  Widget MyDivider3() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5, bottom: 5),
-      child: VerticalDivider(
-        thickness: 2,
-        width: 2,
-        color: Colors.grey,
-      ),
-    );
   }
 }

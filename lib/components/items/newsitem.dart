@@ -20,10 +20,7 @@ class NewsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => NewsScreen(
-              postUrl: posturl,
-            )));
+        print("Opening news article on the web implementation (clean)");
       },
       child: Container(
         height: AppTheme.cardPadding * 4,
