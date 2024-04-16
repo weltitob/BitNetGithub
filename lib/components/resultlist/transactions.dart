@@ -8,6 +8,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
@@ -15,6 +16,7 @@ import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -149,7 +151,11 @@ class _TransactionsState extends State<Transactions>
             size: AppTheme.cardPadding * 1.25,
             buttonType: ButtonType.transparent,
             iconData: FontAwesomeIcons.filter,
-            onTap: () {}),
+            onTap: () {
+              BitNetBottomSheet(
+                  context: context,
+                  child: WalletFilterScreen());
+            }),
       ),], onTap: (){Navigator.pop(context);},),
       body: ListView(children: combinedTransactions)
     ) : Container(
