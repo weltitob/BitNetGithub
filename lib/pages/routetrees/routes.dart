@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 import 'package:bitnet/pages/auth/getstartedscreen.dart';
 import 'package:bitnet/pages/auth/ionloadingscreen.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
-import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
 import 'package:bitnet/pages/auth/old_matrix/connect/connect_page.dart';
 import 'package:bitnet/pages/auth/pinverificationscreen.dart';
 import 'package:bitnet/pages/auth/restore/chooserestorescreen.dart';
@@ -27,9 +24,16 @@ import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
+import 'package:bitnet/pages/secondpages/analysisscreen.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
+import 'package:bitnet/pages/secondpages/hashrate/hashrate.dart';
+import 'package:bitnet/pages/secondpages/keymetrics/keymetricsscreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
+import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/unaccepted_block_transactions.dart';
+import 'package:bitnet/pages/secondpages/newsscreen.dart';
+import 'package:bitnet/pages/secondpages/transactionsscreen.dart';
+import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
 import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
@@ -135,6 +139,43 @@ class AppRoutes {
                   path: 'bitcoinscreen',
                   builder: _dynamicTransition == null ? (ctx,state) => const BitcoinScreen() : null,
                                 pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: const BitcoinScreen(), transitionsBuilder: _dynamicTransition!) : null,
+                  routes: [
+                    GoRoute(
+                      path: 'mempool',
+                      builder: _dynamicTransition == null ? (ctx,state) => const MempoolHome() : null,
+                      pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  const BlockTransactions(), transitionsBuilder: _dynamicTransition!) : null,
+                    ),
+                    GoRoute(
+                      path: 'hashrate',
+                      builder: _dynamicTransition == null ? (ctx,state) => const HashrateScreen() : null,
+                      pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  const BlockTransactions(), transitionsBuilder: _dynamicTransition!) : null,
+                    ),
+                    GoRoute(
+                      path: 'whales',
+                      builder: _dynamicTransition == null ? (ctx,state) => const WhaleBehaviour() : null,
+                      pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  const BlockTransactions(), transitionsBuilder: _dynamicTransition!) : null,
+                    ),
+                    GoRoute(
+                      path: 'keymetrics',
+                      builder: _dynamicTransition == null ? (ctx,state) => const KeyMetricsScreen() : null,
+                      pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  const BlockTransactions(), transitionsBuilder: _dynamicTransition!) : null,
+                    ),
+                    GoRoute(
+                      path: 'transactions',
+                      builder: _dynamicTransition == null ? (ctx,state) => const LastTransactionsScreen() : null,
+                      pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  const BlockTransactions(), transitionsBuilder: _dynamicTransition!) : null,
+                    ),
+                    GoRoute(
+                      path: 'analysts',
+                      builder: _dynamicTransition == null ? (ctx,state) => AnalysisScreen() : null,
+                      pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  const BlockTransactions(), transitionsBuilder: _dynamicTransition!) : null,
+                    ),
+                    GoRoute(
+                      path: 'news',
+                      builder: _dynamicTransition == null ? (ctx,state) => NewsScreen() : null,
+                      pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child:  const BlockTransactions(), transitionsBuilder: _dynamicTransition!) : null,
+                    ),
+                  ]
                 ),
                 GoRoute(
                   path: 'block_transactions',

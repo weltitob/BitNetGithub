@@ -23,7 +23,7 @@ class _RoundedContainerState extends State<RoundedContainer> {
       borderThickness: 1.5,
       blur: 50,
       opacity: 0.1,
-      borderRadius: AppTheme.cardRadiusMid,
+      borderRadius: AppTheme.cardRadiusBigger,
       child: Container(
         padding: widget.contentPadding ?? const EdgeInsets.only(
           top: AppTheme.cardPadding,

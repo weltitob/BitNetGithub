@@ -189,7 +189,7 @@ class _ChartWidgetState extends State<ChartWidget> {
               child: _loading
                   ? Center(
                       child: Container(
-                        height: AppTheme.cardPadding * 14,
+                        height: AppTheme.cardPadding * 16,
                         child: avatarGlow(
                           context,
                           Icons.currency_bitcoin,
@@ -213,7 +213,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     double _firstpriceexact = currentline.first.price;
 
     return SizedBox(
-      height: AppTheme.cardPadding * 14,
+      height: AppTheme.cardPadding * 16,
       child: SfCartesianChart(
           trackballBehavior: _trackballBehavior,
           onTrackballPositionChanging: (args) {
