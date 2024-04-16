@@ -15,6 +15,7 @@ import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:bitnet/components/items/balancecard.dart';
@@ -53,8 +54,19 @@ class _WalletScreenState extends State<WalletScreen> {
         BitcoinUnits.SAT);
 
     List<Container> cards = [
-      Container(child: BalanceCardLightning(controller: widget.controller)),
-      Container(child: BalanceCardBtc(controller: widget.controller)),
+      Container(
+        child: GestureDetector(
+          onTap: () {
+            context.go('/wallet/lightningcard');
+          },
+            child: BalanceCardLightning(controller: widget.controller)
+        ),
+      ),
+      Container(child: GestureDetector(
+          onTap: () {
+            context.go('/wallet/bitcoincard');
+          },
+          child: BalanceCardBtc(controller: widget.controller))),
     ];
 
     return bitnetScaffold(
@@ -311,6 +323,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
               ),
+              SizedBox(height: AppTheme.elementSpacing,),
               const SizedBox(height: AppTheme.elementSpacing),
               Transactions(),
             ],
@@ -320,7 +333,6 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
