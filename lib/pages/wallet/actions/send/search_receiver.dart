@@ -61,7 +61,6 @@ class SearchReceiver extends StatelessWidget {
                     onTapOutside: (value) {
                       // Unfocuses the input field when tapped outside of it
                     },
-                    maxLength: 40,
                     focusNode: controller.myFocusNodeAdress,
                     controller: controller.bitcoinReceiverAdressController,
                     onFieldSubmitted: (value) {
