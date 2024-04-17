@@ -300,7 +300,7 @@ class CardBackgroundOnchain extends StatelessWidget {
               stops: [0, 0.75],
               colors: [
                 Theme.of(context).colorScheme.secondaryContainer,
-                Theme.of(context).colorScheme.background,
+                Theme.of(context).colorScheme.secondary,
               ],
             ),
           ),
@@ -329,7 +329,7 @@ Widget paymentNetworkPicture(BuildContext context, String imageUrl) {
       height: AppTheme.cardPadding * 2,
       width: AppTheme.cardPadding * 2,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppTheme.cardPadding * 2),
+        borderRadius: AppTheme.cardRadiusCircular,
         color: Theme.of(context).colorScheme.background.withOpacity(0.25),
       ),
       child: Image.asset(

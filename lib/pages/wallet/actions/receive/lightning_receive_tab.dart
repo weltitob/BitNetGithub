@@ -12,6 +12,7 @@ import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
@@ -57,42 +58,51 @@ class LightningReceiveTab extends StatelessWidget {
           const SizedBox(
             height: AppTheme.cardPadding * 2,
           ),
-          SizedBox(
-            child: Center(
-              child: RepaintBoundary(
-                // The Qr code is generated from this widget's global key
-                key: controller.globalKeyQR,
-                child: Column(
-                  children: [
-                    // Custom border painted around the Qr code
-                    CustomPaint(
-                      foregroundPainter: BorderPainter(),
-                      child: Container(
-                        margin: const EdgeInsets.all(AppTheme.cardPadding),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: AppTheme.cardRadiusBigger),
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.all(AppTheme.cardPadding / 1.25),
-                          // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
-                          child: PrettyQrView.data(
-                            data: "lightning: ${controller.qrCodeDataStringLightning}",
-                            decoration: const PrettyQrDecoration(
-                              shape: PrettyQrSmoothSymbol(
-                                roundFactor: 1,
-                              ),
-                              image: PrettyQrDecorationImage(
-                                image: const AssetImage('assets/images/lightning.png'),
-                              ),)),
+          GestureDetector(
+            onTap: () async {
+              await Clipboard.setData(
+                  ClipboardData(text: controller.qrCodeDataStringLightning));
+              // Display a snackbar to indicate that the wallet address has been copied
+              showOverlay(
+                  context, "Wallet-Adresse in Zwischenablage kopiert");
+            },
+            child: SizedBox(
+              child: Center(
+                child: RepaintBoundary(
+                  // The Qr code is generated from this widget's global key
+                  key: controller.globalKeyQR,
+                  child: Column(
+                    children: [
+                      // Custom border painted around the Qr code
+                      CustomPaint(
+                        foregroundPainter: Theme.of(context).brightness == Brightness.light ? BorderPainterBlack() : BorderPainter(),
+                        child: Container(
+                          margin: const EdgeInsets.all(AppTheme.cardPadding),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: AppTheme.cardRadiusBigger),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                            // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
+                            child: PrettyQrView.data(
+                              data: "lightning: ${controller.qrCodeDataStringLightning}",
+                              decoration: const PrettyQrDecoration(
+                                shape: PrettyQrSmoothSymbol(
+                                  roundFactor: 1,
+                                ),
+                                image: PrettyQrDecorationImage(
+                                  image: const AssetImage('assets/images/lightning.png'),
+                                ),)),
+                            ),
                           ),
                         ),
+                      // SizedBox to add some spacing
+                      const SizedBox(
+                        height: AppTheme.cardPadding,
                       ),
-                    // SizedBox to add some spacing
-                    const SizedBox(
-                      height: AppTheme.cardPadding,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -112,7 +122,7 @@ class LightningReceiveTab extends StatelessWidget {
                 Icon(
                   Icons.copy_rounded,
                   size: 18,
-                  color: AppTheme.white60,
+                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,
                 ),
                 const SizedBox(
                   width: AppTheme.elementSpacing * 0.25,

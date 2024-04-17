@@ -26,31 +26,39 @@ class GlassContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: borderRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-        child: Container(
-          height: height,
-          width: width,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(opacity + 0.1),
-                Colors.white.withOpacity(opacity - 0.025),
-              ],
-            ),
-            borderRadius: borderRadius,
-            border: GradientBoxBorder(
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: Theme.of(context).brightness == Brightness.light
+            ? [AppTheme.boxShadowSmall] // Define this boxShadow in your AppTheme
+            : [AppTheme.boxShadowSmall], // Optionally, define a different shadow for dark mode
+      ),
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+          child: Container(
+            height: height,
+            width: width,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity + 0.1),
+                  Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity - 0.025),
+                ],
+              ),
               borderRadius: borderRadius,
-              borderWidth: borderThickness,
+              border: GradientBoxBorder(
+                borderRadius: borderRadius,
+                borderWidth: borderThickness,
+              ),
             ),
+            child: child,
           ),
-          child: child,
         ),
       ),
     );
   }
+
 }

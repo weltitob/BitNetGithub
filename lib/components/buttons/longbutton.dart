@@ -61,7 +61,7 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                           darken(AppTheme.colorBitcoin, 10),
                           darken(AppTheme.colorPrimaryGradient, 10)
                         ]
-                      : [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],
+                      : [Theme.of(context).colorScheme.secondaryContainer, Theme.of(context).colorScheme.tertiaryContainer,],
                   gradientBegin: Alignment.topCenter,
                   gradientEnd: Alignment.bottomCenter,
                   context: context,
