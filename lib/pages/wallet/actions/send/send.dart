@@ -123,7 +123,7 @@ class SendController extends State<Send> {
   void onQRCodeScanned(dynamic encodedString, BuildContext cxt) {
     // Logic to determine the type of QR code
     QRTyped type = determineQRType(encodedString);
-    print("INVIUCE DETECTED! $type");
+    Logs().w("TYPE DETECTED! $type");
 
     switch (type) {
       case QRTyped.LightningMail:
@@ -136,8 +136,7 @@ class SendController extends State<Send> {
         setState(() {});
         break;
       case QRTyped.Invoice:
-        print("INVIUCE DETECTED!");
-        Logs().w("Invoice was detected will forward to Send screen...");
+        Logs().w("Invoice was detected will forward to Send screen with invoice: $encodedString");
         giveValuesToInvoice(encodedString);
         setState(() {});
         //cxt.go("/wallet/send?walletAdress=$encodedString");
@@ -196,6 +195,7 @@ class SendController extends State<Send> {
   }
 
   void giveValuesToInvoice(String invoiceString) {
+    Logs().w("Invoice that is about to be paid for: $invoiceString");
     setState(() {
       sendType = SendType.Invoice;
       hasReceiver = true;
@@ -273,8 +273,7 @@ class SendController extends State<Send> {
             bitcoinReceiverAdress
           ]; // Assuming you want to send a list containing a single invoice for now
 
-          Stream<RestResponse> paymentStream =
-              sendPaymentV2Stream(invoiceStrings);
+          Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings);
           paymentStream.listen((RestResponse response) {
             setState(() {
               isFinished =

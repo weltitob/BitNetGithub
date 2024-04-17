@@ -121,7 +121,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   BitNetImageWithTextContainer(
                     "Key Metrics",
                         () {
-                          context.push('wallet/bitcoinscreen/keymetrics');
+                          context.push('/wallet/bitcoinscreen/keymetrics');
                         },
                     fallbackIcon: FontAwesomeIcons.key,
                     width: AppTheme.cardPadding * 4,
@@ -130,7 +130,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   BitNetImageWithTextContainer(
                       "Mempool",
                           () {
-                            context.push('wallet/bitcoinscreen/mempool');
+                            context.push('/wallet/bitcoinscreen/mempool');
                           }, //mempoolhome
                     fallbackIcon: FontAwesomeIcons.bitcoinSign,
                     width: AppTheme.cardPadding * 4,
@@ -139,7 +139,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   BitNetImageWithTextContainer(
                     "Hashrate & Difficulty",
                         () {
-                          context.push('wallet/bitcoinscreen/hashrate');
+                          context.push('/wallet/bitcoinscreen/hashrate');
                           //context.go(Uri(path: '/hashrate', queryParameters: {}).toString());
                         },
                     fallbackIcon: FontAwesomeIcons.computer,
@@ -155,7 +155,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   BitNetImageWithTextContainer(
                     "Transactions",
                         () {
-                          context.push('wallet/bitcoinscreen/transactions');
+                          context.push('/wallet/bitcoinscreen/transactions');
                           //context.go(Uri(path: '/transactions', queryParameters: {}).toString());
                         },
                     fallbackIcon: FontAwesomeIcons.addressCard,
@@ -164,14 +164,14 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   ),
                   BitNetImageWithTextContainer(
                     "Whales",
-                        () => context.push('wallet/bitcoinscreen/whales'),
+                        () => context.push('/wallet/bitcoinscreen/whales'),
                     fallbackIcon: FontAwesomeIcons.fish,
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
                   ),
                   BitNetImageWithTextContainer(
                     "News",
-                        () => context.push('wallet/bitcoinscreen/news'),
+                        () => context.push('/wallet/bitcoinscreen/news'),
                     fallbackIcon: FontAwesomeIcons.newspaper,
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,

@@ -13,6 +13,7 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:bitnet/pages/wallet/walletscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -55,6 +56,11 @@ class WalletController extends State<Wallet> {
           receiver: receivedInvoice.paymentRequest!,
           txHash: receivedInvoice.rHash!,
         ));
+        //generate a new invoice for the user with 0 amount
+        Logs().w("Generating new empty invoice for user");
+
+        //getInvoice(0, "Empty invoice");
+
       } else {
         Logs().w("Invoice received but not settled yet: ${receivedInvoice.settled}");
       }
@@ -74,6 +80,7 @@ class WalletController extends State<Wallet> {
         txHash: bitcoinTransaction.txHash,
       ));
       //});
+
     }, onError: (error) {
       Logs().e("Received error for Transactions-stream: $error");
     });
