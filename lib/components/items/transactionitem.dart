@@ -5,6 +5,7 @@ import 'package:bitnet/components/items/lightning_transaction_details.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:get/get.dart';
@@ -32,6 +33,35 @@ class TransactionItem extends StatefulWidget {
 }
 
 class _TransactionItemState extends State<TransactionItem> {
+
+  String usd = '';
+  dollarRate() async {
+    final _dio = Dio();
+
+    String url = 'https://mempool.space/api/v1/historical-price?timestamp=${widget.data.timestamp}';
+
+    final response = await _dio.get(url);
+    if (response.statusCode == 200) {
+      final data = response.data;
+      final List<dynamic> prices = data['prices'];
+      if (prices.isNotEmpty) {
+        final latestPrice = prices.last;
+        usd = ((double.parse(widget.data.amount) / 100000000) * latestPrice['USD']).toString();
+      }
+      print('usd $usd');
+    } else {
+      throw Exception('Failed to load historical price');
+    }
+  }
+
+  @override
+  void initState() {
+    dollarRate();
+
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Use DateFormat for formatting the timestamp

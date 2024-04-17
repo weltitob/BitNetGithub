@@ -28,7 +28,7 @@ class _MostViewState extends State<MostView> {
           child: Image.asset(
             widget.nftImg,
             width: 44.w,
-            height: 44.w,
+            height: 44.h,
             fit: BoxFit.cover,
           ),
         ),
@@ -39,15 +39,13 @@ class _MostViewState extends State<MostView> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 5.h),
-                  child: Text(
-                    widget.nftName,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: const Color.fromRGBO(249, 249, 249, 1),
-                    ),
+                Text(
+                  widget.nftName,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: const Color.fromRGBO(249, 249, 249, 1),
                   ),
                 ),
                 Text(
