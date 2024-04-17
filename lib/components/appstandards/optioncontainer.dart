@@ -44,53 +44,44 @@ class BitNetImageWithTextContainer extends StatelessWidget {
       child: InkWell(
         onTap: action,
         borderRadius: borderRadius,
-        child: ClipRRect(
+        child: GlassContainer(
+          width: width,
+          height: height,
+          borderThickness: isActive ? 1 : 0,
           borderRadius: borderRadius,
-          child: Container(
-            width: width,
-            height: height,
-            decoration: BoxDecoration(
-              borderRadius: borderRadius,
-              boxShadow: [AppTheme.boxShadowProfile],
-            ),
-            child: GlassContainer(
-              borderThickness: isActive ? 1 : 0,
-              borderRadius: borderRadius,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: height / 40,
-                    ),
-                    height: width / 1.5,
-                    width: width / 1.5,
-                    decoration: BoxDecoration(
-                      borderRadius: borderRadius / 1.5,
-                      boxShadow: [AppTheme.boxShadowSmall],
-                    ),
-                    child: image != null
-                        ? Image.asset(image!)
-                        : Icon(
-                            fallbackIcon ?? Icons.error,
-                            size: AppTheme.cardPadding * 1.75,
-                            color: AppTheme.white80,
-                          ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      right: AppTheme.elementSpacing,
-                      left: AppTheme.elementSpacing,
-                    ),
-                    child: Text(text,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center, style: textstyle),
-                  ),
-                ],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.only(
+                  top: height / 40,
+                ),
+                height: width / 1.5,
+                width: width / 1.5,
+                decoration: BoxDecoration(
+                  borderRadius: borderRadius / 1.5,
+                  boxShadow: Theme.of(context).brightness == Brightness.light ? [] : [AppTheme.boxShadowSmall],
+                ),
+                child: image != null
+                    ? Image.asset(image!)
+                    : Icon(
+                        fallbackIcon ?? Icons.error,
+                        size: AppTheme.cardPadding * 1.75,
+                        color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
+                      ),
               ),
-            ),
+              Container(
+                margin: EdgeInsets.only(
+                  right: AppTheme.elementSpacing,
+                  left: AppTheme.elementSpacing,
+                ),
+                child: Text(text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center, style: textstyle),
+              ),
+            ],
           ),
         ),
       ),

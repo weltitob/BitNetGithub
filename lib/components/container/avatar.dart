@@ -70,8 +70,8 @@ class Avatar extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                isSpecialType ? AppTheme.colorBitcoin : Theme.of(context).secondaryHeaderColor,
-                isSpecialType ? AppTheme.colorPrimaryGradient : Theme.of(context).secondaryHeaderColor,
+                isSpecialType ? AppTheme.colorBitcoin : Theme.of(context).primaryColor,
+                isSpecialType ? AppTheme.colorPrimaryGradient : Theme.of(context).primaryColor,
               ],
             ),
           ),
@@ -79,7 +79,7 @@ class Avatar extends StatelessWidget {
             margin: EdgeInsets.all(borderPadding),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular((size - borderPadding * 2) / 2.5,)),
-              color: Theme.of(context).secondaryHeaderColor,
+              color: Theme.of(context).primaryColor,
             ),
             child: noPic
                 ? textWidget

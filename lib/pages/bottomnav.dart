@@ -23,15 +23,43 @@ class BottomNav extends StatefulWidget {
   State<BottomNav> createState() => _BottomNavState();
 }
 
-class _BottomNavState extends State<BottomNav> {
-  String profileId = Auth().currentUser?.uid ?? '';
+class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMixin {
+  String? profileId;
+  Map<String, AnimationController> animationControllers = {};
+
   @override
   void initState() {
-    loadData();
-    //getData();
-    // TODO: implement initState
     super.initState();
+    initUser();
   }
+
+  void initUser() async {
+    profileId = Auth().currentUser?.uid;
+    loadData();
+    setupAnimationControllers();
+  }
+  void setupAnimationControllers() {
+    final navItems = getNavItems();
+    navItems.forEach((item) {
+      animationControllers[item['route']] ??= AnimationController(
+        duration: const Duration(milliseconds: 300),
+        vsync: this,
+        lowerBound: 0.8,
+        upperBound: 1.2,
+      );
+    });
+  }
+
+  List<Map<String, dynamic>> getNavItems() {
+    return [
+      {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
+      {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
+      {'icon': FontAwesomeIcons.upload, 'route': '/create'},
+      {'icon': FontAwesomeIcons.wallet, 'route': '/wallet'},
+      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/$profileId'},
+    ];
+  }
+
 
   void loadData() async {
     QuerySnapshot querySnapshot = await settingsCollection.get();
@@ -78,19 +106,32 @@ class _BottomNavState extends State<BottomNav> {
     // });
   }
 
+
+  @override
+  void dispose() {
+    animationControllers.values.forEach((controller) => controller.dispose());
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final navItems = [
-      {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
-      {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
-      {'icon': FontAwesomeIcons.upload, 'route': '/create'},
-      {'icon': FontAwesomeIcons.wallet, 'route': '/wallet'},
-      {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/:$profileId'},
-    ];
 
-    void onTabTapped(String route) {
+    final navItems = getNavItems();
+
+    void onTabTapped(String route, dynamic item) {
+      setState(() {
+        animationControllers.forEach((route, controller) {
+          if (item['route'] == route) {
+            controller.forward();
+          } else {
+            controller.reverse();
+          }
+        });
+        context.go(item['route']);
+      });
       context.go(route);
     }
+
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
@@ -103,39 +144,47 @@ class _BottomNavState extends State<BottomNav> {
             IgnorePointer(
               child: Padding(
                 padding:
-                const EdgeInsets.only(top: AppTheme.cardPadding * 32),
+                const EdgeInsets.only(top: AppTheme.cardPadding * 33),
                 child: Container(
                   height: MediaQuery.of(context).size.height -
-                      AppTheme.cardPadding * 32,
+                      AppTheme.cardPadding * 33,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       // Use color stops to create an "exponential" effect
                       stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
-                      colors: [
-                        Theme.of(context)
-                            .colorScheme
-                            .background
+                      colors: Theme.of(context).brightness == Brightness.light ? [
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60)
                             .withOpacity(0.0001),
-                        Theme.of(context)
-                            .colorScheme
-                            .background
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60)
                             .withOpacity(0.33),
-                        Theme.of(context)
-                            .colorScheme
-                            .background
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60)
                             .withOpacity(0.66),
-                        Theme.of(context)
-                            .colorScheme
-                            .background
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60)
                             .withOpacity(0.99),
                         // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
                         // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
                         // Theme.of(context).colorScheme.background,
                         // Theme.of(context).colorScheme.background,
-                        Theme.of(context).colorScheme.background,
-                        Theme.of(context).colorScheme.background
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60),
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60)
+                      ] : [
+                        darken(Theme.of(context).colorScheme.primaryContainer, 80)
+                            .withOpacity(0.0001),
+                        darken(Theme.of(context).colorScheme.primaryContainer, 80)
+                            .withOpacity(0.33),
+                        darken(Theme.of(context).colorScheme.primaryContainer, 80)
+                            .withOpacity(0.66),
+                        darken(Theme.of(context).colorScheme.primaryContainer, 80)
+                            .withOpacity(0.99),
+                        // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
+                        // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
+                        // Theme.of(context).colorScheme.background,
+                        // Theme.of(context).colorScheme.background,
+                        darken(Theme.of(context).colorScheme.primaryContainer, 80),
+                        darken(Theme.of(context).colorScheme.primaryContainer, 80)
+
                       ],
                     ),
                   ),
@@ -156,11 +205,11 @@ class _BottomNavState extends State<BottomNav> {
                 child: GlassContainer(
                   // borderRadius: AppTheme.cardRadiusBig,
                   child: Container(
-                    height: AppTheme.cardPadding * 2.5,
+                    height: AppTheme.cardPadding * 2.75,
                     //alignment: Alignment.center,
                     margin: EdgeInsets.only(
-                      left: AppTheme.elementSpacing * 1,
-                      right: AppTheme.elementSpacing * 1,
+                      left: AppTheme.elementSpacing * 2,
+                      right: AppTheme.elementSpacing * 2,
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -168,15 +217,20 @@ class _BottomNavState extends State<BottomNav> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         for (var item in navItems)
-                          InkWell(
-                            onTap: () => onTabTapped(item['route'] as String),
-                            child: Icon(
-                              item['icon'] as IconData, // <--- Here
-                              color: widget.routerState.fullPath != null && widget.routerState.fullPath!
-                                  .contains((item['route'] as String).split('/')[1])
-                                  ? AppTheme.colorBitcoin
-                                  : Theme.of(context).iconTheme.color?.withOpacity(0.5),
-                              size: AppTheme.cardPadding,
+                          AnimatedScale(
+                            scale: widget.routerState.fullPath != null && widget.routerState.fullPath!
+                                .contains((item['route'] as String).split('/')[1]) ? 1.1 : 1,
+                            duration: const Duration(milliseconds: 300),
+                            child: InkWell(
+                              onTap: () => onTabTapped(item['route'] as String, item),
+                              child: Icon(
+                                item['icon'] as IconData, // <--- Here
+                                color: widget.routerState.fullPath != null && widget.routerState.fullPath!
+                                    .contains((item['route'] as String).split('/')[1])
+                                    ? Theme.of(context).colorScheme.onPrimaryContainer
+                                    : Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5),
+                                size: AppTheme.cardPadding,
+                              ),
                             ),
                           ),
                       ],

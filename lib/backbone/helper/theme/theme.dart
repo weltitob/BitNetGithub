@@ -247,10 +247,17 @@ abstract class AppTheme {
     offset: const Offset(0, 2),
     blurRadius: 5,
   );
+  static BoxShadow boxShadowSuperSmall = BoxShadow(
+    color: Colors.black.withOpacity(0.05),  // Reduced opacity for less intensity
+    offset: const Offset(0, 4),             // Smaller offset to keep the shadow closer
+    blurRadius: 15,                         // Significantly reduced blur radius for a tighter shadow
+    spreadRadius: 0.5,                      // Smaller spread to limit the shadow's reach
+  );
   static BoxShadow boxShadowSmall = BoxShadow(
     color: Colors.black.withOpacity(0.1),
-    offset: const Offset(0, 2.5),
-    blurRadius: 20,
+    offset: const Offset(0, 10),
+    blurRadius: 80,
+    spreadRadius: 1.5,
   );
   static BoxShadow boxShadowBig = BoxShadow(
     color: Colors.black.withOpacity(0.1),

@@ -173,6 +173,7 @@ class GradientBorderPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
+
           lighten(AppTheme.colorBitcoin, 60),
           AppTheme.colorBitcoin,
           AppTheme.colorBitcoin,
