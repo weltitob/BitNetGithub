@@ -190,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   isNormalChild: true,
                   isChild: Container(
                     width: size.width,
-                    height: 242.w,
+                    height: 245.w,
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,

@@ -59,7 +59,7 @@ class WalletController extends State<Wallet> {
         //generate a new invoice for the user with 0 amount
         Logs().w("Generating new empty invoice for user");
 
-        //getInvoice(0, "Empty invoice");
+        ReceiveController().getInvoice(0, "Empty invoice");
 
       } else {
         Logs().w("Invoice received but not settled yet: ${receivedInvoice.settled}");
