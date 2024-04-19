@@ -14,6 +14,7 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
         body: Container(),
         appBar: bitnetAppBar(
           text: "Lightning Card Information",
