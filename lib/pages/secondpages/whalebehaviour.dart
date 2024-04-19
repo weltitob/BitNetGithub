@@ -1,3 +1,5 @@
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
@@ -195,35 +197,96 @@ class InsiderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.grey[900],
-        ),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[900],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    width: 110,
-                    child: Row(
+    return bitnetScaffold(
+      context: context,
+      appBar: bitnetAppBar(
+        text: 'Whale Behaviour',
+        context: context,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.grey[900],
+          ),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[900],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: 110,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.person_rounded,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                          Text(
+                            " NAME",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 80,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today_rounded,
+                            color: Colors.grey[400],
+                            size: 12,
+                          ),
+                          Text(
+                            " DATE",
+                            style: TextStyle(
+                              color: Colors.grey[400],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 80,
+                      child: Row(
+                        children: [
+                          Icon(Icons.monetization_on_rounded,
+                              color: Colors.grey[400], size: 12),
+                          Text(
+                            " VALUE",
+                            style: TextStyle(
+                              color: Colors.grey[400],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
                       children: [
                         Icon(
-                          Icons.person_rounded,
+                          Icons.bar_chart,
                           color: Colors.white,
                           size: 12,
                         ),
                         Text(
-                          " NAME",
+                          " TYPE",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -232,110 +295,56 @@ class InsiderWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                  Container(
-                    width: 80,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.calendar_today_rounded,
-                          color: Colors.grey[400],
-                          size: 12,
-                        ),
-                        Text(
-                          " DATE",
-                          style: TextStyle(
-                            color: Colors.grey[400],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 80,
-                    child: Row(
-                      children: [
-                        Icon(Icons.monetization_on_rounded,
-                            color: Colors.grey[400], size: 12),
-                        Text(
-                          " VALUE",
-                          style: TextStyle(
-                            color: Colors.grey[400],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.bar_chart,
-                        color: Colors.white,
-                        size: 12,
-                      ),
-                      Text(
-                        " TYPE",
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: MyDividerStandard(),
+              ),
+              FutureBuilder<List<Insider>>(
+                  future: iexcloudinsider.getInsiderData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        children: [
+                          ChildbuildWhaleBehavior(
+                              "${snapshot.data![0].fullName}",
+                              "${snapshot.data![0].filingDate}",
+                              "${snapshot.data![0].transactionValue}\$",
+                              false),
+                          ChildbuildWhaleBehavior(
+                              "${snapshot.data![1].fullName}",
+                              "${snapshot.data![1].filingDate}",
+                              "${snapshot.data![1].transactionValue}\$",
+                              false),
+                          ChildbuildWhaleBehavior(
+                              "${snapshot.data![2].fullName}",
+                              "${snapshot.data![2].filingDate}",
+                              "${snapshot.data![2].transactionValue}\$",
+                              false),
+                        ],
+                      );
+                    }
+                    if (snapshot.hasError) {
+                      return Text(
+                        '${snapshot.error}',
                         style: TextStyle(
                           color: Colors.white,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: MyDividerStandard(),
-            ),
-            FutureBuilder<List<Insider>>(
-                future: iexcloudinsider.getInsiderData(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Column(
-                      children: [
-                        ChildbuildWhaleBehavior(
-                            "${snapshot.data![0].fullName}",
-                            "${snapshot.data![0].filingDate}",
-                            "${snapshot.data![0].transactionValue}\$",
-                            false),
-                        ChildbuildWhaleBehavior(
-                            "${snapshot.data![1].fullName}",
-                            "${snapshot.data![1].filingDate}",
-                            "${snapshot.data![1].transactionValue}\$",
-                            false),
-                        ChildbuildWhaleBehavior(
-                            "${snapshot.data![2].fullName}",
-                            "${snapshot.data![2].filingDate}",
-                            "${snapshot.data![2].transactionValue}\$",
-                            false),
-                      ],
-                    );
-                  }
-                  if (snapshot.hasError) {
-                    return Text(
-                      '${snapshot.error}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
-                  } else
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: const Text('No results found',
-                          style: TextStyle(
-                              color: Colors.grey, fontWeight: FontWeight.bold)),
-                    );
-                }),
-          ],
+                      );
+                    } else
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Text('No results found',
+                            style: TextStyle(
+                                color: Colors.grey, fontWeight: FontWeight.bold)),
+                      );
+                  }),
+            ],
+          ),
         ),
       ),
     );

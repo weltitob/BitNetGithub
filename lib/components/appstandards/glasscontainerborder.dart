@@ -160,10 +160,12 @@ class GradientOutlineInputBorder extends InputBorder {
 class GradientBorderPainter extends CustomPainter {
   final BorderRadius borderRadius;
   final double borderWidth;
+  final List<Color> gradientColors;
 
   GradientBorderPainter({
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.borderWidth = 1.5,
+    this.gradientColors = const [Colors.white, Colors.white],
   });
 
   @override
@@ -172,13 +174,7 @@ class GradientBorderPainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-
-          lighten(AppTheme.colorBitcoin, 60),
-          AppTheme.colorBitcoin,
-          AppTheme.colorBitcoin,
-          lighten(AppTheme.colorBitcoin, 60)
-        ],
+        colors: gradientColors,
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;

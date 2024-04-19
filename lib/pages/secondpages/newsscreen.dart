@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/models/bitcoin/news.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/components/items/newsitem.dart';
@@ -70,34 +72,42 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading
-        ? Center(
-            child: Container(
-              height: 200,
-              child: dotProgress(context),
-            ),
-          )
-        : Padding(
-            padding: const EdgeInsets.only(top: 5.0),
-            child: Container(
-              child: ListView.builder(
-                  itemCount: newslist.length > 5
-                      ? newslist.length = 5
-                      : newslist.length,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return NewsTile(
-                      imgUrl: newslist[index].urlToImage,
-                      title: newslist[index].title,
-                      desc: newslist[index].description,
-                      content: newslist[index].content,
-                      posturl: newslist[index].url,
-                      publishedAt: newslist[index].publishedAt.toString(),
-                      author: 'Ringer',
-                    );
-                  }),
-            ),
-          );
+    return bitnetScaffold(
+      context: context,
+      extendBodyBehindAppBar: true,
+      appBar: bitnetAppBar(
+        text: "News",
+        context: context,
+      ),
+      body: Container(child: _loading
+          ? Center(
+              child: Container(
+                height: 200,
+                child: dotProgress(context),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Container(
+                child: ListView.builder(
+                    itemCount: newslist.length > 5
+                        ? newslist.length = 5
+                        : newslist.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return NewsTile(
+                        imgUrl: newslist[index].urlToImage,
+                        title: newslist[index].title,
+                        desc: newslist[index].description,
+                        content: newslist[index].content,
+                        posturl: newslist[index].url,
+                        publishedAt: newslist[index].publishedAt.toString(),
+                        author: 'Ringer',
+                      );
+                    }),
+              ),
+            )),
+    );
   }
 }

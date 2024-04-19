@@ -1,4 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
@@ -62,32 +64,40 @@ class _HashrateScreenState extends State<HashrateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-              value: selectedMonth,
-              onChanged: (String? newValue) {
-                selectedMonth = newValue!;
-                getData();
-                setState(() {});
-              },
-              items: <String>['3M', '6M', '1Y', '2Y', '3Y']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList()),
-        ),
-        SizedBox(
-          height: AppTheme.elementSpacing,
-        ),
-        HashrateChart(
-          chartData: chartData,
-          difficulty: difficulty,
-        ),
-      ],
+    return bitnetScaffold(
+      context: context,
+      extendBodyBehindAppBar: true,
+      appBar: bitnetAppBar(
+        text: 'Hashrate',
+        context: context,
+      ),
+      body: Column(
+        children: [
+          DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+                value: selectedMonth,
+                onChanged: (String? newValue) {
+                  selectedMonth = newValue!;
+                  getData();
+                  setState(() {});
+                },
+                items: <String>['3M', '6M', '1Y', '2Y', '3Y']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList()),
+          ),
+          SizedBox(
+            height: AppTheme.elementSpacing,
+          ),
+          HashrateChart(
+            chartData: chartData,
+            difficulty: difficulty,
+          ),
+        ],
+      ),
     );
   }
 }

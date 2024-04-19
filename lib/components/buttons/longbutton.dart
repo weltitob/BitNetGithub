@@ -55,16 +55,15 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
             borderRadius: borderRadius,
           ),
           child: widget.buttonType == ButtonType.solid
-              ? solidContainer(
+              ? SolidContainer(
                   gradientColors: _isHovered
                       ? [
-                          darken(AppTheme.colorBitcoin, 10),
-                          darken(AppTheme.colorPrimaryGradient, 10)
+                          darken(Theme.of(context).colorScheme.secondaryContainer, 10),
+                          darken(Theme.of(context).colorScheme.tertiaryContainer, 10)
                         ]
                       : [Theme.of(context).colorScheme.secondaryContainer, Theme.of(context).colorScheme.tertiaryContainer,],
                   gradientBegin: Alignment.topCenter,
                   gradientEnd: Alignment.bottomCenter,
-                  context: context,
                   borderRadius: borderRadiusNum,
                   width: widget.customWidth,
                   height: widget.customHeight,
