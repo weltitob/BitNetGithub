@@ -14,6 +14,7 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
         body: Container(),
         appBar: bitnetAppBar(
           onTap: (){

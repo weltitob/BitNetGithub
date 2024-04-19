@@ -10,8 +10,7 @@ Widget personalActionButton({
 }) {
   return InkWell(
     onTap: onPressed,
-    child: solidContainer(
-      context: context,
+    child: SolidContainer(
       gradientColors: gradientColors,
       child: Center(
         child: Icon(

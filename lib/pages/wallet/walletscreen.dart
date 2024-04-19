@@ -87,9 +87,9 @@ class _WalletScreenState extends State<WalletScreen> {
                     Row(
                       children: [
                         Avatar(
-                          size: AppTheme.cardPadding * 2.5,
+                          size: AppTheme.cardPadding * 3,
                         ),
-                        SizedBox(width: AppTheme.elementSpacing * 1.25,),
+                        SizedBox(width: AppTheme.elementSpacing * 1.5,),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -98,7 +98,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             SizedBox(
-                              height: AppTheme.elementSpacing * 0.5,
+                              height: AppTheme.elementSpacing * 0.25,
                             ),
                             Row(
                               children: [

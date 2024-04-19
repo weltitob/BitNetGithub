@@ -1,9 +1,6 @@
-import 'dart:async';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
-import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
-import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -145,6 +142,7 @@ class _TransactionsState extends State<Transactions>
 
     return transactionsLoaded  ? widget.fullList ? bitnetScaffold(
       context: context,
+      extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(context: context, text: 'Activity',actions: [ Padding(
         padding: const EdgeInsets.only(right: 20.0),
         child: RoundedButtonWidget(

@@ -1,53 +1,84 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:flutter/material.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
+import 'package:flutter/material.dart';
 
-Widget solidContainer({
-  required BuildContext context,
-  List<Color>? gradientColors,
-  double? height,
-  double? width,
-  AlignmentGeometry? alignment,
-  double? borderRadius,
-  AlignmentGeometry? gradientBegin,
-  AlignmentGeometry? gradientEnd,
-  bool normalPainter = true,
-  double borderWidth = 1.5,
-  required Widget child,
-}) {
-  gradientColors =
-      gradientColors ?? [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient];
-  height = height ?? AppTheme.cardPadding * 1.5;
-  width = width ?? AppTheme.cardPadding * 2.5;
-  alignment = alignment ?? Alignment.center;
-  borderRadius = borderRadius ?? AppTheme.borderRadiusMid;
-  gradientBegin = gradientBegin ?? Alignment.topCenter;
-  gradientEnd = gradientEnd ?? Alignment.bottomCenter;
-  normalPainter = normalPainter;
+class SolidContainer extends StatelessWidget {
+  final List<Color> gradientColors;
+  final double height;
+  final double width;
+  final AlignmentGeometry alignment;
+  final double borderRadius;
+  final AlignmentGeometry gradientBegin;
+  final AlignmentGeometry gradientEnd;
+  final bool normalPainter;
+  final double borderWidth;
+  final Widget child;
 
-  return CustomPaint(
-    painter: normalPainter
-        ? GradientBorderPainter(
-            borderRadius: BorderRadius.circular(borderRadius),
-            borderWidth: borderWidth)
-        : null,
-    foregroundPainter: normalPainter
-        ? null
-        : GradientBorderPainter(
-            borderRadius: BorderRadius.circular(borderRadius),
-            borderWidth: borderWidth),
-    child: Container(
-      height: height,
-      width: width,
-      alignment: alignment,
-      decoration: BoxDecoration(
+  SolidContainer({
+    Key? key,
+    List<Color>? gradientColors,
+    double? height,
+    double? width,
+    AlignmentGeometry? alignment,
+    double? borderRadius,
+    AlignmentGeometry? gradientBegin,
+    AlignmentGeometry? gradientEnd,
+    this.normalPainter = true,
+    this.borderWidth = 1.5,
+    required this.child,
+  })  : this.gradientColors = gradientColors ?? [AppTheme.colorBitcoin, AppTheme.colorPrimaryGradient],
+        this.height = height ?? AppTheme.cardPadding * 1.5,
+        this.width = width ?? AppTheme.cardPadding * 2.5,
+        this.alignment = alignment ?? Alignment.center,
+        this.borderRadius = borderRadius ?? AppTheme.borderRadiusMid,
+        this.gradientBegin = gradientBegin ?? Alignment.topCenter,
+        this.gradientEnd = gradientEnd ?? Alignment.bottomCenter,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: normalPainter
+          ? GradientBorderPainter(
+          borderRadius: BorderRadius.circular(borderRadius),
+          borderWidth: borderWidth,
+          gradientColors: [
+            lighten(Theme.of(context).colorScheme.secondaryContainer, 60),
+            Theme.of(context).colorScheme.secondaryContainer,
+            Theme.of(context).colorScheme.secondaryContainer,
+            lighten(Theme.of(context).colorScheme.secondaryContainer, 60)
+          ]
+      ) // Modify to pass the correct colors
+          : null,
+      foregroundPainter: !normalPainter
+          ? GradientBorderPainter(
+          borderRadius: BorderRadius.circular(borderRadius),
+          borderWidth: borderWidth,
+          gradientColors: [
+            lighten(Theme.of(context).colorScheme.secondaryContainer, 60),
+            Theme.of(context).colorScheme.secondaryContainer,
+            Theme.of(context).colorScheme.secondaryContainer,
+            lighten(Theme.of(context).colorScheme.secondaryContainer, 60)
+          ]
+      ) // Modify to pass the correct colors
+          : null,
+      child: Container(
+        height: height,
+        width: width,
+        alignment: alignment,
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
           gradient: LinearGradient(
             begin: gradientBegin,
             end: gradientEnd,
             colors: gradientColors,
-          )),
-      child: child,
-    ),
-  );
+          ),
+        ),
+        child: child,
+      ),
+    );
+  }
 }

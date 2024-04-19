@@ -26,8 +26,6 @@ class SettingsChatController extends State<SettingsChat> {
     super.initState();
   }
 
-
-
   void checkBootstrap() async {
     final client = Matrix.of(context).client;
     if (!client.encryptionEnabled) return;

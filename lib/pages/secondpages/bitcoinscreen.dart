@@ -48,6 +48,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
     final controller = Get.put(HomeController());
     return bitnetScaffold(
       context: context,
+      extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: bitnetAppBar(
           text: "Bitcoin chart",

@@ -1,4 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recentreplacements.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recenttransactions.dart';
@@ -27,27 +29,35 @@ class _LastTransactionsScreenState extends State<LastTransactionsScreen> with Si
   }
   @override
   Widget build(BuildContext context) {
-    return RoundedContainer(
-      contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
-      child: Column(
-        children: [
-          TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(text: 'Recent Transactions'),
-              Tab(text: 'Recent Replacements'),
-            ],
-          ),
-          Expanded(
-            child: TabBarView(
+    return bitnetScaffold(
+      context: context,
+      extendBodyBehindAppBar: true,
+      appBar: bitnetAppBar(
+        context: context,
+        text: "Last Transactions",
+      ),
+      body: RoundedContainer(
+        contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
+        child: Column(
+          children: [
+            TabBar(
               controller: _tabController,
-              children: [
-                SingleChildScrollView(child: RecentTransactions()),
-                SingleChildScrollView(child: RecentReplacements()),
+              tabs: [
+                Tab(text: 'Recent Transactions'),
+                Tab(text: 'Recent Replacements'),
               ],
             ),
-          ),
-        ],
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  SingleChildScrollView(child: RecentTransactions()),
+                  SingleChildScrollView(child: RecentReplacements()),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -70,7 +71,8 @@ class ProfileView extends StatelessWidget {
     bool isProfileOwner = currentUserId == myuser;
     // final testuser = UserPreferences.myUser;
 
-    return Scaffold(
+    return bitnetScaffold(
+      context: context,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: controller.isUserLoading
           ? Center(child: dotProgress(context))
@@ -188,7 +190,7 @@ class ProfileView extends StatelessWidget {
                                   Avatar(
                                     mxContent: Uri.parse(
                                         controller.userData.profileImageUrl),
-                                    size: 120,
+                                    size: AppTheme.cardPadding * 5.75,
                                     type: profilePictureType.lightning,
                                   ),
                                   Positioned(
