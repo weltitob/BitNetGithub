@@ -74,7 +74,7 @@ class SearchReceiver extends StatelessWidget {
                   margin: EdgeInsets.only(top: AppTheme.elementSpacing),
                   child: LongButtonWidget(
                     customWidth: AppTheme.cardPadding * 7,
-                    onTap: () => context.go("/qrscanner"),
+                    onTap: () => context.push("/qrscanner"),
                     title: 'Scan QR',
                   ),
                 ),

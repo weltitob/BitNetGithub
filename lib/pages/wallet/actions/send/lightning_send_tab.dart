@@ -192,6 +192,7 @@ class LightningSendTab extends StatelessWidget {
             currController: TextEditingController(),
             focusNode: controller.myFocusNodeMoney,
             context: context,
+            swapped: false
           ),
         ],
       ),

@@ -83,7 +83,7 @@ class QRScannerController extends State<QrScanner> {
         break;
       case QRTyped.OnChain:
        // Navigator.push(cxt, MaterialPageRoute(builder: (context)=>Send()));
-        context.go("/wallet/send?walletAdress=$encodedString");
+        cxt.go("/wallet/send?walletAdress=$encodedString");
         break;
       case QRTyped.Invoice:
         print("INVIUCE DETECTED!");
@@ -91,7 +91,7 @@ class QRScannerController extends State<QrScanner> {
         //have to parse or give the page everything I know about the invoice
         try {
           //Navigator.push(context, MaterialPageRoute(builder: (context)=>Send()));
-          context.go("/wallet/send?invoice=$encodedString");
+          cxt.go("/wallet/send?invoice=$encodedString");
           //context.go("/wallet/receive");
         } catch (e) {
           Logs().e("Failed forwarding with error: $e");

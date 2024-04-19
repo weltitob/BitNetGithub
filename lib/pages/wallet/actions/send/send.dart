@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/fundpsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtransaction.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
@@ -71,22 +72,29 @@ class SendController extends State<Send> {
     Logs().w("Process parameters for sendscreen called");
 
     Map<String, String> queryParams = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
-    String? invoice = queryParams['invoice'];
+    // String? invoice = queryParams['invoice'];
+    String? invoice = 'lnbc500n1pnzzc3ppp55sjc9u3gqh0hx2906eyesfv8vpsmv76c6efm28nptxyr5hz9sc4qdqqcqzzsxqyz5vqsp5c70w90l69xw6tgx492g22y870jslzvggtu3en96hazj3cepyqaqq9qyyssq4wu4fah7z7tr45sasgmuknu99k89v6acnt44mraasfnstlvgsgyrqua5lhh3s8tszl84fmz4qc5hm6xuvej565r6vwdrh3k39tldr8cp9adam0';
     String? walletAdress = queryParams['walletAdress'];
 
     if (invoice != null){
       Logs().w("Invoice: $invoice");
       giveValuesToInvoice(invoice!);
+      moneyController.text = (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
+      bitcoinUnit = BitcoinUnits.SAT;
     }
     else if(walletAdress != null){
       Logs().w("Walletadress: $walletAdress");
 
       giveValuesToOnchainSend(walletAdress);
+            moneyController.text = (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
+      bitcoinUnit = BitcoinUnits.SAT;
+
     }
     else{
       Logs().w("No parameters found");
     }
     Logs().w("Invoice: $invoice");
+
 
   }
 

@@ -23,7 +23,7 @@ class QRScannerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        context.pop();
+        // context.pop();
         return true;
       },
       child: bitnetScaffold(
