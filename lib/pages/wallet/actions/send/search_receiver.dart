@@ -22,6 +22,7 @@ class SearchReceiver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         text: "Choose Recipient",
         context: context,
@@ -32,6 +33,7 @@ class SearchReceiver extends StatelessWidget {
       context: context,
       body: Column(
         children: [
+          SizedBox(height: AppTheme.cardPadding * 2.5,),
           SearchFieldWidget(
             hintText: "Empfänger suchen",
             isSearchEnabled: true,

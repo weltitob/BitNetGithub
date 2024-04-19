@@ -58,10 +58,17 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
               ? SolidContainer(
                   gradientColors: _isHovered
                       ? [
-                          darken(Theme.of(context).colorScheme.secondaryContainer, 10),
-                          darken(Theme.of(context).colorScheme.tertiaryContainer, 10)
+                          darken(
+                              Theme.of(context).colorScheme.secondaryContainer,
+                              10),
+                          darken(
+                              Theme.of(context).colorScheme.tertiaryContainer,
+                              10)
                         ]
-                      : [Theme.of(context).colorScheme.secondaryContainer, Theme.of(context).colorScheme.tertiaryContainer,],
+                      : [
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context).colorScheme.secondary,
+                        ],
                   gradientBegin: Alignment.topCenter,
                   gradientEnd: Alignment.bottomCenter,
                   borderRadius: borderRadiusNum,
@@ -123,7 +130,15 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                                       ?.copyWith(
                                       color: widget.textColor != null
                                           ? widget.textColor
-                                          : AppTheme.white90,
+                                          : widget.buttonType ==
+                                                  ButtonType.solid
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary
+                                              : Theme.of(context).brightness ==
+                                                      Brightness.light
+                                                  ? AppTheme.black70
+                                                  : AppTheme.white90,
                                       shadows: [
                                         //AppTheme.boxShadowBig,
                                         AppTheme.boxShadowButton

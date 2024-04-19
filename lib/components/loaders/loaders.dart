@@ -10,7 +10,7 @@ Container dotProgress(BuildContext context, {Color? color, double? size}) {
   return Container(
     child: Center(
       child: SpinKitThreeBounce(
-        color: color ?? AppTheme.colorBitcoin, // Set the color of the dots
+        color: color ?? Theme.of(context).colorScheme.primary, // Set the color of the dots
         size: size ?? AppTheme.iconSize, // Set the size of the dots, with a fallback to the default
       ),
     ),
@@ -22,7 +22,7 @@ Container dotProgress(BuildContext context, {Color? color, double? size}) {
 Widget avatarGlow(BuildContext context, IconData icon) {
   return Center(
     child: AvatarGlow(
-      glowColor: darken(Colors.orange, 80), // Set the color of the glow with a darken function
+      glowColor: darken(Theme.of(context).colorScheme.primary, 80), // Set the color of the glow with a darken function
       endRadius: 160.0, // Set the size of the glow
       duration: const Duration(milliseconds: 2000), // Set the duration of the animation
       repeatPauseDuration: const Duration(milliseconds: 0), // Set the duration of the pause between animations
@@ -31,7 +31,7 @@ Widget avatarGlow(BuildContext context, IconData icon) {
       child: Icon(
         icon,
         size: 100,
-        color: Colors.orange, // Set the color of the icon
+        color: Theme.of(context).colorScheme.primary, // Set the color of the icon
       ),
     ),
   );
@@ -43,7 +43,7 @@ Widget avatarGlowProgressAudio(BuildContext context) {
     padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, right: 10.0), // Set the padding for the widget
     child: Container(
       decoration: BoxDecoration(
-        color: Colors.orange[600], // Set the color of the container
+        color: Theme.of(context).colorScheme.primary, // Set the color of the container
         borderRadius: BorderRadius.circular(40.0), // Set the border radius of the container
       ),
       child: Padding(
@@ -66,7 +66,7 @@ Widget avatarGlowProgressAudio(BuildContext context) {
 Widget avatarGlowProgressSmall(BuildContext context) {
   return Center(
     child: AvatarGlow(
-        glowColor: Colors.orange, // Set the color of the glow
+        glowColor: Theme.of(context).colorScheme.primary, // Set the color of the glow
         endRadius: 20.0, // Set the size of the glow
         duration: Duration(milliseconds: 1000), // Set the duration of the animation
         repeatPauseDuration: Duration(milliseconds: 0), // Set the duration of the pause between animations
