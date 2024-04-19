@@ -157,7 +157,10 @@ class _TransactionsState extends State<Transactions>
                   child: WalletFilterScreen());
             }),
       ),], onTap: (){Navigator.pop(context);},),
-      body: ListView(children: combinedTransactions)
+      body: Padding(
+        padding: const EdgeInsets.only(top: 12.0),
+        child: ListView(children: combinedTransactions),
+      )
     ) : Container(
         height: AppTheme.cardPadding * 18,
         child: ListView.builder(
