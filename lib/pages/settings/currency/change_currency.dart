@@ -26,6 +26,7 @@ class _ChangeCurrencyState extends State<ChangeCurrency> {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
         text: 'Change Currency',

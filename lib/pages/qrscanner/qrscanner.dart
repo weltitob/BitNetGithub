@@ -7,6 +7,7 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner_view.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
+import 'package:bitnet/pages/wallet/actions/send/send_view.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
@@ -88,11 +89,14 @@ class QRScannerController extends State<QrScanner> {
       case QRTyped.Invoice:
         print("INVIUCE DETECTED!");
         Logs().w("Invoice was detected will forward to Send screen...");
+        cxt.go("/wallet/send?walletAdress=$encodedString");
+
         //have to parse or give the page everything I know about the invoice
         try {
-          //Navigator.push(context, MaterialPageRoute(builder: (context)=>Send()));
-          cxt.go("/wallet/send?invoice=$encodedString");
-          //context.go("/wallet/receive");
+          //cxt.go(Uri(path: '/wallet/send', queryParameters: {'invoice': encodedString}).toString());
+
+          //Navigator.pushReplacement(cxt, MaterialPageRoute(builder: (context)=>Send()));
+        // cxt.go("/wallet/send");
         } catch (e) {
           Logs().e("Failed forwarding with error: $e");
         }

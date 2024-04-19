@@ -189,7 +189,7 @@ class _ChartWidgetState extends State<ChartWidget> {
               child: _loading
                   ? Center(
                       child: Container(
-                        height: AppTheme.cardPadding * 14,
+                        height: AppTheme.cardPadding * 16,
                         child: avatarGlow(
                           context,
                           Icons.currency_bitcoin,
@@ -213,7 +213,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     double _firstpriceexact = currentline.first.price;
 
     return SizedBox(
-      height: AppTheme.cardPadding * 14,
+      height: AppTheme.cardPadding * 16,
       child: SfCartesianChart(
           trackballBehavior: _trackballBehavior,
           onTrackballPositionChanging: (args) {
@@ -545,8 +545,8 @@ class _CustomWidgetState extends State<CustomWidget>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "BTC",
-                        style: Theme.of(context).textTheme.titleSmall,
+                          "Bitcoin",
+                          style: Theme.of(context).textTheme.headlineMedium
                       ),
                       Text(
                         trackBallValueDate,
@@ -557,13 +557,9 @@ class _CustomWidgetState extends State<CustomWidget>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      const Text(
-                        "Bitcoin",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Text(
+                        "BTC",
+                        style: Theme.of(context).textTheme.titleSmall,
                       ),
                       Text(
                         "${trackBallValueTime} Uhr",

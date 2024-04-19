@@ -23,6 +23,7 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
         text: 'Change Language',
@@ -63,6 +64,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
         margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
         child: Column(
           children: [
+            SizedBox(height: AppTheme.cardPadding * 2,),
             SearchFieldWidget(
                 hintText: lang!.searchL,
                 isSearchEnabled: true,

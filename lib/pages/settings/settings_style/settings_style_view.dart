@@ -21,6 +21,7 @@ class SettingsStyleView extends StatelessWidget {
   Widget build(BuildContext context) {
     const colorPickerSize = AppTheme.cardPadding * 1.5;
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
         text: L10n.of(context)!.changeTheme,

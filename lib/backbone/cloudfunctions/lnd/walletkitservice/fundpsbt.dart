@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/bitcoin/walletkit/transactiondata.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -9,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 
 Future<RestResponse> fundPsbt(TransactionData model) async {
-  const String restHost = 'mybitnet.com:8443';
+  String restHost = AppTheme.baseUrlLightningTerminal;
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/psbt/fund';
 

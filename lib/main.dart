@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
-import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/user/userdata.dart';
@@ -71,12 +70,9 @@ Future<void> main() async {
   );
 
   await FirebaseAppCheck.instance.activate(
-    //web
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    //android
     androidProvider:
         AndroidProvider.debug, //AndoroidProvider.playIntegrity nach release
-    //ios
     appleProvider: AppleProvider.appAttest,
   );
 
@@ -109,9 +105,6 @@ class MyApp extends StatelessWidget {
               providers: [
                 ChangeNotifierProvider<CardChangeProvider>(
                     create: (context) => CardChangeProvider()),
-                //FROM Ahmad remove later once we have a proper implementation
-                // ChangeNotifierProvider<MyThemeProvider>(
-                //     create: (context) => MyThemeProvider()),
                 ChangeNotifierProvider<LocalProvider>(
                     create: (context) => LocalProvider()),
                 ChangeNotifierProvider<CurrencyChangeProvider>(
@@ -142,15 +135,12 @@ class MyApp extends StatelessWidget {
               ),
               ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
                 update: (context, currencyChangeProvider, bitcoinPriceStream) {
-                  // Check if bitcoinPriceStream is null or currency has changed
                   if (bitcoinPriceStream == null || bitcoinPriceStream.localCurrency != currencyChangeProvider.selectedCurrency) {
-                    // If so, dispose the old stream and create a new one with the updated currency
                     bitcoinPriceStream?.dispose();
                     final newStream = BitcoinPriceStream();
                     newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
                     return newStream;
                   }
-                  // If the currency hasn't changed, return the existing stream
                   return bitcoinPriceStream;
                 },
                 dispose: (context, bitcoinPriceStream) => bitcoinPriceStream.dispose(),
@@ -159,10 +149,6 @@ class MyApp extends StatelessWidget {
                 create: (context) => Provider.of<BitcoinPriceStream>(context, listen: false).priceStream,
                 initialData: ChartLine(time: 0, price: 0),
               ),
-              // StreamProvider<ChartLine?>(
-              //   create: (context) => BitcoinPriceStream().priceStream,
-              //   initialData: ChartLine(time: 0, price: 0),
-              // ),
               StreamProvider<UserData?>(
                 create: (_) => Auth().userWalletStream,
                 initialData: null,

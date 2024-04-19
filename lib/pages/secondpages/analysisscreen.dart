@@ -1,3 +1,5 @@
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
 import 'package:flutter/material.dart';
@@ -6,118 +8,132 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 
 
-class AnalysisWidget extends StatelessWidget {
+class AnalysisScreen extends StatefulWidget {
 
+  @override
+  State<AnalysisScreen> createState() => _AnalysisScreenState();
+}
+
+class _AnalysisScreenState extends State<AnalysisScreen> {
   //Cloudservices
   IEXCloudServicePrice iexcloudprice = IEXCloudServicePrice();
+
   IEXCloudServiceAnalysts iexcloudanalysts = IEXCloudServiceAnalysts();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 300,
-                child: Text(
-                  "The stock is covered by 67 analysts. The average assesment is:",
-                  style: TextStyle(
-                    color: Colors.grey[400],
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
+    return bitnetScaffold(
+      context: context,
+      extendBodyBehindAppBar: true,
+      appBar: bitnetAppBar(
+        context: context,
+        text: "Analysis",
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 300,
+                  child: Text(
+                    "The stock is covered by 67 analysts. The average assesment is:",
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                  padding: EdgeInsets.only(
-                    top: 10,
-                  )),
-              Row(
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        "\$",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
+                Padding(
+                    padding: EdgeInsets.only(
+                      top: 10,
+                    )),
+                Row(
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          "\$",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                          ),
                         ),
-                      ),
-                      Container(
-                        height: 7.5,
-                      )
-                    ],
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(
-                        left: 5,
-                      )),
+                        Container(
+                          height: 7.5,
+                        )
+                      ],
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(
+                          left: 5,
+                        )),
 
-                  FutureBuilder<List<Analysts>>(
-                      future: iexcloudanalysts.getData(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Text(
-                            snapshot.data![0].marketConsensusTargetPrice,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
+                    FutureBuilder<List<Analysts>>(
+                        future: iexcloudanalysts.getData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Text(
+                              snapshot.data![0].marketConsensusTargetPrice,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          }
+                          if(snapshot.hasError){
+                            return Text(
+                              'N/A',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          }
+                          else {
+                            return const Text(
+                              "---",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          }
                         }
-                        if(snapshot.hasError){
-                          return Text(
-                            'N/A',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        }
-                        else {
-                          return const Text(
-                            "---",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        }
-                      }
-                  ),
-                ],
-              ),
-              Padding(
+                    ),
+                  ],
+                ),
+                Padding(
+                    padding: EdgeInsets.only(
+                      top: 5,
+                    )),
+                ChildbuildAnalysis2("Highest assesment:", 1200.28),
+                ChildbuildAnalysis2("Lowest assesment:", 321.1),
+                Padding(
                   padding: EdgeInsets.only(
                     top: 5,
-                  )),
-              ChildbuildAnalysis2("Highest assesment:", 1200.28),
-              ChildbuildAnalysis2("Lowest assesment:", 321.1),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 5,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        ChildbuildAnalysis(),
-        Padding(
-          padding: const EdgeInsets.only(left: 25, right: 25),
-          child: MyDivider(),
-        ),
-        ChildbuildSentimentAnalysis(context, "News sentiment", "negative", "positive", 16),
-        ChildbuildSentimentAnalysis(context, "Fear-Greed", "Extreme fear", "Extreme greed", 50),
-        ChildbuildSentimentAnalysis(context, "Whale-Behaviour", "Bearish", "Bullish", 20),
-      ],
+          ChildbuildAnalysis(),
+          Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: MyDivider(),
+          ),
+          ChildbuildSentimentAnalysis(context, "News sentiment", "negative", "positive", 16),
+          ChildbuildSentimentAnalysis(context, "Fear-Greed", "Extreme fear", "Extreme greed", 50),
+          ChildbuildSentimentAnalysis(context, "Whale-Behaviour", "Bearish", "Bullish", 20),
+        ],
+      ),
     );
   }
 
@@ -289,7 +305,6 @@ class AnalysisWidget extends StatelessWidget {
       ),
     );
   }
-
 
   Widget ChildbuildAnalysis2(String text, double assesment) {
     return Row(

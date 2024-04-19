@@ -29,11 +29,11 @@ class MnemonicGenScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: AppTheme.cardPadding * 2,),
+            SizedBox(height: AppTheme.cardPadding * 5,),
             Icon(FontAwesomeIcons.key,
-            size: AppTheme.cardPadding * 1.5,),
-            SizedBox(height: AppTheme.cardPadding * 1,),
-            Text("Save your mnemonic securely", style: Theme.of(context).textTheme.titleMedium,),
+            size: AppTheme.cardPadding * 2,),
+            SizedBox(height: AppTheme.cardPadding * 2,),
+            Text("Save your mnemonic securely!", style: Theme.of(context).textTheme.headlineSmall,),
             SizedBox(height: AppTheme.cardPadding,),
             Container(
               margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -44,7 +44,7 @@ class MnemonicGenScreen extends StatelessWidget {
             ),
             SizedBox(height: AppTheme.cardPadding,),
             Container(
-              width: AppTheme.cardPadding * 10,
+              width: AppTheme.cardPadding * 14,
               child: FormTextField(
                 readOnly: true, // This makes the text field read-only
                 isMultiline: true,
@@ -55,7 +55,9 @@ class MnemonicGenScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: AppTheme.cardPadding * 1,),
-            LongButtonWidget(title: "Continue", onTap: (){
+            LongButtonWidget(
+                customWidth: AppTheme.cardPadding * 14,
+                title: "Continue", onTap: (){
               mnemonicController.changeWrittenDown();
             }),
           ],

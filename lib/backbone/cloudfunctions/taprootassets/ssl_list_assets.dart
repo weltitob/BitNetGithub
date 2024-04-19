@@ -1,11 +1,12 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:http/http.dart' as http;
 
 
 Future<void> listAssetsWithSSL() async {
-  const String restHost = 'mybitnet.com:8443'; // Update the host as needed
+  String restHost = AppTheme.baseUrlLightningTerminal;
   const String macaroonPath = './assets/keys/tap_admin.macaroon'; // Update the path to the macaroon file
 
   // Read the macaroon file

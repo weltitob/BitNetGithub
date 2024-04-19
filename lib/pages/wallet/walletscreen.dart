@@ -7,6 +7,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -14,6 +15,7 @@ import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:bitnet/components/items/balancecard.dart';
@@ -52,8 +54,19 @@ class _WalletScreenState extends State<WalletScreen> {
         BitcoinUnits.SAT);
 
     List<Container> cards = [
-      Container(child: BalanceCardLightning(controller: widget.controller)),
-      Container(child: BalanceCardBtc(controller: widget.controller)),
+      Container(
+        child: GestureDetector(
+          onTap: () {
+            context.go('/wallet/lightningcard');
+          },
+            child: BalanceCardLightning(controller: widget.controller)
+        ),
+      ),
+      Container(child: GestureDetector(
+          onTap: () {
+            context.go('/wallet/bitcoincard');
+          },
+          child: BalanceCardBtc(controller: widget.controller))),
     ];
 
     return bitnetScaffold(
@@ -67,63 +80,71 @@ class _WalletScreenState extends State<WalletScreen> {
               const SizedBox(height: AppTheme.cardPadding * 1.5),
               Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding * 1.5),
+                    horizontal: AppTheme.cardPadding * 1),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Text(
-                          "Total Wallet Balance",
-                          style: Theme.of(context).textTheme.bodyMedium,
+                        Avatar(
+                          size: AppTheme.cardPadding * 3,
                         ),
-                        SizedBox(
-                          height: AppTheme.elementSpacing * 0.5,
-                        ),
-                        Row(
+                        SizedBox(width: AppTheme.elementSpacing * 1.5,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Consumer<BalanceHideProvider>(
-                                builder: (context, balanceHideProvider, _) {
-                              return balanceHideProvider.hideBalance!
-                                  ? Text(
-                                      '*****',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineLarge,
-                                    )
-                                  : GestureDetector(
-                                      onTap: () => coin.setCurrencyType(
-                                          coin.coin != null
-                                              ? !coin.coin!
-                                              : false),
-                                      child: Container(
-                                        child: (coin.coin ?? true)
-                                            ? Row(
-                                                children: [
-                                                  Text(
-                                                    unitModel.amount.toString(),
+                            Text(
+                              "Total Wallet Balance",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            SizedBox(
+                              height: AppTheme.elementSpacing * 0.25,
+                            ),
+                            Row(
+                              children: [
+                                Consumer<BalanceHideProvider>(
+                                    builder: (context, balanceHideProvider, _) {
+                                  return balanceHideProvider.hideBalance!
+                                      ? Text(
+                                          '*****',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displaySmall,
+                                        )
+                                      : GestureDetector(
+                                          onTap: () => coin.setCurrencyType(
+                                              coin.coin != null
+                                                  ? !coin.coin!
+                                                  : false),
+                                          child: Container(
+                                            child: (coin.coin ?? true)
+                                                ? Row(
+                                                    children: [
+                                                      Text(
+                                                        unitModel.amount.toString(),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .displaySmall,
+                                                      ),
+                                                      // const SizedBox(
+                                                      //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                                                      // ),
+                                                      Icon(
+                                                        getCurrencyIcon(unitModel
+                                                            .bitcoinUnitAsString),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Text(
+                                                    "${currencyEquivalent}${getCurrency(currency!)}",
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headlineLarge,
+                                                        .displaySmall,
                                                   ),
-                                                  // const SizedBox(
-                                                  //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-                                                  // ),
-                                                  Icon(
-                                                    getCurrencyIcon(unitModel
-                                                        .bitcoinUnitAsString),
-                                                  ),
-                                                ],
-                                              )
-                                            : Text(
-                                                "${currencyEquivalent}${getCurrency(currency!)}",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headlineLarge,
-                                              ),
-                                      ));
-                            }),
+                                          ));
+                                }),
+                              ],
+                            ),
                           ],
                         ),
                       ],
@@ -144,7 +165,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: AppTheme.cardPadding,),
+              SizedBox(height: AppTheme.cardPadding * 1.5,),
               Container(
                 height: AppTheme.cardPadding * 9,
                 child: Stack(
@@ -196,16 +217,16 @@ class _WalletScreenState extends State<WalletScreen> {
                       context.push('/wallet/send');
                     },
                       //image: "assets/images/friends.png",
-                      width: AppTheme.cardPadding * 3.5,
-                      height: AppTheme.cardPadding * 3.5,
+                      width: AppTheme.cardPadding * 3.85,
+                      height: AppTheme.cardPadding * 3.85,
                       fallbackIcon: Icons.arrow_upward_rounded,
                     ),
                     BitNetImageWithTextContainer("Receive", () {
                       context.go('/wallet/receive');
                     },
                       //image: "assets/images/key_removed_bck.png",
-                      width: AppTheme.cardPadding * 3.5,
-                      height: AppTheme.cardPadding * 3.5,
+                      width: AppTheme.cardPadding * 3.85,
+                      height: AppTheme.cardPadding * 3.85,
                       fallbackIcon: Icons.arrow_downward_rounded,
                     ),
                     BitNetImageWithTextContainer(
@@ -214,8 +235,8 @@ class _WalletScreenState extends State<WalletScreen> {
                       context.go("/wallet/loop_screen");
                     },
                       //image: "assets/images/key_removed_bck.png",
-                    width: AppTheme.cardPadding * 3.5,
-                    height: AppTheme.cardPadding * 3.5,
+                    width: AppTheme.cardPadding * 3.85,
+                    height: AppTheme.cardPadding * 3.85,
                     fallbackIcon: Icons.sync_rounded,
                     ),
                     // LongButtonWidget(
@@ -242,7 +263,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding),
                 child: Text(
-                  "Chart",
+                  "Buy & Sell",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
@@ -301,6 +322,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
               ),
+              SizedBox(height: AppTheme.elementSpacing,),
               const SizedBox(height: AppTheme.elementSpacing),
               Transactions(),
             ],
@@ -310,7 +332,6 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

@@ -1,4 +1,3 @@
-
 import 'package:bitnet/components/appstandards/backgroundgradient.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -44,40 +43,43 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
         }
       },
       child: Container(
-          height: containerHeight,
-          width: containerWidth,
-          child: widget.buttonType == ButtonType.transparent ? GlassContainer(
-            borderThickness: 1.5, // remove border if not active
-            blur: 50,
-            opacity: 0.1,
-            borderRadius: borderRadius,
-            child: AnimatedScale(
-                duration: const Duration(milliseconds: 200),
-                scale: isHovered ? 1.0 : 0.9,
-                child: icon()),
-          ) : BackgroundGradient(
-            borderRadius: borderRadius,
-            colorprimary: AppTheme.colorBitcoin,
-            colorsecondary: AppTheme.colorPrimaryGradient,
-            child: Container(
-              alignment: Alignment.center,
-              child: AnimatedScale(
-                  duration: const Duration(milliseconds: 200),
-                  scale: isHovered ? 1.0 : 0.9,
-                  child: icon()),
-            ),
-          ),
-
+        height: containerHeight,
+        width: containerWidth,
+        child: widget.buttonType == ButtonType.transparent
+            ? GlassContainer(
+                borderThickness: 1.5, // remove border if not active
+                blur: 50,
+                opacity: 0.1,
+                borderRadius: borderRadius,
+                child: AnimatedScale(
+                    duration: const Duration(milliseconds: 200),
+                    scale: isHovered ? 1.0 : 0.9,
+                    child: icon(context, widget.buttonType)),
+              )
+            : BackgroundGradient(
+                borderRadius: borderRadius,
+                colorprimary: Theme.of(context).colorScheme.primary,
+                colorsecondary: Theme.of(context).colorScheme.secondary,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: AnimatedScale(
+                      duration: const Duration(milliseconds: 200),
+                      scale: isHovered ? 1.0 : 0.9,
+                      child: icon(context, widget.buttonType)),
+                ),
+              ),
       ),
     );
   }
 
-  Widget icon(){
+  Widget icon(BuildContext context, ButtonType buttonType) {
     return Icon(
       widget.iconData,
       color: widget.buttonType == ButtonType.solid
-          ? AppTheme.white90
-          : AppTheme.white90,
+          ? Theme.of(context).colorScheme.onPrimary
+          : Theme.of(context).brightness == Brightness.light
+              ? AppTheme.black70
+              : AppTheme.white90,
       size: widget.size * 0.6,
     );
   }

@@ -4,8 +4,8 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,51 +42,64 @@ class OnChainReceiveTab extends StatelessWidget {
               RoundedButtonWidget(
                   size: AppTheme.cardPadding * 1.5,
                   buttonType: ButtonType.transparent,
-                  iconData: FontAwesomeIcons.refresh, onTap: (){
-                Logs().w("Refresh button pressed: New Bitcoin Adress should be generated // not implemented yet");
-              })
+                  iconData: FontAwesomeIcons.refresh,
+                  onTap: () {
+                    Logs().w(
+                        "Refresh button pressed: New Bitcoin Adress should be generated // not implemented yet");
+                  })
             ],
           ),
           // SizedBox to add some spacing
           const SizedBox(
             height: AppTheme.cardPadding * 2,
           ),
-          SizedBox(
-            child: Center(
-              child: RepaintBoundary(
-                // The Qr code is generated from this widget's global key
-                key: globalKeyQR,
-                child: Column(
-                  children: [
-                    // Custom border painted around the Qr code
-                    CustomPaint(
-                      foregroundPainter: BorderPainter(),
-                      child: Container(
-                        margin: const EdgeInsets.all(AppTheme.cardPadding),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: AppTheme.cardRadiusBigger),
-                        child: Padding(
-                          padding:
-                          const EdgeInsets.all(AppTheme.cardPadding / 1.25),
-                          // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
-                          child: PrettyQrView.data(
-                              data: "bitcoin: ${controller.qrCodeDataStringOnchain}",
-                              decoration: const PrettyQrDecoration(
-                                shape: PrettyQrSmoothSymbol(
-                                  roundFactor: 1,
-                                ),
-                                image: PrettyQrDecorationImage(
-                                  image: const AssetImage('assets/images/bitcoin.png'),
-                                ),)),
+          GestureDetector(
+            onTap: () async {
+              await Clipboard.setData(
+                  ClipboardData(text: controller.qrCodeDataStringLightning));
+              // Display a snackbar to indicate that the wallet address has been copied
+              showOverlay(context, "Wallet-Adresse in Zwischenablage kopiert");
+            },
+            child: SizedBox(
+              child: Center(
+                child: RepaintBoundary(
+                  // The Qr code is generated from this widget's global key
+                  key: globalKeyQR,
+                  child: Column(
+                    children: [
+                      // Custom border painted around the Qr code
+                      CustomPaint(
+                        foregroundPainter: BorderPainter(),
+                        child: Container(
+                          margin: const EdgeInsets.all(AppTheme.cardPadding),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: AppTheme.cardRadiusBigger),
+                          child: Padding(
+                            padding: const EdgeInsets.all(
+                                AppTheme.cardPadding / 1.25),
+                            // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
+                            child: PrettyQrView.data(
+                                data:
+                                    "bitcoin: ${controller.qrCodeDataStringOnchain}",
+                                decoration: const PrettyQrDecoration(
+                                  shape: PrettyQrSmoothSymbol(
+                                    roundFactor: 1,
+                                  ),
+                                  image: PrettyQrDecorationImage(
+                                    image: const AssetImage(
+                                        'assets/images/bitcoin.png'),
+                                  ),
+                                )),
+                          ),
                         ),
                       ),
-                    ),
-                    // SizedBox to add some spacing
-                    const SizedBox(
-                      height: AppTheme.cardPadding * 1.5,
-                    ),
-                  ],
+                      // SizedBox to add some spacing
+                      const SizedBox(
+                        height: AppTheme.cardPadding * 1.5,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -96,8 +109,7 @@ class OnChainReceiveTab extends StatelessWidget {
               await Clipboard.setData(
                   ClipboardData(text: controller.qrCodeDataStringOnchain));
               // Display a snackbar to indicate that the wallet address has been copied
-              showOverlay(
-                  context, "Wallet-Adresse in Zwischenablage kopiert");
+              showOverlay(context, "Wallet-Adresse in Zwischenablage kopiert");
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -154,19 +166,25 @@ class OnChainReceiveTab extends StatelessWidget {
                   );
                 },
               ),
-              RoundedButtonWidget(iconData: Icons.share_rounded,
+              RoundedButtonWidget(
+                iconData: Icons.share_rounded,
                 onTap: () {
                   // Share the wallet address
                   Share.share('${controller.qrCodeDataStringLightning}');
                 },
-                buttonType: ButtonType.transparent,),
-              RoundedButtonWidget(iconData: FontAwesomeIcons.copy, onTap: () async {
-                await Clipboard.setData(
-                    ClipboardData(text: controller.qrCodeDataStringLightning));
-                // Display a snackbar to indicate that the wallet address has been copied
-                showOverlay(
-                    context, "Wallet-Adresse in Zwischenablage kopiert");
-              }, buttonType: ButtonType.transparent,),
+                buttonType: ButtonType.transparent,
+              ),
+              RoundedButtonWidget(
+                iconData: FontAwesomeIcons.copy,
+                onTap: () async {
+                  await Clipboard.setData(ClipboardData(
+                      text: controller.qrCodeDataStringLightning));
+                  // Display a snackbar to indicate that the wallet address has been copied
+                  showOverlay(
+                      context, "Wallet-Adresse in Zwischenablage kopiert");
+                },
+                buttonType: ButtonType.transparent,
+              ),
               SizedBox(
                 width: AppTheme.elementSpacing / 2,
               ),

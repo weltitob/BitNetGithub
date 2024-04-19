@@ -1,10 +1,10 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/searchfield/search_field_with_notif.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/marketplace/HomeScreen.dart';
@@ -159,60 +159,58 @@ class _FeedScreenState extends State<FeedScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: NestedScrollView(
-          controller: _scrollController,
-          headerSliverBuilder: (context, value) {
-            return [
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    SearchFieldWithNotificationsWidget(
-                      isSearchEnabled: true,
-                      hintText: "Search...",
-                      handleSearch: handleSearch,
+    return bitnetScaffold(
+      body: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (context, value) {
+          return [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  SearchFieldWithNotificationsWidget(
+                    isSearchEnabled: true,
+                    hintText: "Search...",
+                    handleSearch: handleSearch,
+                  ),
+                  HorizontalFadeListView(
+                    child: Container(
+                      height: 100,
+                      margin: EdgeInsets.only(left: AppTheme.elementSpacing),
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: walletcategorys.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ScreenCategorys(
+                                walletcategorys[index].imageURL,
+                                walletcategorys[index].text,
+                                walletcategorys[index].header,
+                                index);
+                          }),
                     ),
-                    HorizontalFadeListView(
-                      child: Container(
-                        height: 100,
-                        margin: EdgeInsets.only(left: AppTheme.elementSpacing),
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: walletcategorys.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return ScreenCategorys(
-                                  walletcategorys[index].imageURL,
-                                  walletcategorys[index].text,
-                                  walletcategorys[index].header,
-                                  index);
-                            }),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ];
-          },
-          body:
-              //HomeScreen(),
-              searchResultsFuture == null
-                  ? TabBarView(
-                      controller: _tabController,
-                      children: <Widget>[
-                        HomeScreen(),
-                        Container(
-                          child: Center(
-                              child: Text(
-                            "No users found.",
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          )),
-                        ),
-                      ],
-                    )
-                  : buildSearchResults(),
-        ),
-      ),
+            ),
+          ];
+        },
+        body:
+            //HomeScreen(),
+            searchResultsFuture == null
+                ? TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      HomeScreen(),
+                      Container(
+                        child: Center(
+                            child: Text(
+                          "No users found.",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        )),
+                      ),
+                    ],
+                  )
+                : buildSearchResults(),
+      ), context: context,
     );
   }
 

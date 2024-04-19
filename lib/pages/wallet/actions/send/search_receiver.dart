@@ -17,9 +17,12 @@ class SearchReceiver extends StatelessWidget {
 
   const SearchReceiver({super.key, required this.controller});
 
+
+
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         text: "Choose Recipient",
         context: context,
@@ -30,6 +33,7 @@ class SearchReceiver extends StatelessWidget {
       context: context,
       body: Column(
         children: [
+          SizedBox(height: AppTheme.cardPadding * 2.5,),
           SearchFieldWidget(
             hintText: "Empfänger suchen",
             isSearchEnabled: true,
@@ -59,12 +63,11 @@ class SearchReceiver extends StatelessWidget {
                     onTapOutside: (value) {
                       // Unfocuses the input field when tapped outside of it
                     },
-                    maxLength: 40,
                     focusNode: controller.myFocusNodeAdress,
                     controller: controller.bitcoinReceiverAdressController,
                     onFieldSubmitted: (value) {
                       Logs().w("Adress: $value");
-                      QRScannerController().onQRCodeScanned(value, context);
+                      controller.onQRCodeScanned(value, context);
                       //controller.validateAdress(value);
                     },
                     autofocus: false,

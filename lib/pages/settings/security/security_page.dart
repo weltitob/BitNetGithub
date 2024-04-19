@@ -92,6 +92,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       body: isVerified
           ? Column(
               children: <Widget>[

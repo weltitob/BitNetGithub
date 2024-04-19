@@ -1,16 +1,17 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
+
 class BitcoinTransaction {
   String txHash;
-  String amount; // Keep as String if negative values are represented with "-" sign
+  String amount;
   int numConfirmations;
   String blockHash;
   int blockHeight;
-  int timeStamp; // Changed to int
-  String totalFees; // Keep as String if negative values are possible
+  int timeStamp;
+  String totalFees;
   List<String> destAddresses;
   List<OutputDetail> outputDetails;
-  String rawTxHex;
-  String label;
+  String? rawTxHex; // Make nullable if not always provided
+  String? label; // Make nullable if not always provided
   List<PreviousOutpoint> previousOutpoints;
 
   BitcoinTransaction({
@@ -23,25 +24,25 @@ class BitcoinTransaction {
     required this.totalFees,
     required this.destAddresses,
     required this.outputDetails,
-    required this.rawTxHex,
-    required this.label,
+    this.rawTxHex, // Remove required if nullable
+    this.label, // Remove required if nullable
     required this.previousOutpoints,
   });
 
   factory BitcoinTransaction.fromJson(Map<String, dynamic> json) {
     return BitcoinTransaction(
-      txHash: json['tx_hash'],
-      amount: json['amount'],
-      numConfirmations: json['num_confirmations'],
-      blockHash: json['block_hash'],
-      blockHeight: json['block_height'],
-      timeStamp: int.parse(json['time_stamp']), // Parse to int
-      totalFees: json['total_fees'],
-      destAddresses: List<String>.from(json['dest_addresses'].map((x) => x)),
-      outputDetails: List<OutputDetail>.from(json['output_details'].map((x) => OutputDetail.fromJson(x))),
-      rawTxHex: json['raw_tx_hex'],
-      label: json['label'] ?? '', // Handle potential null value
-      previousOutpoints: List<PreviousOutpoint>.from(json['previous_outpoints'].map((x) => PreviousOutpoint.fromJson(x))),
+      txHash: json['tx_hash']!,
+      amount: json['amount']!,
+      numConfirmations: json['num_confirmations']!,
+      blockHash: json['block_hash']!,
+      blockHeight: json['block_height']!,
+      timeStamp: int.parse(json['time_stamp']),
+      totalFees: json['total_fees']!,
+      destAddresses: List<String>.from(json['dest_addresses'].map((x) => x as String)),
+      outputDetails: List<OutputDetail>.from(json['output_details'].map((x) => OutputDetail.fromJson(x as Map<String, dynamic>))),
+      rawTxHex: json['raw_tx_hex'] as String?,
+      label: json['label'] as String?,
+      previousOutpoints: List<PreviousOutpoint>.from(json['previous_outpoints'].map((x) => PreviousOutpoint.fromJson(x as Map<String, dynamic>))),
     );
   }
 }
@@ -50,8 +51,8 @@ class OutputDetail {
   String outputType;
   String address;
   String pkScript;
-  int outputIndex; // Changed to int
-  String amount; // Keep as String if negative values are represented with "-" sign
+  int outputIndex;
+  String amount;
   bool isOurAddress;
 
   OutputDetail({
@@ -65,11 +66,11 @@ class OutputDetail {
 
   factory OutputDetail.fromJson(Map<String, dynamic> json) {
     return OutputDetail(
-      outputType: json['output_type'],
-      address: json['address'],
-      pkScript: json['pk_script'],
-      outputIndex: int.parse(json['output_index']), // Parse to int
-      amount: json['amount'],
+      outputType: json['output_type']!,
+      address: json['address']!,
+      pkScript: json['pk_script']!,
+      outputIndex: int.parse(json['output_index']),
+      amount: json['amount']!,
       isOurAddress: json['is_our_address'],
     );
   }
@@ -84,10 +85,9 @@ class PreviousOutpoint {
     required this.isOurOutput,
   });
 
-  // From JSON
   factory PreviousOutpoint.fromJson(Map<String, dynamic> json) {
     return PreviousOutpoint(
-      outpoint: json['outpoint'],
+      outpoint: json['outpoint']!,
       isOurOutput: json['is_our_output'],
     );
   }
@@ -100,10 +100,9 @@ class BitcoinTransactionsList {
     required this.transactions,
   });
 
-  // From JSON
   factory BitcoinTransactionsList.fromJson(Map<String, dynamic> json) {
     return BitcoinTransactionsList(
-      transactions: List<BitcoinTransaction>.from(json['transactions'].map((x) => BitcoinTransaction.fromJson(x))),
+      transactions: List<BitcoinTransaction>.from(json['transactions'].map((x) => BitcoinTransaction.fromJson(x as Map<String, dynamic>))),
     );
   }
 }

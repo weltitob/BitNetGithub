@@ -45,14 +45,13 @@ class bitnetScaffold extends StatelessWidget {
               width: double.infinity,
               height: double.infinity,
               // The screen background is a gradient
-
               decoration: BoxDecoration(
                   gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomRight,
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
                       colors: [
-                        Theme.of(context).colorScheme.background.withAlpha(100),
-                        Theme.of(context).colorScheme.background,
+                        Theme.of(context).brightness == Brightness.light ? lighten(Theme.of(context).colorScheme.primaryContainer, 60) :darken(Theme.of(context).colorScheme.primaryContainer, 80),
+                        Theme.of(context).brightness == Brightness.light ? lighten(Theme.of(context).colorScheme.tertiaryContainer, 60) :darken(Theme.of(context).colorScheme.tertiaryContainer, 80),
                       ])),
               child: Padding(
                 padding: extendBodyBehindBottomNav ? EdgeInsets.only(bottom: AppTheme.cardPadding * 3) : EdgeInsets.zero,
@@ -71,14 +70,22 @@ class bitnetScaffold extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       stops: [0.0, 0.25, 0.5, 0.75, 1.0],
-                      colors: [
-                        Theme.of(context).colorScheme.background,
-                        Theme.of(context).colorScheme.background.withOpacity(0.9),
-                        Theme.of(context).colorScheme.background.withOpacity(0.7),
-                        Theme.of(context).colorScheme.background.withOpacity(0.4),
-                        //Theme.of(context).colorScheme.background,
-                        Theme.of(context).colorScheme.background.withOpacity(0.0001),
-                      ])),
+                      colors: Theme.of(context).brightness == Brightness.light ?[
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60),
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60).withOpacity(0.9),
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60).withOpacity(0.7),
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60).withOpacity(0.4),
+                        lighten(Theme.of(context).colorScheme.primaryContainer, 60).withOpacity(0.0001),
+                      ] :
+                          [
+                            darken(Theme.of(context).colorScheme.primaryContainer, 80),
+                            darken(Theme.of(context).colorScheme.primaryContainer, 80).withOpacity(0.9),
+                            darken(Theme.of(context).colorScheme.primaryContainer, 80).withOpacity(0.7),
+                            darken(Theme.of(context).colorScheme.primaryContainer, 80).withOpacity(0.4),
+                            darken(Theme.of(context).colorScheme.primaryContainer, 80).withOpacity(0.0001),
+                          ]
+
+                  )),
             ) : Container(),
           ],
         ),
