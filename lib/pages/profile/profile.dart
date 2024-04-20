@@ -44,11 +44,12 @@ class ProfileController extends State<Profile> {
 
   //check if currentuser follows the displayed person
   late bool isFollowing;
-
+  bool gotIsFollowing = false;
   //followers
   late int followerCount;
   late int followingCount;
-
+  bool gotFollowerCount = false;
+  bool gotFollowingCount = false;
   TextEditingController displayNameController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
@@ -60,7 +61,7 @@ class ProfileController extends State<Profile> {
   final focusNodeDisplayName = FocusNode();
   final focusNodeUsername = FocusNode();
   final focusNodeBio = FocusNode();
-
+  bool get profileReady => gotIsFollowing == true && gotFollowerCount == true && gotFollowingCount == true && isUserLoading == false;
   @override
   void initState() {
     super.initState();
@@ -304,6 +305,7 @@ class ProfileController extends State<Profile> {
     await followersRef.doc(profileId).collection('userFollowers').get();
     setState(() {
       followerCount = snapshot.docs.length;
+      gotFollowerCount = true;
     });
   }
 
@@ -312,6 +314,7 @@ class ProfileController extends State<Profile> {
     await followingRef.doc(profileId).collection('userFollowing').get();
     setState(() {
       followingCount = snapshot.docs.length;
+      gotFollowingCount = true;
     });
   }
 
@@ -325,11 +328,12 @@ class ProfileController extends State<Profile> {
         .get();
     setState(() {
       isFollowing = doc.exists;
+      gotIsFollowing = true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ProfileView(this);
+    return !profileReady ? Center(child:CircularProgressIndicator()) : ProfileView(this);
   }
 }
