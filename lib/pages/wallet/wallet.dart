@@ -92,10 +92,13 @@ class WalletController extends State<Wallet> {
   void fetchOnchainWalletBalance() async {
     try{
       RestResponse onchainBalanceRest = await walletBalance();
+      if(onchainBalanceRest.statusCode == 200) {
       OnchainBalance onchainBalance = OnchainBalance.fromJson(onchainBalanceRest.data);
-      setState(() {
+setState(() {
         this.onchainBalance = onchainBalance;
       });
+      }
+      
       changeTotalBalanceStr();
     } catch (e) {
       print(e);

@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/fundpsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtransaction.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
@@ -85,11 +86,18 @@ class SendController extends State<Send> {
     if (invoice != null) {
       Logs().w("Invoice: $invoice");
       giveValuesToInvoice(invoice!);
-    } else if (walletAdress != null) {
+      moneyController.text = (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
+      bitcoinUnit = BitcoinUnits.SAT;
+    }
+    else if(walletAdress != null){
       Logs().w("Walletadress: $walletAdress");
 
       giveValuesToOnchainSend(walletAdress);
-    } else {
+            moneyController.text = (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
+      bitcoinUnit = BitcoinUnits.SAT;
+
+    }
+    else{
       Logs().w("No parameters found");
     }
     Logs().w("Invoice: $invoice");
