@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -148,6 +149,9 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
           },
           text: L10n.of(context)!.pinCodeVerification,
           context: context,
+          actions: [
+         PopUpLangPickerWidget()
+        ]
         ),
         gradientColor: Colors.black,
         key: scaffoldKey,

@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/appbaractions.dart';
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
@@ -45,6 +46,8 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                       iconData: Icons.info_outline_rounded,
                     )
                   ),
+                                  PopUpLangPickerWidget(),
+
               ],
               text: "Social recovery",
               context: context,

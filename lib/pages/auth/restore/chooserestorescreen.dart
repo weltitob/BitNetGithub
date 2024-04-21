@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/components/resultlist/users.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -68,7 +69,10 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             context: context,
             onTap: () {
               context.go('/authhome');
-            }),
+            },
+            actions: [
+         PopUpLangPickerWidget()
+        ]),
         body: ListView(
           children: [
             SizedBox(

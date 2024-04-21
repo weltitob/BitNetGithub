@@ -1,3 +1,4 @@
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -53,7 +54,10 @@ class _CreateAccountViewState extends State<CreateAccountView>
                 if (!widget.controller.isLoading) {
                   context.go('/authhome');
                 }
-              }),
+              },
+              actions: [
+         PopUpLangPickerWidget()
+        ]),
           body: BackgroundWithContent(
             backgroundType: BackgroundType.asset,
             opacity: 0.8,

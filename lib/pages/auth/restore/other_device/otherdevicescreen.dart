@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/futurelottie.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
@@ -53,7 +54,10 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
             context: context,
             onTap: () {
               Navigator.of(context).pop();
-            }),
+            },
+            actions: [
+         PopUpLangPickerWidget()
+        ]),
         body: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: AppTheme.cardPadding * 1.5),

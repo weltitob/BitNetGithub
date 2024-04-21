@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:bitnet/models/user/userdata.dart';
@@ -11,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
+import 'package:provider/provider.dart';
 
 
 class MnemonicGen extends StatefulWidget {
@@ -116,7 +120,10 @@ class MnemonicController extends State<MnemonicGen> {
           userdata,
           verificationCode
       );
-
+      LocalProvider localeProvider = Provider.of<LocalProvider>(context, listen: false);
+               Locale deviceLocale = PlatformDispatcher.instance.locale;// or html.window.locale
+         String langCode = deviceLocale.languageCode;
+      localeProvider.setLocaleInDatabase(localeProvider.locale?.languageCode ?? langCode, localeProvider.locale ?? deviceLocale);
       Logs().w("Navigating to homescreen now...");
       context.go('/');
 
