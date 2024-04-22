@@ -40,6 +40,9 @@ class _MempoolHomeState extends State<MempoolHome> {
       context: context,
       appBar: bitnetAppBar(
         text: 'Mempool',
+        onTap: (){
+          context.pop();
+        },
         actions: [
           IconButton(
             onPressed: () {

@@ -6,6 +6,7 @@ import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HashrateScreen extends StatefulWidget {
   const HashrateScreen({super.key});
@@ -67,9 +68,13 @@ class _HashrateScreenState extends State<HashrateScreen> {
     return bitnetScaffold(
       context: context,
       extendBodyBehindAppBar: true,
+
       appBar: bitnetAppBar(
         text: 'Hashrate',
         context: context,
+        onTap: (){
+          context.pop();
+        },
       ),
       body: Column(
         children: [
