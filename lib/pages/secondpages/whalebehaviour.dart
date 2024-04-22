@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart';
@@ -204,6 +205,9 @@ class InsiderWidget extends StatelessWidget {
       appBar: bitnetAppBar(
         text: 'Whale Behaviour',
         context: context,
+        onTap: (){
+          context.pop();
+        },
       ),
       body: Padding(
         padding: const EdgeInsets.only(

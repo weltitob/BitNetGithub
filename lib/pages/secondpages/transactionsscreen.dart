@@ -5,6 +5,7 @@ import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recentreplacements.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recenttransactions.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LastTransactionsScreen extends StatefulWidget {
   const LastTransactionsScreen({super.key});
@@ -35,9 +36,12 @@ class _LastTransactionsScreenState extends State<LastTransactionsScreen> with Si
       appBar: bitnetAppBar(
         context: context,
         text: "Last Transactions",
+        onTap: (){
+          context.pop();
+        },
       ),
       body: RoundedContainer(
-        contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
+        contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding * 2.5),
         child: Column(
           children: [
             TabBar(
