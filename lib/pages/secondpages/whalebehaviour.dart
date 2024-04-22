@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
@@ -198,13 +199,17 @@ class InsiderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
         text: 'Whale Behaviour',
         context: context,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
+        padding: const EdgeInsets.only(
+            left: AppTheme.elementSpacing,
+            right: AppTheme.elementSpacing,
+            top: AppTheme.cardPadding * 3),
         child: Container(
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -340,7 +345,8 @@ class InsiderWidget extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: const Text('No results found',
                             style: TextStyle(
-                                color: Colors.grey, fontWeight: FontWeight.bold)),
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold)),
                       );
                   }),
             ],
