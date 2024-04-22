@@ -1,15 +1,21 @@
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
+import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class LightningTransactionDetails extends StatelessWidget {
   final TransactionItemData data;
@@ -18,6 +24,18 @@ class LightningTransactionDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String formattedDate = displayTimeAgoFromInt(data.timestamp);
+    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
+    print('cooin ${coin.coin}');
+    currency = currency ?? "USD";
+
+    final bitcoinPrice = chartLine?.price;
+    final currencyEquivalent = bitcoinPrice != null
+        ? (double.parse(data.amount) / 100000000 * bitcoinPrice)
+        .toStringAsFixed(2)
+        : "0.00";
     return bitnetScaffold(
         context: context,
         extendBodyBehindAppBar: true,
@@ -58,12 +76,53 @@ class LightningTransactionDetails extends StatelessWidget {
             ),
 
             SizedBox(height: AppTheme.cardPadding),
-            Text(data.amount,
-                style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                    color:
-                    data.direction == TransactionDirection.received
-                        ? AppTheme.successColor
-                        : AppTheme.errorColor)),
+            Consumer<BalanceHideProvider>(
+                builder: (context, balanceHideProvider, _) {
+              return balanceHideProvider.hideBalance!
+                  ? Text(
+                '*****',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium,
+              )
+                  : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      coin.setCurrencyType(
+                          coin.coin != null
+                              ? !coin.coin!
+                              : false);
+                    },
+                    child: Text(
+                      coin.coin ?? true ? data.amount : "$currencyEquivalent${getCurrency(currency!)}",
+                      overflow: TextOverflow.ellipsis,
+                      style:Theme.of(context).textTheme.displayLarge!
+                          .copyWith(
+                          color: data.direction ==
+                              TransactionDirection
+                                  .received
+                              ? AppTheme.successColor
+                              : AppTheme.errorColor),
+                    ),
+                  ),
+                  coin.coin ?? true ? Icon(AppTheme.satoshiIcon, color: data.direction ==
+                      TransactionDirection
+                          .received
+                      ? AppTheme.successColor
+                      : AppTheme.errorColor,) : SizedBox.shrink(),
+                ],
+              );
+
+              // Text(data.amount,
+              //       style: Theme.of(context).textTheme.displayLarge!.copyWith(
+              //           color:
+              //           data.direction == TransactionDirection.received
+              //               ? AppTheme.successColor
+              //               : AppTheme.errorColor));
+            }
+          ),
             SizedBox(height: AppTheme.elementSpacing),
             Text(formattedDate,
                 style: Theme.of(context).textTheme.bodyLarge),
