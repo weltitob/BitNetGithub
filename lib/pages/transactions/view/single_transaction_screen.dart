@@ -3,6 +3,7 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings, prefer_const_constructors
 
 import 'dart:math';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
@@ -22,6 +23,7 @@ class SingleTransactionScreen extends StatelessWidget {
     final controllerHome = Get.put(HomeController());
     return bitnetScaffold(
       context: context,
+      extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(context: context,
         onTap: (){
           controller.timer?.cancel();
@@ -83,7 +85,6 @@ class SingleTransactionScreen extends StatelessWidget {
           //Navigator.pop(context);
           // VRouter.of(context).previousUrl;
           // controller.txID = '';
-          print('will pop');
         },
         child: Obx(() {
           return controller.isLoading.isTrue
@@ -94,8 +95,8 @@ class SingleTransactionScreen extends StatelessWidget {
               ? Center(child: Text('Something went wrong'))
               : SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 0.0, vertical: 0.0),
+              padding: const EdgeInsets.only(
+                  top: AppTheme.cardPadding * 2),
               child: Container(
                // decoration: BoxDecoration(color: primaryColor),
                 child: Column(
