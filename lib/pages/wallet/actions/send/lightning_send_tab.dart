@@ -1,13 +1,17 @@
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:matrix/matrix.dart';
+import 'package:provider/provider.dart';
 
 class LightningSendTab extends StatelessWidget {
   final SendController controller;
@@ -180,6 +184,15 @@ class LightningSendTab extends StatelessWidget {
   }
 
   Widget bitcoinWidget(BuildContext context) {
+        String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    currency = currency ?? "USD";
+                     final chartLine = Provider.of<ChartLine?>(context, listen: false);
+
+    final bitcoinPrice = chartLine?.price;
+
+    controller.currencyController.text = CurrencyConverter.convertCurrency("SATS", double.parse(controller.moneyController.text), currency, bitcoinPrice!);
+ 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: Column(
@@ -187,12 +200,12 @@ class LightningSendTab extends StatelessWidget {
         children: [
           AmountWidget(
             bitcoinUnit: controller.bitcoinUnit,
-            enabled: controller.moneyTextFieldIsEnabled,
+            enabled: double.parse(controller.currencyController.text) == 0,
             btcController: controller.moneyController,
-            currController: TextEditingController(),
+            currController: controller.currencyController,
             focusNode: controller.myFocusNodeMoney,
             context: context,
-            swapped: false
+            swapped: true
           ),
         ],
       ),

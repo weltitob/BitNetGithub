@@ -76,79 +76,88 @@ class _AmountWidgetState extends State<AmountWidget> {
             children: [
               
               // Text field to enter Bitcoin value
-              TextField(
-                
-                enabled: widget.enabled,
-                focusNode: widget.focusNode,
-                onTap: () {
-                  // Validate Bitcoin address when the text field is tapped
-                },
-                onTapOutside: (value) {
-                  // Unfocus the text field when tapped outside
-                  if (widget.focusNode.hasFocus) {
-                    widget.focusNode.unfocus();
-                  }
-                },
-                textAlign: TextAlign.center,
-                onChanged: (text) {
-                },
-                maxLength: 10,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  // Only allow numerical values with a decimal point
-                  FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
-                  // Restrict the range of input to be within 0 and 2000
-                  NumericalRangeFormatter(
-                      min: 0, max: double.parse("99999999999"), context: context),
-                ],
-                decoration: InputDecoration(
-                  prefixIcon: IconButton(onPressed: (){
-                  this.swapped = !this.swapped;
-                  if(this.swapped) {
+              Row(
+                children: [
+                     IconButton(onPressed: (){
+                        this.swapped = !this.swapped;
+                        if(this.swapped) {
+                    
+                           final chartLine = Provider.of<ChartLine?>(context, listen: false);
+                        currency = currency ?? "USD";
+                    
+                        final bitcoinPrice = chartLine?.price;
+                        final currencyEquivalent = bitcoinPrice != null
+                            ? CurrencyConverter.convertCurrency(widget.bitcoinUnit.name, double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text), currency!, bitcoinPrice)
+                            : "0.00";
+                          
+                        this.widget.currController.text = currencyEquivalent;
+                        } else {
+                                         final chartLine = Provider.of<ChartLine?>(context, listen: false);
+                        currency = currency ?? "USD";
+                    
+                        final bitcoinPrice = chartLine?.price;
+                        final currencyEquivalent = bitcoinPrice != null
+                            ? CurrencyConverter.convertCurrency(currency!, double.parse(widget.currController.text.isEmpty ? "0.0" : widget.currController.text), widget.bitcoinUnit.name, bitcoinPrice)
+                            : "0.00";
+                    
+                          widget.btcController.text = currencyEquivalent;
+                        }
+                        widget.focusNode.unfocus();
+                        setState((){});
+                      }, icon: Icon(Icons.swap_vert, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90)),
 
-                     final chartLine = Provider.of<ChartLine?>(context, listen: false);
-    currency = currency ?? "USD";
-
-    final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null
-        ? CurrencyConverter.convertCurrency(widget.bitcoinUnit.name, double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text), currency!, bitcoinPrice)
-        : "0.00";
-      
-                  this.widget.currController.text = currencyEquivalent;
-                  } else {
-                                   final chartLine = Provider.of<ChartLine?>(context, listen: false);
-    currency = currency ?? "USD";
-
-    final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null
-        ? CurrencyConverter.convertCurrency(currency!, double.parse(widget.currController.text.isEmpty ? "0.0" : widget.currController.text), widget.bitcoinUnit.name, bitcoinPrice)
-        : "0.00";
-
-                    widget.btcController.text = currencyEquivalent;
-                  }
-                  widget.focusNode.unfocus();
-                  setState((){});
-                }, icon: Icon(Icons.swap_vert, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90)),
-                suffixIcon: this.swapped? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(getCurrency(currency!),
-                    style: TextStyle(fontSize: 24 , color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90)),
-                  ],
-                ) : Icon(
-                  getCurrencyIcon(widget.bitcoinUnit.name),
-                  size: AppTheme.cardPadding * 1.25,
-                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90
+                  Expanded(
+                    child: Container(
+                      width: 300,
+                      child: TextField(
+                        enabled: widget.enabled,
+                        focusNode: widget.focusNode,
+                        onTap: () {
+                          // Validate Bitcoin address when the text field is tapped
+                        },
+                        onTapOutside: (value) {
+                          // Unfocus the text field when tapped outside
+                          if (widget.focusNode.hasFocus) {
+                            widget.focusNode.unfocus();
+                          }
+                        },
+                        textAlign: TextAlign.center,
+                        onChanged: (text) {
+                        },
+                        maxLength: 10,
+                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                        inputFormatters: [
+                          // Only allow numerical values with a decimal point
+                          FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
+                          // Restrict the range of input to be within 0 and 2000
+                          NumericalRangeFormatter(
+                              min: 0, max: double.parse("99999999999"), context: context),
+                        ],
+                        decoration: InputDecoration(
+                        suffixIcon: this.swapped? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(getCurrency(currency!),
+                            style: TextStyle(fontSize: 24 , color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90)),
+                          ],
+                        ) : Icon(
+                          getCurrencyIcon(widget.bitcoinUnit.name),
+                          size: AppTheme.cardPadding * 1.25,
+                          color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90
+                            ),
+                          border: InputBorder.none,
+                          counterText: "",
+                          hintText: "0.0",
+                          hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60),
+                        ),
+                        controller: swapped ? widget.currController :  widget.btcController,
+                        autofocus: false,
+                        
+                        style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90),
+                      ),
                     ),
-                  border: InputBorder.none,
-                  counterText: "",
-                  hintText: "0.0",
-                  hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60),
-                ),
-                controller: swapped ? widget.currController :  widget.btcController,
-                autofocus: false,
-                
-                style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90),
+                  ),
+                ],
               ),
               // TextField(
               //   enabled: controller.moneyTextFieldIsEnabled,
@@ -217,11 +226,12 @@ class _AmountWidgetState extends State<AmountWidget> {
     final currencyEquivalent = bitcoinPrice != null
         ? CurrencyConverter.convertCurrency(bitcoinUnit.name, double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text), currency, bitcoinPrice)
         : "0.00";
-  
+    widget.currController.text = currencyEquivalent;
+
 
 
     return Text(
-      "≈ ${currencyEquivalent}${getCurrency(currency)}", // show the converted value of Bitcoin to Euro with 2 decimal places
+      "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency)}", // show the converted value of Bitcoin to Euro with 2 decimal places
       style: Theme.of(context)
           .textTheme
           .bodyLarge!.copyWith(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90), // use the bodyLarge text theme style from the current theme
@@ -243,7 +253,7 @@ class _AmountWidgetState extends State<AmountWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "≈ ${currencyEquivalent}", // show the converted value of Bitcoin to Euro with 2 decimal places
+          "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}", // show the converted value of Bitcoin to Euro with 2 decimal places
           style: Theme.of(context)
               .textTheme
               .bodyLarge!.copyWith(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90), // use the bodyLarge text theme style from the current theme
