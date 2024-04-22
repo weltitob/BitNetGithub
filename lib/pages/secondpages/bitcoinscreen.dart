@@ -182,6 +182,35 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   ),
                 ],
               ),
+              SizedBox(height: AppTheme.cardPadding * 1,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  BitNetImageWithTextContainer(
+                    "Fear and Greed",
+                        () {
+                      context.push('/wallet/bitcoinscreen/fearandgreed');
+                    },
+                    fallbackIcon: Icons.speed_rounded,
+                    width: AppTheme.cardPadding * 4,
+                    height: AppTheme.cardPadding * 4,
+                  ),
+                  BitNetImageWithTextContainer(
+                    "No info",
+                        () => context.push('/wallet/bitcoinscreen/whales'),
+                    fallbackIcon: FontAwesomeIcons.fish,
+                    width: AppTheme.cardPadding * 4,
+                    height: AppTheme.cardPadding * 4,
+                  ),
+                  BitNetImageWithTextContainer(
+                    "No info",
+                        () => context.push('/wallet/bitcoinscreen/news'),
+                    fallbackIcon: FontAwesomeIcons.newspaper,
+                    width: AppTheme.cardPadding * 4,
+                    height: AppTheme.cardPadding * 4,
+                  ),
+                ],
+              ),
               SizedBox(height: AppTheme.cardPadding * 2,),
             ],
           )),

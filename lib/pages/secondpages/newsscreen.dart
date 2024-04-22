@@ -76,22 +76,22 @@ class _NewsScreenState extends State<NewsScreen> {
       context: context,
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
-        text: "News",
+        text: "Bitcoin News",
         context: context,
       ),
       body: Container(child: _loading
           ? Center(
               child: Container(
-                height: 200,
+                height: AppTheme.cardPadding * 10,
                 child: dotProgress(context),
               ),
             )
           : Padding(
-              padding: const EdgeInsets.only(top: 5.0),
+              padding: const EdgeInsets.only(top: AppTheme.elementSpacing / 2),
               child: Container(
                 child: ListView.builder(
-                    itemCount: newslist.length > 5
-                        ? newslist.length = 5
+                    itemCount: newslist.length > 20
+                        ? newslist.length = 20
                         : newslist.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
