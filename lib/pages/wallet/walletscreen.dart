@@ -121,8 +121,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 ? Row(
                                                     children: [
                                                       Text(
-                                                        widget.controller
-                                                            .totalBalanceStr,
+                                                        unitModel.amount.toString(),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .displaySmall,
@@ -215,7 +214,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     BitNetImageWithTextContainer("Send", () {
-                      context.go('/wallet/send');
+                      context.push('/wallet/send');
                     },
                       //image: "assets/images/friends.png",
                       width: AppTheme.cardPadding * 3.85,

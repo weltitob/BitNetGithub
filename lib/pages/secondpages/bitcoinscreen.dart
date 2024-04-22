@@ -60,52 +60,55 @@ class _BitcoinScreenState extends State<BitcoinScreen>
         scrollDirection: Axis.vertical,
         controller: _controller,
         children: [
-          Column(
-            children: [
-              SizedBox(
-                height: AppTheme.cardPadding * 2,
-              ),
-              ChartWidget(),
-              SizedBox(
-                height: AppTheme.elementSpacing * 4,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  LongButtonWidget(
-                      customWidth: AppTheme.cardPadding * 7.5,
-                      customHeight: AppTheme.cardPadding * 2.5,
-                      title: "Buy",
-                      onTap: () {
-                        BitNetBottomSheet(
-                            context: context, child: PurchaseSheet());
-                      }),
-                  SizedBox(
-                    width: AppTheme.elementSpacing,
-                  ),
-                  LongButtonWidget(
-                      buttonType: ButtonType.transparent,
-                      customWidth: AppTheme.cardPadding * 7.5,
-                      customHeight: AppTheme.cardPadding * 2.5,
-                      title: "Sell",
-                      onTap: () {
-                        BitNetBottomSheet(
-                            context: context,
-                            child: Column(
-                              children: [
-                                AmountWidget(
-                                    enabled: true,
-                                    btcController: TextEditingController(),
-                                    currController: TextEditingController(),
-                                    focusNode: FocusNode(),
-                                    context: context),
-                              ],
-                            ));
-                      }),
-                ],
-              )
-            ],
+          SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: AppTheme.cardPadding * 2,
+                ),
+                ChartWidget(),
+                SizedBox(
+                  height: AppTheme.elementSpacing * 4,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    LongButtonWidget(
+                        customWidth: AppTheme.cardPadding * 7.5,
+                        customHeight: AppTheme.cardPadding * 2.5,
+                        title: "Buy",
+                        onTap: () {
+                          BitNetBottomSheet(
+                              context: context, child: PurchaseSheet());
+                        }),
+                    SizedBox(
+                      width: AppTheme.elementSpacing,
+                    ),
+                    LongButtonWidget(
+                        buttonType: ButtonType.transparent,
+                        customWidth: AppTheme.cardPadding * 7.5,
+                        customHeight: AppTheme.cardPadding * 2.5,
+                        title: "Sell",
+                        onTap: () {
+                          BitNetBottomSheet(
+                              context: context,
+                              child: Column(
+                                children: [
+                                  AmountWidget(
+                                      enabled: true,
+                                      btcController: TextEditingController(),
+                                      currController: TextEditingController(),
+                                      focusNode: FocusNode(),
+                                      context: context),
+                                ],
+                              ));
+                        }),
+                  ],
+                )
+              ],
+            ),
           ),
           SizedBox(height: AppTheme.cardPadding * 4,),
           RoundedContainer(
@@ -200,18 +203,26 @@ class PurchaseSheet extends StatefulWidget {
 class _PurchaseSheetState extends State<PurchaseSheet>
     with TickerProviderStateMixin {
   late TabController controller;
+  late TextEditingController btcCtrl;
+  late TextEditingController currCtrl;
   @override
-  void initState() {
-    controller = TabController(length: 3, vsync: this);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
+ void initState() {
+  controller = TabController(length: 3, vsync: this);
+  btcCtrl = TextEditingController();
+  currCtrl = TextEditingController();
+  btcCtrl.addListener(() {
+  });
+    currCtrl.addListener(() {
+  });
+  super.initState();
+ }
+ @override 
+ void dispose() {
+  btcCtrl.dispose();
+  currCtrl.dispose();
+  controller.dispose();
+  super.dispose();
+ }
   @override
   Widget build(BuildContext context) {
     return TabBarView(
@@ -232,8 +243,8 @@ class _PurchaseSheetState extends State<PurchaseSheet>
               ),
               AmountWidget(
                   enabled: true,
-                  btcController: TextEditingController(),
-                  currController: TextEditingController(),
+                  btcController: btcCtrl,
+                  currController: currCtrl,
                   focusNode: FocusNode(),
                   context: context),
               SizedBox(
