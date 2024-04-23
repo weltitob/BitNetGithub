@@ -1,4 +1,10 @@
 //import 'package:bitnet/l10n/l10n.dart';
+import 'dart:ui';
+
+import 'package:bitnet/backbone/helper/language.dart';
+import 'package:bitnet/backbone/streams/locale_provider.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +13,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:provider/provider.dart';
 
 
 class GetStartedScreen extends StatefulWidget {
@@ -19,12 +26,19 @@ class GetStartedScreen extends StatefulWidget {
 
 class _GetStartedScreenState extends State<GetStartedScreen> {
   late final Future<LottieComposition> _compostionBitcoin;
-
+  // late Locale deviceLocale;
+  // late String langCode;
+  // bool initLocale = false;
   @override
   void initState() {
     super.initState();
     _compostionBitcoin =
         loadComposition('assets/lottiefiles/bitcoinanimation.json');
+        //  deviceLocale = PlatformDispatcher.instance.locale;// or html.window.locale
+        //  langCode = deviceLocale.languageCode;
+
+
+
   }
 
   @override
@@ -35,7 +49,12 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
+//     if(!initLocale) {
+// Provider.of<LocalProvider>(context, listen: false)
+//             .setLocaleInDatabase(langCode,
+//             deviceLocale, isUser: false);
+//             initLocale = true;
+//     }
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       bool isSuperSmallScreen =
@@ -68,9 +87,12 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               ? AppTheme.columnWidth * 0.15
               : AppTheme.columnWidth * 0.65
           : AppTheme.columnWidth;
-
+         
       return bitnetScaffold(
         extendBodyBehindAppBar: true,
+        appBar: bitnetAppBar(context: context,hasBackButton: false,actions: [
+         PopUpLangPickerWidget()
+        ]),
         context: context,
         backgroundColor: Theme.of(context).colorScheme.background,
         margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -137,3 +159,4 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
     });
   }
 } //
+

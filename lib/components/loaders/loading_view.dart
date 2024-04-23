@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/foundation.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:matrix/matrix.dart';
+import 'package:provider/provider.dart';
 
 
 class LoadingViewAppStart extends StatelessWidget {
@@ -44,6 +46,13 @@ class LoadingViewAppStart extends StatelessWidget {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {          if(kIsWeb){
             context.go('/website');
           } else{
+                     Locale deviceLocale = PlatformDispatcher.instance.locale;// or html.window.locale
+        String langCode = deviceLocale.languageCode;
+
+            Provider.of<LocalProvider>(context, listen: false)
+            .setLocaleInDatabase(langCode,
+            deviceLocale, isUser: false);
+
             context.go('/authhome');
           }
  });

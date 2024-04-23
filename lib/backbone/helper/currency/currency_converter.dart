@@ -9,7 +9,7 @@ class CurrencyConverter {
       if (inputCurrency == outputCurrency) {
         return amount.toStringAsFixed(2);
       } else if (inputCurrency == "BTC") {
-        return (amount * bitcoinPrice!).toStringAsFixed(2);
+        return (amount * bitcoinPrice!).toStringAsFixed(8);
       }
       else if (inputCurrency == "BTC" && outputCurrency == "SATS") {
         return convertBitcoinToSats(amount).toStringAsFixed(8);
@@ -21,10 +21,10 @@ class CurrencyConverter {
         return (amount / bitcoinPrice! * 100000000).toStringAsFixed(2);
       }
        else if(inputCurrency == "USD" && outputCurrency == "BTC") {
-        return (amount / bitcoinPrice!).toStringAsFixed(2);
+        return (amount / bitcoinPrice!).toStringAsFixed(8);
       }
       else {
-        return (amount * bitcoinPrice! / 100000000).toStringAsFixed(2);
+        return (amount * bitcoinPrice! / 100000000).toStringAsFixed(8);
       }
     } catch (e) {
       throw Exception("Error converting currency: $e");

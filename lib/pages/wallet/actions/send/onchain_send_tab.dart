@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
@@ -189,6 +190,7 @@ class OnChainSendTab extends StatelessWidget {
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null ? (controller.feesDouble / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+    controller.currencyController.text = CurrencyConverter.convertCurrency("SATS", double.parse(controller.moneyController.text), currency, bitcoinPrice!);
 
 
     return Padding(
@@ -198,22 +200,23 @@ class OnChainSendTab extends StatelessWidget {
         children: [
           AmountWidget(
             bitcoinUnit: controller.bitcoinUnit,
-            enabled: controller.moneyTextFieldIsEnabled,
+                        enabled: double.parse(controller.currencyController.text) == 0,
+
             btcController: controller.moneyController,
-            currController: TextEditingController(),
+            currController: controller.currencyController,
             focusNode: controller.myFocusNodeMoney,
             context: context,
           ),
-          const SizedBox(
-            height: AppTheme.cardPadding,
-          ),
-          Container(
-            child: Text(
-              "Fees ≈ ${currencyEquivalent}${getCurrency(currency)}",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          )
+          // const SizedBox(
+          //   height: AppTheme.cardPadding,
+          // ),
+          // Container(
+          //   child: Text(
+          //     "Fees ≈ ${currencyEquivalent}${getCurrency(currency)}",
+          //     textAlign: TextAlign.center,
+          //     style: Theme.of(context).textTheme.bodyLarge,
+          //   ),
+          // )
         ],
       ),
     );

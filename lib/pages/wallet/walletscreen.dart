@@ -52,6 +52,7 @@ class _WalletScreenState extends State<WalletScreen> {
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
         double.parse(widget.controller.onchainBalance.confirmedBalance),
         BitcoinUnits.SAT);
+      
 
     List<Container> cards = [
       Container(
@@ -68,7 +69,7 @@ class _WalletScreenState extends State<WalletScreen> {
           },
           child: BalanceCardBtc(controller: widget.controller))),
     ];
-
+    var sampleTheme = Theme.of(context).textTheme;
     return bitnetScaffold(
       context: context,
       body: ListView(
@@ -121,7 +122,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 ? Row(
                                                     children: [
                                                       Text(
-                                                        unitModel.amount.toString(),
+                                                        widget.controller.totalBalanceSAT.toString(),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .displaySmall,

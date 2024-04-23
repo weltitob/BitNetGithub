@@ -119,6 +119,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
         Provider.of<LocalProvider>(context, listen: false)
             .setLocaleInDatabase(codeList[index],
             locale);
+            setState((){});
         //Navigator.pop(context);
       },
     );

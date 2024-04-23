@@ -92,7 +92,7 @@ class WalletController extends State<Wallet> {
   void fetchOnchainWalletBalance() async {
     try{
       RestResponse onchainBalanceRest = await walletBalance();
-      if(onchainBalanceRest.statusCode == 200) {
+      if(!onchainBalanceRest.data.isEmpty) {
       OnchainBalance onchainBalance = OnchainBalance.fromJson(onchainBalanceRest.data);
 setState(() {
         this.onchainBalance = onchainBalance;
@@ -108,9 +108,13 @@ setState(() {
   void fetchLightingWalletBalance() async {
     try{
       RestResponse lightningBalanceRest = await channelBalance();
+
       LightningBalance lightningBalance = LightningBalance.fromJson(lightningBalanceRest.data);
       setState(() {
-        this.lightningBalance = lightningBalance;
+      if(!lightningBalanceRest.data.isEmpty) {
+                  this.lightningBalance = lightningBalance;
+
+        }
       });
       changeTotalBalanceStr();
     } catch (e) {

@@ -485,8 +485,8 @@ abstract class AppTheme {
     ThemeData themeData = ThemeData.from(
       colorScheme: colorScheme,
       textTheme:  brightness == Brightness.light
-          ? textTheme.merge(fallbackTextTheme)
-               : textThemeDarkMode.merge(fallbackTextTheme),
+          ? fallbackTextTheme.merge(textTheme)
+               : fallbackTextTheme.merge(textThemeDarkMode),
     );
 
     return themeData;

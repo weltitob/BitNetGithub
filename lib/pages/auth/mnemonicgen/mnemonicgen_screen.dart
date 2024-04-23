@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
@@ -23,6 +24,9 @@ class MnemonicGenScreen extends StatelessWidget {
       appBar: bitnetAppBar(
         text: "Your Password & Backup",
         context: context,
+        actions: [
+         PopUpLangPickerWidget()
+        ]
       ),
       body: SingleChildScrollView(
         child: Column(

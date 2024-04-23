@@ -66,6 +66,7 @@ class SendController extends State<Send> {
   late double feesDouble;
   TextEditingController moneyController =
       TextEditingController(); // the controller for the amount text field
+  TextEditingController currencyController = TextEditingController();
   bool isFinished =
       false; // a flag indicating whether the send process is finished
   dynamic moneyineur = ''; // the amount in Euro, stored as dynamic type
@@ -198,6 +199,11 @@ class SendController extends State<Send> {
     final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
     double sat_per_vbyte = double.parse(sat_per_kw); // / 4
     feesDouble = sat_per_vbyte;
+    moneyController.text = feesDouble.toString();
+          moneyController.text = (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
+      bitcoinUnit = BitcoinUnits.SAT;
+
+    
     print("Estimated fees: $feesDouble");
     setState(() {});
   }
@@ -211,6 +217,9 @@ class SendController extends State<Send> {
 
       Bolt11PaymentRequest req = Bolt11PaymentRequest(invoiceString);
       moneyController.text = req.amount.toString();
+            moneyController.text = (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
+      bitcoinUnit = BitcoinUnits.SAT;
+
       moneyTextFieldIsEnabled = false;
       description = req.tags[1].data;
     });
@@ -384,6 +393,7 @@ class SendController extends State<Send> {
     myFocusNodeAdress.dispose();
     myFocusNodeMoney.dispose();
     moneyController.dispose();
+    currencyController.dispose();
     super.dispose();
   }
 

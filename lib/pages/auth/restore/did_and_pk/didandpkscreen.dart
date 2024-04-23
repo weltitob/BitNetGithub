@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -111,7 +112,9 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
             context: context,
             onTap: () {
               Navigator.of(context).pop();
-            }),
+            },
+             actions: [                PopUpLangPickerWidget(),
+],),
         body: BackgroundWithContent(
           backgroundType: BackgroundType.asset,
           opacity: 0.8,
