@@ -31,6 +31,7 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
 
   FocusNode myFocusNode = FocusNode();
   late TextEditingController amountController;
+  late TextEditingController currController;
   TextEditingController messageController = TextEditingController();
 
   bool createdInvoice = false;
@@ -84,6 +85,7 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
     super.initState();
     amountController = TextEditingController();
     amountController.text = "1000";
+    currController = TextEditingController();
     // Listen for changes
     amountController.addListener(updateAmountDisplay);
     //probably need to check if other keysend invoice is still available and if not create a new one make the logic unflawed
@@ -136,6 +138,7 @@ class ReceiveController extends State<Receive> with SingleTickerProviderStateMix
   @override
   void dispose() {
     amountController.removeListener(updateAmountDisplay);
+    currController.dispose();
     amountController.dispose();
     super.dispose();
   }

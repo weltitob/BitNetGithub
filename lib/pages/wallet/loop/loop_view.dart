@@ -83,9 +83,9 @@ class LoopScreen extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: AmountWidget(
                 enabled: true,
-                btcController: TextEditingController(text: '123'),
-                currController: TextEditingController(),
-                focusNode: FocusNode(),
+                btcController: controller.btcController,
+                currController: controller.currController,
+                focusNode: controller.node,
                 context: context,
               ),
             ),
