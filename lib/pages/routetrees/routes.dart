@@ -26,6 +26,7 @@ import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:bitnet/pages/secondpages/analysisscreen.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
+import 'package:bitnet/pages/secondpages/fear_and_greed.dart';
 import 'package:bitnet/pages/secondpages/hashrate/hashrate.dart';
 import 'package:bitnet/pages/secondpages/keymetrics/keymetricsscreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/block_transactions.dart';
@@ -252,6 +253,18 @@ class AppRoutes {
                                 key: state.pageKey,
                                 child: const BlockTransactions(),
                                 transitionsBuilder: _dynamicTransition!)
+                            : null,
+                      ),
+                      GoRoute(
+                        path: 'fearandgreed',
+                        builder: _dynamicTransition == null
+                            ? (ctx, state) => FearAndGreed()
+                            : null,
+                        pageBuilder: _dynamicTransition != null
+                            ? (ctx, state) => CustomTransitionPage(
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                             : null,
                       ),
                     ]),

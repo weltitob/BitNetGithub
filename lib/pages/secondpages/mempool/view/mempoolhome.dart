@@ -28,9 +28,40 @@ class _MempoolHomeState extends State<MempoolHome> {
   final controller = Get.put(HomeController());
   final TextFieldController = TextEditingController();
   //final transactionCtrl = Get.put(TransactionController());
+  final ScrollController _controller = ScrollController();
+
 
   handleSearch(String query) {
     return query;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //
+    setState(() {
+      controller.showBlock.value = true;
+      controller.showNextBlock.value =
+      false;
+      controller.indexBlock.value = 0;
+      controller.selectedIndex = 0;
+      controller.selectedIndexData = -1;
+      controller.txDetailsConfirmedF(
+          controller
+              .bitcoinData[0].id!);
+      controller.txDetailsF(
+          controller.bitcoinData[0].id!,
+          0);
+    });
+
+    Future.delayed(Duration(seconds: 1), () {
+      _controller.animateTo(
+        1150.0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   @override
@@ -40,6 +71,9 @@ class _MempoolHomeState extends State<MempoolHome> {
       context: context,
       appBar: bitnetAppBar(
         text: 'Mempool',
+        onTap: (){
+          context.pop();
+        },
         actions: [
           IconButton(
             onPressed: () {
@@ -93,6 +127,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                 height: AppTheme.elementSpacing / 2,
               ),
               SingleChildScrollView(
+                controller: _controller,
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
                 child: Row(

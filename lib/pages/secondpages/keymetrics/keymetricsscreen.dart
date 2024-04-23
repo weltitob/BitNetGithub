@@ -4,6 +4,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/pages/secondpages/keymetrics/keymetrics.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class KeyMetricsScreen extends StatefulWidget {
   const KeyMetricsScreen({super.key});
@@ -20,9 +21,13 @@ class _KeyMetricsScreenState extends State<KeyMetricsScreen> {
       context: context,
       appBar: bitnetAppBar(
           text: "Key metrics",
-          context: context),
+          context: context,
+        onTap: (){
+          context.pop();
+        },
+      ),
       body: RoundedContainer(
-        contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding),
+        contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding * 2.5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

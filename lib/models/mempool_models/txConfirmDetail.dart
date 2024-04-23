@@ -57,7 +57,7 @@ class TransactionConfirmedDetail {
         weight: json["weight"],
         previousblockhash: json["previousblockhash"],
         mediantime: json["mediantime"],
-        stale: json["stale"],
+        stale: json["stale"] == null ? false : json["stale"],
         extras: Extras.fromJson(json["extras"]),
     );
 
@@ -172,7 +172,7 @@ class Extras {
         matchRate: json["matchRate"]?.toDouble(),
         expectedFees: json["expectedFees"],
         expectedWeight: json["expectedWeight"],
-        similarity: json["similarity"]?.toDouble(),
+        similarity: json["similarity"]?.toDouble() == null ? 0.0 : json["similarity"]?.toDouble(),
     );
 
     Map<String, dynamic> toJson() => {

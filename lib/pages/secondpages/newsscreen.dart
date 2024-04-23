@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:bitnet/components/items/newsitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -78,6 +79,9 @@ class _NewsScreenState extends State<NewsScreen> {
       appBar: bitnetAppBar(
         text: "Bitcoin News",
         context: context,
+        onTap: (){
+          context.pop();
+        },
       ),
       body: Container(child: _loading
           ? Center(
@@ -87,7 +91,7 @@ class _NewsScreenState extends State<NewsScreen> {
               ),
             )
           : Padding(
-              padding: const EdgeInsets.only(top: AppTheme.elementSpacing / 2),
+              padding: const EdgeInsets.only(top: AppTheme.elementSpacing / 2, left:  AppTheme.elementSpacing, right:  AppTheme.elementSpacing),
               child: Container(
                 child: ListView.builder(
                     itemCount: newslist.length > 20
