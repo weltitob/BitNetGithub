@@ -44,7 +44,7 @@ super.initState();
             bitcoinUnit: widget.controller.bitcoinUnit,
             enabled: true,
             btcController: widget.controller.amountController,
-            currController: TextEditingController(),
+            currController: widget.controller.currController,
             focusNode: widget.controller.myFocusNode,
           ),
         ),

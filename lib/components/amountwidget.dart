@@ -90,7 +90,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                             ? CurrencyConverter.convertCurrency(widget.bitcoinUnit.name, double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text), currency!, bitcoinPrice)
                             : "0.00";
                           
-                        this.widget.currController.text = currencyEquivalent;
+                        this.widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
                         } else {
                                          final chartLine = Provider.of<ChartLine?>(context, listen: false);
                         currency = currency ?? "USD";
@@ -100,7 +100,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                             ? CurrencyConverter.convertCurrency(currency!, double.parse(widget.currController.text.isEmpty ? "0.0" : widget.currController.text), widget.bitcoinUnit.name, bitcoinPrice)
                             : "0.00";
                     
-                          widget.btcController.text = currencyEquivalent;
+                          widget.btcController.text = formatBtcDouble(double.parse(currencyEquivalent));
                         }
                         widget.focusNode.unfocus();
                         setState((){});
@@ -226,7 +226,7 @@ class _AmountWidgetState extends State<AmountWidget> {
     final currencyEquivalent = bitcoinPrice != null
         ? CurrencyConverter.convertCurrency(bitcoinUnit.name, double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text), currency, bitcoinPrice)
         : "0.00";
-    widget.currController.text = currencyEquivalent;
+    // widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
 
 
 
@@ -248,7 +248,7 @@ class _AmountWidgetState extends State<AmountWidget> {
     final currencyEquivalent = bitcoinPrice != null
         ? CurrencyConverter.convertCurrency(currency, double.parse(this.widget.currController.text.isEmpty ? "0.0" : this.widget.currController.text), bitcoinUnit.name, bitcoinPrice)
         : "0.00";
-    widget.btcController.text = currencyEquivalent;
+    // widget.btcController.text = formatBtcDouble(double.parse(currencyEquivalent));
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -264,4 +264,17 @@ class _AmountWidgetState extends State<AmountWidget> {
 
   }
 
+String formatBtcDouble(double value) {
+  String formattedValue;
+  if (value == value.floor()) {
+    formattedValue = value.toStringAsFixed(2);
+  } else {
+    String stringValue = value.toString();
+    int decimalIndex = stringValue.indexOf('.');
+    int decimalPlaces = stringValue.length - decimalIndex - 1;
+    int maxDecimalPlaces = decimalPlaces.clamp(2, 8); 
+    formattedValue = value.toStringAsFixed(maxDecimalPlaces);
+  }
+  return formattedValue;
+}
 }

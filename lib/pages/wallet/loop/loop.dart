@@ -14,6 +14,9 @@ class Loop extends StatefulWidget {
 class LoopController extends State<Loop> {
 
   bool animate = false;
+  TextEditingController btcController = TextEditingController(text: '123');
+    TextEditingController currController = TextEditingController();
+    FocusNode node = FocusNode();
 
   List<Container> cards = [
     Container(
@@ -29,6 +32,13 @@ class LoopController extends State<Loop> {
             controller: WalletController())),
   ];
 
+@override
+void dispose(){
+  btcController.dispose();
+  currController.dispose();
+  node.dispose();
+  super.dispose();
+}
 
   void changeAnimate() {
     setState(() {
