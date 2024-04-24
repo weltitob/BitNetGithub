@@ -17,17 +17,7 @@ class SettingsStyle extends StatefulWidget {
 class SettingsStyleController extends State<SettingsStyle> {
 
   // create some values
-  Color pickerColor = Color(0xff443a49);
-  final user = Auth().currentUser;
-
-  void changeColor(Color color) {
-    setState(() => pickerColor = color);
-  }
-
-  void setChatColor(Color? color) async {
-    AppTheme.colorSchemeSeed = color;
-    ThemeController.of(context).setPrimaryColor(color);
-  }
+ 
   //
   // void onThemeChange(Color color, Brightness brightness) async {
   //   final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
@@ -71,26 +61,7 @@ class SettingsStyleController extends State<SettingsStyle> {
   // }
 
 
-  ThemeMode get currentTheme => ThemeController.of(context).themeMode;
-  Color? get currentColor => ThemeController.of(context).primaryColor;
-
-  static final List<Color?> customColors = [
-    AppTheme.primaryColor,
-    Colors.indigoAccent,
-    AppTheme.colorBitcoin,
-    Colors.pinkAccent,
-    null,
-  ];
-
-  void switchTheme(ThemeMode? newTheme) {
-    Logs().w("switchTheme");
-    if (newTheme == null) return;
-    setState(() {
-      ThemeController.of(context).setThemeMode(newTheme);
-    });
-  }
-
 
   @override
-  Widget build(BuildContext context) => SettingsStyleView(this);
+  Widget build(BuildContext context) => SettingsStyleView();
 }
