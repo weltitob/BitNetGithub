@@ -7,11 +7,12 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/settingslistitem.dart';
 import 'package:bitnet/models/settings/settingsmodel.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/settings/security/recoverwithqrpage.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class SecuritySettingsPage extends StatefulWidget {
@@ -125,8 +126,8 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           buttonType: ButtonType.transparent,
           onTap: () {
             print("pressed");
-            Provider.of<SettingsProvider>(context, listen: false)
-                .switchTab('main');
+            final controller = Get.find<SettingsController>();
+            controller.switchTab('main');
           }),
     );
   }

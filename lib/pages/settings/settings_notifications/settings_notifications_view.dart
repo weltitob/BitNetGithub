@@ -1,16 +1,16 @@
+import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
-import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:get/get.dart';
 import 'package:matrix/matrix.dart';
-import 'package:provider/provider.dart';
+
 import 'settings_notifications.dart';
 
 class SettingsNotificationsView extends StatelessWidget {
@@ -29,8 +29,8 @@ class SettingsNotificationsView extends StatelessWidget {
         context: context,
         onTap: () {
           print("pressed");
-          Provider.of<SettingsProvider>(context, listen: false)
-              .switchTab('main');
+           final controller = Get.find<SettingsController>();
+            controller.switchTab('main');
         },
       ),
       body: MaxWidthBody(
