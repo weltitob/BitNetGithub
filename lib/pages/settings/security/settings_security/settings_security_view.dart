@@ -3,16 +3,13 @@ import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
-import 'package:flutter/material.dart';
-
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
-
 import 'package:bitnet/pages/routetrees/matrix.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+
 import 'settings_security.dart';
 
 class SettingsSecurityView extends StatelessWidget {
@@ -28,21 +25,15 @@ class SettingsSecurityView extends StatelessWidget {
           context: context,
           onTap: () {
             print("pressed");
-            Provider.of<SettingsProvider>(context, listen: false)
-                .switchTab('main');
+            final controller = Get.find<SettingsController>();
+            controller.switchTab('main');
           }),
       body: ListTileTheme(
         iconColor: Theme.of(context).colorScheme.onBackground,
         child: MaxWidthBody(
           withScrolling: true,
           child: Column(
-            children: [
-              // ListTile(
-              //   leading: const Icon(Icons.camera_outlined),
-              //   trailing: const Icon(Icons.chevron_right_outlined),
-              //   title: Text(L10n.of(context)!.whoCanSeeMyStories),
-              //   onTap: () => context.go('stories'),
-              // ),
+            children: [ 
               ListTile(
                 leading: const Icon(Icons.block_outlined),
                 trailing: const Icon(Icons.chevron_right_outlined),

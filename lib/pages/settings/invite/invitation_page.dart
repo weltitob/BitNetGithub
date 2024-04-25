@@ -1,24 +1,22 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/items/settingslistitem.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/client_chooser_button.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/userresult.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class InvitationSettingsPage extends StatefulWidget {
   const InvitationSettingsPage({Key? key}) : super(key: key);
@@ -56,8 +54,8 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
           buttonType: ButtonType.transparent,
           onTap: () {
             print("pressed");
-            Provider.of<SettingsProvider>(context, listen: false)
-                .switchTab('main');
+            final controller = Get.find<SettingsController>();
+            controller.switchTab('main');
           }),
       body: Container(
         color: Colors.transparent,
@@ -149,8 +147,9 @@ class _KeyItemState extends State<_KeyItem> {
     return GestureDetector(
       onTap: widget.verificationkey.used
           ? () {
-              context.goNamed("/profile",
-              pathParameters: {'profileId':widget.verificationkey.receiver });
+              context.goNamed("/profile", pathParameters: {
+                'profileId': widget.verificationkey.receiver
+              });
             }
           : () {
               //copy the key

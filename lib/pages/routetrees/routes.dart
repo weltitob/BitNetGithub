@@ -436,7 +436,7 @@ class AppRoutes {
         ),
         GoRoute(
           path: '/rooms/settings',
-          builder: (ctx, state) => const Settings(),
+          builder: (ctx, state) => Settings(),
           routes: _settingsRoutes,
         ),
         GoRoute(

@@ -3,19 +3,19 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'settings.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsView extends StatelessWidget {
-  final SettingsController controller;
-
-  const SettingsView(this.controller, {Key? key}) : super(key: key);
+  const SettingsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return bitnetScaffold(
+    final controller = Get.find<SettingsController>();
+     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
@@ -27,7 +27,7 @@ class SettingsView extends StatelessWidget {
         iconColor: Theme.of(context).colorScheme.onBackground,
         child: ListView(
           key: const Key('SettingsListViewContent'),
-          children: <Widget>[
+          children: [
             BitNetListTile(
               leading: Icon(Icons.color_lens),
               text: L10n.of(context)!.changeTheme,
@@ -113,12 +113,7 @@ class SettingsView extends StatelessWidget {
                 size: AppTheme.iconSize * 0.75,
               ),
               onTap: () async {
-                //matrix logout
-                //need to implement the chatbackup in our normal key first
-                //controller.logoutAction();
-                //my logout
                 await Auth().signOut();
-                //pop
                 context.pop();
                 context.go('/authhome');
               },

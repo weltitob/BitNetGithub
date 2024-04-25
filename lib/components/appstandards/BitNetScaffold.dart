@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
-
 class bitnetScaffold extends StatelessWidget {
   final Widget body;
   final Color? gradientColor;
@@ -28,7 +27,8 @@ class bitnetScaffold extends StatelessWidget {
     this.extendBodyBehindBottomNav = false,
     this.removeGradientColor = false,
     this.floatingActionButton,
-    this.floatingActionButtonLocation = FloatingActionButtonLocation.centerDocked,
+    this.floatingActionButtonLocation =
+        FloatingActionButtonLocation.centerDocked,
     this.resizeToAvoidBottomInset = true, // New parameter with default value
   }) : super(key: key);
 
@@ -50,51 +50,116 @@ class bitnetScaffold extends StatelessWidget {
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [
-                        Theme.of(context).brightness == Brightness.light ? lighten(Theme.of(context).colorScheme.primaryContainer, 60) :darken(Theme.of(context).colorScheme.primaryContainer, 80),
-                        Theme.of(context).brightness == Brightness.light ? lighten(Theme.of(context).colorScheme.tertiaryContainer, 60) :darken(Theme.of(context).colorScheme.tertiaryContainer, 80),
-                      ])),
+                    Theme.of(context).brightness == Brightness.light
+                        ? lighten(
+                            Theme.of(context).colorScheme.primaryContainer, 60)
+                        : darken(
+                            Theme.of(context).colorScheme.primaryContainer, 80),
+                    Theme.of(context).brightness == Brightness.light
+                        ? lighten(
+                            Theme.of(context).colorScheme.tertiaryContainer, 60)
+                        : darken(
+                            Theme.of(context).colorScheme.tertiaryContainer,
+                            80),
+                  ])),
               child: Padding(
-                padding: extendBodyBehindBottomNav ? EdgeInsets.only(bottom: AppTheme.cardPadding * 3) : EdgeInsets.zero,
+                padding: extendBodyBehindBottomNav
+                    ? EdgeInsets.only(bottom: AppTheme.cardPadding * 3)
+                    : EdgeInsets.zero,
                 child: Container(
-                    margin: margin,
-                    child: body,
+                  margin: margin,
+                  child: body,
                 ),
               ),
             ),
-            extendBodyBehindAppBar ?
-            removeGradientColor ? Container() : Container(
-              width: double.infinity,
-              height: AppTheme.cardPadding * 3,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: [0.0, 0.25, 0.5, 0.75, 1.0],
-                      colors: Theme.of(context).brightness == Brightness.light ?[
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 60),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 60).withOpacity(0.9),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 60).withOpacity(0.7),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 60).withOpacity(0.4),
-                        lighten(Theme.of(context).colorScheme.primaryContainer, 60).withOpacity(0.0001),
-                      ] :
-                          [
-                            darken(Theme.of(context).colorScheme.primaryContainer, 80),
-                            darken(Theme.of(context).colorScheme.primaryContainer, 80).withOpacity(0.9),
-                            darken(Theme.of(context).colorScheme.primaryContainer, 80).withOpacity(0.7),
-                            darken(Theme.of(context).colorScheme.primaryContainer, 80).withOpacity(0.4),
-                            darken(Theme.of(context).colorScheme.primaryContainer, 80).withOpacity(0.0001),
-                          ]
-
-                  )),
-            ) : Container(),
+            extendBodyBehindAppBar
+                ? removeGradientColor
+                    ? Container()
+                    : Container(
+                        width: double.infinity,
+                        height: AppTheme.cardPadding * 3,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+                            colors:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? [
+                                        lighten(
+                                            Theme.of(context)
+                                                .colorScheme
+                                                .primaryContainer,
+                                            60),
+                                        lighten(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryContainer,
+                                                60)
+                                            .withOpacity(0.9),
+                                        lighten(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryContainer,
+                                                60)
+                                            .withOpacity(0.7),
+                                        lighten(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryContainer,
+                                                60)
+                                            .withOpacity(0.4),
+                                        lighten(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryContainer,
+                                                60)
+                                            .withOpacity(0.0001),
+                                      ]
+                                    : [
+                                        darken(
+                                            Theme.of(context)
+                                                .colorScheme
+                                                .primaryContainer,
+                                            80),
+                                        darken(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryContainer,
+                                                80)
+                                            .withOpacity(0.9),
+                                        darken(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryContainer,
+                                                80)
+                                            .withOpacity(0.7),
+                                        darken(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryContainer,
+                                                80)
+                                            .withOpacity(0.4),
+                                        darken(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryContainer,
+                                                80)
+                                            .withOpacity(0.0001),
+                                      ],
+                          ),
+                        ),
+                      )
+                : Container(),
           ],
         ),
         appBar: appBar,
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: AppTheme.cardPadding),
           child: floatingActionButton,
-        ),  // Use the passed floating action button
-        floatingActionButtonLocation: floatingActionButtonLocation, // Use the passed floating action button location
+        ), // Use the passed floating action button
+        floatingActionButtonLocation:
+            floatingActionButtonLocation, // Use the passed floating action button location
       ),
     );
   }
