@@ -92,8 +92,15 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  GlobalKey _streamKey = GlobalKey(debugLabel: "");
 
   // This widget is the root of the application.
   @override
@@ -137,15 +144,23 @@ class MyApp extends StatelessWidget {
                 update: (context, currencyChangeProvider, bitcoinPriceStream) {
                   if (bitcoinPriceStream == null || bitcoinPriceStream.localCurrency != currencyChangeProvider.selectedCurrency) {
                     bitcoinPriceStream?.dispose();
-                    final newStream = BitcoinPriceStream();
-                    newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
+                    final newStream = BitcoinPriceStream.withCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
+                    // newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
+
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
+                      _streamKey.currentState?.setState(() {
+                        
+                      });
+                    });
                     return newStream;
                   }
                   return bitcoinPriceStream;
                 },
                 dispose: (context, bitcoinPriceStream) => bitcoinPriceStream.dispose(),
+                
               ),
               StreamProvider<ChartLine?>(
+                key: _streamKey,
                 create: (context) => Provider.of<BitcoinPriceStream>(context, listen: false).priceStream,
                 initialData: ChartLine(time: 0, price: 0),
               ),
@@ -160,7 +175,10 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider<BalanceHideProvider>(
                   create: (context) => BalanceHideProvider()),
             ],
+          
             child: bTree.WidgetTree(),
           );
   }
+
 }
+
