@@ -191,7 +191,7 @@ class _UsersListState extends State<UsersList>
                           height: AppTheme.cardPadding,
                         ),
                         Center(
-                          child: buildIndicator(
+                          child: CustomIndicator(
                               pageController: pageController, count: all_userresults.length)
                         ),
                       ],

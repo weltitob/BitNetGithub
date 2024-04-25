@@ -1,16 +1,18 @@
+import 'package:bitnet/backbone/helper/language.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
-import 'package:flutter/material.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/backbone/helper/language.dart';
-import 'package:bitnet/backbone/streams/locale_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class ChangeLanguage extends StatefulWidget {
   const ChangeLanguage({super.key});
@@ -31,8 +33,8 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
         buttonType: ButtonType.transparent,
         onTap: () {
           print("pressed");
-          Provider.of<SettingsProvider>(context, listen: false)
-              .switchTab('main');
+            final controller = Get.find<SettingsController>();
+            controller .switchTab('main');
         },
       ),
       body: SingleChildScrollView(child: LanguagePickerSheet(onTapLanguage: (langCode, locale) {
