@@ -48,12 +48,10 @@ return TextButton(child: Text(flag, style: Theme.of(context).textTheme.displaySm
               extendBodyBehindAppBar: true,
               context: context,
               appBar: bitnetAppBar(
+                hasBackButton: false,
                 text: 'Change Language',
                 context: context,
                 buttonType: ButtonType.transparent,
-                onTap: () {
-                  context.pop();
-                },
               ),
               body: SingleChildScrollView(child: LanguagePickerSheet(onTapLanguage: (langCode, locale) {
                   Provider.of<LocalProvider>(context, listen: false)
@@ -67,33 +65,6 @@ return TextButton(child: Text(flag, style: Theme.of(context).textTheme.displaySm
     }
   ), context: context);
 },);
-    // return     PopupMenuButton<int>(
-    //         constraints: BoxConstraints.loose(Size(32, double.infinity)),
-    //         icon: Text(flag,style: Theme.of(context).textTheme.displaySmall ),
-    //          color: Colors.transparent,
-    //             elevation: 2,
-    //             position: PopupMenuPosition.under,
-    //             offset: Offset(-4, -2),
-    //             shape: RoundedRectangleBorder(
-    //               borderRadius: BorderRadius.circular(24),
-    //             ),
-    //              itemBuilder: (BuildContext context) {
-    //               List<PopupMenuEntry<int>> itemList = List.empty(growable: true);
-    //                 for(String code in codeList) {
-    //                   if(code == currentLangCode)
-    //                   continue;
-    //                   itemList.add(PopupMenuItem(
-    //                     padding: EdgeInsets.zero,
-    //                     child: Text(languageToFlag[code]!, style: Theme.of(context).textTheme.displaySmall), 
-    //                     onTap: (){
-    //                     Provider.of<LocalProvider>(context, listen: false)
-    //         .setLocaleInDatabase(code,
-    //         Locale.fromSubtags(languageCode: code), isUser: false);
-    //         setState((){});
-    //                   },));
-    //                 }
-    //               return itemList;
-    //              }
-    //         );
+   
   }
 }
