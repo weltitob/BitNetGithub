@@ -2,34 +2,53 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-Widget buildIndicator({
-  required PageController pageController,
-  required int count,
-  double expansionFactor = 3,
-  double offset = 16.0,
-  double dotWidth = 16.0,
-  double dotHeight = 16.0,
-  double spacing = 8.0,
-  double radius = 16.0,
-  double strokeWidth = 1.0,
-  PaintingStyle paintStyle = PaintingStyle.fill,
-  Color activeDotColor = AppTheme.colorBitcoin,
-  //Color dotColor = AppTheme.glassMorphColorLight,
-}) {
-  return SmoothPageIndicator(
-    controller: pageController,
-    count: count,
-    effect: ExpandingDotsEffect(
-      expansionFactor: expansionFactor,
-      offset: offset,
-      dotWidth: dotWidth,
-      dotHeight: dotHeight,
-      spacing: spacing,
-      radius: radius,
-      strokeWidth: strokeWidth,
-      paintStyle: paintStyle,
-      activeDotColor: activeDotColor,
-      dotColor: AppTheme.glassMorphColorLight,
-    ),
-  );
+class CustomIndicator extends StatelessWidget {
+  final PageController pageController;
+  final int count;
+  final double expansionFactor;
+  final double offset;
+  final double dotWidth;
+  final double dotHeight;
+  final double spacing;
+  final double radius;
+  final double strokeWidth;
+  final PaintingStyle paintStyle;
+  final Color activeDotColor;
+
+  const CustomIndicator({
+    Key? key,
+    required this.pageController,
+    required this.count,
+    this.expansionFactor = 3,
+    this.offset = 16.0,
+    this.dotWidth = 16.0,
+    this.dotHeight = 16.0,
+    this.spacing = 8.0,
+    this.radius = 16.0,
+    this.strokeWidth = 1.0,
+    this.paintStyle = PaintingStyle.fill,
+    this.activeDotColor = AppTheme.colorBitcoin, // Define this in your app theme
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SmoothPageIndicator(
+      controller: pageController,
+      count: count,
+      effect: ExpandingDotsEffect(
+        expansionFactor: expansionFactor,
+        offset: offset,
+        dotWidth: dotWidth,
+        dotHeight: dotHeight,
+        spacing: spacing,
+        radius: radius,
+        strokeWidth: strokeWidth,
+        paintStyle: paintStyle,
+        activeDotColor: Theme.of(context).colorScheme.primary,
+        dotColor: Theme.of(context).brightness == Brightness.light
+            ? AppTheme.white60
+            : AppTheme.glassMorphColorLight, // Define these colors in your app theme
+      ),
+    );
+  }
 }
