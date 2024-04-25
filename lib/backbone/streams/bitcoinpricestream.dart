@@ -1,13 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:http/http.dart';
-import 'package:bitnet/components/chart/chart.dart';
 import 'package:http/http.dart' as http;
-import 'package:matrix/matrix.dart';
-import 'package:provider/provider.dart';
 
 /*
 This class represents a stream that periodically fetches the current price of Bitcoin in Euro from a REST API.

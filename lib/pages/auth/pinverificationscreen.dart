@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -12,9 +13,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class PinVerificationScreen extends StatefulWidget {

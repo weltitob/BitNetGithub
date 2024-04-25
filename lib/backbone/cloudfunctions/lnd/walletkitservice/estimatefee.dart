@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,6 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:matrix/matrix.dart';
 
 Future<RestResponse> estimateFee(String conf_target) async {
   String restHost = AppTheme.baseUrlLightningTerminal;

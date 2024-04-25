@@ -1,21 +1,16 @@
 //import 'package:bitnet/l10n/l10n.dart';
-import 'dart:ui';
 
-import 'package:bitnet/backbone/helper/language.dart';
-import 'package:bitnet/backbone/streams/locale_provider.dart';
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:matrix/matrix.dart';
-import 'package:provider/provider.dart';
 
 
 class GetStartedScreen extends StatefulWidget {

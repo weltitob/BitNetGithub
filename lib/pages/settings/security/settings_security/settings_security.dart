@@ -9,10 +9,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:intl/intl.dart';
-import 'package:matrix/matrix.dart';
 
 import 'package:bitnet/pages/settings/setting_keys.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_file_extension.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'settings_security_view.dart';
 

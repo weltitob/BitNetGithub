@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:matrix/matrix.dart';
 import 'package:native_imaging/native_imaging.dart' as native;
 
 Future<MatrixImageFileResizedResponse?> customImageResizer(

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:http/http.dart';
 import 'package:bitnet/components/chart/chart.dart';
-import 'package:matrix/matrix.dart';
 
 /*
 This class represents a chart line for a given cryptocurrency and allows fetching its chart data from the Coingecko API.

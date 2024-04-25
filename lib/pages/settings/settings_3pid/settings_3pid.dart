@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
-import 'package:matrix/matrix.dart';
 
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'settings_3pid_view.dart';

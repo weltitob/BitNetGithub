@@ -1,11 +1,9 @@
-import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/device_extension.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/date_time_extension.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:matrix/matrix.dart';
 
 enum UserDeviceListItemAction {
   rename,

@@ -1,14 +1,12 @@
 import 'dart:convert';
 
-import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/flutter_hive_collections_database.dart';
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_http_client.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_image_resizer.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:matrix/encryption/utils/key_verification.dart';
-import 'package:matrix/matrix.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'famedlysdk_store.dart';

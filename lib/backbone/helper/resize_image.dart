@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
-import 'package:matrix/matrix.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_compress/video_compress.dart';
 

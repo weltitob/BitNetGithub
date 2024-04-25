@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/background_push.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_scroll_behaviour.dart';

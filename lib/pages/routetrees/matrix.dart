@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/background_push.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/famedlysdk_store.dart';
@@ -25,8 +26,6 @@ import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:matrix/encryption.dart';
-import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_html/html.dart' as html;
@@ -350,34 +349,34 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
       );
       return;
     }
-    onRoomKeyRequestSub[name] ??=
-        c.onRoomKeyRequest.stream.listen((RoomKeyRequest request) async {
-      if (widget.clients.any(
-        ((cl) =>
-            cl.userID == request.requestingDevice.userId &&
-            cl.identityKey == request.requestingDevice.curve25519Key),
-      )) {
-        Logs().i(
-          '[Key Request] Request is from one of our own clients, forwarding the key...',
-        );
-        await request.forwardKey();
-      }
-    });
-    onKeyVerificationRequestSub[name] ??= c.onKeyVerificationRequest.stream
-        .listen((KeyVerification request) async {
-      var hidPopup = false;
-      request.onUpdate = () {
-        if (!hidPopup &&
-            {KeyVerificationState.done, KeyVerificationState.error}
-                .contains(request.state)) {
-          Navigator.of(navigatorContext).pop('dialog');
-        }
-        hidPopup = true;
-      };
-      request.onUpdate = null;
-      hidPopup = true;
-      await KeyVerificationDialog(request: request).show(navigatorContext);
-    });
+    // onRoomKeyRequestSub[name] ??=
+    //     c.onRoomKeyRequest.stream.listen((RoomKeyRequest request) async {
+    //   if (widget.clients.any(
+    //     ((cl) =>
+    //         cl.userID == request.requestingDevice.userId &&
+    //         cl.identityKey == request.requestingDevice.curve25519Key),
+    //   )) {
+    //     Logs().i(
+    //       '[Key Request] Request is from one of our own clients, forwarding the key...',
+    //     );
+    //     await request.forwardKey();
+    //   }
+    // });
+    // onKeyVerificationRequestSub[name] ??= c.onKeyVerificationRequest.stream
+    //     .listen((KeyVerification request) async {
+    //   var hidPopup = false;
+    //   request.onUpdate = () {
+    //     if (!hidPopup &&
+    //         {KeyVerificationState.done, KeyVerificationState.error}
+    //             .contains(request.state)) {
+    //       Navigator.of(navigatorContext).pop('dialog');
+    //     }
+    //     hidPopup = true;
+    //   };
+    //   request.onUpdate = null;
+    //   hidPopup = true;
+    //   await KeyVerificationDialog(request: request).show(navigatorContext);
+    // });
     onLoginStateChanged[name] ??= c.onLoginStateChanged.stream.listen((state) {
       final loggedInWithMultipleClients = widget.clients.length > 1;
       if (loggedInWithMultipleClients && state != LoginState.loggedIn) {
@@ -408,21 +407,21 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
         );
       }
     });
-    onUiaRequest[name] ??= c.onUiaRequest.stream.listen(uiaRequestHandler);
-    if (PlatformInfos.isWeb || PlatformInfos.isLinux) {
-      c.onSync.stream.first.then((s) {
-        html.Notification.requestPermission();
-        onNotification[name] ??= c.onEvent.stream
-            .where(
-              (e) =>
-                  e.type == EventUpdateType.timeline &&
-                  [EventTypes.Message, EventTypes.Sticker, EventTypes.Encrypted]
-                      .contains(e.content['type']) &&
-                  e.content['sender'] != c.userID,
-            )
-            .listen(showLocalNotification);
-      });
-    }
+    // onUiaRequest[name] ??= c.onUiaRequest.stream.listen(uiaRequestHandler);
+    // if (PlatformInfos.isWeb || PlatformInfos.isLinux) {
+    //   c.onSync.stream.first.then((s) {
+    //     html.Notification.requestPermission();
+    //     onNotification[name] ??= c.onEvent.stream
+    //         .where(
+    //           (e) =>
+    //               e.type == EventUpdateType.timeline &&
+    //               [EventTypes.Message, EventTypes.Sticker, EventTypes.Encrypted]
+    //                   .contains(e.content['type']) &&
+    //               e.content['sender'] != c.userID,
+    //         )
+    //         .listen(showLocalNotification);
+    //   });
+    // }
   }
 
   void _cancelSubs(String name) {
@@ -437,13 +436,13 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   }
 
 
-  void createVoipPlugin() async {
-    if (await store.getItemBool(SettingKeys.experimentalVoip) == false) {
-      voipPlugin = null;
-      return;
-    }
-    voipPlugin = webrtcIsSupported ? VoipPlugin(client) : null;
-  }
+  // void createVoipPlugin() async {
+  //   if (await store.getItemBool(SettingKeys.experimentalVoip) == false) {
+  //     voipPlugin = null;
+  //     return;
+  //   }
+  //   voipPlugin = webrtcIsSupported ? VoipPlugin(client) : null;
+  // }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

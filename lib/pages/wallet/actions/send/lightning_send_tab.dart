@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
@@ -10,7 +11,6 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 
 class LightningSendTab extends StatelessWidget {

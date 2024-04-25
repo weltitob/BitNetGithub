@@ -1,11 +1,9 @@
-import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/client_stories_extension.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
-import 'package:matrix/matrix.dart';
 
 import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
 import 'package:bitnet/components/container/avatar.dart';

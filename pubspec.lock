@@ -393,14 +393,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1+1"
-  canonical_json:
-    dependency: transitive
-    description:
-      name: canonical_json
-      sha256: d6be1dd66b420c6ac9f42e3693e09edf4ff6edfee26cb4c28c1c019fdb8c0c15
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.2"
   characters:
     dependency: transitive
     description:
@@ -1583,14 +1575,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.4"
-  html_unescape:
-    dependency: transitive
-    description:
-      name: html_unescape
-      sha256: "15362d7a18f19d7b742ef8dcb811f5fd2a2df98db9f80ea393c075189e0b61e3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   http:
     dependency: "direct main"
     description:
@@ -1936,14 +1920,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.3"
-  markdown:
-    dependency: transitive
-    description:
-      name: markdown
-      sha256: "01512006c8429f604eb10f9848717baeaedf99e991d14a50d540d9beff08e5c6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   marquee:
     dependency: "direct main"
     description:
@@ -1968,14 +1944,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.0"
-  matrix:
-    dependency: "direct main"
-    description:
-      name: matrix
-      sha256: ecee8d687224f0fe668a5b9a034e8c2a7b241f578c93a236e0e93a8c2382a458
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.20.5"
   matrix_api_lite:
     dependency: transitive
     description:
@@ -2104,14 +2072,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  olm:
-    dependency: transitive
-    description:
-      name: olm
-      sha256: "37948a6576949256f3ee1d0063d5b408634ff7e452b9a5c2f6410f9d7ced1c20"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.3"
   package_config:
     dependency: transitive
     description:
@@ -2528,14 +2488,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  sdp_transform:
-    dependency: transitive
-    description:
-      name: sdp_transform
-      sha256: "73e412a5279a5c2de74001535208e20fff88f225c9a4571af0f7146202755e45"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.2"
   sentiment_dart:
     dependency: transitive
     description:

@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:flutter/material.dart';
-import 'package:matrix/matrix.dart';
-import '../../../backbone/helper/localized_exception_extension.dart';
 import '../../routetrees/matrix.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 

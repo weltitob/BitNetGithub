@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -13,7 +14,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 
 
@@ -91,7 +91,7 @@ class MnemonicController extends State<MnemonicGen> {
       isLoadingSignUp = true;
     });
     try{
-      Auth().loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
+      // Auth().loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
       Logs().w("Making firebase auth now...");
 
       final userdata = UserData(
@@ -127,10 +127,7 @@ class MnemonicController extends State<MnemonicGen> {
       Logs().w("Navigating to homescreen now...");
       context.go('/');
 
-    } on MatrixException catch(e){
-      print("Matrix Exception: $e");
-      throw Exception(e);
-    }
+    } 
     on FirebaseException catch (e) {
       Logs().e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
       throw Exception("We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");

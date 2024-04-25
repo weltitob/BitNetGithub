@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
 
 
 import 'package:bitnet/pages/matrix/pages/invitation_selection/invitation_selection.dart';

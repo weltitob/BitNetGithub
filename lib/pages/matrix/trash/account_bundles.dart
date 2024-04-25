@@ -1,4 +1,3 @@
-import 'package:matrix/matrix.dart';
 
 class AccountBundles {
   String? prefix;

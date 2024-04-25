@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:matrix/matrix.dart';
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 
 class ReceivedInvoice {
   final String? memo;

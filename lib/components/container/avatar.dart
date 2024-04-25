@@ -2,9 +2,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:matrix/matrix.dart';
-
-import 'package:bitnet/backbone/helper/matrix_helpers/string_color.dart';
 import 'package:bitnet/pages/matrix/widgets/mxc_image.dart';
 
 enum profilePictureType { none, lightning, onchain }

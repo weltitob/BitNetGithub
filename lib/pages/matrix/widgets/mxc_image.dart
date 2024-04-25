@@ -1,12 +1,10 @@
 import 'dart:typed_data';
 
-import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_file_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:matrix/matrix.dart';
 
 class MxcImage extends StatefulWidget {
   final Uri? uri;

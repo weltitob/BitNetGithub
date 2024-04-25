@@ -1,15 +1,12 @@
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:bitnet/components/indicators/smoothpageindicator.dart';
+
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:matrix/matrix.dart';
 
 class MnemonicGenConfirm extends StatefulWidget {
   final MnemonicController mnemonicController;

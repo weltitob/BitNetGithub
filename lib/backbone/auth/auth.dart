@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/models/IONdata.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
@@ -22,7 +23,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:matrix/matrix.dart';
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
@@ -246,7 +246,7 @@ class Auth {
 
       //dieser call leitet uns iwie bereits weiter zur matrix page da das muss verhindert werden
 
-      await loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
+      // await loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
 
       final String customToken = await fakeLoginION(
           randomstring,
@@ -325,99 +325,100 @@ class Auth {
   /// login type.
 
   //coming from old homeserverpicker
-  Future<void> checkHomeserverAction(BuildContext context, String homeservertext) async {
-    try {
-      var homeserver = Uri.parse(homeservertext);
-      if (homeserver.scheme.isEmpty) {
-        homeserver = Uri.https(homeservertext, '');
-      }
-      final matrix = Matrix.of(context);
-      matrix.loginHomeserverSummary =
-      await matrix.getLoginClient().checkHomeserver(homeserver);
-      final ssoSupported = matrix.loginHomeserverSummary!.loginFlows
-          .any((flow) => flow.type == 'm.login.sso');
+  // Future<void> checkHomeserverAction(BuildContext context, String homeservertext) async {
+  //   try {
+  //     var homeserver = Uri.parse(homeservertext);
+  //     if (homeserver.scheme.isEmpty) {
+  //       homeserver = Uri.https(homeservertext, '');
+  //     }
+  //     final matrix = Matrix.of(context);
+  //     matrix.loginHomeserverSummary =
+  //     await matrix.getLoginClient().checkHomeserver(homeserver);
+  //     final ssoSupported = matrix.loginHomeserverSummary!.loginFlows
+  //         .any((flow) => flow.type == 'm.login.sso');
 
-      try {
-        await Matrix.of(context).getLoginClient().register();
-        matrix.loginRegistrationSupported = true;
-      } on MatrixException catch (e) {
-        matrix.loginRegistrationSupported = e.requireAdditionalAuthentication;
-      }
+  //     try {
+  //       await Matrix.of(context).getLoginClient().register();
+  //       matrix.loginRegistrationSupported = true;
+  //     } on MatrixException catch (e) {
+  //       matrix.loginRegistrationSupported = e.requireAdditionalAuthentication;
+  //     }
 
-      if (!ssoSupported && matrix.loginRegistrationSupported == false) {
-        // Server does not support SSO or registration. We can skip to login page:
-        context.go('/authhome/login');
-      } else {
-        context.go('/authhome/connect');
-      }
-    } catch (e) {
-      Logs().e('Error in checkHomeserverAction', (e).toLocalizedString(context));
-    }
-  }
+  //     if (!ssoSupported && matrix.loginRegistrationSupported == false) {
+  //       // Server does not support SSO or registration. We can skip to login page:
+  //       context.go('/authhome/login');
+  //     } else {import 'package:matrix/matrix.dart';
 
-  Future<void> restoreBackupMatrix(BuildContext context) async {
-    final picked = await FilePicker.platform.pickFiles(withData: true);
-    final file = picked?.files.firstOrNull;
-    if (file == null) return;
-    await showFutureLoadingDialog(
-      context: context,
-      future: () async {
-        try {
-          final client = Matrix.of(context).getLoginClient();
-          await client.importDump(String.fromCharCodes(file.bytes!));
-          Matrix.of(context).initMatrix();
-        } catch (e) {
-          print("Auth.dart: This line somehow importet matrix and it messed with the User line $e");
-          //This line somehow importet matrix and it messed with the User line
-          //Logs().e('Future error:', e, s);
-        }
-      },
-    );
-  }
+  //       context.go('/authhome/connect');
+  //     }
+  //   } catch (e) {
+  //     Logs().e('Error in checkHomeserverAction', (e).toLocalizedString(context));
+  //   }
+  // }
 
-  loginMatrix(BuildContext context, String username, String password) async {
+  // Future<void> restoreBackupMatrix(BuildContext context) async {
+  //   final picked = await FilePicker.platform.pickFiles(withData: true);
+  //   final file = picked?.files.firstOrNull;
+  //   if (file == null) return;
+  //   await showFutureLoadingDialog(
+  //     context: context,
+  //     future: () async {
+  //       try {
+  //         final client = Matrix.of(context).getLoginClient();
+  //         await client.importDump(String.fromCharCodes(file.bytes!));
+  //         Matrix.of(context).initMatrix();
+  //       } catch (e) {
+  //         print("Auth.dart: This line somehow importet matrix and it messed with the User line $e");
+  //         //This line somehow importet matrix and it messed with the User line
+  //         //Logs().e('Future error:', e, s);
+  //       }
+  //     },
+  //   );
+  // }
 
-    //this stuff kind of comes from somehwere else...
-    final matrix = Matrix.of(context);
-    Uri homeserver = Uri.parse("http://matrix.org");
-    matrix.loginHomeserverSummary = await matrix.getLoginClient().checkHomeserver(homeserver);
+  // loginMatrix(BuildContext context, String username, String password) async {
 
-    //also throws error that some pushtoken is missing
-    //this somehow still automtically causes a push to the chats screen which we dont want
+  //   //this stuff kind of comes from somehwere else...
+  //   final matrix = Matrix.of(context);
+  //   Uri homeserver = Uri.parse("http://matrix.org");
+  //   matrix.loginHomeserverSummary = await matrix.getLoginClient().checkHomeserver(homeserver);
 
-    try {
-      AuthenticationIdentifier identifier;
-      if (username.isEmail) {
-        identifier = AuthenticationThirdPartyIdentifier(
-          medium: 'email',
-          address: username,
-        );
-      } else if (username.isPhoneNumber) {
-        identifier = AuthenticationThirdPartyIdentifier(
-          medium: 'msisdn',
-          address: username,
-        );
-      } else {
-        identifier = AuthenticationUserIdentifier(user: username);
-      }
-      await matrix.getLoginClient().login(
-        LoginType.mLoginPassword,
-        identifier: identifier,
-        // To stay compatible with older server versions
-        // ignore: deprecated_member_use
-        user: identifier.type == AuthenticationIdentifierTypes.userId
-            ? username
-            : null,
-        password: password,
-        initialDeviceDisplayName: PlatformInfos.clientName,
-      );
+  //   //also throws error that some pushtoken is missing
+  //   //this somehow still automtically causes a push to the chats screen which we dont want
 
-    } on MatrixException catch (exception) {
-      throw Exception("Exception occured with signin Matrix itself: $exception");
-    } catch (exception) {
-      throw Exception("Exception occured with signin Matrix thats not Matrix: ${exception.toString()}");
-    }
-  }
+  //   try {
+  //     AuthenticationIdentifier identifier;
+  //     if (username.isEmail) {
+  //       identifier = AuthenticationThirdPartyIdentifier(
+  //         medium: 'email',
+  //         address: username,
+  //       );
+  //     } else if (username.isPhoneNumber) {
+  //       identifier = AuthenticationThirdPartyIdentifier(
+  //         medium: 'msisdn',
+  //         address: username,
+  //       );
+  //     } else {
+  //       identifier = AuthenticationUserIdentifier(user: username);
+  //     }
+  //     await matrix.getLoginClient().login(
+  //       LoginType.mLoginPassword,
+  //       identifier: identifier,
+  //       // To stay compatible with older server versions
+  //       // ignore: deprecated_member_use
+  //       user: identifier.type == AuthenticationIdentifierTypes.userId
+  //           ? username
+  //           : null,
+  //       password: password,
+  //       initialDeviceDisplayName: PlatformInfos.clientName,
+  //     );
+
+  //   } on MatrixException catch (exception) {
+  //     throw Exception("Exception occured with signin Matrix itself: $exception");
+  //   } catch (exception) {
+  //     throw Exception("Exception occured with signin Matrix thats not Matrix: ${exception.toString()}");
+  //   }
+  // }
 
 
   // bool isDefaultPlatform =
@@ -458,78 +459,78 @@ class Auth {
 
 
 
-  void signUpMatrixFirst(BuildContext context, String username) async {
-    try {
-      try {
-        Logs().w("Trying to register username $username on client");
+  // void signUpMatrixFirst(BuildContext context, String username) async {
+  //   try {
+  //     try {
+  //       Logs().w("Trying to register username $username on client");
 
-        Client client = Matrix.of(context).getLoginClient();
-        print(client.database);
-        print(client.clientName);
-        print(client.accountData);
-        print(client.deviceID); //this is null already so the client bullshit def is some issue
+  //       Client client = Matrix.of(context).getLoginClient();
+  //       print(client.database);
+  //       print(client.clientName);
+  //       print(client.accountData);
+  //       print(client.deviceID); //this is null already so the client bullshit def is some issue
 
-        if(client != null){
-          client.register(username: username, password: "testjklskhajkd", initialDeviceDisplayName: "test");
-          Logs().w("To here it needs to come...");
-        }
-        else {
-          Logs().e("Client is null");
-        }
-      } on MatrixException catch (e) {
-        Logs().e("signUpMatrixFirst error: $e");
-        if (!e.requireAdditionalAuthentication) rethrow;
-      }
-      Matrix.of(context).loginUsername = username;
+  //       if(client != null){
+  //         client.register(username: username, password: "testjklskhajkd", initialDeviceDisplayName: "test");
+  //         Logs().w("To here it needs to come...");
+  //       }
+  //       else {
+  //         Logs().e("Client is null");
+  //       }
+  //     } on MatrixException catch (e) {
+  //       Logs().e("signUpMatrixFirst error: $e");
+  //       if (!e.requireAdditionalAuthentication) rethrow;
+  //     }
+  //     Matrix.of(context).loginUsername = username;
 
-      //context.go('signup');
+  //     //context.go('signup');
 
-    } catch (e, s) {
-      final signupError = e.toLocalizedString(context);
-      Logs().e('Sign up failed: $signupError, in signUpMatrixFirst', e, s);
-    }
-  }
+  //   } catch (e, s) {
+  //     final signupError = e.toLocalizedString(context);
+  //     Logs().e('Sign up failed: $signupError, in signUpMatrixFirst', e, s);
+  //   }
+  // }
 
-  void signupMatrix(BuildContext context, String email, String password) async {
-    try {
-      final client = Matrix.of(context).getLoginClient();
+  // void signupMatrix(BuildContext context, String email, String password) async {
+  //   try {
+  //     final client = Matrix.of(context).getLoginClient();
 
-      if (email.isNotEmpty) {
-        Matrix.of(context).currentClientSecret =
-            DateTime.now().millisecondsSinceEpoch.toString();
-        Matrix.of(context).currentThreepidCreds =
-        await client.requestTokenToRegisterEmail(
-          Matrix.of(context).currentClientSecret,
-          email,
-          0,
-        );
-      }
+  //     if (email.isNotEmpty) {
+  //       Matrix.of(context).currentClientSecret =
+  //           DateTime.now().millisecondsSinceEpoch.toString();
+  //       Matrix.of(context).currentThreepidCreds =
+  //       await client.requestTokenToRegisterEmail(
+  //         Matrix.of(context).currentClientSecret,
+  //         email,
+  //         0,
+  //       );
+  //     }
 
-      //the Matrix loginUsername setting is missing for sure!!
+  //     //the Matrix loginUsername setting is missing for sure!!
 
-      final displayname = Matrix.of(context).loginUsername!;
-      final localPart = displayname.toLowerCase().replaceAll(' ', '_');
+  //     final displayname = Matrix.of(context).loginUsername!;
+  //     final localPart = displayname.toLowerCase().replaceAll(' ', '_');
 
-      await client.uiaRequestBackground(
-            (auth) => client.register(
-          username: localPart,
-          password: password,
-          initialDeviceDisplayName: PlatformInfos.clientName,
-          auth: auth,
-        ),
-      );
-      // Set displayname
-      if (displayname != localPart) {
-        await client.setDisplayName(
-          client.userID!,
-          displayname,
-        );
-      }
-    } catch (e) {
-      final error = (e).toLocalizedString(context);
-      Logs().e(error);
-    }
-  }
+  //     await client.uiaRequestBackground(
+  //           (auth) => client.register(
+  //         username: localPart,
+  //         password: password,
+  //         initialDeviceDisplayName: PlatformInfos.clientName,
+  //         auth: auth,
+  //       ),
+  //     );
+  //     // Set displayname
+  //     if (displayname != localPart) {
+  //       await client.setDisplayName(
+  //         client.userID!,
+  //         displayname,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     final error = (e).toLocalizedString(context);
+  //     Logs().e(error);
+  //   }
+  // }
 
   //-----------------------------MATRIX-------------------------------------
 

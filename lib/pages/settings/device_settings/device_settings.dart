@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/key_verification/key_verification_dialog.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings_view.dart';
@@ -7,8 +8,6 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
-import 'package:matrix/encryption/utils/key_verification.dart';
-import 'package:matrix/matrix.dart';
 
 class DevicesSettings extends StatefulWidget {
   const DevicesSettings({Key? key}) : super(key: key);
