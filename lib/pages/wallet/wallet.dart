@@ -58,7 +58,6 @@ class WalletController extends State<Wallet> {
         ));
         //generate a new invoice for the user with 0 amount
         Logs().w("Generating new empty invoice for user");
-
         ReceiveController().getInvoice(0, "Empty invoice");
 
       } else {
@@ -94,11 +93,10 @@ class WalletController extends State<Wallet> {
       RestResponse onchainBalanceRest = await walletBalance();
       if(!onchainBalanceRest.data.isEmpty) {
       OnchainBalance onchainBalance = OnchainBalance.fromJson(onchainBalanceRest.data);
-setState(() {
+      setState(() {
         this.onchainBalance = onchainBalance;
       });
       }
-      
       changeTotalBalanceStr();
     } catch (e) {
       print(e);

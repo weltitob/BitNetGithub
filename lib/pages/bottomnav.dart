@@ -64,7 +64,6 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
   void loadData() async {
     QuerySnapshot querySnapshot = await settingsCollection.get();
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
-    print('rawTheme');
     print(allData);
     if(allData.contains(FirebaseAuth.instance.currentUser?.uid)){
       var data = await settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
