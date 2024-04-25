@@ -119,7 +119,7 @@ List<String> findLongestWords(List<String> words) {
                     color: Colors.transparent,
                     width: 0.0,
                   ),
-                  color: AppTheme.colorGlassContainer,
+                  color: Theme.of(context).colorScheme.brightness == Brightness.light ? AppTheme.white60 : AppTheme.colorGlassContainer,
                 ),
                 child: TextFormField(
                   readOnly: widget.readOnly, // Set the read-only property
