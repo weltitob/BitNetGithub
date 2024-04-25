@@ -14,7 +14,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class ChangeLanguage extends StatefulWidget {
   const ChangeLanguage({super.key});
-
+  
   @override
   State<ChangeLanguage> createState() => _ChangeLanguageState();
 }
@@ -35,14 +35,19 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
               .switchTab('main');
         },
       ),
-      body: SingleChildScrollView(child: LanguagePickerSheet()),
+      body: SingleChildScrollView(child: LanguagePickerSheet(onTapLanguage: (langCode, locale) {
+          Provider.of<LocalProvider>(context, listen: false)
+            .setLocaleInDatabase(langCode,
+            locale);
+            setState((){});
+      },)),
     );
   }
 }
 
 class LanguagePickerSheet extends StatefulWidget {
-  const LanguagePickerSheet({super.key});
-
+  const LanguagePickerSheet({super.key, required this.onTapLanguage});
+  final Function(String langCode, Locale locale) onTapLanguage;
   @override
   State<LanguagePickerSheet> createState() => _LanguagePickerSheetState();
 }
@@ -116,10 +121,11 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
       selected: currentLanguage == locale ? true : false,
       text: languageList[index],
       onTap: () {
-        Provider.of<LocalProvider>(context, listen: false)
-            .setLocaleInDatabase(codeList[index],
-            locale);
-            setState((){});
+        // Provider.of<LocalProvider>(context, listen: false)
+        //     .setLocaleInDatabase(codeList[index],
+        //     locale);
+        //     setState((){});
+        widget.onTapLanguage(codeList[index], locale);
         //Navigator.pop(context);
       },
     );

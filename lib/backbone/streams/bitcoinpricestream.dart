@@ -101,12 +101,23 @@ class BitcoinPriceStream {
   String localCurrency = 'eur'; // Default currency
 
   BitcoinPriceStream() {
+    
     _priceController = StreamController<ChartLine>(
       onListen: _startStream,
       onCancel: _stopStream,
     );
   }
 
+ BitcoinPriceStream.withCurrency(String currency) {
+  if (localCurrency != currency) {
+      localCurrency = currency.toLowerCase();
+    }
+     _priceController = StreamController<ChartLine>(
+      onListen: _startStream,
+      onCancel: _stopStream,
+    );
+    _startStream();
+ }
   Stream<ChartLine> get priceStream => _priceController.stream;
 
 
