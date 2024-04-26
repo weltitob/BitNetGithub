@@ -14,7 +14,6 @@ class Avatar extends StatelessWidget {
   final double size;
   final void Function()? onTap;
   static const double defaultSize = AppTheme.cardPadding * 2;
-  final Client? client;
   final double fontSize;
 
   const Avatar({
@@ -23,7 +22,6 @@ class Avatar extends StatelessWidget {
     this.name,
     this.size = defaultSize,
     this.onTap,
-    this.client,
     this.fontSize = 18,
     Key? key,
     this.profileId,
@@ -31,15 +29,7 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var fallbackLetters = '@';
-    final name = this.name;
-    if (name != null) {
-      if (name.runes.length >= 2) {
-        fallbackLetters = String.fromCharCodes(name.runes, 0, 2);
-      } else if (name.runes.length == 1) {
-        fallbackLetters = name;
-      }
-    }
+   
     final noPic = mxContent == null ||
         mxContent.toString().isEmpty ||
         mxContent.toString() == 'null';

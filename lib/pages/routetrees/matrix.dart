@@ -1,37 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:bitnet/backbone/helper/logs/logs.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/other/background_push.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/other/famedlysdk_store.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/other/uia_request_manager.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/other/voip_plugin.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/dialogsandsheets/dialogs/key_verification/key_verification_dialog.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
-import 'package:bitnet/pages/matrix/trash/account_bundles.dart';
-import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:collection/collection.dart';
-import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
-import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:url_launcher/url_launcher_string.dart';
 
-import '../matrix/widgets/local_notifications_extension.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -39,14 +23,12 @@ class Matrix extends StatefulWidget {
   final Widget? child;
 
   final BuildContext context;
-  final List<Client> clients;
   final Map<String, String>? queryParameters;
 
   const Matrix({
     this.child,
 
     required this.context,
-    required this.clients,
     this.queryParameters,
     Key? key,
   }) : super(key: key);
@@ -60,169 +42,14 @@ class Matrix extends StatefulWidget {
 }
 
 class MatrixState extends State<Matrix> with WidgetsBindingObserver {
-  int _activeClient = -1;
-  String? activeBundle;
-  Store store = Store();
   late BuildContext navigatorContext;
 
-  HomeserverSummary? loginHomeserverSummary;
-  XFile? loginAvatar;
-  String? loginUsername;
-  bool? loginRegistrationSupported;
 
-  BackgroundPush? backgroundPush;
-
-  Client get client {
-    if (widget.clients.isEmpty) {
-      print("Clients list was empty...");
-      Logs().w("IMPORTANT CLIENTS WAS EMPTY in matrix.dart");
-      widget.clients.add(getLoginClient());
-    }
-    if (_activeClient < 0 || _activeClient >= widget.clients.length) {
-      return currentBundle!.first!;
-    }
-    return widget.clients[_activeClient];
-  }
-
-  bool get webrtcIsSupported =>
-      kIsWeb ||
-      PlatformInfos.isMobile ||
-      PlatformInfos.isWindows ||
-      PlatformInfos.isMacOS;
-
-  VoipPlugin? voipPlugin;
-
-  bool get isMultiAccount => widget.clients.length > 1;
-
-  int getClientIndexByMatrixId(String matrixId) =>
-      widget.clients.indexWhere((client) => client.userID == matrixId);
-
-  late String currentClientSecret;
-  RequestTokenResponse? currentThreepidCreds;
-
-  void setActiveClient(Client? cl) {
-    final i = widget.clients.indexWhere((c) => c == cl);
-    if (i != -1) {
-      _activeClient = i;
-      // TODO: Multi-client VoiP support
-      createVoipPlugin();
-    } else {
-      Logs().w('Tried to set an unknown client ${cl!.userID} as active');
-    }
-  }
-
-  List<Client?>? get currentBundle {
-    if (!hasComplexBundles) {
-      return List.from(widget.clients);
-    }
-    final bundles = accountBundles;
-    if (bundles.containsKey(activeBundle)) {
-      return bundles[activeBundle];
-    }
-    return bundles.values.first;
-  }
-
-  Map<String?, List<Client?>> get accountBundles {
-    final resBundles = <String?, List<_AccountBundleWithClient>>{};
-    for (var i = 0; i < widget.clients.length; i++) {
-      final bundles = widget.clients[i].accountBundles;
-      for (final bundle in bundles) {
-        if (bundle.name == null) {
-          continue;
-        }
-        resBundles[bundle.name] ??= [];
-        resBundles[bundle.name]!.add(
-          _AccountBundleWithClient(
-            client: widget.clients[i],
-            bundle: bundle,
-          ),
-        );
-      }
-    }
-    for (final b in resBundles.values) {
-      b.sort(
-        (a, b) => a.bundle!.priority == null
-            ? 1
-            : b.bundle!.priority == null
-                ? -1
-                : a.bundle!.priority!.compareTo(b.bundle!.priority!),
-      );
-    }
-    return resBundles
-        .map((k, v) => MapEntry(k, v.map((vv) => vv.client).toList()));
-  }
-
-  bool get hasComplexBundles => accountBundles.values.any((v) => v.length > 1);
-
-  Client? _loginClientCandidate;
-
-  Client getLoginClient() {
-    if (widget.clients.isNotEmpty && !client.isLogged()) {
-      return client;
-    }
-    final candidate = _loginClientCandidate ??= ClientManager.createClient(
-      '${AppTheme.applicationName}-${DateTime.now().millisecondsSinceEpoch}',
-    )..onLoginStateChanged
-          .stream
-          .where((l) => l == LoginState.loggedIn)
-          .first
-          .then((_) {
-        if (!widget.clients.contains(_loginClientCandidate)) {
-          widget.clients.add(_loginClientCandidate!);
-        }
-        ClientManager.addClientNameToStore(_loginClientCandidate!.clientName);
-        _registerSubs(_loginClientCandidate!.clientName);
-        _loginClientCandidate = null;
-        //uncomment this because even if firebase wasnt logged in it was pushing us further
-        //widget.router!.currentState!.to('/rooms');
-      });
-    return candidate;
-  }
-
-  Client? getClientByName(String name) =>
-      widget.clients.firstWhereOrNull((c) => c.clientName == name);
-
-  Map<String, dynamic>? get shareContent => _shareContent;
-
-  set shareContent(Map<String, dynamic>? content) {
-    _shareContent = content;
-    onShareContentChanged.add(_shareContent);
-  }
-
-  Map<String, dynamic>? _shareContent;
-
-  final StreamController<Map<String, dynamic>?> onShareContentChanged =
-      StreamController.broadcast();
-
-  File? wallpaper;
-
-  void _initWithStore() async {
-    try {
-      if (client.isLogged()) {
-        // TODO: Figure out how this works in multi account
-        final statusMsg = await store.getItem(SettingKeys.ownStatusMessage);
-        if (statusMsg?.isNotEmpty ?? false) {
-          Logs().v('Send cached status message: "$statusMsg"');
-          await client.setPresence(
-            client.userID!,
-            PresenceType.online,
-            statusMsg: statusMsg,
-          );
-        }
-      }
-    } catch (e, s) {
-      client.onLoginStateChanged.addError(e, s);
-      rethrow;
-    }
-  }
 
   final onRoomKeyRequestSub = <String, StreamSubscription>{};
   final onKeyVerificationRequestSub = <String, StreamSubscription>{};
   final onNotification = <String, StreamSubscription>{};
 
-  final onLoginStateChanged = <String, StreamSubscription<LoginState>>{};
-
-  final onUiaRequest = <String, StreamSubscription<UiaRequest>>{};
   StreamSubscription<html.Event>? onFocusSub;
   StreamSubscription<html.Event>? onBlurSub;
 
@@ -243,22 +70,13 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
   bool webHasFocus = true;
 
-  String? get activeRoomId => GoRouter.of(context).routerDelegate.currentConfiguration.pathParameters['roomid'];
 
-  final linuxNotifications =
-      PlatformInfos.isLinux ? NotificationsClient() : null;
-  final Map<String, int> linuxNotificationIds = {};
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     initMatrix();
-    if (PlatformInfos.isWeb) {
-      initConfig().then((_) => initSettings());
-    } else {
-      initSettings();
-    }
     initLoadingDialog();
   }
 
@@ -281,50 +99,19 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
       });
     }
 
-    _initWithStore();
-
-    for (final c in widget.clients) {
-      _registerSubs(c.clientName);
-    }
 
     if (kIsWeb) {
       onFocusSub = html.window.onFocus.listen((_) => webHasFocus = true);
       onBlurSub = html.window.onBlur.listen((_) => webHasFocus = false);
     }
 
-    if (PlatformInfos.isMobile) {
-      backgroundPush = BackgroundPush(
-        client,
-        context,
-        onFcmError: (errorMsg, {Uri? link}) async {
-          final result = await showOkCancelAlertDialog(
-            barrierDismissible: true,
-            context: context,
-            title: L10n.of(context)!.oopsSomethingWentWrong,
-            message: errorMsg,
-            okLabel:
-            link == null ? L10n.of(context)!.ok : L10n.of(context)!.help,
-            cancelLabel: L10n.of(context)!.doNotShowAgain,
-          );
-          if (result == OkCancelResult.ok && link != null) {
-            launchUrlString(link.toString());
-          }
-          if (result == OkCancelResult.cancel) {
-            await store.setItemBool(SettingKeys.showNoGoogle, true);
-          }
-        },
-      );
-    }
-
-    createVoipPlugin();
+    
   }
 
   void initLoadingDialog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       LoadingDialog.defaultTitle = L10n.of(context)!.loadingPleaseWait;
       LoadingDialog.defaultBackLabel = L10n.of(context)!.close;
-      LoadingDialog.defaultOnError =
-          (e) => (e as Object?)!.toLocalizedString(context);
     });
   }
 
@@ -341,100 +128,9 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     }
   }
 
-  void _registerSubs(String name) {
-    final c = getClientByName(name);
-    if (c == null) {
-      Logs().w(
-        'Attempted to register subscriptions for non-existing client $name',
-      );
-      return;
-    }
-    // onRoomKeyRequestSub[name] ??=
-    //     c.onRoomKeyRequest.stream.listen((RoomKeyRequest request) async {
-    //   if (widget.clients.any(
-    //     ((cl) =>
-    //         cl.userID == request.requestingDevice.userId &&
-    //         cl.identityKey == request.requestingDevice.curve25519Key),
-    //   )) {
-    //     Logs().i(
-    //       '[Key Request] Request is from one of our own clients, forwarding the key...',
-    //     );
-    //     await request.forwardKey();
-    //   }
-    // });
-    // onKeyVerificationRequestSub[name] ??= c.onKeyVerificationRequest.stream
-    //     .listen((KeyVerification request) async {
-    //   var hidPopup = false;
-    //   request.onUpdate = () {
-    //     if (!hidPopup &&
-    //         {KeyVerificationState.done, KeyVerificationState.error}
-    //             .contains(request.state)) {
-    //       Navigator.of(navigatorContext).pop('dialog');
-    //     }
-    //     hidPopup = true;
-    //   };
-    //   request.onUpdate = null;
-    //   hidPopup = true;
-    //   await KeyVerificationDialog(request: request).show(navigatorContext);
-    // });
-    onLoginStateChanged[name] ??= c.onLoginStateChanged.stream.listen((state) {
-      final loggedInWithMultipleClients = widget.clients.length > 1;
-      if (loggedInWithMultipleClients && state != LoginState.loggedIn) {
-        _cancelSubs(c.clientName);
-        widget.clients.remove(c);
-        ClientManager.removeClientNameFromStore(c.clientName);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(L10n.of(context)!.oneClientLoggedOut),
-          ),
-        );
+ 
 
-        if (state != LoginState.loggedIn) {
-          context.go(
-            //'/rooms',
-            //queryParameters: widget.router?.currentState?.queryParameters ?? {},
-            '/authhome'
-          );
-        }
-      } else {
-        //widget.router?.currentState?.to(
-          //state == LoginState.loggedIn ? '/rooms' : '/home',
-          //queryParameters: widget.router?.currentState?.queryParameters ?? {},
-        //);
-        print("MATRIX.dart ELSE STATEMENT WAS TRIGGERED !!!! LOOK!");
-        context.go(
-            '/feed'
-        );
-      }
-    });
-    // onUiaRequest[name] ??= c.onUiaRequest.stream.listen(uiaRequestHandler);
-    // if (PlatformInfos.isWeb || PlatformInfos.isLinux) {
-    //   c.onSync.stream.first.then((s) {
-    //     html.Notification.requestPermission();
-    //     onNotification[name] ??= c.onEvent.stream
-    //         .where(
-    //           (e) =>
-    //               e.type == EventUpdateType.timeline &&
-    //               [EventTypes.Message, EventTypes.Sticker, EventTypes.Encrypted]
-    //                   .contains(e.content['type']) &&
-    //               e.content['sender'] != c.userID,
-    //         )
-    //         .listen(showLocalNotification);
-    //   });
-    // }
-  }
-
-  void _cancelSubs(String name) {
-    onRoomKeyRequestSub[name]?.cancel();
-    onRoomKeyRequestSub.remove(name);
-    onKeyVerificationRequestSub[name]?.cancel();
-    onKeyVerificationRequestSub.remove(name);
-    onLoginStateChanged[name]?.cancel();
-    onLoginStateChanged.remove(name);
-    onNotification[name]?.cancel();
-    onNotification.remove(name);
-  }
-
+ 
 
   // void createVoipPlugin() async {
   //   if (await store.getItemBool(SettingKeys.experimentalVoip) == false) {
@@ -447,59 +143,6 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     Logs().v('AppLifecycleState = $state');
-    final foreground = state != AppLifecycleState.detached &&
-        state != AppLifecycleState.paused;
-    client.backgroundSync = foreground;
-    client.syncPresence = foreground ? null : PresenceType.unavailable;
-    client.requestHistoryOnLimitedTimeline = !foreground;
-  }
-
-  void initSettings() {
-    store.getItem(SettingKeys.wallpaper).then((final path) async {
-      if (path == null) return;
-      final file = File(path);
-      if (await file.exists()) {
-        wallpaper = file;
-      }
-    });
-    store.getItem(SettingKeys.fontSizeFactor).then(
-          (value) => AppTheme.fontSizeFactor =
-              double.tryParse(value ?? '') ?? AppTheme.fontSizeFactor,
-        );
-    store.getItem(SettingKeys.bubbleSizeFactor).then(
-          (value) => AppTheme.bubbleSizeFactor =
-              double.tryParse(value ?? '') ?? AppTheme.bubbleSizeFactor,
-        );
-    store
-        .getItemBool(SettingKeys.renderHtml, AppTheme.renderHtml)
-        .then((value) => AppTheme.renderHtml = value);
-    store
-        .getItemBool(
-          SettingKeys.hideRedactedEvents,
-          AppTheme.hideRedactedEvents,
-        )
-        .then((value) => AppTheme.hideRedactedEvents = value);
-    store
-        .getItemBool(SettingKeys.hideUnknownEvents, AppTheme.hideUnknownEvents)
-        .then((value) => AppTheme.hideUnknownEvents = value);
-    store
-        .getItemBool(
-          SettingKeys.showDirectChatsInSpaces,
-          AppTheme.showDirectChatsInSpaces,
-        )
-        .then((value) => AppTheme.showDirectChatsInSpaces = value);
-    store
-        .getItemBool(SettingKeys.separateChatTypes, AppTheme.separateChatTypes)
-        .then((value) => AppTheme.separateChatTypes = value);
-    store
-        .getItemBool(SettingKeys.autoplayImages, AppTheme.autoplayImages)
-        .then((value) => AppTheme.autoplayImages = value);
-    store
-        .getItemBool(SettingKeys.sendOnEnter, AppTheme.sendOnEnter)
-        .then((value) => AppTheme.sendOnEnter = value);
-    store
-        .getItemBool(SettingKeys.experimentalVoip, AppTheme.experimentalVoip)
-        .then((value) => AppTheme.experimentalVoip = value);
   }
 
   @override
@@ -508,14 +151,10 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
     onRoomKeyRequestSub.values.map((s) => s.cancel());
     onKeyVerificationRequestSub.values.map((s) => s.cancel());
-    onLoginStateChanged.values.map((s) => s.cancel());
     onNotification.values.map((s) => s.cancel());
-    client.httpClient.close();
     onFocusSub?.cancel();
     onBlurSub?.cancel();
-    backgroundPush?.onRoomSync?.cancel();
 
-    linuxNotifications?.close();
 
     super.dispose();
   }
@@ -529,33 +168,3 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   }
 }
 
-class FixedThreepidCreds extends ThreepidCreds {
-  FixedThreepidCreds({
-    required String sid,
-    required String clientSecret,
-    String? idServer,
-    String? idAccessToken,
-  }) : super(
-          sid: sid,
-          clientSecret: clientSecret,
-          idServer: idServer,
-          idAccessToken: idAccessToken,
-        );
-
-  @override
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['sid'] = sid;
-    data['client_secret'] = clientSecret;
-    if (idServer != null) data['id_server'] = idServer;
-    if (idAccessToken != null) data['id_access_token'] = idAccessToken;
-    return data;
-  }
-}
-
-class _AccountBundleWithClient {
-  final Client? client;
-  final AccountBundle? bundle;
-
-  _AccountBundleWithClient({this.client, this.bundle});
-}

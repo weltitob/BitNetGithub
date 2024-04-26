@@ -58,7 +58,6 @@ class _BottomNavState extends State<BottomNav>
   List<Map<String, dynamic>> getNavItems() {
     return [
       {'icon': FontAwesomeIcons.fire, 'route': '/feed'},
-      {'icon': FontAwesomeIcons.rocketchat, 'route': '/rooms'},
       {'icon': FontAwesomeIcons.upload, 'route': '/create'},
       {'icon': FontAwesomeIcons.wallet, 'route': '/wallet'},
       {'icon': FontAwesomeIcons.userAstronaut, 'route': '/profile/$profileId'},
@@ -147,7 +146,6 @@ class _BottomNavState extends State<BottomNav>
           widget.child,
           if (widget.routerState.fullPath != null &&
                   (widget.routerState.fullPath == '/feed' ||
-                      widget.routerState.fullPath == '/rooms' ||
                       widget.routerState.fullPath == '/create' ||
                       widget.routerState.fullPath == '/wallet' ||
                       widget.routerState.fullPath!.contains('/profile')) ||
@@ -252,7 +250,6 @@ class _BottomNavState extends State<BottomNav>
             ),
           if (widget.routerState.fullPath != null &&
                   (widget.routerState.fullPath == '/feed' ||
-                      widget.routerState.fullPath == '/rooms' ||
                       widget.routerState.fullPath == '/create' ||
                       widget.routerState.fullPath == '/wallet' ||
                       widget.routerState.fullPath!.contains('/profile')) ||

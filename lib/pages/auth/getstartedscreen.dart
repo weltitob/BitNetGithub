@@ -149,7 +149,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   onTap: () async {
                     context.go('/authhome/pinverification');
                   }),
-              SizedBox(height: AppTheme.cardPadding * 4),
+              // SizedBox(height: AppTheme.cardPadding * 4),
               Container(
                 margin: EdgeInsets.only(
                     top: AppTheme.cardPadding,

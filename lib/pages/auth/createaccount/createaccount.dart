@@ -1,9 +1,7 @@
 import 'package:bitnet/backbone/helper/logs/logs.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
-import 'package:bitnet/models/matrix_models/identityprovider_matrix.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
@@ -48,16 +46,10 @@ class CreateAccountController extends State<CreateAccount> {
   final TextEditingController controllerUsername = TextEditingController();
   bool isLoading = false;
 
-  bool _supportsFlow(String flowType) =>
-      Matrix.of(context)
-          .loginHomeserverSummary
-          ?.loginFlows
-          .any((flow) => flow.type == flowType) ??
-          false;
+
 
   bool isDefaultPlatform = (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
 
-  bool get supportsLogin => _supportsFlow('m.login.password');
 
   void login() => context.go('/authhome/login');
 

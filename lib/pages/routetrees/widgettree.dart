@@ -1,14 +1,11 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/logs/logs.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/other/background_push.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_scroll_behaviour.dart';
-import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/loaders/empty_page.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
-import 'package:bitnet/pages/routetrees/routes.dart';
 import 'package:app_links/app_links.dart';
 import 'package:bitnet/router.dart';
 import 'package:flutter/foundation.dart';
@@ -19,10 +16,8 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:universal_html/html.dart' as html;
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 
@@ -49,7 +44,7 @@ class _WidgetTreeState extends State<WidgetTree> {
     super.initState();
 
 
-    getclientsfunc();
+    //getclientsfunc();
     isBiometricsAvailable();
     _appLinks = AppLinks(
       onAppLink: (Uri uri, String string) {
@@ -71,8 +66,6 @@ class _WidgetTreeState extends State<WidgetTree> {
   String? _initialUrl;
 
   bool? columnMode;
-  late List<Client> clients;
-  bool _isLoadingClients = true;
 
   @override
   void dispose() {
@@ -101,48 +94,19 @@ class _WidgetTreeState extends State<WidgetTree> {
   }
 
   getclientsfunc() async {
-    try {
-      clients = await ClientManager.getClients();
-      setState(() {
-        _isLoadingClients = false;
-      });
-      print("Fetched clients: ${clients.toString()}");
-      // Preload first client if we have clients
-      print("If now firstornullerror its here...");
-      final firstClient = clients.isNotEmpty ? clients.first : null;
-      print("First client: $firstClient");
-
-      await firstClient?.roomsLoading;
-      await firstClient?.accountDataLoading;
-      print("clients after loading: $clients");
-
-      if (PlatformInfos.isMobile) {
-        BackgroundPush.clientOnly(clients.first);
-      }
-      final queryParameters = <String, String>{};
-
-      //why is this line executed try with own mobile phone next
-      if (kIsWeb) {
-        queryParameters
-            .addAll(Uri.parse(html.window.location.href).queryParameters);
-      }
-
-      print("Loading should be finished");
-    } catch (e) {
-      throw Exception("error loading matrix: $e");
-    }
-    if (kIsWeb) {
-      _initialUrl = '/website';
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
+ if(kIsWeb) {
+  _initialUrl = '/website';
+   } else {
+    if(Auth().currentUser != null) {
+      _initialUrl = '/feed';
     } else {
-      if (clients.isNotEmpty) {
-        print('Client is not null so this gets triggered...');
-        _initialUrl =
-            clients.any((client) => client.isLogged()) ? '/feed' : '/authhome';
-      } else {
-        print('Client seems to be null...');
-        _initialUrl = '/loading';
-      }
+      _initialUrl = '/authhome';
     }
+   }
+
+    });
+  
   }
 
   @override
@@ -191,14 +155,13 @@ class _WidgetTreeState extends State<WidgetTree> {
                   ],
                   builder: (context, child) =>
                       //child,
-                      (_isLoadingClients)
-                          ? EmptyPage(
-                              loading: true, text: "Clients still loading...")
-                          :
+                      // (_isLoadingClients)
+                      //     ? EmptyPage(
+                      //         loading: true, text: "Clients still loading...")
+                      //     :
                           //WebsiteLandingPage(),
                           Matrix(
                               context: context,
-                              clients: clients,
                               child: child,
                             ),
 

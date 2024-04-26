@@ -17,3 +17,4 @@ compressImage(file, postId) async {
     return file;
   }
 }
+

@@ -1,18 +1,11 @@
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
 import 'package:bitnet/components/tabs/wallettab.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:pin_code_text_field/pin_code_text_field.dart';
 
 class ProfileController extends GetxController {
   String profileId = "GUsuvr19SPrGELGZtrAq";
@@ -151,35 +144,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  void pickAvatarMatrix() async {
-    final source = !PlatformInfos.isMobile
-        ? ImageSource.gallery
-        : await showModalActionSheet<ImageSource>(
-            context: Get.context!,
-            title: L10n.of(Get.context!)!.changeYourAvatar,
-            actions: [
-              SheetAction(
-                key: ImageSource.camera,
-                label: L10n.of(Get.context!)!.openCamera,
-                isDefaultAction: true,
-                icon: Icons.camera_alt_outlined,
-              ),
-              SheetAction(
-                key: ImageSource.gallery,
-                label: L10n.of(Get.context!)!.openGallery,
-                icon: Icons.photo_outlined,
-              ),
-            ],
-          );
-    if (source == null) return;
-    final picked = await ImagePicker().pickImage(
-      source: source,
-      imageQuality: 50,
-      maxWidth: 512,
-      maxHeight: 512,
-    );
-    Matrix.of(Get.context!).loginAvatar = picked;
-  }
+  
 
   void updateUsername() {
     usersCollection.doc(profileId).update({

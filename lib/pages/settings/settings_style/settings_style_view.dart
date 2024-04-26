@@ -58,14 +58,12 @@ class SettingsStyleView extends StatelessWidget {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(colorPickerSize),
                             onTap: () {
-                              controller.setChatColor(color,context);
+                             
                             },
                             child: color == null
                                 ? GestureDetector(
                                     onTap: () => showColorPickerDialouge(
                                       actionright: () {
-                                        controller.setChatColor(
-                                            controller.pickerColor.value,context);
                                         Navigator.of(context, rootNavigator: true)
                                             .pop();
                                       },

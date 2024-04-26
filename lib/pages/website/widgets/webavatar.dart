@@ -3,7 +3,6 @@ import 'package:bitnet/pages/website/widgets/webmxcimage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:matrix/matrix.dart';
 
 import 'package:bitnet/backbone/helper/matrix_helpers/string_color.dart';
 
@@ -15,7 +14,6 @@ class WebAvatar extends StatelessWidget {
   final double size;
   final void Function()? onTap;
   static const double defaultSize = AppTheme.cardPadding * 2;
-  final Client? client;
   final double fontSize;
 
   const WebAvatar({
@@ -23,7 +21,6 @@ class WebAvatar extends StatelessWidget {
     this.name,
     this.size = defaultSize,
     this.onTap,
-    this.client,
     this.fontSize = 18,
     Key? key,
     this.profileId,
