@@ -94,49 +94,46 @@ class OnChainReceiveTab extends StatelessWidget {
                         ),
                       ),
                       // SizedBox to add some spacing
-                      const SizedBox(
-                        height: AppTheme.cardPadding * 1.5,
-                      ),
                     ],
                   ),
                 ),
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () async {
-              await Clipboard.setData(
-                  ClipboardData(text: controller.qrCodeDataStringOnchain));
-              // Display a snackbar to indicate that the wallet address has been copied
-              showOverlay(context, "Wallet-Adresse in Zwischenablage kopiert");
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Add an icon to copy the wallet address to the clipboard
-                Icon(
-                  Icons.copy_rounded,
-                  size: 18,
-                  color: AppTheme.white60,
-                ),
-                const SizedBox(
-                  width: AppTheme.elementSpacing * 0.25,
-                ),
-                // Display the user's wallet address
-                Container(
-                  width: AppTheme.cardPadding * 10,
-                  child: Text(
-                    "${controller.qrCodeDataStringOnchain}",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: () async {
+          //     await Clipboard.setData(
+          //         ClipboardData(text: controller.qrCodeDataStringOnchain));
+          //     // Display a snackbar to indicate that the wallet address has been copied
+          //     showOverlay(context, "Wallet-Adresse in Zwischenablage kopiert");
+          //   },
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       // Add an icon to copy the wallet address to the clipboard
+          //       Icon(
+          //         Icons.copy_rounded,
+          //         size: 18,
+          //         color: AppTheme.white60,
+          //       ),
+          //       const SizedBox(
+          //         width: AppTheme.elementSpacing * 0.25,
+          //       ),
+          //       // Display the user's wallet address
+          //       Container(
+          //         width: AppTheme.cardPadding * 10,
+          //         child: Text(
+          //           "${controller.qrCodeDataStringOnchain}",
+          //           style: Theme.of(context).textTheme.bodyMedium,
+          //           overflow: TextOverflow.ellipsis,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           // Add some space between the rows
           const SizedBox(
-            height: AppTheme.cardPadding,
+            height: AppTheme.cardPadding * 2,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -149,9 +146,9 @@ class OnChainReceiveTab extends StatelessWidget {
                 customHeight: AppTheme.cardPadding * 2,
                 customWidth: AppTheme.cardPadding * 8,
                 buttonType: ButtonType.transparent,
-                title: "Wallet-type",
+                title: "Change amount",
                 leadingIcon: Icon(
-                  FontAwesomeIcons.bitcoin,
+                  FontAwesomeIcons.edit,
                   size: AppTheme.cardPadding,
                   color: AppTheme.white90,
                 ),
@@ -159,7 +156,7 @@ class OnChainReceiveTab extends StatelessWidget {
                   BitNetBottomSheet(
                     context: context,
                     //also add a help button as an action at the right once bitnetbottomsheet is fixed
-                    title: "Change Wallet Type",
+                    title: "Change Amount",
                     height: MediaQuery.of(context).size.height * 0.7,
                     child: Container(),
                   );

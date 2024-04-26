@@ -37,16 +37,26 @@ class LightningReceiveTab extends StatelessWidget {
                 style: Theme.of(context).textTheme.headline5,
               ),
 
-              RoundedButtonWidget(
-                  size: AppTheme.cardPadding * 1.5,
-                  buttonType: ButtonType.transparent,
-                  iconData: controller.createdInvoice
-                      ? FontAwesomeIcons.cancel
-                      : FontAwesomeIcons.refresh,
-                  onTap: () {
-                    Logs().w(
-                        "Refresh button pressed: New Bitcoin Adress should be generated // not implemented yet");
-                  })
+              Row(
+                children: [
+                  RoundedButtonWidget(
+                      size: AppTheme.cardPadding * 1.5,
+                      buttonType: ButtonType.transparent,
+                      iconData: controller.createdInvoice
+                          ? FontAwesomeIcons.cancel
+                          : FontAwesomeIcons.refresh,
+                      onTap: () {
+                        Logs().w(
+                            "Refresh button pressed: New Bitcoin Adress should be generated // not implemented yet");
+                      }),
+                  SizedBox(width: AppTheme.elementSpacing,),
+                  LongButtonWidget(
+                      buttonType: ButtonType.transparent,
+                      customHeight: AppTheme.cardPadding * 1.5,
+                      customWidth: AppTheme.cardPadding * 3,
+                      title: "23:04", onTap: (){})
+                ],
+              )
             ],
           ),
           // SizedBox to add some spacing
@@ -93,52 +103,49 @@ class LightningReceiveTab extends StatelessWidget {
                           ),
                         ),
                       // SizedBox to add some spacing
-                      const SizedBox(
-                        height: AppTheme.cardPadding,
-                      ),
                     ],
                   ),
                 ),
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () async {
-              await Clipboard.setData(
-                  ClipboardData(text: controller.qrCodeDataStringLightning));
-              // Display a snackbar to indicate that the wallet address has been copied
-              showOverlay(
-                  context, "Wallet-Adresse in Zwischenablage kopiert");
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Add an icon to copy the wallet address to the clipboard
-                Icon(
-                  Icons.copy_rounded,
-                  size: 18,
-                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,
-                ),
-                const SizedBox(
-                  width: AppTheme.elementSpacing * 0.25,
-                ),
-                // Display the user's wallet address
-                Container(
-                  width: AppTheme.cardPadding * 10,
-                  child: Text(
-                    "${controller.qrCodeDataStringLightning}",
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: () async {
+          //     await Clipboard.setData(
+          //         ClipboardData(text: controller.qrCodeDataStringLightning));
+          //     // Display a snackbar to indicate that the wallet address has been copied
+          //     showOverlay(
+          //         context, "Wallet-Adresse in Zwischenablage kopiert");
+          //   },
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       // Add an icon to copy the wallet address to the clipboard
+          //       Icon(
+          //         Icons.copy_rounded,
+          //         size: 18,
+          //         color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,
+          //       ),
+          //       const SizedBox(
+          //         width: AppTheme.elementSpacing * 0.25,
+          //       ),
+          //       // Display the user's wallet address
+          //       Container(
+          //         width: AppTheme.cardPadding * 10,
+          //         child: Text(
+          //           "${controller.qrCodeDataStringLightning}",
+          //           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          //
+          //           ),
+          //           overflow: TextOverflow.ellipsis,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           // Add some space between the rows
           const SizedBox(
-            height: AppTheme.cardPadding * 1.5,
+            height: AppTheme.cardPadding * 2,
           ),
           if (!controller.createdInvoice) Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,9 +158,9 @@ class LightningReceiveTab extends StatelessWidget {
                       customHeight: AppTheme.cardPadding * 2,
                       customWidth: AppTheme.cardPadding * 8,
                       buttonType: ButtonType.transparent,
-                      title: "Create invoice",
+                      title: "Change amount",
                       leadingIcon: Icon(
-                        FontAwesomeIcons.fileInvoiceDollar,
+                        FontAwesomeIcons.edit,
                         size: AppTheme.cardPadding,
                         color: AppTheme.white90,
                       ),
@@ -161,7 +168,7 @@ class LightningReceiveTab extends StatelessWidget {
                         BitNetBottomSheet(
                           context: context,
                           //also add a help button as an action at the right once bitnetbottomsheet is fixed
-                          title: "Create Invoice",
+                          title: "Change Amount",
                           height: MediaQuery.of(context).size.height * 0.7,
                           child: CreateInvoice(
                             controller: controller,
