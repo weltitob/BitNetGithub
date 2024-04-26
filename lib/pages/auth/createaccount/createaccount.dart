@@ -53,22 +53,6 @@ class CreateAccountController extends State<CreateAccount> {
 
   void login() => context.go('/authhome/login');
 
-  Map<String, dynamic>? _rawLoginTypes;
-
-  // List<IdentityProvider>? get identityProviders {
-  //   final loginTypes = _rawLoginTypes;
-  //   if (loginTypes == null) return null;
-  //   final rawProviders = loginTypes.tryGetList('flows')!.singleWhere(
-  //         (flow) => flow['type'] == AuthenticationTypes.sso,
-  //   )['identity_providers'];
-  //   final list = (rawProviders as List)
-  //       .map((json) => IdentityProvider.fromJson(json))
-  //       .toList();
-  //   if (PlatformInfos.isCupertinoStyle) {
-  //     list.sort((a, b) => a.brand == 'apple' ? -1 : 1);
-  //   }
-  //   return list;
-  // }
 
   createAccountPressed() async {
     setState(() {
@@ -117,20 +101,6 @@ class CreateAccountController extends State<CreateAccount> {
     });
   }
 
-  // void matrixSignUp() {
-
-  //   Logs().w("!!!CHANGE NEEDED: signup matrix need to change email each time and at one point setup own matrix server without email auth");
-  //   Logs().w("signupmatrixfirst from Auth is called...");
-  //   Auth().signUpMatrixFirst(context, localpart);
-  //   // Logs().w("signupmatrixsecond from Auth is called...");
-  //   // Auth().signupMatrix(context, "testhaha@gmail.com", "i__hate..passwords!!");
-
-  //   //set profilepicture
-  //   // Logs().w("Setting profilepicture for Matrix client too...");
-  //   // final picked = await urlToXFile(profileimageurl);
-  //   //set matrix profilepicture too
-  //   // Matrix.of(context).loginAvatar = picked;
-  // }
 
 
   @override

@@ -58,68 +58,7 @@ class _MxcImageState extends State<WebMxcImage> {
   bool? _isCached;
 
   Future<void> _load() async {
-    // //final client = Matrix.of(context).client;
-    // final uri = widget.ref;
-    // //final event = widget.event;
-
-    // if (uri != null) {
-    //   final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    //   final width = widget.width;
-    //   final realWidth = width == null ? null : width * devicePixelRatio;
-    //   final height = widget.height;
-    //   final realHeight = height == null ? null : height * devicePixelRatio;
-
-    //   var storageRef = null;
-    //   try {
-    //     storageRef = FirebaseStorage.instance.ref(widget.ref);
-    //   } catch (e) {
-    //     return;
-    //   }
-    //   final httpUri = storageRef.getDownloadURL();
-
-    //   final storeKey = await httpUri;
-
-    //   if (_isCached == null) {
-    //     final cachedData = await client.database?.getFile(Uri.parse(storeKey));
-    //     if (cachedData != null) {
-    //       if (!mounted) return;
-    //       setState(() {
-    //         _imageData = cachedData;
-    //         _isCached = true;
-    //       });
-    //       return;
-    //     }
-    //     _isCached = false;
-    //   }
-
-    //   final response = await storageRef.getData();
-
-    //   if (response == null) {
-    //     print(
-    //         "Something bad happened while trying to download the image off of Firebase Storage");
-    //     return;
-    //   }
-    //   final remoteData = response;
-
-    //   if (!mounted) return;
-    //   setState(() {
-    //     _imageData = remoteData;
-    //   });
-    //   await client.database?.storeFile(Uri.parse(storeKey), remoteData, 0);
-    // }
-
-    // if (event != null) {
-    //   final data = await event.downloadAndDecryptAttachment(
-    //     getThumbnail: widget.isThumbnail,
-    //   );
-    //   if (data.detectFileType is MatrixImageFile) {
-    //     if (!mounted) return;
-    //     setState(() {
-    //       _imageData = data.bytes;
-    //     });
-    //     return;
-    //   }
-    // }
+  
 
     cacheImage().then((String imageUrl) {
       setState(() {
