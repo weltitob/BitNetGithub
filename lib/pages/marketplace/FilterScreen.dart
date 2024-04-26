@@ -1,4 +1,3 @@
-
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/components/marketplace_widgets/CoinPillLabel.dart';
@@ -10,8 +9,6 @@ import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({Key? key}) : super(key: key);
@@ -342,12 +339,15 @@ class _FilterScreenState extends State<FilterScreen> {
                       child: Wrap(
                         spacing: 15.w,
                         runSpacing: 15.w,
-                        children: List.generate(chainListData.length, (index) {
-                          return CoinPillLabel(
-                            coinImg: chainListData[index].coinImg,
-                            labelText: chainListData[index].labelText,
-                          );
-                        }),
+                        children: List.generate(
+                          chainListData.length,
+                          (index) {
+                            return CoinPillLabel(
+                              coinImg: chainListData[index].coinImg,
+                              labelText: chainListData[index].labelText,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -452,10 +452,7 @@ class _FilterScreenState extends State<FilterScreen> {
               width: size.width - 40.w,
               margin: EdgeInsets.symmetric(horizontal: 20.w),
               child: const CommonBtn(
-                hasOnPress: false,
-                text: 'Apply',
-                hasBackPress: true
-              ),
+                  hasOnPress: false, text: 'Apply', hasBackPress: true),
             ),
           ),
           const StatusBarBg()

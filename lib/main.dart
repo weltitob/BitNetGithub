@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -16,6 +17,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
 import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
 import 'backbone/auth/auth.dart';
@@ -50,6 +52,8 @@ Future<void> main() async {
   void onAppLink() {
     print("APPLINK WAS TRIGGERED");
   }
+
+  
 
   // Ensure that Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
@@ -134,34 +138,38 @@ class _MyAppState extends State<MyApp> {
             providers: [
               ChangeNotifierProvider<CardChangeProvider>(
                   create: (context) => CardChangeProvider()),
-              ChangeNotifierProvider<CurrencyTypeProvider>(create:(context)=> CurrencyTypeProvider()),
+              ChangeNotifierProvider<CurrencyTypeProvider>(
+                  create: (context) => CurrencyTypeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider()),
               ChangeNotifierProvider<CurrencyChangeProvider>(
-                  create: (context) => CurrencyChangeProvider(),
+                create: (context) => CurrencyChangeProvider(),
               ),
               ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
                 update: (context, currencyChangeProvider, bitcoinPriceStream) {
-                  if (bitcoinPriceStream == null || bitcoinPriceStream.localCurrency != currencyChangeProvider.selectedCurrency) {
+                  if (bitcoinPriceStream == null ||
+                      bitcoinPriceStream.localCurrency !=
+                          currencyChangeProvider.selectedCurrency) {
                     bitcoinPriceStream?.dispose();
-                    final newStream = BitcoinPriceStream.withCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
+                    final newStream = BitcoinPriceStream.withCurrency(
+                        currencyChangeProvider.selectedCurrency ?? 'usd');
                     // newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
 
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
-                      _streamKey.currentState?.setState(() {
-                        
-                      });
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      _streamKey.currentState?.setState(() {});
                     });
                     return newStream;
                   }
                   return bitcoinPriceStream;
                 },
-                dispose: (context, bitcoinPriceStream) => bitcoinPriceStream.dispose(),
-                
+                dispose: (context, bitcoinPriceStream) =>
+                    bitcoinPriceStream.dispose(),
               ),
               StreamProvider<ChartLine?>(
                 key: _streamKey,
-                create: (context) => Provider.of<BitcoinPriceStream>(context, listen: false).priceStream,
+                create: (context) =>
+                    Provider.of<BitcoinPriceStream>(context, listen: false)
+                        .priceStream,
                 initialData: ChartLine(time: 0, price: 0),
               ),
               StreamProvider<UserData?>(
@@ -175,10 +183,7 @@ class _MyAppState extends State<MyApp> {
               ChangeNotifierProvider<BalanceHideProvider>(
                   create: (context) => BalanceHideProvider()),
             ],
-          
             child: bTree.WidgetTree(),
           );
   }
-
 }
-
