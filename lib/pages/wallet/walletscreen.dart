@@ -52,22 +52,21 @@ class _WalletScreenState extends State<WalletScreen> {
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
         double.parse(widget.controller.onchainBalance.confirmedBalance),
         BitcoinUnits.SAT);
-      
 
     List<Container> cards = [
       Container(
         child: GestureDetector(
-          onTap: () {
-            context.go('/wallet/lightningcard');
-          },
-            child: BalanceCardLightning(controller: widget.controller)
-        ),
+            onTap: () {
+              context.go('/wallet/lightningcard');
+            },
+            child: BalanceCardLightning(controller: widget.controller)),
       ),
-      Container(child: GestureDetector(
-          onTap: () {
-            context.go('/wallet/bitcoincard');
-          },
-          child: BalanceCardBtc(controller: widget.controller))),
+      Container(
+          child: GestureDetector(
+              onTap: () {
+                context.go('/wallet/bitcoincard');
+              },
+              child: BalanceCardBtc(controller: widget.controller))),
     ];
     var sampleTheme = Theme.of(context).textTheme;
     return bitnetScaffold(
@@ -90,7 +89,9 @@ class _WalletScreenState extends State<WalletScreen> {
                         Avatar(
                           size: AppTheme.cardPadding * 3,
                         ),
-                        SizedBox(width: AppTheme.elementSpacing * 1.5,),
+                        SizedBox(
+                          width: AppTheme.elementSpacing * 1.5,
+                        ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -122,7 +123,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                                 ? Row(
                                                     children: [
                                                       Text(
-                                                        widget.controller.totalBalanceSAT.toString(),
+                                                        widget.controller
+                                                            .totalBalanceSAT
+                                                            .toString(),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .displaySmall,
@@ -152,21 +155,24 @@ class _WalletScreenState extends State<WalletScreen> {
                     ),
                     Consumer<BalanceHideProvider>(
                         builder: (context, balanceHideProvider, _) {
-                        return RoundedButtonWidget(
-                            size: AppTheme.cardPadding * 1.25,
-                            buttonType: ButtonType.transparent,
-                            iconData: balanceHideProvider.hideBalance == false ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
-                            onTap: () {
-                              Provider.of<BalanceHideProvider>(context,
-                                      listen: false)
-                                  .setHideBalance();
-                            });
-                      }
-                    ),
+                      return RoundedButtonWidget(
+                          size: AppTheme.cardPadding * 1.25,
+                          buttonType: ButtonType.transparent,
+                          iconData: balanceHideProvider.hideBalance == false
+                              ? FontAwesomeIcons.eyeSlash
+                              : FontAwesomeIcons.eye,
+                          onTap: () {
+                            Provider.of<BalanceHideProvider>(context,
+                                    listen: false)
+                                .setHideBalance();
+                          });
+                    }),
                   ],
                 ),
               ),
-              SizedBox(height: AppTheme.cardPadding * 1.5,),
+              SizedBox(
+                height: AppTheme.cardPadding * 1.5,
+              ),
               Container(
                 height: AppTheme.cardPadding * 9,
                 child: Stack(
@@ -184,11 +190,9 @@ class _WalletScreenState extends State<WalletScreen> {
                       cardsCount: cards.length,
                       onSwipe: (int index, int? previousIndex,
                           CardSwiperDirection direction) {
-                        Provider.of<CardChangeProvider>(context,
-                                listen: false)
-                            .setCardInDatabase(card == 'onChain'
-                                ? 'lightning'
-                                : 'onChain');
+                        Provider.of<CardChangeProvider>(context, listen: false)
+                            .setCardInDatabase(
+                                card == 'onChain' ? 'lightning' : 'onChain');
                         return true;
                       },
                       cardBuilder: (context, index, percentThresholdX,
@@ -214,17 +218,21 @@ class _WalletScreenState extends State<WalletScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    BitNetImageWithTextContainer("Send", () {
-                      context.push('/wallet/send');
-                    },
+                    BitNetImageWithTextContainer(
+                      "Send",
+                      () {
+                        context.push('/wallet/send');
+                      },
                       //image: "assets/images/friends.png",
                       width: AppTheme.cardPadding * 3.85,
                       height: AppTheme.cardPadding * 3.85,
                       fallbackIcon: Icons.arrow_upward_rounded,
                     ),
-                    BitNetImageWithTextContainer("Receive", () {
-                      context.go('/wallet/receive');
-                    },
+                    BitNetImageWithTextContainer(
+                      "Receive",
+                      () {
+                        context.go('/wallet/receive');
+                      },
                       //image: "assets/images/key_removed_bck.png",
                       width: AppTheme.cardPadding * 3.85,
                       height: AppTheme.cardPadding * 3.85,
@@ -232,13 +240,13 @@ class _WalletScreenState extends State<WalletScreen> {
                     ),
                     BitNetImageWithTextContainer(
                       "Rebalance",
-                          () {
-                      context.go("/wallet/loop_screen");
-                    },
+                      () {
+                        context.go("/wallet/loop_screen");
+                      },
                       //image: "assets/images/key_removed_bck.png",
-                    width: AppTheme.cardPadding * 3.85,
-                    height: AppTheme.cardPadding * 3.85,
-                    fallbackIcon: Icons.sync_rounded,
+                      width: AppTheme.cardPadding * 3.85,
+                      height: AppTheme.cardPadding * 3.85,
+                      fallbackIcon: Icons.sync_rounded,
                     ),
                     // LongButtonWidget(
                     //     buttonType: ButtonType.solid,
@@ -323,7 +331,9 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: AppTheme.elementSpacing,),
+              SizedBox(
+                height: AppTheme.elementSpacing,
+              ),
               const SizedBox(height: AppTheme.elementSpacing),
               Transactions(),
             ],

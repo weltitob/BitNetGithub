@@ -1,8 +1,27 @@
+import 'dart:async';
+
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
+import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/balancecard.dart';
+import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
+import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
+import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
+import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
+import 'package:bitnet/models/bitcoin/transactiondata.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:bitnet/pages/wallet/loop/loop_view.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:matrix/matrix.dart';
 
 class Loop extends StatefulWidget {
   const Loop({super.key});
@@ -12,29 +31,155 @@ class Loop extends StatefulWidget {
 }
 
 class LoopController extends State<Loop> {
-  bool animate = false;
+  late final Future<LottieComposition> compositionSend;
+  late final Future<LottieComposition> compositionReceive;
+  late OnchainBalance onchainBalance = OnchainBalance(
+      totalBalance: '0',
+      confirmedBalance: '0',
+      unconfirmedBalance: '0',
+      lockedBalance: '0',
+      reservedBalanceAnchorChan: '',
+      accountBalance: '');
+  late LightningBalance lightningBalance = LightningBalance(
+      balance: '0',
+      pendingOpenBalance: '0',
+      localBalance: '0',
+      remoteBalance: '0',
+      unsettledLocalBalance: '0',
+      pendingOpenLocalBalance: '',
+      unsettledRemoteBalance: '',
+      pendingOpenRemoteBalance: '');
+  bool visible = false;
 
-  List<Container> cards = [
-    Container(
-        height: AppTheme.cardPadding * 8,
-        margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-        child: BalanceCardBtc(controller: WalletController())),
-    Container(
-        height: AppTheme.cardPadding * 8,
-        margin: EdgeInsets.symmetric(
-          horizontal: AppTheme.cardPadding,
-        ),
-        child: BalanceCardLightning(controller: WalletController())),
-  ];
+  StreamSubscription<List<ReceivedInvoice>>? _invoicesSubscription;
+  StreamSubscription<List<BitcoinTransaction>>? _transactionsSubscription;
 
-  void changeAnimate() {
+  String totalBalanceStr = "0";
+  double totalBalanceSAT = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    subscribeInvoicesStream().listen((restResponse) {
+      Logs().w("Received data from Invoice-stream: $restResponse");
+      ReceivedInvoice receivedInvoice =
+          ReceivedInvoice.fromJson(restResponse.data);
+      if (receivedInvoice.settled == true) {
+        showOverlayTransaction(
+            context,
+            "Lightning invoice settled",
+            TransactionItemData(
+              amount: receivedInvoice.amtPaidSat.toString(),
+              timestamp: receivedInvoice.settleDate,
+              type: TransactionType.lightning,
+              status: TransactionStatus.confirmed,
+              direction: TransactionDirection.received,
+              receiver: receivedInvoice.paymentRequest!,
+              txHash: receivedInvoice.rHash!,
+            ));
+        //generate a new invoice for the user with 0 amount
+        Logs().w("Generating new empty invoice for user");
+
+        ReceiveController().getInvoice(0, "Empty invoice");
+      } else {
+        Logs().w(
+            "Invoice received but not settled yet: ${receivedInvoice.settled}");
+      }
+    }, onError: (error) {
+      Logs().e("Received error for Invoice-stream: $error");
+    });
+
+    subscribeTransactionsStream().listen((restResponse) {
+      BitcoinTransaction bitcoinTransaction =
+          BitcoinTransaction.fromJson(restResponse.data);
+      showOverlayTransaction(
+          context,
+          "Onchain transaction settled",
+          TransactionItemData(
+            amount: bitcoinTransaction.amount.toString(),
+            timestamp: bitcoinTransaction.timeStamp,
+            type: TransactionType.onChain,
+            status: TransactionStatus.confirmed,
+            direction: TransactionDirection.received,
+            receiver: bitcoinTransaction.destAddresses[0],
+            txHash: bitcoinTransaction.txHash,
+          ));
+      //});
+    }, onError: (error) {
+      Logs().e("Received error for Transactions-stream: $error");
+    });
+
+    fetchOnchainWalletBalance();
+    fetchLightingWalletBalance();
+  }
+
+  void fetchOnchainWalletBalance() async {
+    try {
+      RestResponse onchainBalanceRest = await walletBalance();
+      if (!onchainBalanceRest.data.isEmpty) {
+        OnchainBalance onchainBalance =
+            OnchainBalance.fromJson(onchainBalanceRest.data);
+
+        setState(() {
+          this.onchainBalance = onchainBalance;
+        });
+      }
+
+      changeTotalBalanceStr();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void fetchLightingWalletBalance() async {
+    try {
+      RestResponse lightningBalanceRest = await channelBalance();
+
+      LightningBalance lightningBalance =
+          LightningBalance.fromJson(lightningBalanceRest.data);
+      setState(() {
+        if (!lightningBalanceRest.data.isEmpty) {
+          this.lightningBalance = lightningBalance;
+        }
+      });
+      changeTotalBalanceStr();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  changeTotalBalanceStr() {
+    // Assuming both values are strings and represent numerical values
+    String confirmedBalanceStr = onchainBalance.confirmedBalance;
+    String balanceStr = lightningBalance.balance;
+
+    double confirmedBalanceSAT = double.parse(confirmedBalanceStr);
+    double balanceSAT = double.parse(balanceStr);
+
+    totalBalanceSAT = confirmedBalanceSAT + balanceSAT;
+
+    BitcoinUnitModel bitcoinUnit = CurrencyConverter.convertToBitcoinUnit(
+        totalBalanceSAT, BitcoinUnits.SAT);
+    final balance = bitcoinUnit.amount;
+    final unit = bitcoinUnit.bitcoinUnitAsString;
+
     setState(() {
-      animate = !animate;
+      this.totalBalanceStr = balance.toString() + " " + unit;
     });
   }
 
   @override
+  void dispose() {
+    _invoicesSubscription?.cancel();
+    _transactionsSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return LoopScreen(controller: this);
+    return LoopScreen(
+      controller: this,
+    );
   }
 }

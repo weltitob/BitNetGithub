@@ -16,7 +16,10 @@ import 'package:get/get.dart';
 
 class LoopScreen extends StatefulWidget {
   final LoopController controller;
-  const LoopScreen({super.key, required this.controller});
+  const LoopScreen({
+    super.key,
+    required this.controller,
+  });
 
   @override
   State<LoopScreen> createState() => _LoopScreenState();
@@ -27,9 +30,11 @@ class _LoopScreenState extends State<LoopScreen> {
 
   @override
   void dispose() {
-    super.dispose();
+    loopGetController.btcController.clear();
+    loopGetController.currencyController.clear();
     loopGetController.dispose();
     log('Loop controller disposed');
+    super.dispose();
   }
 
   @override
@@ -63,8 +68,7 @@ class _LoopScreenState extends State<LoopScreen> {
                           height: AppTheme.cardPadding * 8,
                           margin: EdgeInsets.symmetric(
                               horizontal: AppTheme.cardPadding),
-                          child:
-                              BalanceCardBtc(controller: WalletController())),
+                          child: BalanceCardBtc(controller: widget.controller)),
                       Container(
                         height: AppTheme.cardPadding * 1,
                       ),
@@ -74,7 +78,7 @@ class _LoopScreenState extends State<LoopScreen> {
                             horizontal: AppTheme.cardPadding,
                           ),
                           child: BalanceCardLightning(
-                              controller: WalletController())),
+                              controller: widget.controller)),
                     ],
                   ),
                   Align(
@@ -106,12 +110,12 @@ class _LoopScreenState extends State<LoopScreen> {
               child: AmountWidget(
                 enabled: true,
                 bitcoinUnit: BitcoinUnits.SAT,
-                btcController: TextEditingController(),
-                currController: TextEditingController(),
+                btcController: loopGetController.btcController,
+                currController: loopGetController.currencyController,
                 focusNode: FocusNode(),
                 onAmountChange: (type, currency) {
-                  log('This is the entered type $type');
-                  log('THis is the converted ammount $currency');
+                  log('This is the currencyController ${loopGetController.currencyController.text}');
+                  log('This is the btcController ${loopGetController.btcController.text}');
                 },
                 context: context,
               ),
@@ -129,7 +133,7 @@ class _LoopScreenState extends State<LoopScreen> {
                           ? 'Onchain to Lightning'
                           : 'Lightning to Onchain',
                       onTap: () {
-                        loopGetController.loopInQuote(context);
+                        loopGetController.loopInQuote(context, '20000');
                       },
                       customWidth: AppTheme.cardPadding * 12,
                     )),

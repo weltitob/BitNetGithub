@@ -13,7 +13,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class BalanceCardLightning extends StatelessWidget {
-  final WalletController controller;
+  final dynamic controller;
   const BalanceCardLightning({super.key, required this.controller});
 
   @override
@@ -42,7 +42,7 @@ class BalanceCardLightning extends StatelessWidget {
 }
 
 class BalanceCardBtc extends StatelessWidget {
-  final WalletController controller;
+  final dynamic controller;
   const BalanceCardBtc({Key? key, required this.controller}) : super(key: key);
 
   @override
@@ -157,7 +157,8 @@ class CardBackgroundLightning extends StatelessWidget {
               topLeftGradient(),
               bottomRightGradient(),
               CustomPaint(
-                size: Size(double.infinity, double.infinity), // nimmt die Größe des Containers an
+                size: Size(double.infinity,
+                    double.infinity), // nimmt die Größe des Containers an
                 painter: WavyGleamPainter(),
               ),
             ],
@@ -172,42 +173,67 @@ class WavyGleamPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.04) // Mehr Opazität für bessere Sichtbarkeit
+      ..color = Colors.white
+          .withOpacity(0.04) // Mehr Opazität für bessere Sichtbarkeit
       ..style = PaintingStyle.fill;
 
     // Erste Welle breiter machen
     Path path1 = Path()
       ..moveTo(0, 0) // Startpunkt oben links
-      ..lineTo(0, size.height * 0.0) // Beginn der Welle ein Drittel des Weges nach unten
+      ..lineTo(
+          0,
+          size.height *
+              0.0) // Beginn der Welle ein Drittel des Weges nach unten
       ..cubicTo(
-        size.width * 0.25, size.height * 0.0, // Erster Kontrollpunkt leicht rechts von Start
-        size.width * 0.3, size.height * 0.0, // Zweiter Kontrollpunkt für den Aufstieg der Welle
-        size.width * 0.4, size.height * 0.4, // Höhepunkt der Welle in der Mitte der Karte
+        size.width * 0.25,
+        size.height * 0.0, // Erster Kontrollpunkt leicht rechts von Start
+        size.width * 0.3,
+        size.height * 0.0, // Zweiter Kontrollpunkt für den Aufstieg der Welle
+        size.width * 0.4,
+        size.height * 0.4, // Höhepunkt der Welle in der Mitte der Karte
       )
       ..cubicTo(
-        size.width * 0.6, size.height * 0.9, // Dritter Kontrollpunkt für den Abstieg
-        size.width * 0.8, size.height * 0.7, // Vierter Kontrollpunkt weiter rechts für die Rundung
-        size.width, size.height * 0.75, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
+        size.width * 0.6,
+        size.height * 0.9, // Dritter Kontrollpunkt für den Abstieg
+        size.width * 0.8,
+        size.height *
+            0.7, // Vierter Kontrollpunkt weiter rechts für die Rundung
+        size.width,
+        size.height *
+            0.75, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
       )
-      ..lineTo(size.width, size.height) // Linie nach unten zum unteren rechten Eckpunkt
+      ..lineTo(size.width,
+          size.height) // Linie nach unten zum unteren rechten Eckpunkt
       ..lineTo(0, size.height) // Linie zurück zum unteren linken Eckpunkt
       ..close(); // Pfad schließen
 
     // Zweite Welle breiter machen, etwas unterhalb der ersten
     Path path2 = Path()
       ..moveTo(0, 0) // Startpunkt oben links
-      ..lineTo(0, size.height * 0.0) // Beginn der Welle ein Drittel des Weges nach unten
+      ..lineTo(
+          0,
+          size.height *
+              0.0) // Beginn der Welle ein Drittel des Weges nach unten
       ..cubicTo(
-        size.width * 0.25, size.height * 0.1, // Erster Kontrollpunkt leicht rechts von Start
-        size.width * 0.3, size.height * 0.1, // Zweiter Kontrollpunkt für den Aufstieg der Welle
-        size.width * 0.4, size.height * 0.5, // Höhepunkt der Welle in der Mitte der Karte
+        size.width * 0.25,
+        size.height * 0.1, // Erster Kontrollpunkt leicht rechts von Start
+        size.width * 0.3,
+        size.height * 0.1, // Zweiter Kontrollpunkt für den Aufstieg der Welle
+        size.width * 0.4,
+        size.height * 0.5, // Höhepunkt der Welle in der Mitte der Karte
       )
       ..cubicTo(
-        size.width * 0.6, size.height * 1, // Dritter Kontrollpunkt für den Abstieg
-        size.width * 0.8, size.height * 0.8, // Vierter Kontrollpunkt weiter rechts für die Rundung
-        size.width, size.height * 0.85, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
+        size.width * 0.6,
+        size.height * 1, // Dritter Kontrollpunkt für den Abstieg
+        size.width * 0.8,
+        size.height *
+            0.8, // Vierter Kontrollpunkt weiter rechts für die Rundung
+        size.width,
+        size.height *
+            0.85, // Endpunkt rechts, auf gleicher Höhe wie der vierte Kontrollpunkt
       )
-      ..lineTo(size.width, size.height) // Linie nach unten zum unteren rechten Eckpunkt
+      ..lineTo(size.width,
+          size.height) // Linie nach unten zum unteren rechten Eckpunkt
       ..lineTo(0, size.height) // Linie zurück zum unteren linken Eckpunkt
       ..close(); // Pfad schließen
 
@@ -218,7 +244,6 @@ class WavyGleamPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
-
 
 class CardBackgroundOnchain extends StatelessWidget {
   const CardBackgroundOnchain({Key? key}) : super(key: key);
@@ -269,10 +294,8 @@ class CardBackgroundOnchain extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     return Container(
       padding: const EdgeInsets.all(0.5),
       decoration: BoxDecoration(
@@ -310,7 +333,8 @@ class CardBackgroundOnchain extends StatelessWidget {
               topLeftGradient(),
               bottomRightGradient(),
               CustomPaint(
-                size: Size(double.infinity, double.infinity), // nimmt die Größe des Containers an
+                size: Size(double.infinity,
+                    double.infinity), // nimmt die Größe des Containers an
                 painter: WavyGleamPainter(),
               ),
             ],
