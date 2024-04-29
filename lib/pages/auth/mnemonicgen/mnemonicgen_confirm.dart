@@ -62,7 +62,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
                         margin: EdgeInsets.only(top: AppTheme.cardPadding),
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: AppTheme.white60,
+                            color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black60,
                             width: 2,
                           ),
                           borderRadius: AppTheme.cardRadiusCircular,

@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
-import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';

@@ -153,73 +153,68 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
          PopUpLangPickerWidget()
         ]
         ),
-        gradientColor: Colors.black,
         key: scaffoldKey,
-        body: BackgroundWithContent(
-          backgroundType: BackgroundType.asset,
-          opacity: 0.7,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Center(
-                  child: ListView(
-                    children: [
-                      SizedBox(
-                        height: AppTheme.cardPadding * 3,
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: Center(
+                child: ListView(
+                  children: [
+                    SizedBox(
+                      height: AppTheme.cardPadding * 3,
+                    ),
+                    Center(
+                        child: Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding * 2),
+                      child: AnimatedTextKit(
+                        animatedTexts: [
+                          TypewriterAnimatedText(
+                            L10n.of(context)!.platformDemandText,
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(shadows: [
+                              AppTheme.boxShadowSmall,
+                            ]),
+                            textAlign: TextAlign.center,
+                            speed: const Duration(milliseconds: 50),
+                          ),
+                          TypewriterAnimatedText(
+                            L10n.of(context)!.platformExlusivityText,
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(shadows: [
+                              AppTheme.boxShadowSmall,
+                            ]),
+                            textAlign: TextAlign.center,
+                            speed: const Duration(milliseconds: 50),
+                          ),
+                          TypewriterAnimatedText(
+                            L10n.of(context)!.platformExpandCapacityText,
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(shadows: [
+                              AppTheme.boxShadowSmall,
+                            ]),
+                            textAlign: TextAlign.center,
+                            speed: const Duration(milliseconds: 50),
+                          ),
+                        ],
+                        repeatForever: true,
+                        pause: const Duration(milliseconds: 2000),
+                        displayFullTextOnTap: true,
+                        stopPauseOnTap: true,
                       ),
-                      Center(
-                          child: Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: AppTheme.cardPadding * 2),
-                        child: AnimatedTextKit(
-                          animatedTexts: [
-                            TypewriterAnimatedText(
-                              L10n.of(context)!.platformDemandText,
-                              textStyle: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(shadows: [
-                                AppTheme.boxShadowSmall,
-                              ]),
-                              textAlign: TextAlign.center,
-                              speed: const Duration(milliseconds: 50),
-                            ),
-                            TypewriterAnimatedText(
-                              L10n.of(context)!.platformExlusivityText,
-                              textStyle: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(shadows: [
-                                AppTheme.boxShadowSmall,
-                              ]),
-                              textAlign: TextAlign.center,
-                              speed: const Duration(milliseconds: 50),
-                            ),
-                            TypewriterAnimatedText(
-                              L10n.of(context)!.platformExpandCapacityText,
-                              textStyle: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(shadows: [
-                                AppTheme.boxShadowSmall,
-                              ]),
-                              textAlign: TextAlign.center,
-                              speed: const Duration(milliseconds: 50),
-                            ),
-                          ],
-                          repeatForever: true,
-                          pause: const Duration(milliseconds: 2000),
-                          displayFullTextOnTap: true,
-                          stopPauseOnTap: true,
-                        ),
-                      )),
-                    ],
-                  ),
+                    )),
+                  ],
                 ),
               ),
-              buildVerificationSpace()
-            ],
-          ),
+            ),
+            buildVerificationSpace()
+          ],
         ),
       );
     });

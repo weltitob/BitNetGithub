@@ -27,14 +27,23 @@ class _BitcoinScreenState extends State<BitcoinScreen>
     with SingleTickerProviderStateMixin {
 
   final _controller = ScrollController();
+    late TextEditingController btcCtrlSell;
+  late TextEditingController currCtrlSell;
+  FocusNode nodeSell = FocusNode();
 
   @override
   void initState() {
+    btcCtrlSell = TextEditingController();
+    currCtrlSell = TextEditingController();
+    
     super.initState();
   }
 
   @override
   void dispose() {
+    btcCtrlSell.dispose();
+    currCtrlSell.dispose();
+    nodeSell.dispose();
     super.dispose();
   }
 
@@ -93,9 +102,9 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                                 children: [
                                   AmountWidget(
                                       enabled: true,
-                                      btcController: TextEditingController(),
-                                      currController: TextEditingController(),
-                                      focusNode: FocusNode(),
+                                      btcController: btcCtrlSell,
+                                      currController: currCtrlSell,
+                                      focusNode: nodeSell,
                                       context: context),
                                 ],
                               ));
@@ -227,23 +236,24 @@ class PurchaseSheet extends StatefulWidget {
 class _PurchaseSheetState extends State<PurchaseSheet>
     with TickerProviderStateMixin {
   late TabController controller;
-  late TextEditingController btcCtrl;
-  late TextEditingController currCtrl;
+  late TextEditingController btcCtrlBuy;
+  late TextEditingController currCtrlBuy;
+  FocusNode nodeBuy = FocusNode();
+  
+
   @override
  void initState() {
   controller = TabController(length: 3, vsync: this);
-  btcCtrl = TextEditingController();
-  currCtrl = TextEditingController();
-  btcCtrl.addListener(() {
-  });
-    currCtrl.addListener(() {
-  });
+  btcCtrlBuy = TextEditingController();
+  currCtrlBuy = TextEditingController();
+
   super.initState();
  }
  @override 
  void dispose() {
-  btcCtrl.dispose();
-  currCtrl.dispose();
+  btcCtrlBuy.dispose();
+  currCtrlBuy.dispose();
+  nodeBuy.dispose();
   controller.dispose();
   super.dispose();
  }
@@ -267,9 +277,9 @@ class _PurchaseSheetState extends State<PurchaseSheet>
               ),
               AmountWidget(
                   enabled: true,
-                  btcController: btcCtrl,
-                  currController: currCtrl,
-                  focusNode: FocusNode(),
+                  btcController: btcCtrlBuy,
+                  currController: currCtrlBuy,
+                  focusNode: nodeBuy,
                   context: context),
               SizedBox(
                 height: AppTheme.cardPadding * 2,

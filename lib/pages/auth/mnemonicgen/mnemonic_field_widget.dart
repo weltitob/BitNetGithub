@@ -114,7 +114,7 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
                       SizedBox(
                         height: AppTheme.cardPadding,
                       ),
-                      buildIndicator(pageController: _pageController, count: 6),
+                      CustomIndicator(pageController: _pageController, count: 6),
                       SizedBox(
                         height: AppTheme.cardPadding * 2,
                       ),
