@@ -12,7 +12,6 @@ import 'package:bitnet/pages/marketplace/ProfileEditScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/marketplace/SearchScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 Map<String, WidgetBuilder> allRoutes = {
   kInitialRoute: (BuildContext context) => const HomeScreen(),
