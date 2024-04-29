@@ -1,29 +1,21 @@
-import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
-import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/MostView.dart';
 import 'package:bitnet/components/marketplace_widgets/NftDropSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:go_router/go_router.dart';
 
-
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+ 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -37,63 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: AppTheme.cardPadding * 1,
                 ),
-                // Container(
-                //   margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
-                //   padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                //   child: Header(
-                //     title: Text(
-                //       'Explore',
-                //       style: Theme.of(context).textTheme.displaySmall,
-                //     ),
-                //     rightIcon: GestureDetector(
-                //       onTap: () {
-                //         Navigator.pushNamed(
-                //             context, route.kNotificationScreenRoute);
-                //       },
-                //       child: Row(
-                //         children: [
-                //           Stack(
-                //             children: [
-                //               Container(
-                //                 width: AppTheme.cardPadding * 2,
-                //                 height: AppTheme.cardPadding * 2,
-                //                 decoration: BoxDecoration(
-                //                   color: const Color.fromRGBO(
-                //                       255, 255, 255, 0.1),
-                //                   borderRadius: AppTheme.cardRadiusCircular,
-                //                 ),
-                //                 padding: EdgeInsets.all(AppTheme.elementSpacing),
-                //                 child: Image.asset(
-                //                   notificationIcon,
-                //                   width: AppTheme.cardPadding,
-                //                   height: AppTheme.cardPadding,
-                //                   fit: BoxFit.contain,
-                //                 ),
-                //               ),
-                //               Positioned(
-                //                 right: AppTheme.elementSpacing,
-                //                 top: AppTheme.elementSpacing,
-                //                 child: Container(
-                //                   width: AppTheme.elementSpacing,
-                //                   height: AppTheme.elementSpacing,
-                //                   decoration: BoxDecoration(
-                //                     color: const Color.fromRGBO(97, 90, 232, 1),
-                //                     borderRadius: AppTheme.cardRadiusCircular,
-                //                     border: Border.all(
-                //                       width: 30,
-                //                       color:
-                //                           const Color.fromRGBO(24, 31, 39, 1),
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ],
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 CommonHeading(
                   hasButton: true,
                   headingText: 'Latest NFT Drops',
@@ -115,9 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemCount: nftDropSliderData.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
-                          onTap: () => context.goNamed(
-                              kNftProductScreenRoute ,
-                                  pathParameters: {'nft_id': nftDropSliderData[index].nftName}),
+                          onTap: () => context.goNamed(kNftProductScreenRoute,
+                              pathParameters: {
+                                'nft_id': nftDropSliderData[index].nftName
+                              }),
                           child: NftDropSlider(
                             nftImage: nftDropSliderData[index].nftImage,
                             nftName: nftDropSliderData[index].nftName,
@@ -224,7 +160,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   isChild: Container(
                     width: size.width,
                     height: 245.w,
-                    margin: EdgeInsets.only(bottom: 30.h),
+                    margin: EdgeInsets.only(
+                      bottom: 30.h,
+                    ),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       padding: EdgeInsets.only(
