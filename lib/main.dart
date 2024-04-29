@@ -43,7 +43,8 @@ import 'backbone/auth/auth.dart';
 // ⠀⠀⠀⠀⠘⢻⣿⣷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀ ⢀⣠⣾⣿⡿⠋⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⠈⠛⢿⣿⣷⣶⣤⣤⣤⣤⣤⣤⣴⣾⣿⣿⠟⠋⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠛⠻⠿⠿⠿⠿⠟⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
-//
+
+
 //██████╗░██╗████████╗███╗░░██╗███████╗████████╗
 //██╔══██╗██║╚══██╔══╝████╗░██║██╔════╝╚══██╔══╝
 //██████╦╝██║░░░██║░░░██╔██╗██║█████╗░░░░░██║░░░
@@ -51,14 +52,13 @@ import 'backbone/auth/auth.dart';
 //██████╦╝██║░░░██║░░░██║░╚███║███████╗░░░██║░░░
 //╚═════╝░╚═╝░░░╚═╝░░░╚═╝░░╚══╝╚══════╝░░░╚═╝░░░
 
-// Main function to start the application
 Future<void> main() async {
   void onAppLink() {
     print("APPLINK WAS TRIGGERED");
   }
 
   // Ensure that Flutter binding is initialized
- 
+
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();
@@ -131,7 +131,6 @@ class _MyAppState extends State<MyApp> {
     // _initializeHive();
   }
 
-  // This widget is the root of the application.
   @override
   Widget build(BuildContext context) {
     return kIsWeb
