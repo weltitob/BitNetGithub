@@ -9,7 +9,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
-
 // This class is a StatefulWidget which displays a screen where a user can receive bitcoin
 class ReceiveScreen extends StatelessWidget {
   final ReceiveController controller;
