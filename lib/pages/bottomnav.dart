@@ -5,9 +5,14 @@ import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/pages/chat_list/chat_list.dart';
+import 'package:bitnet/pages/create/createasset.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
+import 'package:bitnet/pages/feed/feedscreen.dart';
+import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
+import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -122,13 +127,32 @@ class _BottomNavState extends State<BottomNav>
     super.dispose();
   }
 
+  int _selectedIndex = 0;
+
+  static  List<Widget> navItems = <Widget>[
+    FeedScreen(),
+    FeedScreen(),
+    //ChatList(routerState: ,),
+    CreateAsset(),
+    Wallet(),
+    Profile()
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     Get.put(FeedController(),);
-    final navItems = getNavItems();
+    Get.put(ProfileController());
+
+    //final navItems = getNavItems();
     print(widget.routerState.fullPath);
     void onTabTapped(String route, dynamic item) {
-      Get.put(ProfileController());
       setState(() {
         animationControllers.forEach((route, controller) {
           if (item['route'] == route) {
@@ -144,179 +168,220 @@ class _BottomNavState extends State<BottomNav>
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
-      body: Stack(
-        children: [
-          widget.child,
-          if (widget.routerState.fullPath != null &&
-                  (widget.routerState.fullPath == '/feed' ||
-                      widget.routerState.fullPath == '/rooms' ||
-                      widget.routerState.fullPath == '/create' ||
-                      widget.routerState.fullPath == '/wallet' ||
-                      widget.routerState.fullPath!.contains('/profile')) ||
-              widget.routerState.fullPath != '/wallet/bitcoinscreen')
-            IgnorePointer(
-              child: Padding(
-                padding: const EdgeInsets.only(top: AppTheme.cardPadding * 33),
-                child: Container(
-                  height: MediaQuery.of(context).size.height -
-                      AppTheme.cardPadding * 33,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      // Use color stops to create an "exponential" effect
-                      stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
-                      colors: Theme.of(context).brightness == Brightness.light
-                          ? [
-                              lighten(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      60)
-                                  .withOpacity(0.0001),
-                              lighten(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      60)
-                                  .withOpacity(0.33),
-                              lighten(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      60)
-                                  .withOpacity(0.66),
-                              lighten(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      60)
-                                  .withOpacity(0.99),
-                              // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
-                              // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
-                              // Theme.of(context).colorScheme.background,
-                              // Theme.of(context).colorScheme.background,
-                              lighten(
-                                  Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
-                                  60),
-                              lighten(
-                                  Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
-                                  60)
-                            ]
-                          : [
-                              darken(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      80)
-                                  .withOpacity(0.0001),
-                              darken(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      80)
-                                  .withOpacity(0.33),
-                              darken(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      80)
-                                  .withOpacity(0.66),
-                              darken(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      80)
-                                  .withOpacity(0.99),
-                              // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
-                              // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
-                              // Theme.of(context).colorScheme.background,
-                              // Theme.of(context).colorScheme.background,
-                              darken(
-                                  Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
-                                  80),
-                              darken(
-                                  Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
-                                  80)
-                            ],
-                    ),
-                  ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+          child: GlassContainer(
+            child: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.fire),
+                  label: '',
                 ),
-              ),
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.rocketchat),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.upload),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.wallet),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(FontAwesomeIcons.userAstronaut),
+                  label: '',
+                ),
+              ],
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.transparent,
+              currentIndex: _selectedIndex,
+              selectedItemColor: AppTheme.colorBitcoin,
+              unselectedItemColor: AppTheme.glassMorphColorLight,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              onTap: _onItemTapped,
             ),
-          if (widget.routerState.fullPath != null &&
-                  (widget.routerState.fullPath == '/feed' ||
-                      widget.routerState.fullPath == '/rooms' ||
-                      widget.routerState.fullPath == '/create' ||
-                      widget.routerState.fullPath == '/wallet' ||
-                      widget.routerState.fullPath!.contains('/profile')) ||
-              widget.routerState.fullPath != '/wallet/bitcoinscreen')
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: AppTheme.cardPadding,
-                  left: AppTheme.cardPadding * 1,
-                  right: AppTheme.cardPadding * 1,
-                ),
-                child: GlassContainer(
-                  // borderRadius: AppTheme.cardRadiusBig,
-                  child: Container(
-                    height: AppTheme.cardPadding * 2.75,
-                    //alignment: Alignment.center,
-                    margin: EdgeInsets.only(
-                      left: AppTheme.elementSpacing * 2,
-                      right: AppTheme.elementSpacing * 2,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        for (var item in navItems)
-                          AnimatedScale(
-                            scale: widget.routerState.fullPath != null &&
-                                    widget.routerState.fullPath!.contains(
-                                        (item['route'] as String).split('/')[1])
-                                ? 1.1
-                                : 1,
-                            duration: const Duration(milliseconds: 300),
-                            child: InkWell(
-                              onTap: () =>
-                                  onTabTapped(item['route'] as String, item),
-                              child: Icon(
-                                item['icon'] as IconData, // <--- Here
-                                color: widget.routerState.fullPath != null &&
-                                        widget.routerState.fullPath!.contains(
-                                            (item['route'] as String)
-                                                .split('/')[1])
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .onPrimaryContainer
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .onPrimaryContainer
-                                        .withOpacity(0.5),
-                                size: AppTheme.cardPadding,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
+          ),
+        ),
+        body: Center(
+          child: navItems.elementAt(_selectedIndex),
+        )
+
+      //   body: Stack(
+      //   children: [
+      //     widget.child,
+      //     if (widget.routerState.fullPath != null &&
+      //             (widget.routerState.fullPath == '/feed' ||
+      //                 widget.routerState.fullPath == '/rooms' ||
+      //                 widget.routerState.fullPath == '/create' ||
+      //                 widget.routerState.fullPath == '/wallet' ||
+      //                 widget.routerState.fullPath!.contains('/profile')) ||
+      //         widget.routerState.fullPath != '/wallet/bitcoinscreen')
+      //       IgnorePointer(
+      //         child: Padding(
+      //           padding: const EdgeInsets.only(top: AppTheme.cardPadding * 33),
+      //           child: Container(
+      //             height: MediaQuery.of(context).size.height -
+      //                 AppTheme.cardPadding * 33,
+      //             decoration: BoxDecoration(
+      //               gradient: LinearGradient(
+      //                 begin: Alignment.topCenter,
+      //                 end: Alignment.bottomCenter,
+      //                 // Use color stops to create an "exponential" effect
+      //                 stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
+      //                 colors: Theme.of(context).brightness == Brightness.light
+      //                     ? [
+      //                         lighten(
+      //                                 Theme.of(context)
+      //                                     .colorScheme
+      //                                     .primaryContainer,
+      //                                 60)
+      //                             .withOpacity(0.0001),
+      //                         lighten(
+      //                                 Theme.of(context)
+      //                                     .colorScheme
+      //                                     .primaryContainer,
+      //                                 60)
+      //                             .withOpacity(0.33),
+      //                         lighten(
+      //                                 Theme.of(context)
+      //                                     .colorScheme
+      //                                     .primaryContainer,
+      //                                 60)
+      //                             .withOpacity(0.66),
+      //                         lighten(
+      //                                 Theme.of(context)
+      //                                     .colorScheme
+      //                                     .primaryContainer,
+      //                                 60)
+      //                             .withOpacity(0.99),
+      //                         // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
+      //                         // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
+      //                         // Theme.of(context).colorScheme.background,
+      //                         // Theme.of(context).colorScheme.background,
+      //                         lighten(
+      //                             Theme.of(context)
+      //                                 .colorScheme
+      //                                 .primaryContainer,
+      //                             60),
+      //                         lighten(
+      //                             Theme.of(context)
+      //                                 .colorScheme
+      //                                 .primaryContainer,
+      //                             60)
+      //                       ]
+      //                     : [
+      //                         darken(
+      //                                 Theme.of(context)
+      //                                     .colorScheme
+      //                                     .primaryContainer,
+      //                                 80)
+      //                             .withOpacity(0.0001),
+      //                         darken(
+      //                                 Theme.of(context)
+      //                                     .colorScheme
+      //                                     .primaryContainer,
+      //                                 80)
+      //                             .withOpacity(0.33),
+      //                         darken(
+      //                                 Theme.of(context)
+      //                                     .colorScheme
+      //                                     .primaryContainer,
+      //                                 80)
+      //                             .withOpacity(0.66),
+      //                         darken(
+      //                                 Theme.of(context)
+      //                                     .colorScheme
+      //                                     .primaryContainer,
+      //                                 80)
+      //                             .withOpacity(0.99),
+      //                         // Theme.of(context).colorScheme.background.withOpacity(0.45), //with opacity probably doesnt work because od the alpha changes we did
+      //                         // Theme.of(context).colorScheme.background.withOpacity(0.9), //with opacity probably doesnt work because od the alpha changes we did
+      //                         // Theme.of(context).colorScheme.background,
+      //                         // Theme.of(context).colorScheme.background,
+      //                         darken(
+      //                             Theme.of(context)
+      //                                 .colorScheme
+      //                                 .primaryContainer,
+      //                             80),
+      //                         darken(
+      //                             Theme.of(context)
+      //                                 .colorScheme
+      //                                 .primaryContainer,
+      //                             80)
+      //                       ],
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     if (widget.routerState.fullPath != null &&
+      //             (widget.routerState.fullPath == '/feed' ||
+      //                 widget.routerState.fullPath == '/rooms' ||
+      //                 widget.routerState.fullPath == '/create' ||
+      //                 widget.routerState.fullPath == '/wallet' ||
+      //                 widget.routerState.fullPath!.contains('/profile')) ||
+      //         widget.routerState.fullPath != '/wallet/bitcoinscreen')
+      //       Align(
+      //         alignment: Alignment.bottomCenter,
+      //         child: Padding(
+      //           padding: EdgeInsets.only(
+      //             bottom: AppTheme.cardPadding,
+      //             left: AppTheme.cardPadding * 1,
+      //             right: AppTheme.cardPadding * 1,
+      //           ),
+      //           child: GlassContainer(
+      //             // borderRadius: AppTheme.cardRadiusBig,
+      //             child: Container(
+      //               height: AppTheme.cardPadding * 2.75,
+      //               //alignment: Alignment.center,
+      //               margin: EdgeInsets.only(
+      //                 left: AppTheme.elementSpacing * 2,
+      //                 right: AppTheme.elementSpacing * 2,
+      //               ),
+      //               child: Row(
+      //                 crossAxisAlignment: CrossAxisAlignment.center,
+      //                 // crossAxisAlignment: CrossAxisAlignment.center,
+      //                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //                 children: [
+      //                   for (var item in navItems)
+      //                     AnimatedScale(
+      //                       scale: widget.routerState.fullPath != null &&
+      //                               widget.routerState.fullPath!.contains(
+      //                                   (item['route'] as String).split('/')[1])
+      //                           ? 1.1
+      //                           : 1,
+      //                       duration: const Duration(milliseconds: 300),
+      //                       child: InkWell(
+      //                         onTap: () =>
+      //                             onTabTapped(item['route'] as String, item),
+      //                         child: Icon(
+      //                           item['icon'] as IconData, // <--- Here
+      //                           color: widget.routerState.fullPath != null &&
+      //                                   widget.routerState.fullPath!.contains(
+      //                                       (item['route'] as String)
+      //                                           .split('/')[1])
+      //                               ? Theme.of(context)
+      //                                   .colorScheme
+      //                                   .onPrimaryContainer
+      //                               : Theme.of(context)
+      //                                   .colorScheme
+      //                                   .onPrimaryContainer
+      //                                   .withOpacity(0.5),
+      //                           size: AppTheme.cardPadding,
+      //                         ),
+      //                       ),
+      //                     ),
+      //                 ],
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //   ],
+      // ),
     );
   }
 
