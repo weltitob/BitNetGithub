@@ -20,6 +20,7 @@ final channel = IOWebSocketChannel.connect('wss://mempool.space/api/v1/ws');
 var subscription;
 
 class HomeController extends GetxController {
+  RxBool loadingDetail = false.obs;
   RxBool isLoading = false.obs;
   RxBool isLoadingTx = false.obs;
   RxBool socketLoading = false.obs;
@@ -342,6 +343,7 @@ class HomeController extends GetxController {
   }
 
   txDetailsConfirmedF(String txId) async {
+    loadingDetail.value = true;
     try {
       String url = 'https://mempool.space/api/v1/block/$txId';
 
@@ -362,6 +364,8 @@ class HomeController extends GetxController {
       isLoading.value = false;
       update();
     }
+    loadingDetail.value = false;
+    return null;
   }
 
   txDetailsF(String txId, int page) async {
