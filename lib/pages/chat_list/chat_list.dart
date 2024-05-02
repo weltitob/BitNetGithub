@@ -56,9 +56,9 @@ enum ActiveFilter {
 
 class ChatList extends StatefulWidget {
   static BuildContext? contextForVoip;
-  final GoRouterState routerState;
+  final GoRouterState? routerState;
 
-  const ChatList({Key? key, required this.routerState}) : super(key: key);
+  const ChatList({Key? key,  this.routerState}) : super(key: key);
 
   @override
   ChatListController createState() => ChatListController();
@@ -282,7 +282,7 @@ class ChatListController extends State<ChatList>
 
   final selectedRoomIds = <String>{};
 
-  String? get activeChat => widget.routerState.pathParameters['roomid'];
+  String? get activeChat => widget.routerState?.pathParameters['roomid'];
 
   SelectMode get selectMode => Matrix.of(context).shareContent != null
       ? SelectMode.share

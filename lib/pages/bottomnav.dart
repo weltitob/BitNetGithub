@@ -23,9 +23,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class BottomNav extends StatefulWidget {
-  final Widget child;
   final GoRouterState routerState;
-  const BottomNav({Key? key, required this.child, required this.routerState})
+  const BottomNav({Key? key, required this.routerState})
       : super(key: key);
 
   @override
@@ -46,7 +45,7 @@ class _BottomNavState extends State<BottomNav>
   void initUser() async {
     profileId = Auth().currentUser?.uid;
     loadData();
-    setupAnimationControllers();
+    //setupAnimationControllers();
   }
 
   void setupAnimationControllers() {
@@ -131,8 +130,7 @@ class _BottomNavState extends State<BottomNav>
 
   static  List<Widget> navItems = <Widget>[
     FeedScreen(),
-    FeedScreen(),
-    //ChatList(routerState: ,),
+    ChatList(),
     CreateAsset(),
     Wallet(),
     Profile()
@@ -169,7 +167,7 @@ class _BottomNavState extends State<BottomNav>
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+          padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
           child: GlassContainer(
             child: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
