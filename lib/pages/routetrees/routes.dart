@@ -445,14 +445,15 @@ class AppRoutes {
                 ),
               ],
             ),
+            GoRoute(
+              path: 'settings',
+              builder: (ctx, state) => Settings(),
+              routes: _settingsRoutes,
+            ),
           ]
         ),
 
-    GoRoute(
-      path: '/settings',
-      builder: (ctx, state) => Settings(),
-      routes: _settingsRoutes,
-    ),
+
 
 
         // ShellRoute(

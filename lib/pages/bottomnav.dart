@@ -22,6 +22,9 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+int _selectedIndex = 0;
+
+
 class BottomNav extends StatefulWidget {
   final GoRouterState routerState;
   const BottomNav({Key? key, required this.routerState})
@@ -126,7 +129,6 @@ class _BottomNavState extends State<BottomNav>
     super.dispose();
   }
 
-  int _selectedIndex = 0;
 
   static  List<Widget> navItems = <Widget>[
     FeedScreen(),
