@@ -46,6 +46,7 @@ class SendController extends State<Send> {
   late TextEditingController bitcoinReceiverAdressController;
 
   void handleSearch(String value) {
+    onQRCodeScanned(value, context);
     print(value);
   }
 
@@ -146,6 +147,7 @@ class SendController extends State<Send> {
         break;
       case QRTyped.Invoice:
         Logs().w("Invoice was detected will forward to Send screen with invoice: $encodedString");
+        showOverlay(context, encodedString);
         giveValuesToInvoice(encodedString);
         setState(() {});
         //cxt.go("/wallet/send?walletAdress=$encodedString");

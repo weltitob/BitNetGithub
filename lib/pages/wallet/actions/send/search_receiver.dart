@@ -38,6 +38,7 @@ class SearchReceiver extends StatelessWidget {
             hintText: "Empfänger suchen",
             isSearchEnabled: true,
             handleSearch: controller.handleSearch,
+
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -50,33 +51,33 @@ class SearchReceiver extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: AppTheme.cardPadding * 4),
+            margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
             height: 85,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: AppTheme.cardPadding * 7,
-                  child: FormTextField(
-                    hintText: "Kopieren",
-                    onTapOutside: (value) {
-                      // Unfocuses the input field when tapped outside of it
-                    },
-                    focusNode: controller.myFocusNodeAdress,
-                    controller: controller.bitcoinReceiverAdressController,
-                    onFieldSubmitted: (value) {
-                      Logs().w("Adress: $value");
-                      controller.onQRCodeScanned(value, context);
-                      //controller.validateAdress(value);
-                    },
-                    autofocus: false,
-                  ),
-                ),
+                // Container(
+                //   width: AppTheme.cardPadding * 7,
+                //   child: FormTextField(
+                //     hintText: "Kopieren",
+                //     onTapOutside: (value) {
+                //       // Unfocuses the input field when tapped outside of it
+                //     },
+                //     focusNode: controller.myFocusNodeAdress,
+                //     controller: controller.bitcoinReceiverAdressController,
+                //     onFieldSubmitted: (value) {
+                //       Logs().w("Adress: $value");
+                //       controller.onQRCodeScanned(value, context);
+                //       //controller.validateAdress(value);
+                //     },
+                //     autofocus: false,
+                //   ),
+                // ),
                 Container(
                   margin: EdgeInsets.only(top: AppTheme.elementSpacing),
                   child: LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 7,
+                    //customWidth: AppTheme.cardPadding * 7,
                     onTap: () => context.push("/qrscanner"),
                     title: 'Scan QR',
                   ),
