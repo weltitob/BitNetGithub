@@ -425,6 +425,23 @@ class TransactionController extends GetxController {
     }
   }
 
+  getBlock(String? blockHash) async {
+    isLoadingAddress.value = true;
+    try {
+      String url = '${baseUrl}/block$blockHash';
+      print(url);
+      await _dio.get(url).then((value) async {
+        print(value.data);
+
+        isLoadingAddress.value = false;
+      });
+    } catch (e, tr) {
+      print(e);
+      print(tr);
+      isLoadingAddress.value = false;
+    }
+  }
+
   var P2SH_P2WPKH_COST =
       21 * 4; // the WU cost for the non-witness part of P2SH-P2WPKH
   var P2SH_P2WSH_COST =
