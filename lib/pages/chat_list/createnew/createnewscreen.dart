@@ -76,7 +76,7 @@ class _CreateNewScreenState extends State<CreateNewScreen>
       context: context,
       appBar: bitnetAppBar(
         context: context,
-        onTap: () => context.go('/rooms'),
+        onTap: () => context.go('/feed'),
         text: _title,
       ),
       body: SingleChildScrollView(

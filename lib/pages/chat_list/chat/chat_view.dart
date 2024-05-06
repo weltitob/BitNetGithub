@@ -203,7 +203,7 @@ class ChatView extends StatelessWidget {
                     ),
                   ) :
                   InkWell(
-                          onTap: () => context.go('/rooms'),
+                          onTap: () => context.go('/feed'),
                           child: UnreadRoomsBadge(
                             filter: (r) => r.id != controller.roomId,
                             badgePosition: BadgePosition.topEnd(end: 8, top: 4),
@@ -218,7 +218,7 @@ class ChatView extends StatelessWidget {
                                   buttonType: ButtonType.solid,
                                   iconData: Icons.arrow_back_outlined,
                                   onTap: () {
-                                    context.go('/rooms');
+                                    context.go('/feed');
                                   },
                                 ),
                               ),

@@ -8,6 +8,7 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LoopScreen extends StatelessWidget {
   final LoopController controller;
@@ -24,7 +25,7 @@ class LoopScreen extends StatelessWidget {
         text: 'Loop Screen',
         context: context,
         onTap: () {
-          Navigator.pop(context);
+          context.go('/feed');
         },
       ),
       body: SingleChildScrollView(
