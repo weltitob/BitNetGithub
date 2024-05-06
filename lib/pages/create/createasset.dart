@@ -244,7 +244,7 @@ class _CreateAssetState extends State<CreateAsset> {
                               ],),
                           ))),
                 buildTextField(),
-                SizedBox(height: AppTheme.cardPadding * 4,),
+               // SizedBox(height: AppTheme.cardPadding * 4,),
 
                 ]
           )),

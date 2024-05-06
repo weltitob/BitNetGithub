@@ -190,7 +190,7 @@ class ChatController extends State<ChatPageWithRoom> {
     );
     final roomId = success.result;
     if (roomId == null) return;
-    context.goNamed('rooms', pathParameters: {'roomid': roomId});
+    context.goNamed('/feed', pathParameters: {'roomid': roomId});
   }
 
   void leaveChat() async {
@@ -199,7 +199,7 @@ class ChatController extends State<ChatPageWithRoom> {
       future: room.leave,
     );
     if (success.error != null) return;
-    context.go('/rooms');
+    context.go('/feed');
   }
 
   EmojiPickerType emojiPickerType = EmojiPickerType.keyboard;
@@ -791,7 +791,7 @@ class ChatController extends State<ChatPageWithRoom> {
       };
     }
     setState(() => selectedEvents.clear());
-    context.go('/rooms');
+    context.go('/feed');
   }
 
   void sendAgainAction() {
@@ -1002,7 +1002,7 @@ class ChatController extends State<ChatPageWithRoom> {
       future: room.leave,
     );
     if (result.error == null) {
-      context.goNamed('rooms', pathParameters: {'roomid': result.result!});
+      context.goNamed('/rooms', pathParameters: {'roomid': result.result!});
     }
   }
 

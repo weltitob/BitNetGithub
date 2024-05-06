@@ -20,7 +20,7 @@ class _LightningCardInformationScreenState extends State<LightningCardInformatio
           text: "Lightning Card Information",
           context: context,
           onTap: () {
-            context.pop();
+            context.go("/feed");
           },
         ),
         context: context

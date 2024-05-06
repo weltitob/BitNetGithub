@@ -29,7 +29,8 @@ class SendBTCScreen extends StatelessWidget {
       // Disables resizing when the keyboard is shown
 
       appBar: bitnetAppBar(
-        onTap: (){          context.go("/feed");
+        onTap: (){
+          context.go("/feed");
         },
         customTitle: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

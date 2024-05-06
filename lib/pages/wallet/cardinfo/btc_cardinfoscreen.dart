@@ -18,7 +18,7 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
         body: Container(),
         appBar: bitnetAppBar(
           onTap: (){
-            context.pop();
+            context.go("/feed");
           },
           text: "Bitcoin Card Information",
           context: context,

@@ -367,7 +367,93 @@ class AppRoutes {
           builder: (ctx, state) => ChatList(
             routerState: state,
           ),
+          routes: [
+            // Chat details and other chat-related routes without BottomNav
+            GoRoute(
+              path: 'create',
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const CreateNewScreen(
+                initialIndex: 0,
+              )
+                  : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const CreateNewScreen(
+                    initialIndex: 0,
+                  ),
+                  transitionsBuilder: _dynamicTransition!)
+                  : null,
+              routes: _chatCreateRoutes,
+            ),
+            GoRoute(
+              path: 'spaces/:roomid',
+              name: '/rooms/spaces',
+              builder: (ctx, state) => ChatDetails(
+                routerState: state,
+              ),
+              routes: _chatDetailsRoutes1,
+            ),
+            GoRoute(
+              path: ':roomid',
+              name: 'rooms',
+              builder: (ctx, state) => ChatPage(
+                routerState: state,
+              ),
+              routes: [
+                GoRoute(
+                  path: 'encryption',
+                  builder: (ctx, state) => ChatEncryptionSettings(
+                    routerState: state,
+                  ),
+                ),
+                GoRoute(
+                  path: 'invite',
+                  builder: (ctx, state) => InvitationSelection(
+                    routerState: state,
+                  ),
+                ),
+                GoRoute(
+                  path: 'details',
+                  builder: (ctx, state) => ChatDetails(
+                    routerState: state,
+                  ),
+                  routes: _chatDetailsRoutes2,
+                ),
+              ],
+            ),
+            GoRoute(
+              path: 'archive',
+              builder: (ctx, state) => const Archive(),
+              routes: [
+                GoRoute(
+                  path: ':roomid',
+                  name: 'archive',
+                  builder: _dynamicTransition == null
+                      ? (ctx, state) => ChatPage(
+                    routerState: state,
+                  )
+                      : null,
+                  pageBuilder: _dynamicTransition != null
+                      ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: ChatPage(
+                        routerState: state,
+                      ),
+                      transitionsBuilder: _dynamicTransition!)
+                      : null,
+                ),
+              ],
+            ),
+          ]
         ),
+
+    GoRoute(
+      path: '/settings',
+      builder: (ctx, state) => Settings(),
+      routes: _settingsRoutes,
+    ),
+
 
         // ShellRoute(
         //   builder: (ctx, state, child) {
@@ -382,88 +468,7 @@ class AppRoutes {
         //   ],
         // ),
 
-        // Chat details and other chat-related routes without BottomNav
-        GoRoute(
-          path: '/rooms/create',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => const CreateNewScreen(
-                    initialIndex: 0,
-                  )
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: const CreateNewScreen(
-                    initialIndex: 0,
-                  ),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-          routes: _chatCreateRoutes,
-        ),
-        GoRoute(
-          path: '/rooms/spaces/:roomid',
-          name: '/rooms/spaces',
-          builder: (ctx, state) => ChatDetails(
-            routerState: state,
-          ),
-          routes: _chatDetailsRoutes1,
-        ),
-        GoRoute(
-          path: '/rooms/:roomid',
-          name: 'rooms',
-          builder: (ctx, state) => ChatPage(
-            routerState: state,
-          ),
-          routes: [
-            GoRoute(
-              path: 'encryption',
-              builder: (ctx, state) => ChatEncryptionSettings(
-                routerState: state,
-              ),
-            ),
-            GoRoute(
-              path: 'invite',
-              builder: (ctx, state) => InvitationSelection(
-                routerState: state,
-              ),
-            ),
-            GoRoute(
-              path: 'details',
-              builder: (ctx, state) => ChatDetails(
-                routerState: state,
-              ),
-              routes: _chatDetailsRoutes2,
-            ),
-          ],
-        ),
-        GoRoute(
-          path: '/rooms/settings',
-          builder: (ctx, state) => Settings(),
-          routes: _settingsRoutes,
-        ),
-        GoRoute(
-          path: '/rooms/archive',
-          builder: (ctx, state) => const Archive(),
-          routes: [
-            GoRoute(
-              path: ':roomid',
-              name: 'archive',
-              builder: _dynamicTransition == null
-                  ? (ctx, state) => ChatPage(
-                        routerState: state,
-                      )
-                  : null,
-              pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(
-                      key: state.pageKey,
-                      child: ChatPage(
-                        routerState: state,
-                      ),
-                      transitionsBuilder: _dynamicTransition!)
-                  : null,
-            ),
-          ],
-        ),
+
       ];
 
   List<GoRoute> get _authRoutes => [
