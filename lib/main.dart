@@ -127,26 +127,33 @@ class MyApp extends StatelessWidget {
             providers: [
               ChangeNotifierProvider<CardChangeProvider>(
                   create: (context) => CardChangeProvider()),
-              ChangeNotifierProvider<CurrencyTypeProvider>(create:(context)=> CurrencyTypeProvider()),
+              ChangeNotifierProvider<CurrencyTypeProvider>(
+                  create: (context) => CurrencyTypeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider()),
               ChangeNotifierProvider<CurrencyChangeProvider>(
-                  create: (context) => CurrencyChangeProvider(),
+                create: (context) => CurrencyChangeProvider(),
               ),
               ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
                 update: (context, currencyChangeProvider, bitcoinPriceStream) {
-                  if (bitcoinPriceStream == null || bitcoinPriceStream.localCurrency != currencyChangeProvider.selectedCurrency) {
+                  if (bitcoinPriceStream == null ||
+                      bitcoinPriceStream.localCurrency !=
+                          currencyChangeProvider.selectedCurrency) {
                     bitcoinPriceStream?.dispose();
                     final newStream = BitcoinPriceStream();
-                    newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
+                    newStream.updateCurrency(
+                        currencyChangeProvider.selectedCurrency ?? 'usd');
                     return newStream;
                   }
                   return bitcoinPriceStream;
                 },
-                dispose: (context, bitcoinPriceStream) => bitcoinPriceStream.dispose(),
+                dispose: (context, bitcoinPriceStream) =>
+                    bitcoinPriceStream.dispose(),
               ),
               StreamProvider<ChartLine?>(
-                create: (context) => Provider.of<BitcoinPriceStream>(context, listen: false).priceStream,
+                create: (context) =>
+                    Provider.of<BitcoinPriceStream>(context, listen: false)
+                        .priceStream,
                 initialData: ChartLine(time: 0, price: 0),
               ),
               StreamProvider<UserData?>(

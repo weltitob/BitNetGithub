@@ -133,7 +133,9 @@ class _LoopScreenState extends State<LoopScreen> {
                           ? 'Onchain to Lightning'
                           : 'Lightning to Onchain',
                       onTap: () {
-                        loopGetController.loopInQuote(context, '20000');
+                        loopGetController.animate.value
+                            ? loopGetController.loopInQuote(context)
+                            : loopGetController.loopOutQuote(context);
                       },
                       customWidth: AppTheme.cardPadding * 12,
                     )),

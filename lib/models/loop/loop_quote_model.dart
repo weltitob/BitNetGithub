@@ -1,6 +1,6 @@
 class LoopQuoteModel {
   final String swapFeeSat;
-  final int? htlcPublishFeeSat;
+  final String? htlcPublishFeeSat;
   final String? htlcSweepFeeSat;
   final String? prepayAmtSat;
   final String? swapPaymentDest;
