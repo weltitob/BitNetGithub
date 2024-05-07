@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:matrix/matrix.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Transactions extends StatefulWidget {
   bool fullList;
@@ -100,7 +101,10 @@ class _TransactionsState extends State<Transactions>
             receiver: transaction.paymentRequest.toString(),
             txHash: transaction.value.toString(),
             amount: "+" + transaction.amtPaid.toString(),
-            status: TransactionStatus.failed,
+            status: transaction.settled
+                ? TransactionStatus.confirmed
+                : TransactionStatus.failed,
+
             // other properties
     ))),
       ...lightningPayments.map((transaction) => TransactionItem(
@@ -113,15 +117,15 @@ class _TransactionsState extends State<Transactions>
             txHash: transaction.paymentHash.toString(),
             amount: "-" + transaction.valueSat.toString(),
             status: transaction.status == "SUCCEEDED"
-                ? TransactionStatus.confirmed
+                ? TransactionStatus.confirmed : transaction.status == "FAILED"
+                ? TransactionStatus.failed
                 : TransactionStatus.pending,
           ))),
       ...onchainTransactions.map((transaction) => TransactionItem(
     context: context,
           data: TransactionItemData(
-
           timestamp: transaction.timeStamp,
-          status: TransactionStatus.pending,
+          status: transaction.numConfirmations > 0 ? TransactionStatus.confirmed : TransactionStatus.pending,
           type: TransactionType.onChain,
           direction: transaction.amount.contains("-")
               ? TransactionDirection.sent
@@ -132,13 +136,13 @@ class _TransactionsState extends State<Transactions>
           txHash: transaction.txHash.toString(),
           amount: transaction.amount.contains("-")
               ? transaction.amount.toString()
-              : "+" + transaction.amount.toString()
+              : "+" + transaction.amount.toString(),
+
           ))),
     ].toList();
 
     combinedTransactions.sort((a, b) => a.data.timestamp.compareTo(b.data.timestamp));
     combinedTransactions = combinedTransactions.reversed.toList();
-
 
     return transactionsLoaded  ? widget.fullList ? bitnetScaffold(
       context: context,

@@ -301,7 +301,7 @@ class SendController extends State<Send> {
             if (response.statusCode == "success") {
               // Handle success
               showOverlay(context, "Payment successful!");
-              GoRouter.of(context).pushNamed("/wallet");
+              GoRouter.of(context).pushNamed("/feed");
             } else {
               // Handle error
               showOverlay(context, "Payment failed: ${response.message}");
@@ -363,10 +363,10 @@ class SendController extends State<Send> {
             isFinished = true;
           });
           if (publishTransactionRestResponse.statusCode == "success") {
-            context.go("/wallet");
+            context.go("/feed");
             // Display a success message and navigate to the bottom navigation bar
           } else {
-            context.go("/wallet");
+            context.go("/feed");
             setState(() {
               // Display an error message if the cloud function failed and set isFinished to false
               isFinished = false;
