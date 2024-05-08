@@ -6,6 +6,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
@@ -14,6 +15,7 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -35,7 +37,7 @@ class _TransactionsState extends State<Transactions>
   List<LightningPayment> lightningPayments = [];
   List<ReceivedInvoice> lightningInvoices = [];
   List<BitcoinTransaction> onchainTransactions = [];
-
+  final searchCtrl = TextEditingController();
 
   void getOnchainTransactions() async {
     Logs().w("Getting onchain transactions");
@@ -147,21 +149,40 @@ class _TransactionsState extends State<Transactions>
     return transactionsLoaded  ? widget.fullList ? bitnetScaffold(
       context: context,
       extendBodyBehindAppBar: true,
-      appBar: bitnetAppBar(context: context, text: 'Activity',actions: [ Padding(
-        padding: const EdgeInsets.only(right: 20.0),
-        child: RoundedButtonWidget(
-            size: AppTheme.cardPadding * 1.25,
-            buttonType: ButtonType.transparent,
-            iconData: FontAwesomeIcons.filter,
-            onTap: () {
-              BitNetBottomSheet(
-                  context: context,
-                  child: WalletFilterScreen());
-            }),
-      ),], onTap: (){Navigator.pop(context);},),
+      appBar: bitnetAppBar(context: context, text: 'Activity', onTap: (){Navigator.pop(context);},),
       body: Padding(
-        padding: const EdgeInsets.only(top: 12.0),
-        child: ListView(children: combinedTransactions),
+        padding: const EdgeInsets.only(top: 40.0),
+        child: Column(
+          children: [
+            //SizedBox(height: 80,),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+              child: SearchFieldWidget(
+                // controller: searchCtrl,
+                 hintText: 'Search',
+                handleSearch:(v){
+                  setState(() {
+                    searchCtrl.text = v;
+                  });
+                },
+                suffixIcon:  IconButton(
+                  // size: AppTheme.cardPadding * 1.25,
+                  // buttonType: ButtonType.transparent,
+                  icon: Icon(FontAwesomeIcons.filter),
+                  onPressed: () {
+                    BitNetBottomSheet(
+                        context: context,
+                        child: WalletFilterScreen());
+                  }),
+                isSearchEnabled: true,),
+            ),
+            Expanded(child: ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: combinedTransactions.length,
+                itemBuilder:(context, index)=> combinedTransactions[index].data.receiver.contains(searchCtrl.text.toLowerCase()) ? combinedTransactions[index] : SizedBox())),
+          ],
+        ),
       )
     ) : Container(
         height: AppTheme.cardPadding * 18,
