@@ -2,13 +2,15 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
+import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 
 class CreateInvoice extends StatefulWidget {
-  final ReceiveController controller;
-  const CreateInvoice({super.key, required this.controller,});
+ // final ReceiveController controller;
+  const CreateInvoice({super.key});
 
   @override
   State<CreateInvoice> createState() => _CreateInvoiceState();
@@ -16,12 +18,14 @@ class CreateInvoice extends StatefulWidget {
 
 
 class _CreateInvoiceState extends State<CreateInvoice> {
+  final controller = Get.put(ReceiveController());
+
 
   @override
 void initState() {
-widget.controller.receiveState.addListener(() {
-  setState((){});
-});
+// controller.receiveState.addListener(() {
+//   setState((){});
+// });
 super.initState();
 }
   @override
@@ -33,26 +37,30 @@ super.initState();
               left: AppTheme.cardPadding,),
           alignment: Alignment.centerLeft,
         ),
-        Padding(
-          padding: const EdgeInsets.only(
-            top: AppTheme.cardPadding,
-            left: AppTheme.cardPadding,
-            right: AppTheme.cardPadding,
-          ),
-          child: AmountWidget(
-            context: context,
-            bitcoinUnit: widget.controller.bitcoinUnit,
-            enabled: true,
-            btcController: widget.controller.amountController,
-            currController: widget.controller.currController,
-            focusNode: widget.controller.myFocusNode,
-          ),
+        Obx(
+           () {
+            return Padding(
+              padding: const EdgeInsets.only(
+                top: AppTheme.cardPadding,
+                left: AppTheme.cardPadding,
+                right: AppTheme.cardPadding,
+              ),
+              child: AmountWidget(
+                context: context,
+                bitcoinUnit: controller.bitcoinUnit.value,
+                enabled: true,
+                btcController: controller.amountController,
+                currController: controller.currController,
+                focusNode: controller.myFocusNode,
+              ),
+            );
+          }
         ),
         SizedBox(height: AppTheme.cardPadding * 1,),
         Container(
           width: AppTheme.cardPadding * 12,
           child: FormTextField(
-            controller: widget.controller.messageController,
+            controller: controller.messageController,
             hintText: "Add a message...",
           ),
         ),
@@ -61,7 +69,8 @@ super.initState();
             title: "Generate Invoice",
             customWidth: AppTheme.cardPadding * 12,
             onTap: (){
-              widget.controller.getInvoice((double.parse(widget.controller.amountController.text)).toInt(), "");
+              controller.getInvoice((double.parse(controller.amountController.text)).toInt(), "");
+              context.pop();
             })
       ],
     );
