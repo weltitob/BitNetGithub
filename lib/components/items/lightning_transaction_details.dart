@@ -36,6 +36,10 @@ class LightningTransactionDetails extends StatelessWidget {
         ? (double.parse(data.amount) / 100000000 * bitcoinPrice)
         .toStringAsFixed(2)
         : "0.00";
+    final currencyEquivalentFee = bitcoinPrice != null
+        ? (data.fee.toDouble() / 100000000 * bitcoinPrice)
+        .toStringAsFixed(2)
+        : "0.00";
     return bitnetScaffold(
         context: context,
         extendBodyBehindAppBar: true,
@@ -198,6 +202,28 @@ class LightningTransactionDetails extends StatelessWidget {
                 "${data.timestamp}",
                 style: Theme.of(context).textTheme.bodyLarge,
               )
+            ),
+            BitNetListTile(
+                text: 'Fee',
+                trailing: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        coin.setCurrencyType(
+                            coin.coin != null
+                                ? !coin.coin!
+                                : false);
+                      },
+                      child: Text(
+                        coin.coin ?? true ? '${data.fee}' : "$currencyEquivalentFee${getCurrency(currency!)}",
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                    coin.coin ?? true ? Icon(AppTheme.satoshiIcon) : SizedBox.shrink(),
+                  ],
+                )
             ),
           ],
         ));

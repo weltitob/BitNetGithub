@@ -168,7 +168,24 @@ class _BottomNavState extends State<BottomNav>
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Add this line
-        bottomNavigationBar: Padding(
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Theme.of(context).brightness == Brightness.light
+                        ? lighten(
+                        Theme.of(context).colorScheme.primaryContainer, 60)
+                        : darken(
+                        Theme.of(context).colorScheme.primaryContainer, 80),
+                    Theme.of(context).brightness == Brightness.light
+                        ? lighten(
+                        Theme.of(context).colorScheme.tertiaryContainer, 60)
+                        : darken(
+                        Theme.of(context).colorScheme.tertiaryContainer,
+                        80),
+                  ])),
           padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
           child: GlassContainer(
             child: BottomNavigationBar(
@@ -197,8 +214,13 @@ class _BottomNavState extends State<BottomNav>
               type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.transparent,
               currentIndex: _selectedIndex,
-              selectedItemColor: AppTheme.colorBitcoin,
-              unselectedItemColor: AppTheme.glassMorphColorLight,
+              selectedItemColor: Theme.of(context)
+                  .colorScheme
+                  .onPrimaryContainer,
+              unselectedItemColor: Theme.of(context)
+                  .colorScheme
+                  .onPrimaryContainer
+                  .withOpacity(0.5),
               showSelectedLabels: false,
               showUnselectedLabels: false,
               onTap: _onItemTapped,

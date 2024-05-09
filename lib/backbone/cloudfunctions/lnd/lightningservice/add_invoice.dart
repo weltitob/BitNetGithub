@@ -29,7 +29,7 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   final Map<String, dynamic> data = {
     'memo': memo ?? "",
     'value': amount,
-    'expiry': 1000,
+    'expiry': 1200,
     'fallback_addr': 'bc1qtfmrfu3n5vx8jgep5vw2s7z68u0aq40c24e2ps',
     'private': false,
     'is_keysend': true

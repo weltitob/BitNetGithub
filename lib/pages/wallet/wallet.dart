@@ -13,7 +13,7 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
+import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/walletscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -51,6 +51,7 @@ class WalletController extends State<Wallet> {
           amount: receivedInvoice.amtPaidSat.toString(),
           timestamp: receivedInvoice.settleDate,
           type: TransactionType.lightning,
+          fee: 0,
           status: TransactionStatus.confirmed,
           direction: TransactionDirection.received,
           receiver: receivedInvoice.paymentRequest!,
@@ -73,6 +74,7 @@ class WalletController extends State<Wallet> {
         amount: bitcoinTransaction.amount.toString(),
         timestamp: bitcoinTransaction.timeStamp,
         type: TransactionType.onChain,
+        fee: 0,
         status: TransactionStatus.confirmed,
         direction: TransactionDirection.received,
         receiver: bitcoinTransaction.destAddresses[0],
