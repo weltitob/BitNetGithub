@@ -3,7 +3,6 @@ import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';

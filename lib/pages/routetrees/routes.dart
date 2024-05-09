@@ -40,7 +40,6 @@ import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:bitnet/pages/wallet/cardinfo/btc_cardinfoscreen.dart';

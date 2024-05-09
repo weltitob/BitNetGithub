@@ -7,7 +7,6 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

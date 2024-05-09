@@ -9,7 +9,6 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/lightning_receive_tab.dart';
 import 'package:bitnet/pages/wallet/actions/receive/onchain_receive_tab.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
