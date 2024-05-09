@@ -41,6 +41,7 @@ import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
+import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:bitnet/pages/wallet/cardinfo/btc_cardinfoscreen.dart';
 import 'package:bitnet/pages/wallet/cardinfo/lightning_cardinfoscreen.dart';
@@ -107,11 +108,11 @@ class AppRoutes {
         GoRoute(
           path: '/error',
           builder:
-              _dynamicTransition == null ? (ctx, state) => Receive() : null,
+              _dynamicTransition == null ? (ctx, state) => ReceiveScreen() : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) => CustomTransitionPage(
                   key: state.pageKey,
-                  child: Receive(),
+                  child: ReceiveScreen(),
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
@@ -288,11 +289,11 @@ class AppRoutes {
             GoRoute(
               path: 'receive',
               builder:
-                  _dynamicTransition == null ? (ctx, state) => Receive() : null,
+                  _dynamicTransition == null ? (ctx, state) => ReceiveScreen() : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
                       key: state.pageKey,
-                      child: Receive(),
+                      child: ReceiveScreen(),
                       transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
