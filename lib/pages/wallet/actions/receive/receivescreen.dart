@@ -49,6 +49,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
     controller.amountController.removeListener(controller.updateAmountDisplay);
     controller.currController.dispose();
     controller.amountController.dispose();
+    controller.timer.cancel();
     super.dispose();
   }
 
@@ -85,6 +86,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                                   controller.amountController.text))
                                   .toInt(),
                               "");
+                          controller.timer.cancel();
                           controller.duration = Duration(minutes: 20);
                           controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
                         });
