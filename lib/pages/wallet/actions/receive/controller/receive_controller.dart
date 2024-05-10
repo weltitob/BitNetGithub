@@ -42,16 +42,15 @@ class ReceiveController extends GetxController {
   // A GlobalKey is used to identify this widget in the widget tree, used to access and modify its properties
   GlobalKey globalKeyQR = GlobalKey();
 
-
   void updateTimer(Timer timer) {
-      if (duration.inSeconds > 0) {
-        duration = duration - Duration(seconds: 1);
-        min.value = (duration.inMinutes % 60).toString().padLeft(2, '0');
-        sec.value = (duration.inSeconds % 60).toString().padLeft(2, '0');
-        print(duration);
-      } else {
-        timer.cancel();
-      }
+    if (duration.inSeconds > 0) {
+      duration = duration - Duration(seconds: 1);
+      min.value = (duration.inMinutes % 60).toString().padLeft(2, '0');
+      sec.value = (duration.inSeconds % 60).toString().padLeft(2, '0');
+      print(duration);
+    } else {
+      timer.cancel();
+    }
   }
 
   String formatDuration(Duration duration) {
@@ -150,5 +149,24 @@ class ReceiveController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    amountController = TextEditingController();
+    amountController.text = "1000";
+    currController = TextEditingController();
+    // Listen for changes
+    amountController.addListener(updateAmountDisplay);
+    //probably need to check if other keysend invoice is still available and if not create a new one make the logic unflawed
+    getInvoice(0, "");
+    getTaprootAddress();
+    duration = Duration(minutes: 20);
+    timer = Timer.periodic(Duration(seconds: 1), updateTimer);
+  }
+
+  @override
+  void dispose() {
+    amountController.removeListener(updateAmountDisplay);
+    currController.dispose();
+    amountController.dispose();
+    timer.cancel();
+    super.dispose();
   }
 }
