@@ -24,7 +24,7 @@ class ReceiveController extends GetxController {
   //ReceiveState receiveState = ReceiveState(0);
   RxBool updatingText = false.obs;
   FocusNode myFocusNode = FocusNode();
-  late TextEditingController amountController= TextEditingController();
+  late TextEditingController amountController = TextEditingController();
   late TextEditingController currController;
   TextEditingController messageController = TextEditingController();
   late Duration duration;
@@ -145,27 +145,6 @@ class ReceiveController extends GetxController {
     }
   }
 
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-    amountController.text = "1000";
-    currController = TextEditingController();
-    // Listen for changes
-    amountController.addListener(updateAmountDisplay);
-    //probably need to check if other keysend invoice is still available and if not create a new one make the logic unflawed
-    getInvoice(0, "");
-    getTaprootAddress();
-    duration = Duration(minutes: 20);
-    timer = Timer.periodic(Duration(seconds: 1), updateTimer);
-  }
+   
 
-  @override
-  void dispose() {
-    amountController.removeListener(updateAmountDisplay);
-    currController.dispose();
-    amountController.dispose();
-    timer.cancel();
-    super.dispose();
-  }
 }

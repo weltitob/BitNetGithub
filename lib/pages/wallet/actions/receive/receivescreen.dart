@@ -15,10 +15,42 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 // This class is a StatefulWidget which displays a screen where a user can receive bitcoin
-class ReceiveScreen extends GetWidget<ReceiveController> {
+class ReceiveScreen extends StatefulWidget {
   ReceiveScreen({Key? key}) : super(key: key);
 
+  @override
+  State<ReceiveScreen> createState() => _ReceiveScreenState();
+}
+
+class _ReceiveScreenState extends State<ReceiveScreen> {
   // This method builds the UI for the ReceiveScreen
+  final controller = Get.find<ReceiveController>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.amountController = TextEditingController();
+    controller.amountController.text = "1000";
+    controller.currController = TextEditingController();
+    // Listen for changes
+    controller.amountController.addListener(controller.updateAmountDisplay);
+    //probably need to check if other keysend invoice is still available and if not create a new one make the logic unflawed
+    controller.getInvoice(0, "");
+    controller.getTaprootAddress();
+    controller.duration = Duration(minutes: 20);
+    controller.timer =
+        Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+  }
+
+  @override
+  void dispose() {
+    controller.amountController.removeListener(controller.updateAmountDisplay);
+    controller.currController.dispose();
+    controller.amountController.dispose();
+    controller.timer.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
