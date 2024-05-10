@@ -3,27 +3,21 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class BitcoinCardInformationScreen extends StatefulWidget {
+class BitcoinCardInformationScreen extends StatelessWidget {
   const BitcoinCardInformationScreen({super.key});
 
   @override
-  State<BitcoinCardInformationScreen> createState() => _BitcoinCardInformationScreenState();
-}
-
-class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScreen> {
-  @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
-      extendBodyBehindAppBar: true,
+        extendBodyBehindAppBar: true,
         body: Container(),
         appBar: bitnetAppBar(
-          onTap: (){
+          onTap: () {
             context.go("/feed");
           },
           text: "Bitcoin Card Information",
           context: context,
         ),
-        context: context
-    );
+        context: context);
   }
 }

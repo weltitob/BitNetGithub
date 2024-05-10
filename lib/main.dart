@@ -40,7 +40,6 @@ import 'backbone/auth/auth.dart';
 // ⠀⠀⠀⠀⠀⠀⠈⠛⢿⣿⣷⣶⣤⣤⣤⣤⣤⣤⣴⣾⣿⣿⠟⠋⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠛⠻⠿⠿⠿⠿⠟⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
-
 //██████╗░██╗████████╗███╗░░██╗███████╗████████╗
 //██╔══██╗██║╚══██╔══╝████╗░██║██╔════╝╚══██╔══╝
 //██████╦╝██║░░░██║░░░██╔██╗██║█████╗░░░░░██║░░░
@@ -80,7 +79,6 @@ Future<void> main() async {
   );
 
   Logs().nativeColors = !PlatformInfos.isIOS;
-  
 
   // Run the app
   runApp(
@@ -107,7 +105,6 @@ class _MyAppState extends State<MyApp> {
   GlobalKey _streamKey = GlobalKey(debugLabel: "");
   static bool _isHiveInitialized = false;
   static Future<void> _initializeHive() async {
- 
     if (!_isHiveInitialized) {
       if (PlatformInfos.isLinux) {
         Hive.init((await getApplicationSupportDirectory()).path);
@@ -118,7 +115,7 @@ class _MyAppState extends State<MyApp> {
       }
       _isHiveInitialized = true;
     }
-     }
+  }
 
   @override
   void initState() {
@@ -161,11 +158,14 @@ class _MyAppState extends State<MyApp> {
         : MultiProvider(
             providers: [
               ChangeNotifierProvider<CardChangeProvider>(
-                  create: (context) => CardChangeProvider()),
+                create: (context) => CardChangeProvider(),
+              ),
               ChangeNotifierProvider<CurrencyTypeProvider>(
-                  create: (context) => CurrencyTypeProvider()),
+                create: (context) => CurrencyTypeProvider(),
+              ),
               ChangeNotifierProvider<LocalProvider>(
-                  create: (context) => LocalProvider()),
+                create: (context) => LocalProvider(),
+              ),
               ChangeNotifierProvider<CurrencyChangeProvider>(
                 create: (context) => CurrencyChangeProvider(),
               ),
