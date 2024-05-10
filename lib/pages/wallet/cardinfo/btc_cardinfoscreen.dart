@@ -56,7 +56,7 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
             child: CircularProgressIndicator(),
           )
               : Padding(
-            padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
+            padding: const EdgeInsets.only(top: 60.0, left: 20.0, right: 20.0),
             child: SingleChildScrollView(
               child: Column(
                 children: [

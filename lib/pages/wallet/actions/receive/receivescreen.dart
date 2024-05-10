@@ -59,7 +59,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
         context: context,
         text: "Bitcoin empfangen",
         onTap: () {
-          context.go("/wallet");
+          context.go("/feed");
         },
         actions: [
           Obx(() {
