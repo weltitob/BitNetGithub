@@ -17,6 +17,7 @@ import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
+import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -104,7 +105,6 @@ class WalletsController extends GetxController {
 
   RxString? selectedCurrency;
 
- 
   // Method to update the first currency and its corresponding Firestore document
   void setFirstCurrencyInDatabase(String currency) {
     settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
@@ -122,6 +122,8 @@ class WalletsController extends GetxController {
   void onInit() {
     super.onInit();
     Get.put(CryptoItemController());
+    Get.put(ReceiveController());
+    Get.put(WalletFilterController());
     subscribeInvoicesStream().listen((restResponse) {
       Logs().w("Received data from Invoice-stream: $restResponse");
       ReceivedInvoice receivedInvoice =
