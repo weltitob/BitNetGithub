@@ -187,7 +187,6 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                   ),
                 ),
               ),
-            ),
             BitNetListTile(
               text: "Payment Network",
               trailing: data.type == TransactionType.onChain
@@ -232,6 +231,6 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                 )
             ),
           ],
-        ));
+        )));
   }
 }
