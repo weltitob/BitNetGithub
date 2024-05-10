@@ -12,6 +12,7 @@ import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -27,7 +28,9 @@ class WalletScreen extends GetWidget<WalletsController> {
   const WalletScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    Get.put(SendsController(context: context));
+    Get.lazyPut(() => ReceiveController(), fenix: true);
+
+    Get.lazyPut(() => SendsController(context: context), fenix: true);
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
 
     final bitcoinPrice = chartLine?.price;

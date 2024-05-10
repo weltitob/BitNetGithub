@@ -25,9 +25,9 @@ class ReceiveScreen extends StatefulWidget {
 class _ReceiveScreenState extends State<ReceiveScreen> {
   // This method builds the UI for the ReceiveScreen
   final controller = Get.find<ReceiveController>();
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller.amountController = TextEditingController();
     controller.amountController.text = "1000";

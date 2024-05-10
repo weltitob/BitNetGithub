@@ -96,6 +96,7 @@ class WalletsController extends GetxController {
       "showCoin": type,
     });
     coin!.value = type;
+    update();
   }
 
   // Clear method adjusted to reset currency values
@@ -122,7 +123,6 @@ class WalletsController extends GetxController {
   void onInit() {
     super.onInit();
     Get.put(CryptoItemController());
-    Get.lazyPut(() => ReceiveController(), fenix: true);
     Get.put(WalletFilterController());
     subscribeInvoicesStream().listen((restResponse) {
       Logs().w("Received data from Invoice-stream: $restResponse");
