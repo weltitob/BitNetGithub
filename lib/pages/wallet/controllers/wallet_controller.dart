@@ -122,7 +122,7 @@ class WalletsController extends GetxController {
   void onInit() {
     super.onInit();
     Get.put(CryptoItemController());
-    Get.put(ReceiveController());
+    Get.lazyPut(() => ReceiveController(), fenix: true);
     Get.put(WalletFilterController());
     subscribeInvoicesStream().listen((restResponse) {
       Logs().w("Received data from Invoice-stream: $restResponse");
