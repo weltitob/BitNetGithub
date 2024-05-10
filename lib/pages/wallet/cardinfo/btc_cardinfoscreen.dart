@@ -11,24 +11,29 @@ class BitcoinCardInformationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
-        extendBodyBehindAppBar: true,
-        appBar: bitnetAppBar(
-          onTap: () {
-            context.go("/feed");
-          },
-          text: "Bitcoin Card Information",
-          context: context,
-        ),
+      extendBodyBehindAppBar: true,
+      appBar: bitnetAppBar(
+        onTap: () {
+          context.go("/feed");
+        },
+        text: "Bitcoin Card Information",
         context: context,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
-          child: Column(
-            children: [
-              SizedBox(
-                  height: 200,
-                  child: BalanceCardBtc()),
-            ],
-          ),
-        ),);
+      ),
+      context: context,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 60.0,
+          horizontal: 20.0,
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 200,
+              child: BalanceCardBtc(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
