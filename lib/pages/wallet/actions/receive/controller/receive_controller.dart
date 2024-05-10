@@ -24,7 +24,7 @@ class ReceiveController extends GetxController {
   //ReceiveState receiveState = ReceiveState(0);
   RxBool updatingText = false.obs;
   FocusNode myFocusNode = FocusNode();
-  late TextEditingController amountController;
+  late TextEditingController amountController= TextEditingController();
   late TextEditingController currController;
   TextEditingController messageController = TextEditingController();
   late Duration duration;
@@ -149,7 +149,6 @@ class ReceiveController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    amountController = TextEditingController();
     amountController.text = "1000";
     currController = TextEditingController();
     // Listen for changes
