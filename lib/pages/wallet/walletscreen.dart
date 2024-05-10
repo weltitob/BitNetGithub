@@ -23,7 +23,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class WalletScreen extends GetWidget<WalletsController> {
-  // final WalletController controller;
   const WalletScreen({Key? key}) : super(key: key);
 
   @override
@@ -154,7 +153,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                             ? FontAwesomeIcons.eyeSlash
                             : FontAwesomeIcons.eye,
                         onTap: () {
-                          controller.setHideBalance();
+                          controller.setHideBalance(hide: !controller.hideBalance.value);
                         }),
                   ),
                 ],

@@ -56,13 +56,14 @@ class WalletsController extends GetxController {
   RxDouble totalBalanceSAT = 0.0.obs;
 
   void setHideBalance({bool? hide}) {
+    print(hide);
     if (hide != null) {
       hideBalance.value = hide;
     }
     settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).update({
-      "hide_balance": !hideBalance.value,
+      "hide_balance": hideBalance.value,
     });
-    hideBalance.value = !hideBalance.value;
+    hideBalance.value = hideBalance.value;
   }
 
   final arguments = Get.arguments;
