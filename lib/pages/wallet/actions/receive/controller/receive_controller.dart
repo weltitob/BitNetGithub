@@ -69,9 +69,6 @@ class ReceiveController extends GetxController {
     InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
     print("Invoice" + invoiceModel.payment_request.toString());
     qrCodeDataStringLightning.value = invoiceModel.payment_request.toString();
-    // setState(() {
-    //
-    // });
   }
 
   void getTaprootAddress() async {
@@ -80,9 +77,6 @@ class ReceiveController extends GetxController {
     BitcoinAddress address = BitcoinAddress.fromJson(callback.data);
     print("Bitcoin onchain Address" + address.addr.toString());
     qrCodeDataStringOnchain.value = address.addr.toString();
-    // setState(() {
-    //
-    // });
   }
 
   void switchReceiveType() {
@@ -144,7 +138,4 @@ class ReceiveController extends GetxController {
       updatingText.value = false;
     }
   }
-
-   
-
 }
