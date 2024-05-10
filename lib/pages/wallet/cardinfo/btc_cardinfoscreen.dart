@@ -17,50 +17,51 @@ class BitcoinCardInformationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
-        extendBodyBehindAppBar: true,
-        appBar: bitnetAppBar(
-          onTap: () {
-            context.go("/feed");
-          },
-          text: "Bitcoin Card Information",
-          context: context,
-        ),
+      extendBodyBehindAppBar: true,
+      appBar: bitnetAppBar(
         context: context,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
-          child: Column(
-            children: [
-              SizedBox(
-                  height: 200,
-                  child: BalanceCardBtc()),
-              BitNetListTile(
-                text: 'Address',
-                trailing: Text('bc1qkmlp...' + '30fltzunefdjln'),
-              ),
-              BitNetListTile(
-                text: 'QRCode',
-                trailing: Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(
-                        AppTheme.cardPadding / 1.25),
-                   //margin: const EdgeInsets.all(AppTheme.cardPadding),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: AppTheme.cardRadiusBigger),
-                    child: PrettyQrView.data(
-                        data:
-                        "bc1qkmlpuea96ekcjlk2wpjhsrr030fltzunefdjln",
-                        decoration: const PrettyQrDecoration(
-                          shape: PrettyQrSmoothSymbol(
-                            roundFactor: 1,
-                          ),
-                        )
-                    ),
+        onTap: () {
+          context.go("/feed");
+        },
+        text: "Bitcoin Card Information",
+        ),
+      context: context,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
+        child: Column(
+          children: [
+            SizedBox(
+                height: 200,
+                child: BalanceCardBtc()),
+            BitNetListTile(
+              text: 'Address',
+              trailing: Text('bc1qkmlp...' + '30fltzunefdjln'),
+            ),
+            BitNetListTile(
+              text: 'QRCode',
+              trailing: Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(
+                      AppTheme.cardPadding / 1.25),
+                  //margin: const EdgeInsets.all(AppTheme.cardPadding),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: AppTheme.cardRadiusBigger),
+                  child: PrettyQrView.data(
+                      data:
+                      "bc1qkmlpuea96ekcjlk2wpjhsrr030fltzunefdjln",
+                      decoration: const PrettyQrDecoration(
+                        shape: PrettyQrSmoothSymbol(
+                          roundFactor: 1,
+                        ),
+                      )
                   ),
                 ),
               ),
-            ],
-          ),
-        ),);
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -12,6 +12,7 @@ import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
@@ -24,9 +25,9 @@ import 'package:provider/provider.dart';
 
 class WalletScreen extends GetWidget<WalletsController> {
   const WalletScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    Get.put(SendsController(context: context));
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
 
     final bitcoinPrice = chartLine?.price;
@@ -103,11 +104,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             .displaySmall,
                                       )
                                     : GestureDetector(
-                                        onTap: () =>
-                                            controller.setCurrencyType(
-                                                controller.coin!.value != null
-                                                    ? !controller.coin!.value
-                                                    : false),
+                                        onTap: () => controller.setCurrencyType(
+                                            controller.coin!.value != null
+                                                ? !controller.coin!.value
+                                                : false),
                                         child: Container(
                                           child: (controller.coin?.value ??
                                                   true)
@@ -115,8 +115,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                   children: [
                                                     Text(
                                                       controller
-                                                          .totalBalanceSAT
-                                                          .value
+                                                          .totalBalanceSAT.value
                                                           .toString(),
                                                       style: Theme.of(context)
                                                           .textTheme
@@ -153,7 +152,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                             ? FontAwesomeIcons.eyeSlash
                             : FontAwesomeIcons.eye,
                         onTap: () {
-                          controller.setHideBalance(hide: !controller.hideBalance.value);
+                          controller.setHideBalance(
+                              hide: !controller.hideBalance.value);
                         }),
                   ),
                 ],
@@ -195,8 +195,8 @@ class WalletScreen extends GetWidget<WalletsController> {
             ),
             const SizedBox(height: AppTheme.cardPadding * 1.5),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Text(
                 "Actions",
                 style: Theme.of(context).textTheme.titleLarge,
@@ -204,8 +204,8 @@ class WalletScreen extends GetWidget<WalletsController> {
             ),
             const SizedBox(height: AppTheme.cardPadding),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -261,8 +261,8 @@ class WalletScreen extends GetWidget<WalletsController> {
             ),
             const SizedBox(height: AppTheme.cardPadding * 1.5),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Text(
                 "Buy & Sell",
                 style: Theme.of(context).textTheme.titleLarge,
@@ -272,8 +272,8 @@ class WalletScreen extends GetWidget<WalletsController> {
               height: AppTheme.cardPadding,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: CryptoItem(
                 currency: Currency(
                   code: 'BTC',
@@ -285,8 +285,8 @@ class WalletScreen extends GetWidget<WalletsController> {
             ),
             const SizedBox(height: AppTheme.cardPadding * 1.5),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.cardPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -302,8 +302,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                           iconData: FontAwesomeIcons.filter,
                           onTap: () {
                             BitNetBottomSheet(
-                                context: context,
-                                child: WalletFilterScreen());
+                                context: context, child: WalletFilterScreen());
                           }),
                       SizedBox(
                         width: AppTheme.elementSpacing,
