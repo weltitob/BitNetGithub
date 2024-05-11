@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/appbaractions.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -10,11 +10,9 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:bitnet/pages/wallet/actions/receive/lightning_receive_tab.dart';
 import 'package:bitnet/pages/wallet/actions/receive/onchain_receive_tab.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
 
 // This class is a StatefulWidget which displays a screen where a user can receive bitcoin
 class ReceiveScreen extends StatefulWidget {
@@ -24,13 +22,12 @@ class ReceiveScreen extends StatefulWidget {
   State<ReceiveScreen> createState() => _ReceiveScreenState();
 }
 
-class _ReceiveScreenState extends State<ReceiveScreen>
-    with SingleTickerProviderStateMixin {
-  final controller = Get.put(ReceiveController());
+class _ReceiveScreenState extends State<ReceiveScreen> {
+  // This method builds the UI for the ReceiveScreen
+  final controller = Get.find<ReceiveController>();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller.amountController = TextEditingController();
     controller.amountController.text = "1000";
@@ -41,7 +38,8 @@ class _ReceiveScreenState extends State<ReceiveScreen>
     controller.getInvoice(0, "");
     controller.getTaprootAddress();
     controller.duration = Duration(minutes: 20);
-    controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+    controller.timer =
+        Timer.periodic(Duration(seconds: 1), controller.updateTimer);
   }
 
   @override
@@ -53,25 +51,20 @@ class _ReceiveScreenState extends State<ReceiveScreen>
     super.dispose();
   }
 
-  // This method builds the UI for the ReceiveScreen
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
-      //extendBodyBehindAppBar: true,
-      // The screen background color
       appBar: bitnetAppBar(
         context: context,
         text: "Bitcoin empfangen",
         onTap: () {
-          // Navigate back to the previous screen
-          context.go("/wallet");
+          context.go("/feed");
         },
         actions: [
           Obx(() {
             return controller.receiveType == ReceiveType.Lightning
-                ? Obx(
-                 () {
+                ? Obx(() {
                     return LongButtonWidget(
                         buttonType: ButtonType.transparent,
                         customHeight: AppTheme.cardPadding * 1.5,
@@ -79,19 +72,19 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                         leadingIcon: controller.createdInvoice.value
                             ? Icon(FontAwesomeIcons.cancel)
                             : Icon(FontAwesomeIcons.refresh),
-                        title: "${controller.min.value}:${controller.sec.value}",
+                        title:
+                            "${controller.min.value}:${controller.sec.value}",
                         onTap: () {
                           controller.getInvoice(
-                              (double.parse(
-                                  controller.amountController.text))
+                              (double.parse(controller.amountController.text))
                                   .toInt(),
                               "");
                           controller.timer.cancel();
                           controller.duration = Duration(minutes: 20);
-                          controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+                          controller.timer = Timer.periodic(
+                              Duration(seconds: 1), controller.updateTimer);
                         });
-                  }
-                )
+                  })
                 : RoundedButtonWidget(
                     size: AppTheme.cardPadding * 1.5,
                     buttonType: ButtonType.transparent,

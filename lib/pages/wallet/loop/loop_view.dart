@@ -5,14 +5,15 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/items/balancecard.dart';
-import 'package:bitnet/pages/wallet/loop/loop.dart';
-import 'package:bitnet/pages/wallet/wallet.dart';
+import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-class LoopScreen extends StatelessWidget {
-  final LoopController controller;
-  const LoopScreen({super.key, required this.controller});
+class LoopScreen extends GetWidget<LoopsController> {
+  const LoopScreen({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,36 +46,37 @@ class LoopScreen extends StatelessWidget {
                           height: AppTheme.cardPadding * 8,
                           margin: EdgeInsets.symmetric(
                               horizontal: AppTheme.cardPadding),
-                          child:
-                          BalanceCardBtc(controller: WalletController())),
-                      Container(height: AppTheme.cardPadding * 1,),
+                          child: BalanceCardBtc()),
+                      Container(
+                        height: AppTheme.cardPadding * 1,
+                      ),
                       Container(
                           height: AppTheme.cardPadding * 8,
                           margin: EdgeInsets.symmetric(
                             horizontal: AppTheme.cardPadding,
                           ),
-                          child: BalanceCardLightning(
-                              controller: WalletController())),
+                          child: BalanceCardLightning()),
                     ],
                   ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: AnimatedRotation(
-                      turns: controller.animate ? 1 / 2 : 3 / 2,
-                      duration: Duration(milliseconds: 400),
-                      child: RotatedBox(
-                        quarterTurns: controller.animate ? 1 : 3,
-                        child: RoundedButtonWidget(
-                            buttonType: ButtonType.transparent,
-                            iconData: Icons.arrow_back,
-                            onTap: () {
-                              controller.changeAnimate();
-                            }),
+                  Obx(
+                    () => Align(
+                      alignment: Alignment.center,
+                      child: AnimatedRotation(
+                        turns: controller.animate.value ? 1 / 2 : 3 / 2,
+                        duration: Duration(milliseconds: 400),
+                        child: RotatedBox(
+                          quarterTurns: controller.animate.value ? 1 : 3,
+                          child: RoundedButtonWidget(
+                              buttonType: ButtonType.transparent,
+                              iconData: Icons.arrow_back,
+                              onTap: () {
+                                controller.changeAnimate();
+                              }),
+                        ),
                       ),
                     ),
                   ),
                 ],
-
               ),
             ),
             SizedBox(

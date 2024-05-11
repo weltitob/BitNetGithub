@@ -334,7 +334,7 @@ class AppRoutes {
             GoRoute(
               path: 'bitcoincard',
               builder: _dynamicTransition == null
-                  ? (ctx, state) => const BitcoinCardInformationScreen()
+                  ? (ctx, state) =>  BitcoinCardInformationScreen()
                   : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(

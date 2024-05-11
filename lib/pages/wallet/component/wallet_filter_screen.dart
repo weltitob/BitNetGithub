@@ -3,31 +3,14 @@ import 'package:bitnet/components/marketplace_widgets/CommonBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/FilterPillList.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
+import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class WalletFilterScreen extends StatefulWidget {
+class WalletFilterScreen extends GetWidget<WalletFilterController> {
   const WalletFilterScreen({super.key});
-
-  @override
-  State<WalletFilterScreen> createState() => _WalletFilterScreenState();
-}
-
-class _WalletFilterScreenState extends State<WalletFilterScreen> {
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
-
-  Future<DateTime> _selectDate(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101),
-    );
-    if (picked == null) {}
-    return picked!;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,21 +39,23 @@ class _WalletFilterScreenState extends State<WalletFilterScreen> {
                       child: GlassContainer(
                     child: InkWell(
                       onTap: () async {
-                        startDate = await _selectDate(context);
-                        setState(() {
-
-                        });
+                        controller.startDate.value =
+                            await controller.selectDate(context);
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                            child: Text(
-                                DateFormat('dd-MM-yyyy').format(startDate),
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: const Color.fromRGBO(249, 249, 249, 1),
-                                ))),
+                      child: Obx(
+                        () => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                              child: Text(
+                                  DateFormat('dd-MM-yyyy')
+                                      .format(controller.startDate.value),
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color:
+                                        const Color.fromRGBO(249, 249, 249, 1),
+                                  ))),
+                        ),
                       ),
                     ),
                   )),
@@ -89,21 +74,23 @@ class _WalletFilterScreenState extends State<WalletFilterScreen> {
                       child: GlassContainer(
                     child: InkWell(
                       onTap: () async {
-                        endDate = await _selectDate(context);
-                        setState(() {
-
-                        });
+                        controller.endDate.value =
+                            await controller.selectDate(context);
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                            child: Text(
-                                DateFormat('dd-MM-yyyy').format(endDate),
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: const Color.fromRGBO(249, 249, 249, 1),
-                                ))),
+                      child: Obx(
+                        () => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                              child: Text(
+                                  DateFormat('dd-MM-yyyy')
+                                      .format(controller.endDate.value),
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color:
+                                        const Color.fromRGBO(249, 249, 249, 1),
+                                  ))),
+                        ),
                       ),
                     ),
                   )),

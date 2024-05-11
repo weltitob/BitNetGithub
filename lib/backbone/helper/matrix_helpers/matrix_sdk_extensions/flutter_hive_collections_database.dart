@@ -53,7 +53,9 @@ class FlutterHiveCollectionsDatabase extends HiveCollectionsDatabase {
       final rawEncryptionKey = await secureStorage.read(key: _cipherStorageKey);
       if (rawEncryptionKey == null) throw MissingPluginException();
 
-      hiverCipher = HiveAesCipher(base64Url.decode(rawEncryptionKey));
+      hiverCipher = HiveAesCipher(
+        base64Url.decode(rawEncryptionKey), 
+      );
     } on MissingPluginException catch (_) {
       const FlutterSecureStorage()
           .delete(key: _cipherStorageKey)
