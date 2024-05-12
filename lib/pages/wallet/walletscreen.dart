@@ -326,7 +326,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        Transactions(fullList: true, walletController: null,)));
+                                        Transactions(fullList: true)));
                           }),
                     ],
                   ),
@@ -337,7 +337,7 @@ class WalletScreen extends GetWidget<WalletsController> {
               height: AppTheme.elementSpacing,
             ),
             const SizedBox(height: AppTheme.elementSpacing),
-            Transactions(walletController: null,),
+            Transactions(),
           ],
         ),
       ),

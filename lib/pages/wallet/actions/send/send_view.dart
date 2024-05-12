@@ -30,7 +30,6 @@ class SendBTCScreen extends GetWidget<SendsController> {
       appBar: bitnetAppBar(
         onTap: () {
           controller.resetValues();
-          //context.go("/feed");
         },
         customTitle: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

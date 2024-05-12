@@ -23,8 +23,7 @@ import 'package:matrix/matrix.dart';
 
 class Transactions extends StatefulWidget {
   bool fullList;
-  final WalletsController? walletController;
-  Transactions({Key? key, this.fullList = false, required this.walletController}) : super(key: key);
+  Transactions({Key? key, this.fullList = false}) : super(key: key);
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -109,7 +108,6 @@ class _TransactionsState extends State<Transactions>
     String errorMessage = "";
     getOnchainTransactions().then((value) {
       futuresCompleted++;
-      if(widget.walletController == null) {
       if(!value) {
         errorCount++;
         errorMessage = "Failed to load Onchain Transactions";
@@ -121,14 +119,13 @@ class _TransactionsState extends State<Transactions>
     });      
           handlePageLoadErrors(errorCount, errorMessage, context);
           }
-      }
+      
 
     });
 
 
     getLightningPayments().then((value) {
                       futuresCompleted++;
-      if(widget.walletController == null) {
       if(!value) {
         errorCount++;
         errorMessage = "Failed to load Lightning Payments";
@@ -140,14 +137,13 @@ class _TransactionsState extends State<Transactions>
     });      
           handlePageLoadErrors(errorCount, errorMessage, context);
           }
-      }
+      
     });
 
  
      
     getLightningInvoices().then((value) {
                 futuresCompleted++;
-      if(widget.walletController == null) {
       if(!value) {
         errorCount++;
         errorMessage = "Failed to load Lightning Invoices";
@@ -159,7 +155,7 @@ class _TransactionsState extends State<Transactions>
     });      
           handlePageLoadErrors(errorCount, errorMessage, context);
           }
-      } 
+      
     });
 
    
