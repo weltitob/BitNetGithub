@@ -32,7 +32,13 @@ class WalletScreen extends GetWidget<WalletsController> {
 
     Get.lazyPut(() => SendsController(context: context), fenix: true);
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    if(controller.queueErrorOvelay) {
+      controller.queueErrorOvelay = false;
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
+              controller.handleFuturesCompleted(context);
 
+      });
+    }
     final bitcoinPrice = chartLine?.price;
 
     final currencyEquivalent = bitcoinPrice != null
@@ -320,7 +326,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        Transactions(fullList: true)));
+                                        Transactions(fullList: true, walletController: null,)));
                           }),
                     ],
                   ),
@@ -331,10 +337,11 @@ class WalletScreen extends GetWidget<WalletsController> {
               height: AppTheme.elementSpacing,
             ),
             const SizedBox(height: AppTheme.elementSpacing),
-            Transactions(),
+            Transactions(walletController: null,),
           ],
         ),
       ),
     );
   }
+  
 }

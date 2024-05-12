@@ -3,9 +3,8 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoice
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -15,16 +14,17 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:matrix/matrix.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class Transactions extends StatefulWidget {
   bool fullList;
-  Transactions({Key? key, this.fullList = false}) : super(key: key);
+  final WalletsController? walletController;
+  Transactions({Key? key, this.fullList = false, required this.walletController}) : super(key: key);
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -38,55 +38,140 @@ class _TransactionsState extends State<Transactions>
   List<BitcoinTransaction> onchainTransactions = [];
   final searchCtrl = TextEditingController();
 
-  void getOnchainTransactions() async {
+  Future<bool> getOnchainTransactions() async {
+    try {
     Logs().w("Getting onchain transactions");
     RestResponse restBitcoinTransactions = await getTransactions();
     BitcoinTransactionsList bitcoinTransactions =
         BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
     onchainTransactions = bitcoinTransactions.transactions;
     setState(() {});
+
+    } on Error catch(_) {
+      return false;
+    } catch(e) {
+      return false;
+    }
+    return true;
   }
 
   //what i sent on the lightning network
-  void getLightningPayments() async {
+  Future<bool> getLightningPayments() async {
+    try {
     Logs().w("Getting lightning payments");
     RestResponse restLightningPayments = await listPayments();
     LightningPaymentsList lightningPayments =
         LightningPaymentsList.fromJson(restLightningPayments.data);
     this.lightningPayments = lightningPayments.payments;
     setState(() {});
+
+    } on Error catch(_) {
+      return false;
+    } catch(e) {
+      return false;
+    }
+    return true;
   }
 
   //what I received on the lightning network
-  void getLightningInvoices() async {
+  Future<bool> getLightningInvoices() async {
     Logs().w("Getting lightning invoices");
-    RestResponse restLightningInvoices = await listInvoices();
+    try {
+
+  RestResponse restLightningInvoices = await listInvoices();
     ReceivedInvoicesList lightningInvoices =
         ReceivedInvoicesList.fromJson(restLightningInvoices.data);
     List<ReceivedInvoice> settledInvoices =
         lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
     this.lightningInvoices = settledInvoices;
     setState(() {});
+
+    }on Error catch(_) {
+      return false;
+    } catch(e) {
+      return false;
+    } 
+    return true;
+  
   }
 
   // Subscriptions
 
   @override
   void initState() {
+    Logs().i("Initializing transactions page");
     super.initState();
     setState(() {
       transactionsLoaded = false;
     });
-
-    getOnchainTransactions();
-    getLightningPayments();
-    getLightningInvoices();
-
-    setState(() {
+    int futuresCompleted = 0;
+    int errorCount=0;
+    String errorMessage = "";
+    getOnchainTransactions().then((value) {
+      futuresCompleted++;
+      if(widget.walletController == null) {
+      if(!value) {
+        errorCount++;
+        errorMessage = "Failed to load Onchain Transactions";
+        }
+       
+      if(futuresCompleted == 3) {
+         setState(() {
       transactionsLoaded = true;
-    });
-  }
+    });      
+          handlePageLoadErrors(errorCount, errorMessage, context);
+          }
+      }
 
+    });
+
+
+    getLightningPayments().then((value) {
+                      futuresCompleted++;
+      if(widget.walletController == null) {
+      if(!value) {
+        errorCount++;
+        errorMessage = "Failed to load Lightning Payments";
+        }
+       
+      if(futuresCompleted == 3) {
+         setState(() {
+      transactionsLoaded = true;
+    });      
+          handlePageLoadErrors(errorCount, errorMessage, context);
+          }
+      }
+    });
+
+ 
+     
+    getLightningInvoices().then((value) {
+                futuresCompleted++;
+      if(widget.walletController == null) {
+      if(!value) {
+        errorCount++;
+        errorMessage = "Failed to load Lightning Invoices";
+        }
+       
+      if(futuresCompleted == 3) {
+         setState(() {
+      transactionsLoaded = true;
+    });      
+          handlePageLoadErrors(errorCount, errorMessage, context);
+          }
+      } 
+    });
+
+   
+
+  }
+    void handlePageLoadErrors(int errorCount, String errorMessage, BuildContext context) {
+      if(errorCount == 1) {
+        showOverlay(context, errorMessage, color: AppTheme.errorColor);
+      } else if(errorCount > 1) {
+        showOverlay(context, "Failed to load certain data in this page, please try again later", color: AppTheme.errorColor);
+      }
+    }
   @override
   void dispose() {
     super.dispose();
@@ -223,4 +308,6 @@ class _TransactionsState extends State<Transactions>
             child: dotProgress(context),
           );
   }
+  
+ 
 }

@@ -63,7 +63,7 @@ class LightningSendTab extends GetWidget<SendsController> {
                       title: "JETZT SENDEN!",
                       onTap: () async {
                         Logs().w("lightning SendBTC getting called");
-                        await controller.sendBTC();
+                        await controller.sendBTC(context);
                       },
                     )
                 ),
@@ -202,12 +202,15 @@ class LightningSendTab extends GetWidget<SendsController> {
         children: [
           AmountWidget(
             bitcoinUnit: controller.bitcoinUnit,
-            enabled: double.parse(controller.currencyController.text) == 0,
+            enabled: double.parse(controller.currencyController.text) == 0 || controller.sendType == SendType.LightningUrl,
             btcController: controller.moneyController,
             currController: controller.currencyController,
             focusNode: controller.myFocusNodeMoney,
             context: context,
-            swapped: true
+            swapped: true,
+            lowerBound: controller.lowerBound,
+            upperBound: controller.upperBound,
+            boundType: controller.boundType
           ),
         ],
       ),

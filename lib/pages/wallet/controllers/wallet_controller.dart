@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_bala
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -20,6 +21,7 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:matrix/matrix.dart';
@@ -55,7 +57,10 @@ class WalletsController extends GetxController {
 
   RxString totalBalanceStr = "0".obs;
   RxDouble totalBalanceSAT = 0.0.obs;
-
+  String loadMessageError = "";
+  int errorCount = 0;
+  int loadedFutures = 0;
+  bool queueErrorOvelay = false;
   void setHideBalance({bool? hide}) {
     print(hide);
     if (hide != null) {
@@ -151,6 +156,7 @@ class WalletsController extends GetxController {
             "Invoice received but not settled yet: ${receivedInvoice.settled}");
       }
     }, onError: (error) {
+      
       Logs().e("Received error for Invoice-stream: $error");
     });
 
@@ -174,15 +180,46 @@ class WalletsController extends GetxController {
           ));
       //});
     }, onError: (error) {
+
       Logs().e("Received error for Transactions-stream: $error");
     });
+    fetchOnchainWalletBalance().then((value) {
+      loadedFutures++;
+      if(!value) {
+      errorCount++;
+      loadMessageError = "Failed to load Onchain Balance";
+      }
+   if(loadedFutures == 2) {
+queueErrorOvelay = true;      }
+    });
 
-    fetchOnchainWalletBalance();
-    fetchLightingWalletBalance();
+  
+    fetchLightingWalletBalance().then((value) {
+
+       loadedFutures++;
+      if(!value) {
+      errorCount++;
+      loadMessageError = "Failed to load Lightning Balance";
+      }
+      if(loadedFutures == 2) {
+queueErrorOvelay = true;
+      }
+    });
+
+   
+   
   }
+  void handleFuturesCompleted(BuildContext context) {
+    Logs().i("Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
+    if(errorCount>1) {
+      showOverlay(context, "Failed to load certain services, please try again later.", color: AppTheme.errorColor);
+    } else if(errorCount ==1) {
+            showOverlay(context, loadMessageError, color: AppTheme.errorColor);
 
-  void fetchOnchainWalletBalance() async {
-    try {
+    }
+  }
+  Future<bool> fetchOnchainWalletBalance() async {
+      try {
       RestResponse onchainBalanceRest = await walletBalance();
       if (!onchainBalanceRest.data.isEmpty) {
         OnchainBalance onchainBalance =
@@ -190,14 +227,19 @@ class WalletsController extends GetxController {
         this.onchainBalance = onchainBalance;
       }
       changeTotalBalanceStr();
-    } catch (e) {
-      print(e);
-    }
+
+      }
+      on Error catch(_) {
+return false;
+      } catch (e){
+return false;
+      }
+    return true;
   }
 
-  void fetchLightingWalletBalance() async {
+  Future<bool> fetchLightingWalletBalance() async {
     try {
-      RestResponse lightningBalanceRest = await channelBalance();
+  RestResponse lightningBalanceRest = await channelBalance();
 
       LightningBalance lightningBalance =
           LightningBalance.fromJson(lightningBalanceRest.data);
@@ -205,9 +247,15 @@ class WalletsController extends GetxController {
         this.lightningBalance = lightningBalance;
       }
       changeTotalBalanceStr();
+
+    } on Error catch(_) {
+      return false;
     } catch (e) {
-      print(e);
+      return false;
     }
+    return true;
+    
+    
   }
 
   changeTotalBalanceStr() {

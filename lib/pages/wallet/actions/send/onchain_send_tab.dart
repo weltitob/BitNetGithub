@@ -67,7 +67,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
                       title: "JETZT SENDEN!",
                       onTap: () async {
                         Logs().w("onchain SendBTC getting called");
-                        await controller.sendBTC();
+                        await controller.sendBTC(context);
                       },
                     )),
               ],

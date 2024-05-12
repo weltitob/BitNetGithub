@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/fundpsbt.dart';
@@ -19,11 +21,13 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
+import 'package:dart_lnurl/dart_lnurl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
+import 'package:http/http.dart' as http;
 
 class SendsController extends GetxController {
   late BuildContext context;
@@ -60,7 +64,10 @@ class SendsController extends GetxController {
   final GlobalKey<FormState> formKey =
       GlobalKey<FormState>(); // a key for the form widget
   String bitcoinReceiverAdress = ""; // the Bitcoin receiver address
-
+  int? lowerBound;
+  int? upperBound;
+  BitcoinUnits? boundType;
+  String? lnCallback;
   void processParameters(BuildContext context) {
     print('Process parameters for');
     Logs().w("Process parameters for sendscreen called");
@@ -96,18 +103,22 @@ class SendsController extends GetxController {
     print("isStringInvoice: $isStringInvoice");
     final isBitcoinValid = isBitcoinWalletValid(encodedString);
     print("isBitcoinValid: $isBitcoinValid");
-
+    final isLnUrl = (encodedString as String).toLowerCase().startsWith("lnurl");
     late QRTyped qrTyped;
 
     Logs().w("Determining the QR type...");
     // Logic to determine the QR type based on the encoded string
     // Return the appropriate QRTyped enum value
     if (isLightningMailValid) {
+      
       qrTyped = QRTyped.LightningMail;
-    } else if (isStringInvoice) {
+    }else if (isLnUrl) {
+      qrTyped = QRTyped.LightningUrl;
+     }  else if (isStringInvoice) {
       qrTyped = QRTyped.Invoice;
     } else if (isBitcoinValid) {
       qrTyped = QRTyped.OnChain;
+      
     } else {
       qrTyped = QRTyped.Unknown;
     }
@@ -120,6 +131,8 @@ class SendsController extends GetxController {
     Logs().w("TYPE DETECTED! $type");
 
     switch (type) {
+      case QRTyped.LightningUrl:
+      giveValuesToLnUrl(encodedString);
       case QRTyped.LightningMail:
         // Handle LightningMail QR code
         break;
@@ -186,7 +199,56 @@ class SendsController extends GetxController {
 
     print("Estimated fees: $feesDouble");
   }
+  void giveValuesToLnUrl(String lnUrl) async {
+    LNURLParseResult lnResult = await getParams(lnUrl);
+    if( lnResult.payParams != null ) {
+      hasReceiver.value = true;
+      sendType = SendType.LightningUrl;
+      bitcoinReceiverAdress = lnUrl;
+      moneyController.text = lnResult.payParams!.minSendable.toString();
+      bitcoinUnit = BitcoinUnits.SAT;
+      moneyTextFieldIsEnabled.value = false;
+      lowerBound = lnResult.payParams!.minSendable;
+      upperBound = lnResult.payParams!.maxSendable;
+      boundType = BitcoinUnits.SAT;
+      lnCallback = lnResult.payParams!.callback;
 
+    }
+
+  }
+  void payLnUrl(String url, double amount, BuildContext context) async {
+    
+    Uri finalUrl = Uri.parse(url + "?amount=${amount.floor()}");
+
+   dynamic response = await http.get(finalUrl);
+   dynamic body = jsonDecode(response.body);
+   String invoicePr = body["pr"];
+    List<String> invoiceStrings = [
+            invoicePr
+          ];
+
+          Stream<RestResponse> paymentStream =
+              sendPaymentV2Stream(invoiceStrings);
+          paymentStream.listen((RestResponse response) {
+            isFinished.value =
+                true; 
+            if (response.statusCode == "success") {
+              GoRouter.of(context).go("/feed");
+                            showOverlay(context, "Payment successful!");
+
+            } else {
+              showOverlay(context, "Payment failed: ${response.message}");
+              isFinished.value =
+                  false; 
+            }
+          }, onError: (error) {
+            isFinished.value = false;
+            showOverlay(context, "An error occurred: $error");
+          }, onDone: () {
+          }, cancelOnError: true 
+              );
+    print(response.body);
+  }
   void giveValuesToInvoice(String invoiceString) {
     Logs().w("Invoice that is about to be paid for: $invoiceString");
     sendType = SendType.Invoice;
@@ -201,6 +263,7 @@ class SendsController extends GetxController {
 
     moneyTextFieldIsEnabled.value = false;
     description = req.tags[1].data;
+
   }
 
   changeFees(String fees) {
@@ -219,12 +282,15 @@ class SendsController extends GetxController {
     }
   }
 
-  sendBTC() async {
+  sendBTC(BuildContext context) async {
     Logs().w("sendBTC() called");
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
-        if (sendType == SendType.Invoice) {
+        if(sendType == SendType.LightningUrl) {
+          payLnUrl(lnCallback!, double.parse(moneyController.text), context);
+        } 
+        else if (sendType == SendType.Invoice) {
           final amountInSat = double.parse(moneyController.text) * 100000000;
           List<String> invoiceStrings = [
             bitcoinReceiverAdress
@@ -238,7 +304,7 @@ class SendsController extends GetxController {
             if (response.statusCode == "success") {
               // Handle success
               showOverlay(context, "Payment successful!");
-              GoRouter.of(context).pushNamed("/feed");
+              GoRouter.of(context).go("/feed");
             } else {
               // Handle error
               showOverlay(context, "Payment failed: ${response.message}");
@@ -327,6 +393,7 @@ class SendsController extends GetxController {
 
 enum SendType {
   Lightning,
+  LightningUrl,
   OnChain,
   Invoice,
   Unknown,
