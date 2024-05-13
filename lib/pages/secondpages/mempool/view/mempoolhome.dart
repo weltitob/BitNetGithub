@@ -364,7 +364,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                                     GestureDetector(
                                       onTap: () {
                                         context.go(
-                                            "/wallet/unaccepted_block_transactions"); //${controller.txDetailsConfirmed!.id}
+                                            "/wallet/unaccepted_block_transactions"); 
+                                            //${controller.txDetailsConfirmed!.id}
                                       },
                                       //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
                                       child: SearchFieldWidget(
