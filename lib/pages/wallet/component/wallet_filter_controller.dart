@@ -4,7 +4,16 @@ import 'package:get/get.dart';
 class WalletFilterController extends GetxController {
   Rx<DateTime> startDate = DateTime.now().obs;
   Rx<DateTime> endDate = DateTime.now().obs;
+  RxList<String> selectedFilters = [''].obs;
 
+  void toggleFilter(String filter) {
+      if (selectedFilters.contains(filter)) {
+        selectedFilters.remove(filter);
+      } else {
+        selectedFilters.add(filter);
+      }
+
+  }
   Future<DateTime> selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
