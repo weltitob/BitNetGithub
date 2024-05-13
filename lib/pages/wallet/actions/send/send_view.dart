@@ -52,14 +52,20 @@ class SendBTCScreen extends GetWidget<SendsController> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: controller.sendType == SendType.Invoice
-                ? LightningSendTab()
-                : OnChainSendTab(),
-          ),
-        ],
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (v) {
+          context.go('/feed');
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: controller.sendType == SendType.Invoice
+                  ? LightningSendTab()
+                  : OnChainSendTab(),
+            ),
+          ],
+        ),
       ),
     );
   }
