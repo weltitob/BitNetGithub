@@ -162,7 +162,7 @@ class ChatView extends StatelessWidget {
           controller.emojiPickerAction();
           return false;
         } else {
-                    context.go('/rooms');
+                    context.go('/feed');
 
           return false;
         }
@@ -197,7 +197,7 @@ class ChatView extends StatelessWidget {
                         buttonType: ButtonType.solid,
                         iconData: Icons.close_outlined,
                         onTap: () {
-                          context.go('/rooms');
+                          context.go('/feed');
                         },
                       ),
                     ),

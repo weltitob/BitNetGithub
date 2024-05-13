@@ -59,7 +59,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
         context: context,
         text: "Bitcoin empfangen",
         onTap: () {
-          context.go("/wallet");
+          context.go('/feed');
         },
         actions: [
           Obx(() {
@@ -101,74 +101,81 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
         ],
       ),
       // The screen's body
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        // The screen background is a gradient
-        // Padding around the screen's contents
-        child: Column(
-          children: [
-            SizedBox(
-              height: AppTheme.cardPadding * 3.5,
-            ),
-            Obx(() {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  children: [
-                    controller.receiveType == ReceiveType.Lightning
-                        ? GlassContainer(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (v) {
+          context.go('/feed');
+          print('ppop scope receive');
+        },
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          // The screen background is a gradient
+          // Padding around the screen's contents
+          child: Column(
+            children: [
+              SizedBox(
+                height: AppTheme.cardPadding * 3.5,
+              ),
+              Obx(() {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      controller.receiveType == ReceiveType.Lightning
+                          ? GlassContainer(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12.0, horizontal: 16.0),
+                                child: Text(
+                                  ReceiveType.Lightning.name,
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                              ),
+                            )
+                          : InkWell(
+                              onTap: () {
+                                controller.switchReceiveType();
+                              },
                               child: Text(
                                 ReceiveType.Lightning.name,
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                             ),
-                          )
-                        : InkWell(
-                            onTap: () {
-                              controller.switchReceiveType();
-                            },
-                            child: Text(
-                              ReceiveType.Lightning.name,
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                          ),
-                    SizedBox(width: AppTheme.cardPadding),
-                    controller.receiveType == ReceiveType.OnChain
-                        ? GlassContainer(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+                      SizedBox(width: AppTheme.cardPadding),
+                      controller.receiveType == ReceiveType.OnChain
+                          ? GlassContainer(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12.0, horizontal: 16.0),
+                                child: Text(
+                                  ReceiveType.OnChain.name,
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                              ),
+                            )
+                          : InkWell(
+                              onTap: () {
+                                controller.switchReceiveType();
+                              },
                               child: Text(
                                 ReceiveType.OnChain.name,
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                             ),
-                          )
-                        : InkWell(
-                            onTap: () {
-                              controller.switchReceiveType();
-                            },
-                            child: Text(
-                              ReceiveType.OnChain.name,
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                          ),
-                  ],
-                ),
-              );
-            }),
-            Expanded(
-              child: Obx(() {
-                return controller.receiveType == ReceiveType.Lightning
-                    ? LightningReceiveTab()
-                    : OnChainReceiveTab();
+                    ],
+                  ),
+                );
               }),
-            ),
-          ],
+              Expanded(
+                child: Obx(() {
+                  return controller.receiveType == ReceiveType.Lightning
+                      ? LightningReceiveTab()
+                      : OnChainReceiveTab();
+                }),
+              ),
+            ],
+          ),
         ),
       ),
       context: context,
