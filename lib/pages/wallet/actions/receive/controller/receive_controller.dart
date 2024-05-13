@@ -24,7 +24,7 @@ class ReceiveController extends GetxController {
   //ReceiveState receiveState = ReceiveState(0);
   RxBool updatingText = false.obs;
   FocusNode myFocusNode = FocusNode();
-  late TextEditingController amountController;
+  late TextEditingController amountController = TextEditingController();
   late TextEditingController currController;
   TextEditingController messageController = TextEditingController();
   late Duration duration;
@@ -42,16 +42,15 @@ class ReceiveController extends GetxController {
   // A GlobalKey is used to identify this widget in the widget tree, used to access and modify its properties
   GlobalKey globalKeyQR = GlobalKey();
 
-
   void updateTimer(Timer timer) {
-      if (duration.inSeconds > 0) {
-        duration = duration - Duration(seconds: 1);
-        min.value = (duration.inMinutes % 60).toString().padLeft(2, '0');
-        sec.value = (duration.inSeconds % 60).toString().padLeft(2, '0');
-        print(duration);
-      } else {
-        timer.cancel();
-      }
+    if (duration.inSeconds > 0) {
+      duration = duration - Duration(seconds: 1);
+      min.value = (duration.inMinutes % 60).toString().padLeft(2, '0');
+      sec.value = (duration.inSeconds % 60).toString().padLeft(2, '0');
+      print(duration);
+    } else {
+      timer.cancel();
+    }
   }
 
   String formatDuration(Duration duration) {
@@ -70,9 +69,6 @@ class ReceiveController extends GetxController {
     InvoiceModel invoiceModel = InvoiceModel.fromJson(callback.data);
     print("Invoice" + invoiceModel.payment_request.toString());
     qrCodeDataStringLightning.value = invoiceModel.payment_request.toString();
-    // setState(() {
-    //
-    // });
   }
 
   void getTaprootAddress() async {
@@ -81,9 +77,6 @@ class ReceiveController extends GetxController {
     BitcoinAddress address = BitcoinAddress.fromJson(callback.data);
     print("Bitcoin onchain Address" + address.addr.toString());
     qrCodeDataStringOnchain.value = address.addr.toString();
-    // setState(() {
-    //
-    // });
   }
 
   void switchReceiveType() {
@@ -144,11 +137,5 @@ class ReceiveController extends GetxController {
       // Your conversion logic here
       updatingText.value = false;
     }
-  }
-
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
   }
 }

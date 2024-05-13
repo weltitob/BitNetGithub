@@ -7,24 +7,20 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:matrix/matrix.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
-class LightningReceiveTab extends StatelessWidget {
+class LightningReceiveTab extends GetWidget<ReceiveController> {
   const LightningReceiveTab({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ReceiveController());
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: Column(
@@ -32,44 +28,6 @@ class LightningReceiveTab extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // SizedBox(
-          //   height: AppTheme.cardPadding * 2,
-          // ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     Text(
-          //       "Lightning",
-          //       style: Theme.of(context).textTheme.headline5,
-          //     ),
-          //     Row(
-          //       children: [
-          //         Obx(() {
-          //           return RoundedButtonWidget(
-          //               size: AppTheme.cardPadding * 1.5,
-          //               buttonType: ButtonType.transparent,
-          //               iconData: controller.createdInvoice.value
-          //                   ? FontAwesomeIcons.cancel
-          //                   : FontAwesomeIcons.refresh,
-          //               onTap: () {
-          //                 Logs().w(
-          //                     "Refresh button pressed: New Bitcoin Adress should be generated // not implemented yet");
-          //               });
-          //         }),
-          //         SizedBox(
-          //           width: AppTheme.elementSpacing,
-          //         ),
-          //         LongButtonWidget(
-          //             buttonType: ButtonType.transparent,
-          //             customHeight: AppTheme.cardPadding * 1.5,
-          //             customWidth: AppTheme.cardPadding * 3,
-          //             title: "23:04",
-          //             onTap: () {})
-          //       ],
-          //     )
-          //   ],
-          // ),
-          // SizedBox to add some spacing
           const SizedBox(
             height: AppTheme.cardPadding * 2,
           ),
@@ -135,45 +93,6 @@ class LightningReceiveTab extends StatelessWidget {
               ),
             ),
           ),
-          // GestureDetector(
-          //   onTap: () async {
-          //     await Clipboard.setData(
-          //         ClipboardData(text: controller.qrCodeDataStringLightning));
-          //     // Display a snackbar to indicate that the wallet address has been copied
-          //     showOverlay(
-          //         context, "Wallet-Adresse in Zwischenablage kopiert");
-          //   },
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       // Add an icon to copy the wallet address to the clipboard
-          //       Icon(
-          //         Icons.copy_rounded,
-          //         size: 18,
-          //         color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,
-          //       ),
-          //       const SizedBox(
-          //         width: AppTheme.elementSpacing * 0.25,
-          //       ),
-          //       // Display the user's wallet address
-          //       Container(
-          //         width: AppTheme.cardPadding * 10,
-          //         child: Text(
-          //           "${controller.qrCodeDataStringLightning}",
-          //           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-          //
-          //           ),
-          //           overflow: TextOverflow.ellipsis,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          // Add some space between the rows
-          // const SizedBox(
-          //   height: AppTheme.cardPadding * 2,
-          // ),
-
           BitNetListTile(
             text: 'Invoice',
             trailing: Obx(() {
@@ -206,96 +125,31 @@ class LightningReceiveTab extends StatelessWidget {
                     );
             }),
           ),
-          StatefulBuilder(
-            builder: (context, setState) {
-              return BitNetListTile(
-                text: 'Amount',
-                trailing: LongButtonWidget(
-                  customHeight: AppTheme.cardPadding * 2,
-                  customWidth: AppTheme.cardPadding * 7,
-                  buttonType: ButtonType.transparent,
-                  title: controller.amountController.text.isEmpty
-                      ? "Change Amount"
-                      : controller.amountController.text,
-                  // leadingIcon: Icon(
-                  //   FontAwesomeIcons.edit,
-                  //   size: AppTheme.cardPadding,
-                  //   color: AppTheme.white90,
-                  // ),
-                  onTap: () async {
-                   bool res =  await BitNetBottomSheet(
-                      context: context,
-                      //also add a help button as an action at the right once bitnetbottomsheet is fixed
-                      title: "Change Amount",
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      child: CreateInvoice(),
-                    );
-                   if(res){
-                     setState((){});
-                   }
-                  },
-                ),
-              );
-            }
-          ),
-
-          // Obx(() {
-          //   return !controller.createdInvoice.value
-          //       ? Row(
-          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //           crossAxisAlignment: CrossAxisAlignment.center,
-          //           children: [
-          //             SizedBox(
-          //               width: AppTheme.elementSpacing / 2,
-          //             ),
-          //             LongButtonWidget(
-          //               customHeight: AppTheme.cardPadding * 2,
-          //               customWidth: AppTheme.cardPadding * 8,
-          //               buttonType: ButtonType.transparent,
-          //               title: "Change amount",
-          //               leadingIcon: Icon(
-          //                 FontAwesomeIcons.edit,
-          //                 size: AppTheme.cardPadding,
-          //                 color: AppTheme.white90,
-          //               ),
-          //               onTap: () {
-          //                 BitNetBottomSheet(
-          //                   context: context,
-          //                   //also add a help button as an action at the right once bitnetbottomsheet is fixed
-          //                   title: "Change Amount",
-          //                   height: MediaQuery.of(context).size.height * 0.7,
-          //                   child: CreateInvoice(),
-          //                 );
-          //               },
-          //             ),
-          //             RoundedButtonWidget(
-          //               iconData: Icons.share_rounded,
-          //               onTap: () {
-          //                 // Share the wallet address
-          //                 Share.share(
-          //                     '${controller.qrCodeDataStringLightning}');
-          //               },
-          //               buttonType: ButtonType.transparent,
-          //             ),
-          //             RoundedButtonWidget(
-          //               iconData: FontAwesomeIcons.copy,
-          //               onTap: () async {
-          //                 await Clipboard.setData(ClipboardData(
-          //                     text:
-          //                         controller.qrCodeDataStringLightning.value));
-          //                 // Display a snackbar to indicate that the wallet address has been copied
-          //                 showOverlay(context,
-          //                     "Wallet-Adresse in Zwischenablage kopiert");
-          //               },
-          //               buttonType: ButtonType.transparent,
-          //             ),
-          //             SizedBox(
-          //               width: AppTheme.elementSpacing / 2,
-          //             ),
-          //           ],
-          //         )
-          //       : Container();
-          // })
+          StatefulBuilder(builder: (context, setState) {
+            return BitNetListTile(
+              text: 'Amount',
+              trailing: LongButtonWidget(
+                customHeight: AppTheme.cardPadding * 2,
+                customWidth: AppTheme.cardPadding * 7,
+                buttonType: ButtonType.transparent,
+                title: controller.amountController.text.isEmpty
+                    ? "Change Amount"
+                    : controller.amountController.text,
+                onTap: () async {
+                  bool res = await BitNetBottomSheet(
+                    context: context,
+                    //also add a help button as an action at the right once bitnetbottomsheet is fixed
+                    title: "Change Amount",
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: CreateInvoice(),
+                  );
+                  if (res) {
+                    setState(() {});
+                  }
+                },
+              ),
+            );
+          }),
         ],
       ),
     );

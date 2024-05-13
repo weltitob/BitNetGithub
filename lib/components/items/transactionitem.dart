@@ -9,7 +9,7 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
-import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -74,6 +74,7 @@ class _TransactionItemState extends State<TransactionItem> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<WalletsController>();
     // Use DateFormat for formatting the timestamp
     final String formattedDate = displayTimeAgoFromInt(widget.data.timestamp);
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
@@ -103,13 +104,12 @@ class _TransactionItemState extends State<TransactionItem> {
             child: Stack(
               children: [
                 GestureDetector(
-                onTap: () {
+                  onTap: () {
                     if (widget.data.type == TransactionType.lightning) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  LightningTransactionDetails(
+                              builder: (context) => LightningTransactionDetails(
                                     data: widget.data,
                                   )));
                     } else {
@@ -127,11 +127,9 @@ class _TransactionItemState extends State<TransactionItem> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  SingleTransactionScreen()));
+                              builder: (context) => SingleTransactionScreen()));
                     }
                   },
-
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: AppTheme.elementSpacing * 1,
@@ -182,13 +180,12 @@ class _TransactionItemState extends State<TransactionItem> {
                             ],
                           ),
                           const Spacer(),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Consumer<BalanceHideProvider>(
-                                  builder: (context, balanceHideProvider, _) {
-                                return balanceHideProvider.hideBalance!
+                          Obx(
+                            () => Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                controller.hideBalance.value
                                     ? Text(
                                         '*****',
                                         style: Theme.of(context)
@@ -196,92 +193,103 @@ class _TransactionItemState extends State<TransactionItem> {
                                             .titleMedium,
                                       )
                                     : Row(
-                                      children: [
-                                        GestureDetector(
+                                        children: [
+                                          GestureDetector(
                                             onTap: () {
                                               coin.setCurrencyType(
-                                                coin.coin != null
-                                                    ? !coin.coin!
-                                                    : false);
-                                              },
+                                                  coin.coin != null
+                                                      ? !coin.coin!
+                                                      : false);
+                                            },
                                             child: Text(
-                                                coin.coin ?? true ? widget.data.amount : "$currencyEquivalent${getCurrency(currency!)}",
+                                              coin.coin ?? true
+                                                  ? widget.data.amount
+                                                  : "$currencyEquivalent${getCurrency(currency!)}",
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleMedium!
                                                   .copyWith(
-                                                      color: widget.data.direction ==
+                                                      color: widget.data
+                                                                  .direction ==
                                                               TransactionDirection
                                                                   .received
-                                                          ? AppTheme.successColor
-                                                          : AppTheme.errorColor),
+                                                          ? AppTheme
+                                                              .successColor
+                                                          : AppTheme
+                                                              .errorColor),
                                             ),
                                           ),
-                                        coin.coin ?? true ? Icon(AppTheme.satoshiIcon, color: widget.data.direction ==
-                                        TransactionDirection
-                                            .received
-                                        ? AppTheme.successColor
-                                          : AppTheme.errorColor,) : SizedBox.shrink(),
-                                      ],
-                                    );
-                              }),
-                              // Consumer<BalanceHideProvider>(
-                              //     builder: (context, balanceHideProvider, _) {
-                              //   return balanceHideProvider.hideBalance!
-                              //       ? Text(
-                              //           '*****',
-                              //           style: Theme.of(context)
-                              //               .textTheme
-                              //               .titleMedium,
-                              //         )
-                              //       : Text(
-                              //           '\$$usd',
-                              //           style: Theme.of(context)
-                              //               .textTheme
-                              //               .titleMedium!,
-                              //         );
-                              // }),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: AppTheme.elementSpacing / 3,
-                                    vertical: AppTheme.elementSpacing / 15),
-                                child: Row(
-                                  children: [
-                                    //only for received transactions
-                                    Icon(
-                                      Icons.circle,
-                                      color: widget.data.status ==
-                                              TransactionStatus.confirmed
-                                          ? AppTheme.successColor
-                                          : widget.data.status ==
-                                                  TransactionStatus.pending
-                                              ? AppTheme.colorBitcoin
-                                              : AppTheme.errorColor,
-                                      size: AppTheme.cardPadding * 0.75,
-                                    ),
-                                    SizedBox(
-                                      width: AppTheme.elementSpacing / 2,
-                                    ),
-                                    Image.asset(
-                                      widget.data.type == TransactionType.onChain
-                                          ? "assets/images/bitcoin.png"
-                                          : "assets/images/lightning.png",
-                                      width: AppTheme.cardPadding * 0.75,
-                                      height: AppTheme.cardPadding * 0.75,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ],
+                                          coin.coin ?? true
+                                              ? Icon(
+                                                  AppTheme.satoshiIcon,
+                                                  color: widget
+                                                              .data.direction ==
+                                                          TransactionDirection
+                                                              .received
+                                                      ? AppTheme.successColor
+                                                      : AppTheme.errorColor,
+                                                )
+                                              : SizedBox.shrink(),
+                                        ],
+                                      ),
+                                // Consumer<BalanceHideProvider>(
+                                //     builder: (context, balanceHideProvider, _) {
+                                //   return balanceHideProvider.hideBalance!
+                                //       ? Text(
+                                //           '*****',
+                                //           style: Theme.of(context)
+                                //               .textTheme
+                                //               .titleMedium,
+                                //         )
+                                //       : Text(
+                                //           '\$$usd',
+                                //           style: Theme.of(context)
+                                //               .textTheme
+                                //               .titleMedium!,
+                                //         );
+                                // }),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: AppTheme.elementSpacing / 3,
+                                      vertical: AppTheme.elementSpacing / 15),
+                                  child: Row(
+                                    children: [
+                                      //only for received transactions
+                                      Icon(
+                                        Icons.circle,
+                                        color: widget.data.status ==
+                                                TransactionStatus.confirmed
+                                            ? AppTheme.successColor
+                                            : widget.data.status ==
+                                                    TransactionStatus.pending
+                                                ? AppTheme.colorBitcoin
+                                                : AppTheme.errorColor,
+                                        size: AppTheme.cardPadding * 0.75,
+                                      ),
+                                      SizedBox(
+                                        width: AppTheme.elementSpacing / 2,
+                                      ),
+                                      Image.asset(
+                                        widget.data.type ==
+                                                TransactionType.onChain
+                                            ? "assets/images/bitcoin.png"
+                                            : "assets/images/lightning.png",
+                                        width: AppTheme.cardPadding * 0.75,
+                                        height: AppTheme.cardPadding * 0.75,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                
               ],
             ),
           ),
