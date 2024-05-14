@@ -7,7 +7,6 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -16,7 +15,7 @@ import 'package:provider/provider.dart';
 
 class ChangeLanguage extends StatefulWidget {
   const ChangeLanguage({super.key});
-  
+
   @override
   State<ChangeLanguage> createState() => _ChangeLanguageState();
 }
@@ -33,16 +32,17 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
         buttonType: ButtonType.transparent,
         onTap: () {
           print("pressed");
-            final controller = Get.find<SettingsController>();
-            controller .switchTab('main');
+          final controller = Get.find<SettingsController>();
+          controller.switchTab('main');
         },
       ),
-      body: SingleChildScrollView(child: LanguagePickerSheet(onTapLanguage: (langCode, locale) {
+      body: LanguagePickerSheet(
+        onTapLanguage: (langCode, locale) {
           Provider.of<LocalProvider>(context, listen: false)
-            .setLocaleInDatabase(langCode,
-            locale);
-            setState((){});
-      },)),
+              .setLocaleInDatabase(langCode, locale);
+          setState(() {});
+        },
+      ),
     );
   }
 }
@@ -59,7 +59,6 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
 
   @override
   Widget build(BuildContext context) {
-
     final currentLanguage = Provider.of<LocalProvider>(context).locale;
     final get = MediaQuery.of(context).size;
     final lang = L10n.of(context);
@@ -68,45 +67,50 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
       //height: get.height * 0.8,
       width: get.width,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-        child: Column(
-          children: [
-            SizedBox(height: AppTheme.cardPadding * 2,),
-            SearchFieldWidget(
-                hintText: lang!.searchL,
-                isSearchEnabled: true,
-                //controller: search,
-                onChanged: (val) {
-                  setState(() {
-                    search.text = val;
-                  });
-                },
-                handleSearch: (dynamic) {}),
-            VerticalFadeListView(
-              child: SizedBox(
-                width: get.width,
-               // height: get.height * 0.62,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: flagList.length,
-                  itemBuilder: (context, index) {
-                    if (search.text.isEmpty) {
-                      return languageBox(index, currentLanguage);
-                    }
-                    if (languageList[index]
-                        .toString()
-                        .toLowerCase()
-                        .startsWith(search.text.toLowerCase())) {
-                      return languageBox(index, currentLanguage);
-                    }
-                    return Container();
+        margin: EdgeInsets.symmetric(
+          horizontal: AppTheme.elementSpacing,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: AppTheme.cardPadding * 2,
+              ),
+              SearchFieldWidget(
+                  hintText: lang!.searchL,
+                  isSearchEnabled: true,
+                  onChanged: (val) {
+                    setState(() {
+                      search.text = val;
+                    });
                   },
+                  handleSearch: (dynamic) {}),
+              VerticalFadeListView(
+                child: SizedBox(
+                  width: get.width,
+                  height: get.height * 0.6,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    physics: const ClampingScrollPhysics(),
+                    itemCount: flagList.length,
+                    itemBuilder: (context, index) {
+                      if (search.text.isEmpty) {
+                        return languageBox(index, languageList[index]);
+                      }
+                      if (languageList[index]
+                          .toString()
+                          .toLowerCase()
+                          .startsWith(search.text.toLowerCase())) {
+                        return languageBox(index, currentLanguage);
+                      }
+                      return Container();
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -128,7 +132,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
         //     locale);
         //     setState((){});
         widget.onTapLanguage(codeList[index], locale);
-        //Navigator.pop(context);
+        Navigator.pop(context);
       },
     );
   }

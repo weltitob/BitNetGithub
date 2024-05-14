@@ -28,6 +28,7 @@ class SettingsButton extends StatelessWidget {
               iconData: Icons.brightness_low_rounded,
               onTap: () {
                 BitNetBottomSheet(
+                  width: double.infinity,
                   //height: MediaQuery.of(context).size.height * 0.7,
                   context: context,
                   borderRadius: AppTheme.borderRadiusBig,

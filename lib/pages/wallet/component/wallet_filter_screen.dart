@@ -59,63 +59,73 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                               child: Text(
                                   DateFormat('dd-MM-yyyy')
                                       .format(controller.startDate.value),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                  ))),
+                                  style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ))),
                         ),
                       ),
-                    ),
-                  )),
-                  Container(
-                    margin: EdgeInsets.only(left: 10.w, right: 11.w),
-                    child: Text(
-                      'To',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: const Color.fromRGBO(255, 255, 255, 0.5),
+                    ))),
+                    Container(
+                      margin: EdgeInsets.only(left: 10.w, right: 11.w),
+                      child: Text(
+                        'To',
+                        style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
+                    Expanded(
                       child: GlassContainer(
-                    child: InkWell(
-                      onTap: () async {
-                        controller.endDate.value =
-                            await controller.selectDate(context);
-                      },
-                      child: Obx(
-                        () => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                              child: Text(
+                        child: InkWell(
+                          onTap: () async {
+                            controller.endDate.value =
+                                await controller.selectDate(context);
+                          },
+                          child: Obx(
+                            () => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
                                   DateFormat('dd-MM-yyyy')
                                       .format(controller.endDate.value),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                  ))),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  )),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Spacer(),
-          Container(
-            width: MediaQuery.of(context).size.width - 40.w,
-            child:  CommonBtn(
-                hasOnPress: false, text: 'Apply', hasBackPress: true),
-          ),
-        ],
-      ),
-    );
+            Spacer(),
+            SizedBox(
+              width: 250.w,
+              // width: MediaQuery.of(context).size.width - 40.w,
+              child: CommonBtn(
+                  hasMargin: true,
+                  hasOnPress: false,
+                  text: 'Apply',
+                  hasBackPress: true),
+            ),
+          ],
+        ),
+      );
   }
 }

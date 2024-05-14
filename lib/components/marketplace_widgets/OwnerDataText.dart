@@ -1,4 +1,5 @@
 
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -28,10 +29,9 @@ class OwnerDataText extends StatelessWidget {
                   child: Text(
                     ownerDataText,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
-                      color: const Color.fromRGBO(255, 255, 255, 0.7),
                     ),
                   ),
                 )
@@ -44,16 +44,16 @@ class OwnerDataText extends StatelessWidget {
                     width: 20.w,
                     height: 20.w,
                     fit: BoxFit.contain,
+                    color: AppTheme.black100,
                   ),
                 )
               : Container(),
           Text(
             ownerDataTitle,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14.sp,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontSize: 12.sp,
               fontWeight: FontWeight.w400,
-              color: const Color.fromRGBO(255, 255, 255, 0.5),
             ),
           ),
         ],

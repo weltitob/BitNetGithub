@@ -19,6 +19,7 @@ import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -242,26 +243,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                     height: AppTheme.cardPadding * 3.85,
                     fallbackIcon: Icons.sync_rounded,
                   ),
-                  // LongButtonWidget(
-                  //     buttonType: ButtonType.solid,
-                  //     title: "Send",
-                  //     customWidth: AppTheme.cardPadding * 6.5,
-                  //     leadingIcon: Icon(FontAwesomeIcons.circleUp),
-                  //     onTap: () {
-                  //       context.go('/wallet/send');
-                  //     }),
-                  // LongButtonWidget(
-                  //     buttonType: ButtonType.transparent,
-                  //     title: "Receive",
-                  //     customWidth: AppTheme.cardPadding * 6.5,
-                  //     leadingIcon: Icon(FontAwesomeIcons.circleDown),
-                  //     onTap: () {
-                  //       context.go('/wallet/receive');
-                  //     }),
                 ],
               ),
             ),
-            const SizedBox(height: AppTheme.cardPadding * 1.5),
+            const SizedBox(
+              height: AppTheme.cardPadding * 1.5,
+            ),
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -270,7 +257,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            const SizedBox(
+            SizedBox(
               height: AppTheme.cardPadding,
             ),
             Padding(

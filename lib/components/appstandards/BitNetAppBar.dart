@@ -4,7 +4,8 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:flutter/material.dart';
 
-class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget{ //
+class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget {
+  //
   final BuildContext context;
   final Function()? onTap;
   final bool hasBackButton;
@@ -15,17 +16,16 @@ class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget{ //
   final IconData? customIcon;
   final ButtonType? buttonType;
 
-  bitnetAppBar({
-    required this.context,
-    this.onTap,
-    this.hasBackButton = true,
-    this.actions,
-    this.text = "",
-    this.customTitle,
-    this.customLeading,
-    this.customIcon,
-    this.buttonType = ButtonType.solid
-  });
+  bitnetAppBar(
+      {required this.context,
+      this.onTap,
+      this.hasBackButton = true,
+      this.actions,
+      this.text = "",
+      this.customTitle,
+      this.customLeading,
+      this.customIcon,
+      this.buttonType = ButtonType.solid});
 
   @override
   _BitnetAppBarState createState() => _BitnetAppBarState();
@@ -46,17 +46,19 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
 
     // Define breakpoint values for responsive layout.
     bool isSuperSmallScreen = width < AppTheme.isSuperSmallScreen;
-    bool isSmallScreen = width < AppTheme.isSmallScreen; // Example breakpoint for small screens
+    bool isSmallScreen =
+        width < AppTheme.isSmallScreen; // Example breakpoint for small screens
     bool isMidScreen = width < AppTheme.isMidScreen;
     bool isIntermediateScreen = width < AppTheme.isIntermediateScreen;
 
-    double centerSpacing = isMidScreen ? isIntermediateScreen
-        ? isSmallScreen
-        ? isSuperSmallScreen
-        ? AppTheme.columnWidth * 0.075
-        : AppTheme.columnWidth * 0.15
-        : AppTheme.columnWidth * 0.35
-        : AppTheme.columnWidth * 0.65
+    double centerSpacing = isMidScreen
+        ? isIntermediateScreen
+            ? isSmallScreen
+                ? isSuperSmallScreen
+                    ? AppTheme.columnWidth * 0.075
+                    : AppTheme.columnWidth * 0.15
+                : AppTheme.columnWidth * 0.35
+            : AppTheme.columnWidth * 0.65
         : AppTheme.columnWidth;
 
     return AppBar(
@@ -71,47 +73,48 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
       title: widget.customTitle ??
           (widget.text != null
               ? animateText
-              ? Container(
-              width: AppTheme.cardPadding * 10,
-              height: AppTheme.cardPadding,
-              child: AnimatedText(text: widget.text!))
-              : Container(
-            key: _textKey,
-            padding: EdgeInsets.symmetric(horizontal: centerSpacing),
-            child: Text(
-              widget.text!,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-          )
+                  ? Container(
+                      width: AppTheme.cardPadding * 10,
+                      height: AppTheme.cardPadding,
+                      child: AnimatedText(text: widget.text!))
+                  : Container(
+                      key: _textKey,
+                      padding: EdgeInsets.symmetric(horizontal: centerSpacing),
+                      child: Text(
+                        widget.text!,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    )
               : Container()),
       leading: widget.hasBackButton
           ? widget.customLeading ??
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: widget.onTap,
-              child: Container(
-                margin: const EdgeInsets.only(
-                    left: AppTheme.elementSpacing * 1.5,
-                    right: AppTheme.elementSpacing * 0.5,
-                    top: AppTheme.elementSpacing,
-                    bottom: AppTheme.elementSpacing),
-                child: RoundedButtonWidget(
-                  buttonType: widget.buttonType ?? ButtonType.solid,
-                  iconData: widget.customIcon ?? Icons.arrow_back,
-                  onTap: widget.onTap
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: widget.onTap,
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      left: AppTheme.elementSpacing * 1.5,
+                      right: AppTheme.elementSpacing * 0.5,
+                      top: AppTheme.elementSpacing,
+                      bottom: AppTheme.elementSpacing,
+                    ),
+                    child: RoundedButtonWidget(
+                        buttonType: widget.buttonType ?? ButtonType.solid,
+                        iconData: widget.customIcon ?? Icons.arrow_back,
+                        onTap: widget.onTap),
+                  ),
                 ),
-              ),
-            ),
-          )
+              )
           : null,
       actions: widget.actions,
     );
   }
 
   void _checkOverflow() {
-    final RenderBox? renderBox = _textKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? renderBox =
+        _textKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox != null && renderBox.hasSize) {
       final double textWidth = renderBox.size.width;
 
@@ -140,60 +143,3 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
     }
   }
 }
-
-
-//
-// import 'package:bitnet/components/buttons/roundediconbutton.dart';
-// import 'package:bitnet/components/loaders/loaders.dart';
-// import 'package:flutter/material.dart';
-// import 'package:bitnet/backbone/helper/theme/theme.dart';
-//
-// AppBar bitnetAppBar({
-//   required BuildContext context,
-//   Function()? onTap,
-//   bool hasBackButton = true,
-//   List<Widget>? actions, // Parameter for actions
-//   String? text,
-//   Widget? customTitle,
-//   Widget? customLeading,
-//   IconData? customIcon,
-// }) {
-//   return AppBar(
-//     scrolledUnderElevation: 0,
-//     shadowColor: Colors.transparent,
-//     bottomOpacity: 0,
-//     elevation: 0,
-//     centerTitle: true,
-//     titleTextStyle: Theme.of(context).textTheme.titleLarge,
-//     backgroundColor: Colors.transparent,
-//     title: LayoutBuilder(builder: (context, constraints) {
-//       double width = constraints.maxWidth;
-//
-//       // Define breakpoint values for responsive layout.
-//       bool isSmallScreen = width < AppTheme.isSmallScreen; // Example breakpoint for small screens
-//       bool isMidScreen = width < AppTheme.isMidScreen;
-//       double centerSpacing = isMidScreen ? isSmallScreen ? AppTheme.columnWidth * 0.15 : AppTheme.columnWidth * 0.65 : AppTheme.columnWidth;
-//
-//       return customTitle ?? (text != null ? Text(text) : Container());}), // Use customTitle if provided
-//     leading: hasBackButton ? customLeading ?? MouseRegion(
-//       cursor: SystemMouseCursors.click,
-//       child: GestureDetector(
-//         onTap: onTap,
-//         child: Container(
-//           margin: const EdgeInsets.only(
-//               left: AppTheme.elementSpacing * 1.5,
-//               right: AppTheme.elementSpacing * 0.5,
-//               top: AppTheme.elementSpacing,
-//               bottom: AppTheme.elementSpacing),
-//           child: RoundedIconButton(
-//             iconData: customIcon ?? Icons.arrow_back,
-//             colorPrimary: AppTheme.colorPrimaryGradient,
-//             colorSecondary: AppTheme.colorBitcoin,
-//           ),
-//         ),
-//       ),
-//     ) : null,
-//     actions: actions,
-//   );
-// }
-//

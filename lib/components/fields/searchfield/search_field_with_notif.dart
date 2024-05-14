@@ -38,7 +38,7 @@ class _SearchFieldWithNotificationsWidgetState
       child: GlassContainer(
         borderRadius: AppTheme.cardRadiusSmall,
         child: Container(
-          height: AppTheme.cardPadding * 1.75,
+          height: AppTheme.cardPadding * 2,
           decoration: BoxDecoration(
             borderRadius: AppTheme.cardRadiusSmall,
             boxShadow: [

@@ -15,7 +15,7 @@ import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
- 
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -70,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                   isNormalChild: true,
                   isChild: Container(
                     width: size.width,
-                    height: 185.h,
+                    height: 230.h,
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,

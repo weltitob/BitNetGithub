@@ -1,9 +1,9 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:go_router/go_router.dart';
-
 
 class TrendingSellersSlider extends StatelessWidget {
   final nftImage;
@@ -20,12 +20,13 @@ class TrendingSellersSlider extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.goNamed(kCollectionScreenRoute,
-        pathParameters: {'collection_id': this.nftName});
+            pathParameters: {'collection_id': this.nftName});
       },
       child: Container(
         width: 224.w,
         margin: EdgeInsets.symmetric(horizontal: 8.w),
         decoration: BoxDecoration(
+            border: Border.all(color: AppTheme.black100),
             color: const Color.fromRGBO(255, 255, 255, 0.1),
             borderRadius: BorderRadius.circular(12.r)),
         child: Column(
@@ -59,11 +60,10 @@ class TrendingSellersSlider extends StatelessWidget {
                   offset: Offset(0.0, -14.h),
                   child: Text(
                     nftName,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: const Color.fromRGBO(249, 249, 249, 1),
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ),
               ],

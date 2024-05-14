@@ -9,7 +9,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
 class ChooseRestoreScreen extends StatefulWidget {
   ChooseRestoreScreen({
     Key? key,
@@ -65,14 +64,15 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
         extendBodyBehindAppBar: true,
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: bitnetAppBar(
-            text: L10n.of(context)!.restoreAccount,
-            context: context,
-            onTap: () {
-              context.go('/authhome');
-            },
-            actions: [
-         PopUpLangPickerWidget()
-        ]),
+          text: L10n.of(context)!.restoreAccount,
+          context: context,
+          onTap: () {
+            print('popping');
+            Navigator.pop(context);
+            // context.go('/authhome');
+          },
+          actions: [PopUpLangPickerWidget()],
+        ),
         body: ListView(
           children: [
             SizedBox(
@@ -107,11 +107,9 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                BitNetImageWithTextContainer(
-                    "Social recovery", () {
+                BitNetImageWithTextContainer("Social recovery", () {
                   context.go('/authhome/login/social_recovery');
-                },
-                image: "assets/images/friends.png"),
+                }, image: "assets/images/friends.png"),
                 BitNetImageWithTextContainer("Use DID and Private Key", () {
                   context.go('/authhome/login/did_recovery');
                 }, image: "assets/images/key_removed_bck.png"),
