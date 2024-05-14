@@ -133,8 +133,10 @@ class SendsController extends GetxController {
     switch (type) {
       case QRTyped.LightningUrl:
       giveValuesToLnUrl(encodedString);
+        break;
       case QRTyped.LightningMail:
         // Handle LightningMail QR code
+        giveValuesToLnUrl(encodedString, asAddress: true);
         break;
       case QRTyped.OnChain:
         // Navigator.push(cxt, MaterialPageRoute(builder: (context)=>Send()));
@@ -199,8 +201,21 @@ class SendsController extends GetxController {
 
     print("Estimated fees: $feesDouble");
   }
-  void giveValuesToLnUrl(String lnUrl) async {
-    LNURLParseResult lnResult = await getParams(lnUrl);
+  void giveValuesToLnUrl(String lnUrl, {bool asAddress = false}) async {
+    String finalLnUrl = lnUrl;
+    LNURLParseResult? lnResult = null;
+    if(asAddress) {
+      List<String> lnUrlParts = lnUrl.split('@');
+      finalLnUrl = 'https://${lnUrlParts[1]}/.well-known/lnurlp/${lnUrlParts[0]}';
+          dynamic httpResult = await http.get(Uri.parse(finalLnUrl));
+          if(httpResult.statusCode != 200) {
+            return;
+          }
+          lnResult = LNURLParseResult(payParams: LNURLPayParams.fromJson(jsonDecode(httpResult.body)));
+    } else {
+           lnResult = await getParams(finalLnUrl);
+
+    }
     if( lnResult.payParams != null ) {
       hasReceiver.value = true;
       sendType = SendType.LightningUrl;
