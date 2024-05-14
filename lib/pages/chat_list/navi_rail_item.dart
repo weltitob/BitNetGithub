@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NaviRailItem extends StatelessWidget {
   final String toolTip;
@@ -20,8 +21,8 @@ class NaviRailItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 64,
-      width: 64,
+      height: 64.h,
+      width: 64.w,
       child: Stack(
         children: [
           Positioned(

@@ -19,10 +19,10 @@ import 'package:go_router/go_router.dart';
 import 'package:popover/popover.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-
 class CollectionScreen extends StatefulWidget {
   final GoRouterState? routerState;
-  const CollectionScreen({Key? key, required this.routerState}) : super(key: key);
+  const CollectionScreen({Key? key, required this.routerState})
+      : super(key: key);
   @override
   State<CollectionScreen> createState() => _CollectionScreenState();
 }
@@ -78,6 +78,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                               backArrowIcon,
                               width: 18.w,
                               height: 15.h,
+                              color: AppTheme.colorSchemeSeed,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -157,55 +158,21 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     child: Text(
                       name != null ? name : "Unknown",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style:Theme.of(context).textTheme.bodyLarge!.copyWith(
                         decoration: TextDecoration.underline,
-                        fontSize: 28.sp,
+                        fontSize: 26.sp,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
                       ),
                     ),
                   ),
                 ),
-                // Container(
-                //   margin: EdgeInsets.only(bottom: 15.h),
-                //   padding: EdgeInsets.symmetric(horizontal: 20.w),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: const [
-                //       OwnerDataText(
-                //         ownerDataText: '78',
-                //         ownerDataTitle: 'Items',
-                //         hasText: true,
-                //       ),
-                //       OwnerDataText(
-                //         ownerDataText: '54',
-                //         ownerDataTitle: 'Owners',
-                //         hasText: true,
-                //       ),
-                //       OwnerDataText(
-                //         ownerDataText: '60',
-                //         ownerDataTitle: 'Floor Price',
-                //         hasText: true,
-                //       ),
-                //       OwnerDataText(
-                //         ownerDataText: '1.07k',
-                //         ownerDataTitle: 'Traded',
-                //         hasText: true,
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 Container(
                   margin: EdgeInsets.only(bottom: 20.h),
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Text(
                     'Inscriptions #${inscriptions[0]}-${inscriptions[inscriptions.length - 1]}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white70,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 14.sp)
                   ),
                 ),
                 Container(
@@ -214,10 +181,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   child: Text(
                     'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14.sp,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
-                      color: const Color.fromRGBO(255, 255, 255, 0.5),
                     ),
                   ),
                 ),
@@ -282,7 +248,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     ),
                   ),
                 ),
-
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 4),
                   child: GlassContainer(
@@ -446,7 +411,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     child: Text("Inscriptions",
                         style: Theme.of(context).textTheme.headlineMedium)),
                 SizedBox(height: 20),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 64.0),
                   child: Row(
@@ -544,8 +508,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             rank: sortedGridList[index].rank,
                             onTap: handleProductClick,
                             onLongTap: () {
-                              context.goNamed('$kCollectionScreenRoute/$kNftProductScreenRoute',
-                                  pathParameters: {'nft_id':sortedGridList[index].nftName });
+                              context.goNamed(
+                                  '$kCollectionScreenRoute/$kNftProductScreenRoute',
+                                  pathParameters: {
+                                    'nft_id': sortedGridList[index].nftName
+                                  });
                             },
                             onTapBuy: () {
                               setState(() {

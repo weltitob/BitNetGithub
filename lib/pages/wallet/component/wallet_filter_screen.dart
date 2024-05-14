@@ -14,97 +14,108 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-      child: Column(
-        children: [
-          FilterPillList(
-            headingText: 'Filter Options',
-            listDataText: [
-              PillLabelModal(labelText: "Lightning"),
-              PillLabelModal(labelText: "Onchain"),
-              PillLabelModal(labelText: "Sent"),
-              PillLabelModal(labelText: "Received"),
-            ],
-          ),
-          CommonHeading(
-            headingText: 'TimeFrame',
-            hasButton: false,
-            collapseBtn: true,
-            child: Container(
-              margin: EdgeInsets.only(bottom: 30.h),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: GlassContainer(
-                    child: InkWell(
-                      onTap: () async {
-                        controller.startDate.value =
-                            await controller.selectDate(context);
-                      },
-                      child: Obx(
-                        () => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                              child: Text(
-                                  DateFormat('dd-MM-yyyy')
-                                      .format(controller.startDate.value),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                  ))),
+    return Container(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 20.h),
+        child: Column(
+          children: [
+            FilterPillList(
+              headingText: 'Filter Options',
+              listDataText: [
+                PillLabelModal(labelText: "Lightning"),
+                PillLabelModal(labelText: "Onchain"),
+                PillLabelModal(labelText: "Sent"),
+                PillLabelModal(labelText: "Received"),
+              ],
+            ),
+            CommonHeading(
+              headingText: 'TimeFrame',
+              hasButton: false,
+              collapseBtn: true,
+              child: Container(
+                margin: EdgeInsets.only(bottom: 30.h),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: GlassContainer(
+                      child: InkWell(
+                        onTap: () async {
+                          controller.startDate.value =
+                              await controller.selectDate(context);
+                        },
+                        child: Obx(
+                          () => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                                child: Text(
+                                    DateFormat('dd-MM-yyyy')
+                                        .format(controller.startDate.value),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ))),
+                          ),
+                        ),
+                      ),
+                    )),
+                    Container(
+                      margin: EdgeInsets.only(left: 10.w, right: 11.w),
+                      child: Text(
+                        'To',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          color: const Color.fromRGBO(255, 255, 255, 0.5),
                         ),
                       ),
                     ),
-                  )),
-                  Container(
-                    margin: EdgeInsets.only(left: 10.w, right: 11.w),
-                    child: Text(
-                      'To',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: const Color.fromRGBO(255, 255, 255, 0.5),
-                      ),
-                    ),
-                  ),
-                  Expanded(
+                    Expanded(
                       child: GlassContainer(
-                    child: InkWell(
-                      onTap: () async {
-                        controller.endDate.value =
-                            await controller.selectDate(context);
-                      },
-                      child: Obx(
-                        () => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                              child: Text(
+                        child: InkWell(
+                          onTap: () async {
+                            controller.endDate.value =
+                                await controller.selectDate(context);
+                          },
+                          child: Obx(
+                            () => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
                                   DateFormat('dd-MM-yyyy')
                                       .format(controller.endDate.value),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                  ))),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  )),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Spacer(),
-          Container(
-            width: MediaQuery.of(context).size.width - 40.w,
-            child: const CommonBtn(
-                hasOnPress: false, text: 'Apply', hasBackPress: true),
-          ),
-        ],
+            Spacer(),
+            SizedBox(
+              width: 250.w,
+              // width: MediaQuery.of(context).size.width - 40.w,
+              child: CommonBtn(
+                  hasMargin: true,
+                  hasOnPress: false,
+                  text: 'Apply',
+                  hasBackPress: true),
+            ),
+          ],
+        ),
       ),
     );
   }

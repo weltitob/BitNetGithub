@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -42,19 +41,17 @@ class _MostViewState extends State<MostView> {
                 Text(
                   widget.nftName,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    color: const Color.fromRGBO(249, 249, 249, 1),
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 Text(
                   widget.nftPrice,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                    color: const Color.fromRGBO(255, 255, 255, 0.5),
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),

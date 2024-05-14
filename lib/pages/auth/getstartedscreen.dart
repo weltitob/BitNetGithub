@@ -1,22 +1,15 @@
 //import 'package:bitnet/l10n/l10n.dart';
-import 'dart:ui';
-
-import 'package:bitnet/backbone/helper/language.dart';
-import 'package:bitnet/backbone/streams/locale_provider.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:matrix/matrix.dart';
-import 'package:provider/provider.dart';
-
 
 class GetStartedScreen extends StatefulWidget {
   // function to toggle between login and reset password screens
@@ -36,11 +29,8 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
     super.initState();
     _compostionBitcoin =
         loadComposition('assets/lottiefiles/bitcoinanimation.json');
-        //  deviceLocale = PlatformDispatcher.instance.locale;// or html.window.locale
-        //  langCode = deviceLocale.languageCode;
-
-
-
+    //  deviceLocale = PlatformDispatcher.instance.locale;// or html.window.locale
+    //  langCode = deviceLocale.languageCode;
   }
 
   @override
@@ -89,11 +79,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               ? AppTheme.columnWidth * 0.15
               : AppTheme.columnWidth * 0.65
           : AppTheme.columnWidth;
-         
+
       return bitnetScaffold(
         extendBodyBehindAppBar: true,
-        appBar: bitnetAppBar(context: context,hasBackButton: false,actions: [
-         PopUpLangPickerWidget()
+        appBar: bitnetAppBar(context: context, hasBackButton: false, actions: [
+          PopUpLangPickerWidget(),
         ]),
         context: context,
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -108,12 +98,10 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
           child: Column(
             // even space distribution
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+            children: [
               Container(
                 color: Colors.transparent,
-                width: AppTheme.cardPadding *
-                    20 *
-                    spacingMultiplier, //double.infinity
+                width: AppTheme.cardPadding * 20 * spacingMultiplier,
                 child: FutureBuilder(
                   future: _compostionBitcoin,
                   builder: (context, snapshot) {
@@ -157,12 +145,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               SizedBox(height: AppTheme.cardPadding * 4),
               Container(
                 margin: EdgeInsets.only(
-                    top: AppTheme.cardPadding,
-                    bottom: AppTheme.cardPadding),
+                    top: AppTheme.cardPadding, bottom: AppTheme.cardPadding),
                 child: GestureDetector(
                   onTap: () {
                     Logs().w("AGBS and Impressum was clicked");
-                      //context.go('/authhome/login');
+                    // context.go('/authhome/login');
                   },
                   child: Text(
                     "AGBS and Impressum",

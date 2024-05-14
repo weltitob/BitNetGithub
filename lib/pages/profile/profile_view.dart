@@ -43,6 +43,7 @@ class ProfileView extends StatelessWidget {
 
   void onQRButtonPressed(BuildContext context) {
     BitNetBottomSheet(
+      width: MediaQuery.sizeOf(context).width,
       context: context,
       title: "Share Profile",
       iconData: Icons.qr_code_rounded,
