@@ -29,7 +29,6 @@ class WalletScreen extends GetWidget<WalletsController> {
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(() => ReceiveController(), fenix: true);
-
     Get.lazyPut(() => SendsController(context: context), fenix: true);
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
 
@@ -287,51 +286,61 @@ class WalletScreen extends GetWidget<WalletsController> {
               ),
             ),
             const SizedBox(height: AppTheme.cardPadding * 1.5),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Activity",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  Row(
-                    children: [
-                      RoundedButtonWidget(
-                          size: AppTheme.cardPadding * 1.25,
-                          buttonType: ButtonType.transparent,
-                          iconData: FontAwesomeIcons.filter,
-                          onTap: () {
-                            BitNetBottomSheet(
-                                context: context, child: WalletFilterScreen());
-                          }),
-                      SizedBox(
-                        width: AppTheme.elementSpacing,
+            StatefulBuilder(
+              builder: (context, setState) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Activity",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          Row(
+                            children: [
+                              RoundedButtonWidget(
+                                  size: AppTheme.cardPadding * 1.25,
+                                  buttonType: ButtonType.transparent,
+                                  iconData: FontAwesomeIcons.filter,
+                                  onTap: () async {
+                                    await BitNetBottomSheet(
+                                        context: context, child: WalletFilterScreen());
+                                    setState((){});
+                                  }),
+                              SizedBox(
+                                width: AppTheme.elementSpacing,
+                              ),
+                              LongButtonWidget(
+                                  title: "All",
+                                  buttonType: ButtonType.transparent,
+                                  customWidth: AppTheme.cardPadding * 2.5,
+                                  customHeight: AppTheme.cardPadding * 1.25,
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                Transactions(fullList: true)));
+                                  }),
+                            ],
+                          ),
+                        ],
                       ),
-                      LongButtonWidget(
-                          title: "All",
-                          buttonType: ButtonType.transparent,
-                          customWidth: AppTheme.cardPadding * 2.5,
-                          customHeight: AppTheme.cardPadding * 1.25,
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        Transactions(fullList: true)));
-                          }),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                    SizedBox(
+                      height: AppTheme.elementSpacing,
+                    ),
+                    const SizedBox(height: AppTheme.elementSpacing),
+                    Transactions()
+                  ],
+                );
+              }
             ),
-            SizedBox(
-              height: AppTheme.elementSpacing,
-            ),
-            const SizedBox(height: AppTheme.elementSpacing),
-            Transactions(),
+
           ],
         ),
       ),
