@@ -7,15 +7,15 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:bitnet/pages/wallet/actions/send/send.dart';
+import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 
-class LightningSendTab extends StatelessWidget {
-  final SendController controller;
-  const LightningSendTab({super.key, required this.controller});
+class LightningSendTab extends GetWidget<SendsController> {
+  const LightningSendTab({super.key,  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class LightningSendTab extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
-                  children: <Widget>[
+                  children: [
                     userTile(context),
                     // A SizedBox widget with a height of AppTheme.cardPadding * 2
                     const SizedBox(
@@ -45,11 +45,13 @@ class LightningSendTab extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: AppTheme.cardPadding),
-                      child: Text(
-                        controller.description.isEmpty ? "" : ',,${controller.description}"',
-                        style:
-                            Theme.of(context).textTheme.bodyLarge!.copyWith(),
-                        textAlign: TextAlign.center,
+                      child: Obx(
+                        ()=> Text(
+                          controller.description.value.isEmpty ? "" : ',,${controller.description}"',
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ],

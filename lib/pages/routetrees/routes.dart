@@ -40,7 +40,7 @@ import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
+import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:bitnet/pages/wallet/cardinfo/btc_cardinfoscreen.dart';
 import 'package:bitnet/pages/wallet/cardinfo/lightning_cardinfoscreen.dart';
@@ -93,479 +93,384 @@ class AppRoutes {
             path: '/loading',
             builder: (ctx, state) => const LoadingViewAppStart()),
 
-        ShellRoute(
-          builder: (ctx, state, child) {
-            return BottomNav(child: child, routerState: state);
-          },
+        GoRoute(
+            path: '/qrscanner',
+            builder: _dynamicTransition == null
+                ? (ctx, state) => const QrScanner()
+                : null,
+            pageBuilder: _dynamicTransition != null
+                ? (ctx, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const QrScanner(),
+                    transitionsBuilder: _dynamicTransition!)
+                : null),
+        GoRoute(
+          path: '/error',
+          builder:
+              _dynamicTransition == null ? (ctx, state) => ReceiveScreen() : null,
+          pageBuilder: _dynamicTransition != null
+              ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: ReceiveScreen(),
+                  transitionsBuilder: _dynamicTransition!)
+              : null,
+        ),
+
+        GoRoute(
+            path: '/feed',
+            builder: (ctx, state) => BottomNav(routerState: state),
+            routes: [
+              GoRoute(
+                  path: kNftProductScreenRoute + "/:nft_id",
+                  name: kNftProductScreenRoute,
+                  builder: (ctx, state) => NftProductScreen()),
+              GoRoute(
+                  path: kNotificationScreenRoute,
+                  builder: (ctx, state) => NotificationScreen()),
+              GoRoute(
+                  path: kCollectionScreenRoute + "/:collection_id",
+                  name: kCollectionScreenRoute,
+                  builder: (ctx, state) => CollectionScreen(
+                        routerState: state,
+                      ),
+                  routes: [
+                    GoRoute(
+                        path: kNftProductScreenRoute + "/:nft_id",
+                        name: '$kCollectionScreenRoute$kNftProductScreenRoute',
+                        builder: (ctx, state) => NftProductScreen()),
+                  ]),
+            ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
+        GoRoute(
+          path: '/create',
+          builder: (ctx, state) =>
+              //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
+              CreateAsset(),
+        ),
+
+
+        GoRoute(
+          path: '/wallet',
+          builder: (ctx, state) => Wallet(),
           routes: [
-            // GoRoute(
-            //   path: '',
-            //   redirect: (context, state) => '/feed', // '/feed'
-            // ),
             GoRoute(
-                path: '/qrscanner',
+                path: 'bitcoinscreen',
                 builder: _dynamicTransition == null
-                    ? (ctx, state) => const QrScanner()
+                    ? (ctx, state) => const BitcoinScreen()
                     : null,
                 pageBuilder: _dynamicTransition != null
                     ? (ctx, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const QrScanner(),
-                        transitionsBuilder: _dynamicTransition!)
-                    : null),
-            GoRoute(
-              path: '/error',
-              builder:
-                  _dynamicTransition == null ? (ctx, state) => Receive() : null,
-              pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(
-                      key: state.pageKey,
-                      child: Receive(),
-                      transitionsBuilder: _dynamicTransition!)
-                  : null,
-            ),
-            GoRoute(
-                path: '/feed',
-                builder: (ctx, state) => FeedScreen(),
+                    key: state.pageKey,
+                    child: const BitcoinScreen(),
+                    transitionsBuilder: _dynamicTransition!)
+                    : null,
                 routes: [
                   GoRoute(
-                      path: kNftProductScreenRoute + "/:nft_id",
-                      name: kNftProductScreenRoute,
-                      builder: (ctx, state) => NftProductScreen()),
-                  GoRoute(
-                      path: kNotificationScreenRoute,
-                      builder: (ctx, state) => NotificationScreen()),
-                  GoRoute(
-                      path: kCollectionScreenRoute + "/:collection_id",
-                      name: kCollectionScreenRoute,
-                      builder: (ctx, state) => CollectionScreen(
-                            routerState: state,
-                          ),
-                      routes: [
-                        GoRoute(
-                            path: kNftProductScreenRoute + "/:nft_id",
-                            name:
-                                '$kCollectionScreenRoute/$kNftProductScreenRoute',
-                            builder: (ctx, state) => NftProductScreen()),
-                      ]),
-                ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
-            GoRoute(
-              path: '/create',
-              builder: (ctx, state) =>
-                  //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
-                  CreateAsset(),
-            ),
-            GoRoute(
-              path: '/wallet',
-              builder: (ctx, state) => Wallet(),
-              routes: [
-                GoRoute(
-                    path: 'bitcoinscreen',
+                    path: 'mempool',
                     builder: _dynamicTransition == null
-                        ? (ctx, state) => const BitcoinScreen()
+                        ? (ctx, state) => const MempoolHome()
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey,
-                            child: const BitcoinScreen(),
-                            transitionsBuilder: _dynamicTransition!)
+                        key: state.pageKey,
+                        child: const BlockTransactions(),
+                        transitionsBuilder: _dynamicTransition!)
                         : null,
-                    routes: [
-                      GoRoute(
-                        path: 'mempool',
-                        builder: _dynamicTransition == null
-                            ? (ctx, state) => const MempoolHome()
-                            : null,
-                        pageBuilder: _dynamicTransition != null
-                            ? (ctx, state) => CustomTransitionPage(
-                                key: state.pageKey,
-                                child: const BlockTransactions(),
-                                transitionsBuilder: _dynamicTransition!)
-                            : null,
-                      ),
-                      GoRoute(
-                        path: 'hashrate',
-                        builder: _dynamicTransition == null
-                            ? (ctx, state) => const HashrateScreen()
-                            : null,
-                        pageBuilder: _dynamicTransition != null
-                            ? (ctx, state) => CustomTransitionPage(
-                                key: state.pageKey,
-                                child: const BlockTransactions(),
-                                transitionsBuilder: _dynamicTransition!)
-                            : null,
-                      ),
-                      GoRoute(
-                        path: 'whales',
-                        builder: _dynamicTransition == null
-                            ? (ctx, state) => const WhaleBehaviour()
-                            : null,
-                        pageBuilder: _dynamicTransition != null
-                            ? (ctx, state) => CustomTransitionPage(
-                                key: state.pageKey,
-                                child: const BlockTransactions(),
-                                transitionsBuilder: _dynamicTransition!)
-                            : null,
-                      ),
-                      GoRoute(
-                        path: 'keymetrics',
-                        builder: _dynamicTransition == null
-                            ? (ctx, state) => const KeyMetricsScreen()
-                            : null,
-                        pageBuilder: _dynamicTransition != null
-                            ? (ctx, state) => CustomTransitionPage(
-                                key: state.pageKey,
-                                child: const BlockTransactions(),
-                                transitionsBuilder: _dynamicTransition!)
-                            : null,
-                      ),
-                      GoRoute(
-                        path: 'transactions',
-                        builder: _dynamicTransition == null
-                            ? (ctx, state) => const LastTransactionsScreen()
-                            : null,
-                        pageBuilder: _dynamicTransition != null
-                            ? (ctx, state) => CustomTransitionPage(
-                                key: state.pageKey,
-                                child: const BlockTransactions(),
-                                transitionsBuilder: _dynamicTransition!)
-                            : null,
-                      ),
-                      GoRoute(
-                        path: 'analysts',
-                        builder: _dynamicTransition == null
-                            ? (ctx, state) => AnalysisScreen()
-                            : null,
-                        pageBuilder: _dynamicTransition != null
-                            ? (ctx, state) => CustomTransitionPage(
-                                key: state.pageKey,
-                                child: const BlockTransactions(),
-                                transitionsBuilder: _dynamicTransition!)
-                            : null,
-                      ),
-                      GoRoute(
-                        path: 'news',
-                        builder: _dynamicTransition == null
-                            ? (ctx, state) => NewsScreen()
-                            : null,
-                        pageBuilder: _dynamicTransition != null
-                            ? (ctx, state) => CustomTransitionPage(
-                                key: state.pageKey,
-                                child: const BlockTransactions(),
-                                transitionsBuilder: _dynamicTransition!)
-                            : null,
-                      ),
-                      GoRoute(
-                        path: 'fearandgreed',
-                        builder: _dynamicTransition == null
-                            ? (ctx, state) => FearAndGreed()
-                            : null,
-                        pageBuilder: _dynamicTransition != null
-                            ? (ctx, state) => CustomTransitionPage(
-                            key: state.pageKey,
-                            child: const BlockTransactions(),
-                            transitionsBuilder: _dynamicTransition!)
-                            : null,
-                      ),
-                    ]),
-                GoRoute(
-                  path: 'block_transactions',
-                  builder: _dynamicTransition == null
-                      ? (ctx, state) => const BlockTransactions()
-                      : null,
-                  pageBuilder: _dynamicTransition != null
-                      ? (ctx, state) => CustomTransitionPage(
-                          key: state.pageKey,
-                          child: const BlockTransactions(),
-                          transitionsBuilder: _dynamicTransition!)
-                      : null,
-                ),
-                GoRoute(
-                  path: 'unaccepted_block_transactions',
-                  builder: _dynamicTransition == null
-                      ? (ctx, state) => const UnacceptedBlockTransactions()
-                      : null,
-                  pageBuilder: _dynamicTransition != null
-                      ? (ctx, state) => CustomTransitionPage(
-                          key: state.pageKey,
-                          child: const UnacceptedBlockTransactions(),
-                          transitionsBuilder: _dynamicTransition!)
-                      : null,
-                ),
-                GoRoute(
-                  path: 'receive',
-                  builder: _dynamicTransition == null
-                      ? (ctx, state) => Receive()
-                      : null,
-                  pageBuilder: _dynamicTransition != null
-                      ? (ctx, state) => CustomTransitionPage(
-                          key: state.pageKey,
-                          child: Receive(),
-                          transitionsBuilder: _dynamicTransition!)
-                      : null,
-                ),
-                GoRoute(
-                  path: 'loop_screen',
-                  builder: _dynamicTransition == null
-                      ? (ctx, state) => Loop()
-                      : null,
-                  pageBuilder: _dynamicTransition != null
-                      ? (ctx, state) => CustomTransitionPage(
-                          key: state.pageKey,
-                          child: Loop(),
-                          transitionsBuilder: _dynamicTransition!)
-                      : null,
-                ),
-                GoRoute(
-                  path: 'send',
-                  builder: _dynamicTransition == null
-                      ? (ctx, state) => const Send()
-                      : null,
-                  pageBuilder: _dynamicTransition != null
-                      ? (ctx, state) => CustomTransitionPage(
-                          key: state.pageKey,
-                          child: const Send(),
-                          transitionsBuilder: _dynamicTransition!)
-                      : null,
-                ),
-                GoRoute(
-                  path: 'lightningcard',
-                  builder: _dynamicTransition == null
-                      ? (ctx, state) => const LightningCardInformationScreen()
-                      : null,
-                  pageBuilder: _dynamicTransition != null
-                      ? (ctx, state) => CustomTransitionPage(
-                          key: state.pageKey,
-                          child: const BitcoinScreen(),
-                          transitionsBuilder: _dynamicTransition!)
-                      : null,
-                ),
-                GoRoute(
-                  path: 'bitcoincard',
-                  builder: _dynamicTransition == null
-                      ? (ctx, state) => const BitcoinCardInformationScreen()
-                      : null,
-                  pageBuilder: _dynamicTransition != null
-                      ? (ctx, state) => CustomTransitionPage(
-                          key: state.pageKey,
-                          child: const BitcoinScreen(),
-                          transitionsBuilder: _dynamicTransition!)
-                      : null,
-                ),
-              ],
-            ),
+                  ),
+                  GoRoute(
+                    path: 'hashrate',
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => const HashrateScreen()
+                        : null,
+                    pageBuilder: _dynamicTransition != null
+                        ? (ctx, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const BlockTransactions(),
+                        transitionsBuilder: _dynamicTransition!)
+                        : null,
+                  ),
+                  GoRoute(
+                    path: 'whales',
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => const WhaleBehaviour()
+                        : null,
+                    pageBuilder: _dynamicTransition != null
+                        ? (ctx, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const BlockTransactions(),
+                        transitionsBuilder: _dynamicTransition!)
+                        : null,
+                  ),
+                  GoRoute(
+                    path: 'keymetrics',
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => const KeyMetricsScreen()
+                        : null,
+                    pageBuilder: _dynamicTransition != null
+                        ? (ctx, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const BlockTransactions(),
+                        transitionsBuilder: _dynamicTransition!)
+                        : null,
+                  ),
+                  GoRoute(
+                    path: 'transactions',
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => const LastTransactionsScreen()
+                        : null,
+                    pageBuilder: _dynamicTransition != null
+                        ? (ctx, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const BlockTransactions(),
+                        transitionsBuilder: _dynamicTransition!)
+                        : null,
+                  ),
+                  GoRoute(
+                    path: 'analysts',
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => AnalysisScreen()
+                        : null,
+                    pageBuilder: _dynamicTransition != null
+                        ? (ctx, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const BlockTransactions(),
+                        transitionsBuilder: _dynamicTransition!)
+                        : null,
+                  ),
+                  GoRoute(
+                    path: 'news',
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => NewsScreen()
+                        : null,
+                    pageBuilder: _dynamicTransition != null
+                        ? (ctx, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const BlockTransactions(),
+                        transitionsBuilder: _dynamicTransition!)
+                        : null,
+                  ),
+                  GoRoute(
+                    path: 'fearandgreed',
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => FearAndGreed()
+                        : null,
+                    pageBuilder: _dynamicTransition != null
+                        ? (ctx, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const BlockTransactions(),
+                        transitionsBuilder: _dynamicTransition!)
+                        : null,
+                  ),
+                ]),
             GoRoute(
-                path: '/profile/:profileId',
-                name: '/profile',
-                builder: (ctx, state) => Profile(),
-                routes: []),
-            GoRoute(
-              path: '/single_transaction',
+              path: 'block_transactions',
               builder: _dynamicTransition == null
-                  ? (ctx, state) => const SingleTransactionScreen()
+                  ? (ctx, state) => const BlockTransactions()
                   : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
                       key: state.pageKey,
-                      child: const SingleTransactionScreen(),
+                      child: const BlockTransactions(),
                       transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
-              path: '/rooms',
-              builder: (ctx, state) => ChatList(
-                routerState: state,
-              ),
+              path: 'unaccepted_block_transactions',
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const UnacceptedBlockTransactions()
+                  : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const UnacceptedBlockTransactions(),
+                      transitionsBuilder: _dynamicTransition!)
+                  : null,
+            ),
+            GoRoute(
+              path: 'receive',
+              builder:
+                  _dynamicTransition == null ? (ctx, state) => ReceiveScreen() : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: ReceiveScreen(),
+                      transitionsBuilder: _dynamicTransition!)
+                  : null,
+            ),
+            GoRoute(
+              path: 'loop_screen',
+              builder:
+                  _dynamicTransition == null ? (ctx, state) => Loop() : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: Loop(),
+                      transitionsBuilder: _dynamicTransition!)
+                  : null,
+            ),
+            GoRoute(
+              path: 'send',
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const Send()
+                  : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const Send(),
+                      transitionsBuilder: _dynamicTransition!)
+                  : null,
+            ),
+            GoRoute(
+              path: 'lightningcard',
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const LightningCardInformationScreen()
+                  : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const BitcoinScreen(),
+                      transitionsBuilder: _dynamicTransition!)
+                  : null,
+            ),
+            GoRoute(
+              path: 'bitcoincard',
+              builder: _dynamicTransition == null
+                  ? (ctx, state) =>  BitcoinCardInformationScreen()
+                  : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const BitcoinScreen(),
+                      transitionsBuilder: _dynamicTransition!)
+                  : null,
             ),
           ],
         ),
-
-        // Chat details and other chat-related routes without BottomNav
         GoRoute(
-          path: '/rooms/create',
+            path: '/profile/:profileId',
+            name: '/profile',
+            builder: (ctx, state) => Profile(),
+            routes: []),
+        GoRoute(
+          path: '/single_transaction',
           builder: _dynamicTransition == null
-              ? (ctx, state) => const CreateNewScreen(
-                    initialIndex: 0,
-                  )
+              ? (ctx, state) => const SingleTransactionScreen()
               : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const SingleTransactionScreen(),
+                  transitionsBuilder: _dynamicTransition!)
+              : null,
+        ),
+        GoRoute(
+          path: '/rooms',
+          builder: (ctx, state) => ChatList(
+            routerState: state,
+          ),
+          routes: [
+            // Chat details and other chat-related routes without BottomNav
+            GoRoute(
+              path: 'create',
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => const CreateNewScreen(
+                initialIndex: 0,
+              )
+                  : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
                   key: state.pageKey,
                   child: const CreateNewScreen(
                     initialIndex: 0,
                   ),
                   transitionsBuilder: _dynamicTransition!)
-              : null,
-          routes: _chatCreateRoutes,
-        ),
-        GoRoute(
-          path: '/rooms/spaces/:roomid',
-          name: '/rooms/spaces',
-          builder: (ctx, state) => ChatDetails(
-            routerState: state,
-          ),
-          routes: _chatDetailsRoutes1,
-        ),
-        GoRoute(
-          path: '/rooms/:roomid',
-          name: 'rooms',
-          builder: (ctx, state) => ChatPage(
-            routerState: state,
-          ),
-          routes: [
-            GoRoute(
-              path: 'encryption',
-              builder: (ctx, state) => ChatEncryptionSettings(
-                routerState: state,
-              ),
+                  : null,
+              routes: _chatCreateRoutes,
             ),
             GoRoute(
-              path: 'invite',
-              builder: (ctx, state) => InvitationSelection(
-                routerState: state,
-              ),
-            ),
-            GoRoute(
-              path: 'details',
+              path: 'spaces/:roomid',
+              name: '/rooms/spaces',
               builder: (ctx, state) => ChatDetails(
                 routerState: state,
               ),
-              routes: _chatDetailsRoutes2,
+              routes: _chatDetailsRoutes1,
             ),
-          ],
-        ),
-        GoRoute(
-          path: '/rooms/settings',
-          builder: (ctx, state) => const Settings(),
-          routes: _settingsRoutes,
-        ),
-        GoRoute(
-          path: '/rooms/archive',
-          builder: (ctx, state) => const Archive(),
-          routes: [
             GoRoute(
               path: ':roomid',
-              name: 'archive',
-              builder: _dynamicTransition == null
-                  ? (ctx, state) => ChatPage(
-                        routerState: state,
-                      )
-                  : null,
-              pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(
+              name: 'rooms',
+              builder: (ctx, state) => ChatPage(
+                routerState: state,
+              ),
+              routes: [
+                GoRoute(
+                  path: 'encryption',
+                  builder: (ctx, state) => ChatEncryptionSettings(
+                    routerState: state,
+                  ),
+                ),
+                GoRoute(
+                  path: 'invite',
+                  builder: (ctx, state) => InvitationSelection(
+                    routerState: state,
+                  ),
+                ),
+                GoRoute(
+                  path: 'details',
+                  builder: (ctx, state) => ChatDetails(
+                    routerState: state,
+                  ),
+                  routes: _chatDetailsRoutes2,
+                ),
+              ],
+            ),
+            GoRoute(
+              path: 'archive',
+              builder: (ctx, state) => const Archive(),
+              routes: [
+                GoRoute(
+                  path: ':roomid',
+                  name: 'archive',
+                  builder: _dynamicTransition == null
+                      ? (ctx, state) => ChatPage(
+                    routerState: state,
+                  )
+                      : null,
+                  pageBuilder: _dynamicTransition != null
+                      ? (ctx, state) => CustomTransitionPage(
                       key: state.pageKey,
                       child: ChatPage(
                         routerState: state,
                       ),
                       transitionsBuilder: _dynamicTransition!)
-                  : null,
+                      : null,
+                ),
+              ],
             ),
-          ],
+            GoRoute(
+              path: 'settings',
+              builder: (ctx, state) => Settings(),
+              routes: _settingsRoutes,
+            ),
+          ]
         ),
+
+
+
+
+        // ShellRoute(
+        //   builder: (ctx, state, child) {
+        //     return BottomNav(routerState: state);
+        //   },
+        //   routes: [
+        //     // GoRoute(
+        //     //   path: '',
+        //     //   redirect: (context, state) => '/feed', // '/feed'
+        //     // ),
+        //
+        //   ],
+        // ),
+
+
       ];
-  //
-  // List<VRouteElement> get _tabletRoutes => [
-  //       VNester(
-  //         path: '/rooms',
-  //         widgetBuilder: (child) => TwoColumnLayout(
-  //           mainView: const ChatList(),
-  //           sideView: child,
-  //         ),
-  //                       pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //         nestedRoutes: [
-  //           GoRoute(
-  //             path: '',
-  //             builder: (ctx,state) => const EmptyPage(),
-  //                           pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //             routes: [
-  //               GoRoute(
-  //                 path: '/spaces/:roomid',
-  //                 builder: (ctx,state) => const ChatDetails(),
-  //                               pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //                 routes: _chatDetailsRoutes,
-  //               ),
-  //               VNester(
-  //                 path: ':roomid',
-  //                 widgetBuilder: (child) => SideViewLayout(
-  //                   mainView: const ChatPage(),
-  //                   sideView: child,
-  //                 ),
-  //                               pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //                 nestedRoutes: [
-  //                   GoRoute(
-  //                     path: '',
-  //                     builder: (ctx,state) => const ChatPage(),
-  //                                   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //                   ),
-  //                   GoRoute(
-  //                     path: 'encryption',
-  //                     builder: (ctx,state) => const ChatEncryptionSettings(),
-  //                                   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //                   ),
-  //                   GoRoute(
-  //                     path: 'details',
-  //                     builder: (ctx,state) => const ChatDetails(),
-  //                                   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //                     routes: _chatDetailsRoutes,
-  //                   ),
-  //                   GoRoute(
-  //                     path: 'invite',
-  //                     builder: (ctx,state) => const InvitationSelection(),
-  //                                   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //                   ),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         ],
-  //       ),
-  //       GoRoute(
-  //         path: '/rooms',
-  //         builder: (ctx,state) => const TwoColumnLayout(
-  //           mainView: ChatList(),
-  //           sideView: EmptyPage(),
-  //         ),
-  //                       pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //         routes: [
-  //           VNester(
-  //             path: '/settings',
-  //             widgetBuilder: (child) => TwoColumnLayout(
-  //               mainView: const Settings(),
-  //               sideView: child,
-  //             ),
-  //             pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //             nestedRoutes: [
-  //               GoRoute(
-  //                 path: '',
-  //                 builder: (ctx,state) => const EmptyPage(),
-  //                 pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //                 routes: _settingsRoutes,
-  //               ),
-  //             ],
-  //           ),
-  //           VNester(
-  //             path: '/archive',
-  //             widgetBuilder: (child) => TwoColumnLayout(
-  //               mainView: const Archive(),
-  //               sideView: child,
-  //             ),
-  //                           pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //             nestedRoutes: [
-  //               GoRoute(
-  //                 path: '',
-  //                 builder: (ctx,state) => const EmptyPage(),
-  //                 pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //               ),
-  //               GoRoute(
-  //                 path: ':roomid',
-  //                 builder: (ctx,state) => const ChatPage(),
-  //                 pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
-  //               ),
-  //             ],
-  //           ),
-  //         ],
-  //       ),
-  //     ];
 
   List<GoRoute> get _authRoutes => [
         GoRoute(

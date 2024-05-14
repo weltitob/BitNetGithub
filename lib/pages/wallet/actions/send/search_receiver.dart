@@ -1,23 +1,17 @@
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:bitnet/pages/qrscanner/qrscanner.dart';
-import 'package:bitnet/pages/wallet/actions/send/send.dart';
+import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:matrix/matrix.dart';
+import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:go_router/go_router.dart';
 
-
-class SearchReceiver extends StatelessWidget {
-  final SendController controller;
-
-  const SearchReceiver({super.key, required this.controller});
-
-
+class SearchReceiver extends GetWidget<SendsController> {
+  const SearchReceiver({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,64 +21,55 @@ class SearchReceiver extends StatelessWidget {
         text: "Choose Recipient",
         context: context,
         onTap: () {
-          context.pop();
+          context.go('/feed');
         },
       ),
       context: context,
-      body: Column(
-        children: [
-          SizedBox(height: AppTheme.cardPadding * 2.5,),
-          SearchFieldWidget(
-            hintText: "Empfänger suchen",
-            isSearchEnabled: true,
-            handleSearch: controller.handleSearch,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              reverse: true,
-              child: Column(
-                children: [
-                  // Ihre scrollbare Liste oder andere Widgets
-                ],
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (v) {
+          context.go('/feed');
+        },
+        child: Column(
+          children: [
+            SizedBox(
+              height: AppTheme.cardPadding * 2.5,
+            ),
+            SearchFieldWidget(
+              hintText: "Empfänger suchen",
+              isSearchEnabled: true,
+              handleSearch: controller.handleSearch,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                reverse: true,
+                child: Column(
+                  children: [
+                    // Ihre scrollbare Liste oder andere Widgets
+                  ],
+                ),
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.only(bottom: AppTheme.cardPadding * 4),
-            height: 85,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: AppTheme.cardPadding * 7,
-                  child: FormTextField(
-                    hintText: "Kopieren",
-                    onTapOutside: (value) {
-                      // Unfocuses the input field when tapped outside of it
-                    },
-                    focusNode: controller.myFocusNodeAdress,
-                    controller: controller.bitcoinReceiverAdressController,
-                    onFieldSubmitted: (value) {
-                      Logs().w("Adress: $value");
-                      controller.onQRCodeScanned(value, context);
-                      //controller.validateAdress(value);
-                    },
-                    autofocus: false,
+            Container(
+              margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
+              height: 85,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: AppTheme.elementSpacing),
+                    child: LongButtonWidget(
+                      //customWidth: AppTheme.cardPadding * 7,
+                      onTap: () => context.push("/qrscanner"),
+                      title: 'Scan QR',
+                    ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: AppTheme.elementSpacing),
-                  child: LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 7,
-                    onTap: () => context.push("/qrscanner"),
-                    title: 'Scan QR',
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

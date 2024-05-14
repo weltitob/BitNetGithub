@@ -9,7 +9,7 @@ class TransactionItemData {
   final String txHash;
   final String amount;
   final int timestamp; // The timestamp property
-
+  final int fee;
   TransactionItemData({
     required this.type,
     required this.direction,
@@ -18,5 +18,6 @@ class TransactionItemData {
     required this.txHash,
     required this.amount,
     required this.timestamp,
+    required this.fee,
   });
 }

@@ -18,12 +18,11 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
 import 'package:bitnet/pages/wallet/loop/loop_view.dart';
-import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:matrix/matrix.dart';
 
-class Loop extends StatefulWidget {
+class Loop extends StatelessWidget {
   const Loop({super.key});
 
   @override

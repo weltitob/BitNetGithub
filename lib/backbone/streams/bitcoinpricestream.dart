@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/streams/currency_provider.dart';
+
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:http/http.dart';
-import 'package:bitnet/components/chart/chart.dart';
 import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
-import 'package:provider/provider.dart';
 
 /*
 This class represents a stream that periodically fetches the current price of Bitcoin in Euro from a REST API.
@@ -107,8 +103,17 @@ class BitcoinPriceStream {
     );
   }
 
+  BitcoinPriceStream.withCurrency(String currency) {
+    if (localCurrency != currency) {
+      localCurrency = currency.toLowerCase();
+    }
+    _priceController = StreamController<ChartLine>(
+      onListen: _startStream,
+      onCancel: _stopStream,
+    );
+    _startStream();
+  }
   Stream<ChartLine> get priceStream => _priceController.stream;
-
 
   void updateCurrency(String currency) {
     if (localCurrency != currency) {
@@ -130,16 +135,20 @@ class BitcoinPriceStream {
         'vs_currencies': localCurrency,
         'include_last_updated_at': 'true',
       };
-      final response = await http.get(Uri.parse(_url).replace(queryParameters: params));
+      final response =
+          await http.get(Uri.parse(_url).replace(queryParameters: params));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final double price = double.parse(data['bitcoin'][localCurrency].toString());
-        final double time = double.parse(data['bitcoin']['last_updated_at'].toString());
+        final double price =
+            double.parse(data['bitcoin'][localCurrency].toString());
+        final double time =
+            double.parse(data['bitcoin']['last_updated_at'].toString());
         Logs().d("Price of bitcoin in $localCurrency: $price");
         final ChartLine latestChartLine = ChartLine(time: time, price: price);
         _priceController.add(latestChartLine);
       } else {
-        Logs().e("Error fetching Bitcoin price stream data: ${response.statusCode} ${response.reasonPhrase}");
+        Logs().e(
+            "Error fetching Bitcoin price stream data: ${response.statusCode} ${response.reasonPhrase}");
       }
     } catch (e) {
       Logs().e("Error fetching Bitcoin price: $e");

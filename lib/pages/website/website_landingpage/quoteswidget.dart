@@ -281,7 +281,7 @@ class _QuotesState extends State<Quotes> {
                                     child: Container(
                                         margin: EdgeInsets.only(
                                             bottom: AppTheme.cardPadding * 1),
-                                        child: buildIndicator(
+                                        child: CustomIndicator (
                                           dotHeight: AppTheme.elementSpacing,
                                           dotWidth: AppTheme.elementSpacing,
                                           pageController: _pageController,

@@ -1,22 +1,23 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
-import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:flutter/material.dart';
 import 'package:bitnet/components/amountwidget.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/pages/wallet/actions/send/send.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 
-class OnChainSendTab extends StatelessWidget {
-  final SendController controller;
-  const OnChainSendTab({super.key, required this.controller});
+class OnChainSendTab extends GetWidget<SendsController> {
+  const OnChainSendTab({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class OnChainSendTab extends StatelessWidget {
         children: [
           Container(
             height:
-            MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
+                MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -46,11 +47,15 @@ class OnChainSendTab extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: AppTheme.cardPadding),
-                      child: Text(
-                        controller.description.isEmpty ? "" : ',,${controller.description}"',
-                        style:
-                        Theme.of(context).textTheme.bodyLarge!.copyWith(),
-                        textAlign: TextAlign.center,
+                      child: Obx(
+                        () => Text(
+                          controller.description.value.isEmpty
+                              ? ""
+                              : ',,${controller.description}"',
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ],
@@ -74,57 +79,57 @@ class OnChainSendTab extends StatelessWidget {
   }
 
   Widget selectNetworkButtons(
-      BuildContext context,
-      String text,
-      String imagePath,
-      bool isActive,
-      ) {
+    BuildContext context,
+    String text,
+    String imagePath,
+    bool isActive,
+  ) {
     return isActive
         ? GlassContainer(
-        child: Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: AppTheme.elementSpacing * 0.75,
-            vertical: AppTheme.elementSpacing * 0.5,
-          ),
-          child: Row(
-            children: [
-              Image.asset(
-                imagePath,
-                width: AppTheme.cardPadding * 1,
-                height: AppTheme.cardPadding * 1,
-              ),
-              Container(
-                width: AppTheme.elementSpacing,
-              ),
-              Text(
-                text,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-            ],
-          ),
-        ))
+            child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: AppTheme.elementSpacing * 0.75,
+              vertical: AppTheme.elementSpacing * 0.5,
+            ),
+            child: Row(
+              children: [
+                Image.asset(
+                  imagePath,
+                  width: AppTheme.cardPadding * 1,
+                  height: AppTheme.cardPadding * 1,
+                ),
+                Container(
+                  width: AppTheme.elementSpacing,
+                ),
+                Text(
+                  text,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+          ))
         : Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: AppTheme.elementSpacing * 0.75,
-        vertical: AppTheme.elementSpacing * 0.5,
-      ),
-      child: Row(
-        children: [
-          Image.asset(
-            imagePath,
-            width: AppTheme.cardPadding * 1,
-            height: AppTheme.cardPadding * 1,
-          ),
-          Container(
-            width: AppTheme.elementSpacing,
-          ),
-          Text(
-            text,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ],
-      ),
-    );
+            margin: EdgeInsets.symmetric(
+              horizontal: AppTheme.elementSpacing * 0.75,
+              vertical: AppTheme.elementSpacing * 0.5,
+            ),
+            child: Row(
+              children: [
+                Image.asset(
+                  imagePath,
+                  width: AppTheme.cardPadding * 1,
+                  height: AppTheme.cardPadding * 1,
+                ),
+                Container(
+                  width: AppTheme.elementSpacing,
+                ),
+                Text(
+                  text,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+          );
   }
 
   // This widget represents a user tile with an avatar, title, subtitle, and edit button.
@@ -185,13 +190,19 @@ class OnChainSendTab extends StatelessWidget {
 
   Widget bitcoinWidget(BuildContext context) {
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null ? (controller.feesDouble / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
-    controller.currencyController.text = CurrencyConverter.convertCurrency("SATS", double.parse(controller.moneyController.text), currency, bitcoinPrice!);
-
+    final currencyEquivalent = bitcoinPrice != null
+        ? (controller.feesDouble / 100000000 * bitcoinPrice).toStringAsFixed(2)
+        : "0.00";
+    controller.currencyController.text = CurrencyConverter.convertCurrency(
+        "SATS",
+        double.parse(controller.moneyController.text),
+        currency,
+        bitcoinPrice!);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -200,8 +211,7 @@ class OnChainSendTab extends StatelessWidget {
         children: [
           AmountWidget(
             bitcoinUnit: controller.bitcoinUnit,
-                        enabled: double.parse(controller.currencyController.text) == 0,
-
+            enabled: double.parse(controller.currencyController.text) == 0,
             btcController: controller.moneyController,
             currController: controller.currencyController,
             focusNode: controller.myFocusNodeMoney,
@@ -221,5 +231,4 @@ class OnChainSendTab extends StatelessWidget {
       ),
     );
   }
-
 }

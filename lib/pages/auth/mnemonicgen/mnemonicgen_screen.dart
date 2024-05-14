@@ -20,6 +20,7 @@ class MnemonicGenScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
         text: "Your Password & Backup",

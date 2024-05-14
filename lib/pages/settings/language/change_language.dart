@@ -1,20 +1,22 @@
+import 'package:bitnet/backbone/helper/language.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
-import 'package:flutter/material.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/backbone/helper/language.dart';
-import 'package:bitnet/backbone/streams/locale_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class ChangeLanguage extends StatefulWidget {
   const ChangeLanguage({super.key});
-
+  
   @override
   State<ChangeLanguage> createState() => _ChangeLanguageState();
 }
@@ -31,18 +33,23 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
         buttonType: ButtonType.transparent,
         onTap: () {
           print("pressed");
-          Provider.of<SettingsProvider>(context, listen: false)
-              .switchTab('main');
+            final controller = Get.find<SettingsController>();
+            controller .switchTab('main');
         },
       ),
-      body: SingleChildScrollView(child: LanguagePickerSheet()),
+      body: SingleChildScrollView(child: LanguagePickerSheet(onTapLanguage: (langCode, locale) {
+          Provider.of<LocalProvider>(context, listen: false)
+            .setLocaleInDatabase(langCode,
+            locale);
+            setState((){});
+      },)),
     );
   }
 }
 
 class LanguagePickerSheet extends StatefulWidget {
-  const LanguagePickerSheet({super.key});
-
+  const LanguagePickerSheet({super.key, required this.onTapLanguage});
+  final Function(String langCode, Locale locale) onTapLanguage;
   @override
   State<LanguagePickerSheet> createState() => _LanguagePickerSheetState();
 }
@@ -116,10 +123,11 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
       selected: currentLanguage == locale ? true : false,
       text: languageList[index],
       onTap: () {
-        Provider.of<LocalProvider>(context, listen: false)
-            .setLocaleInDatabase(codeList[index],
-            locale);
-            setState((){});
+        // Provider.of<LocalProvider>(context, listen: false)
+        //     .setLocaleInDatabase(codeList[index],
+        //     locale);
+        //     setState((){});
+        widget.onTapLanguage(codeList[index], locale);
         //Navigator.pop(context);
       },
     );

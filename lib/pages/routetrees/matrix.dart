@@ -45,7 +45,6 @@ class Matrix extends StatefulWidget {
 
   const Matrix({
     this.child,
-
     required this.context,
     required this.clients,
     this.queryParameters,
@@ -244,7 +243,10 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
   bool webHasFocus = true;
 
-  String? get activeRoomId => GoRouter.of(context).routerDelegate.currentConfiguration.pathParameters['roomid'];
+  String? get activeRoomId => GoRouter.of(context)
+      .routerDelegate
+      .currentConfiguration
+      .pathParameters['roomid'];
 
   final linuxNotifications =
       PlatformInfos.isLinux ? NotificationsClient() : null;
@@ -263,16 +265,15 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     initLoadingDialog();
   }
 
-
   void initMatrix() {
     // Display the app lock
     if (PlatformInfos.isMobile) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ([TargetPlatform.linux].contains(Theme.of(context).platform)
-            ? SharedPreferences.getInstance()
-            .then((prefs) => prefs.getString(SettingKeys.appLockKey))
-            : const FlutterSecureStorage()
-            .read(key: SettingKeys.appLockKey))
+                ? SharedPreferences.getInstance()
+                    .then((prefs) => prefs.getString(SettingKeys.appLockKey))
+                : const FlutterSecureStorage()
+                    .read(key: SettingKeys.appLockKey))
             .then((lock) {
           if (lock?.isNotEmpty ?? false) {
             AppLock.of(widget.context)!.enable();
@@ -304,7 +305,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
             title: L10n.of(context)!.oopsSomethingWentWrong,
             message: errorMsg,
             okLabel:
-            link == null ? L10n.of(context)!.ok : L10n.of(context)!.help,
+                link == null ? L10n.of(context)!.ok : L10n.of(context)!.help,
             cancelLabel: L10n.of(context)!.doNotShowAgain,
           );
           if (result == OkCancelResult.ok && link != null) {
@@ -392,20 +393,17 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
         if (state != LoginState.loggedIn) {
           context.go(
-            //'/rooms',
-            //queryParameters: widget.router?.currentState?.queryParameters ?? {},
-            '/authhome'
-          );
+              //'/rooms',
+              //queryParameters: widget.router?.currentState?.queryParameters ?? {},
+              '/authhome');
         }
       } else {
         //widget.router?.currentState?.to(
-          //state == LoginState.loggedIn ? '/rooms' : '/home',
-          //queryParameters: widget.router?.currentState?.queryParameters ?? {},
+        //state == LoginState.loggedIn ? '/rooms' : '/home',
+        //queryParameters: widget.router?.currentState?.queryParameters ?? {},
         //);
         print("MATRIX.dart ELSE STATEMENT WAS TRIGGERED !!!! LOOK!");
-        context.go(
-            '/feed'
-        );
+        context.go('/feed');
       }
     });
     onUiaRequest[name] ??= c.onUiaRequest.stream.listen(uiaRequestHandler);
@@ -435,7 +433,6 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     onNotification[name]?.cancel();
     onNotification.remove(name);
   }
-
 
   void createVoipPlugin() async {
     if (await store.getItemBool(SettingKeys.experimentalVoip) == false) {

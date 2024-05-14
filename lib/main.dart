@@ -7,20 +7,22 @@ import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
-import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
 import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:provider/provider.dart';
-import 'package:seo/seo.dart';
-import 'backbone/auth/auth.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:matrix/matrix.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:seo/seo.dart';
+
+import 'backbone/auth/auth.dart';
 
 //⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⢀⣀⣤⣴⣶⣶⣶⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⣀⣤⣾⣿⡿⠿⠛⠛⠛⠛⠛⠛⠻⢿⣿⣿⣦⣄⠀⠀⠀⠀⠀⠀
@@ -37,7 +39,7 @@ import 'package:matrix/matrix.dart';
 // ⠀⠀⠀⠀⠘⢻⣿⣷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀ ⢀⣠⣾⣿⡿⠋⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⠈⠛⢿⣿⣷⣶⣤⣤⣤⣤⣤⣤⣴⣾⣿⣿⠟⠋⠀⠀⠀⠀⠀⠀
 // ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠛⠻⠿⠿⠿⠿⠟⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
-//
+
 //██████╗░██╗████████╗███╗░░██╗███████╗████████╗
 //██╔══██╗██║╚══██╔══╝████╗░██║██╔════╝╚══██╔══╝
 //██████╦╝██║░░░██║░░░██╔██╗██║█████╗░░░░░██║░░░
@@ -45,13 +47,13 @@ import 'package:matrix/matrix.dart';
 //██████╦╝██║░░░██║░░░██║░╚███║███████╗░░░██║░░░
 //╚═════╝░╚═╝░░░╚═╝░░░╚═╝░░╚══╝╚══════╝░░░╚═╝░░░
 
-// Main function to start the application
 Future<void> main() async {
   void onAppLink() {
     print("APPLINK WAS TRIGGERED");
   }
 
   // Ensure that Flutter binding is initialized
+
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();
@@ -92,10 +94,36 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of the application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  GlobalKey _streamKey = GlobalKey(debugLabel: "");
+  static bool _isHiveInitialized = false;
+  static Future<void> _initializeHive() async {
+    if (!_isHiveInitialized) {
+      if (PlatformInfos.isLinux) {
+        Hive.init((await getApplicationSupportDirectory()).path);
+      } else {
+        print("Initializing Hive...");
+        await Hive.initFlutter();
+        print("Hive initialized.");
+      }
+      _isHiveInitialized = true;
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // _initializeHive();
+  }
+
   @override
   Widget build(BuildContext context) {
     return kIsWeb
@@ -104,11 +132,14 @@ class MyApp extends StatelessWidget {
             child: MultiProvider(
               providers: [
                 ChangeNotifierProvider<CardChangeProvider>(
-                    create: (context) => CardChangeProvider()),
+                  create: (context) => CardChangeProvider(),
+                ),
                 ChangeNotifierProvider<LocalProvider>(
-                    create: (context) => LocalProvider()),
+                  create: (context) => LocalProvider(),
+                ),
                 ChangeNotifierProvider<CurrencyChangeProvider>(
-                    create: (context) => CurrencyChangeProvider()),
+                  create: (context) => CurrencyChangeProvider(),
+                ),
                 StreamProvider<UserData?>(
                   create: (_) => Auth().userWalletStream,
                   initialData: null,
@@ -117,8 +148,9 @@ class MyApp extends StatelessWidget {
                   create: (_) => Auth().userWalletStreamForAuthChanges,
                   initialData: null,
                 ),
-                ChangeNotifierProvider<BalanceHideProvider>(
-                    create: (context) => BalanceHideProvider()),
+                // ChangeNotifierProvider<BalanceHideProvider>(
+                //   create: (context) => BalanceHideProvider(),
+                // ),
               ],
               child: bTree.WidgetTree(),
             ),
@@ -130,7 +162,8 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider<CurrencyTypeProvider>(
                   create: (context) => CurrencyTypeProvider()),
               ChangeNotifierProvider<LocalProvider>(
-                  create: (context) => LocalProvider()),
+                create: (context) => LocalProvider(),
+              ),
               ChangeNotifierProvider<CurrencyChangeProvider>(
                 create: (context) => CurrencyChangeProvider(),
               ),
@@ -143,6 +176,7 @@ class MyApp extends StatelessWidget {
                     final newStream = BitcoinPriceStream();
                     newStream.updateCurrency(
                         currencyChangeProvider.selectedCurrency ?? 'usd');
+
                     return newStream;
                   }
                   return bitcoinPriceStream;
@@ -164,8 +198,6 @@ class MyApp extends StatelessWidget {
                 create: (_) => Auth().userWalletStreamForAuthChanges,
                 initialData: null,
               ),
-              ChangeNotifierProvider<BalanceHideProvider>(
-                  create: (context) => BalanceHideProvider()),
             ],
             child: bTree.WidgetTree(),
           );

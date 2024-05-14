@@ -162,7 +162,7 @@ class ChatView extends StatelessWidget {
           controller.emojiPickerAction();
           return false;
         } else {
-                    context.go('/rooms');
+                    context.go('/feed');
 
           return false;
         }
@@ -197,13 +197,13 @@ class ChatView extends StatelessWidget {
                         buttonType: ButtonType.solid,
                         iconData: Icons.close_outlined,
                         onTap: () {
-                          context.go('/rooms');
+                          context.go('/feed');
                         },
                       ),
                     ),
                   ) :
                   InkWell(
-                          onTap: () => context.go('/rooms'),
+                          onTap: () => context.go('/feed'),
                           child: UnreadRoomsBadge(
                             filter: (r) => r.id != controller.roomId,
                             badgePosition: BadgePosition.topEnd(end: 8, top: 4),
@@ -218,7 +218,7 @@ class ChatView extends StatelessWidget {
                                   buttonType: ButtonType.solid,
                                   iconData: Icons.arrow_back_outlined,
                                   onTap: () {
-                                    context.go('/rooms');
+                                    context.go('/feed');
                                   },
                                 ),
                               ),

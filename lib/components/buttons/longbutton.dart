@@ -141,7 +141,11 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                                                   : AppTheme.white90,
                                       shadows: [
                                         //AppTheme.boxShadowBig,
-                                        AppTheme.boxShadowButton
+                                        Theme.of(context).brightness ==
+                                            Brightness.light
+                                            ? AppTheme.boxShadow
+                                            : AppTheme.boxShadowButton,
+
                                       ],
                                     ),
                             ),

@@ -2,12 +2,13 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
-import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:get/get.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,33 +54,38 @@ class ThemeController extends State<ThemeBuilder> {
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
     print('rawTheme');
     print(allData);
-    if(allData.contains(FirebaseAuth.instance.currentUser!.uid)){
-      var data = await settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get();
+    if (allData.contains(FirebaseAuth.instance.currentUser!.uid)) {
+      var data = await settingsCollection
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
       print(data.data());
       final rawThemeMode = data.data()?['theme_mode'];
       final rawColor = data.data()?['primary_color'];
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
-      Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
-      Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card'] ?? 'lightning');
-      Provider.of<BalanceHideProvider>(context, listen: false).setHideBalance(hide:data.data()?['hide_balance'] ?? false);
+      Provider.of<LocalProvider>(context, listen: false)
+          .setLocaleInDatabase(data.data()?['lang'], locale);
+      Provider.of<CardChangeProvider>(context, listen: false)
+          .setCardInDatabase(data.data()?['selected_card'] ?? 'lightning');
+      Get.put(WalletsController())
+          .setHideBalance(hide: data.data()?['hide_balance'] ?? false);
       setState(() {
         _themeMode = ThemeMode.values
             .singleWhereOrNull((value) => value.name == rawThemeMode);
-        _primaryColor = rawColor == null ? AppTheme.colorSchemeSeed : Color(rawColor);
+        _primaryColor =
+            rawColor == null ? AppTheme.colorSchemeSeed : Color(rawColor);
       });
-    }else{
+    } else {
       print('id');
       print(FirebaseAuth.instance.currentUser!.uid);
-      Map<String,dynamic> data = {
-        "theme_mode" : "system",
-        "lang" : "en",
+      Map<String, dynamic> data = {
+        "theme_mode": "system",
+        "lang": "en",
         "primary_color": 4283657726,
-        "selected_currency":"USD",
-        "selected_card":"lightning",
+        "selected_currency": "USD",
+        "selected_card": "lightning",
         "hide_balance": false
       };
-      settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid)
-          .set(data);
+      settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).set(data);
     }
     // final preferences =
     //     _sharedPreferences ??= await SharedPreferences.getInstance();
@@ -100,8 +106,10 @@ class ThemeController extends State<ThemeBuilder> {
     Logs().d('setThemeMode: $newThemeMode');
     // final preferences =
     //     _sharedPreferences ??= await SharedPreferences.getInstance();
-   // await preferences.setString(widget.themeModeSettingsKey, newThemeMode.name);
-    await settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({widget.themeModeSettingsKey : newThemeMode.name});
+    // await preferences.setString(widget.themeModeSettingsKey, newThemeMode.name);
+    await settingsCollection
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({widget.themeModeSettingsKey: newThemeMode.name});
     setState(() {
       _themeMode = newThemeMode;
     });
@@ -112,9 +120,13 @@ class ThemeController extends State<ThemeBuilder> {
     //     _sharedPreferences ??= await SharedPreferences.getInstance();
     if (newPrimaryColor == null) {
       //await preferences.remove(widget.primaryColorSettingsKey);
-      await settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
+      await settingsCollection
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
     } else {
-      await settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({widget.primaryColorSettingsKey: newPrimaryColor.value});
+      await settingsCollection
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({widget.primaryColorSettingsKey: newPrimaryColor.value});
       // await preferences.setInt(
       //   widget.primaryColorSettingsKey,
       //   newPrimaryColor.value,

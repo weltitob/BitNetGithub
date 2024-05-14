@@ -299,7 +299,7 @@ class _AmountWidgetState extends State<AmountWidget> {
             currency,
             bitcoinPrice)
         : "0.00";
-    widget.currController.text = currencyEquivalent;
+    // widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
 
     return Text(
       "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency)}", // show the converted value of Bitcoin to Euro with 2 decimal places
@@ -327,7 +327,7 @@ class _AmountWidgetState extends State<AmountWidget> {
             bitcoinUnit.name,
             bitcoinPrice)
         : "0.00";
-    widget.btcController.text = currencyEquivalent;
+    // widget.btcController.text = formatBtcDouble(double.parse(currencyEquivalent));
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -351,3 +351,4 @@ class _AmountWidgetState extends State<AmountWidget> {
     );
   }
 }
+

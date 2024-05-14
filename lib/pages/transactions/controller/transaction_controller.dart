@@ -367,6 +367,7 @@ class TransactionController extends GetxController {
   }
 
   getAddressComponent(String? addressId) async {
+    this.addressId = addressId ?? '';
     isLoadingAddress.value = true;
     try {
       String url = '${baseUrl}v1/validate-address/$addressId';

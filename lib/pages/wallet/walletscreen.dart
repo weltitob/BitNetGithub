@@ -1,56 +1,46 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
-import 'package:bitnet/backbone/streams/card_provider.dart';
-import 'package:bitnet/backbone/streams/currency_provider.dart';
-import 'package:bitnet/backbone/streams/currency_type_provider.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/resultlist/transactions.dart';
-import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
-import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
-import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
-import 'package:bitnet/pages/wallet/wallet.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/resultlist/transactions.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
+import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
+import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
+import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class WalletScreen extends StatefulWidget {
-  final WalletController controller;
-  const WalletScreen({Key? key, required this.controller}) : super(key: key);
-
-  @override
-  State<WalletScreen> createState() => _WalletScreenState();
-}
-
-class _WalletScreenState extends State<WalletScreen> {
+class WalletScreen extends GetWidget<WalletsController> {
+  const WalletScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
-    String? currency =
-        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
-    currency = currency ?? "USD";
-    final bitcoinPrice = chartLine?.price;
-    final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
+    Get.lazyPut(() => ReceiveController(), fenix: true);
 
-    String? card = Provider.of<CardChangeProvider>(context).selectedCard;
-    print(card);
+    Get.lazyPut(() => SendsController(context: context), fenix: true);
+    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+
+    final bitcoinPrice = chartLine?.price;
+
     final currencyEquivalent = bitcoinPrice != null
-        ? (widget.controller.totalBalanceSAT / 100000000 * bitcoinPrice)
+        ? (controller.totalBalanceSAT.value / 100000000 * bitcoinPrice)
             .toStringAsFixed(2)
         : "0.00";
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
-        double.parse(widget.controller.onchainBalance.confirmedBalance),
+        double.parse(controller.onchainBalance.confirmedBalance),
         BitcoinUnits.SAT);
 
     List<Container> cards = [
@@ -68,7 +58,8 @@ class _WalletScreenState extends State<WalletScreen> {
               },
               child: BalanceCardBtc(controller: widget.controller))),
     ];
-    var sampleTheme = Theme.of(context).textTheme;
+    // var sampleTheme = Theme.of(context).textTheme;
+
     return bitnetScaffold(
       context: context,
       body: ListView(
@@ -201,15 +192,16 @@ class _WalletScreenState extends State<WalletScreen> {
                     )
                   ],
                 ),
+
               ),
-              const SizedBox(height: AppTheme.cardPadding * 1.5),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding),
-                child: Text(
-                  "Actions",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+            ),
+            const SizedBox(height: AppTheme.cardPadding * 1.5),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              child: Text(
+                "Actions",
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: AppTheme.cardPadding),
               Padding(
@@ -267,69 +259,70 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: AppTheme.cardPadding * 1.5),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding),
-                child: Text(
-                  "Buy & Sell",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+            ),
+            const SizedBox(height: AppTheme.cardPadding * 1.5),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              child: Text(
+                "Buy & Sell",
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              const SizedBox(height: AppTheme.cardPadding),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding),
-                child: CryptoItem(
-                  currency: Currency(
-                    code: 'BTC',
-                    name: 'Bitcoin',
-                    icon: Image.asset('assets/images/bitcoin.png'),
+            ),
+            const SizedBox(
+              height: AppTheme.cardPadding,
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              child: CryptoItem(
+                currency: Currency(
+                  code: 'BTC',
+                  name: 'Bitcoin',
+                  icon: Image.asset('assets/images/bitcoin.png'),
+                ),
+                context: context,
+              ),
+            ),
+            const SizedBox(height: AppTheme.cardPadding * 1.5),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Activity",
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  context: context,
-                ),
-              ),
-              const SizedBox(height: AppTheme.cardPadding * 1.5),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Activity",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    Row(
-                      children: [
-                        RoundedButtonWidget(
-                            size: AppTheme.cardPadding * 1.25,
-                            buttonType: ButtonType.transparent,
-                            iconData: FontAwesomeIcons.filter,
-                            onTap: () {
-                              BitNetBottomSheet(
-                                  context: context,
-                                  child: WalletFilterScreen());
-                            }),
-                        SizedBox(
-                          width: AppTheme.elementSpacing,
-                        ),
-                        LongButtonWidget(
-                            title: "All",
-                            buttonType: ButtonType.transparent,
-                            customWidth: AppTheme.cardPadding * 2.5,
-                            customHeight: AppTheme.cardPadding * 1.25,
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Transactions(fullList: true)));
-                            }),
-                      ],
-                    ),
-                  ],
-                ),
+                  Row(
+                    children: [
+                      RoundedButtonWidget(
+                          size: AppTheme.cardPadding * 1.25,
+                          buttonType: ButtonType.transparent,
+                          iconData: FontAwesomeIcons.filter,
+                          onTap: () {
+                            BitNetBottomSheet(
+                                context: context, child: WalletFilterScreen());
+                          }),
+                      SizedBox(
+                        width: AppTheme.elementSpacing,
+                      ),
+                      LongButtonWidget(
+                          title: "All",
+                          buttonType: ButtonType.transparent,
+                          customWidth: AppTheme.cardPadding * 2.5,
+                          customHeight: AppTheme.cardPadding * 1.25,
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Transactions(fullList: true)));
+                          }),
+                    ],
+                  ),
+                ],
               ),
               SizedBox(
                 height: AppTheme.elementSpacing,
@@ -342,7 +335,4 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
     );
   }
-
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

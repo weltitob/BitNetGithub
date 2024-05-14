@@ -132,7 +132,7 @@ class _PageThreeState extends State<PageThree> {
                     height: AppTheme.cardPadding * 2 * spacingMultiplier,
                   ),
                   isSmallScreen
-                      ? buildIndicator(
+                      ? CustomIndicator(
                           pageController: pageController,
                           count: 3,
                         )

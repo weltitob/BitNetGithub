@@ -11,13 +11,13 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
-import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class LightningTransactionDetails extends StatelessWidget {
+class LightningTransactionDetails extends GetWidget<WalletsController> {
   final TransactionItemData data;
   LightningTransactionDetails({required this.data, super.key});
 
@@ -34,6 +34,10 @@ class LightningTransactionDetails extends StatelessWidget {
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
         ? (double.parse(data.amount) / 100000000 * bitcoinPrice)
+            .toStringAsFixed(2)
+        : "0.00";
+    final currencyEquivalentFee = bitcoinPrice != null
+        ? (data.fee.toDouble() / 100000000 * bitcoinPrice)
         .toStringAsFixed(2)
         : "0.00";
     return bitnetScaffold(
@@ -45,75 +49,79 @@ class LightningTransactionDetails extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: AppTheme.cardPadding * 3,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Avatar(
-                  size: AppTheme.cardPadding * 4.75,
-                ),
-                SizedBox(
-                  width: AppTheme.elementSpacing,
-                ),
-                Icon(
-                  Icons.double_arrow_rounded,
-                  size: AppTheme.cardPadding * 3,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? AppTheme.white80
-                      : AppTheme.black60,
-                ),
-                SizedBox(
-                  width: AppTheme.elementSpacing,
-                ),
-                Avatar(
-                  size: AppTheme.cardPadding * 4.75,
-                ),
-              ],
-            ),
-
-            SizedBox(height: AppTheme.cardPadding),
-            Consumer<BalanceHideProvider>(
-                builder: (context, balanceHideProvider, _) {
-              return balanceHideProvider.hideBalance!
-                  ? Text(
-                '*****',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium,
-              )
-                  : Row(
+        body: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: AppTheme.cardPadding * 3,
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      coin.setCurrencyType(
-                          coin.coin != null
-                              ? !coin.coin!
-                              : false);
-                    },
-                    child: Text(
-                      coin.coin ?? true ? data.amount : "$currencyEquivalent${getCurrency(currency!)}",
-                      overflow: TextOverflow.ellipsis,
-                      style:Theme.of(context).textTheme.displayLarge!
-                          .copyWith(
-                          color: data.direction ==
-                              TransactionDirection
-                                  .received
-                              ? AppTheme.successColor
-                              : AppTheme.errorColor),
-                    ),
+                  Avatar(
+                    size: AppTheme.cardPadding * 4.75,
                   ),
-                  coin.coin ?? true ? Icon(AppTheme.satoshiIcon, color: data.direction ==
-                      TransactionDirection
-                          .received
-                      ? AppTheme.successColor
-                      : AppTheme.errorColor,) : SizedBox.shrink(),
+                  SizedBox(
+                    width: AppTheme.elementSpacing,
+                  ),
+                  Icon(
+                    Icons.double_arrow_rounded,
+                    size: AppTheme.cardPadding * 3,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppTheme.white80
+                        : AppTheme.black60,
+                  ),
+                  SizedBox(
+                    width: AppTheme.elementSpacing,
+                  ),
+                  Avatar(
+                    size: AppTheme.cardPadding * 4.75,
+                  ),
                 ],
-              );
+              ),
+
+              SizedBox(height: AppTheme.cardPadding),
+              controller.hideBalance.value
+                  ? Text(
+                      '*****',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            coin.setCurrencyType(
+                                coin.coin != null ? !coin.coin! : false);
+                          },
+                          child: Text(
+                            coin.coin ?? true
+                                ? data.amount
+                                : "$currencyEquivalent${getCurrency(currency!)}",
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge!
+                                .copyWith(
+                                    color: data.direction ==
+                                            TransactionDirection.received
+                                        ? AppTheme.successColor
+                                        : AppTheme.errorColor),
+                          ),
+                        ),
+                        coin.coin ?? true
+                            ? Icon(
+                                AppTheme.satoshiIcon,
+                                color: data.direction ==
+                                        TransactionDirection.received
+                                    ? AppTheme.successColor
+                                    : AppTheme.errorColor,
+                              )
+                            : SizedBox.shrink(),
+                      ],
+                    ),
 
               // Text(data.amount,
               //       style: Theme.of(context).textTheme.displayLarge!.copyWith(
@@ -121,63 +129,64 @@ class LightningTransactionDetails extends StatelessWidget {
               //           data.direction == TransactionDirection.received
               //               ? AppTheme.successColor
               //               : AppTheme.errorColor));
-            }
-          ),
-            SizedBox(height: AppTheme.elementSpacing),
-            Text(formattedDate,
-                style: Theme.of(context).textTheme.bodyLarge),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
-              child: Row(
-                children: [
-                  Flexible(
-                    child: Text(data.txHash,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
+
+              SizedBox(height: AppTheme.elementSpacing),
+              Text(formattedDate, style: Theme.of(context).textTheme.bodyLarge),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding * 2),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        data.txHash,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                        onPressed: () async {
+                          await Clipboard.setData(ClipboardData(
+                            text: data.txHash,
+                          ));
+                          Get.snackbar('Copied', data.txHash);
+                        },
+                        icon: const Icon(Icons.copy))
+                  ],
+                ),
+              ),
+              SizedBox(height: AppTheme.cardPadding * 1),
+              Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                child: MyDivider(),
+              ),
+              BitNetListTile(
+                text: 'Status',
+                trailing: Container(
+                  height: AppTheme.cardPadding * 1.5,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing),
+                  decoration: BoxDecoration(
+                    borderRadius: AppTheme.cardRadiusCircular,
+                    color: data.status == TransactionStatus.confirmed
+                        ? AppTheme.successColor
+                        : data.status == TransactionStatus.pending
+                            ? AppTheme.colorBitcoin
+                            : AppTheme.errorColor,
+                  ),
+                  child: Center(
+                    child: Text(
+                      data.status == TransactionStatus.confirmed
+                          ? 'Received'
+                          : data.status == TransactionStatus.pending
+                              ? 'Pending'
+                              : 'Error',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
-                  IconButton(
-                      onPressed: () async {
-                        await Clipboard.setData(ClipboardData(
-                          text: data.txHash,
-                        ));
-                        Get.snackbar('Copied', data.txHash);
-                      },
-                      icon: const Icon(Icons.copy))
-                ],
-              ),
-            ),
-            SizedBox(height: AppTheme.cardPadding * 1),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-              child: MyDivider(),
-            ),
-            BitNetListTile(
-              text: 'Status',
-              trailing: Container(
-                height: AppTheme.cardPadding * 1.5,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing),
-                decoration: BoxDecoration(
-                  borderRadius: AppTheme.cardRadiusCircular,
-                  color: data.status == TransactionStatus.confirmed
-                      ? AppTheme.successColor
-                      : data.status == TransactionStatus.pending
-                      ? AppTheme.colorBitcoin
-                      : AppTheme.errorColor,
-                ),
-                child: Center(
-                  child: Text(
-                    data.status == TransactionStatus.confirmed
-                        ? 'Received'
-                        : data.status == TransactionStatus.pending
-                        ? 'Pending'
-                        : 'Error',
-                    style: const TextStyle(color: Colors.white),
-                  ),
                 ),
               ),
-            ),
             BitNetListTile(
               text: "Payment Network",
               trailing: data.type == TransactionType.onChain
@@ -199,7 +208,29 @@ class LightningTransactionDetails extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyLarge,
               )
             ),
+            BitNetListTile(
+                text: 'Fee',
+                trailing: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        coin.setCurrencyType(
+                            coin.coin != null
+                                ? !coin.coin!
+                                : false);
+                      },
+                      child: Text(
+                        coin.coin ?? true ? '${data.fee}' : "$currencyEquivalentFee${getCurrency(currency!)}",
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                    coin.coin ?? true ? Icon(AppTheme.satoshiIcon) : SizedBox.shrink(),
+                  ],
+                )
+            ),
           ],
-        ));
+        )));
   }
 }

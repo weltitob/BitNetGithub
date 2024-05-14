@@ -7,12 +7,14 @@ class SearchFieldWidget extends StatefulWidget {
   final bool isSearchEnabled;
   final dynamic handleSearch;
   final dynamic onChanged; // Add an onChanged callback
+  final dynamic suffixIcon;
 
   const SearchFieldWidget({
     Key? key,
     required this.hintText,
     required this.isSearchEnabled,
     required this.handleSearch,
+    this.suffixIcon,
     this.onChanged, // Initialize it in the constructor
   }) : super(key: key);
 
@@ -51,7 +53,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                 prefixIcon: Icon(
                   Icons.search,
                 ),
-                suffixIcon: _textFieldController.text.isEmpty
+                suffixIcon: widget.suffixIcon != null ? widget.suffixIcon : _textFieldController.text.isEmpty
                     ? Container(width: 0)
                     : IconButton(
                   icon: Icon(

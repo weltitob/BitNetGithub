@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -21,6 +20,7 @@ final channel = IOWebSocketChannel.connect('wss://mempool.space/api/v1/ws');
 var subscription;
 
 class HomeController extends GetxController {
+  RxBool loadingDetail = false.obs;
   RxBool isLoading = false.obs;
   RxBool isLoadingTx = false.obs;
   RxBool socketLoading = false.obs;
@@ -110,8 +110,8 @@ class HomeController extends GetxController {
   int getTotalTxOutput(TransactionDetailsModel tx) {
     return tx.vout
         .map((Vout v) =>
-    v.value ??
-        0) // Use the null-aware operator ?? to handle null values
+            v.value ??
+            0) // Use the null-aware operator ?? to handle null values
         .reduce((int a, int b) => a + b);
   }
 
@@ -197,25 +197,26 @@ class HomeController extends GetxController {
     channel.sink.add('{"track-rbf-summary":true}');
     Future.delayed(
       const Duration(minutes: 5),
-          () {
+      () {
         channel.sink.add('{"action":"ping"}');
       },
     );
     subscription = channel.stream.listen((message) {
-       // printWrapped('message+ $message');
-       // print('message+1 ${json.decode(message)}');
+      // printWrapped('message+ $message');
+      // print('message+1 ${json.decode(message)}');
       Map<String, dynamic> data = jsonDecode(message);
-       print('message+2 ${data['projected-block-transactions']}');
-      if(data['projected-block-transactions'] != null){
-        if(data['projected-block-transactions']['blockTransactions'] != null) {
+      print('message+2 ${data['projected-block-transactions']}');
+      if (data['projected-block-transactions'] != null) {
+        if (data['projected-block-transactions']['blockTransactions'] != null) {
           blockTransactions.clear();
           blockTransactions =
-          data['projected-block-transactions']['blockTransactions'];
+              data['projected-block-transactions']['blockTransactions'];
           print(
               'message+3 ${data['projected-block-transactions']['blockTransactions']}');
         }
-        if(data['projected-block-transactions']['delta']['added'] != null){
-          blockTransactions.addAll(data['projected-block-transactions']['delta']['added']);
+        if (data['projected-block-transactions']['delta']['added'] != null) {
+          blockTransactions
+              .addAll(data['projected-block-transactions']['delta']['added']);
         }
         // if(data['projected-block-transactions']['delta']['changes'] != null){
         //   List changed = data['projected-block-transactions']['delta']['changed'];
@@ -224,23 +225,22 @@ class HomeController extends GetxController {
         //   }
         //   blockTransactions.addAll(data['projected-block-transactions']['delta']['added']);
         // }
-        if(data['projected-block-transactions']['delta']['removed'] != null){
-          List remove = data['projected-block-transactions']['delta']['removed'];
+        if (data['projected-block-transactions']['delta']['removed'] != null) {
+          List remove =
+              data['projected-block-transactions']['delta']['removed'];
           print(remove.length);
-          for(int i=0; i<blockTransactions.length; i++){
+          for (int i = 0; i < blockTransactions.length; i++) {
             String e = blockTransactions[i][0];
             print(remove.contains(e));
-            if(remove.contains(e)){
+            if (remove.contains(e)) {
               print('remove');
               blockTransactions.removeAt(i);
             }
-
           }
         }
       }
 
-
-       MemPoolModel memPool = MemPoolModel.fromJson(json.decode(message));
+      MemPoolModel memPool = MemPoolModel.fromJson(json.decode(message));
       if (memPool.txPosition != null) {
         txPosition.value = memPool.txPosition!.position.block;
       }
@@ -343,6 +343,7 @@ class HomeController extends GetxController {
   }
 
   txDetailsConfirmedF(String txId) async {
+    loadingDetail.value = true;
     try {
       String url = 'https://mempool.space/api/v1/block/$txId';
 
@@ -363,6 +364,8 @@ class HomeController extends GetxController {
       isLoading.value = false;
       update();
     }
+    loadingDetail.value = false;
+    return null;
   }
 
   txDetailsF(String txId, int page) async {
@@ -403,7 +406,7 @@ class HomeController extends GetxController {
   String timeFormat(int millisecondsString, int median) {
     DateTime medianDate = DateTime.now();
     DateTime targetDate =
-    DateTime.fromMicrosecondsSinceEpoch(millisecondsString);
+        DateTime.fromMicrosecondsSinceEpoch(millisecondsString);
     Duration difference = targetDate.difference(medianDate);
     return formatTimeAgo(targetDate);
   }
@@ -418,4 +421,3 @@ String formatPriceDecimal(price) {
   final format = NumberFormat("#,##0.00", "en_US");
   return format.format(price);
 }
-

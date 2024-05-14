@@ -1,16 +1,16 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
-import 'package:bitnet/pages/wallet/provider/balance_hide_provider.dart';
-import 'package:bitnet/pages/wallet/wallet.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
-
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+
 
 class BalanceCardLightning extends StatelessWidget {
   final dynamic controller;
@@ -44,6 +44,7 @@ class BalanceCardLightning extends StatelessWidget {
 class BalanceCardBtc extends StatelessWidget {
   final dynamic controller;
   const BalanceCardBtc({Key? key, required this.controller}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -363,7 +364,7 @@ Widget paymentNetworkPicture(BuildContext context, String imageUrl) {
   );
 }
 
-class BalanceTextWidget extends StatelessWidget {
+class BalanceTextWidget extends GetWidget<WalletsController> {
   final String balanceSAT;
   final String balanceStr;
   final String cardname;
@@ -395,13 +396,12 @@ class BalanceTextWidget extends StatelessWidget {
             .toStringAsFixed(2)
         : "0.00";
 
-    return Consumer<BalanceHideProvider>(
-        builder: (context, balanceHideProvider, _) {
-      return Padding(
-        padding: const EdgeInsets.all(
-          AppTheme.cardPadding * 1.25,
-        ),
-        child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(
+        AppTheme.cardPadding * 1.25,
+      ),
+      child: Obx(
+        () => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -416,7 +416,7 @@ class BalanceTextWidget extends StatelessWidget {
               height: AppTheme.elementSpacing * 0.75,
             ),
             if (coin.coin ?? true) ...[
-              balanceHideProvider.hideBalance!
+              controller.hideBalance.value
                   ? Text('*****')
                   : GestureDetector(
                       onTap: () => coin.setCurrencyType(
@@ -440,7 +440,7 @@ class BalanceTextWidget extends StatelessWidget {
                       ),
                     ),
             ] else ...[
-              balanceHideProvider.hideBalance!
+              controller.hideBalance.value
                   ? Text('*****')
                   : GestureDetector(
                       onTap: () => coin.setCurrencyType(
@@ -458,7 +458,7 @@ class BalanceTextWidget extends StatelessWidget {
             ]
           ],
         ),
-      );
-    });
+      ),
+    );
   }
 }

@@ -48,7 +48,7 @@ class _LoopScreenState extends State<LoopScreen> {
         text: 'Loop Screen',
         context: context,
         onTap: () {
-          Navigator.pop(context);
+          context.go('/feed');
         },
       ),
       body: SingleChildScrollView(

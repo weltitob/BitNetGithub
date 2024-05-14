@@ -33,7 +33,7 @@ class ChatDetailsView extends StatelessWidget {
       return bitnetScaffold(
         extendBodyBehindAppBar: true,
         appBar: bitnetAppBar(
-          onTap: () => context.go('rooms'),
+          onTap: () => context.go('/rooms'),
             context: context, text: L10n.of(context)!.oopsSomethingWentWrong),
         body: Center(
           child: Text(L10n.of(context)!.youAreNoLongerParticipatingInThisChat),

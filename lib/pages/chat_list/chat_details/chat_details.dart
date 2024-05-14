@@ -80,7 +80,7 @@ class ChatDetailsController extends State<ChatDetails> {
         future: () => room.leave(),
       );
       if (success.error == null) {
-        context.go('/rooms');
+        context.go('/feed');
       }
     }
   }

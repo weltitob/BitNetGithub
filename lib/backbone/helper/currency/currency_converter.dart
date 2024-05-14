@@ -17,10 +17,10 @@ class CurrencyConverter {
       else if (inputCurrency == "SATS" && outputCurrency == "BTC") {
         return convertSatoshiToBTC(amount).toStringAsFixed(0);
       }
-      else if(inputCurrency == "USD" && outputCurrency == "SAT") {
+      else if(outputCurrency == "SAT") {
         return (amount / bitcoinPrice! * 100000000).toStringAsFixed(2);
       }
-       else if(inputCurrency == "USD" && outputCurrency == "BTC") {
+       else if(outputCurrency == "BTC") {
         return (amount / bitcoinPrice!).toStringAsFixed(8);
       }
       else {

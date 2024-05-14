@@ -1,22 +1,21 @@
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/appbaractions.dart';
+import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/actions/send/lightning_send_tab.dart';
 import 'package:bitnet/pages/wallet/actions/send/onchain_send_tab.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-
 // Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
-class SendBTCScreen extends StatelessWidget {
-  final SendController controller;
-
-  const SendBTCScreen(
-      {Key? key, required this.controller})
-      : super(key: key);
+class SendBTCScreen extends GetWidget<SendsController> {
+  const SendBTCScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +28,15 @@ class SendBTCScreen extends StatelessWidget {
       // Disables resizing when the keyboard is shown
 
       appBar: bitnetAppBar(
-        onTap: (){          context.go("/feed");
+        onTap: () {
+          context.go("/feed");
         },
         customTitle: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Adds a title for the screen
             Text("Bitcoin versenden",
                 style: Theme.of(context).textTheme.titleLarge),
-            // Displays the user's wallet balance
-            // Text("${userWallet.walletBalance}BTC verfügbar",
-            //     style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
         context: context,
@@ -49,22 +45,27 @@ class SendBTCScreen extends StatelessWidget {
           GestureDetector(
             onTap: () {},
             child: AppBarActionButton(
-                iconData: controller.sendType == SendType.Invoice ? FontAwesomeIcons.boltLightning : FontAwesomeIcons.bitcoin,
-               ),
+              iconData: controller.sendType == SendType.Invoice
+                  ? FontAwesomeIcons.boltLightning
+                  : FontAwesomeIcons.bitcoin,
+            ),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: controller.sendType == SendType.Invoice
-                ? LightningSendTab(
-              controller: controller,)
-                : OnChainSendTab(
-              controller: controller,
-            )
-          ),
-        ],
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (v) {
+          context.go('/feed');
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: controller.sendType == SendType.Invoice
+                  ? LightningSendTab()
+                  : OnChainSendTab(),
+            ),
+          ],
+        ),
       ),
     );
   }
