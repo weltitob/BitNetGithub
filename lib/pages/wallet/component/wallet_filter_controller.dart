@@ -1,7 +1,8 @@
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class WalletFilterController extends GetxController {
+class WalletFilterController extends BaseController {
   Rx<DateTime> startDate = DateTime.now().obs;
   Rx<DateTime> endDate = DateTime.now().obs;
 

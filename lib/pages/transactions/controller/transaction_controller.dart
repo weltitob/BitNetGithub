@@ -6,6 +6,7 @@ import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:bitnet/backbone/mempool_utils.dart';
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/models/mempool_models/address_component.dart';
 import 'package:bitnet/models/mempool_models/transactionRbfModel.dart';
 import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
@@ -19,16 +20,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:timeago/timeago.dart' as timeago;
-// import 'dart:async';
-// import 'dart:convert';a
-// import 'dart:developer';
-// import 'dart:ffi';
-import 'dart:math' as math;
-import 'package:bitnet/backbone/mempool_utils.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:timeago/timeago.dart' as timeago; 
 
-class TransactionController extends GetxController {
+class TransactionController extends BaseController {
   TransactionController({this.txID});
   final HomeController homeController = Get.put(HomeController());
   TransactionModel? transactionModel;

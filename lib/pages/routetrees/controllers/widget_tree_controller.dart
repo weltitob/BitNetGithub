@@ -1,4 +1,5 @@
 import 'package:app_links/app_links.dart';
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
@@ -10,7 +11,7 @@ import 'package:bitnet/backbone/security/security.dart';
 import 'package:matrix/matrix.dart';
 import 'package:universal_html/html.dart' as html;
 
-class WidgetTreeController extends GetxController {
+class WidgetTreeController extends BaseController {
   RxBool hasBiometrics = true.obs;
   RxBool isSecurityChecked = false.obs;
   RxBool isBioAuthenticated = false.obs;

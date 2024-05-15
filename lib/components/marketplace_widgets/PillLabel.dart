@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -19,7 +18,12 @@ class _PillLabelState extends State<PillLabel> {
         borderRadius: BorderRadius.circular(100.r),
         color: Theme.of(context).colorScheme.secondaryContainer,
       ),
-      padding: EdgeInsets.only(top: 5.w, bottom: 4.w, left: 10.w, right: 10.w),
+      padding: EdgeInsets.only(
+        top: 5.w,
+        bottom: 4.w,
+        left: 10.w,
+        right: 10.w,
+      ),
       child: Text(
         widget.labelText,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(

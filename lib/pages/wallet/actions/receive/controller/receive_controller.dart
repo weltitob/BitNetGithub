@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/add_invoice.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/nextaddr.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/models/bitcoin/lnd/invoice_model.dart';
 import 'package:bitnet/models/bitcoin/walletkit/addressmodel.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
@@ -16,7 +17,7 @@ enum ReceiveType {
   OnChain,
 }
 
-class ReceiveController extends GetxController {
+class ReceiveController extends BaseController {
   RxString qrCodeDataStringLightning = "".obs;
   RxString qrCodeDataStringOnchain = "".obs;
   Rx<BitcoinUnits> bitcoinUnit = BitcoinUnits.SAT.obs;
