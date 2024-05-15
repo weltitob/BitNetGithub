@@ -13,6 +13,7 @@ import 'package:bitnet/pages/wallet/loop/loop.dart';
 import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class LoopScreen extends StatefulWidget {
   final LoopController controller;
