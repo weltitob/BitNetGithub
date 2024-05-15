@@ -158,11 +158,9 @@ class _MyAppState extends State<MyApp> {
         : MultiProvider(
             providers: [
               ChangeNotifierProvider<CardChangeProvider>(
-                create: (context) => CardChangeProvider(),
-              ),
+                  create: (context) => CardChangeProvider()),
               ChangeNotifierProvider<CurrencyTypeProvider>(
-                create: (context) => CurrencyTypeProvider(),
-              ),
+                  create: (context) => CurrencyTypeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                 create: (context) => LocalProvider(),
               ),
@@ -175,13 +173,10 @@ class _MyAppState extends State<MyApp> {
                       bitcoinPriceStream.localCurrency !=
                           currencyChangeProvider.selectedCurrency) {
                     bitcoinPriceStream?.dispose();
-                    final newStream = BitcoinPriceStream.withCurrency(
+                    final newStream = BitcoinPriceStream();
+                    newStream.updateCurrency(
                         currencyChangeProvider.selectedCurrency ?? 'usd');
-                    // newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
 
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      _streamKey.currentState?.setState(() {});
-                    });
                     return newStream;
                   }
                   return bitcoinPriceStream;
@@ -190,7 +185,6 @@ class _MyAppState extends State<MyApp> {
                     bitcoinPriceStream.dispose(),
               ),
               StreamProvider<ChartLine?>(
-                key: _streamKey,
                 create: (context) =>
                     Provider.of<BitcoinPriceStream>(context, listen: false)
                         .priceStream,

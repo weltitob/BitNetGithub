@@ -11,10 +11,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class BalanceCardLightning extends GetWidget<WalletsController> {
-  const BalanceCardLightning({
-    super.key,
-  });
+
+class BalanceCardLightning extends StatelessWidget {
+  final dynamic controller;
+  const BalanceCardLightning({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +41,10 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
   }
 }
 
-class BalanceCardBtc extends GetWidget<WalletsController> {
-  // final WalletController controller;
-  const BalanceCardBtc({
-    Key? key,
-  }) : super(key: key);
+class BalanceCardBtc extends StatelessWidget {
+  final dynamic controller;
+  const BalanceCardBtc({Key? key, required this.controller}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {

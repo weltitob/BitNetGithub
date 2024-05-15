@@ -10,7 +10,9 @@ import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 
 Future<RestResponse> fundPsbt(TransactionData model) async {
+
   String restHost = AppTheme.baseUrlLightningTerminal;
+
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/psbt/fund';
 
