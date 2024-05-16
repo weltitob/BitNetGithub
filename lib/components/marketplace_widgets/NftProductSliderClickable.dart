@@ -98,7 +98,7 @@ class _NftProductSliderState extends State<NftProductSliderClickable> {
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall!
-                            .copyWith(color: Colors.white),
+                            .copyWith(),
                       ),
                     ))),
               ]),
@@ -125,10 +125,9 @@ class _NftProductSliderState extends State<NftProductSliderClickable> {
                       ),
                       Text(
                         widget.cryptoText,
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
-                          color: const Color.fromRGBO(255, 255, 255, 0.7),
                         ),
                       )
                     ],
@@ -162,10 +161,9 @@ class _NftProductSliderState extends State<NftProductSliderClickable> {
               margin: EdgeInsets.only(top: 7.h),
               child: Text(
                 widget.nftMainName,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
-                  color: const Color.fromRGBO(249, 249, 249, 1),
                 ),
               ),
             ),
@@ -176,10 +174,9 @@ class _NftProductSliderState extends State<NftProductSliderClickable> {
                   margin: EdgeInsets.only(top: 5.h),
                   child: Text(
                     widget.nftName,
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
-                      color: const Color.fromRGBO(255, 255, 255, 0.5),
                     ),
                   ),
                 ),

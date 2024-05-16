@@ -1,11 +1,12 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-Future<T?>  BitNetBottomSheet<T>(
+Future<T?> BitNetBottomSheet<T>(
     {required BuildContext context,
     double borderRadius = AppTheme.borderRadiusBigger,
     required Widget child,
     double? height,
+    double? width,
     String title = '',
     Color backgroundColor = Colors.transparent,
     bool isDismissible = true,
@@ -27,7 +28,7 @@ Future<T?>  BitNetBottomSheet<T>(
       isScrollControlled: isScrollControlled,
       constraints: BoxConstraints(
         maxHeight: height ?? AppTheme.cardPadding * 22.5,
-        maxWidth: AppTheme.columnWidth * 1.5,
+        maxWidth:width?? AppTheme.columnWidth * 1.5,
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -44,12 +45,15 @@ Future<T?>  BitNetBottomSheet<T>(
               width: AppTheme.cardPadding * 2.25,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.onBackground,
-                borderRadius: BorderRadius.circular(AppTheme.borderRadiusCircular),
+                borderRadius:
+                    BorderRadius.circular(AppTheme.borderRadiusCircular),
               ),
             ),
             SizedBox(height: AppTheme.elementSpacing * 0.75),
             Container(
-              height: height != null ? (height - AppTheme.cardPadding*3): AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
+              height: height != null
+                  ? (height - AppTheme.cardPadding * 3)
+                  : AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.background,
                 borderRadius: BorderRadius.only(

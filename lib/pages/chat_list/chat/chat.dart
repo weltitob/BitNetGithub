@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/event_extension.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/ios_badge_client_extension.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_file_extension.dart';
@@ -13,17 +15,14 @@ import 'package:bitnet/pages/chat_list/chat/chat_view.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/event_info_dialog.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/recording_dialog.dart';
 import 'package:bitnet/pages/matrix/trash/account_bundles.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
-import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-
-import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:go_router/go_router.dart';
@@ -33,7 +32,6 @@ import 'package:record/record.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:bitnet/pages/routetrees/matrix.dart';
 import '../../matrix/matrix_pages/chat/send_file_dialog.dart';
 import '../../matrix/matrix_pages/chat/send_location_dialog.dart';
 import '../../matrix/matrix_pages/chat/sticker_picker_dialog.dart';

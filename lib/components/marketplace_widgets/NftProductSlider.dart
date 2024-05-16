@@ -71,10 +71,7 @@ class _NftProductSliderState extends State<NftProductSlider> {
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
                       "Rank - " + widget.rank.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(color: Colors.white),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ))),
             ]),
@@ -98,14 +95,8 @@ class _NftProductSliderState extends State<NftProductSlider> {
                           fit: BoxFit.contain,
                         ),
                       ),
-                      Text(
-                        widget.cryptoText,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                          color: const Color.fromRGBO(255, 255, 255, 0.7),
-                        ),
-                      )
+                      Text(widget.cryptoText,
+                          style: Theme.of(context).textTheme.bodyMedium)
                     ],
                   ),
                 ),
@@ -137,23 +128,16 @@ class _NftProductSliderState extends State<NftProductSlider> {
               margin: EdgeInsets.only(top: 7.h),
               child: Text(
                 widget.nftMainName,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: const Color.fromRGBO(249, 249, 249, 1),
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontSize: 12.sp, fontWeight: FontWeight.bold),
               ),
             ),
             Container(
               margin: EdgeInsets.only(top: 5.h),
-              child: Text(
-                widget.nftName,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color.fromRGBO(255, 255, 255, 0.5),
-                ),
-              ),
+              child: Text(widget.nftName,
+                  style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),

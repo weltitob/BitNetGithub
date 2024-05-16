@@ -16,55 +16,60 @@ class PopUpLangPickerWidget extends StatefulWidget {
   @override
   State<PopUpLangPickerWidget> createState() => _PopUpLangPickerWidgetState();
 }
+
 class _PopUpLangPickerWidgetState extends State<PopUpLangPickerWidget> {
   @override
   Widget build(BuildContext context) {
-    Locale? loc = Provider.of<LocalProvider>(context).locale;
-     String currentLangCode = Provider.of<LocalProvider>(context).locale.languageCode;
-String flag = languageToFlag[currentLangCode]!;
-return TextButton(child: Text(flag, style: Theme.of(context).textTheme.displaySmall), onPressed: (){
-  BitNetBottomSheet(
-                        height: MediaQuery.of(context).size.height * 0.7,
-                    borderRadius: AppTheme.borderRadiusBig,
-
-    child: StatefulBuilder(
-    builder: (BuildContext context, StateSetter setModalState) {
-      return Container(
-        decoration: BoxDecoration(
-             color: Theme.of(context)
-                                      .canvasColor, // Add a background color here
-                                  borderRadius: new BorderRadius.only(
-                                    topLeft: AppTheme.cornerRadiusBig,
-                                    topRight: AppTheme.cornerRadiusBig,
-                                  ),
-        ),
-        child: ClipRRect(
-                                        borderRadius: new BorderRadius.only(
-                                      topLeft: AppTheme.cornerRadiusBig,
-                                      topRight: AppTheme.cornerRadiusBig,
-                                    ),
-        
-          child: bitnetScaffold(
-              extendBodyBehindAppBar: true,
-              context: context,
-              appBar: bitnetAppBar(
-                hasBackButton: false,
-                text: 'Change Language',
-                context: context,
-                buttonType: ButtonType.transparent,
-              ),
-              body: SingleChildScrollView(child: LanguagePickerSheet(onTapLanguage: (langCode, locale) {
-                  Provider.of<LocalProvider>(context, listen: false)
-                    .setLocaleInDatabase(langCode,
-                    locale, isUser: false);
-                    setState((){});
-              },)),
-            ),
-        ),
-      );
-    }
-  ), context: context);
-},);
-   
+    // Locale? loc = Provider.of<LocalProvider>(context).locale;
+    String currentLangCode =
+        Provider.of<LocalProvider>(context).locale.languageCode;
+    String flag = languageToFlag[currentLangCode]!;
+    return TextButton(
+      child: Text(flag, style: Theme.of(context).textTheme.displaySmall),
+      onPressed: () {
+        BitNetBottomSheet(
+            height: MediaQuery.of(context).size.height * 0.6,
+            borderRadius: AppTheme.borderRadiusBig,
+            child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setModalState) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context)
+                      .canvasColor, // Add a background color here
+                  borderRadius: new BorderRadius.only(
+                    topLeft: AppTheme.cornerRadiusBig,
+                    topRight: AppTheme.cornerRadiusBig,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: AppTheme.cornerRadiusBig,
+                    topRight: AppTheme.cornerRadiusBig,
+                  ),
+                  child: bitnetScaffold(
+                    extendBodyBehindAppBar: true,
+                    context: context,
+                    appBar: bitnetAppBar(
+                      hasBackButton: false,
+                      text: 'Change Language',
+                      context: context,
+                      buttonType: ButtonType.transparent,
+                    ),
+                    body: LanguagePickerSheet(
+                      onTapLanguage: (langCode, locale) {
+                        Provider.of<LocalProvider>(context, listen: false)
+                            .setLocaleInDatabase(langCode, locale,
+                                isUser: false);
+                        setState(() {});
+                        // context.go('/authhome');
+                      },
+                    ),
+                  ),
+                ),
+              );
+            }),
+            context: context);
+      },
+    );
   }
 }

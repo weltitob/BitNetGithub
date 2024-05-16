@@ -14,11 +14,13 @@ import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:matrix/matrix.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -32,6 +34,8 @@ class Transactions extends StatefulWidget {
 
 class _TransactionsState extends State<Transactions>
     with SingleTickerProviderStateMixin {
+  final controller = Get.put(WalletFilterController());
+
   bool transactionsLoaded = false;
   List<LightningPayment> lightningPayments = [];
   List<ReceivedInvoice> lightningInvoices = [];
@@ -94,60 +98,118 @@ class _TransactionsState extends State<Transactions>
 
   @override
   Widget build(BuildContext context) {
-    var combinedTransactions = [
-      ...lightningInvoices.map((transaction) => TransactionItem(
-          context: context,
-          data: TransactionItemData(
-            timestamp: transaction.settleDate,
-            type: TransactionType.lightning,
-            direction: TransactionDirection.received,
-            receiver: transaction.paymentRequest.toString(),
-            txHash: transaction.value.toString(),
-            amount: "+" + transaction.amtPaid.toString(),
-            fee: 0,
-            status: transaction.settled
-                ? TransactionStatus.confirmed
-                : TransactionStatus.failed,
+    var combinedTransactions = controller.selectedFilters.contains('Lightning')
+        ? [
+            ...lightningInvoices.map((transaction) => TransactionItem(
+                context: context,
+                data: TransactionItemData(
+                  timestamp: transaction.settleDate,
+                  type: TransactionType.lightning,
+                  direction: TransactionDirection.received,
+                  receiver: transaction.paymentRequest.toString(),
+                  txHash: transaction.value.toString(),
+                  amount: "+" + transaction.amtPaid.toString(),
+                  fee: 0,
+                  status: transaction.settled
+                      ? TransactionStatus.confirmed
+                      : TransactionStatus.failed,
 
-            // other properties
-          ))),
-      ...lightningPayments.map((transaction) => TransactionItem(
-          context: context,
-          data: TransactionItemData(
-            timestamp: transaction.creationDate,
-            type: TransactionType.lightning,
-            direction: TransactionDirection.sent,
-            receiver: transaction.paymentHash.toString(),
-            txHash: transaction.paymentHash.toString(),
-            amount: "-" + transaction.valueSat.toString(),
-            fee: transaction.fee,
-            status: transaction.status == "SUCCEEDED"
-                ? TransactionStatus.confirmed
-                : transaction.status == "FAILED"
-                    ? TransactionStatus.failed
-                    : TransactionStatus.pending,
-          ))),
-      ...onchainTransactions.map((transaction) => TransactionItem(
-          context: context,
-          data: TransactionItemData(
-            timestamp: transaction.timeStamp,
-            status: transaction.numConfirmations > 0
-                ? TransactionStatus.confirmed
-                : TransactionStatus.pending,
-            type: TransactionType.onChain,
-            direction: transaction.amount.contains("-")
-                ? TransactionDirection.sent
-                : TransactionDirection.received,
-            receiver: transaction.amount.contains("-")
-                ? transaction.destAddresses.last.toString()
-                : transaction.destAddresses.first.toString(),
-            txHash: transaction.txHash.toString(),
-            fee: 0,
-            amount: transaction.amount.contains("-")
-                ? transaction.amount.toString()
-                : "+" + transaction.amount.toString(),
-          ))),
-    ].toList();
+                  // other properties
+                ))),
+            ...lightningPayments.map((transaction) => TransactionItem(
+                context: context,
+                data: TransactionItemData(
+                  timestamp: transaction.creationDate,
+                  type: TransactionType.lightning,
+                  direction: TransactionDirection.sent,
+                  receiver: transaction.paymentHash.toString(),
+                  txHash: transaction.paymentHash.toString(),
+                  amount: "-" + transaction.valueSat.toString(),
+                  fee: transaction.fee,
+                  status: transaction.status == "SUCCEEDED"
+                      ? TransactionStatus.confirmed
+                      : transaction.status == "FAILED"
+                          ? TransactionStatus.failed
+                          : TransactionStatus.pending,
+                ))),
+          ].toList()
+        : controller.selectedFilters.contains('Onchain')
+            ? [
+                ...onchainTransactions.map((transaction) => TransactionItem(
+                    context: context,
+                    data: TransactionItemData(
+                      timestamp: transaction.timeStamp,
+                      status: transaction.numConfirmations > 0
+                          ? TransactionStatus.confirmed
+                          : TransactionStatus.pending,
+                      type: TransactionType.onChain,
+                      direction: transaction.amount.contains("-")
+                          ? TransactionDirection.sent
+                          : TransactionDirection.received,
+                      receiver: transaction.amount.contains("-")
+                          ? transaction.destAddresses.last.toString()
+                          : transaction.destAddresses.first.toString(),
+                      txHash: transaction.txHash.toString(),
+                      fee: 0,
+                      amount: transaction.amount.contains("-")
+                          ? transaction.amount.toString()
+                          : "+" + transaction.amount.toString(),
+                    ))),
+              ].toList()
+            : [
+                ...lightningInvoices.map((transaction) => TransactionItem(
+                    context: context,
+                    data: TransactionItemData(
+                      timestamp: transaction.settleDate,
+                      type: TransactionType.lightning,
+                      direction: TransactionDirection.received,
+                      receiver: transaction.paymentRequest.toString(),
+                      txHash: transaction.value.toString(),
+                      amount: "+" + transaction.amtPaid.toString(),
+                      fee: 0,
+                      status: transaction.settled
+                          ? TransactionStatus.confirmed
+                          : TransactionStatus.failed,
+
+                      // other properties
+                    ))),
+                ...lightningPayments.map((transaction) => TransactionItem(
+                    context: context,
+                    data: TransactionItemData(
+                      timestamp: transaction.creationDate,
+                      type: TransactionType.lightning,
+                      direction: TransactionDirection.sent,
+                      receiver: transaction.paymentHash.toString(),
+                      txHash: transaction.paymentHash.toString(),
+                      amount: "-" + transaction.valueSat.toString(),
+                      fee: transaction.fee,
+                      status: transaction.status == "SUCCEEDED"
+                          ? TransactionStatus.confirmed
+                          : transaction.status == "FAILED"
+                              ? TransactionStatus.failed
+                              : TransactionStatus.pending,
+                    ))),
+                ...onchainTransactions.map((transaction) => TransactionItem(
+                    context: context,
+                    data: TransactionItemData(
+                      timestamp: transaction.timeStamp,
+                      status: transaction.numConfirmations > 0
+                          ? TransactionStatus.confirmed
+                          : TransactionStatus.pending,
+                      type: TransactionType.onChain,
+                      direction: transaction.amount.contains("-")
+                          ? TransactionDirection.sent
+                          : TransactionDirection.received,
+                      receiver: transaction.amount.contains("-")
+                          ? transaction.destAddresses.last.toString()
+                          : transaction.destAddresses.first.toString(),
+                      txHash: transaction.txHash.toString(),
+                      fee: 0,
+                      amount: transaction.amount.contains("-")
+                          ? transaction.amount.toString()
+                          : "+" + transaction.amount.toString(),
+                    ))),
+              ].toList();
 
     combinedTransactions
         .sort((a, b) => a.data.timestamp.compareTo(b.data.timestamp));
@@ -185,10 +247,11 @@ class _TransactionsState extends State<Transactions>
                               // size: AppTheme.cardPadding * 1.25,
                               // buttonType: ButtonType.transparent,
                               icon: Icon(FontAwesomeIcons.filter),
-                              onPressed: () {
-                                BitNetBottomSheet(
+                              onPressed: () async {
+                                await BitNetBottomSheet(
                                     context: context,
                                     child: WalletFilterScreen());
+                                setState(() {});
                               }),
                           isSearchEnabled: true,
                         ),
@@ -196,16 +259,40 @@ class _TransactionsState extends State<Transactions>
                       Expanded(
                           child: ListView.builder(
                               padding: EdgeInsets.zero,
-                              physics: NeverScrollableScrollPhysics(),
+                              physics: AlwaysScrollableScrollPhysics(),
                               itemCount: combinedTransactions.length,
-                              itemBuilder: (context, index) =>
-                                  combinedTransactions[index]
+                              itemBuilder: (context, index) {
+                                print(controller.selectedFilters.toJson());
+                                if (controller.selectedFilters
+                                    .contains('Sent') && controller.selectedFilters
+                                    .contains('Received')) {
+                                  return combinedTransactions[index];
+                                }
+                                if (controller.selectedFilters
+                                    .contains('Sent')) {
+                                  return combinedTransactions[index]
                                           .data
-                                          .receiver
-                                          .contains(
-                                              searchCtrl.text.toLowerCase())
+                                          .amount
+                                          .contains('-')
                                       ? combinedTransactions[index]
-                                      : SizedBox())),
+                                      : SizedBox();
+                                }
+                                if (controller.selectedFilters
+                                    .contains('Received')) {
+                                  return combinedTransactions[index]
+                                          .data
+                                          .amount
+                                          .contains('+')
+                                      ? combinedTransactions[index]
+                                      : SizedBox();
+                                }
+                                return combinedTransactions[index]
+                                        .data
+                                        .receiver
+                                        .contains(searchCtrl.text.toLowerCase())
+                                    ? combinedTransactions[index]
+                                    : SizedBox();
+                              }))
                     ],
                   ),
                 ))
@@ -216,8 +303,38 @@ class _TransactionsState extends State<Transactions>
                     itemCount: combinedTransactions.length > 5
                         ? 5
                         : combinedTransactions.length,
-                    itemBuilder: (context, index) =>
-                        combinedTransactions[index]))
+                    itemBuilder: (context, index){
+                      print(controller.selectedFilters.toJson());
+                      if (controller.selectedFilters
+                          .contains('Sent') && controller.selectedFilters
+                          .contains('Received')) {
+                        return combinedTransactions[index];
+                      }
+                      if (controller.selectedFilters
+                          .contains('Sent')) {
+                        return combinedTransactions[index]
+                            .data
+                            .amount
+                            .contains('-')
+                            ? combinedTransactions[index]
+                            : SizedBox();
+                      }
+                      if (controller.selectedFilters
+                          .contains('Received')) {
+                        return combinedTransactions[index]
+                            .data
+                            .amount
+                            .contains('+')
+                            ? combinedTransactions[index]
+                            : SizedBox();
+                      }
+                      return combinedTransactions[index]
+                          .data
+                          .receiver
+                          .contains(searchCtrl.text.toLowerCase())
+                          ? combinedTransactions[index]
+                          : SizedBox();
+                    }))
         : Container(
             height: AppTheme.cardPadding * 18,
             child: dotProgress(context),

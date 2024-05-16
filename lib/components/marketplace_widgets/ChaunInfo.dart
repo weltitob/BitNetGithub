@@ -1,5 +1,6 @@
 
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,11 +25,10 @@ class ChaunInfo extends StatelessWidget {
             margin: EdgeInsets.only(bottom: 7.h),
             child: Text(
               chainHeading,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
-                color: const Color.fromRGBO(255, 255, 255, 0.5),
-              ),
+               ),
             ),
           ),
           Row(
@@ -37,11 +37,10 @@ class ChaunInfo extends StatelessWidget {
                 child: Text(
                   chainPeragraph,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
-                    color: const Color.fromRGBO(255, 255, 255, 0.7),
-                  ),
+                   ),
                 ),
               ),
               hasBtn ? GestureDetector(
@@ -65,6 +64,7 @@ class ChaunInfo extends StatelessWidget {
                     paperPlusIcon,
                     width: 10.w,
                     height: 12.h,
+                    color: AppTheme.colorSchemeSeed,
                     fit: BoxFit.contain,
                   ),
                 ),

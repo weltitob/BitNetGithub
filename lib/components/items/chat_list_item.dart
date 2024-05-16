@@ -182,18 +182,15 @@ class ChatListItem extends StatelessWidget {
                 profileId: room.id,
               ),
         customTitle: Row(
-          children: <Widget>[
+          children: [
             Expanded(
-              child: Text(
-                displayname,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: AppTheme.white90,
-                  fontWeight: unread ? FontWeight.bold : null,
-                )
-              ),
+              child: Text(displayname,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: unread ? FontWeight.bold : null,
+                      )),
             ),
             if (isMuted)
               const Padding(
@@ -215,14 +212,12 @@ class ChatListItem extends StatelessWidget {
               ),
             Padding(
               padding: const EdgeInsets.only(left: 4.0),
-              child: Text(
-                room.timeCreated.localizedTimeShort(context),
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: unread
-                      ? AppTheme.white90
-                      : Theme.of(context).textTheme.bodyMedium!.color,
-                )
-              ),
+              child: Text(room.timeCreated.localizedTimeShort(context),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: unread
+                            ? AppTheme.white90
+                            : Theme.of(context).textTheme.bodyMedium!.color,
+                      )),
             ),
           ],
         ),
@@ -245,7 +240,8 @@ class ChatListItem extends StatelessWidget {
               decoration: const BoxDecoration(),
               duration: AppTheme.animationDuration,
               curve: AppTheme.animationCurve,
-              padding: const EdgeInsets.only(right: AppTheme.elementSpacing / 4),
+              padding:
+                  const EdgeInsets.only(right: AppTheme.elementSpacing / 4),
               child: Icon(
                 Icons.edit_outlined,
                 color: Theme.of(context).colorScheme.onBackground,
@@ -257,8 +253,8 @@ class ChatListItem extends StatelessWidget {
                   ? Text(
                       typingText,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                       maxLines: 1,
                       softWrap: false,
                     )
@@ -276,32 +272,37 @@ class ChatListItem extends StatelessWidget {
                           Future.value(L10n.of(context)!.emptyChat),
                       builder: (context, snapshot) {
                         return Text(
-                          room.membership == Membership.invite
-                              ? L10n.of(context)!.youAreInvitedToThisChat
-                              : snapshot.data ??
-                                  room.lastEvent?.calcLocalizedBodyFallback(
-                                    MatrixLocals(L10n.of(context)!),
-                                    hideReply: true,
-                                    hideEdit: true,
-                                    plaintextBody: true,
-                                    removeMarkdown: true,
-                                    withSenderNamePrefix: !room.isDirectChat ||
-                                        room.directChatMatrixID !=
-                                            room.lastEvent?.senderId,
-                                  ) ??
-                                  L10n.of(context)!.emptyChat,
-                          softWrap: false,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            fontWeight: unread ? FontWeight.w700 : FontWeight.w500,
-                            // color:
-                            // Theme.of(context).colorScheme.onSurfaceVariant,
-                            decoration: room.lastEvent?.redacted == true
-                                ? TextDecoration.lineThrough
-                                : null,
-                          )
-                        );
+                            room.membership == Membership.invite
+                                ? L10n.of(context)!.youAreInvitedToThisChat
+                                : snapshot.data ??
+                                    room.lastEvent?.calcLocalizedBodyFallback(
+                                      MatrixLocals(L10n.of(context)!),
+                                      hideReply: true,
+                                      hideEdit: true,
+                                      plaintextBody: true,
+                                      removeMarkdown: true,
+                                      withSenderNamePrefix:
+                                          !room.isDirectChat ||
+                                              room.directChatMatrixID !=
+                                                  room.lastEvent?.senderId,
+                                    ) ??
+                                    L10n.of(context)!.emptyChat,
+                            softWrap: false,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  fontWeight: unread
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  // color:
+                                  // Theme.of(context).colorScheme.onSurfaceVariant,
+                                  decoration: room.lastEvent?.redacted == true
+                                      ? TextDecoration.lineThrough
+                                      : null,
+                                ));
                       },
                     ),
             ),
@@ -328,18 +329,16 @@ class ChatListItem extends StatelessWidget {
               ),
               child: Center(
                 child: room.notificationCount > 0
-                    ? Text(
-                        room.notificationCount.toString(),
+                    ? Text(room.notificationCount.toString(),
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: room.highlightCount > 0
-                              ? Colors.white
-                              : room.notificationCount > 0
-                              ? Theme.of(context).colorScheme.onPrimary
-                              : Theme.of(context)
-                              .colorScheme
-                              .onPrimaryContainer,
-                        )
-                      )
+                              color: room.highlightCount > 0
+                                  ? Colors.white
+                                  : room.notificationCount > 0
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                            ))
                     : const SizedBox.shrink(),
               ),
             ),

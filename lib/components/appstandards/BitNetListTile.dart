@@ -28,7 +28,8 @@ class BitNetListTile extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.contentPadding = const EdgeInsets.symmetric(
-        horizontal: AppTheme.elementSpacing * 0.75, vertical: AppTheme.elementSpacing * 0.75),
+        horizontal: AppTheme.elementSpacing * 0.75,
+        vertical: AppTheme.elementSpacing * 0.75),
     this.onTap,
     this.onLongPress, // Add this line
     this.tileColor,
@@ -45,7 +46,6 @@ class BitNetListTile extends StatelessWidget {
       left: AppTheme.elementSpacing / 2,
       right: AppTheme.elementSpacing / 2,
     ),
-
   });
 
   @override
@@ -58,16 +58,16 @@ class BitNetListTile extends StatelessWidget {
         color: selected
             ? Colors.white.withOpacity(0.15)
             : isActive
-            ? Theme.of(context).colorScheme.secondaryContainer
-            : Colors.transparent,
+                ? Theme.of(context).colorScheme.secondaryContainer
+                : Colors.transparent,
         border: selected
             ? GradientBoxBorder(
-          borderRadius: AppTheme.cardRadiusSmall,
-        )
+                borderRadius: AppTheme.cardRadiusSmall,
+              )
             : GradientBoxBorder(
-          isTransparent: true,
-          borderRadius: AppTheme.cardRadiusSmall,
-        )
+                isTransparent: true,
+                borderRadius: AppTheme.cardRadiusSmall,
+              ),
       ),
       child: InkWell(
         borderRadius: AppTheme.cardRadiusSmall,
@@ -90,14 +90,13 @@ class BitNetListTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      if (customTitle != null) Container(
-                          child: customTitle!),
-
-                      if (customTitle == null)Text(
-                        text,
-                        style:
-                            titleStyle ?? Theme.of(context).textTheme.titleMedium,
-                      ),
+                      if (customTitle != null) Container(child: customTitle!),
+                      if (customTitle == null)
+                        Text(
+                          text,
+                          style: titleStyle ??
+                              Theme.of(context).textTheme.titleMedium,
+                        ),
                       if (subtitle != null) ...[
                         SizedBox(height: 2),
                         DefaultTextStyle(

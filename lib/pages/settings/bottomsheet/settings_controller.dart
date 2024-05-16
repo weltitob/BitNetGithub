@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:collection/collection.dart';
@@ -16,7 +17,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matrix/matrix.dart';
 
-class SettingsController extends GetxController {
+class SettingsController extends BaseController {
   RxString currentTab = 'main'.obs;
 
   void switchTab(String newTab) {

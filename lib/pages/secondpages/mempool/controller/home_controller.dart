@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/models/mempool_models/bitcoin_data.dart';
 import 'package:bitnet/models/mempool_models/mempool_model.dart';
 import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
@@ -19,7 +20,7 @@ Color primaryColor = const Color(0xff24273e);
 final channel = IOWebSocketChannel.connect('wss://mempool.space/api/v1/ws');
 var subscription;
 
-class HomeController extends GetxController {
+class HomeController extends BaseController {
   RxBool loadingDetail = false.obs;
   RxBool isLoading = false.obs;
   RxBool isLoadingTx = false.obs;

@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
@@ -16,13 +14,13 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:bitnet/pages/wallet/actions/receive/receive.dart';
+import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_view.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:matrix/matrix.dart';
 
-class Loop extends StatelessWidget {
+class Loop extends StatefulWidget {
   const Loop({super.key});
 
   @override
@@ -75,7 +73,7 @@ class LoopController extends State<Loop> {
               status: TransactionStatus.confirmed,
               direction: TransactionDirection.received,
               receiver: receivedInvoice.paymentRequest!,
-              txHash: receivedInvoice.rHash!,
+              txHash: receivedInvoice.rHash!, fee: 0,
             ));
         //generate a new invoice for the user with 0 amount
         Logs().w("Generating new empty invoice for user");
@@ -102,7 +100,7 @@ class LoopController extends State<Loop> {
             status: TransactionStatus.confirmed,
             direction: TransactionDirection.received,
             receiver: bitcoinTransaction.destAddresses[0],
-            txHash: bitcoinTransaction.txHash,
+            txHash: bitcoinTransaction.txHash, fee: 0,
           ));
       //});
     }, onError: (error) {
