@@ -221,6 +221,7 @@ dependencies:
   nfc_manager: ^3.4.0
   go_router: ^13.2.2
   flutter_stripe: ^9.1.1
+  dart_lnurl: ^0.2.1
   logger: ^1.4.0
 
 dev_dependencies:

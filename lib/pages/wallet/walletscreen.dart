@@ -31,7 +31,13 @@ class WalletScreen extends GetWidget<WalletsController> {
     Get.lazyPut(() => ReceiveController(), fenix: true);
     Get.lazyPut(() => SendsController(context: context), fenix: true);
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    if(controller.queueErrorOvelay) {
+      controller.queueErrorOvelay = false;
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
+              controller.handleFuturesCompleted(context);
 
+      });
+    }
     final bitcoinPrice = chartLine?.price;
 
     final currencyEquivalent = bitcoinPrice != null
@@ -327,4 +333,5 @@ class WalletScreen extends GetWidget<WalletsController> {
           ],
         ));
   }
+  
 }

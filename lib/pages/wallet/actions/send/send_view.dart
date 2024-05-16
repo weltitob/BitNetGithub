@@ -29,7 +29,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
 
       appBar: bitnetAppBar(
         onTap: () {
-          context.go("/feed");
+          controller.resetValues();
         },
         customTitle: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -60,7 +60,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
         child: Column(
           children: [
             Expanded(
-              child: controller.sendType == SendType.Invoice
+              child: (controller.sendType == SendType.Invoice || controller.sendType == SendType.LightningUrl)
                   ? LightningSendTab()
                   : OnChainSendTab(),
             ),

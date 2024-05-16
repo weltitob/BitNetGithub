@@ -19,6 +19,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 enum QRTyped {
   LightningMail,
+  LightningUrl,
   Invoice,
   OnChain,
   Profile,
