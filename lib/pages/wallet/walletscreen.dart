@@ -101,44 +101,48 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                 .textTheme
                                                 .displaySmall,
                                           )
-                                        : GestureDetector(
-                                            onTap: () =>
-                                                controller.setCurrencyType(
-                                                    controller.coin != null
-                                                        ? !controller
-                                                            .coin!.value
-                                                        : false),
-                                            child: Container(
-                                              child: (controller.coin!.value ??
-                                                      true)
-                                                  ? Row(
-                                                      children: [
-                                                        Text(
-                                                          controller
-                                                              .totalBalanceSAT
-                                                              .toString(),
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .displaySmall,
+                                        : Obx(
+                                           () {
+                                            return GestureDetector(
+                                                onTap: () =>
+                                                    controller.setCurrencyType(
+                                                        controller.coin != null
+                                                            ? !controller
+                                                                .coin!.value
+                                                            : false),
+                                                child: Container(
+                                                  child: (controller.coin?.value ??
+                                                          true)
+                                                      ? Row(
+                                                          children: [
+                                                            Text(
+                                                              controller
+                                                                  .totalBalanceSAT
+                                                                  .toString(),
+                                                              style:
+                                                                  Theme.of(context)
+                                                                      .textTheme
+                                                                      .displaySmall,
+                                                            ),
+                                                            // const SizedBox(
+                                                            //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                                                            // ),
+                                                            Icon(
+                                                              getCurrencyIcon(unitModel
+                                                                  .bitcoinUnitAsString),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Text(
+                                                          "${currencyEquivalent}${getCurrency(controller.selectedCurrency!.value)}",
+                                                          style: Theme.of(context)
+                                                              .textTheme
+                                                              .displaySmall,
                                                         ),
-                                                        // const SizedBox(
-                                                        //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-                                                        // ),
-                                                        Icon(
-                                                          getCurrencyIcon(unitModel
-                                                              .bitcoinUnitAsString),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  : Text(
-                                                      "${currencyEquivalent}${getCurrency(controller.selectedCurrency!.value)}",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .displaySmall,
-                                                    ),
-                                            ),
-                                          ),
+                                                ),
+                                              );
+                                          }
+                                        ),
                                   ],
                                 ),
                               ],
