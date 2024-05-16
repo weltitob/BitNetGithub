@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bitnet/backbone/futures/bitcoinprice.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
@@ -22,17 +24,18 @@ class AmountWidget extends StatefulWidget {
   final int? lowerBound;
   final int? upperBound;
   final BitcoinUnits? boundType;
+  final Function(String currencyType, String text)? onAmountChange;
 
-
-  const AmountWidget({
-    super.key,
-    required this.enabled,
-    required this.btcController,
-    required this.currController,
-    required this.focusNode,
-    this.bitcoinUnit = BitcoinUnits.BTC,
-    this.swapped =  true,
-    required this.context, this.lowerBound, this.upperBound, this.boundType});
+  const AmountWidget(
+      {super.key,
+      required this.enabled,
+      required this.btcController,
+      required this.currController,
+      required this.focusNode,
+      this.bitcoinUnit = BitcoinUnits.BTC,
+      this.swapped = true,
+      required this.context, this.lowerBound, this.upperBound, this.boundType,
+      this.onAmountChange});
 
   @override
   State<AmountWidget> createState() => _AmountWidgetState();
@@ -44,28 +47,33 @@ class _AmountWidgetState extends State<AmountWidget> {
   var currencyAmt = 0.0;
   var coinAmt = 0.0;
   @override
-  void initState(){
+  void initState() {
     swapped = widget.swapped;
-    widget.currController.addListener((){
-      currencyAmt = double.parse(widget.currController.text.isEmpty ? "0.0" : widget.currController.text);
-      coinAmt = double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text);
-      setState((){});
+    widget.currController.addListener(() {
+      currencyAmt = double.parse(widget.currController.text.isEmpty
+          ? "0.0"
+          : widget.currController.text);
+      coinAmt = double.parse(widget.btcController.text.isEmpty
+          ? "0.0"
+          : widget.btcController.text);
+      setState(() {});
     });
-    amtControllerFunc = (){
-      setState((){});
+    amtControllerFunc = () {
+      setState(() {});
     };
-    widget.btcController.addListener(amtControllerFunc
-    );
-  super.initState();
+    widget.btcController.addListener(amtControllerFunc);
+    super.initState();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     widget.btcController.removeListener(amtControllerFunc);
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+    String? currencyType = swapped ? "USD" : widget.bitcoinUnit.name;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
@@ -80,11 +88,11 @@ class _AmountWidgetState extends State<AmountWidget> {
         children: [
           Stack(
             children: [
-              
               // Text field to enter Bitcoin value
               Row(
                 children: [
-                     IconButton(onPressed: (){
+                  IconButton(
+                      onPressed: () {
                         this.swapped = !this.swapped;
                         if(this.swapped) {
                     
@@ -98,20 +106,36 @@ class _AmountWidgetState extends State<AmountWidget> {
                         currencyAmt = double.parse(currencyEquivalent);
                         this.widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
                         } else {
-                                         final chartLine = Provider.of<ChartLine?>(context, listen: false);
-                        currency = currency ?? "USD";
-                    
-                        final bitcoinPrice = chartLine?.price;
-                        final currencyEquivalent = bitcoinPrice != null
-                            ? CurrencyConverter.convertCurrency(currency!, double.parse(widget.currController.text.isEmpty ? "0.0" : widget.currController.text), widget.bitcoinUnit.name, bitcoinPrice)
-                            : "0.00";
-                    
-                          widget.btcController.text = formatBtcDouble(double.parse(currencyEquivalent));
+                          final chartLine =
+                              Provider.of<ChartLine?>(context, listen: false);
+                          currency = currency ?? "USD";
+
+                          final bitcoinPrice = chartLine?.price;
+                          final currencyEquivalent = bitcoinPrice != null
+                              ? CurrencyConverter.convertCurrency(
+                                  currency!,
+                                  double.parse(
+                                      widget.currController.text.isEmpty
+                                          ? "0.0"
+                                          : widget.currController.text),
+                                  widget.bitcoinUnit.name,
+                                  bitcoinPrice)
+                              : "0.00";
+
+                          widget.btcController.text = currencyEquivalent;
+                        }
+                        if (widget.onAmountChange != null) {
+                          widget.onAmountChange!(widget.bitcoinUnit.name,
+                              widget.btcController.text);
                         }
                         widget.focusNode.unfocus();
-                        setState((){});
-                      }, icon: Icon(Icons.swap_vert, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90)),
-
+                        setState(() {});
+                      },
+                      icon: Icon(Icons.swap_vert,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? AppTheme.black70
+                                  : AppTheme.white90)),
                   Expanded(
                     child: Container(
                       width: 300,
@@ -129,6 +153,15 @@ class _AmountWidgetState extends State<AmountWidget> {
                         },
                         textAlign: TextAlign.center,
                         onChanged: (text) {
+                          if (widget.onAmountChange != null) {
+                            if (swapped) {
+                              widget.onAmountChange!(
+                                  currencyType, widget.btcController.text);
+                            } else {
+                              widget.onAmountChange!(
+                                  currencyType, widget.btcController.text);
+                            }
+                          }
                         },
                         maxLength: widget.lowerBound != null ? 20 : 10,
                         keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -142,26 +175,47 @@ class _AmountWidgetState extends State<AmountWidget> {
                               min: 0, max: double.parse("99999999999"), context: context),],
                         ],
                         decoration: InputDecoration(
-                        suffixIcon: this.swapped? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(getCurrency(currency!),
-                            style: TextStyle(fontSize: 24 , color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90)),
-                          ],
-                        ) : Icon(
-                          getCurrencyIcon(widget.bitcoinUnit.name),
-                          size: AppTheme.cardPadding * 1.25,
-                          color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90
-                            ),
+                          suffixIcon: this.swapped
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(getCurrency(currency!),
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.light
+                                                    ? AppTheme.black70
+                                                    : AppTheme.white90)),
+                                  ],
+                                )
+                              : Icon(getCurrencyIcon(widget.bitcoinUnit.name),
+                                  size: AppTheme.cardPadding * 1.25,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black70
+                                      : AppTheme.white90),
                           border: InputBorder.none,
                           counterText: "",
                           hintText: "0.0",
-                          hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60),
+                          hintStyle: TextStyle(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? AppTheme.black60
+                                  : AppTheme.white60),
                         ),
-                        controller: swapped ? widget.currController :  widget.btcController,
+                        controller: swapped
+                            ? widget.currController
+                            : widget.btcController,
                         autofocus: false,
-                        
-                        style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90),
+                        style: Theme.of(context)
+                            .textTheme
+                            .displayLarge!
+                            .copyWith(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? AppTheme.black70
+                                    : AppTheme.white90),
                       ),
                     ),
                   ),
@@ -217,7 +271,10 @@ class _AmountWidgetState extends State<AmountWidget> {
             height: AppTheme.elementSpacing,
           ),
           // A Center widget with a child of bitcoinToMoneyWidget()
-          Center(child: !this.swapped ? bitcoinToMoneyWidget(context, widget.bitcoinUnit) : MoneyToBitcoinWidget(context, widget.bitcoinUnit)),
+          Center(
+              child: !this.swapped
+                  ? bitcoinToMoneyWidget(context, widget.bitcoinUnit)
+                  : MoneyToBitcoinWidget(context, widget.bitcoinUnit)),
         ],
       ),
     );
@@ -232,21 +289,27 @@ class _AmountWidgetState extends State<AmountWidget> {
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
-        ? CurrencyConverter.convertCurrency(bitcoinUnit.name, double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text), currency, bitcoinPrice)
+        ? CurrencyConverter.convertCurrency(
+            bitcoinUnit.name,
+            double.parse(widget.btcController.text.isEmpty
+                ? "0.0"
+                : widget.btcController.text),
+            currency,
+            bitcoinPrice)
         : "0.00";
     // widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
 
-
-
     return Text(
       "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency)}", // show the converted value of Bitcoin to Euro with 2 decimal places
-      style: Theme.of(context)
-          .textTheme
-          .bodyLarge!.copyWith(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90), // use the bodyLarge text theme style from the current theme
+      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+          color: Theme.of(context).brightness == Brightness.light
+              ? AppTheme.black70
+              : AppTheme
+                  .white90), // use the bodyLarge text theme style from the current theme
     );
   }
 
-    Widget MoneyToBitcoinWidget(BuildContext context, BitcoinUnits bitcoinUnit) {
+  Widget MoneyToBitcoinWidget(BuildContext context, BitcoinUnits bitcoinUnit) {
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
@@ -254,7 +317,13 @@ class _AmountWidgetState extends State<AmountWidget> {
 
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
-        ? CurrencyConverter.convertCurrency(currency, double.parse(this.widget.currController.text.isEmpty ? "0.0" : this.widget.currController.text), bitcoinUnit.name, bitcoinPrice)
+        ? CurrencyConverter.convertCurrency(
+            currency,
+            double.parse(this.widget.currController.text.isEmpty
+                ? "0.0"
+                : this.widget.currController.text),
+            bitcoinUnit.name,
+            bitcoinPrice)
         : "0.00";
     // widget.btcController.text = formatBtcDouble(double.parse(currencyEquivalent));
     return Row(
@@ -262,29 +331,24 @@ class _AmountWidgetState extends State<AmountWidget> {
       children: [
         Text(
           "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}", // show the converted value of Bitcoin to Euro with 2 decimal places
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge!.copyWith(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90), // use the bodyLarge text theme style from the current theme
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? AppTheme.black70
+                  : AppTheme
+                      .white90), // use the bodyLarge text theme style from the current theme
         ),
-        Icon(getCurrencyIcon(bitcoinUnit.name,),color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90,)
+        Icon(
+          getCurrencyIcon(
+            bitcoinUnit.name,
+          ),
+          color: Theme.of(context).brightness == Brightness.light
+              ? AppTheme.black70
+              : AppTheme.white90,
+        )
       ],
     );
-
   }
 
-String formatBtcDouble(double value) {
-  String formattedValue;
-  if (value == value.floor()) {
-    formattedValue = value.toStringAsFixed(2);
-  } else {
-    String stringValue = value.toString();
-    int decimalIndex = stringValue.indexOf('.');
-    int decimalPlaces = stringValue.length - decimalIndex - 1;
-    int maxDecimalPlaces = decimalPlaces.clamp(2, 8); 
-    formattedValue = value.toStringAsFixed(maxDecimalPlaces);
-  }
-  return formattedValue;
-}
 }
 
 class BoundInputFormatter extends TextInputFormatter {

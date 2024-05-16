@@ -6,7 +6,6 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/marketplace_widgets/BarChart.dart';
 import 'package:bitnet/components/marketplace_widgets/ChaunInfo.dart';
-import 'package:bitnet/components/marketplace_widgets/CommonBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductHorizontal.dart';
@@ -66,10 +65,9 @@ class _NftProductScreenState extends State<NftProductScreen> {
                           margin: EdgeInsets.only(bottom: 15.h),
                           child: Text(
                             'NFToker #2293',
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               fontSize: 28.sp,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -111,10 +109,8 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                     EdgeInsets.only(bottom: 15.h, top: 30.h),
                                 child: Text(
                                   'Current Price',
-                                  style: TextStyle(
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                    fontSize: 18.sp,
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                     fontSize: 18.sp,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -130,22 +126,18 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                     margin: EdgeInsets.only(left: 8.w),
                                     child: Text(
                                       '12.5',
-                                      style: TextStyle(
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w400,
-                                        color: const Color.fromRGBO(
-                                            255, 255, 255, 0.7),
-                                      ),
+                                          ),
                                     ),
                                   ),
                                   Text(
                                     ' (\$1717.17)',
-                                    style: TextStyle(
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
-                                      color: const Color.fromRGBO(
-                                          255, 255, 255, 0.5),
-                                    ),
+                                     ),
                                   ),
                                 ],
                               ),
@@ -183,8 +175,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                           margin: EdgeInsets.only(bottom: 15.h),
                           child: Text(
                             'Created By',
-                            style: TextStyle(
-                              color: const Color.fromRGBO(249, 249, 249, 1),
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w500,
                             ),
@@ -214,21 +205,18 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                         margin: EdgeInsets.only(bottom: 5.w),
                                         child: Text(
                                           'Crypto-Pills',
-                                          style: TextStyle(
+                                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w500,
-                                            color: Colors.white,
                                           ),
                                         ),
                                       ),
                                       Text(
                                         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                                        style: TextStyle(
+                                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w400,
-                                          color: const Color.fromRGBO(
-                                              255, 255, 255, 0.5),
-                                        ),
+                                         ),
                                       ),
                                     ],
                                   ),
@@ -294,33 +282,28 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               margin: EdgeInsets.only(bottom: 15.h),
                               child: Text(
                                 'Guardians of the Metaverse are a collection of 10,000 unique 3D hero-like avatars living as NFTs on the blockchain.',
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w400,
-                                  color:
-                                      const Color.fromRGBO(255, 255, 255, 0.5),
-                                ),
+                                 ),
                               ),
                             ),
                             Container(
                               margin: EdgeInsets.only(bottom: 15.h),
                               child: Text(
                                 'Guardians are stored as ERC721 tokens on the Ethereum blockchain. Owners can download their Guardians in .png format, they can also request a high resolution image of them, with 3D models coming soon for everyone.',
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w400,
-                                  color:
-                                      const Color.fromRGBO(255, 255, 255, 0.5),
-                                ),
+                                 ),
                               ),
                             ),
                             Text(
                               'Not only are Guardians dope designed character-collectibles, they also serve as your ticket to a world of exclusive content. From developing new collections to fill our universe, to metaverse avatars, we have bundles of awesome features in the pipeline.',
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w400,
-                                color: const Color.fromRGBO(255, 255, 255, 0.5),
-                              ),
+                               ),
                             ),
                           ],
                         ),

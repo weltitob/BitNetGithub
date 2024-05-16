@@ -8,7 +8,7 @@ import 'package:matrix/matrix.dart';
 
 class CryptoItemController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  late List<ChartLine> onedaychart=<ChartLine>[].obs;
+  late List<ChartLine> onedaychart = <ChartLine>[].obs;
   RxBool loading = true.obs;
   Color animationColor = Colors.transparent;
   RxString currentPriceString = "".obs;
@@ -86,7 +86,4 @@ class CryptoItemController extends GetxController
     }
     //update animation color
   }
-
-
-
 }

@@ -46,10 +46,10 @@ class bitnetScaffold extends StatelessWidget {
               height: double.infinity,
               // The screen background is a gradient
               decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
                     Theme.of(context).brightness == Brightness.light
                         ? lighten(
                             Theme.of(context).colorScheme.primaryContainer, 60)
@@ -61,7 +61,9 @@ class bitnetScaffold extends StatelessWidget {
                         : darken(
                             Theme.of(context).colorScheme.tertiaryContainer,
                             80),
-                  ])),
+                  ],
+                ),
+              ),
               child: Padding(
                 padding: extendBodyBehindBottomNav
                     ? EdgeInsets.only(bottom: AppTheme.cardPadding * 3)

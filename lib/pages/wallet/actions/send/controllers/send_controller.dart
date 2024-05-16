@@ -8,6 +8,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtrans
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/walletkit/finalizepsbtresponse.dart';
@@ -29,7 +30,7 @@ import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:http/http.dart' as http;
 
-class SendsController extends GetxController {
+class SendsController extends BaseController {
   late BuildContext context;
   SendsController({required this.context});
 

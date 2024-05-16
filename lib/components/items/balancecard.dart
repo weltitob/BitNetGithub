@@ -394,7 +394,7 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
         ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice)
-            .toStringAsFixed(2)
+        .toStringAsFixed(2)
         : "0.00";
 
     return Padding(
@@ -402,7 +402,7 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
         AppTheme.cardPadding * 1.25,
       ),
       child: Obx(
-        () => Column(
+            () => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -420,42 +420,42 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
               controller.hideBalance.value
                   ? Text('*****')
                   : GestureDetector(
-                      onTap: () => coin.setCurrencyType(
-                          coin.coin != null ? !coin.coin! : false),
-                      child: Container(
-                        width: 160,
-                        child: Row(
-                          children: [
-                            Text(
-                              balanceStr,
-                              style: Theme.of(context).textTheme.headlineLarge,
-                            ),
-                            // const SizedBox(
-                            //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-                            // ),
-                            Icon(
-                              iconDataUnit,
-                            ),
-                          ],
-                        ),
+                onTap: () => coin.setCurrencyType(
+                    coin.coin != null ? !coin.coin! : false),
+                child: Container(
+                  width: 160,
+                  child: Row(
+                    children: [
+                      Text(
+                        balanceStr,
+                        style: Theme.of(context).textTheme.headlineLarge,
                       ),
-                    ),
+                      // const SizedBox(
+                      //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                      // ),
+                      Icon(
+                        iconDataUnit,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ] else ...[
               controller.hideBalance.value
                   ? Text('*****')
                   : GestureDetector(
-                      onTap: () => coin.setCurrencyType(
-                          coin.coin != null ? !coin.coin! : false),
-                      child: Container(
-                        width:
-                            160, // Replace with your AppTheme.cardPadding * 10 if needed
-                        child: Text(
-                          "$currencyEquivalent${getCurrency(currency!)}",
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
-                      ),
-                    ),
+                onTap: () => coin.setCurrencyType(
+                    coin.coin != null ? !coin.coin! : false),
+                child: Container(
+                  width:
+                  160, // Replace with your AppTheme.cardPadding * 10 if needed
+                  child: Text(
+                    "$currencyEquivalent${getCurrency(currency!)}",
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                ),
+              ),
             ]
           ],
         ),

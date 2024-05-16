@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class ScreenCategoryWidget extends StatelessWidget {
@@ -26,7 +27,7 @@ class ScreenCategoryWidget extends StatelessWidget {
         bottom: 10,
         left: 3,
       ),
-      width: 80,
+      width: 80.w,
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: AppTheme.cardRadiusMid,
@@ -46,8 +47,8 @@ class ScreenCategoryWidget extends StatelessWidget {
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 5),
-                    height: 35,
-                    width: 35,
+                    height: 35.h,
+                    width: 35.w,
                     child: Image.asset(image),
                   ),
                   Container(

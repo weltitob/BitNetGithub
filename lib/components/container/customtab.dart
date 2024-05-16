@@ -23,12 +23,11 @@ class CustomTabContent extends StatelessWidget {
           mxContent: mxContent,
           size: 30,
         ),
-        SizedBox(width: AppTheme.elementSpacing / 2),  // Give some spacing between the image and the text
+        SizedBox(width: AppTheme.elementSpacing / 2),
         Text(
           text,
-          style: AppTheme.textTheme.titleMedium!.copyWith(
-              color: AppTheme.white80,
-              fontWeight: FontWeight.bold),
+          style: AppTheme.textTheme.titleMedium!
+              .copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(width: AppTheme.elementSpacing),
       ],

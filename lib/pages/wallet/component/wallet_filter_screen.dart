@@ -1,12 +1,15 @@
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/FilterPillList.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class WalletFilterScreen extends GetWidget<WalletFilterController> {
@@ -18,6 +21,13 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
       child: Column(
         children: [
+          Align(
+              alignment: Alignment.topRight,
+              child: GlassContainer(
+                  height: 40,
+                  child: TextButton(child: Text('Clear'), onPressed: (){controller.selectedFilters.clear();},))),
+
+          SizedBox(height: 20),
           FilterPillList(
             headingText: 'Filter Options',
             listDataText: [
@@ -49,63 +59,73 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                               child: Text(
                                   DateFormat('dd-MM-yyyy')
                                       .format(controller.startDate.value),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                  ))),
+                                  style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ))),
                         ),
                       ),
-                    ),
-                  )),
-                  Container(
-                    margin: EdgeInsets.only(left: 10.w, right: 11.w),
-                    child: Text(
-                      'To',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: const Color.fromRGBO(255, 255, 255, 0.5),
+                    ))),
+                    Container(
+                      margin: EdgeInsets.only(left: 10.w, right: 11.w),
+                      child: Text(
+                        'To',
+                        style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
+                    Expanded(
                       child: GlassContainer(
-                    child: InkWell(
-                      onTap: () async {
-                        controller.endDate.value =
-                            await controller.selectDate(context);
-                      },
-                      child: Obx(
-                        () => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                              child: Text(
+                        child: InkWell(
+                          onTap: () async {
+                            controller.endDate.value =
+                                await controller.selectDate(context);
+                          },
+                          child: Obx(
+                            () => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
                                   DateFormat('dd-MM-yyyy')
                                       .format(controller.endDate.value),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                  ))),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  )),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Spacer(),
-          Container(
-            width: MediaQuery.of(context).size.width - 40.w,
-            child: const CommonBtn(
-                hasOnPress: false, text: 'Apply', hasBackPress: true),
-          ),
-        ],
-      ),
-    );
+            Spacer(),
+            SizedBox(
+              width: 250.w,
+              // width: MediaQuery.of(context).size.width - 40.w,
+              child: CommonBtn(
+                  hasMargin: true,
+                  hasOnPress: false,
+                  text: 'Apply',
+                  hasBackPress: true),
+            ),
+          ],
+        ),
+      );
   }
 }

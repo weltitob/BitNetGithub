@@ -1,7 +1,8 @@
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoopsController extends GetxController {
+class LoopsController extends BaseController {
   RxBool animate = false.obs;
   TextEditingController btcController = TextEditingController(text: '123');
   TextEditingController currController = TextEditingController();

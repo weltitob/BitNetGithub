@@ -13,6 +13,7 @@ class QrButton extends StatelessWidget {
   void onQRButtonPressed(BuildContext context) {
     final controller = Get.find<ProfileController>();
     BitNetBottomSheet(
+      width: double.infinity,
         context: context,
         title: "Share Profile",
         iconData: Icons.qr_code_rounded,

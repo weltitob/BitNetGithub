@@ -7,10 +7,7 @@ import 'package:get/get.dart';
 class PillLabel extends StatefulWidget {
   final labelText;
 
-  const PillLabel(
-      {Key? key,
-      required this.labelText})
-      : super(key: key);
+  const PillLabel({Key? key, required this.labelText}) : super(key: key);
 
   @override
   State<PillLabel> createState() => _PillLabelState();
@@ -37,7 +34,7 @@ class _PillLabelState extends State<PillLabel> {
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
-                color: controller.selectedFilters.contains(widget.labelText) ? Colors.black :const Color.fromRGBO(249, 249, 249, 1),
+                color: controller.selectedFilters.contains(widget.labelText) ? Colors.black : const Color.fromRGBO(249, 249, 249, 1),
               ),
             ),
           ),

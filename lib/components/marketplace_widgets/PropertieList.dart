@@ -28,31 +28,28 @@ class PropertieList extends StatelessWidget {
             margin: EdgeInsets.only(bottom: 5.h),
             child: Text(
               heading,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
-                color: const Color.fromRGBO(249, 249, 249, 0.7),
-              ),
+               ),
             ),
           ),
           Container(
             margin: EdgeInsets.only(bottom: 6.h),
             child: Text(
               subHeading,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
-                color: Colors.white,
-              ),
+               ),
             ),
           ),
           Text(
             peragraph,
-            style: TextStyle(
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               fontSize: 12.sp,
               fontWeight: FontWeight.w400,
-              color: const Color.fromRGBO(255, 255, 255, 0.5),
-            ),
+             ),
           ),
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_bala
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
@@ -26,7 +27,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:matrix/matrix.dart';
 
-class WalletsController extends GetxController {
+class WalletsController extends BaseController {
   RxBool hideBalance = false.obs;
   late final Future<LottieComposition> compositionSend;
   late final Future<LottieComposition> compositionReceive;

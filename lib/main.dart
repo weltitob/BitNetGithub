@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:matrix/matrix.dart';
@@ -79,6 +81,7 @@ Future<void> main() async {
   );
 
   Logs().nativeColors = !PlatformInfos.isIOS;
+  Get.put(LoggerService(), permanent: true);
 
   // Run the app
   runApp(
@@ -158,11 +161,9 @@ class _MyAppState extends State<MyApp> {
         : MultiProvider(
             providers: [
               ChangeNotifierProvider<CardChangeProvider>(
-                create: (context) => CardChangeProvider(),
-              ),
+                  create: (context) => CardChangeProvider()),
               ChangeNotifierProvider<CurrencyTypeProvider>(
-                create: (context) => CurrencyTypeProvider(),
-              ),
+                  create: (context) => CurrencyTypeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                 create: (context) => LocalProvider(),
               ),
@@ -175,13 +176,10 @@ class _MyAppState extends State<MyApp> {
                       bitcoinPriceStream.localCurrency !=
                           currencyChangeProvider.selectedCurrency) {
                     bitcoinPriceStream?.dispose();
-                    final newStream = BitcoinPriceStream.withCurrency(
+                    final newStream = BitcoinPriceStream();
+                    newStream.updateCurrency(
                         currencyChangeProvider.selectedCurrency ?? 'usd');
-                    // newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
 
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      _streamKey.currentState?.setState(() {});
-                    });
                     return newStream;
                   }
                   return bitcoinPriceStream;
@@ -190,7 +188,6 @@ class _MyAppState extends State<MyApp> {
                     bitcoinPriceStream.dispose(),
               ),
               StreamProvider<ChartLine?>(
-                key: _streamKey,
                 create: (context) =>
                     Provider.of<BitcoinPriceStream>(context, listen: false)
                         .priceStream,

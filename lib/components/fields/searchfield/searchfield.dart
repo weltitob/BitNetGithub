@@ -8,6 +8,7 @@ class SearchFieldWidget extends StatefulWidget {
   final dynamic handleSearch;
   final dynamic onChanged; // Add an onChanged callback
   final dynamic suffixIcon;
+  final dynamic onSuffixTap;
 
   const SearchFieldWidget({
     Key? key,
@@ -15,6 +16,7 @@ class SearchFieldWidget extends StatefulWidget {
     required this.isSearchEnabled,
     required this.handleSearch,
     this.suffixIcon,
+    this.onSuffixTap,
     this.onChanged, // Initialize it in the constructor
   }) : super(key: key);
 
@@ -29,7 +31,8 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-          horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
+          horizontal: AppTheme.elementSpacing,
+          vertical: AppTheme.elementSpacing),
       child: GlassContainer(
         borderRadius: AppTheme.cardRadiusSmall,
         child: Container(
@@ -53,14 +56,18 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                 prefixIcon: Icon(
                   Icons.search,
                 ),
-                suffixIcon: widget.suffixIcon != null ? widget.suffixIcon : _textFieldController.text.isEmpty
-                    ? Container(width: 0)
-                    : IconButton(
-                  icon: Icon(
-                    Icons.cancel,
-                  ),
-                  onPressed: () => _textFieldController.clear(),
-                ),
+                suffixIcon: widget.suffixIcon != null
+                    ? widget.suffixIcon
+                    : _textFieldController.text.isEmpty
+                        ? Container(width: 0)
+                        : IconButton(
+                            icon: Icon(
+                              Icons.cancel,
+                            ),
+                            onPressed: () =>
+                                widget.onSuffixTap ??
+                                _textFieldController.clear(),
+                          ),
                 border: OutlineInputBorder(
                     borderSide: BorderSide(width: 0, style: BorderStyle.none),
                     borderRadius: AppTheme.cardRadiusMid)),
