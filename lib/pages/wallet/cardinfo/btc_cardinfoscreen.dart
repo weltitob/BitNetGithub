@@ -64,7 +64,7 @@ class _BitcoinCardInformationScreenState
               : Padding(
                   padding:
                       const EdgeInsets.only(top: 60.0, left: 20.0, right: 20.0),
-                  child: SingleChildScrollView(
+                  child: SingleChildScrollView(  
                     child: Column(
                       children: [
                         SizedBox(height: 200, child: BalanceCardBtc(controller: controller,)),

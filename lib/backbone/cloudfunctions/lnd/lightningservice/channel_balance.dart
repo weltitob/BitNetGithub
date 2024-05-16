@@ -5,8 +5,10 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
 Future<RestResponse> channelBalance() async {
   String restHost = AppTheme.baseUrlLightningTerminal; // Update the host as needed
@@ -24,17 +26,20 @@ Future<RestResponse> channelBalance() async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    var response = await http.get(Uri.parse(url), headers: headers,);
-    // Print raw response for debugging
-    print('Raw Response: ${response.body}');
+    Dio dio = Dio();
+    var response = await dio.get(url,);
+    dio.options.headers['Grpc-Metadata-macaroon'] = macaroon;
+ 
+     // Print raw response for debugging
+    print('Raw Response: ${response.data}');
 
     if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrived Lightning Balance", data: json.decode(response.body));
+      print(json.decode(response.data));
+      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrived Lightning Balance", data: response.data);
 
     } else {
-      print('Failed to load data: ${response.statusCode}, ${response.body}');
-      return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.body}", data: {});
+      print('Failed to load data: ${response.statusCode}, ${response.data}');
+      return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.data}", data: {});
     }
   } catch (e) {
     print('Error: $e');
