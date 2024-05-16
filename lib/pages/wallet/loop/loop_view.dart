@@ -69,7 +69,7 @@ class _LoopScreenState extends State<LoopScreen> {
                           height: AppTheme.cardPadding * 8,
                           margin: EdgeInsets.symmetric(
                               horizontal: AppTheme.cardPadding),
-                          child: BalanceCardBtc(controller: widget.controller)),
+                          child: BalanceCardBtc()),
                       Container(
                         height: AppTheme.cardPadding * 1,
                       ),
@@ -79,7 +79,7 @@ class _LoopScreenState extends State<LoopScreen> {
                             horizontal: AppTheme.cardPadding,
                           ),
                           child: BalanceCardLightning(
-                              controller: widget.controller)),
+                              )),
                     ],
                   ),
                   Align(

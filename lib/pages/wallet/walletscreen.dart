@@ -48,14 +48,14 @@ class WalletScreen extends GetWidget<WalletsController> {
             onTap: () {
               context.go('/wallet/lightningcard');
             },
-            child: BalanceCardLightning(controller: controller)),
+            child: BalanceCardLightning()),
       ),
       Container(
           child: GestureDetector(
               onTap: () {
                 context.go('/wallet/bitcoincard');
               },
-              child: BalanceCardBtc(controller: controller))),
+              child: BalanceCardBtc())),
     ];
     // var sampleTheme = Theme.of(context).textTheme;
 

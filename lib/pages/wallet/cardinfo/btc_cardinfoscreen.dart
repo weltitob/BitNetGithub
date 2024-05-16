@@ -67,7 +67,7 @@ class _BitcoinCardInformationScreenState
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(height: 200, child: BalanceCardBtc(controller: controller,)),
+                        SizedBox(height: 200, child: BalanceCardBtc()),
                         BitNetListTile(
                           text: 'Address',
                           trailing: Text('bc1qkmlp...' + '30fltzunefdjln'),
