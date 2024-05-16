@@ -1,4 +1,3 @@
- 
 import 'package:bitnet/backbone/services/base_controller/base_service.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
@@ -7,14 +6,13 @@ import 'package:flutter/material.dart';
 
 import 'dio_exception.dart';
 import 'interceptors/logger_interceptor.dart';
- 
 
 class DioClient extends BaseService {
   late final Dio _dio;
 
   @override
   void onInit() {
-    super.onInit();  
+    super.onInit();
     _dio = Dio(
       BaseOptions(
         connectTimeout: const Duration(seconds: 30000),

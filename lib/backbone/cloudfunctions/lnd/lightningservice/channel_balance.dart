@@ -1,18 +1,19 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
+
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:http/http.dart' as http;
-
+import 'package:get/get.dart';
+ 
 Future<RestResponse> channelBalance() async {
-  String restHost = AppTheme.baseUrlLightningTerminal; // Update the host as needed
-  const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
+    final DioClient dioClient = Get.find<DioClient>();
+  String restHost =
+      AppTheme.baseUrlLightningTerminal; // Update the host as needed
+  // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   String url = 'https://$restHost/v1/balance/channels';
 
   ByteData byteData = await loadMacaroonAsset();
@@ -26,23 +27,31 @@ Future<RestResponse> channelBalance() async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    Dio dio = Dio();
-    var response = await dio.get(url,);
-    dio.options.headers['Grpc-Metadata-macaroon'] = macaroon;
- 
-     // Print raw response for debugging
+    var response = await dioClient.get(url: url, headers: headers);
+
+    // Print raw response for debugging
     print('Raw Response: ${response.data}');
 
     if (response.statusCode == 200) {
       print(json.decode(response.data));
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrived Lightning Balance", data: response.data);
-
+      return RestResponse(
+          statusCode: "${response.statusCode}",
+          message: "Successfully retrived Lightning Balance",
+          data: response.data);
     } else {
       print('Failed to load data: ${response.statusCode}, ${response.data}');
-      return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.data}", data: {});
+      return RestResponse(
+          statusCode: "error",
+          message:
+              "Failed to load data: ${response.statusCode}, ${response.data}",
+          data: {});
     }
   } catch (e) {
     print('Error: $e');
-    return RestResponse(statusCode: "error", message: "Failed to load data: Could not get response from Lightning node!", data: {});
+    return RestResponse(
+        statusCode: "error",
+        message:
+            "Failed to load data: Could not get response from Lightning node!",
+        data: {});
   }
 }

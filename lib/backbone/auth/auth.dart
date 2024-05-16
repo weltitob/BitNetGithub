@@ -63,20 +63,20 @@ class Auth {
   operator is used to transform the DocumentSnapshot to a UserWallet object.
    */
   Stream<UserData?> get userWalletStream => usersCollection
-      .doc(_firebaseAuth.currentUser?.uid)
-      .snapshots()
-      .map<UserData?>((snapshot) {
-    if (_firebaseAuth.currentUser?.uid == null) {
-      return null;
-    }
-    if (!snapshot.exists) {
-      print("Hier ist ein error aufgetreten (auth.dart)!");
-      return null;
-    }
-    final data = snapshot.data()!;
-    final UserData user = UserData.fromMap(data);
-    return user;
-  });
+          .doc(_firebaseAuth.currentUser?.uid)
+          .snapshots()
+          .map<UserData?>((snapshot) {
+        if (_firebaseAuth.currentUser?.uid == null) {
+          return null;
+        }
+        if (!snapshot.exists) {
+          print("Hier ist ein error aufgetreten (auth.dart)!");
+          return null;
+        }
+        final data = snapshot.data()!;
+        final UserData user = UserData.fromMap(data);
+        return user;
+      });
 
   /*
   The _createUserDocument method is used to update the user's wallet data in the Firestore database.
@@ -93,15 +93,14 @@ class Auth {
     required String customToken,
   }) async {
     fbAuth.UserCredential user =
-    await _firebaseAuth.signInWithCustomToken(customToken);
+        await _firebaseAuth.signInWithCustomToken(customToken);
     return user;
   }
-
 
   Future<UserData> createUserFake({
     required UserData user,
     required VerificationCode code,
-}) async {
+  }) async {
     Logs().w("Calling Cloudfunction with Microsoft ION now...");
 
     Logs().w("Generating challenge...");
@@ -111,9 +110,17 @@ class Auth {
     final String customToken = await fakeLoginION(
       randomstring,
     );
-    final IONData iondata = IONData(did: "did", username: user.username, customToken: customToken, publicIONKey: "publicIONKey", privateIONKey: "privateIONKey", mnemonic: "mnemonic");
+    final IONData iondata = IONData(
+        did: "did",
+        username: user.username,
+        customToken: customToken,
+        publicIONKey: "publicIONKey",
+        privateIONKey: "privateIONKey",
+        mnemonic: "mnemonic");
     final PrivateData privateData = PrivateData(
-        did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
+        did: iondata.did,
+        privateKey: iondata.privateIONKey,
+        mnemonic: iondata.mnemonic);
     // Call the function to store Private data in secure storage
     await storePrivateData(privateData);
 
@@ -123,9 +130,11 @@ class Auth {
     Logs().w("User signed in with token. Creating user in database now...");
 
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    Logs().w('Successfully created wallet/user in database: ${newUser.toMap()}');
+    Logs()
+        .w('Successfully created wallet/user in database: ${newUser.toMap()}');
     // Call the function to generate and store verification codes
-    Logs().w("Generating and storing verification codes for friends of the new user now...");
+    Logs().w(
+        "Generating and storing verification codes for friends of the new user now...");
     await generateAndStoreVerificationCodes(
       numCodes: 4,
       codeLength: 5,
@@ -160,7 +169,9 @@ class Auth {
     Logs().w("User created: IONDATA RECEIVED: $iondata.");
     Logs().w("Storing private data now...");
     final PrivateData privateData = PrivateData(
-        did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
+        did: iondata.did,
+        privateKey: iondata.privateIONKey,
+        mnemonic: iondata.mnemonic);
     // Call the function to store Private data in secure storage
     await storePrivateData(privateData);
     Logs().w("Private data stored. Signing in with token now...");
@@ -168,9 +179,11 @@ class Auth {
     final newUser = user.copyWith(did: iondata.did);
     Logs().w("User signed in with token. Creating user in database now...");
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    Logs().w('Successfully created wallet/user in database: ${newUser.toMap()}');
+    Logs()
+        .w('Successfully created wallet/user in database: ${newUser.toMap()}');
     // Call the function to generate and store verification codes
-    Logs().w("Generating and storing verification codes for friends of the new user now...");
+    Logs().w(
+        "Generating and storing verification codes for friends of the new user now...");
     await generateAndStoreVerificationCodes(
       numCodes: 4,
       codeLength: 5,
@@ -191,9 +204,8 @@ class Auth {
     return newUser;
   }
 
-
-  signMessageAuth(did, privateIONKey) async{
-    try{
+  signMessageAuth(did, privateIONKey) async {
+    try {
       Logs().w("Signing Message in auth.dart ...");
       Logs().w("did: $did, privateIONKey: $privateIONKey");
 
@@ -203,11 +215,10 @@ class Auth {
 
       Logs().w("signMessage function called now...");
 
-      final signedMessage =  await signMessageFunction(
+      final signedMessage = await signMessageFunction(
           did,
-          privateIONKey,  // Convert the private key object to a JSON string
-          message
-      );
+          privateIONKey, // Convert the private key object to a JSON string
+          message);
 
       //signed message gets verified from loginION function which logs in the user if successful
       if (signedMessage == null) {
@@ -216,40 +227,42 @@ class Auth {
 
       print("Message signed... $signedMessage");
       return signedMessage;
-    } catch(e){
+    } catch (e) {
       throw Exception("Error signing message: $e");
     }
   }
 
   String generateRandomString(int length) {
-    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const characters =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     final random = Random();
     return String.fromCharCodes(
       Iterable.generate(
         length,
-            (_) => characters.codeUnitAt(random.nextInt(characters.length)),
+        (_) => characters.codeUnitAt(random.nextInt(characters.length)),
       ),
     );
   }
 
-
-  Future<void> signIn(String did, dynamic signedAuthMessage, BuildContext context) async {
+  Future<void> signIn(
+      String did, dynamic signedAuthMessage, BuildContext context) async {
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
 
-    try{
+    try {
       //showLoadingScreen
       //context.go('/ionloading');
       final String randomstring = generateRandomString(20); // length 20
 
-      Logs().w("For now simply login in own matrix client until own sever is setup and can register there somehow.");
+      Logs().w(
+          "For now simply login in own matrix client until own sever is setup and can register there somehow.");
 
       //dieser call leitet uns iwie bereits weiter zur matrix page da das muss verhindert werden
 
       await loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
 
       final String customToken = await fakeLoginION(
-          randomstring,
+        randomstring,
       );
 
       // final String customToken = await loginION(
@@ -259,7 +272,7 @@ class Auth {
 
       final currentuser = await signInWithToken(customToken: customToken);
 
-      if(currentuser == null){
+      if (currentuser == null) {
         // Remove the loading screen
         context.pop();
         throw Exception("User couldnt be signed in with custom Token!");
@@ -267,8 +280,7 @@ class Auth {
         //if successfull push back to homescreen
         context.go("/");
       }
-
-    } catch(e){
+    } catch (e) {
       // Also pop the loading screen when an error occurs
       Navigator.pop(context);
       throw Exception("signIn user failed $e");
@@ -278,9 +290,8 @@ class Auth {
   //-----------------------------FIREBASE HELPERS---------------------------
 
   Future<String> getUserDID(String username) async {
-    QuerySnapshot snapshot = await usersCollection
-        .where('username', isEqualTo: username)
-        .get();
+    QuerySnapshot snapshot =
+        await usersCollection.where('username', isEqualTo: username).get();
 
     if (snapshot.docs.isEmpty) {
       throw Exception('No user found with the provided username');
@@ -291,9 +302,8 @@ class Auth {
   }
 
   Future<String> getUserUsername(String did) async {
-    QuerySnapshot snapshot = await usersCollection
-        .where('did', isEqualTo: did)
-        .get();
+    QuerySnapshot snapshot =
+        await usersCollection.where('did', isEqualTo: did).get();
 
     if (snapshot.docs.isEmpty) {
       throw Exception('No user found with the provided username');
@@ -304,12 +314,10 @@ class Auth {
   }
 
   Future<bool> doesUsernameExist(String username) async {
-    final QuerySnapshot snapshot = await usersCollection
-        .where('username', isEqualTo: username)
-        .get();
+    final QuerySnapshot snapshot =
+        await usersCollection.where('username', isEqualTo: username).get();
     return snapshot.docs.isNotEmpty;
   }
-
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
@@ -325,7 +333,8 @@ class Auth {
   /// login type.
 
   //coming from old homeserverpicker
-  Future<void> checkHomeserverAction(BuildContext context, String homeservertext) async {
+  Future<void> checkHomeserverAction(
+      BuildContext context, String homeservertext) async {
     try {
       var homeserver = Uri.parse(homeservertext);
       if (homeserver.scheme.isEmpty) {
@@ -333,7 +342,7 @@ class Auth {
       }
       final matrix = Matrix.of(context);
       matrix.loginHomeserverSummary =
-      await matrix.getLoginClient().checkHomeserver(homeserver);
+          await matrix.getLoginClient().checkHomeserver(homeserver);
       final ssoSupported = matrix.loginHomeserverSummary!.loginFlows
           .any((flow) => flow.type == 'm.login.sso');
 
@@ -351,7 +360,8 @@ class Auth {
         context.go('/authhome/connect');
       }
     } catch (e) {
-      Logs().e('Error in checkHomeserverAction', (e).toLocalizedString(context));
+      Logs()
+          .e('Error in checkHomeserverAction', (e).toLocalizedString(context));
     }
   }
 
@@ -367,7 +377,8 @@ class Auth {
           await client.importDump(String.fromCharCodes(file.bytes!));
           Matrix.of(context).initMatrix();
         } catch (e) {
-          print("Auth.dart: This line somehow importet matrix and it messed with the User line $e");
+          print(
+              "Auth.dart: This line somehow importet matrix and it messed with the User line $e");
           //This line somehow importet matrix and it messed with the User line
           //Logs().e('Future error:', e, s);
         }
@@ -376,11 +387,11 @@ class Auth {
   }
 
   loginMatrix(BuildContext context, String username, String password) async {
-
     //this stuff kind of comes from somehwere else...
     final matrix = Matrix.of(context);
     Uri homeserver = Uri.parse("http://matrix.org");
-    matrix.loginHomeserverSummary = await matrix.getLoginClient().checkHomeserver(homeserver);
+    matrix.loginHomeserverSummary =
+        await matrix.getLoginClient().checkHomeserver(homeserver);
 
     //also throws error that some pushtoken is missing
     //this somehow still automtically causes a push to the chats screen which we dont want
@@ -401,24 +412,24 @@ class Auth {
         identifier = AuthenticationUserIdentifier(user: username);
       }
       await matrix.getLoginClient().login(
-        LoginType.mLoginPassword,
-        identifier: identifier,
-        // To stay compatible with older server versions
-        // ignore: deprecated_member_use
-        user: identifier.type == AuthenticationIdentifierTypes.userId
-            ? username
-            : null,
-        password: password,
-        initialDeviceDisplayName: PlatformInfos.clientName,
-      );
-
+            LoginType.mLoginPassword,
+            identifier: identifier,
+            // To stay compatible with older server versions
+            // ignore: deprecated_member_use
+            user: identifier.type == AuthenticationIdentifierTypes.userId
+                ? username
+                : null,
+            password: password,
+            initialDeviceDisplayName: PlatformInfos.clientName,
+          );
     } on MatrixException catch (exception) {
-      throw Exception("Exception occured with signin Matrix itself: $exception");
+      throw Exception(
+          "Exception occured with signin Matrix itself: $exception");
     } catch (exception) {
-      throw Exception("Exception occured with signin Matrix thats not Matrix: ${exception.toString()}");
+      throw Exception(
+          "Exception occured with signin Matrix thats not Matrix: ${exception.toString()}");
     }
   }
-
 
   // bool isDefaultPlatform =
   // (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
@@ -456,8 +467,6 @@ class Auth {
   // bool get supportsPasswordLogin => _supportsFlow('m.login.password');
   //
 
-
-
   void signUpMatrixFirst(BuildContext context, String username) async {
     try {
       try {
@@ -467,13 +476,16 @@ class Auth {
         print(client.database);
         print(client.clientName);
         print(client.accountData);
-        print(client.deviceID); //this is null already so the client bullshit def is some issue
+        print(client
+            .deviceID); //this is null already so the client bullshit def is some issue
 
-        if(client != null){
-          client.register(username: username, password: "testjklskhajkd", initialDeviceDisplayName: "test");
+        if (client != null) {
+          client.register(
+              username: username,
+              password: "testjklskhajkd",
+              initialDeviceDisplayName: "test");
           Logs().w("To here it needs to come...");
-        }
-        else {
+        } else {
           Logs().e("Client is null");
         }
       } on MatrixException catch (e) {
@@ -483,7 +495,6 @@ class Auth {
       Matrix.of(context).loginUsername = username;
 
       //context.go('signup');
-
     } catch (e, s) {
       final signupError = e.toLocalizedString(context);
       Logs().e('Sign up failed: $signupError, in signUpMatrixFirst', e, s);
@@ -498,7 +509,7 @@ class Auth {
         Matrix.of(context).currentClientSecret =
             DateTime.now().millisecondsSinceEpoch.toString();
         Matrix.of(context).currentThreepidCreds =
-        await client.requestTokenToRegisterEmail(
+            await client.requestTokenToRegisterEmail(
           Matrix.of(context).currentClientSecret,
           email,
           0,
@@ -511,7 +522,7 @@ class Auth {
       final localPart = displayname.toLowerCase().replaceAll(' ', '_');
 
       await client.uiaRequestBackground(
-            (auth) => client.register(
+        (auth) => client.register(
           username: localPart,
           password: password,
           initialDeviceDisplayName: PlatformInfos.clientName,
@@ -532,13 +543,11 @@ class Auth {
   }
 
   //-----------------------------MATRIX-------------------------------------
-
-
 }
 
 extension on String {
   static final RegExp _phoneRegex =
-  RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
+      RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
   static final RegExp _emailRegex = RegExp(r'(.+)@(.+)\.(.+)');
 
   bool get isEmail => _emailRegex.hasMatch(this);

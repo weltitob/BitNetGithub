@@ -13,14 +13,14 @@ import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
 import 'package:bitnet/models/mempool_models/validate_address_component.dart';
 import 'package:bitnet/models/mempool_models/txModel.dart' as txModel;
 import 'package:bitnet/models/mempool_models/transactionCacheModel.dart'
-as cacheTx;
+    as cacheTx;
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/model/transaction_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:timeago/timeago.dart' as timeago; 
+import 'package:timeago/timeago.dart' as timeago;
 
 class TransactionController extends BaseController {
   TransactionController({this.txID});
@@ -39,7 +39,6 @@ class TransactionController extends BaseController {
 
   var dataOutSpents;
   var dataOutSpents1;
-  final _dio = Dio();
   String baseUrl = 'https://mempool.space/api/';
   String? txID = '';
   String feeUsd = '', feeSat = '';
@@ -169,8 +168,7 @@ class TransactionController extends BaseController {
   String outPutDollar(int index) {
     double value1 = (transactionModel!.vout![index].value!) / 100000000;
     // outputBTC.value = double.parse(value1.toStringAsFixed(8));
-    double value =
-        ((value1 * 100000000) * currentUSD.value) / 100000000;
+    double value = ((value1 * 100000000) * currentUSD.value) / 100000000;
     outputDollar.value = double.parse(value.toStringAsFixed(2));
     return outputDollar.value.toStringAsFixed(2);
   }
@@ -196,9 +194,9 @@ class TransactionController extends BaseController {
 
   String inPutDollar(int index) {
     double value = (((transactionModel!.vin![index].prevout!.value!) /
-        100000000 *
-        100000000) *
-        currentUSD.value) /
+                100000000 *
+                100000000) *
+            currentUSD.value) /
         100000000;
     inputDollar.value = double.parse(value.toStringAsFixed(2));
     return formatPrice(inputDollar.value.toStringAsFixed(0));
@@ -263,7 +261,7 @@ class TransactionController extends BaseController {
       String url =
           'https://mempool.space/api/v1/transaction-times?txId[]=$txID';
       // print(url);
-      await _dio.get(url).then((value) {
+      await dioClient.get(url: url).then((value) {
         local = value;
       });
       isLoading.value = false;
@@ -283,7 +281,7 @@ class TransactionController extends BaseController {
       //
       String url = '${baseUrl}tx/$txID/rbf';
       print(url);
-      await _dio.get(url).then((value) async {
+      await dioClient.get(url: url).then((value) async {
         print(value.data);
         transactionRbfModel = TransactionRbfModel.fromJson(value.data);
         final homeController = Get.find<HomeController>();
@@ -307,7 +305,7 @@ class TransactionController extends BaseController {
       //
       String url = '${baseUrl}tx/$txID/cached';
       print(url);
-      await _dio.get(url).then((value) async {
+      await dioClient.get(url: url).then((value) async {
         print(value.data);
         transactionCacheModel =
             cacheTx.TransactionCacheModel.fromJson(value.data);
@@ -341,7 +339,7 @@ class TransactionController extends BaseController {
   getTrans(String txID) {
     timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
       String url = '${baseUrl}tx/$txID';
-      await _dio.get(url).then((value) async {
+      await dioClient.get(url: url).then((value) async {
         transactionModel = TransactionModel.fromJson(value.data);
         height = transactionModel!.status!.blockHeight;
         final homeController = Get.find<HomeController>();
@@ -355,7 +353,7 @@ class TransactionController extends BaseController {
 
   getCpfp(String txID) async {
     String url = '${baseUrl}v1/cpfp/$txID';
-    await _dio.get(url).then((value) async {
+    await dioClient.get(url: url).then((value) async {
       effectiveFeeRate.value = value.data["effectiveFeePerVsize"] ?? 0.0;
     });
   }
@@ -366,20 +364,20 @@ class TransactionController extends BaseController {
     try {
       String url = '${baseUrl}v1/validate-address/$addressId';
       print(url);
-      await _dio.get(url).then((value) async {
+      await dioClient.get(url: url).then((value) async {
         print(value.data);
         validateAddressComponentModel =
             ValidateAddressComponentModel.fromJson(value.data);
         print(validateAddressComponentModel?.isvalid);
         validateAddressComponentModel!.isvalid
-            ? await _dio
-            .get('${baseUrl}/address/$addressId')
-            .then((value) async {
-          print(value.data);
-          addressComponentModel =
-              AddressComponentModel.fromJson(value.data);
-          await getSubTransaction();
-        })
+            ? await dioClient
+                .get(url: '${baseUrl}/address/$addressId')
+                .then((value) async {
+                print(value.data);
+                addressComponentModel =
+                    AddressComponentModel.fromJson(value.data);
+                await getSubTransaction();
+              })
             : null;
         isLoadingAddress.value = false;
       });
@@ -397,7 +395,7 @@ class TransactionController extends BaseController {
         String url = '${baseUrl}tx/$txID';
 
         try {
-          await _dio.get(url).then((value) async {
+          await dioClient.get(url: url).then((value) async {
             transactionModel = TransactionModel.fromJson(value.data);
             height = transactionModel!.status!.blockHeight;
             final homeController = Get.find<HomeController>();
@@ -601,26 +599,26 @@ class TransactionController extends BaseController {
             : vin.inner_redeemscript_asm;
         var replacementSize = 0;
         if (
-        // single sig
-        isP2pk ||
-            isP2pkh ||
-            isP2wpkh ||
-            isP2shP2Wpkh ||
-            // multisig
-            isBareMultisig ||
-            parseMultisigScript(script!) != null) {
+            // single sig
+            isP2pk ||
+                isP2pkh ||
+                isP2wpkh ||
+                isP2shP2Wpkh ||
+                // multisig
+                isBareMultisig ||
+                parseMultisigScript(script!) != null) {
           // the scriptSig and scriptWitness can all be replaced by a 66 witness WU with taproot
           replacementSize = 66;
         } else if (script != null) {
           final spendingPaths = script
-              .split(' ')
-              .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
-              .length +
+                  .split(' ')
+                  .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
+                  .length +
               1;
           // now assume the script could have been split into ${spendingPaths} equal tapleaves
           replacementSize = int.parse((script.length ~/ 2 ~/ spendingPaths +
-              32 * math.log((spendingPaths - 1) + 1) +
-              33)
+                  32 * math.log((spendingPaths - 1) + 1) +
+                  33)
               .toString());
         }
         potentialTaprootGains +=
@@ -636,7 +634,7 @@ class TransactionController extends BaseController {
       'potentialP2shSegwitGains': potentialP2shSegwitGains / tx.weight!,
       'potentialTaprootGains': potentialTaprootGains / tx.weight!,
       'realizedTaprootGains':
-      realizedTaprootGains / (tx.weight! + realizedTaprootGains),
+          realizedTaprootGains / (tx.weight! + realizedTaprootGains),
     };
   }
 
@@ -672,7 +670,7 @@ class TransactionController extends BaseController {
     try {
       String url = 'https://mempool.space/api/v1/block/$block';
       print(url);
-      final response = await _dio.get(url);
+      final response = await dioClient.get(url: url);
       print(response);
       final txDetailsConfirmed = TransactionConfirmedDetail.fromJson(
         jsonDecode(jsonEncode(response.data)),
@@ -697,52 +695,52 @@ class TransactionController extends BaseController {
       // isLoading.value = true;
       String url = '${baseUrl}tx/$txID';
       print(url);
-      await _dio
-          .get(url)
+      await dioClient
+          .get(url: url)
           .then((value) async {
-        transactionModel = TransactionModel.fromJson(value.data);
-        // for(int i = 0 ; i< transactionModel!.vin!.length;i++){
-        //   inputDollar.add(0.0);
-        // }
-        height = transactionModel!.status!.blockHeight;
-        final homeController = Get.find<HomeController>();
-        chainTip = homeController.bitcoinData.first.height;
-        // print(height);
-        // print(chainTip);
-        print('before calculating confirmations');
-        await calculateConfirmation();
-        await calculateStatus(transactionModel!.status!.confirmed!);
-        // print(
-        //     'above is the current block size${transactionModel!.status!.blockHeight}');
-        // await txDetailsConfirmedF(
-        //     transactionModel!.status!.blockHeight!.toString());
-      })
+            transactionModel = TransactionModel.fromJson(value.data);
+            // for(int i = 0 ; i< transactionModel!.vin!.length;i++){
+            //   inputDollar.add(0.0);
+            // }
+            height = transactionModel!.status!.blockHeight;
+            final homeController = Get.find<HomeController>();
+            chainTip = homeController.bitcoinData.first.height;
+            // print(height);
+            // print(chainTip);
+            print('before calculating confirmations');
+            await calculateConfirmation();
+            await calculateStatus(transactionModel!.status!.confirmed!);
+            // print(
+            //     'above is the current block size${transactionModel!.status!.blockHeight}');
+            // await txDetailsConfirmedF(
+            //     transactionModel!.status!.blockHeight!.toString());
+          })
           .then((value) => dollarRate())
           .then(
             (value) {
-          segwitEnabled.value = !transactionModel!.status!.confirmed! ||
-              AppUtils.isFeatureActive('mainnet',
-                  transactionModel!.status!.blockHeight!, 'segwit');
-          rbfEnabled.value = !transactionModel!.status!.confirmed! ||
-              AppUtils.isFeatureActive(
-                  'mainnet', transactionModel!.status!.blockHeight!, 'rbf');
-          taprootEnabled.value = !transactionModel!.status!.confirmed! ||
-              AppUtils.isFeatureActive('mainnet',
-                  transactionModel!.status!.blockHeight!, 'taproot');
-          calcSegwitFeeGains(transactionModel!);
-          // ids.first = transactionModel!.txid!;
-          getOutSpends1();
-          isRbfTransaction.value = transactionModel!.vin!
-              .any((element) => element.sequence! < 0xfffffffe);
-          isTaproot.value = transactionModel!.vin!.any((v) =>
-          v.prevout != null &&
-              v.prevout!.scriptpubkeyType == 'v1_p2tr');
-        },
-      )
+              segwitEnabled.value = !transactionModel!.status!.confirmed! ||
+                  AppUtils.isFeatureActive('mainnet',
+                      transactionModel!.status!.blockHeight!, 'segwit');
+              rbfEnabled.value = !transactionModel!.status!.confirmed! ||
+                  AppUtils.isFeatureActive(
+                      'mainnet', transactionModel!.status!.blockHeight!, 'rbf');
+              taprootEnabled.value = !transactionModel!.status!.confirmed! ||
+                  AppUtils.isFeatureActive('mainnet',
+                      transactionModel!.status!.blockHeight!, 'taproot');
+              calcSegwitFeeGains(transactionModel!);
+              // ids.first = transactionModel!.txid!;
+              getOutSpends1();
+              isRbfTransaction.value = transactionModel!.vin!
+                  .any((element) => element.sequence! < 0xfffffffe);
+              isTaproot.value = transactionModel!.vin!.any((v) =>
+                  v.prevout != null &&
+                  v.prevout!.scriptpubkeyType == 'v1_p2tr');
+            },
+          )
           .then((value) => startUpdatingTimestamp())
           .then((value) async {
-        await totalBTC();
-      });
+            await totalBTC();
+          });
 
       num bitCoin = transactionModel!.fee! / 100000000;
 
@@ -764,7 +762,7 @@ class TransactionController extends BaseController {
     getHexValue.value = !getHexValue.value;
     if (!getHexValue.value) {
       String url = '${baseUrl}tx/$txID/hex';
-      final response = await _dio.get(url);
+      final response = await dioClient.get(url: url);
       hexValue.value = response.data;
     }
   }
@@ -776,7 +774,7 @@ class TransactionController extends BaseController {
 
     String url = '${baseUrl}v1/historical-price?timestamp=$timestamp';
 
-    final response = await _dio.get(url);
+    final response = await dioClient.get(url: url);
     if (response.statusCode == 200) {
       final data = response.data;
       final List<dynamic> prices = data['prices'];
@@ -813,7 +811,7 @@ class TransactionController extends BaseController {
 
   String formatLocalTime(int timestamp) {
     DateTime dateTime =
-    DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
+        DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
 
     // Format DateTime to the desired format
     RxString formattedDateTime = "${dateTime.toLocal()}".split('.')[0].obs;
@@ -847,23 +845,23 @@ class TransactionController extends BaseController {
       String url = '${baseUrl}address/$addressId/txs';
       log(url);
       // Timer.periodic(Duration(seconds: 5), (timer) async {
-      await _dio
-          .get(url)
+      await dioClient
+          .get(url: url)
           .then((value) async {
-        subTransactionModel.clear();
-        ids.clear();
-        for (int i = 0; i < value.data.length; i++) {
-          subTransactionModel.add(TransactionModel.fromJson(value.data[i]));
-          ids.add(subTransactionModel[i].txid!);
-        }
+            subTransactionModel.clear();
+            ids.clear();
+            for (int i = 0; i < value.data.length; i++) {
+              subTransactionModel.add(TransactionModel.fromJson(value.data[i]));
+              ids.add(subTransactionModel[i].txid!);
+            }
 
-        await getOutSpends();
-      })
+            await getOutSpends();
+          })
           .then((value) => dollarRate())
-      // .then((value) => startUpdatingTimestamp())
+          // .then((value) => startUpdatingTimestamp())
           .then((value) async {
-        await totalBTC();
-      });
+            await totalBTC();
+          });
 
       isLoading.value = false;
       //     });
@@ -876,10 +874,9 @@ class TransactionController extends BaseController {
   getOutSpends1() async {
     try {
       isLoadingOutSpends.value = true;
-      String url =
-          'https://mempool.space/api/txs/outspends?txids=${txID}';
+      String url = 'https://mempool.space/api/txs/outspends?txids=${txID}';
       log(url);
-      dataOutSpents1 = await _dio.get(url);
+      dataOutSpents1 = await dioClient.get(url: url);
       print(dataOutSpents1);
     } catch (e) {
       print(e);
@@ -894,7 +891,7 @@ class TransactionController extends BaseController {
       String url =
           'https://mempool.space/api/txs/outspends?txids=${ids.length > 10 ? ids.sublist(0, 10).join(",") : ids.join(",")}';
       log(url);
-      dataOutSpents = await _dio.get(url);
+      dataOutSpents = await dioClient.get(url: url);
       isLoadingOutSpends.value = false;
     } catch (e) {
       isLoadingOutSpends.value = false;
@@ -909,22 +906,22 @@ class TransactionController extends BaseController {
           '${baseUrl}address/$addressId/txs?after_txid=${subTransactionModel[10].txid}';
       log(url);
       // Timer.periodic(Duration(seconds: 5), (timer) async {
-      await _dio
-          .get(url)
+      await dioClient
+          .get(url: url)
           .then((value) async {
-        subTransactionModel.clear();
-        ids.clear();
-        for (int i = 0; i < value.data.length; i++) {
-          subTransactionModel.add(TransactionModel.fromJson(value.data[i]));
-          ids.add(subTransactionModel[i].txid!);
-        }
-        await getOutSpends();
-      })
+            subTransactionModel.clear();
+            ids.clear();
+            for (int i = 0; i < value.data.length; i++) {
+              subTransactionModel.add(TransactionModel.fromJson(value.data[i]));
+              ids.add(subTransactionModel[i].txid!);
+            }
+            await getOutSpends();
+          })
           .then((value) => dollarRate())
-      // .then((value) => startUpdatingTimestamp())
+          // .then((value) => startUpdatingTimestamp())
           .then((value) async {
-        await totalBTC();
-      });
+            await totalBTC();
+          });
 
       isLoading.value = false;
       //     });
@@ -941,7 +938,7 @@ class TransactionController extends BaseController {
     channel.sink.add('{"track-tx":"${txID}"}');
     Future.delayed(
       const Duration(minutes: 3),
-          () {
+      () {
         channel.sink.add('{"action":"ping"}');
       },
     );
@@ -1038,4 +1035,3 @@ class SegwitFeeGains {
     };
   }
 }
-
