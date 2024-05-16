@@ -1,22 +1,20 @@
+import 'dart:math' as math;
+
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/models/mempool_models/outspends_model.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-import 'dart:math' as math;
 
 class BitcoinCardInformationScreen extends StatefulWidget {
   BitcoinCardInformationScreen({super.key});
