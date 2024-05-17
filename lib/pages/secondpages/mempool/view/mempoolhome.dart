@@ -345,27 +345,12 @@ class _MempoolHomeState extends State<MempoolHome> {
                                 visible: controller.showNextBlock.value,
                                 child: Container(
                                   child: Column(children: [
-                                    // GestureDetector(
-                                    //   onTap: () {
-                                    //     context.go(
-                                    //         "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
-                                    //   },
-                                    //   //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
-                                    //   child: SearchFieldWidget(
-                                    //     isSearchEnabled: false,
-                                    //     hintText: controller
-                                    //             .mempoolBlocks[controller.indexShowBlock.value]
-                                    //             .nTx!
-                                    //             .toStringAsFixed(0) +
-                                    //         " transactions",
-                                    //     handleSearch: handleSearch,
-                                    //   ),
-                                    // ),
+                                     
                                     GestureDetector(
                                       onTap: () {
                                         context.go(
-                                            "/wallet/unaccepted_block_transactions"); 
-                                            //${controller.txDetailsConfirmed!.id}
+                                            "/wallet/unaccepted_block_transactions");
+                                        //${controller.txDetailsConfirmed!.id}
                                       },
                                       //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
                                       child: SearchFieldWidget(
@@ -556,21 +541,19 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                         child: Column(
                                                           children: [
                                                             Text(
-                                                              DateFormat(
-                                                                      'yyyy-MM-dd hh:mm')
-                                                                  .format((DateTime.fromMillisecondsSinceEpoch(controller
-                                                                          .txDetailsConfirmed!
-                                                                          .timestamp *
-                                                                      1000))),
-                                                              style:
-                                                                  const TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
+                                                                DateFormat(
+                                                                        'yyyy-MM-dd hh:mm')
+                                                                    .format((DateTime.fromMillisecondsSinceEpoch(controller
+                                                                            .txDetailsConfirmed!
+                                                                            .timestamp *
+                                                                        1000))),
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyMedium!
+                                                                    .copyWith(
+                                                                        fontWeight:
+                                                                            FontWeight.bold)),
                                                             Text("time ago..."),
                                                           ],
                                                         ),
@@ -628,22 +611,17 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                             Row(
                                                               children: [
                                                                 Text(
-                                                                  (controller
-                                                                              .txDetailsConfirmed!
-                                                                              .extras
-                                                                              .reward /
-                                                                          100000000)
-                                                                      .toStringAsFixed(
-                                                                          3),
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
+                                                                    (controller.txDetailsConfirmed!.extras.reward /
+                                                                            100000000)
+                                                                        .toStringAsFixed(
+                                                                            3),
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .bodySmall!
+                                                                        .copyWith(
+                                                                            fontWeight:
+                                                                                FontWeight.bold)),
                                                                 Transform
                                                                     .translate(
                                                                   offset:
@@ -651,12 +629,14 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                           0, 2),
                                                                   child: Text(
                                                                     ' BTC  ',
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .shade300,
-                                                                        fontSize:
-                                                                            12),
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .bodySmall!
+                                                                        .copyWith(
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color: AppTheme.secondaryColor),
                                                                   ),
                                                                 ),
                                                                 Text(
@@ -763,33 +743,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              // Expanded(
-                              //   flex: 3,
-                              //   child: Column(
-                              //     children: [
-                              //       Text(
-                              //         '${controller.fees?.economyFee} sat/vB' ??
-                              //             '',
-                              //         maxLines: 1,
-                              //         overflow:
-                              //         TextOverflow.ellipsis,
-                              //       ),
-                              //       const Divider(),
-                              //       Text(
-                              //         controller.fees == null
-                              //             ? ''
-                              //             : '\$ ${controller.dollarConversion(controller.fees!.economyFee!).toStringAsFixed(2)}',
-                              //         overflow:
-                              //         TextOverflow.ellipsis,
-                              //         style: const TextStyle(
-                              //           color: Colors.green,
-                              //           fontWeight: FontWeight.bold,
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              // const SizedBox(width: 20),
                               Column(
                                 children: [
                                   Container(
@@ -820,22 +773,24 @@ class _MempoolHomeState extends State<MempoolHome> {
                                     height: AppTheme.elementSpacing / 2,
                                   ),
                                   Text(
-                                      controller.fees == null
-                                          ? ''
-                                          : '\$ ${controller.dollarConversion(controller.fees!.hourFee!).toStringAsFixed(2)}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(
-                                              color: lighten(
-                                                  getGradientColors(
-                                                          (controller.fees!
-                                                                  .hourFee!)
-                                                              .toDouble(),
-                                                          false)
-                                                      .first,
-                                                  25))),
+                                    controller.fees == null
+                                        ? ''
+                                        : '\$ ${controller.dollarConversion(controller.fees!.hourFee!).toStringAsFixed(2)}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                          color: lighten(
+                                              getGradientColors(
+                                                      (controller
+                                                              .fees!.hourFee!)
+                                                          .toDouble(),
+                                                      false)
+                                                  .first,
+                                              25),
+                                        ),
+                                  ),
                                 ],
                               ),
                               Column(
@@ -869,22 +824,24 @@ class _MempoolHomeState extends State<MempoolHome> {
                                     height: AppTheme.elementSpacing / 2,
                                   ),
                                   Text(
-                                      controller.fees == null
-                                          ? ''
-                                          : '\$ ${controller.dollarConversion(controller.fees!.halfHourFee!).toStringAsFixed(2)}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(
-                                              color: lighten(
-                                                  getGradientColors(
-                                                          (controller.fees!
-                                                                  .halfHourFee!)
-                                                              .toDouble(),
-                                                          false)
-                                                      .first,
-                                                  25))),
+                                    controller.fees == null
+                                        ? ''
+                                        : '\$ ${controller.dollarConversion(controller.fees!.halfHourFee!).toStringAsFixed(2)}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                          color: lighten(
+                                              getGradientColors(
+                                                      (controller.fees!
+                                                              .halfHourFee!)
+                                                          .toDouble(),
+                                                      false)
+                                                  .first,
+                                              25),
+                                        ),
+                                  ),
                                 ],
                               ),
                               Column(
@@ -1287,18 +1244,19 @@ class _MempoolHomeState extends State<MempoolHome> {
           child: Row(
             children: [
               Text(
-                (controller.txDetailsConfirmed!.extras.totalFees / 100000000)
-                    .toStringAsFixed(3),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+                  (controller.txDetailsConfirmed!.extras.totalFees / 100000000)
+                      .toStringAsFixed(3),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(fontWeight: FontWeight.bold)),
               Transform.translate(
                 offset: const Offset(0, 2),
                 child: Text(
                   ' BTC  ',
-                  style: TextStyle(color: Colors.grey.shade300, fontSize: 12),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.secondaryColor),
                 ),
               ),
               Text(
@@ -1398,16 +1356,17 @@ class _MempoolHomeState extends State<MempoolHome> {
                             .totalFees! /
                         100000000)
                     : '',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               Transform.translate(
                 offset: const Offset(0, 2),
                 child: Text(
                   ' BTC  ',
-                  style: TextStyle(color: Colors.grey.shade300, fontSize: 12),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.secondaryColor),
                 ),
               ),
               Text(
@@ -1431,7 +1390,7 @@ class _MempoolHomeState extends State<MempoolHome> {
               '~' +
               '\$${(((controller.mempoolBlocks[controller.indexShowBlock.value].medianFee! * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: AppTheme.white90,
+                color: AppTheme.black60,
               )),
       SizedBox(
         height: AppTheme.elementSpacing,
