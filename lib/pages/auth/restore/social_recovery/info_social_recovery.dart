@@ -25,7 +25,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
   void initState() {
     super.initState();
     key_composition = loadComposition('assets/lottiefiles/btc_key.json');
-    friends_composition = loadComposition('assets/lottiefiles/3_friends.json');
+    friends_composition = loadComposition('assets/lottiefiles/three_friends.json');
     time_composition =
         loadComposition('assets/lottiefiles/time_animation.json');
   }

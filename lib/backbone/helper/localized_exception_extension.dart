@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/uia_request_manager.dart';
-//import 'package:bitnet/l10n/l10n.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
 

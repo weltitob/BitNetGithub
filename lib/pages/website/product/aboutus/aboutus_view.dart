@@ -74,7 +74,7 @@ class AboutUsView extends StatelessWidget {
                                 height: AppTheme.cardPadding * 14 * spacingMultiplier,
                                 width: AppTheme.cardPadding * 14 * spacingMultiplier,
                                 child: Lottie.asset(
-                                  'assets/lottiefiles/btc_3d.json',),
+                                  'assets/lottiefiles/btc_threed.json',),
                               ),
                               Container(
                                 height: AppTheme.cardPadding * 36 * spacingMultiplier,

@@ -189,24 +189,8 @@
         "type": "text",
         "placeholder": {}
     },
-    "badServerLoginTypesException": "The homeserver supports the login types:\n{serverVersions}\nBut this app supports only:\n{supportedVersions}",
-    "@badServerLoginTypesException": {
-        "type": "text",
-        "placeholders": {
-            "serverVersions": {},
-            "supportedVersions": {}
-        }
-    },
     "sendOnEnter": "Send on enter",
     "@sendOnEnter": {},
-    "badServerVersionsException": "The homeserver supports the Spec versions:\n{serverVersions}\nBut this app supports only {supportedVersions}",
-    "@badServerVersionsException": {
-        "type": "text",
-        "placeholders": {
-            "serverVersions": {},
-            "supportedVersions": {}
-        }
-    },
     "banFromChat": "Ban from chat",
     "@banFromChat": {
         "type": "text",
@@ -1999,13 +1983,6 @@
         "type": "text",
         "placeholders": {}
     },
-    "unknownEvent": "Unknown event '{type}'",
-    "@unknownEvent": {
-        "type": "text",
-        "placeholders": {
-            "type": {}
-        }
-    },
     "unmuteChat": "Unmute chat",
     "@unmuteChat": {
         "type": "text",
@@ -2468,7 +2445,6 @@
         }
     },
     "language": "English",
-    "helloWorld": "Hello World!",
     "searchC": "Search Currency Here",
     "searchL": "Search Language Here",
     "cc": "Currency Converter",

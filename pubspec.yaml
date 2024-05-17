@@ -6,13 +6,6 @@ version: 1.0.0+1
 environment:
   sdk: ">=3.0.0 <4.0.0"
 
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
-# dependencies can be manually updated by changing the version numbers below to
-# the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`.
-
 dependencies:
   flutter:
     sdk: flutter
@@ -20,7 +13,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  #
+  intl: 0.19.0
+  flutter_localized_locales: ^2.0.5
   get:
   animate_do: ^3.1.2
   web_socket_channel: ^2.4.0
@@ -28,7 +22,6 @@ dependencies:
   vector_math: ^2.1.0
   android_id: ^0.3.6
 
-  #von oldbitnet create screen stuff
   flutter_sound: ^9.2.13
   flutter_inappwebview: ^5.7.2+3
   youtube_player_flutter: ^8.1.2
@@ -38,7 +31,6 @@ dependencies:
   flutter_layout_grid: ^2.0.5
   another_flushbar: ^1.12.30
 
-  #von fluffy
   adaptive_dialog: ^1.9.0-no-macos.2
   animations: ^2.0.7
   badges: ^2.0.3
@@ -56,10 +48,8 @@ dependencies:
   emoji_picker_flutter: ^1.5.1
   emoji_proposal: ^0.0.1
   emojis: ^0.9.9
-  #fcm_shared_isolate: ^0.1.0
   flutter_app_badger: ^1.5.0
   flutter_app_lock: ^3.0.0
-  #flutter_blurhash: ^0.7.0
   flutter_cache_manager: ^3.3.0
   flutter_foreground_task: ^3.10.0
   flutter_highlighter: ^0.1.1
@@ -69,8 +59,6 @@ dependencies:
   flutter_local_notifications: ^12.0.2
   flutter_map: ^3.1.0
   flutter_math_fork: ^0.7.2
-  #flutter_olm: ^1.2.0
-  #flutter_openssl_crypto: ^0.1.0
   flutter_ringtone_player: ^3.1.1
   flutter_typeahead: ^4.3.2
   flutter_web_auth_2: ^2.1.1
@@ -105,22 +93,18 @@ dependencies:
   vibration: ^1.7.4-nullsafety.0
   video_compress: ^3.1.1
   video_player: ^2.2.18
-  #vrouter: ^1.2.0+21
   webrtc_interface: ^1.0.13
   wakelock: ^0.6.2
 
-  #meins
   app_links: ^2.0.0
   animated_text_kit: ^4.2.2
   animated_flip_counter: ^0.2.6
-
   flutter_secure_storage: ^5.0.2
   mockito: ^5.3.2
   flash: ^2.0.5+1
   local_auth: ^2.1.6
   flutter_multi_formatter: ^2.11.2
   bolt11_decoder: ^1.0.2
-  #rive: ^0.10.0
   mobile_scanner: ^3.4.1
   page_transition: ^2.0.9
   buttons_tabbar: ^1.3.6
@@ -129,60 +113,39 @@ dependencies:
   pointycastle: ^3.3.0
   asn1lib: ^1.0.0
   jose: ^0.3.0
-
   bip39_mnemonic: ^3.0.6
-
-  #doesnt work
   line_awesome_flutter: ^2.0.0
   community_material_icon: ^5.9.55
   camera: ^0.10.3+2
-
   flutter_screenutil: ^5.9.0
   animated_theme_switcher: ^2.0.6
-
-  #wallet
   pretty_qr_code: ^3.1.0
-
-  #database
   cloud_firestore: ^4.3.0
   firebase_core: ^2.9.0
   firebase_storage: ^11.0.9
   cloud_functions: ^4.0.6
   firebase_dynamic_links: ^5.4.8
   injectable: ^1.5.3
-
-  #authentication
   firebase_auth: ^4.2.3
   firebase_app_check: ^0.2.1+8
   uuid: ^3.0.7
   google_sign_in: ^5.4.0
-
-  #effects and animations
   animator: ^3.1.0
   avatar_glow: ^2.0.2
   flutter_svg: ^2.0.6
   dio: ^5.2.1+1
   json_annotation: ^4.0.0
   flutter_spinkit: ^5.0.0
-
-  #functionality
   shared_preferences: ^2.0.15
   just_audio: ^0.9.20
   just_waveform: ^0.0.3
   get_it: ^7.2.0
-  intl: any
+
   equatable: ^2.0.3
   model_viewer_plus: ^1.3.0
-
-  #helpers
   timeago: ^3.1.0
   permission_handler: ^10.1.0
   random_string: ^2.3.1
-  #flutter_rust_bridge: ^1.38.2
-  #  freezed: ^2.1.0+1
-  #  freezed_annotation: ^2.1.0
-
-  #widgets
   curved_navigation_bar: ^1.0.3
   bubble_tab_indicator: ^0.1.6
   syncfusion_flutter_charts: ^20.2.36
@@ -194,14 +157,9 @@ dependencies:
   flutter_toggle_tab: ^1.2.0
   switcher: ^1.0.0
   liquid_pull_to_refresh: ^3.0.1
-
-  #webstuff
-  #snapshot: ^0.2.0
   provider: ^6.0.2
   cached_network_image: ^3.3.0
   http: ^0.13.3
-
-  #asset-/filebased
   file_picker: ^5.2.1
   image_picker: ^0.8.4+4
   path_provider: ^2.0.5
@@ -217,7 +175,6 @@ dependencies:
   intl_generator: ^0.4.1
   build_runner: ^2.4.8
   gauge_indicator: ^0.4.3
-  #nfc_manager:
   nfc_manager: ^3.4.0
   go_router: ^13.2.2
   flutter_stripe: ^9.1.1
@@ -225,9 +182,10 @@ dependencies:
   logger: ^1.4.0
   dio_smart_retry: ^6.0.0
 
-  flutter_gen: any
+  #flutter_gen: any CAUSES ISSUES TO FIND l10N
   keyboard_shortcuts: any
   rxdart: any
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -235,28 +193,59 @@ dev_dependencies:
   intl_utils: ^2.4.0
   msix: ^3.6.2
   translations_cleaner: ^0.0.5
-  flutter_gen_runner:
-
-
+  flutter_gen_runner: ^5.4.0
 
 flutter_launcher_icons:
-  andorid: true
+  android: true
   ios: true
   image_path_android: "assets/logo.png"
   image_path_ios: "assets/logo.png"
   adaptive_icon_background: "#ffffff"
   adaptive_icon_foreground: "assets/logo_foreground.png"
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+flutter_lints: ^2.0.0
 
-  flutter_localizations:
-    sdk: flutter
-  intl:
+msix_config:
+  display_name: bitnet
+  publisher_display_name: bitnet
+  publisher: CN=bitnet, O=Head of bad integration tests, L=Matrix, S=Internet, C=EU
+  identity_name: net.bit.bitnet
+  logo_path: assets/logo.png
+  capabilities: internetClient, location, microphone, webcam
+  protocol_activation: https
+  app_uri_handler_hosts: bitnet.im, matrix.to
+  execution_alias: bitnet
+  sign_msix: false
+  install_certificate: false
+
+dependency_overrides:
+  analyzer: ^6.0.0
+  flutter_secure_storage_windows:
+    git:
+      url: https://gitlab.com/TheOneWithTheBraid/flutter_secure_storage_windows.git
+      ref: main
+  flutter_webrtc:
+    git: https://github.com/krille-chan/flutter-webrtc.git
+  geolocator_android:
+    hosted:
+      name: geolocator_android
+      url: https://hanntech-gmbh.gitlab.io/free2pass/flutter-geolocator-floss
+  keyboard_shortcuts:
+    git:
+      url: https://github.com/TheOneWithTheBraid/keyboard_shortcuts.git
+      ref: null-safety
+  wakelock_windows:
+    git:
+      url: https://github.com/chandrabezzo/wakelock.git
+      ref: main
+      path: wakelock_windows
+
+flutter_intl:
+  enabled: true
+  arb_dir: lib/l10n
+  template_arbs: lib/l10n/intl_en.arb
+  output_dir: lib/generated
+
 
 flutter:
   fonts:
@@ -273,43 +262,3 @@ flutter:
     - assets/lottiefiles/
     - assets/textfiles/
     - assets/keys/
-
-msix_config:
-  display_name: bitnet
-  publisher_display_name: bitnet
-  publisher: CN=bitnet, O=Head of bad integration tests, L=Matrix, S=Internet, C=EU
-  identity_name: net.bit.bitnet
-  logo_path: assets\logo.png
-  capabilities: internetClient, location, microphone, webcam
-  protocol_activation: https
-  app_uri_handler_hosts: bitnet.im, matrix.to
-  execution_alias: bitnet
-  sign_msix: false
-  install_certificate: false
-
-dependency_overrides:
-  # fake secure storage plugin for Windows
-  # See: https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/15161
-  flutter_secure_storage_windows:
-    git:
-      url: https://gitlab.com/TheOneWithTheBraid/flutter_secure_storage_windows.git
-      ref: main
-  flutter_webrtc:
-    git: https://github.com/krille-chan/flutter-webrtc.git
-  geolocator_android:
-    hosted:
-      name: geolocator_android
-      url: https://hanntech-gmbh.gitlab.io/free2pass/flutter-geolocator-floss
-  # waiting for null safety
-  # Upstream pull request: https://github.com/AntoineMarcel/keyboard_shortcuts/pull/13
-  keyboard_shortcuts:
-    git:
-      url: https://github.com/TheOneWithTheBraid/keyboard_shortcuts.git
-      ref: null-safety
-  # blocked upgrade of package_info_plus for null safety
-  # https://github.com/creativecreatorormaybenot/wakelock/pull/203
-  wakelock_windows:
-    git:
-      url: https://github.com/chandrabezzo/wakelock.git
-      ref: main
-      path: wakelock_windows
