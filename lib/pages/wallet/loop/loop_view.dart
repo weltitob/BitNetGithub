@@ -10,7 +10,6 @@ import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/loop/controller/loop_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
-import 'package:bitnet/pages/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';

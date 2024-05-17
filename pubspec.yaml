@@ -225,6 +225,9 @@ dependencies:
   logger: ^1.4.0
   dio_smart_retry: ^6.0.0
 
+  flutter_gen: any
+  keyboard_shortcuts: any
+  rxdart: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

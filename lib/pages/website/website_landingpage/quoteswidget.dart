@@ -8,7 +8,6 @@ import 'package:bitnet/components/container/randomcontainers/randomavatarcontain
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

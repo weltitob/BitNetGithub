@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 
 import 'package:animations/animations.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/profile_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/public_room_bottom_sheet.dart';

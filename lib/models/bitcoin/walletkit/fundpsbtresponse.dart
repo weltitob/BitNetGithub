@@ -1,5 +1,4 @@
 import 'package:bitnet/models/bitcoin/walletkit/outpoint.dart';
-import 'package:bitnet/models/bitcoin/walletkit/utxorequest.dart';
 
 class FundedPsbtResponse {
   final String fundedPsbt;

@@ -7,8 +7,6 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../components/appstandards/BitNetAppBar.dart';
 import '../../components/appstandards/BitNetScaffold.dart';
-import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/services.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';

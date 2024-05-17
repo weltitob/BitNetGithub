@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/pages/secondpages/newsscreen.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class NewsTile extends StatelessWidget {

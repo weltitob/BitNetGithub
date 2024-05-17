@@ -4,7 +4,6 @@ import 'package:bitnet/components/buttons/appbaractions.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/actions/send/lightning_send_tab.dart';
 import 'package:bitnet/pages/wallet/actions/send/onchain_send_tab.dart';
-import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

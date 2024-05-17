@@ -1,10 +1,6 @@
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 
-import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
-import 'package:matrix/matrix.dart';
 import 'settings_style_view.dart';
 
 class SettingsStyle extends StatefulWidget {

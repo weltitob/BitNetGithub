@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/user_bottom_sheet/user_bottom_sheet.dart';
 import 'package:bitnet/pages/chat_list/chat/chat.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

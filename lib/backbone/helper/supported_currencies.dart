@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 const Map<String, String> supportedCurrencies = {
   "USD": "United States Dollar",

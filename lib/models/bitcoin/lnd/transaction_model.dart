@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/helper/helpers.dart';
 
 class BitcoinTransaction {
   String txHash;

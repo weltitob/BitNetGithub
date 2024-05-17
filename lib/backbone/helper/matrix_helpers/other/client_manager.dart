@@ -25,7 +25,7 @@ abstract class ClientManager {
         clientNames.addAll((jsonDecode(rawClientNames) as List).cast<String>());
       }
       print('list populated ///////${clientNames.length}///////');
-    } catch (e, s) {
+    } catch (e) {
       print('Error reading client names: $e');
       await Store().deleteItem(clientNamespace);
     }

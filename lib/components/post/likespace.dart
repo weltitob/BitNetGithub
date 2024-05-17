@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bottomsheet.dart';
 import 'package:bitnet/components/post/comments.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:flutter/material.dart';

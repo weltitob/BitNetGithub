@@ -52,7 +52,7 @@ void showOverlay(BuildContext context, String? message, {Color color = AppTheme.
   );
 
   // Add the overlay entry to the overlay
-  Overlay.of(context)?.insert(overlayEntry);
+  Overlay.of(context).insert(overlayEntry);
 
   // Remove the overlay entry after a duration
   Future.delayed(Duration(seconds: 3), () {
@@ -137,7 +137,7 @@ void showOverlayTransaction(
   );
 
   // Add the overlay entry to the overlay
-  Overlay.of(context)?.insert(overlayEntry);
+  Overlay.of(context).insert(overlayEntry);
 
   // Remove the overlay entry after a duration
   Future.delayed(Duration(seconds: 3), () {
