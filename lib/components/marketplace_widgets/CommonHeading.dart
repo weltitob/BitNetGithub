@@ -1,6 +1,10 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class CommonHeading extends StatefulWidget {
   final headingText;
@@ -50,27 +54,13 @@ class _CommonHeadingState extends State<CommonHeading> {
                 ),
               ),
               widget.hasButton
-                  ? GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, widget.onPress);
-                      },
-                      child: Container(
-                        width: 24.w,
-                        height: 24.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100.r),
-                          color: const Color.fromRGBO(255, 255, 255, 0.1),
-                        ),
-                        padding: EdgeInsets.only(
-                            top: 7.h, bottom: 7.h, right: 8.w, left: 10.w),
-                        child: Image.asset(
-                          rightArrowIcon,
-                          width: 10.w,
-                          height: 5.h,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    )
+                  ? RoundedButtonWidget(
+                    size: AppTheme.cardPadding * 1.25,
+                          buttonType: ButtonType.transparent,
+                    onTap:() =>                         context.go("/feed/${widget.onPress}")
+,
+iconData: Icons.arrow_right,
+                  )
                   : Container(),
               widget.collapseBtn
                   ? GestureDetector(

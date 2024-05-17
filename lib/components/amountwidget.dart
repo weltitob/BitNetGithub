@@ -21,6 +21,9 @@ class AmountWidget extends StatefulWidget {
   final FocusNode focusNode;
   final BitcoinUnits bitcoinUnit;
   final bool swapped;
+  final int? lowerBound;
+  final int? upperBound;
+  final BitcoinUnits? boundType;
   final Function(String currencyType, String text)? onAmountChange;
 
   const AmountWidget(
@@ -31,7 +34,7 @@ class AmountWidget extends StatefulWidget {
       required this.focusNode,
       this.bitcoinUnit = BitcoinUnits.BTC,
       this.swapped = true,
-      required this.context,
+      required this.context, this.lowerBound, this.upperBound, this.boundType,
       this.onAmountChange});
 
   @override
@@ -74,6 +77,9 @@ class _AmountWidgetState extends State<AmountWidget> {
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
+                           final chartLine = Provider.of<ChartLine?>(context, listen: false);
+                    
+                        final bitcoinPrice = chartLine?.price;
 
     //String unit = bitcoinUnitAsString(bitcoinUnit);
 
@@ -88,23 +94,17 @@ class _AmountWidgetState extends State<AmountWidget> {
                   IconButton(
                       onPressed: () {
                         this.swapped = !this.swapped;
-                        if (this.swapped) {
-                          final chartLine =
-                              Provider.of<ChartLine?>(context, listen: false);
-                          currency = currency ?? "USD";
-
-                          final bitcoinPrice = chartLine?.price;
-                          final currencyEquivalent = bitcoinPrice != null
-                              ? CurrencyConverter.convertCurrency(
-                                  widget.bitcoinUnit.name,
-                                  double.parse(widget.btcController.text.isEmpty
-                                      ? "0.0"
-                                      : widget.btcController.text),
-                                  currency!,
-                                  bitcoinPrice)
-                              : "0.00";
-
-                          this.widget.currController.text = currencyEquivalent;
+                        if(this.swapped) {
+                    
+                           final chartLine = Provider.of<ChartLine?>(context, listen: false);
+                        currency = currency ?? "USD";
+                    
+                        final bitcoinPrice = chartLine?.price;
+                        final currencyEquivalent = bitcoinPrice != null
+                            ? CurrencyConverter.convertCurrency(widget.bitcoinUnit.name, double.parse(widget.btcController.text.isEmpty ? "0.0" : widget.btcController.text), currency!, bitcoinPrice)
+                            : "0.00";
+                        currencyAmt = double.parse(currencyEquivalent);
+                        this.widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
                         } else {
                           final chartLine =
                               Provider.of<ChartLine?>(context, listen: false);
@@ -163,18 +163,16 @@ class _AmountWidgetState extends State<AmountWidget> {
                             }
                           }
                         },
-                        maxLength: 10,
-                        keyboardType:
-                            TextInputType.numberWithOptions(decimal: true),
+                        maxLength: widget.lowerBound != null ? 20 : 10,
+                        keyboardType: TextInputType.numberWithOptions(decimal: true),
                         inputFormatters: [
-                          // Only allow numerical values with a decimal point
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'(^\d*\.?\d*)')),
+                          if(widget.boundType != null) ...[
+                          BoundInputFormatter(swapped: swapped, lowerBound: widget.lowerBound??0,upperBound: widget.upperBound??999999999999999, boundType: widget.boundType!, valueType: widget.bitcoinUnit, inputCurrency: currency??"USD", bitcoinPrice: bitcoinPrice!, ),
+                           ], // Only allow numerical values with a decimal point
+                          FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
                           // Restrict the range of input to be within 0 and 2000
-                          NumericalRangeFormatter(
-                              min: 0,
-                              max: double.parse("99999999999"),
-                              context: context),
+                         if(widget.lowerBound == null)...[  NumericalRangeFormatter(
+                              min: 0, max: double.parse("99999999999"), context: context),],
                         ],
                         decoration: InputDecoration(
                           suffixIcon: this.swapped
@@ -350,5 +348,44 @@ class _AmountWidgetState extends State<AmountWidget> {
       ],
     );
   }
+
 }
 
+class BoundInputFormatter extends TextInputFormatter {
+  final bool swapped;
+  final String inputCurrency;
+  final int lowerBound;
+  final int upperBound;
+  final double bitcoinPrice;
+  final BitcoinUnits boundType;
+  final BitcoinUnits valueType;
+
+  BoundInputFormatter({required this.inputCurrency, required this.bitcoinPrice, required this.swapped, required this.lowerBound, required this.upperBound, required this.boundType, required this.valueType});
+
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    double convertedNewValue = double.parse(newValue.text);
+    if(!swapped) {
+    if(valueType != boundType) {
+      if(valueType == BitcoinUnits.SAT) {
+       convertedNewValue=  CurrencyConverter.convertSatoshiToBTC(convertedNewValue);
+      } else {
+       convertedNewValue =  CurrencyConverter.convertBitcoinToSats(convertedNewValue);
+      }
+    }
+      if(convertedNewValue < lowerBound) {
+        return newValue.copyWith(text: "$lowerBound", selection: TextSelection.collapsed(offset: lowerBound.toString().length), composing: TextRange.empty);
+      } else if(convertedNewValue > upperBound) {
+        return newValue.copyWith(text: "$upperBound", selection: TextSelection.collapsed(offset: upperBound.toString().length), composing: TextRange.empty);
+      }
+    } else {
+      convertedNewValue = double.parse(CurrencyConverter.convertCurrency(inputCurrency, double.parse(newValue.text), boundType.name, bitcoinPrice));
+       if(convertedNewValue < lowerBound) {
+        return newValue.copyWith(text: CurrencyConverter.convertCurrency(boundType.name, lowerBound.toDouble(), inputCurrency, bitcoinPrice) , selection: TextSelection.collapsed(offset: CurrencyConverter.convertCurrency(boundType.name, lowerBound.toDouble(), inputCurrency, bitcoinPrice).length), composing: TextRange.empty);
+      } else if(convertedNewValue > upperBound) {
+        return newValue.copyWith(text: CurrencyConverter.convertCurrency(boundType.name, upperBound.toDouble(), inputCurrency, bitcoinPrice) , selection: TextSelection.collapsed(offset: CurrencyConverter.convertCurrency(boundType.name, upperBound.toDouble(), inputCurrency, bitcoinPrice).length), composing: TextRange.empty);
+      }
+    }
+    return newValue;
+  }
+}
