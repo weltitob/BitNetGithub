@@ -7,7 +7,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:matrix/matrix.dart';
+
 
 Stream<RestResponse> subscribeInvoicesStream() async* {
   Logs().w("Called subscribeInvoices Stream!"); // The combined JSON response

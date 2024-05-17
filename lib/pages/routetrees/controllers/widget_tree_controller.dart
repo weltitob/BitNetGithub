@@ -8,7 +8,7 @@ import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart'
 
 import 'package:bitnet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:bitnet/backbone/security/security.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:universal_html/html.dart' as html;
 
 class WidgetTreeController extends BaseController {

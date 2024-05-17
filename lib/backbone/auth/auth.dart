@@ -8,11 +8,11 @@ import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/IONdata.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/backbone/helper/localized_exception_extension.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -20,9 +20,10 @@ import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:matrix/matrix.dart';
+
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
@@ -101,9 +102,9 @@ class Auth {
     required UserData user,
     required VerificationCode code,
   }) async {
-    Logs().w("Calling Cloudfunction with Microsoft ION now...");
-
-    Logs().w("Generating challenge...");
+    LoggerService logger = Get.find();
+    logger.i("Calling Cloudfunction with Microsoft ION now...");
+    logger.i("Generating challenge...");
     //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
     final String challange = generateChallenge(user.username);
     final String randomstring = generateRandomString(20); // length 20
@@ -127,13 +128,12 @@ class Auth {
     final currentuser = await signInWithToken(customToken: iondata.customToken);
     final newUser = user.copyWith(did: iondata.did);
 
-    Logs().w("User signed in with token. Creating user in database now...");
+    logger.i("User signed in with token. Creating user in database now...");
 
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    Logs()
-        .w('Successfully created wallet/user in database: ${newUser.toMap()}');
+    logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
     // Call the function to generate and store verification codes
-    Logs().w(
+    logger.i(
         "Generating and storing verification codes for friends of the new user now...");
     await generateAndStoreVerificationCodes(
       numCodes: 4,
@@ -141,17 +141,17 @@ class Auth {
       issuer: newUser.did,
       codesCollection: codesCollection,
     );
-    Logs().w("Marking the verification code as used now...");
+    logger.i("Marking the verification code as used now...");
     // Call the function to mark the verification code as used
     await markVerificationCodeAsUsed(
       code: code,
       receiver: newUser.did,
       codesCollection: codesCollection,
     );
-    Logs().w("Verification code marked as used.");
-    Logs().w("Adding user to userscount");
+    logger.i("Verification code marked as used.");
+    logger.i("Adding user to userscount");
     addUserCount();
-    Logs().w("Returning new user now...");
+    logger.i("Returning new user now...");
     return newUser;
   }
 
@@ -159,30 +159,31 @@ class Auth {
     required UserData user,
     required VerificationCode code,
   }) async {
-    Logs().w("Calling Cloudfunction with Microsoft ION now...");
+        LoggerService logger = Get.find();
 
-    Logs().w("Generating challenge...");
+    logger.i("Calling Cloudfunction with Microsoft ION now...");
+
+    logger.i("Generating challenge...");
     //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
     final String challange = generateChallenge(user.username);
-    Logs().w("Challenge created: $challange. Creating user now...");
+    logger.i("Challenge created: $challange. Creating user now...");
     final IONData iondata = await createDID(user.username, challange);
-    Logs().w("User created: IONDATA RECEIVED: $iondata.");
-    Logs().w("Storing private data now...");
+    logger.i("User created: IONDATA RECEIVED: $iondata.");
+    logger.i("Storing private data now...");
     final PrivateData privateData = PrivateData(
         did: iondata.did,
         privateKey: iondata.privateIONKey,
         mnemonic: iondata.mnemonic);
     // Call the function to store Private data in secure storage
     await storePrivateData(privateData);
-    Logs().w("Private data stored. Signing in with token now...");
+    logger.i("Private data stored. Signing in with token now...");
     final currentuser = await signInWithToken(customToken: iondata.customToken);
     final newUser = user.copyWith(did: iondata.did);
-    Logs().w("User signed in with token. Creating user in database now...");
+    logger.i("User signed in with token. Creating user in database now...");
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    Logs()
-        .w('Successfully created wallet/user in database: ${newUser.toMap()}');
+    logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
     // Call the function to generate and store verification codes
-    Logs().w(
+    logger.i(
         "Generating and storing verification codes for friends of the new user now...");
     await generateAndStoreVerificationCodes(
       numCodes: 4,
@@ -190,30 +191,32 @@ class Auth {
       issuer: newUser.did,
       codesCollection: codesCollection,
     );
-    Logs().w("Marking the verification code as used now...");
+    logger.i("Marking the verification code as used now...");
     // Call the function to mark the verification code as used
     await markVerificationCodeAsUsed(
       code: code,
       receiver: newUser.did,
       codesCollection: codesCollection,
     );
-    Logs().w("Verification code marked as used.");
-    Logs().w("Adding user to userscount");
+    logger.i("Verification code marked as used.");
+    logger.i("Adding user to userscount");
     addUserCount();
-    Logs().w("Returning new user now...");
+    logger.i("Returning new user now...");
     return newUser;
   }
 
   signMessageAuth(did, privateIONKey) async {
     try {
-      Logs().w("Signing Message in auth.dart ...");
-      Logs().w("did: $did, privateIONKey: $privateIONKey");
+          LoggerService logger = Get.find();
+
+      logger.i("Signing Message in auth.dart ...");
+      logger.i("did: $did, privateIONKey: $privateIONKey");
 
       final message = generateChallenge(did);
 
-      Logs().w("Message: $message");
+      logger.i("Message: $message");
 
-      Logs().w("signMessage function called now...");
+      logger.i("signMessage function called now...");
 
       final signedMessage = await signMessageFunction(
           did,
@@ -248,13 +251,14 @@ class Auth {
       String did, dynamic signedAuthMessage, BuildContext context) async {
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
+    LoggerService logger = Get.find();
 
     try {
       //showLoadingScreen
       //context.go('/ionloading');
       final String randomstring = generateRandomString(20); // length 20
 
-      Logs().w(
+      logger.i(
           "For now simply login in own matrix client until own sever is setup and can register there somehow.");
 
       //dieser call leitet uns iwie bereits weiter zur matrix page da das muss verhindert werden
@@ -335,6 +339,8 @@ class Auth {
   //coming from old homeserverpicker
   Future<void> checkHomeserverAction(
       BuildContext context, String homeservertext) async {
+            LoggerService logger = Get.find();
+
     try {
       var homeserver = Uri.parse(homeservertext);
       if (homeserver.scheme.isEmpty) {
@@ -359,9 +365,8 @@ class Auth {
       } else {
         context.go('/authhome/connect');
       }
-    } catch (e) {
-      Logs()
-          .e('Error in checkHomeserverAction', (e).toLocalizedString(context));
+    } on Exception catch ( e) {
+     logger.e('Error in checkHomeserverAction: ${e.toString()}');
     }
   }
 
@@ -470,7 +475,8 @@ class Auth {
   void signUpMatrixFirst(BuildContext context, String username) async {
     try {
       try {
-        Logs().w("Trying to register username $username on client");
+        LoggerService logger = Get.find();
+        logger.i("Trying to register username $username on client");
 
         Client client = Matrix.of(context).getLoginClient();
         print(client.database);
@@ -483,17 +489,21 @@ class Auth {
             username: username,
             password: "testjklskhajkd",
             initialDeviceDisplayName: "test");
-        Logs().w("To here it needs to come...");
+        logger.i("To here it needs to come...");
             } on MatrixException catch (e) {
-        Logs().e("signUpMatrixFirst error: $e");
+                      LoggerService logger = Get.find();
+
+        logger.e("signUpMatrixFirst error: $e");
         if (!e.requireAdditionalAuthentication) rethrow;
       }
       Matrix.of(context).loginUsername = username;
 
       //context.go('signup');
     } catch (e, s) {
-      final signupError = e.toLocalizedString(context);
-      Logs().e('Sign up failed: $signupError, in signUpMatrixFirst', e, s);
+      final signupError = e.toString();
+              LoggerService logger = Get.find();
+
+     logger.e('Sign up failed: $signupError, in signUpMatrixFirst, Stacktrace is: $s');
     }
   }
 
@@ -533,8 +543,9 @@ class Auth {
         );
       }
     } catch (e) {
-      final error = (e).toLocalizedString(context);
-      Logs().e(error);
+              LoggerService logger = Get.find();
+
+     logger.e(e.toString());
     }
   }
 

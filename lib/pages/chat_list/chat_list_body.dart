@@ -19,7 +19,7 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/profile_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/public_room_bottom_sheet.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
+
 
 import '../../components/fields/searchfield/chat_list_searchbar.dart';
 

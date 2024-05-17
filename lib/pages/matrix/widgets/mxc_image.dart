@@ -7,7 +7,7 @@ import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:matrix/matrix.dart';
+
 
 class MxcImage extends StatefulWidget {
   final Uri? uri;

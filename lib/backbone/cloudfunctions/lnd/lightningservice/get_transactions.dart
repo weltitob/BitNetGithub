@@ -7,7 +7,7 @@ import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:matrix/matrix.dart';
+
 
 Future<RestResponse> getTransactions() async {
   String restHost =

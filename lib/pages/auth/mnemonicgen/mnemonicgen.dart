@@ -13,7 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:provider/provider.dart';
 
 class MnemonicGen extends StatefulWidget {

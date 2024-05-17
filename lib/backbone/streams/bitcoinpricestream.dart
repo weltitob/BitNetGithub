@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:get/get.dart';
-import 'package:matrix/matrix.dart';
+
 
 /*
 This class represents a stream that periodically fetches the current price of Bitcoin in Euro from a REST API.

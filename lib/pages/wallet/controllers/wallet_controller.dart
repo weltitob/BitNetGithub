@@ -24,7 +24,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:matrix/matrix.dart';
+
 
 class WalletsController extends BaseController {
   RxBool hideBalance = false.obs;

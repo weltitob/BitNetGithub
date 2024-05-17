@@ -9,7 +9,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:linkify/linkify.dart';
-import 'package:matrix/matrix.dart';
+
 
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/pages/matrix/widgets/mxc_image.dart';

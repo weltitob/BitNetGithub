@@ -18,7 +18,7 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:bitnet/pages/wallet/loop/loop_view.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:matrix/matrix.dart';
+
 
 class Loop extends StatefulWidget {
   const Loop({super.key});

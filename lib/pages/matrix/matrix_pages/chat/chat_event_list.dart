@@ -7,7 +7,7 @@ import 'package:bitnet/pages/matrix/matrix_pages/chat/events/message.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:bitnet/pages/chat_list/chat/chat.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/seen_by_row.dart';

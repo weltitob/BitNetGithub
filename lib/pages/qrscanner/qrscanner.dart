@@ -9,7 +9,7 @@ import 'package:bitnet/pages/qrscanner/qrscanner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 

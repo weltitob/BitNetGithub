@@ -4,7 +4,7 @@ import 'package:bitnet/pages/matrix/matrix_pages/chat/events/reply_content.dart'
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:matrix/matrix.dart';
+
 import '../../../chat_list/chat/chat.dart';
 
 class ReplyDisplay extends StatelessWidget {

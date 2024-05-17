@@ -28,7 +28,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:http/http.dart' as http;
 
 class SendsController extends BaseController {

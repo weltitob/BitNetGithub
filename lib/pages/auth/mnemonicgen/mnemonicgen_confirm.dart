@@ -6,7 +6,7 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:matrix/matrix.dart';
+
 
 class MnemonicGenConfirm extends StatefulWidget {
   final MnemonicController mnemonicController;

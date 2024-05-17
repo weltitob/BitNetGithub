@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:matrix/matrix.dart'; // Adjust the import to your project structure
+ // Adjust the import to your project structure
 
 Stream<List<UserData>> lastUsersStream() {
   Logs().i("lastUsersStream called");

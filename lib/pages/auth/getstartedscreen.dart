@@ -10,7 +10,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
-import 'package:matrix/matrix.dart';
+
 
 class GetStartedScreen extends StatefulWidget {
   GetStartedScreen({Key? key}) : super(key: key);

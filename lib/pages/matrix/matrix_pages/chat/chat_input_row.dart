@@ -12,7 +12,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:keyboard_shortcuts/keyboard_shortcuts.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import '../../../chat_list/chat/chat.dart';

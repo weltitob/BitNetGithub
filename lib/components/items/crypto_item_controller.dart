@@ -4,7 +4,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:matrix/matrix.dart';
+
 
 class CryptoItemController extends GetxController
     with GetSingleTickerProviderStateMixin {

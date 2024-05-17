@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:future_loading_dialog/future_loading_dialog.dart';
-import 'package:matrix/matrix.dart';
+
 
 
 class MessageReactions extends StatelessWidget {

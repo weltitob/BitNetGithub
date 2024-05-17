@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:matrix/matrix.dart';
+
 import 'audio_player.dart';
 import 'cute_events.dart';
 import 'html_message.dart';

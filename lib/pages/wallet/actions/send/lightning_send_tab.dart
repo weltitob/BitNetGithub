@@ -11,7 +11,7 @@ import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dar
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:provider/provider.dart';
 
 class LightningSendTab extends GetWidget<SendsController> {

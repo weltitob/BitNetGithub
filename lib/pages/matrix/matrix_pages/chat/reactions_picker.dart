@@ -2,7 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:emoji_proposal/emoji_proposal.dart';
-import 'package:matrix/matrix.dart';
+
 
 import 'package:bitnet/backbone/helper/matrix_helpers/app_emojis.dart';
 import 'package:bitnet/pages/chat_list/chat/chat.dart';

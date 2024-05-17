@@ -8,7 +8,7 @@ import 'package:bitnet/models/bitcoin/walletkit/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:matrix/matrix.dart';
+
 
 Future<RestResponse> fundPsbt(TransactionData model) async {
   String restHost = AppTheme.baseUrlLightningTerminal;

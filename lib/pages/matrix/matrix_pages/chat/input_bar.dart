@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:emojis/emoji.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:slugify/slugify.dart';
 import 'package:bitnet/pages/matrix/widgets/mxc_image.dart';
 import '../../../../components/container/avatar.dart';

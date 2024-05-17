@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:get/get.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

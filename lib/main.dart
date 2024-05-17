@@ -20,7 +20,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:matrix/matrix.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +82,6 @@ Future<void> main() async {
     appleProvider: AppleProvider.appAttest,
   );
 
-  Logs().nativeColors = !PlatformInfos.isIOS;
   Get.put(LoggerService(), permanent: true);
   Get.put(DioClient(), permanent: true);
 
