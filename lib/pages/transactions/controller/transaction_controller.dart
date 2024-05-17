@@ -72,10 +72,13 @@ class TransactionController extends BaseController {
   RxString replacedTx = ''.obs;
   List<String> ids = [];
   RxInt page = 1.obs;
+  String searchValue = '';
 
   void toggleExpansion() {
     showDetail.value = !showDetail.value;
   }
+
+
 
   @override
   void onInit() {
