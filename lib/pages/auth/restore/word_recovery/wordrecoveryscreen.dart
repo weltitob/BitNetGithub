@@ -5,19 +5,12 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:bitnet/components/indicators/smoothpageindicator.dart';
-import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
-import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
-import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
+import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
 
 class WordRecoveryScreen extends StatefulWidget {
   @override
@@ -104,10 +97,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
         did = await Auth().getUserDID(_usernameController.text);
       }
       final PrivateData privateData =
-          await recoverKeyWithMnemonic(mnemonic, did);
-      print("Privatedata succesfully recovered: $privateData");
-      print("DID: ${privateData.did}");
-      print("PrivateKey: ${privateData.privateKey}");
+          await recoverKeyWithMnemonic(mnemonic, did); 
       final signedMessage =
           await Auth().signMessageAuth(privateData.did, privateData.privateKey);
       print("Signed message: $signedMessage");
@@ -122,14 +112,11 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
 
       throw Exception("Irgendeine error message lel: $e");
     }
-
-    //use privatekey and did to sign the message and authenticate afterwards
   }
   
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           final screenWidth = MediaQuery.of(context).size.width;
@@ -139,7 +126,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
             context: context,
             margin: isSuperSmallScreen
                 ? EdgeInsets.symmetric(horizontal: 0)
-                : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+                : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
             extendBodyBehindAppBar: true,
             backgroundColor: Theme.of(context).colorScheme.background,
             appBar: bitnetAppBar(

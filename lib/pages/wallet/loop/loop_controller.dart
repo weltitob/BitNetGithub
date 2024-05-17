@@ -17,6 +17,6 @@ class LoopsController extends BaseController {
   }
 
   void changeAnimate() {
-       animate.value = !animate.value;
-   }
+    animate.value = !animate.value;
+  }
 }

@@ -2,10 +2,11 @@ import 'dart:typed_data';
 
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_file_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 
 class MxcImage extends StatefulWidget {
@@ -98,15 +99,16 @@ class _MxcImageState extends State<MxcImage> {
         }
         _isCached = false;
       }
+        final DioClient dioClient = Get.find<DioClient>();
 
-      final response = await http.get(httpUri);
+      final response = await dioClient.get(url: httpUri.path);
       if (response.statusCode != 200) {
         if (response.statusCode == 404) {
           return;
         }
         throw Exception();
       }
-      final remoteData = response.bodyBytes;
+      final remoteData = response.data;
 
       if (!mounted) return;
       setState(() {

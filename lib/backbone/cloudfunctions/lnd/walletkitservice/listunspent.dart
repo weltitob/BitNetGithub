@@ -3,14 +3,15 @@ import 'dart:io';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
 import 'package:matrix/matrix.dart';
 
 Future<RestResponse> listUnspent() async {
   String restHost = AppTheme.baseUrlLightningTerminal;
-  const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
+  // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/utxos';
 
   ByteData byteData = await loadMacaroonAsset();
@@ -24,25 +25,39 @@ Future<RestResponse> listUnspent() async {
     'min_confs': 0,
     'max_confs': 0,
     'account': "default",
-    'unconfirmed_only': false, //false or true decides if only unconfirmed utxos are returned
+    'unconfirmed_only':
+        false, //false or true decides if only unconfirmed utxos are returned
   };
 
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    var response = await http.post(Uri.parse(url), headers: headers, body: json.encode(data));
-    Logs().w('Raw Response Publish Transaction: ${response.body}');
+      final DioClient dioClient = Get.find<DioClient>();
+
+    var response = await dioClient.post(url:url,
+        headers: headers, data: json.encode(data));
+    Logs().w('Raw Response Publish Transaction: ${response.data}');
 
     if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully added invoice", data: json.decode(response.body));
-
+      print(response.data);
+      return RestResponse(
+          statusCode: "${response.statusCode}",
+          message: "Successfully added invoice",
+          data: response.data);
     } else {
-      Logs().e('Failed to load data: ${response.statusCode}, ${response.body}');
-      return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.body}", data: {});
+      Logs().e('Failed to load data: ${response.statusCode}, ${response.data}');
+      return RestResponse(
+          statusCode: "error",
+          message:
+              "Failed to load data: ${response.statusCode}, ${response.data}",
+          data: {});
     }
   } catch (e) {
     Logs().e('Error trying to publish transaction: $e');
-    return RestResponse(statusCode: "error", message: "Failed to load data: Could not get response from Lightning node!", data: {});
+    return RestResponse(
+        statusCode: "error",
+        message:
+            "Failed to load data: Could not get response from Lightning node!",
+        data: {});
   }
 }

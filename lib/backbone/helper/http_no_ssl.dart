@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
-import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:http/http.dart' as http;
 import 'dart:io';
 
 class MyHttpOverrides extends HttpOverrides {

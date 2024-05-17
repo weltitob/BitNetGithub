@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
 import 'package:matrix/matrix.dart';
 
 /*
@@ -135,10 +135,13 @@ class BitcoinPriceStream {
         'vs_currencies': localCurrency,
         'include_last_updated_at': 'true',
       };
-      final response =
-          await http.get(Uri.parse(_url).replace(queryParameters: params));
+        final DioClient dioClient = Get.find<DioClient>();
+
+      final response = await dioClient.get(
+          url: _url +
+              "?ids=bitcoin&vs_currencies=$localCurrency&include_last_updated_at='true'");
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final data = response.data;
         final double price =
             double.parse(data['bitcoin'][localCurrency].toString());
         final double time =
@@ -148,7 +151,7 @@ class BitcoinPriceStream {
         _priceController.add(latestChartLine);
       } else {
         Logs().e(
-            "Error fetching Bitcoin price stream data: ${response.statusCode} ${response.reasonPhrase}");
+            "Error fetching Bitcoin price stream data: ${response.statusCode} ${response.data}");
       }
     } catch (e) {
       Logs().e("Error fetching Bitcoin price: $e");

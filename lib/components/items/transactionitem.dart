@@ -13,6 +13,7 @@ import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -100,7 +101,7 @@ class _TransactionItemState extends State<TransactionItem> {
         child: ClipRRect(
           borderRadius: AppTheme.cardRadiusBig,
           child: Container(
-            height: AppTheme.cardPadding * 3,
+            height: AppTheme.cardPadding * 3.2.h,
             child: Stack(
               children: [
                 GestureDetector(
