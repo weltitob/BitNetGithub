@@ -7,6 +7,7 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -423,7 +424,7 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
                 onTap: () => coin.setCurrencyType(
                     coin.coin != null ? !coin.coin! : false),
                 child: Container(
-                  width: 160,
+                  width: 180.w,
                   child: Row(
                     children: [
                       Text(

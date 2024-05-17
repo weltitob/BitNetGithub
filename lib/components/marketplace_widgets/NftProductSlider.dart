@@ -2,7 +2,6 @@ import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 
 class NftProductSlider extends StatefulWidget {
   final nftImage;

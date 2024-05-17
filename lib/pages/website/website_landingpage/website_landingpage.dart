@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/streams/website_streams/lastregisteredstream.dar
 import 'package:bitnet/backbone/streams/website_streams/userchangepercentstream.dart';
 import 'package:bitnet/backbone/streams/website_streams/usercountstream.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/models/website/footerpagedata.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage_view.dart';
 import 'package:flutter/material.dart';

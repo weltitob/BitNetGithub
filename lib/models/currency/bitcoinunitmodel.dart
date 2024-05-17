@@ -1,5 +1,3 @@
-import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
-import 'package:flutter/material.dart';
 
 enum BitcoinUnits { BTC, SAT, }
 

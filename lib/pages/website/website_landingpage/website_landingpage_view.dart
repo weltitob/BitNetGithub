@@ -14,7 +14,6 @@ import 'package:bitnet/pages/website/website_landingpage/pagetwo.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:seo/seo.dart';
 
 class WebsiteLandingPageView extends StatelessWidget {
   final WebsiteLandingPageController controller;

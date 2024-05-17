@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:bitnet/models/user/userwallet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';

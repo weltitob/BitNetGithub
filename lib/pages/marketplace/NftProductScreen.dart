@@ -7,7 +7,6 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/marketplace_widgets/BarChart.dart';
 import 'package:bitnet/components/marketplace_widgets/ChaunInfo.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
-import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductHorizontal.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:bitnet/components/marketplace_widgets/PropertieList.dart';

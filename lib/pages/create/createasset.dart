@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/compression.dart';
@@ -24,14 +23,10 @@ import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:bitnet/models/postmodels/media_model.dart';
 
 //THIS ONE HERE SEEMS TO BE TH EISSUE THIS IMPORT FUCKS EVERYTHING UP
 //import 'package:bitnet/models/postmodels/post.dart';
 
-import 'package:flutter_sound/public/flutter_sound_recorder.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:uuid/uuid.dart';
 
 class CreateAsset extends StatefulWidget {
   const CreateAsset({super.key});
@@ -272,7 +267,7 @@ class _CreateAssetState extends State<CreateAsset> {
                   "ON",
                   style: Theme.of(context)
                       .textTheme
-                      .button!
+                      .labelLarge!
                       .copyWith(
                       color: Theme.of(context)
                           .colorScheme
@@ -388,7 +383,7 @@ class _CreateAssetState extends State<CreateAsset> {
                               },
                             )
                           : TextField(
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                               minLines: 1,
                               maxLines: 5,
                               keyboardType: TextInputType.multiline,

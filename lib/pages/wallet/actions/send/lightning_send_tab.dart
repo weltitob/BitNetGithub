@@ -151,7 +151,7 @@ class LightningSendTab extends GetWidget<SendsController> {
           // The title displays the user's name.
           title: Text(
             "Unbekannt",
-            style: Theme.of(context).textTheme.subtitle2,
+            style: Theme.of(context).textTheme.titleSmall,
           ),
           // The subtitle displays a card number.
           subtitle: cardWithNumber(context),
@@ -187,7 +187,7 @@ class LightningSendTab extends GetWidget<SendsController> {
               // The receiver address to be displayed
               controller.bitcoinReceiverAdress,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
         ],

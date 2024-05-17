@@ -2,11 +2,8 @@ import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matr
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/chat_list/chat_details/chat_details_view.dart';
-import 'package:bitnet/pages/matrix/matrix_pages/chat/cupertino_widgets_bottom_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/widgets_bottom_sheet.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';

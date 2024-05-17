@@ -24,6 +24,7 @@ import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:dart_lnurl/dart_lnurl.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -40,6 +41,16 @@ class SendsController extends BaseController {
   void handleSearch(String value) {
     onQRCodeScanned(value, context);
   }
+
+
+
+
+  Future<void> getClipboardData() async {
+    ClipboardData? data = await Clipboard.getData('text/plain');
+    Logs().w('clipboard data ${data?.text}');
+    handleSearch(data?.text ?? '');
+  }
+
 
   BitcoinUnits bitcoinUnit = BitcoinUnits.BTC;
   RxBool isLoadingExchangeRt = true.obs;
@@ -162,7 +173,8 @@ class SendsController extends BaseController {
       case QRTyped.RestoreLogin:
       //  onScannedForSignIn(encodedString);
       case QRTyped.Unknown:
-        //send to unknown qr code page which shows raw data
+
+      //send to unknown qr code page which shows raw data
         //context.go("/error");
         break;
       default:
@@ -177,6 +189,7 @@ class SendsController extends BaseController {
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
     bitcoinReceiverAdressController = TextEditingController();
+    getClipboardData();
   }
 
   void resetValues() {
@@ -283,7 +296,7 @@ class SendsController extends BaseController {
     bitcoinUnit = BitcoinUnits.SAT;
 
     moneyTextFieldIsEnabled.value = false;
-    description = req.tags[1].data;
+    description.value = req.tags[1].data;
 
   }
 

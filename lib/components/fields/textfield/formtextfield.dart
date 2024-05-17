@@ -6,7 +6,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/services.dart';
 
 class FormTextField extends StatefulWidget {
-  final dynamic? onTapOutside;
+  final dynamic onTapOutside;
   final int? maxLength;
   final bool autofocus;
   final Function()? changefocustonext;

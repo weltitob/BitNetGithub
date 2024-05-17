@@ -3,6 +3,7 @@ import 'package:bitnet/models/mempool_models/bitcoin_data.dart';
 import 'package:bitnet/models/mempool_models/mempool_model.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/pages/secondpages/mempool/colorhelper.dart';
 
@@ -69,8 +70,7 @@ class _DataWidgetState extends State<DataWidget> {
         children: [
           widget.isAccepted
               ? Padding(
-                  padding:
-                      const EdgeInsets.only(left: AppTheme.cardPadding / 2),
+                  padding: EdgeInsets.only(left: AppTheme.cardPadding / 2.w),
                   child: Text(
                     widget.blockData!.height.toString(),
                     style: Theme.of(context)
@@ -88,15 +88,15 @@ class _DataWidgetState extends State<DataWidget> {
                 ),
           const SizedBox(height: AppTheme.elementSpacing),
           Container(
-            height: AppTheme.cardPadding * 6,
+            height: AppTheme.cardPadding * 5.h,
             width: AppTheme.cardPadding *
-                6, //MediaQuery.of(context).size.height * 0.2,
+                6.w, //MediaQuery.of(context).size.height * 0.2,
             margin: widget.isAccepted
-                ? const EdgeInsets.only(left: AppTheme.cardPadding, top: 10)
-                : const EdgeInsets.only(
-                    top: 10,
-                    left: AppTheme.cardPadding / 2,
-                    right: AppTheme.cardPadding / 2),
+                ? EdgeInsets.only(left: AppTheme.cardPadding.w, top: 10.h)
+                : EdgeInsets.only(
+                    top: 10.h,
+                    left: AppTheme.cardPadding / 2.5.w,
+                    right: AppTheme.cardPadding / 2.5.w),
             padding: const EdgeInsets.all(AppTheme.elementSpacing),
             decoration: getDecoration(
               widget.isAccepted
@@ -119,55 +119,55 @@ class _DataWidgetState extends State<DataWidget> {
                         'Fee: ~' +
                             '\$' +
                             '${(widget.mempoolBlocks!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.white),
+                        style: TextStyle(fontSize: 14.sp, color: Colors.white),
                       ),
-                // const SizedBox(height: 10),
-                // Text(
-                //   '${widget.blockData.extras!.feeRange!.first.toStringAsFixed(0)} - ${widget.blockData.extras!.feeRange!.last.toStringAsFixed(0)} sat/vB',
-                //   style: TextStyle(color: Colors.yellow.shade300),
-                // ),
-                const SizedBox(height: AppTheme.elementSpacing * 0.5),
+                SizedBox(height: AppTheme.elementSpacing * 0.35.h),
                 widget.isAccepted
                     ? Text(
                         '${widget.size.toStringAsFixed(2)} MB',
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
-                            fontSize: 20),
+                            fontSize: 20.sp),
                       )
                     : Text(
                         '${(widget.mempoolBlocks!.blockSize! / 1000000).toStringAsFixed(2)} MB',
-                        style: const TextStyle(
-                            fontSize: 20,
+                        style: TextStyle(
+                            fontSize: 20.sp,
                             color: Colors.white,
                             fontWeight: FontWeight.bold),
                       ),
-                const SizedBox(height: AppTheme.elementSpacing * 0.5),
+                SizedBox(height: AppTheme.elementSpacing * 0.4.h),
                 widget.isAccepted
-                    ? Text(
-                        '${formatPrice(widget.blockData?.txCount)} transactions',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.white),
-                      )
-                    : Text(
-                        '${formatPrice(widget.mempoolBlocks?.nTx)} transactions',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.white),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                const SizedBox(height: AppTheme.elementSpacing * 0.5),
+                    ? FittedBox(
+                      child: Text(
+                          '${formatPrice(widget.blockData?.txCount)} transactions',
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                        ),
+                    )
+                    : FittedBox(
+                      child: Text(
+                          '${formatPrice(widget.mempoolBlocks?.nTx)} transactions',
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ),
+                SizedBox(height: AppTheme.elementSpacing * 0.4.h),
                 widget.isAccepted
                     ? Text(
                         '${widget.time}',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.white),
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 14.sp, color: Colors.white),
                       )
-                    : Text(
-                        'In ~${widget.mins} minutes',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.white),
-                      ),
+                    : FittedBox(
+                      child: Text(
+                          'In ~${widget.mins} minutes',
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                        ),
+                    ),
               ],
             ),
           ),
@@ -176,11 +176,11 @@ class _DataWidgetState extends State<DataWidget> {
                   margin: widget.isAccepted
                       ? const EdgeInsets.only(left: AppTheme.cardPadding)
                       : const EdgeInsets.only(left: 0),
-                  child: const Icon(Icons.arrow_drop_down_rounded,
-                      size: AppTheme.cardPadding * 2.5),
+                  child: Icon(Icons.arrow_drop_down_rounded,
+                      size: AppTheme.cardPadding * 2.h),
                 )
-              : const SizedBox(
-                  height: AppTheme.cardPadding * 1.5,
+              : SizedBox(
+                  height: AppTheme.cardPadding * 1.h,
                 ),
         ],
       ),

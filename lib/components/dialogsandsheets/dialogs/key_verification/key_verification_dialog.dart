@@ -11,7 +11,6 @@ import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:matrix/encryption.dart';
 import 'package:matrix/matrix.dart';
 
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
 import 'package:bitnet/components/container/avatar.dart';
 
 class KeyVerificationDialog extends StatefulWidget {

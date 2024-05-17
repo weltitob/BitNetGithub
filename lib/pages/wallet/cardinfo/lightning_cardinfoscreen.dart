@@ -10,7 +10,12 @@ class LightningCardInformationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return bitnetScaffold(
         extendBodyBehindAppBar: true,
-        body: Container(),
+        body: PopScope(
+            canPop: false,
+            onPopInvoked: (v) {
+              context.go("/feed");
+            },
+            child: Container()),
         appBar: bitnetAppBar(
           text: "Lightning Card Information",
           context: context,

@@ -1,6 +1,5 @@
 import 'package:bitnet/models/bitcoin/walletkit/input.dart';
 import 'package:bitnet/models/bitcoin/walletkit/output.dart';
-import 'package:flutter/material.dart';
 
 class RawTransactionData {
   final List<Input> inputs;

@@ -34,7 +34,6 @@ class HomeController extends BaseController {
   int selectedIndex = -1;
   int selectedIndexData = -1;
   RxBool daLoading = false.obs;
-  final _dio = Dio();
   List<BlockData> bitcoinData = [];
   List<TransactionDetailsModel> txDetails = [];
   List<TransactionDetailsModel> txDetailsFound = [];
@@ -134,7 +133,7 @@ class HomeController extends BaseController {
 
     String url = '${baseUrl}v1/historical-price?timestamp=$timestamp';
 
-    final response = await _dio.get(url);
+    final response = await dioClient.get(url: url);
     if (response.statusCode == 200) {
       final data = response.data;
       final List<dynamic> prices = data['prices'];
@@ -160,7 +159,7 @@ class HomeController extends BaseController {
     update();
     try {
       String url = '${baseUrl}v1/blocks';
-      final response = await _dio.get(url);
+      final response = await dioClient.get(url: url);
       response.data.length;
       for (int i = 0; i < response.data.length; i++) {
         bitcoinData.add(BlockData.fromJson(response.data[i]));
@@ -323,7 +322,7 @@ class HomeController extends BaseController {
     Timer.periodic(const Duration(seconds: 5), (timer) async {
       try {
         String url = 'https://mempool.space/api/v1/blocks';
-        final response = await _dio.get(url);
+        final response = await dioClient.get(url: url);
         response.data.length;
         bitcoinData.clear();
         for (int i = 0; i < response.data.length; i++) {
@@ -348,7 +347,7 @@ class HomeController extends BaseController {
     try {
       String url = 'https://mempool.space/api/v1/block/$txId';
 
-      final response = await _dio.get(url);
+      final response = await dioClient.get(url: url);
       txDetailsConfirmed = TransactionConfirmedDetail.fromJson(
         jsonDecode(
           jsonEncode(response.data),
@@ -374,7 +373,7 @@ class HomeController extends BaseController {
       isLoadingTx.value = true;
       String url = 'https://mempool.space/api/block/$txId/txs/$page';
 
-      final response = await _dio.get(url);
+      final response = await dioClient.get(url: url);
 
       response.data.length;
       txDetails.clear();

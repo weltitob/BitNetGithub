@@ -7,6 +7,7 @@ import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/components/resultlist/users.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class ChooseRestoreScreen extends StatefulWidget {
@@ -33,34 +34,12 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
         builder: (BuildContext context, BoxConstraints constraints) {
       final screenWidth = MediaQuery.of(context).size.width;
       bool isSuperSmallScreen =
-          constraints.maxWidth < AppTheme.isSuperSmallScreen;
-      bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
-      bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-
-      double textWidth = isMidScreen
-          ? isSmallScreen
-              ? AppTheme.cardPadding * 16
-              : AppTheme.cardPadding * 22
-          : AppTheme.cardPadding * 24;
-      double subtitleWidth = isMidScreen
-          ? isSmallScreen
-              ? AppTheme.cardPadding * 14
-              : AppTheme.cardPadding * 18
-          : AppTheme.cardPadding * 22;
-      double spacingMultiplier = isMidScreen
-          ? isSmallScreen
-              ? 0.5
-              : 0.75
-          : 1;
-      double centerSpacing = isMidScreen
-          ? isSmallScreen
-              ? AppTheme.columnWidth * 0.15
-              : AppTheme.columnWidth * 0.65
-          : AppTheme.columnWidth;
+          constraints.maxWidth < AppTheme.isSuperSmallScreen; 
+       
       return bitnetScaffold(
         margin: isSuperSmallScreen
             ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
         extendBodyBehindAppBar: true,
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: bitnetAppBar(
@@ -76,7 +55,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
         body: ListView(
           children: [
             SizedBox(
-              height: AppTheme.cardPadding * 1,
+              height: AppTheme.cardPadding * 1.h,
             ),
             Padding(
               padding:
@@ -102,7 +81,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               ],
             ),
             SizedBox(
-              height: AppTheme.cardPadding,
+              height: AppTheme.cardPadding.h,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -116,11 +95,11 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               ],
             ),
             SizedBox(
-              height: AppTheme.cardPadding * 2,
+              height: AppTheme.cardPadding * 2.h,
             ),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
               child: Text(
                 "Locally saved accounts",
                 textAlign: TextAlign.left,
