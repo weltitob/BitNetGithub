@@ -56,16 +56,26 @@ class LightningSendTab extends GetWidget<SendsController> {
                     ),
                   ],
                 ),
+                Obx(
+                        ()=> Text(
+                          controller.amountWidgetOverBound.value ? "You are over the sending limit." : controller.amountWidgetUnderBound.value ? "You are under the sending baseline." : "",
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                 // A Padding widget that contains a button widget
                 Padding(
                     padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
-                    child: LongButtonWidget(
+                    child: 
+                    Obx( () => LongButtonWidget(
                       title: "JETZT SENDEN!",
-                      onTap: () async {
+                      buttonType: (!controller.amountWidgetOverBound.value && !controller.amountWidgetUnderBound.value) ? ButtonType.solid : ButtonType.transparent,
+                      onTap: (!controller.amountWidgetOverBound.value && !controller.amountWidgetUnderBound.value) ? () async {
                         Logs().w("lightning SendBTC getting called");
                         await controller.sendBTC(context);
-                      },
-                    )
+                      } : null,
+                    ))
                 ),
               ],
             ),
@@ -201,6 +211,7 @@ class LightningSendTab extends GetWidget<SendsController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AmountWidget(
+            ctrler: controller,
             bitcoinUnit: controller.bitcoinUnit,
             enabled: double.parse(controller.currencyController.text) == 0 || controller.sendType == SendType.LightningUrl,
             btcController: controller.moneyController,

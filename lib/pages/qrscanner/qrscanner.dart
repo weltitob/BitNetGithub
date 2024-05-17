@@ -53,7 +53,7 @@ class QRScannerController extends State<QrScanner> {
     print("isStringInvoice: $isStringInvoice");
     final isBitcoinValid = isBitcoinWalletValid(encodedString);
     print("isBitcoinValid: $isBitcoinValid");
-
+   
     late QRTyped qrTyped;
 
     Logs().w("Determining the QR type...");
@@ -62,6 +62,7 @@ class QRScannerController extends State<QrScanner> {
     if(isLightningMailValid){
       qrTyped = QRTyped.LightningMail;
     }
+    
     else if (isStringInvoice){
       qrTyped = QRTyped.Invoice;
     }
@@ -85,12 +86,15 @@ class QRScannerController extends State<QrScanner> {
         break;
       case QRTyped.OnChain:
        // Navigator.push(cxt, MaterialPageRoute(builder: (context)=>Send()));
-        cxt.go("/wallet/send?walletAdress=$encodedString");
+        //cxt.go("/wallet/send?walletAdress=$encodedString");
+        context.pop(encodedString);
         break;
       case QRTyped.Invoice:
         print("INVIUCE DETECTED!");
         Logs().w("Invoice was detected will forward to Send screen...");
-        cxt.go("/wallet/send?walletAdress=$encodedString");
+        Logs().w(GoRouter.of(cxt).routerDelegate.currentConfiguration.fullPath);
+        context.pop(encodedString);
+      
 
         //have to parse or give the page everything I know about the invoice
         try {

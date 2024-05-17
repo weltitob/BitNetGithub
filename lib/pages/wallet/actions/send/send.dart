@@ -9,7 +9,8 @@ class Send extends GetWidget<SendsController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.processParameters(context);
+
+    controller.processParameters(context, null);
 
     return Obx(() =>
         controller.hasReceiver.value ? SendBTCScreen() : SearchReceiver());

@@ -46,6 +46,8 @@ class SendsController extends BaseController {
   RxBool isLoadingFees = false.obs;
   RxBool hasReceiver = false.obs;
   RxBool moneyTextFieldIsEnabled = true.obs;
+  RxBool amountWidgetOverBound = false.obs;
+  RxBool amountWidgetUnderBound = false.obs;
   late FocusNode myFocusNodeAdress;
   late FocusNode myFocusNodeMoney;
   late double feesInEur_medium;
@@ -69,7 +71,7 @@ class SendsController extends BaseController {
   int? upperBound;
   BitcoinUnits? boundType;
   String? lnCallback;
-  void processParameters(BuildContext context) {
+  void processParameters(BuildContext context, String? address) {
     print('Process parameters for');
     Logs().w("Process parameters for sendscreen called");
 
@@ -77,7 +79,9 @@ class SendsController extends BaseController {
         GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
     String? invoice = queryParams['invoice'];
     String? walletAdress = queryParams['walletAdress'];
-
+    if(address != null) {
+      walletAdress = address;
+    }
     if (invoice != null) {
       Logs().w("Invoice: $invoice");
       giveValuesToInvoice(invoice);
@@ -85,9 +89,10 @@ class SendsController extends BaseController {
           (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
       bitcoinUnit = BitcoinUnits.SAT;
     } else if (walletAdress != null) {
-      Logs().w("Walletadress: $walletAdress");
+      onQRCodeScanned(walletAdress, context);
+      // Logs().w("Walletadress: $walletAdress");
 
-      giveValuesToOnchainSend(walletAdress);
+      // giveValuesToOnchainSend(walletAdress);
       moneyController.text =
           (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
       bitcoinUnit = BitcoinUnits.SAT;
@@ -180,7 +185,7 @@ class SendsController extends BaseController {
     moneyController.text = "0.00001";
     moneyTextFieldIsEnabled.value = true;
     description.value = "";
-    context.go("/wallet/send");
+    //context.go("/wallet/send");
   }
 
   void giveValuesToOnchainSend(String onchainAdress) async {

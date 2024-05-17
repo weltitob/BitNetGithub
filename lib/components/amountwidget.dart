@@ -8,6 +8,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -25,6 +26,8 @@ class AmountWidget extends StatefulWidget {
   final int? upperBound;
   final BitcoinUnits? boundType;
   final Function(String currencyType, String text)? onAmountChange;
+  //only useful for when in a send tab
+  final SendsController? ctrler;
 
   const AmountWidget(
       {super.key,
@@ -35,7 +38,7 @@ class AmountWidget extends StatefulWidget {
       this.bitcoinUnit = BitcoinUnits.BTC,
       this.swapped = true,
       required this.context, this.lowerBound, this.upperBound, this.boundType,
-      this.onAmountChange});
+      this.onAmountChange, this.ctrler});
 
   @override
   State<AmountWidget> createState() => _AmountWidgetState();
@@ -43,6 +46,7 @@ class AmountWidget extends StatefulWidget {
 
 class _AmountWidgetState extends State<AmountWidget> {
   bool swapped = true;
+  
   var amtControllerFunc;
   var currencyAmt = 0.0;
   var coinAmt = 0.0;
@@ -77,9 +81,8 @@ class _AmountWidgetState extends State<AmountWidget> {
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
-                           final chartLine = Provider.of<ChartLine?>(context, listen: false);
-                    
-                        final bitcoinPrice = chartLine?.price;
+    final chartLine = Provider.of<ChartLine?>(context, listen: false);
+    final bitcoinPrice = chartLine?.price;
 
     //String unit = bitcoinUnitAsString(bitcoinUnit);
 
@@ -167,12 +170,25 @@ class _AmountWidgetState extends State<AmountWidget> {
                         keyboardType: TextInputType.numberWithOptions(decimal: true),
                         inputFormatters: [
                           if(widget.boundType != null) ...[
-                          BoundInputFormatter(swapped: swapped, lowerBound: widget.lowerBound??0,upperBound: widget.upperBound??999999999999999, boundType: widget.boundType!, valueType: widget.bitcoinUnit, inputCurrency: currency??"USD", bitcoinPrice: bitcoinPrice!, ),
+                          BoundInputFormatter(swapped: swapped, lowerBound: widget.lowerBound??0,upperBound: widget.upperBound??999999999999999, boundType: widget.boundType!, valueType: widget.bitcoinUnit, inputCurrency: currency??"USD", bitcoinPrice: bitcoinPrice!, 
+                          overBound: (double currentVal) { 
+                            widget.ctrler?.amountWidgetUnderBound.value = false;
+                            widget.ctrler?.amountWidgetOverBound.value = true;
+                           }, 
+                          underBound: (double currentVal) {
+                            widget.ctrler?.amountWidgetUnderBound.value = true;
+                            widget.ctrler?.amountWidgetOverBound.value = false;
+
+                            }, 
+                            inBound: (double currentVal) { 
+                            widget.ctrler?.amountWidgetUnderBound.value = false;
+                            widget.ctrler?.amountWidgetOverBound.value = false;
+                             }, ),
                            ], // Only allow numerical values with a decimal point
                           FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
                           // Restrict the range of input to be within 0 and 2000
-                         if(widget.lowerBound == null)...[  NumericalRangeFormatter(
-                              min: 0, max: double.parse("99999999999"), context: context),],
+                           NumericalRangeFormatter(
+                              min: 0,max: (widget.upperBound != null && (widget.upperBound! > double.parse("99999999999"))) ? widget.upperBound!.toDouble() : double.parse("99999999999"), context: context),
                         ],
                         decoration: InputDecoration(
                           suffixIcon: this.swapped
@@ -359,8 +375,10 @@ class BoundInputFormatter extends TextInputFormatter {
   final double bitcoinPrice;
   final BitcoinUnits boundType;
   final BitcoinUnits valueType;
-
-  BoundInputFormatter({required this.inputCurrency, required this.bitcoinPrice, required this.swapped, required this.lowerBound, required this.upperBound, required this.boundType, required this.valueType});
+  final Function(double currentVal)? overBound;
+  final Function(double currentVal)? underBound;
+  final Function(double currentVal)? inBound;
+  BoundInputFormatter({required this.overBound, required this.underBound,required this.inBound,  required this.inputCurrency, required this.bitcoinPrice, required this.swapped, required this.lowerBound, required this.upperBound, required this.boundType, required this.valueType});
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
@@ -374,16 +392,29 @@ class BoundInputFormatter extends TextInputFormatter {
       }
     }
       if(convertedNewValue < lowerBound) {
-        return newValue.copyWith(text: "$lowerBound", selection: TextSelection.collapsed(offset: lowerBound.toString().length), composing: TextRange.empty);
+      //  return newValue.copyWith(text: "$lowerBound", selection: TextSelection.collapsed(offset: lowerBound.toString().length), composing: TextRange.empty);
+      underBound?.call(convertedNewValue);
       } else if(convertedNewValue > upperBound) {
-        return newValue.copyWith(text: "$upperBound", selection: TextSelection.collapsed(offset: upperBound.toString().length), composing: TextRange.empty);
+      //  return newValue.copyWith(text: "$upperBound", selection: TextSelection.collapsed(offset: upperBound.toString().length), composing: TextRange.empty);
+                   overBound?.call(convertedNewValue);
+
+      } else {
+        inBound?.call(convertedNewValue);
       }
     } else {
       convertedNewValue = double.parse(CurrencyConverter.convertCurrency(inputCurrency, double.parse(newValue.text), boundType.name, bitcoinPrice));
        if(convertedNewValue < lowerBound) {
-        return newValue.copyWith(text: CurrencyConverter.convertCurrency(boundType.name, lowerBound.toDouble(), inputCurrency, bitcoinPrice) , selection: TextSelection.collapsed(offset: CurrencyConverter.convertCurrency(boundType.name, lowerBound.toDouble(), inputCurrency, bitcoinPrice).length), composing: TextRange.empty);
+              underBound?.call(convertedNewValue);
+
+       // return newValue.copyWith(text: CurrencyConverter.convertCurrency(boundType.name, lowerBound.toDouble(), inputCurrency, bitcoinPrice) , selection: TextSelection.collapsed(offset: CurrencyConverter.convertCurrency(boundType.name, lowerBound.toDouble(), inputCurrency, bitcoinPrice).length), composing: TextRange.empty);
+
       } else if(convertedNewValue > upperBound) {
-        return newValue.copyWith(text: CurrencyConverter.convertCurrency(boundType.name, upperBound.toDouble(), inputCurrency, bitcoinPrice) , selection: TextSelection.collapsed(offset: CurrencyConverter.convertCurrency(boundType.name, upperBound.toDouble(), inputCurrency, bitcoinPrice).length), composing: TextRange.empty);
+              overBound?.call(convertedNewValue);
+
+       // return newValue.copyWith(text: CurrencyConverter.convertCurrency(boundType.name, upperBound.toDouble(), inputCurrency, bitcoinPrice) , selection: TextSelection.collapsed(offset: CurrencyConverter.convertCurrency(boundType.name, upperBound.toDouble(), inputCurrency, bitcoinPrice).length), composing: TextRange.empty);
+      
+      } else {
+        inBound?.call(convertedNewValue);
       }
     }
     return newValue;

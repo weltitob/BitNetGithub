@@ -21,6 +21,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:matrix/matrix.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
 
@@ -123,6 +124,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     // TODO: implement initState
+    PhotoManager.clearFileCache();
     super.initState();
     // _initializeHive();
   }

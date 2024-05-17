@@ -219,7 +219,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   BitNetImageWithTextContainer(
                     "Send",
                     () {
-                      context.push('/wallet/send');
+                      context.go('/wallet/send');
                     },
                     //image: "assets/images/friends.png",
                     width: AppTheme.cardPadding * 3.85,

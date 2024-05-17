@@ -150,7 +150,7 @@ class AppRoutes {
 
         GoRoute(
           path: '/wallet',
-          builder: (ctx, state) => Wallet(),
+          builder: (ctx, state) => Container(),
           routes: [
             GoRoute(
                 path: 'bitcoinscreen',
@@ -310,7 +310,7 @@ class AppRoutes {
             GoRoute(
               path: 'send',
               builder: _dynamicTransition == null
-                  ? (ctx, state) => const Send()
+                  ? (ctx, state) =>  Send(key: state.pageKey)
                   : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(

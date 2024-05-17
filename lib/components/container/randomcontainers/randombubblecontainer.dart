@@ -24,6 +24,9 @@ class _BubbleWidgetState extends State<BubbleWidget> with TickerProviderStateMix
 
     Future.doWhile(() async {
       await Future.delayed(Duration(milliseconds: 200)); // Creates a bubble every half-second
+      if(!mounted) {
+        return false;
+      }
       final bubble = Bubble(
         position: Offset(random.nextDouble() * widget.width, random.nextDouble() * widget.height),
         color: Colors.white.withAlpha(50 + random.nextInt(200)),
