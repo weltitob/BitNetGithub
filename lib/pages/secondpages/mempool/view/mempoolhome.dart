@@ -453,7 +453,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                         Icon(
                                                           Icons.copy,
                                                           color:
-                                                              AppTheme.white80,
+                                                              AppTheme.black60,
                                                           size: AppTheme
                                                                   .elementSpacing *
                                                               1.5,
