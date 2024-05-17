@@ -2,13 +2,10 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:matrix/matrix.dart';
 
 class MnemonicGenConfirm extends StatefulWidget {
@@ -20,77 +17,76 @@ class MnemonicGenConfirm extends StatefulWidget {
 }
 
 class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
-
-
-
-  void triggerMnemonicCheck(mCtrl, tCtrls){
-    final String mnemonic = tCtrls.map((controller) => controller.text).join(' ');
+  void triggerMnemonicCheck(mCtrl, tCtrls) {
+    final String mnemonic =
+        tCtrls.map((controller) => controller.text).join(' ');
     mCtrl.confirmMnemonic(mnemonic);
   }
 
   @override
   Widget build(BuildContext context) {
-     final Size size = MediaQuery.of(context).size;
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          final screenWidth = MediaQuery.of(context).size.width;
-          bool isSuperSmallScreen =
-              constraints.maxWidth < AppTheme.isSuperSmallScreen;
-          return bitnetScaffold(
-            context: context,
-            margin: isSuperSmallScreen
-                ? EdgeInsets.symmetric(horizontal: 0)
-                : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
-            extendBodyBehindAppBar: true,
-            backgroundColor: Theme.of(context).colorScheme.background,
-            appBar: bitnetAppBar(
-                text: "Confirm your mnemonic",
-                context: context,
+      final screenWidth = MediaQuery.of(context).size.width;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      return bitnetScaffold(
+        context: context,
+        margin: isSuperSmallScreen
+            ? EdgeInsets.symmetric(horizontal: 0)
+            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
+        extendBodyBehindAppBar: true,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        appBar: bitnetAppBar(
+          text: "Confirm your mnemonic",
+          context: context,
+          onTap: () {
+            widget.mnemonicController.changeWrittenDown();
+          },
+          actions: [PopUpLangPickerWidget()],
+        ),
+        body: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            MnemonicFieldWidget(
+                mnemonicController: widget.mnemonicController,
+                triggerMnemonicCheck: triggerMnemonicCheck),
+            Container(
+              margin: EdgeInsets.only(top: AppTheme.cardPadding.h),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppTheme.white60
+                      : AppTheme.black60,
+                  width: 2,
+                ),
+                borderRadius: AppTheme.cardRadiusCircular,
+              ),
+              child: SizedBox(
+                height: 0,
+                width: 65.w,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  top: AppTheme.cardPadding.h, bottom: AppTheme.cardPadding.h),
+              child: GestureDetector(
                 onTap: () {
-                  widget.mnemonicController.changeWrittenDown();
+                  Logs().w("Skip at own risk pressed");
+                  //context.go("/pinverification");
+                  widget.mnemonicController.signUp();
                 },
-                actions: [
-         PopUpLangPickerWidget()
-        ]),
-
-     body: SingleChildScrollView(
-      physics: NeverScrollableScrollPhysics(),
-       child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-       children: [MnemonicFieldWidget(mnemonicController: widget.mnemonicController, triggerMnemonicCheck: triggerMnemonicCheck),
-         Container(
-                        margin: EdgeInsets.only(top: AppTheme.cardPadding),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black60,
-                            width: 2,
-                          ),
-                          borderRadius: AppTheme.cardRadiusCircular,
-                        ),
-                        child: SizedBox(
-                          height: 0,
-                          width: 65,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: AppTheme.cardPadding,
-                            bottom: AppTheme.cardPadding),
-                        child: GestureDetector(
-                          onTap: () {
-                            Logs().w("Skip at own risk pressed");
-                            //context.go("/pinverification");
-                            widget.mnemonicController.signUp();
-                          },
-                          child: Text(
-                            "Skip at own risk",
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                      ),]),
-     ),
-          );});
+                child: Text(
+                  "Skip at own risk",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ),
+            SizedBox(height: 30.h)
+          ]),
+        ),
+      );
+    });
   }
-
 }
-

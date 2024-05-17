@@ -1,17 +1,17 @@
-import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
 
 Future<RestResponse> addInvoice(int amount, String? memo) async {
-  String restHost = AppTheme.baseUrlLightningTerminal; // Update the host as needed
-  const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
+  String restHost =
+      AppTheme.baseUrlLightningTerminal; // Update the host as needed
+  // const String macaroonPath =
+  //     'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   // Make the GET request
   String url = 'https://$restHost/v1/invoices';
   // Read the macaroon file and convert it to a hexadecimal string
@@ -38,20 +38,31 @@ Future<RestResponse> addInvoice(int amount, String? memo) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    var response = await http.post(Uri.parse(url), headers: headers, body: json.encode(data));
+      final DioClient dioClient = Get.find<DioClient>();
+    var response = await dioClient.post(url: url, headers: headers, data: data);
     // Print raw response for debugging
-    print('Raw Response: ${response.body}');
+    print('Raw Response: ${response.data}');
 
     if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully added invoice", data: json.decode(response.body));
-
+      print(response.data);
+      return RestResponse(
+          statusCode: "${response.statusCode}",
+          message: "Successfully added invoice",
+          data: response.data);
     } else {
-      print('Failed to load data: ${response.statusCode}, ${response.body}');
-      return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.body}", data: {});
+      print('Failed to load data: ${response.statusCode}, ${response.data}');
+      return RestResponse(
+          statusCode: "error",
+          message:
+              "Failed to load data: ${response.statusCode}, ${response.data}",
+          data: {});
     }
   } catch (e) {
     print('Error: $e');
-    return RestResponse(statusCode: "error", message: "Failed to load data: Could not get response from Lightning node!", data: {});
+    return RestResponse(
+        statusCode: "error",
+        message:
+            "Failed to load data: Could not get response from Lightning node!",
+        data: {});
   }
 }

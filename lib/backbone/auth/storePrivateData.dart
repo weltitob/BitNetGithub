@@ -72,11 +72,6 @@ Future<PrivateData> getPrivateData(String DidOrUsername) async {
   // Find the IONData object with the matching DID
   final matchingPrivateData = usersStored.firstWhere((user) => user.did == did);
 
-  if (matchingPrivateData == null) {
-    throw Exception(
-        'Failed to find IONData with the specified DID or username');
-  }
-
   return matchingPrivateData;
 }
 

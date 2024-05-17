@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
@@ -83,6 +84,7 @@ Future<void> main() async {
 
   Logs().nativeColors = !PlatformInfos.isIOS;
   Get.put(LoggerService(), permanent: true);
+  Get.put(DioClient(), permanent: true);
 
   // Run the app
   runApp(

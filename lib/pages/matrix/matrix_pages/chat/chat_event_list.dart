@@ -12,7 +12,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:bitnet/pages/chat_list/chat/chat.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/seen_by_row.dart';
 import 'package:bitnet/pages/matrix/matrix_pages/chat/typing_indicators.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/adaptive_bottom_sheet.dart';
 
 class ChatEventList extends StatelessWidget {
   final ChatController controller;

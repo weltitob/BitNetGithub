@@ -4,7 +4,6 @@ import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/components/container/custom_card_landigpage.dart';
 import 'package:bitnet/models/website/carddata.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
-import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:seo/seo.dart';
 

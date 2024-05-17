@@ -1,12 +1,15 @@
 import 'dart:io';
-import 'package:http/http.dart' as http;
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 Future<XFile?> urlToXFile(String url) async {
   try {
+      final DioClient dioClient = Get.find<DioClient>();
+
     // Downloading the file from the URL
-    final response = await http.get(Uri.parse(url));
+    final response = await dioClient.get(url: url);
     if (response.statusCode != 200) {
       throw Exception('Error downloading file');
     }
@@ -17,11 +20,10 @@ Future<XFile?> urlToXFile(String url) async {
 
     // Writing the file to the local storage
     final file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
+    await file.writeAsBytes(response.data);
 
     // Creating an XFile instance from the local file path
     return XFile(file.path);
-
   } catch (e) {
     print('Error converting URL to XFile: $e');
     return null;

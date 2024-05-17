@@ -16,7 +16,6 @@ import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:provider/provider.dart';
 
-
 class MnemonicGen extends StatefulWidget {
   const MnemonicGen({super.key});
 
@@ -25,8 +24,8 @@ class MnemonicGen extends StatefulWidget {
 }
 
 class MnemonicController extends State<MnemonicGen> {
-
-  String profileimageurl = "https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=338&ext=jpg&ga=GA1.1.735520172.1711238400&semt=ais";
+  String profileimageurl =
+      "https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=338&ext=jpg&ga=GA1.1.735520172.1711238400&semt=ais";
 
   late String code;
   late String issuer;
@@ -47,18 +46,18 @@ class MnemonicController extends State<MnemonicGen> {
 
   void processParameters(BuildContext context) {
     Logs().w("Process parameters for mnemonicgen called");
-    final Map<String, String> parameters = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
+    final Map<String, String> parameters =
+        GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
 
     if (parameters.containsKey('code')) {
       code = parameters['code']!;
     }
-    if(parameters.containsKey('issuer')) {
+    if (parameters.containsKey('issuer')) {
       issuer = parameters['issuer']!;
     }
     if (parameters.containsKey('username')) {
       username = parameters['username']!;
     }
-
   }
 
   // Constructs Mnemonic from random secure 256bits entropy with optional passphrase
@@ -75,22 +74,23 @@ class MnemonicController extends State<MnemonicGen> {
 
   void confirmMnemonic(String typedMnemonic) {
     if (mnemonicString == typedMnemonic) {
-      showOverlay(context, "Your mnemonic is correct! Please keep it safe.", color: AppTheme.successColor);
+      showOverlay(context, "Your mnemonic is correct! Please keep it safe.",
+          color: AppTheme.successColor);
       signUp();
     } else {
       //implement error throw
-      showOverlay(context, "Your mnemonic does not match. Please try again.", color: AppTheme.errorColor);
+      showOverlay(context, "Your mnemonic does not match. Please try again.",
+          color: AppTheme.errorColor);
       Logs().e("Mnemonic does not match");
       changeWrittenDown();
     }
   }
 
-
   void signUp() async {
     setState(() {
       isLoadingSignUp = true;
     });
-    try{
+    try {
       Auth().loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
       Logs().w("Making firebase auth now...");
 
@@ -111,29 +111,29 @@ class MnemonicController extends State<MnemonicGen> {
       );
 
       VerificationCode verificationCode = VerificationCode(
-          used: false,
-          code: code,
-          issuer: issuer,
-          receiver: username);
+          used: false, code: code, issuer: issuer, receiver: username);
 
-      final UserData? currentuserwallet = await firebaseAuthentication(
-          userdata,
-          verificationCode
+      final UserData? currentuserwallet =
+          await firebaseAuthentication(userdata, verificationCode);
+      LocalProvider localeProvider = Provider.of<LocalProvider>(
+        context,
+        listen: false,
       );
-      LocalProvider localeProvider = Provider.of<LocalProvider>(context, listen: false);
-               Locale deviceLocale = PlatformDispatcher.instance.locale;// or html.window.locale
-         String langCode = deviceLocale.languageCode;
-      localeProvider.setLocaleInDatabase(localeProvider.locale?.languageCode ?? langCode, localeProvider.locale ?? deviceLocale);
+      Locale deviceLocale =
+          PlatformDispatcher.instance.locale; // or html.window.locale
+      String langCode = deviceLocale.languageCode;
+      localeProvider.setLocaleInDatabase(
+          localeProvider.locale.languageCode ?? langCode,
+          localeProvider.locale ?? deviceLocale);
       Logs().w("Navigating to homescreen now...");
       context.go('/');
-
-    } on MatrixException catch(e){
+    } on MatrixException catch (e) {
       print("Matrix Exception: $e");
       throw Exception(e);
-    }
-    on FirebaseException catch (e) {
+    } on FirebaseException catch (e) {
       Logs().e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
-      throw Exception("We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");
+      throw Exception(
+          "We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");
     } catch (e) {
       //implement error throw
       Logs().e("Error trying to call signUp in mnemonicgen.dart: $e");
@@ -155,13 +155,12 @@ class MnemonicController extends State<MnemonicGen> {
       );
 
       return currentuserwallet;
-    }on FirebaseException catch (e) {
+    } on FirebaseException catch (e) {
       Logs().e("Firebase Exception: $e");
       setState(() {
         throw Exception("Error: $e");
       });
-    }
-    catch (e) {
+    } catch (e) {
       throw Exception("Error: $e");
     }
     return null;
@@ -173,14 +172,14 @@ class MnemonicController extends State<MnemonicGen> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     processParameters(context);
 
     if (hasWrittenDown) {
-      return MnemonicGenConfirm(mnemonicController: this,);
+      return MnemonicGenConfirm(
+        mnemonicController: this,
+      );
     } else {
       return MnemonicGenScreen(mnemonicController: this);
     }

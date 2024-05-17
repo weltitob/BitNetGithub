@@ -8,7 +8,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 
-
 class CreateAccount extends StatefulWidget {
   CreateAccount({
     Key? key,
@@ -19,7 +18,6 @@ class CreateAccount extends StatefulWidget {
 }
 
 class CreateAccountController extends State<CreateAccount> {
-
   late String code;
   late String issuer;
 
@@ -30,11 +28,12 @@ class CreateAccountController extends State<CreateAccount> {
 
   void processParameters(BuildContext context) {
     Logs().w("Process parameters for createAccount called");
-    final Map<String, String> parameters = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
+    final Map<String, String> parameters =
+        GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
     if (parameters.containsKey('code')) {
       code = parameters['code']!;
     }
-    if(parameters.containsKey('issuer')) {
+    if (parameters.containsKey('issuer')) {
       issuer = parameters['issuer']!;
     }
   }
@@ -53,9 +52,10 @@ class CreateAccountController extends State<CreateAccount> {
           .loginHomeserverSummary
           ?.loginFlows
           .any((flow) => flow.type == flowType) ??
-          false;
+      false;
 
-  bool isDefaultPlatform = (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
+  bool isDefaultPlatform =
+      (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
 
   bool get supportsLogin => _supportsFlow('m.login.password');
 
@@ -68,7 +68,7 @@ class CreateAccountController extends State<CreateAccount> {
     if (loginTypes == null) return null;
     final rawProviders = loginTypes.tryGetList('flows')!.singleWhere(
           (flow) => flow['type'] == AuthenticationTypes.sso,
-    )['identity_providers'];
+        )['identity_providers'];
     final list = (rawProviders as List)
         .map((json) => IdentityProvider.fromJson(json))
         .toList();
@@ -84,7 +84,8 @@ class CreateAccountController extends State<CreateAccount> {
       isLoading = true;
     });
 
-    localpart = controllerUsername.text.trim().toLowerCase().replaceAll(' ', '_');
+    localpart =
+        controllerUsername.text.trim().toLowerCase().replaceAll(' ', '_');
     if (localpart.isEmpty) {
       setState(() {
         errorMessage = L10n.of(context)!.pleaseChooseAUsername;
@@ -93,9 +94,8 @@ class CreateAccountController extends State<CreateAccount> {
       throw Exception(L10n.of(context)!.pleaseChooseAUsername);
     }
 
-    try{
-      bool usernameExists =
-      await Auth().doesUsernameExist(localpart);
+    try {
+      bool usernameExists = await Auth().doesUsernameExist(localpart);
 
       if (!usernameExists) {
         // You can create the user here since they don't exist yet.
@@ -103,13 +103,16 @@ class CreateAccountController extends State<CreateAccount> {
 
         //VRouter.of(context).queryParameters.clear();
 
-        Logs().w("Queryparameters that will be passed: $code, $issuer, $localpart");
+        Logs().w(
+            "Queryparameters that will be passed: $code, $issuer, $localpart");
 
-        context.go(Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
-          'code': code,
-          'issuer': issuer,
-          'username': localpart,
-        }).toString());
+        context.go(
+          Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
+            'code': code,
+            'issuer': issuer,
+            'username': localpart,
+          }).toString(),
+        );
 
         //await createUserLocal();
       } else {
@@ -117,7 +120,7 @@ class CreateAccountController extends State<CreateAccount> {
         errorMessage = "This username is already taken.";
         // The username already exists.
       }
-    } catch(e) {
+    } catch (e) {
       print("Error: $e");
     }
     setState(() {
@@ -126,8 +129,8 @@ class CreateAccountController extends State<CreateAccount> {
   }
 
   void matrixSignUp() {
-
-    Logs().w("!!!CHANGE NEEDED: signup matrix need to change email each time and at one point setup own matrix server without email auth");
+    Logs().w(
+        "!!!CHANGE NEEDED: signup matrix need to change email each time and at one point setup own matrix server without email auth");
     Logs().w("signupmatrixfirst from Auth is called...");
     Auth().signUpMatrixFirst(context, localpart);
     // Logs().w("signupmatrixsecond from Auth is called...");
@@ -140,11 +143,12 @@ class CreateAccountController extends State<CreateAccount> {
     // Matrix.of(context).loginAvatar = picked;
   }
 
-
   @override
   Widget build(BuildContext context) {
     processParameters(context);
 
-    return CreateAccountView(controller: this,);
+    return CreateAccountView(
+      controller: this,
+    );
   }
 }

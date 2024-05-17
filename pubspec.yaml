@@ -161,7 +161,7 @@ dependencies:
   animator: ^3.1.0
   avatar_glow: ^2.0.2
   flutter_svg: ^2.0.6
-  dio: ^4.0.6
+  dio: ^5.2.1+1
   json_annotation: ^4.0.0
   flutter_spinkit: ^5.0.0
 
@@ -225,7 +225,11 @@ dependencies:
   logger: ^1.4.0
   photo_manager: ^3.1.1
   photo_manager_image_provider: ^2.1.1
+  dio_smart_retry: ^6.0.0
 
+  flutter_gen: any
+  keyboard_shortcuts: any
+  rxdart: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

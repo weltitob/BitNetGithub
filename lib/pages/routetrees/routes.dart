@@ -19,7 +19,6 @@ import 'package:bitnet/pages/chat_list/chat_matrixwidgets_settings/chat_matrixwi
 import 'package:bitnet/pages/chat_list/chat_permissions_settings/chat_permissions_settings.dart';
 import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
 import 'package:bitnet/pages/create/createasset.dart';
-import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';

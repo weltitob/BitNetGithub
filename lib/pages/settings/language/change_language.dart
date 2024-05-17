@@ -10,6 +10,7 @@ import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -65,7 +66,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
 
     return Container(
       //height: get.height * 0.8,
-      width: get.width,
+      width: get.width.w,
       child: Container(
         margin: EdgeInsets.symmetric(
           horizontal: AppTheme.elementSpacing,
@@ -74,7 +75,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
           child: Column(
             children: [
               SizedBox(
-                height: AppTheme.cardPadding * 2,
+                height: AppTheme.cardPadding * 2.h,
               ),
               SearchFieldWidget(
                   hintText: lang!.searchL,
@@ -88,7 +89,7 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
               VerticalFadeListView(
                 child: SizedBox(
                   width: get.width,
-                  height: get.height * 0.6,
+                  height: get.height * 0.6.h,
                   child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,

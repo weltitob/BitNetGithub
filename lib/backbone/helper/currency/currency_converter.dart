@@ -1,5 +1,4 @@
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
-import 'package:flutter/material.dart';
 
 class CurrencyConverter {
 

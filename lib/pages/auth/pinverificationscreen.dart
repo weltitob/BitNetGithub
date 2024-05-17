@@ -1,18 +1,19 @@
 import 'dart:async';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/models/firebase/verificationcode.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -114,59 +115,34 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       final screenWidth = MediaQuery.of(context).size.width;
       bool isSuperSmallScreen =
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
-      bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
-      bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
 
-      double textWidth = isMidScreen
-          ? isSmallScreen
-              ? AppTheme.cardPadding * 16
-              : AppTheme.cardPadding * 22
-          : AppTheme.cardPadding * 24;
-      double subtitleWidth = isMidScreen
-          ? isSmallScreen
-              ? AppTheme.cardPadding * 14
-              : AppTheme.cardPadding * 18
-          : AppTheme.cardPadding * 22;
-      double spacingMultiplier = isMidScreen
-          ? isSmallScreen
-              ? 0.5
-              : 0.75
-          : 1;
-      double centerSpacing = isMidScreen
-          ? isSmallScreen
-              ? AppTheme.columnWidth * 0.15
-              : AppTheme.columnWidth * 0.65
-          : AppTheme.columnWidth;
       return bitnetScaffold(
         margin: isSuperSmallScreen
             ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
-          onTap: () {
-            context.go('/authhome');
-          },
-          text: L10n.of(context)!.pinCodeVerification,
-          context: context,
-          actions: [
-         PopUpLangPickerWidget()
-        ]
-        ),
+            onTap: () {
+              context.go('/authhome');
+            },
+            text: L10n.of(context)!.pinCodeVerification,
+            context: context,
+            actions: [PopUpLangPickerWidget()]),
         key: scaffoldKey,
         body: Column(
-          children: <Widget>[
+          children: [
             Expanded(
               child: Center(
                 child: ListView(
                   children: [
                     SizedBox(
-                      height: AppTheme.cardPadding * 3,
+                      height: AppTheme.cardPadding * 3.h,
                     ),
                     Center(
                         child: Container(
                       margin: EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding * 2),
+                          horizontal: AppTheme.cardPadding * 2.w),
                       child: AnimatedTextKit(
                         animatedTexts: [
                           TypewriterAnimatedText(
@@ -230,8 +206,8 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
           ),
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: AppTheme.cardPadding * 2,
-              vertical: AppTheme.elementSpacing,
+              horizontal: AppTheme.cardPadding * 2.w,
+              vertical: AppTheme.elementSpacing.h,
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -244,7 +220,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: AppTheme.cardPadding,
+                  height: AppTheme.cardPadding.h,
                 ),
                 Text(
                   L10n.of(context)!.invitationCode,
@@ -252,7 +228,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                   textAlign: TextAlign.left,
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding,
+                  height: AppTheme.cardPadding.h,
                 ),
                 Form(
                   key: formKey,
@@ -315,7 +291,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                         ),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * 2,
+                  height: AppTheme.cardPadding * 2.h,
                 )
               ],
             ),

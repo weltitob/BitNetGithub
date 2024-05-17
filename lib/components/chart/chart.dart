@@ -606,7 +606,7 @@ class _CustomWidgetState extends State<CustomWidget>
                 // ),
                 // SizedBox(width: AppTheme.elementSpacing,),
                 Text(
-                  "${trackBallValuePrice}${getCurrency(currency!)}",
+                  "${trackBallValuePrice}${getCurrency(currency)}",
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
               ],

@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   desktop_lifecycle
   dynamic_color
   emoji_picker_flutter
+  file_selector_windows
   firebase_auth
   firebase_core
   firebase_storage

@@ -8,6 +8,7 @@ import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 
@@ -64,7 +65,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      height: AppTheme.cardPadding * 3,
+                      height: AppTheme.cardPadding * 3.h,
                     ),
                     Text(
                       "Recovery account",
@@ -72,7 +73,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Container(
-                      height: AppTheme.cardPadding,
+                      height: AppTheme.cardPadding.h,
                     ),
                     UserResult(
                       onTap: () async {
@@ -104,7 +105,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Container(
-                      height: AppTheme.cardPadding * 2,
+                      height: AppTheme.cardPadding * 2.h,
                     ),
                     Text(
                       "Friends / Key-Issuers",
@@ -112,7 +113,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Container(
-                      height: AppTheme.cardPadding,
+                      height: AppTheme.cardPadding.h,
                     ),
                     Container(
                       child: UserResult(
@@ -138,7 +139,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                       ),
                     ),
                     Container(
-                      height: AppTheme.elementSpacing,
+                      height: AppTheme.elementSpacing.h,
                     ),
                     UserResult(
                       onTap: () async {
@@ -158,12 +159,11 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                           createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                           updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                           isActive: true,
-                          dob: 10,
-
+                          dob: 10, 
                           ),
                     ),
                     Container(
-                      height: AppTheme.elementSpacing,
+                      height: AppTheme.elementSpacing.h,
                     ),
                     UserResult(
                       onTap: () async {
@@ -187,23 +187,23 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                         ),
                     ),
                     Container(
-                      height: AppTheme.cardPadding,
+                      height: AppTheme.cardPadding.h,
                     ),
                   ],
                 ),
               ),
             ),
             Positioned(
-                bottom: AppTheme.cardPadding * 2,
+                bottom: AppTheme.cardPadding * 2.h,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding),
                   child: Container(
                     alignment: Alignment.center,
-                    height: AppTheme.cardPadding * 2.5,
-                    width: screenWidth - AppTheme.cardPadding * 2,
+                    height: AppTheme.cardPadding * 2.5.h,
+                    width: screenWidth - AppTheme.cardPadding * 2.w,
                     child: LongButtonWidget(
-                      customWidth: AppTheme.cardPadding * 14,
+                      customWidth: AppTheme.cardPadding * 14.w,
                       title: "RECOVER ACCOUNT",
                       onTap: () {  },
                     )

@@ -53,10 +53,12 @@ class MultipleEmotesSettingsView extends StatelessWidget {
                 title: Text(packName!),
                 onTap: () async {
                   //TODO: segmented routing doesnt exist for Go Router, potential bugs
-                  context.go(
-                    context.namedLocation('emotes2', pathParameters: {'roomid': room.id, 'state_key': keys[i]}) 
-                    // + '/details/'  '/rooms/:'+ room.id+'/details/'+ 'emotes/'+ keys[i],
-                  );
+                  context.go(context.namedLocation('emotes2', pathParameters: {
+                    'roomid': room.id,
+                    'state_key': keys[i]
+                  })
+                      // + '/details/'  '/rooms/:'+ room.id+'/details/'+ 'emotes/'+ keys[i],
+                      );
                 },
               );
             },

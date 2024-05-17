@@ -44,22 +44,22 @@ class QRScannerView extends StatelessWidget {
             }),
         body: Stack(
           children: [
-            // MobileScanner(
-            //   //allowDuplicates: false,
-            //   controller: controller.cameraController,
-            //   onDetect: (capture) {
-            //     final List<Barcode> barcodes = capture.barcodes;
-            //     final Uint8List? image = capture.image;
-            //     for (final barcode in barcodes) {
-            //       debugPrint('Barcode found! ${barcode.rawValue}');
-            //       //final String code = barcode.rawValue.toString();
-            //       //var encodedString = jsonDecode(codeinjson);
-            //       controller.onQRCodeScanned(barcode.rawValue!, context);
-            //       //check what type we scanned somehow and then call the according functions
-            //       //controller.onScannedForSignIn(encodedString);
-            //     }
-            //   },
-            // ),
+            MobileScanner(
+              //allowDuplicates: false,
+              controller: controller.cameraController,
+              onDetect: (capture) {
+                final List<Barcode> barcodes = capture.barcodes;
+                final Uint8List? image = capture.image;
+                for (final barcode in barcodes) {
+                  debugPrint('Barcode found! ${barcode.rawValue}');
+                  //final String code = barcode.rawValue.toString();
+                  //var encodedString = jsonDecode(codeinjson);
+                  controller.onQRCodeScanned(barcode.rawValue!, context);
+                  //check what type we scanned somehow and then call the according functions
+                  //controller.onScannedForSignIn(encodedString);
+                }
+              },
+            ),
             controller.isQRScanner
                 ? QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5))
                 : TextScannerOverlay(

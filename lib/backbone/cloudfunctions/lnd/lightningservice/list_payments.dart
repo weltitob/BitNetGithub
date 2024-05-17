@@ -3,14 +3,15 @@ import 'dart:io';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:matrix/matrix.dart';
+import 'package:get/get.dart';
+ import 'package:matrix/matrix.dart';
 
 Future<RestResponse> listPayments() async {
   String restHost = AppTheme.baseUrlLightningTerminal;
-  const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
+  // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   String url = 'https://$restHost/v1/payments';
 
   ByteData byteData = await loadMacaroonAsset();
@@ -26,17 +27,18 @@ Future<RestResponse> listPayments() async {
   //data still needs to add the include_incomplete parameter
 
   try {
-    var response = await http.get(Uri.parse(url), headers: headers,);
+      final DioClient dioClient = Get.find<DioClient>();
+    var response = await dioClient.get(url:url, headers: headers,);
     // Print raw response for debugging
-    Logs().d('Raw Response Payments: ${response.body}');
+    Logs().d('Raw Response Payments: ${response.data}');
 
     if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrieved Lightning Payments", data: json.decode(response.body));
+      print(response.data);
+      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrieved Lightning Payments", data: json.decode(response.data));
 
     } else {
-      print('Failed to load data: ${response.statusCode}, ${response.body}');
-      return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.body}", data: {});
+      print('Failed to load data: ${response.statusCode}, ${response.data}');
+      return RestResponse(statusCode: "error", message: "Failed to load data: ${response.statusCode}, ${response.data}", data: {});
     }
   } catch (e) {
     print('Error: $e');

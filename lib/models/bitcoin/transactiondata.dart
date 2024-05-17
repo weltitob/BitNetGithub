@@ -1,5 +1,4 @@
 import 'package:bitnet/components/items/transactionitem.dart';
-import 'package:flutter/material.dart';
 
 class TransactionItemData {
   final TransactionType type;

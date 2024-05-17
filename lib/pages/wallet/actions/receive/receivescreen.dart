@@ -129,7 +129,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                                     vertical: 12.0, horizontal: 16.0),
                                 child: Text(
                                   ReceiveType.Lightning.name,
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headlineSmall,
                                 ),
                               ),
                             )
@@ -139,7 +139,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                               },
                               child: Text(
                                 ReceiveType.Lightning.name,
-                                style: Theme.of(context).textTheme.headline5,
+                                style: Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
                       SizedBox(width: AppTheme.cardPadding),
@@ -150,7 +150,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                                     vertical: 12.0, horizontal: 16.0),
                                 child: Text(
                                   ReceiveType.OnChain.name,
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headlineSmall,
                                 ),
                               ),
                             )
@@ -160,7 +160,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                               },
                               child: Text(
                                 ReceiveType.OnChain.name,
-                                style: Theme.of(context).textTheme.headline5,
+                                style: Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
                     ],
