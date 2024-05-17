@@ -1,6 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+// import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 Future<bool?> showColorPickerDialouge({
   required BuildContext context,
@@ -25,15 +25,16 @@ Future<bool?> showColorPickerDialouge({
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            HueRingPicker(
-              enableAlpha: false,
-              displayThumbColor: true,
-              hueRingStrokeWidth: AppTheme.cardPadding,
-              colorPickerHeight: AppTheme.iconSize * 8.5,
-              portraitOnly: false,
-              pickerColor: pickerColor,
-              onColorChanged: onColorChanged,
-            ),
+            //deprecated replace with new color
+            // HueRingPicker(
+            //   enableAlpha: false,
+            //   displayThumbColor: true,
+            //   hueRingStrokeWidth: AppTheme.cardPadding,
+            //   colorPickerHeight: AppTheme.iconSize * 8.5,
+            //   portraitOnly: false,
+            //   pickerColor: pickerColor,
+            //   onColorChanged: onColorChanged,
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [

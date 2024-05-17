@@ -610,13 +610,14 @@ class TransactionController extends BaseController {
                 parseMultisigScript(script!) != null) {
           // the scriptSig and scriptWitness can all be replaced by a 66 witness WU with taproot
           replacementSize = 66;
-        } else        final spendingPaths = script
+        } else
+          final spendingPaths = script
                 .split(' ')
                 .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
                 .length +
             1;
         // now assume the script could have been split into ${spendingPaths} equal tapleaves
-        replacementSize = int.parse((script.length ~/ 2 ~/ spendingPaths +
+        replacementSize = int.parse((script!.length ~/ 2 ~/ spendingPaths +
                 32 * math.log((spendingPaths - 1) + 1) +
                 33)
             .toString());

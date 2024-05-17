@@ -153,7 +153,7 @@ dependencies:
   fl_chart: ^0.55.2
   smooth_page_indicator: ^1.0.0+2
   cupertino_icons: ^1.0.2
-  flutter_colorpicker: ^1.0.3
+  #flutter_colorpicker: ^1.0.3 needs replacement with this flex_color_picker: ^3.5.0
   flutter_toggle_tab: ^1.2.0
   switcher: ^1.0.0
   liquid_pull_to_refresh: ^3.0.1
@@ -242,10 +242,9 @@ dependency_overrides:
 
 flutter_intl:
   enabled: true
-  arb_dir: lib/l10n
-  template_arbs: lib/l10n/intl_en.arb
-  output_dir: lib/generated
-
+  arb_dir: lib/intl  # Updated to reflect the renamed directory
+  template_arbs: lib/intl/intl_en.arb  # Ensure this matches the template ARB file
+  output_dir: lib/generated  # Directory for generated Dart localization files
 
 flutter:
   fonts:

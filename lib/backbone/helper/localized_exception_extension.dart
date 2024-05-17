@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:bitnet/backbone/helper/matrix_helpers/other/uia_request_manager.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix/matrix.dart';
 
 extension LocalizedExceptionExtension on Object {
@@ -30,12 +30,6 @@ extension LocalizedExceptionExtension on Object {
           .toString()
           .replaceAll('{', '"')
           .replaceAll('}', '"');
-      return L10n.of(context)!.badServerVersionsException(
-        serverVersions,
-        supportedVersions,
-        serverVersions,
-        supportedVersions,
-      );
     }
     if (this is BadServerLoginTypesException) {
       final serverVersions = (this as BadServerLoginTypesException)
@@ -48,11 +42,6 @@ extension LocalizedExceptionExtension on Object {
           .toString()
           .replaceAll('{', '"')
           .replaceAll('}', '"');
-      return L10n.of(context)!.badServerLoginTypesException(
-        serverVersions,
-        supportedVersions,
-        supportedVersions,
-      );
     }
     if (this is MatrixConnectionException || this is SocketException) {
       return L10n.of(context)!.noConnectionToTheServer;

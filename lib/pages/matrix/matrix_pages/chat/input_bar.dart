@@ -180,32 +180,6 @@ class InputBar extends StatelessWidget {
           continue; // we don't care about tombstoned rooms
         }
         final state = r.getState(EventTypes.RoomCanonicalAlias);
-        if ((state != null &&
-                ((state.content['alias'] is String &&
-                        state.content['alias']
-                            .split(':')[0]
-                            .toLowerCase()
-                            .contains(roomSearch)) ||
-                    (state.content['alt_aliases'] is List &&
-                        state.content['alt_aliases'].any(
-                          (l) =>
-                              l is String &&
-                              l
-                                  .split(':')[0]
-                                  .toLowerCase()
-                                  .contains(roomSearch),
-                        )))) ||
-            (r.name.toLowerCase().contains(roomSearch))) {
-          ret.add({
-            'type': 'room',
-            'mxid': (r.canonicalAlias.isNotEmpty) ? r.canonicalAlias : r.id,
-            'displayname': r.getLocalizedDisplayname(),
-            'avatar_url': r.avatar?.toString(),
-          });
-        }
-        if (ret.length > maxResults) {
-          break;
-        }
       }
     }
     return ret;

@@ -43,11 +43,7 @@ class MultipleEmotesSettingsView extends StatelessWidget {
               final event = packs[keys[i]];
               String? packName = keys[i].isNotEmpty ? keys[i] : 'Default Pack';
               if (event != null && event.content['pack'] is Map) {
-                if (event.content['pack']['displayname'] is String) {
-                  packName = event.content['pack']['displayname'];
-                } else if (event.content['pack']['name'] is String) {
-                  packName = event.content['pack']['name'];
-                }
+                packName = "test";
               }
               return ListTile(
                 title: Text(packName!),

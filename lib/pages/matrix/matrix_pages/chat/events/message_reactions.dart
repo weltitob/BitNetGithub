@@ -58,21 +58,7 @@ class MessageReactions extends StatelessWidget {
                 count: r.count,
                 reacted: r.reacted,
                 onTap: () {
-                  if (r.reacted) {
-                    final evt = allReactionEvents.firstWhereOrNull(
-                      (e) =>
-                          e.senderId == e.room.client.userID &&
-                          e.content['m.relates_to']['key'] == r.key,
-                    );
-                    if (evt != null) {
-                      showFutureLoadingDialog(
-                        context: context,
-                        future: () => evt.redactEvent(),
-                      );
-                    }
-                  } else {
-                    event.room.sendReaction(event.eventId, r.key!);
-                  }
+
                 },
                 onLongPress: () async => await _AdaptableReactorsDialog(
                   client: client,

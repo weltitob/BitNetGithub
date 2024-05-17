@@ -154,9 +154,6 @@ class EmotesSettingsController extends State<EmotesSettings> {
       room != null &&
       client!.accountData['im.ponies.emote_rooms']?.content is Map &&
       client.accountData['im.ponies.emote_rooms']!.content['rooms'] is Map &&
-      client.accountData['im.ponies.emote_rooms']!.content['rooms'][room!.id]
-          is Map &&
-      client.accountData['im.ponies.emote_rooms']!.content['rooms'][room!.id]
           [stateKey ?? ''] is Map;
 
   bool get readonly =>

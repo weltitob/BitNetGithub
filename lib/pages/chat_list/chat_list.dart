@@ -327,34 +327,10 @@ class ChatListController extends State<ChatList>
     });
   }
 
-  void _initReceiveSharingIntent() {
-    if (!PlatformInfos.isMobile) return;
-
-    // For sharing images coming from outside the app while the app is in the memory
-    _intentFileStreamSubscription = ReceiveSharingIntent.getMediaStream()
-        .listen(_processIncomingSharedFiles, onError: print);
-
-    // For sharing images coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialMedia().then(_processIncomingSharedFiles);
-
-    // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream()
-        .listen(processIncomingSharedText, onError: print);
-
-    // For sharing or opening urls/text coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialText().then(processIncomingSharedText);
-
-    // For receiving shared Uris
-    _intentUriStreamSubscription = linkStream.listen(processIncomingUris);
-    if (WidgetTree.gotInitialLink == false) {
-      WidgetTree.gotInitialLink = true;
-      getInitialLink().then(processIncomingUris);
-    }
-  }
 
   @override
   void initState() {
-    _initReceiveSharingIntent();
+    //_initReceiveSharingIntent();
 
     scrollController.addListener(_onScroll);
     _waitForFirstSync();
