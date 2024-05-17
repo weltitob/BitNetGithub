@@ -439,7 +439,7 @@ class TransactionController extends BaseController {
 
     String? opN = ops.removeLast();
 
-    if (opN == null || !opN.startsWith('OP_PUSHNUM_')) {
+    if (!opN.startsWith('OP_PUSHNUM_')) {
       return null;
     }
 
@@ -453,22 +453,20 @@ class TransactionController extends BaseController {
     for (int i = 0; i < n; i++) {
       String? publicKey = ops.removeLast();
 
-      if (publicKey == null ||
-          !RegExp(r'^0((2|3)\w{64}|4\w{128})$').hasMatch(publicKey)) {
+      if (!RegExp(r'^0((2|3)\w{64}|4\w{128})$').hasMatch(publicKey)) {
         return null;
       }
 
       String? opPushBytes = ops.removeLast();
 
-      if (opPushBytes == null ||
-          !RegExp(r'^OP_PUSHBYTES_(33|65)$').hasMatch(opPushBytes)) {
+      if (!RegExp(r'^OP_PUSHBYTES_(33|65)$').hasMatch(opPushBytes)) {
         return null;
       }
     }
 
     String? opM = ops.removeLast();
 
-    if (opM == null || !opM.startsWith('OP_PUSHNUM_')) {
+    if (!opM.startsWith('OP_PUSHNUM_')) {
       return null;
     }
 
@@ -612,18 +610,17 @@ class TransactionController extends BaseController {
                 parseMultisigScript(script!) != null) {
           // the scriptSig and scriptWitness can all be replaced by a 66 witness WU with taproot
           replacementSize = 66;
-        } else if (script != null) {
-          final spendingPaths = script
-                  .split(' ')
-                  .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
-                  .length +
-              1;
-          // now assume the script could have been split into ${spendingPaths} equal tapleaves
-          replacementSize = int.parse((script.length ~/ 2 ~/ spendingPaths +
-                  32 * math.log((spendingPaths - 1) + 1) +
-                  33)
-              .toString());
-        }
+        } else        final spendingPaths = script
+                .split(' ')
+                .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
+                .length +
+            1;
+        // now assume the script could have been split into ${spendingPaths} equal tapleaves
+        replacementSize = int.parse((script.length ~/ 2 ~/ spendingPaths +
+                32 * math.log((spendingPaths - 1) + 1) +
+                33)
+            .toString());
+      
         potentialTaprootGains +=
             witnessSize(vin) + scriptSigSize(vin) * 4 - replacementSize;
       }

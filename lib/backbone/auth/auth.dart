@@ -479,16 +479,12 @@ class Auth {
         print(client
             .deviceID); //this is null already so the client bullshit def is some issue
 
-        if (client != null) {
-          client.register(
-              username: username,
-              password: "testjklskhajkd",
-              initialDeviceDisplayName: "test");
-          Logs().w("To here it needs to come...");
-        } else {
-          Logs().e("Client is null");
-        }
-      } on MatrixException catch (e) {
+        client.register(
+            username: username,
+            password: "testjklskhajkd",
+            initialDeviceDisplayName: "test");
+        Logs().w("To here it needs to come...");
+            } on MatrixException catch (e) {
         Logs().e("signUpMatrixFirst error: $e");
         if (!e.requireAdditionalAuthentication) rethrow;
       }
