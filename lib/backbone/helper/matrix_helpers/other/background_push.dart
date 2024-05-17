@@ -8,16 +8,16 @@ import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/clie
 import 'package:bitnet/backbone/helper/matrix_helpers/other/push_helper.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 
-import 'famedlysdk_store.dart';
 import '../../platform_infos.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'famedlysdk_store.dart';
 
 //import 'package:fcm_shared_isolate/fcm_shared_isolate.dart';
 
@@ -61,7 +61,10 @@ class BackgroundPush {
         ),
         client: client,
         l10n: l10n,
-        activeRoomId: GoRouter.of(context!).routerDelegate.currentConfiguration.pathParameters['roomid'],
+        activeRoomId: GoRouter.of(context!)
+            .routerDelegate
+            .currentConfiguration
+            .pathParameters['roomid'],
         onSelectNotification: goToRoom,
       ),
     );
@@ -83,8 +86,7 @@ class BackgroundPush {
 
   factory BackgroundPush(
     Client client,
-    BuildContext context,
-     {
+    BuildContext context, {
     final void Function(String errorMsg, {Uri? link})? onFcmError,
   }) {
     final instance = BackgroundPush.clientOnly(client);
@@ -201,8 +203,7 @@ class BackgroundPush {
     if (!PlatformInfos.isIOS &&
         (await UnifiedPush.getDistributors()).isNotEmpty) {
       await setupUp();
-    }
-    else {
+    } else {
       await setupFirebase();
     }
 
@@ -212,8 +213,7 @@ class BackgroundPush {
         .then((details) {
       if (details == null ||
           !details.didNotificationLaunchApp ||
-          _wentToRoomOnStartup
-          ) {
+          _wentToRoomOnStartup) {
         return;
       }
       _wentToRoomOnStartup = true;
@@ -276,7 +276,7 @@ class BackgroundPush {
               ?.content
               .tryGet<String>('type') ==
           ClientStoriesExtension.storiesRoomType;
-          //TODO: was originally toSegments
+      //TODO: was originally toSegments
       context?.go(isStory ? 'stories/$roomId' : 'rooms/$roomId');
     } catch (e, s) {
       Logs().e('[Push] Failed to open room', e, s);
@@ -284,7 +284,7 @@ class BackgroundPush {
   }
 
   Future<void> setupUp() async {
-     await UnifiedPush.registerAppWithDialog(context!);
+    await UnifiedPush.registerAppWithDialog(context!);
   }
 
   Future<void> _newUpEndpoint(String newEndpoint, String i) async {
@@ -304,8 +304,13 @@ class BackgroundPush {
           .toString()
           .split('?')
           .first;
-      final res =
-          json.decode(utf8.decode((await http.get(Uri.parse(url))).bodyBytes));
+      Dio dioClient = Dio();
+
+      final res = json.decode(
+        utf8.decode(
+          (await dioClient.get<List<int>>(url)).data!,
+        ),
+      );
       if (res['gateway'] == 'matrix' ||
           (res['unifiedpush'] is Map &&
               res['unifiedpush']['gateway'] == 'matrix')) {
@@ -357,7 +362,10 @@ class BackgroundPush {
       PushNotification.fromJson(data),
       client: client,
       l10n: l10n,
-      activeRoomId: GoRouter.of(context!).routerDelegate.currentConfiguration.pathParameters['roomid'],
+      activeRoomId: GoRouter.of(context!)
+          .routerDelegate
+          .currentConfiguration
+          .pathParameters['roomid'],
     );
   }
 

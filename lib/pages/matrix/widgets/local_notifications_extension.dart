@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_locals.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:desktop_lifecycle/desktop_lifecycle.dart';
 import 'package:desktop_notifications/desktop_notifications.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:matrix/matrix.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
@@ -80,9 +81,11 @@ extension LocalNotificationsExtension on MatrixState {
         appIconFile = File(
           '${avatarDirectory.path}/${Uri.encodeComponent(appIconUrl.toString())}',
         );
+          final DioClient dioClient = Get.find<DioClient>();
+
         if (await appIconFile.exists() == false) {
-          final response = await http.get(appIconUrl);
-          await appIconFile.writeAsBytes(response.bodyBytes);
+          final response = await dioClient.get(url: appIconUrl.path);
+          await appIconFile.writeAsBytes(response.data);
         }
       }
       final notification = await linuxNotifications!.notify(
@@ -113,7 +116,8 @@ extension LocalNotificationsExtension on MatrixState {
             room.setReadMarker(event.eventId, mRead: event.eventId);
             break;
           case DesktopNotificationActions.openChat:
-            navigatorContext.goNamed('rooms', pathParameters: {'roomid': room.id});
+            navigatorContext
+                .goNamed('rooms', pathParameters: {'roomid': room.id});
             break;
         }
       });
