@@ -60,9 +60,12 @@ class _CryptoItemState extends State<CryptoItem> {
       controllerCrypto.priceChangeString.value =
           toPercent(controllerCrypto.priceChange.value);
       controllerCrypto.colorUpdater();
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       controllerCrypto.isBlinking.value = true;
       controllerCrypto.controller.forward();
       Logs().d("Cryptoitem (bitcoinchart) ui has been updated!");
+
+       });
     }
   }
 

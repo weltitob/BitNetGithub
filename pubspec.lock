@@ -400,15 +400,7 @@ packages:
       sha256: "9e9aba2fbab77ce2472924196ff8ac4dd8f9126c4f9a3096171cd1d870d6b26c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.3"
-  canonical_json:
-    dependency: transitive
-    description:
-      name: canonical_json
-      sha256: d6be1dd66b420c6ac9f42e3693e09edf4ff6edfee26cb4c28c1c019fdb8c0c15
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.2"
+    version: "0.3.1+1"
   characters:
     dependency: transitive
     description:
@@ -1655,14 +1647,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.4"
-  html_unescape:
-    dependency: transitive
-    description:
-      name: html_unescape
-      sha256: "15362d7a18f19d7b742ef8dcb811f5fd2a2df98db9f80ea393c075189e0b61e3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   http:
     dependency: "direct main"
     description:
@@ -1880,7 +1864,7 @@ packages:
     source: hosted
     version: "0.0.5"
   keyboard_shortcuts:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       path: "."
       ref: null-safety
@@ -2032,30 +2016,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.3"
-  macos_ui:
-    dependency: transitive
-    description:
-      name: macos_ui
-      sha256: "91c7f3427f763fd96b65831342b896b18751140e6bf55f8572fcb41f7b30bcab"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.7"
-  macos_window_utils:
-    dependency: transitive
-    description:
-      name: macos_window_utils
-      sha256: "230be594d26f6dee92c5a1544f4242d25138a5bfb9f185b27f14de3949ef0be8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.5.0"
-  markdown:
-    dependency: transitive
-    description:
-      name: markdown
-      sha256: "01512006c8429f604eb10f9848717baeaedf99e991d14a50d540d9beff08e5c6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   marquee:
     dependency: "direct main"
     description:
@@ -2080,14 +2040,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.0"
-  matrix:
-    dependency: "direct main"
-    description:
-      name: matrix
-      sha256: ecee8d687224f0fe668a5b9a034e8c2a7b241f578c93a236e0e93a8c2382a458
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.20.5"
   matrix_api_lite:
     dependency: transitive
     description:
@@ -2132,10 +2084,10 @@ packages:
     dependency: "direct main"
     description:
       name: mobile_scanner
-      sha256: "1b60b8f9d4ce0cb0e7d7bc223c955d083a0737bee66fa1fcfe5de48225e0d5b3"
+      sha256: b8c0e9afcfd52534f85ec666f3d52156f560b5e6c25b1e3d4fe2087763607926
       url: "https://pub.dev"
     source: hosted
-    version: "3.5.7"
+    version: "5.1.1"
   mockito:
     dependency: "direct main"
     description:
@@ -2224,14 +2176,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  olm:
-    dependency: transitive
-    description:
-      name: olm
-      sha256: "37948a6576949256f3ee1d0063d5b408634ff7e452b9a5c2f6410f9d7ced1c20"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.3"
   package_config:
     dependency: transitive
     description:
@@ -2376,6 +2320,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.0"
+  photo_manager:
+    dependency: "direct main"
+    description:
+      name: photo_manager
+      sha256: "1ddee48659025df5c80153a2e85c3fa0f5b5733ecffcda9769a9447da2c51352"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.1"
+  photo_manager_image_provider:
+    dependency: "direct main"
+    description:
+      name: photo_manager_image_provider
+      sha256: "38ef1023dc11de3a8669f16e7c981673b3c5cfee715d17120f4b87daa2cdd0af"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   pin_code_fields:
     dependency: "direct main"
     description:
@@ -2633,7 +2593,7 @@ packages:
     source: hosted
     version: "0.0.10"
   rxdart:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: rxdart
       sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
@@ -2648,14 +2608,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  sdp_transform:
-    dependency: transitive
-    description:
-      name: sdp_transform
-      sha256: "73e412a5279a5c2de74001535208e20fff88f225c9a4571af0f7146202755e45"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.2"
   sentiment_dart:
     dependency: transitive
     description:
@@ -3342,6 +3294,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  web:
+    dependency: transitive
+    description:
+      name: web
+      sha256: "97da13628db363c635202ad97068d47c5b8aa555808e7a9411963c533b449b27"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.1"
+    version: "1.0.2"
   web:
     dependency: transitive
     description:

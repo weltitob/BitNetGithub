@@ -624,6 +624,7 @@ class TransactionController extends BaseController {
       
         potentialTaprootGains +=
             witnessSize(vin) + scriptSigSize(vin) * 4 - replacementSize;
+        }    
       }
     }
 

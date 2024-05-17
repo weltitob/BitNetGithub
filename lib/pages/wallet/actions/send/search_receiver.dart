@@ -61,7 +61,9 @@ class SearchReceiver extends GetWidget<SendsController> {
                     margin: EdgeInsets.only(top: AppTheme.elementSpacing),
                     child: LongButtonWidget(
                       //customWidth: AppTheme.cardPadding * 7,
-                      onTap: () => context.push("/qrscanner"),
+                      onTap: ()async {
+controller.processParameters(context, (await context.push("/qrscanner")) as String?);
+                      } ,
                       title: 'Scan QR',
                     ),
                   ),
