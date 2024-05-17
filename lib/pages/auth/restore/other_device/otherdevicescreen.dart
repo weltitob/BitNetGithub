@@ -7,6 +7,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/futurelottie.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 class OtherDeviceScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
       return bitnetScaffold(
         margin: isSuperSmallScreen
             ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
@@ -59,12 +60,12 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
          PopUpLangPickerWidget()
         ]),
         body: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.cardPadding * 1.5),
+          padding:   EdgeInsets.symmetric(
+              horizontal: AppTheme.cardPadding * 1.5.w),
           child: ListView(
             children: [
               SizedBox(
-                height: AppTheme.cardPadding * 1.5,
+                height: AppTheme.cardPadding * 1.5.h,
               ),
               Text(
                 "Step 1: Open the app on a different device.",
@@ -83,8 +84,8 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                     ),
                   ),
                   Container(
-                      height: AppTheme.cardPadding * 7,
-                      width: AppTheme.cardPadding * 7,
+                      height: AppTheme.cardPadding * 7.h,
+                      width: AppTheme.cardPadding * 7.w,
                       color: Colors.transparent,
                       child: Container(
                           decoration: BoxDecoration(
@@ -96,7 +97,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                 ],
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 1,
+                height: AppTheme.cardPadding * 1.h,
               ),
               Text(
                 "Step 2: Open the QR-Code",
@@ -110,12 +111,12 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                      height: AppTheme.cardPadding * 6,
-                      width: AppTheme.cardPadding * 6,
+                      height: AppTheme.cardPadding * 6.h,
+                      width: AppTheme.cardPadding * 6.w,
                       color: Colors.transparent,
                       child: buildFutureLottie(verify_user_composition, true)),
                   SizedBox(
-                    width: AppTheme.cardPadding,
+                    width: AppTheme.cardPadding.w,
                   ),
                   Expanded(
                     child: Text(
@@ -128,7 +129,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                 ],
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 2.25,
+                height: AppTheme.cardPadding * 2.25.h,
               ),
               Text(
                 "Step 3: Scan the QR-Code with this device",
@@ -150,18 +151,18 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                     ),
                   ),
                   Container(
-                      height: AppTheme.cardPadding * 7,
-                      width: AppTheme.cardPadding * 7,
+                      height: AppTheme.cardPadding * 7.h,
+                      width: AppTheme.cardPadding * 7.w,
                       color: Colors.transparent,
                       child: buildFutureLottie(scan_qr_composition, true)),
                 ],
               ),
               SizedBox(
-                height: AppTheme.cardPadding,
+                height: AppTheme.cardPadding.h
               ),
               Center(
                 child: LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 14,
+                    customWidth: AppTheme.cardPadding * 14.w,
                     title: "Scan QR",
                     onTap: () {
                       Navigator.of(context).push(
@@ -174,7 +175,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                     }),
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 2,
+                height: AppTheme.cardPadding * 3.h,
               )
             ],
           ),

@@ -1,23 +1,21 @@
 import 'dart:async';
-
-import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flutter/material.dart';
-import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/backgroundwithcontent.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
 import 'dart:math';
 
-
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/lang_picker_widget.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/fields/textfield/formtextfield.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:matrix/matrix.dart';
 
 Random random = new Random();
 
@@ -103,29 +101,31 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       return bitnetScaffold(
         margin: isSuperSmallScreen
             ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
         extendBodyBehindAppBar: true,
         context: context,
         gradientColor: Colors.black,
         appBar: bitnetAppBar(
-            text: "DID and Private Key Login",
-            context: context,
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-             actions: [                PopUpLangPickerWidget(),
-],),
+          text: "DID and Private Key Login",
+          context: context,
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          actions: [
+            PopUpLangPickerWidget(),
+          ],
+        ),
         body: Form(
           key: _form,
           child: ListView(
             padding: EdgeInsets.only(
-                left: AppTheme.cardPadding * 2,
-                right: AppTheme.cardPadding * 2,
-                top: AppTheme.cardPadding * 6),
+                left: AppTheme.cardPadding * 2.w,
+                right: AppTheme.cardPadding * 2.w,
+                top: AppTheme.cardPadding * 6.h),
             physics: BouncingScrollPhysics(),
             children: [
               Container(
-                height: AppTheme.cardPadding * 4.5,
+                height: AppTheme.cardPadding * 4.5.h,
                 child: AnimatedTextKit(
                   animatedTexts: [
                     TypewriterAnimatedText(
@@ -148,15 +148,14 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Container(
-                    margin:
-                        EdgeInsets.only(left: AppTheme.elementSpacing / 2),
-                    height: AppTheme.cardPadding * 1.5,
+                    margin: EdgeInsets.only(left: AppTheme.elementSpacing / 2.w),
+                    height: AppTheme.cardPadding * 1.5.h,
                     child: Image.asset("assets/images/ion.png"),
                   ),
                 ],
               ),
               SizedBox(
-                height: AppTheme.cardPadding,
+                height: AppTheme.cardPadding.h,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -179,7 +178,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(bottom: AppTheme.cardPadding),
+                          EdgeInsets.only(bottom: AppTheme.cardPadding.h),
                     child: Container(
                       child: FormTextField(
                         validator: (val) {
@@ -203,21 +202,20 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     ),
                   ),
                   LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 14,
+                    customWidth: AppTheme.cardPadding * 14.w,
                     title: L10n.of(context)!.restoreAccount,
                     onTap: () {
                       if (_form.currentState!.validate()) {
                         signIn();
                       }
                     },
-                    state:
-                        _isLoading ? ButtonState.loading : ButtonState.idle,
+                    state: _isLoading ? ButtonState.loading : ButtonState.idle,
                   ),
                   errorMessage == null
                       ? Container()
                       : Padding(
-                          padding: const EdgeInsets.only(
-                              top: AppTheme.cardPadding),
+                          padding:
+                              const EdgeInsets.only(top: AppTheme.cardPadding),
                           child: Text(
                             errorMessage!,
                             textAlign: TextAlign.center,
@@ -228,24 +226,26 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                           ),
                         ),
                   Container(
-                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding * 2.h),
                     child: Text(
                       L10n.of(context)!.noAccountYet,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: AppTheme.cardPadding),
+                    margin: EdgeInsets.only(top: AppTheme.cardPadding.h),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black60,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.white60
+                            : AppTheme.black60,
                         width: 2,
                       ),
                       borderRadius: AppTheme.cardRadiusCircular,
                     ),
                     child: SizedBox(
                       height: 0,
-                      width: 65,
+                      width: 65.w,
                     ),
                   ),
                   Container(

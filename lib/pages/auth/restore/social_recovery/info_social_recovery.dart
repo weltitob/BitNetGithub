@@ -5,6 +5,7 @@ import "package:bitnet/components/appstandards/BitNetScaffold.dart";
 import "package:bitnet/components/buttons/lang_picker_widget.dart";
 import "package:bitnet/components/container/futurelottie.dart";
 import "package:flutter/material.dart";
+import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:lottie/lottie.dart";
 
 class InfoSocialRecoveryScreen extends StatefulWidget {
@@ -44,24 +45,26 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
       return bitnetScaffold(
         margin: isSuperSmallScreen
             ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
+            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
-            text: "Social Recovery Info",
-            context: context,
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            actions: [                PopUpLangPickerWidget(),
-],),
+          text: "Social Recovery Info",
+          context: context,
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          actions: [
+            PopUpLangPickerWidget(),
+          ],
+        ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.cardPadding * 1.5),
+          padding:   EdgeInsets.symmetric(
+              horizontal: AppTheme.cardPadding * 1.5.w),
           child: ListView(
             children: [
               SizedBox(
-                height: AppTheme.cardPadding * 1.5,
+                height: AppTheme.cardPadding * 1.5.h,
               ),
               Text(
                 "Step 1: Activate social recovery",
@@ -83,8 +86,8 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                     ),
                   ),
                   Container(
-                      height: AppTheme.cardPadding * 5,
-                      width: AppTheme.cardPadding * 5,
+                      height: AppTheme.cardPadding * 5.h,
+                      width: AppTheme.cardPadding * 5.w,
                       color: Colors.transparent,
                       child: Container(
                           decoration: BoxDecoration(
@@ -95,7 +98,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 ],
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 2,
+                height: AppTheme.cardPadding * 2.h,
               ),
               Text(
                 "Step 2. Contact each of your friends",
@@ -103,18 +106,18 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(
-                height: AppTheme.cardPadding,
+                height: AppTheme.cardPadding.h,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                      height: AppTheme.cardPadding * 6,
-                      width: AppTheme.cardPadding * 6,
+                      height: AppTheme.cardPadding * 6.h,
+                      width: AppTheme.cardPadding * 6.w,
                       color: Colors.transparent,
                       child: buildFutureLottie(friends_composition, true)),
                   SizedBox(
-                    width: AppTheme.cardPadding,
+                    width: AppTheme.cardPadding.w,
                   ),
                   Expanded(
                     child: Text(
@@ -127,7 +130,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 ],
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 2.25,
+                height: AppTheme.cardPadding * 2.25.h,
               ),
               Text(
                 "Step 3: Wait 24 hours and then login",
@@ -135,7 +138,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(
-                height: AppTheme.elementSpacing,
+                height: AppTheme.elementSpacing.h,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -150,14 +153,14 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                   ),
                   Container(
                       alignment: Alignment.center,
-                      height: AppTheme.cardPadding * 6,
-                      width: AppTheme.cardPadding * 6,
+                      height: AppTheme.cardPadding * 6.h,
+                      width: AppTheme.cardPadding * 6.w,
                       color: Colors.transparent,
                       child: buildFutureLottie(time_composition, true)),
                 ],
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 2,
+                height: AppTheme.cardPadding * 2.h,
               )
             ],
           ),
