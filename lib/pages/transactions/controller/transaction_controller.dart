@@ -610,8 +610,8 @@ class TransactionController extends BaseController {
                 parseMultisigScript(script!) != null) {
           // the scriptSig and scriptWitness can all be replaced by a 66 witness WU with taproot
           replacementSize = 66;
-        } else
-          final spendingPaths = script
+        } else {
+ final spendingPaths = script
                 .split(' ')
                 .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
                 .length +
@@ -624,11 +624,11 @@ class TransactionController extends BaseController {
       
         potentialTaprootGains +=
             witnessSize(vin) + scriptSigSize(vin) * 4 - replacementSize;
+        }
+         
         }    
       }
-    }
-
-    return {
+          return {
       'realizedSegwitGains': realizedSegwitGains /
           (tx.weight! +
               realizedSegwitGains), // percent of the pre-segwit tx size
@@ -638,7 +638,11 @@ class TransactionController extends BaseController {
       'realizedTaprootGains':
           realizedTaprootGains / (tx.weight! + realizedTaprootGains),
     };
-  }
+    }
+
+
+  
+
 
   void calculateRatings(TransactionConfirmedDetail block) {
     num feePerByte = effectiveFeeRate.value == 0.0

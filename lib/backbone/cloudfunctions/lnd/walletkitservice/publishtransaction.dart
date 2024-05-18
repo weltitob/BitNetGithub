@@ -4,12 +4,14 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 
 Future<RestResponse> publishTransaction(String tx_hex, String label) async {
+  LoggerService logger = Get.find();
   String restHost = AppTheme.baseUrlLightningTerminal;
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/tx';
@@ -33,7 +35,7 @@ Future<RestResponse> publishTransaction(String tx_hex, String label) async {
 
     var response = await dioClient.post(
         url: url, headers: headers, data: data);
-    Logs().w('Raw Response Publish Transaction: ${response.data}');
+    logger.i('Raw Response Publish Transaction: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);
@@ -42,7 +44,7 @@ Future<RestResponse> publishTransaction(String tx_hex, String label) async {
           message: "Successfully published transaction",
           data: response.data);
     } else {
-      Logs().e(
+      logger.e(
           'Failed to load data (publishtransaction.dart): ${response.statusCode}, ${response.data}');
       return RestResponse(
           statusCode: "error",
@@ -51,7 +53,7 @@ Future<RestResponse> publishTransaction(String tx_hex, String label) async {
           data: {});
     }
   } catch (e) {
-    Logs().e('Error trying to publish transaction: $e');
+    logger.e('Error trying to publish transaction: $e');
     return RestResponse(
         statusCode: "error",
         message:

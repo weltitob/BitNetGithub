@@ -3,8 +3,6 @@ import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/other/background_push.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/other/client_manager.dart';
 
 import 'package:bitnet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:bitnet/backbone/security/security.dart';
@@ -19,7 +17,6 @@ class WidgetTreeController extends BaseController {
   RxString? initialUrl = ''.obs;
 
   RxBool? columnMode = false.obs;
-  List<Client> clients = [];
   RxBool isLoadingClients = true.obs;
 
   @override
@@ -59,47 +56,47 @@ class WidgetTreeController extends BaseController {
   getclientsfunc() async { 
   Stopwatch stopwatch = Stopwatch()..start();
 
-  try {
-    print('getting clients///////');
-    clients = await ClientManager.getClients();
-    print('gotted the clients////////////');
-    isLoadingClients.value = false;
-    print("Fetched clients: ${clients.toString()}");
+  // try {
+  //   print('getting clients///////');
+  //   clients = await ClientManager.getClients();
+  //   print('gotted the clients////////////');
+  //   isLoadingClients.value = false;
+  //   print("Fetched clients: ${clients.toString()}");
 
-    if (clients.isNotEmpty) {
-      // Preload first client if we have clients
-      final firstClient = clients.first;
-      await firstClient.roomsLoading;
-      await firstClient.accountDataLoading;
+  //   if (clients.isNotEmpty) {
+  //     // Preload first client if we have clients
+  //     final firstClient = clients.first;
+  //     await firstClient.roomsLoading;
+  //     await firstClient.accountDataLoading;
  
-      print("clients after loading: $clients");
+  //     print("clients after loading: $clients");
 
-      if (PlatformInfos.isMobile) {
-        BackgroundPush.clientOnly(clients.first);
-      }
-    }
+  //     if (PlatformInfos.isMobile) {
+  //       BackgroundPush.clientOnly(clients.first);
+  //     }
+  //   }
 
-    // Load query parameters if it's a web platform
-    if (kIsWeb) {
-      final queryParameters = Uri.parse(html.window.location.href).queryParameters;
-      print("Loaded query parameters: $queryParameters");
-    }
+  //   // Load query parameters if it's a web platform
+  //   if (kIsWeb) {
+  //     final queryParameters = Uri.parse(html.window.location.href).queryParameters;
+  //     print("Loaded query parameters: $queryParameters");
+  //   }
 
-    print("Loading should be finished");
-  } catch (e) {
-    throw Exception("error loading matrix: $e");
-  }
+  //   print("Loading should be finished");
+  // } catch (e) {
+  //   throw Exception("error loading matrix: $e");
+  // }
 
-  // Set initial URL based on platform and client status
-  if (kIsWeb) {
-    initialUrl!.value = '/website';
-  } else {
-    if (clients.isNotEmpty && clients.any((client) => client.isLogged())) {
-      initialUrl!.value = '/feed';
-    } else {
-      initialUrl!.value = '/authhome';
-    }
-  }
+  // // Set initial URL based on platform and client status
+  // if (kIsWeb) {
+  //   initialUrl!.value = '/website';
+  // } else {
+  //   if (clients.isNotEmpty && clients.any((client) => client.isLogged())) {
+  //     initialUrl!.value = '/feed';
+  //   } else {
+  //     initialUrl!.value = '/authhome';
+  //   }
+  // }
 
   stopwatch.stop();
   print("Execution Time: ${stopwatch.elapsedMilliseconds} milliseconds");

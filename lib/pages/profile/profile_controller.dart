@@ -150,35 +150,6 @@ class ProfileController extends BaseController {
     }
   }
 
-  void pickAvatarMatrix() async {
-    final source = !PlatformInfos.isMobile
-        ? ImageSource.gallery
-        : await showModalActionSheet<ImageSource>(
-            context: Get.context!,
-            title: L10n.of(Get.context!)!.changeYourAvatar,
-            actions: [
-              SheetAction(
-                key: ImageSource.camera,
-                label: L10n.of(Get.context!)!.openCamera,
-                isDefaultAction: true,
-                icon: Icons.camera_alt_outlined,
-              ),
-              SheetAction(
-                key: ImageSource.gallery,
-                label: L10n.of(Get.context!)!.openGallery,
-                icon: Icons.photo_outlined,
-              ),
-            ],
-          );
-    if (source == null) return;
-    final picked = await ImagePicker().pickImage(
-      source: source,
-      imageQuality: 50,
-      maxWidth: 512,
-      maxHeight: 512,
-    );
-    Matrix.of(Get.context!).loginAvatar = picked;
-  }
 
   void updateUsername() {
     usersCollection.doc(profileId).update({

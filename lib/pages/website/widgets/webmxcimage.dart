@@ -1,16 +1,14 @@
 import 'dart:typed_data';
 
-import 'package:bitnet/backbone/helper/matrix_helpers/matrix_sdk_extensions/matrix_file_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/pages/routetrees/matrix.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 
 class WebMxcImage extends StatefulWidget {
   final String? ref;
-  final Event? event;
   final double? width;
   final double? height;
   final BoxFit? fit;
@@ -19,13 +17,11 @@ class WebMxcImage extends StatefulWidget {
   final Duration retryDuration;
   final Duration animationDuration;
   final Curve animationCurve;
-  final ThumbnailMethod thumbnailMethod;
   final Widget Function(BuildContext context)? placeholder;
   final String? cacheKey;
 
   const WebMxcImage({
     this.ref,
-    this.event,
     this.width,
     this.height,
     this.fit,
@@ -35,7 +31,6 @@ class WebMxcImage extends StatefulWidget {
     this.animationDuration = AppTheme.animationDuration,
     this.retryDuration = const Duration(seconds: 2),
     this.animationCurve = AppTheme.animationCurve,
-    this.thumbnailMethod = ThumbnailMethod.scale,
     this.cacheKey,
     Key? key,
   }) : super(key: key);
@@ -59,76 +54,24 @@ class _MxcImageState extends State<WebMxcImage> {
         ? _imageDataNoCache = data
         : _imageDataCache[cacheKey] = data;
   }
-
+  String? _imageUrl;
   bool? _isCached;
 
   Future<void> _load() async {
-    final client = Matrix.of(context).client;
-    final uri = widget.ref;
-    final event = widget.event;
+  
 
-    if (uri != null) {
-      final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-      final width = widget.width;
-      final realWidth = width == null ? null : width * devicePixelRatio;
-      final height = widget.height;
-      final realHeight = height == null ? null : height * devicePixelRatio;
-
-      var storageRef = null;
-      try {
-        storageRef = FirebaseStorage.instance.ref(widget.ref);
-      } catch (e) {
-        return;
-      }
-      final httpUri = storageRef.getDownloadURL();
-
-      final storeKey = await httpUri;
-
-      if (_isCached == null) {
-        final cachedData = await client.database?.getFile(Uri.parse(storeKey));
-        if (cachedData != null) {
-          if (!mounted) return;
-          setState(() {
-            _imageData = cachedData;
-            _isCached = true;
-          });
-          return;
-        }
-        _isCached = false;
-      }
-
-      final response = await storageRef.getData();
-
-      if (response == null) {
-        print(
-            "Something bad happened while trying to download the image off of Firebase Storage");
-        return;
-      }
-      final remoteData = response;
-
-      if (!mounted) return;
+    cacheImage().then((String imageUrl) {
       setState(() {
-        _imageData = remoteData;
+        // Get image url
+        _imageUrl = imageUrl;
+        _isCached = true;
       });
-      await client.database?.storeFile(Uri.parse(storeKey), remoteData, 0);
-    }
+    });
 
-    if (event != null) {
-      final data = await event.downloadAndDecryptAttachment(
-        getThumbnail: widget.isThumbnail,
-      );
-      if (data.detectFileType is MatrixImageFile) {
-        if (!mounted) return;
-        setState(() {
-          _imageData = data.bytes;
-        });
-        return;
-      }
-    }
   }
 
   void _tryLoad(_) async {
-    if (_imageData != null) return;
+    if (_imageUrl != null) return;
     try {
       await _load();
     } catch (e) {
@@ -137,6 +80,24 @@ class _MxcImageState extends State<WebMxcImage> {
       await Future.delayed(widget.retryDuration);
       _tryLoad(_);
     }
+  }
+   Future<String> cacheImage() async {
+   
+    final Reference ref = FirebaseStorage.instance.ref(widget.ref);
+    
+    // Get your image url
+    final imageUrl = await ref.getDownloadURL();
+
+    // Download your image data
+    final imageBytes = await ref.getData(10000000);
+    
+    // Put the image file in the cache
+    await DefaultCacheManager().putFile(
+      imageUrl,
+      imageBytes!,
+      fileExtension: "jpg",
+    );
+    return imageUrl;
   }
 
   @override
@@ -153,7 +114,7 @@ class _MxcImageState extends State<WebMxcImage> {
 
   @override
   Widget build(BuildContext context) {
-    final data = _imageData;
+    final data = _imageUrl;
 
     return AnimatedCrossFade(
       duration: widget.animationDuration,
@@ -162,15 +123,15 @@ class _MxcImageState extends State<WebMxcImage> {
       firstChild: placeholder(context),
       secondChild: data == null || data.isEmpty
           ? const SizedBox.shrink()
-          : Image.memory(
-              data,
+          : CachedNetworkImage(
+              imageUrl: data,
               width: widget.width,
               height: widget.height,
               fit: widget.fit,
               filterQuality: FilterQuality.medium,
-              errorBuilder: (context, __, ___) {
+              errorWidget: (context, __, ___) {
                 _isCached = false;
-                _imageData = null;
+                _imageUrl = null;
                 WidgetsBinding.instance.addPostFrameCallback(_tryLoad);
                 return placeholder(context);
               },

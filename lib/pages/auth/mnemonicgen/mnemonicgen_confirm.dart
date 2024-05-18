@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
@@ -6,6 +7,7 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 
 class MnemonicGenConfirm extends StatefulWidget {
@@ -25,6 +27,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
 
   @override
   Widget build(BuildContext context) {
+    LoggerService logger = Get.find();
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       final screenWidth = MediaQuery.of(context).size.width;
@@ -73,7 +76,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
                   top: AppTheme.cardPadding.h, bottom: AppTheme.cardPadding.h),
               child: GestureDetector(
                 onTap: () {
-                  Logs().w("Skip at own risk pressed");
+                  logger.i("Skip at own risk pressed");
                   //context.go("/pinverification");
                   widget.mnemonicController.signUp();
                 },

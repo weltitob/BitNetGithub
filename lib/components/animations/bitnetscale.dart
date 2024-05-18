@@ -1,4 +1,6 @@
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 
 class BitNetScale extends StatefulWidget {
@@ -24,10 +26,11 @@ class _BitNetScaleState extends State<BitNetScale> {
 
   @override
   Widget build(BuildContext context) {
+    LoggerService logger = Get.find();
     return InkWell(
       onHover: (value) {
         setState(() {
-          Logs().w("Hovered: $value");
+          logger.i("Hovered: $value");
           isHovered = value;
         });
       },

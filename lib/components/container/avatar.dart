@@ -16,7 +16,6 @@ class Avatar extends StatelessWidget {
   final double size;
   final void Function()? onTap;
   static const double defaultSize = AppTheme.cardPadding * 2;
-  final Client? client;
   final double fontSize;
 
   const Avatar({
@@ -25,7 +24,6 @@ class Avatar extends StatelessWidget {
     this.name,
     this.size = defaultSize,
     this.onTap,
-    this.client,
     this.fontSize = 18,
     Key? key,
     this.profileId,

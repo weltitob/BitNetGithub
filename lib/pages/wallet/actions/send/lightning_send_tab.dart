@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -19,6 +20,7 @@ class LightningSendTab extends GetWidget<SendsController> {
 
   @override
   Widget build(BuildContext context) {
+    LoggerService logger = Get.find();
     return Form(
       key: controller.formKey,
       child: ListView(
@@ -72,7 +74,7 @@ class LightningSendTab extends GetWidget<SendsController> {
                       title: "JETZT SENDEN!",
                       buttonType: (!controller.amountWidgetOverBound.value && !controller.amountWidgetUnderBound.value) ? ButtonType.solid : ButtonType.transparent,
                       onTap: (!controller.amountWidgetOverBound.value && !controller.amountWidgetUnderBound.value) ? () async {
-                        Logs().w("lightning SendBTC getting called");
+                        logger.i("lightning SendBTC getting called");
                         await controller.sendBTC(context);
                       } : null,
                     ))
@@ -141,6 +143,7 @@ class LightningSendTab extends GetWidget<SendsController> {
 
   // This widget represents a user tile with an avatar, title, subtitle, and edit button.
   Widget userTile(BuildContext context) {
+    LoggerService logger = Get.find();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -160,7 +163,7 @@ class LightningSendTab extends GetWidget<SendsController> {
               child: const Icon(Icons.edit_rounded,
                   color: Colors.grey, size: AppTheme.cardPadding),
               onTap: () {
-                Logs().w("Edit button pressed");
+                logger.i("Edit button pressed");
                 controller.resetValues();
               }),
         ),

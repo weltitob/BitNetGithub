@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -103,7 +104,8 @@ class ThemeController extends State<ThemeBuilder> {
   }
 
   Future<void> setThemeMode(ThemeMode newThemeMode) async {
-    Logs().d('setThemeMode: $newThemeMode');
+    LoggerService logger = Get.find();
+    logger.d('setThemeMode: $newThemeMode');
     // final preferences =
     //     _sharedPreferences ??= await SharedPreferences.getInstance();
     // await preferences.setString(widget.themeModeSettingsKey, newThemeMode.name);

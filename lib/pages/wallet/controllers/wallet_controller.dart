@@ -130,7 +130,7 @@ class WalletsController extends BaseController {
     Get.put(CryptoItemController());
     Get.put(WalletFilterController());
     subscribeInvoicesStream().listen((restResponse) {
-      Logs().w("Received data from Invoice-stream: $restResponse");
+      logger.w("Received data from Invoice-stream: $restResponse");
       ReceivedInvoice receivedInvoice =
           ReceivedInvoice.fromJson(restResponse.data);
       if (receivedInvoice.settled == true) {
@@ -149,19 +149,19 @@ class WalletsController extends BaseController {
           ),
         );
         //generate a new invoice for the user with 0 amount
-        Logs().w("Generating new empty invoice for user");
+        logger.w("Generating new empty invoice for user");
         ReceiveController().getInvoice(0, "Empty invoice");
       } else {
-        Logs().w(
+        logger.w(
             "Invoice received but not settled yet: ${receivedInvoice.settled}");
       }
     }, onError: (error) {
       
-      Logs().e("Received error for Invoice-stream: $error");
+      logger.e("Received error for Invoice-stream: $error");
     });
 
     subscribeTransactionsStream().listen((restResponse) {
-      Logs().e("nisidi subscribeTransactionsStream");
+      logger.e("nisidi subscribeTransactionsStream");
 
       BitcoinTransaction bitcoinTransaction =
           BitcoinTransaction.fromJson(restResponse.data);
@@ -181,7 +181,7 @@ class WalletsController extends BaseController {
       //});
     }, onError: (error) {
 
-      Logs().e("Received error for Transactions-stream: $error");
+      logger.e("Received error for Transactions-stream: $error");
     });
     fetchOnchainWalletBalance().then((value) {
       loadedFutures++;
@@ -210,7 +210,7 @@ queueErrorOvelay = true;
    
   }
   void handleFuturesCompleted(BuildContext context) {
-    Logs().i("Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
+    logger.i("Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
     if(errorCount>1) {
       showOverlay(context, "Failed to load certain services, please try again later.", color: AppTheme.errorColor);
     } else if(errorCount ==1) {

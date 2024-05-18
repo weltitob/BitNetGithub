@@ -91,7 +91,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
                     iconData: FontAwesomeIcons.refresh,
                     onTap: () {
                       controller.getTaprootAddress();
-                      // Logs().w(
+                      // logger.w(
                       //     "Refresh button pressed: New Bitcoin Adress should be generated // not implemented yet");
                     });
           }),

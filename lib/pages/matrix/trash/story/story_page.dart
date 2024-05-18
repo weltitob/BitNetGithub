@@ -83,7 +83,7 @@
 //         SnackBar(content: Text(L10n.of(context)!.replyHasBeenSent)),
 //       );
 //     } catch (e, s) {
-//       Logs().w('Unable to reply to story', e, s);
+//       logger.w('Unable to reply to story', e, s);
 //       ScaffoldMessenger.of(context).showSnackBar(
 //         SnackBar(content: Text(e.toLocalizedString(context))),
 //       );
@@ -207,7 +207,7 @@
 //       await videoPlayerController.play();
 //       return videoPlayerController;
 //     } catch (e, s) {
-//       Logs().w('Unable to load video story. Try again...', e, s);
+//       logger.w('Unable to load video story. Try again...', e, s);
 //       await Future.delayed(const Duration(seconds: 3));
 //       return loadVideoController(event);
 //     }
@@ -416,7 +416,7 @@
 //               .toList();
 //           events.removeOutdatedEvents();
 //         } catch (e, s) {
-//           Logs().d('Unable to request history in stories', e, s);
+//           logger.d('Unable to request history in stories', e, s);
 //         }
 //       }
 //
@@ -453,7 +453,7 @@
 //       }
 //       maybeSetReadMarker();
 //     } catch (e, s) {
-//       Logs().e('Unable to load story', e, s);
+//       logger.e('Unable to load story', e, s);
 //     }
 //     return;
 //   }

@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_scroll_behaviour.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/loaders/empty_page.dart';
 import 'package:bitnet/pages/routetrees/controllers/widget_tree_controller.dart';
@@ -8,7 +9,6 @@ import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -23,6 +23,7 @@ class WidgetTree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<LocalProvider>(context);
+    LoggerService logger = Get.find();
     Get.put(WidgetTreeController());
 
     final controller = Get.find<WidgetTreeController>();
@@ -33,7 +34,7 @@ class WidgetTree extends StatelessWidget {
           final isColumnMode =
               AppTheme.isColumnModeByWidth(constraints.maxWidth);
           if (isColumnMode != controller.columnMode!.value) {
-            Logs().v('Set Column Mode = $isColumnMode');
+            logger.i('Set Column Mode = $isColumnMode');
             WidgetsBinding.instance.addPostFrameCallback((_) {
               () {
                 controller.initialUrl!.value = "/loading";
@@ -58,22 +59,17 @@ class WidgetTree extends StatelessWidget {
                   scrollBehavior: CustomScrollBehavior(),
                   locale: provider.locale,
                   supportedLocales: L10n.supportedLocales,
-                  localizationsDelegates: const [
+                  localizationsDelegates:  [
                     L10n.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
+                    // GlobalMaterialLocalizations.delegate,
+                    // GlobalCupertinoLocalizations.delegate,
+                    // GlobalWidgetsLocalizations.delegate,
                   ],
-                  builder: (context, child) => Obx(
-                    () => (controller.isLoadingClients.value)
-                        ? EmptyPage(
-                            loading: true, text: "Clients still loading...")
-                        : Matrix(
+                  builder: (context, child) =>  Matrix(
                             context: context,
-                            clients: controller.clients,
                             child: child,
                           ),
-                  ),
+                  
                 );
               });
         },

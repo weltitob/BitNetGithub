@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
@@ -12,6 +13,7 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
@@ -45,7 +47,8 @@ class MnemonicController extends State<MnemonicGen> {
   }
 
   void processParameters(BuildContext context) {
-    Logs().w("Process parameters for mnemonicgen called");
+    LoggerService logger = Get.find();
+    logger.i("Process parameters for mnemonicgen called");
     final Map<String, String> parameters =
         GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
 
@@ -73,6 +76,7 @@ class MnemonicController extends State<MnemonicGen> {
   }
 
   void confirmMnemonic(String typedMnemonic) {
+    LoggerService logger = Get.find();
     if (mnemonicString == typedMnemonic) {
       showOverlay(context, "Your mnemonic is correct! Please keep it safe.",
           color: AppTheme.successColor);
@@ -81,18 +85,19 @@ class MnemonicController extends State<MnemonicGen> {
       //implement error throw
       showOverlay(context, "Your mnemonic does not match. Please try again.",
           color: AppTheme.errorColor);
-      Logs().e("Mnemonic does not match");
+      logger.e("Mnemonic does not match");
       changeWrittenDown();
     }
   }
 
   void signUp() async {
+    LoggerService logger = Get.find();
     setState(() {
       isLoadingSignUp = true;
     });
     try {
-      Auth().loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
-      Logs().w("Making firebase auth now...");
+      //Auth().loginMatrix(context, "weltitob@proton.me", "Bear123Fliederbaum");
+      logger.i("Making firebase auth now...");
 
       final userdata = UserData(
         backgroundImageUrl: profileimageurl,
@@ -125,18 +130,15 @@ class MnemonicController extends State<MnemonicGen> {
       localeProvider.setLocaleInDatabase(
           localeProvider.locale.languageCode ?? langCode,
           localeProvider.locale ?? deviceLocale);
-      Logs().w("Navigating to homescreen now...");
+      logger.i("Navigating to homescreen now...");
       context.go('/');
-    } on MatrixException catch (e) {
-      print("Matrix Exception: $e");
-      throw Exception(e);
-    } on FirebaseException catch (e) {
-      Logs().e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
+    }  on FirebaseException catch (e) {
+      logger.e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
       throw Exception(
           "We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");
     } catch (e) {
       //implement error throw
-      Logs().e("Error trying to call signUp in mnemonicgen.dart: $e");
+      logger.e("Error trying to call signUp in mnemonicgen.dart: $e");
     }
     setState(() {
       isLoadingSignUp = false;
@@ -145,9 +147,10 @@ class MnemonicController extends State<MnemonicGen> {
 
   Future<UserData?> firebaseAuthentication(
       UserData userData, VerificationCode code) async {
+        LoggerService logger = Get.find();
     try {
       //blablabla
-      Logs().w("Creating firebase user now...");
+      logger.i("Creating firebase user now...");
 
       final UserData currentuserwallet = await Auth().createUserFake(
         user: userData,
@@ -156,7 +159,7 @@ class MnemonicController extends State<MnemonicGen> {
 
       return currentuserwallet;
     } on FirebaseException catch (e) {
-      Logs().e("Firebase Exception: $e");
+      logger.e("Firebase Exception: $e");
       setState(() {
         throw Exception("Error: $e");
       });

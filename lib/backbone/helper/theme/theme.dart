@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -156,13 +158,14 @@ abstract class AppTheme {
       'https://github.com/googlefonts/noto-emoji/';
 
   static void loadFromJson(Map<String, dynamic> json) {
+    LoggerService logger = Get.find();
     if (json['chat_color'] != null) {
       try {
         colorSchemeSeed = Color(json['chat_color']);
       } catch (e) {
-        Logs().w(
-          'Invalid color in config.json! Please make sure to define the color in this format: "0xffdd0000"',
-          e,
+        logger.i(
+          'Invalid color in config.json! Please make sure to define the color in this format: "0xffdd0000", error: $e'
+          
         );
       }
     }

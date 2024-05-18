@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/client_chooser_button.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -82,7 +81,6 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
                   ),
                   onTap: () {
                     print("Share button pressed");
-                    SettingsAction.invite;
                   },
                 ),
                 Padding(

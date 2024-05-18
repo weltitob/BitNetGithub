@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/pages/chat_list/chat_list.dart';
 import 'package:bitnet/pages/create/createasset.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
@@ -129,7 +128,6 @@ class _BottomNavState extends State<BottomNav>
 
   static List<Widget> navItems = <Widget>[
     FeedScreen(),
-    ChatList(),
     CreateAsset(),
     Wallet(),
     Profile()
@@ -190,10 +188,6 @@ class _BottomNavState extends State<BottomNav>
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(FontAwesomeIcons.fire),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(FontAwesomeIcons.rocketchat),
                   label: '',
                 ),
                 BottomNavigationBarItem(

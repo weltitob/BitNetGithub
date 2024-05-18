@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
@@ -14,6 +15,7 @@ import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 
@@ -50,7 +52,8 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
 
   // function to sign in with email and password
   Future<void> signIn() async {
-    Logs().w("signIn pressed...");
+    LoggerService logger = Get.find();
+    logger.i("signIn pressed...");
     setState(() {
       _isLoading = true;
       errorMessage = null;
@@ -69,7 +72,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       //call login with signed message and then store the iondata in the privatestorage of new device!
       //Auth().signIn(did, _controllerPassword.text, myusername);
 
-      Logs().w(
+      logger.i(
           "didandpkscreen.dart: recover privatekey from user (broken if no real did) for user $did");
 
       final recoveredprivatkey = await recoverKey(

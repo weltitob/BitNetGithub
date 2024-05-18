@@ -1,5 +1,8 @@
 
 
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:get/get.dart';
+
 class ReceivedInvoice {
   final String? memo;
   final String? rPreimage;
@@ -32,13 +35,14 @@ class ReceivedInvoice {
   });
 
   factory ReceivedInvoice.fromJson(Map<String, dynamic>? json) {
+    LoggerService logger = Get.find();
     if (json == null) {
-      Logs().e('JSON data must not be null');
+      logger.e('JSON data must not be null');
       throw ArgumentError('JSON data must not be null');
     }
     Map<String, dynamic>? result = json['result'] as Map<String, dynamic>?;
     if (result == null) {
-      Logs().e('Result key missing or null in the JSON data');
+      logger.e('Result key missing or null in the JSON data');
       throw ArgumentError('Result key missing or null in the JSON data');
     }
     return ReceivedInvoice(

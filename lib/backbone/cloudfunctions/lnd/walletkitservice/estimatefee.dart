@@ -4,12 +4,14 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 
 Future<RestResponse> estimateFee(String conf_target) async {
+  LoggerService logger = Get.find();
   String restHost = AppTheme.baseUrlLightningTerminal;
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
   String url = 'https://$restHost/v2/wallet/estimatefee/$conf_target';
@@ -31,7 +33,7 @@ Future<RestResponse> estimateFee(String conf_target) async {
       url: url,
       headers: headers,
     );
-    Logs().w('Raw Response estimate fee: ${response.data}');
+    logger.i('Raw Response estimate fee: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);
@@ -40,7 +42,7 @@ Future<RestResponse> estimateFee(String conf_target) async {
           message: "Successfully got fee estimate",
           data: response.data);
     } else {
-      Logs().e('Failed to load data: ${response.statusCode}, ${response.data}');
+      logger.e('Failed to load data: ${response.statusCode}, ${response.data}');
       return RestResponse(
           statusCode: "error",
           message:
@@ -48,7 +50,7 @@ Future<RestResponse> estimateFee(String conf_target) async {
           data: {});
     }
   } catch (e) {
-    Logs().e('Error trying to publish transaction: $e');
+    logger.e('Error trying to publish transaction: $e');
     return RestResponse(
         statusCode: "error",
         message:

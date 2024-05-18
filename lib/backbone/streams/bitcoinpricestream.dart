@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:get/get.dart';
 
@@ -14,7 +15,7 @@ If there is an error fetching the price, it is caught and printed to the console
 */
 // Stream<ChartLine> bitcoinPriceStream(Duration updateInterval) async* {
 //   Timer.periodic(updateInterval, (Timer timer) async* {
-//     Logs().w("Fetching Bitcoin price...");
+//     logger.w("Fetching Bitcoin price...");
 //     try {
 //       final Map<String, String> params = {
 //         'ids': 'bitcoin',
@@ -128,7 +129,8 @@ class BitcoinPriceStream {
   }
 
   Future<void> _fetchAndUpdate() async {
-    Logs().d("Fetching bitcoin price in $localCurrency...");
+    LoggerService logger = Get.find();
+    logger.d("Fetching bitcoin price in $localCurrency...");
     try {
       final Map<String, String> params = {
         'ids': 'bitcoin',
@@ -146,15 +148,15 @@ class BitcoinPriceStream {
             double.parse(data['bitcoin'][localCurrency].toString());
         final double time =
             double.parse(data['bitcoin']['last_updated_at'].toString());
-        Logs().d("Price of bitcoin in $localCurrency: $price");
+        logger.d("Price of bitcoin in $localCurrency: $price");
         final ChartLine latestChartLine = ChartLine(time: time, price: price);
         _priceController.add(latestChartLine);
       } else {
-        Logs().e(
+        logger.e(
             "Error fetching Bitcoin price stream data: ${response.statusCode} ${response.data}");
       }
     } catch (e) {
-      Logs().e("Error fetching Bitcoin price: $e");
+      logger.e("Error fetching Bitcoin price: $e");
     }
   }
 

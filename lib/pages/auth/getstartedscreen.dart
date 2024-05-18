@@ -1,6 +1,7 @@
 //import 'package:bitnet/l10n/l10n.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
@@ -8,6 +9,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
@@ -29,6 +31,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    LoggerService logger = Get.find();
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
@@ -108,7 +111,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                     top: AppTheme.cardPadding, bottom: AppTheme.cardPadding),
                 child: GestureDetector(
                   onTap: () {
-                    Logs().w("AGBS and Impressum was clicked");
+                    logger.i("AGBS and Impressum was clicked");
                   },
                   child: Text(
                     "AGBS and Impressum",

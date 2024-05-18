@@ -3,7 +3,6 @@ import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 import 'package:bitnet/pages/auth/getstartedscreen.dart';
 import 'package:bitnet/pages/auth/ionloadingscreen.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
-import 'package:bitnet/pages/auth/old_matrix/connect/connect_page.dart';
 import 'package:bitnet/pages/auth/pinverificationscreen.dart';
 import 'package:bitnet/pages/auth/restore/chooserestorescreen.dart';
 import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
@@ -12,16 +11,11 @@ import 'package:bitnet/pages/auth/restore/social_recovery/info_social_recovery.d
 import 'package:bitnet/pages/auth/restore/social_recovery/socialrecoveryscreen.dart';
 import 'package:bitnet/pages/auth/restore/word_recovery/wordrecoveryscreen.dart';
 import 'package:bitnet/pages/bottomnav.dart';
-import 'package:bitnet/pages/chat_list/chat_details/chat_details.dart';
-import 'package:bitnet/pages/chat_list/chat_encryption_settings/chat_encryption_settings.dart';
-import 'package:bitnet/pages/chat_list/chat_list.dart';
-import 'package:bitnet/pages/chat_list/chat_matrixwidgets_settings/chat_matrixwidgets.dart';
-import 'package:bitnet/pages/chat_list/chat_permissions_settings/chat_permissions_settings.dart';
-import 'package:bitnet/pages/chat_list/createnew/createnewscreen.dart';
 import 'package:bitnet/pages/create/createasset.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
+import 'package:bitnet/pages/matrix/widgets/log_view.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:bitnet/pages/secondpages/analysisscreen.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
@@ -34,9 +28,7 @@ import 'package:bitnet/pages/secondpages/mempool/view/unaccepted_block_transacti
 import 'package:bitnet/pages/secondpages/newsscreen.dart';
 import 'package:bitnet/pages/secondpages/transactionsscreen.dart';
 import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
-import 'package:bitnet/pages/settings/archive/archive.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
-import 'package:bitnet/pages/settings/device_settings/device_settings.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
@@ -52,22 +44,12 @@ import 'package:bitnet/pages/website/contact/submitidea/submitidea.dart';
 import 'package:bitnet/pages/website/product/aboutus/aboutus.dart';
 import 'package:bitnet/pages/website/product/ourteam/ourteam.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
-import 'package:bitnet/pages/chat_list/chat/chat.dart';
-import 'package:bitnet/pages/matrix/pages/invitation_selection/invitation_selection.dart';
 import 'package:bitnet/components/loaders/loading_view.dart';
-import 'package:bitnet/pages/matrix/widgets/log_view.dart';
 import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/settings/invite/invitation_page.dart';
 import 'package:bitnet/pages/settings/security/security_page.dart';
-import 'package:bitnet/pages/settings/security/settings_security/settings_security.dart';
-import 'package:bitnet/pages/settings/settings_3pid/settings_3pid.dart';
-import 'package:bitnet/pages/settings/settings_chat/settings_chat.dart';
-import 'package:bitnet/pages/settings/settings_emotes/settings_emotes.dart';
-import 'package:bitnet/pages/settings/settings_ignore_list/settings_ignore_list.dart';
-import 'package:bitnet/pages/settings/settings_multiple_emotes/settings_multiple_emotes.dart';
-import 'package:bitnet/pages/settings/settings_notifications/settings_notifications.dart';
 import 'package:bitnet/pages/settings/settings_style/settings_style.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -361,100 +343,12 @@ class AppRoutes {
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
-        GoRoute(
-          path: '/rooms',
-          builder: (ctx, state) => ChatList(
-            routerState: state,
-          ),
-          routes: [
-            // Chat details and other chat-related routes without BottomNav
-            GoRoute(
-              path: 'create',
-              builder: _dynamicTransition == null
-                  ? (ctx, state) => const CreateNewScreen(
-                initialIndex: 0,
-              )
-                  : null,
-              pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: const CreateNewScreen(
-                    initialIndex: 0,
-                  ),
-                  transitionsBuilder: _dynamicTransition!)
-                  : null,
-              routes: _chatCreateRoutes,
-            ),
-            GoRoute(
-              path: 'spaces/:roomid',
-              name: '/rooms/spaces',
-              builder: (ctx, state) => ChatDetails(
-                routerState: state,
-              ),
-              routes: _chatDetailsRoutes1,
-            ),
-            GoRoute(
-              path: ':roomid',
-              name: 'rooms',
-              builder: (ctx, state) => ChatPage(
-                routerState: state,
-              ),
-              routes: [
-                GoRoute(
-                  path: 'encryption',
-                  builder: (ctx, state) => ChatEncryptionSettings(
-                    routerState: state,
-                  ),
-                ),
-                GoRoute(
-                  path: 'invite',
-                  builder: (ctx, state) => InvitationSelection(
-                    routerState: state,
-                  ),
-                ),
-                GoRoute(
-                  path: 'details',
-                  builder: (ctx, state) => ChatDetails(
-                    routerState: state,
-                  ),
-                  routes: _chatDetailsRoutes2,
-                ),
-              ],
-            ),
-            GoRoute(
-              path: 'archive',
-              builder: (ctx, state) => const Archive(),
-              routes: [
-                GoRoute(
-                  path: ':roomid',
-                  name: 'archive',
-                  builder: _dynamicTransition == null
-                      ? (ctx, state) => ChatPage(
-                    routerState: state,
-                  )
-                      : null,
-                  pageBuilder: _dynamicTransition != null
-                      ? (ctx, state) => CustomTransitionPage(
-                      key: state.pageKey,
-                      child: ChatPage(
-                        routerState: state,
-                      ),
-                      transitionsBuilder: _dynamicTransition!)
-                      : null,
-                ),
-              ],
-            ),
-            GoRoute(
+         GoRoute(
               path: 'settings',
               builder: (ctx, state) => Settings(),
               routes: _settingsRoutes,
             ),
-          ]
-        ),
-
-
-
-
+     
         // ShellRoute(
         //   builder: (ctx, state, child) {
         //     return BottomNav(routerState: state);
@@ -557,220 +451,12 @@ class AppRoutes {
             //   builder: (ctx,state) => const LogViewer(),
             //   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
             // ),
-            GoRoute(
-              path: 'connect',
-              builder: (ctx, state) => const ConnectPage(),
-              routes: [
-                GoRoute(
-                  path: 'signup',
-                  builder: (ctx, state) => Container(),
-                ),
-              ],
-            ),
+            
           ],
         ),
       ];
 
-  List<GoRoute> get _chatCreateRoutes => [
-        GoRoute(
-          path: 'chat',
-          builder: (ctx, state) => const CreateNewScreen(
-            initialIndex: 0,
-          ),
-        ),
-        GoRoute(
-          path: 'group',
-          builder: (ctx, state) => const CreateNewScreen(
-            initialIndex: 1,
-          ),
-        ),
-        GoRoute(
-          path: 'space',
-          builder: (ctx, state) => const CreateNewScreen(
-            initialIndex: 2,
-          ),
-        ),
-      ];
-
-  List<GoRoute> get _chatDetailsRoutes1 => [
-        GoRoute(
-          path: 'permissions',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => ChatPermissionsSettings(
-                    routerState: state,
-                  )
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: ChatPermissionsSettings(
-                    routerState: state,
-                  ),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'widgets',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => ChatMatrixWidgets(
-                    routerState: state,
-                  )
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: ChatMatrixWidgets(
-                    routerState: state,
-                  ),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'invite',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => InvitationSelection(
-                    routerState: state,
-                  )
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: InvitationSelection(
-                    routerState: state,
-                  ),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'multiple_emotes',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => MultipleEmotesSettings(
-                    routerState: state,
-                  )
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: MultipleEmotesSettings(routerState: state),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'emotes',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => EmotesSettings(routerState: state)
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: EmotesSettings(routerState: state),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'emotes/:state_key',
-          name: 'emotes',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => EmotesSettings(routerState: state)
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: EmotesSettings(routerState: state),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-      ];
-  List<GoRoute> get _chatDetailsRoutes2 => [
-        GoRoute(
-          path: 'permissions',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => ChatPermissionsSettings(
-                    routerState: state,
-                  )
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: ChatPermissionsSettings(
-                    routerState: state,
-                  ),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'widgets',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => ChatMatrixWidgets(
-                    routerState: state,
-                  )
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: ChatMatrixWidgets(
-                    routerState: state,
-                  ),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'invite',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => InvitationSelection(
-                    routerState: state,
-                  )
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: InvitationSelection(
-                    routerState: state,
-                  ),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'multiple_emotes',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => MultipleEmotesSettings(
-                    routerState: state,
-                  )
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: MultipleEmotesSettings(routerState: state),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'emotes',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => EmotesSettings(routerState: state)
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: EmotesSettings(routerState: state),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'emotes/:state_key',
-          name: 'emotes2',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => EmotesSettings(routerState: state)
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: EmotesSettings(routerState: state),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-      ];
-
+ 
   List<GoRoute> get _settingsRoutes => [
         GoRoute(
           path: 'settings?tab=language',
@@ -796,18 +482,7 @@ class AppRoutes {
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
-        GoRoute(
-          path: 'settings?tab=notifications',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => const SettingsNotifications()
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: SettingsNotifications(),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
+       
         GoRoute(
           path: 'settings?tab=style',
           builder: _dynamicTransition == null
@@ -820,18 +495,7 @@ class AppRoutes {
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
-        GoRoute(
-          path: 'settings?tab=devices',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => const DevicesSettings()
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: DevicesSettings(),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
+       
         GoRoute(
           path: 'settings?tab=invite_friends',
           builder: _dynamicTransition == null
@@ -855,70 +519,6 @@ class AppRoutes {
                   child: SecuritySettingsPage(),
                   transitionsBuilder: _dynamicTransition!)
               : null,
-        ),
-        GoRoute(
-          path: 'settings?tab=chat',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => const SettingsChat()
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: const SettingsChat(),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-          routes: [
-            GoRoute(
-              path: 'settings?tab=chat&subtab=emotes',
-              builder: _dynamicTransition == null
-                  ? (ctx, state) => EmotesSettings(routerState: state)
-                  : null,
-              pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(
-                      key: state.pageKey,
-                      child: EmotesSettings(routerState: state),
-                      transitionsBuilder: _dynamicTransition!)
-                  : null,
-            ),
-          ],
-        ),
-        GoRoute(
-          path: 'settings?tab=security',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => const SettingsSecurity()
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: const SettingsSecurity(),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-          routes: [
-            GoRoute(
-              path: 'settings?tab=security&subtab=ignorelist',
-              builder: _dynamicTransition == null
-                  ? (ctx, state) => const SettingsIgnoreList()
-                  : null,
-              pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(
-                      key: state.pageKey,
-                      child: SettingsIgnoreList(),
-                      transitionsBuilder: _dynamicTransition!)
-                  : null,
-            ),
-            GoRoute(
-              path: 'settings?tab=security&subtab=3pid',
-              builder: _dynamicTransition == null
-                  ? (ctx, state) => const Settings3Pid()
-                  : null,
-              pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(
-                      key: state.pageKey,
-                      child: Settings3Pid(),
-                      transitionsBuilder: _dynamicTransition!)
-                  : null,
-            ),
-          ],
         ),
         GoRoute(
           path: 'settings?tab=logs',

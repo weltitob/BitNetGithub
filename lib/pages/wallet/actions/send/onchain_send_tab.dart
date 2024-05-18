@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -21,6 +22,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
 
   @override
   Widget build(BuildContext context) {
+    LoggerService logger = Get.find();
     return Form(
       key: controller.formKey,
       child: ListView(
@@ -66,7 +68,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
                     child: LongButtonWidget(
                       title: "JETZT SENDEN!",
                       onTap: () async {
-                        Logs().w("onchain SendBTC getting called");
+                        logger.i("onchain SendBTC getting called");
                         await controller.sendBTC(context);
                       },
                     )),
@@ -134,6 +136,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
 
   // This widget represents a user tile with an avatar, title, subtitle, and edit button.
   Widget userTile(BuildContext context) {
+    LoggerService logger = Get.find();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -153,7 +156,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
               child: const Icon(Icons.edit_rounded,
                   color: Colors.grey, size: AppTheme.cardPadding),
               onTap: () {
-                Logs().w("Edit button pressed");
+                logger.i("Edit button pressed");
                 controller.resetValues();
               }),
         ),

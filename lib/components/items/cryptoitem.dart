@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
@@ -42,7 +43,7 @@ class CryptoItem extends StatefulWidget {
 
 class _CryptoItemState extends State<CryptoItem> {
   final controllerCrypto = Get.find<CryptoItemController>();
-
+  final LoggerService logger = Get.find();
   void didChangeDependencies() {
     super.didChangeDependencies();
     final chartLine = Provider.of<ChartLine?>(context, listen: true);
@@ -63,7 +64,7 @@ class _CryptoItemState extends State<CryptoItem> {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       controllerCrypto.isBlinking.value = true;
       controllerCrypto.controller.forward();
-      Logs().d("Cryptoitem (bitcoinchart) ui has been updated!");
+      logger.d("Cryptoitem (bitcoinchart) ui has been updated!");
 
        });
     }

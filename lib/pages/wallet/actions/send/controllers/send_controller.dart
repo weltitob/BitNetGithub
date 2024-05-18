@@ -9,6 +9,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/walletkit/finalizepsbtresponse.dart';
@@ -46,8 +47,9 @@ class SendsController extends BaseController {
 
 
   Future<void> getClipboardData() async {
+    LoggerService logger = Get.find();
     ClipboardData? data = await Clipboard.getData('text/plain');
-    Logs().w('clipboard data ${data?.text}');
+    logger.i('clipboard data ${data?.text}');
     handleSearch(data?.text ?? '');
   }
 
@@ -83,8 +85,9 @@ class SendsController extends BaseController {
   BitcoinUnits? boundType;
   String? lnCallback;
   void processParameters(BuildContext context, String? address) {
+    LoggerService logger = Get.find();
     print('Process parameters for');
-    Logs().w("Process parameters for sendscreen called");
+    logger.i("Process parameters for sendscreen called");
 
     Map<String, String> queryParams =
         GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
@@ -94,23 +97,23 @@ class SendsController extends BaseController {
       walletAdress = address;
     }
     if (invoice != null) {
-      Logs().w("Invoice: $invoice");
+      logger.i("Invoice: $invoice");
       giveValuesToInvoice(invoice);
       moneyController.text =
           (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
       bitcoinUnit = BitcoinUnits.SAT;
     } else if (walletAdress != null) {
       onQRCodeScanned(walletAdress, context);
-      // Logs().w("Walletadress: $walletAdress");
+      // logger.w("Walletadress: $walletAdress");
 
       // giveValuesToOnchainSend(walletAdress);
       moneyController.text =
           (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
       bitcoinUnit = BitcoinUnits.SAT;
     } else {
-      Logs().w("No parameters found");
+      logger.i("No parameters found");
     }
-    Logs().w("Invoice: $invoice");
+    logger.i("Invoice: $invoice");
   }
 
   QRTyped determineQRType(dynamic encodedString) {
@@ -123,7 +126,7 @@ class SendsController extends BaseController {
     final isLnUrl = (encodedString as String).toLowerCase().startsWith("lnurl");
     late QRTyped qrTyped;
 
-    Logs().w("Determining the QR type...");
+    logger.i("Determining the QR type...");
     // Logic to determine the QR type based on the encoded string
     // Return the appropriate QRTyped enum value
     if (isLightningMailValid) {
@@ -145,7 +148,7 @@ class SendsController extends BaseController {
   void onQRCodeScanned(dynamic encodedString, BuildContext cxt) {
     // Logic to determine the type of QR code
     QRTyped type = determineQRType(encodedString);
-    Logs().w("TYPE DETECTED! $type");
+    logger.i("TYPE DETECTED! $type");
 
     switch (type) {
       case QRTyped.LightningUrl:
@@ -161,7 +164,7 @@ class SendsController extends BaseController {
         giveValuesToOnchainSend(encodedString);
         break;
       case QRTyped.Invoice:
-        Logs().w(
+        logger.i(
             "Invoice was detected will forward to Send screen with invoice: $encodedString");
         showOverlay(context, encodedString);
         giveValuesToInvoice(encodedString);
@@ -284,7 +287,8 @@ class SendsController extends BaseController {
     print(response.body);
   }
   void giveValuesToInvoice(String invoiceString) {
-    Logs().w("Invoice that is about to be paid for: $invoiceString");
+    LoggerService logger = Get.find();
+    logger.i("Invoice that is about to be paid for: $invoiceString");
     sendType = SendType.Invoice;
     hasReceiver.value = true;
     bitcoinReceiverAdress = invoiceString;
@@ -317,7 +321,8 @@ class SendsController extends BaseController {
   }
 
   sendBTC(BuildContext context) async {
-    Logs().w("sendBTC() called");
+    LoggerService logger = Get.find();
+    logger.i("sendBTC() called");
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
@@ -402,16 +407,16 @@ class SendsController extends BaseController {
             isFinished.value = false;
           }
         } else {
-          Logs().w("Unknown sendType");
+          logger.i("Unknown sendType");
         }
       } catch (e) {
-        Logs().e("Error with sendBTC: " + e.toString());
+        logger.e("Error with sendBTC: " + e.toString());
         isFinished.value = false;
       }
     } else {
       // Display an error message if biometric authentication failed
       isFinished.value = false;
-      Logs().e('Biometric authentication failed');
+      logger.e('Biometric authentication failed');
     }
   }
 

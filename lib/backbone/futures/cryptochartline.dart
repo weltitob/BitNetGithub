@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:http/http.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 
 /*
@@ -25,11 +27,12 @@ class CryptoChartLine {
 
   // Function to fetch chart data from Coingecko API
   Future<void> getChartData() async {
-    Logs().d("Fetching chart data for $crypto... $days days, $currency currency");
+    LoggerService logger = Get.find();
+    logger.d("Fetching chart data for $crypto... $days days, $currency currency");
     final currencyLower = currency.toLowerCase();
     var url =
         "https://api.coingecko.com/api/v3/coins/$crypto/market_chart?vs_currency=$currencyLower&days=$days&api_key=$apiKey";
-    Response res = await get(Uri.parse(url));
+    http.Response res = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(res.body);
     if (res.statusCode == 200) {
       // If 'days' is 'max', get data for every 15th element, otherwise get data for every 4th element
@@ -68,7 +71,7 @@ class CryptoChartLine {
         });
       }
     } else {
-      Logs().e("Unable to retrieve chart data from Coingecko. Status code: ${res.statusCode} Response: ${res.body}");
+      logger.e("Unable to retrieve chart data from Coingecko. Status code: ${res.statusCode} Response: ${res.body}");
       // Throw an error if unable to retrieve chart data from Coingecko
     }
   }

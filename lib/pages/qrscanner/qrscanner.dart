@@ -2,12 +2,14 @@ import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/matrix_helpers/url_launcher.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/qr_codes/qr_bitcoinadress.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -37,12 +39,10 @@ class QRScannerController extends State<QrScanner> {
   bool isLoading = false;
 
 
-  void _onQRViewCreatedMatrix(dynamic scanData) async {
-    //if matrix shit is scanned
-    UrlLauncher(context, scanData.code).openMatrixToUrl();
-  }
+ 
 
   QRTyped determineQRType(dynamic encodedString) {
+    LoggerService logger = Get.find();
     final isLightningMailValid = isLightningAdressAsMail(encodedString);
     print("isLightingMailValid: $isLightningMailValid");
     final isStringInvoice = isStringALNInvoice(encodedString);
@@ -52,7 +52,7 @@ class QRScannerController extends State<QrScanner> {
    
     late QRTyped qrTyped;
 
-    Logs().w("Determining the QR type...");
+    logger.i("Determining the QR type...");
     // Logic to determine the QR type based on the encoded string
     // Return the appropriate QRTyped enum value
     if(isLightningMailValid){
@@ -73,6 +73,7 @@ class QRScannerController extends State<QrScanner> {
 
 
   void onQRCodeScanned(dynamic encodedString, BuildContext cxt) {
+    LoggerService logger = Get.find();
     // Logic to determine the type of QR code
     QRTyped type = determineQRType(encodedString);
 
@@ -87,8 +88,7 @@ class QRScannerController extends State<QrScanner> {
         break;
       case QRTyped.Invoice:
         print("INVIUCE DETECTED!");
-        Logs().w("Invoice was detected will forward to Send screen...");
-        Logs().w(GoRouter.of(cxt).routerDelegate.currentConfiguration.fullPath);
+        logger.i("Invoice was detected will forward to Send screen...");
         context.pop(encodedString);
       
 
@@ -99,7 +99,7 @@ class QRScannerController extends State<QrScanner> {
           //Navigator.pushReplacement(cxt, MaterialPageRoute(builder: (context)=>Send()));
         // cxt.go("/wallet/send");
         } catch (e) {
-          Logs().e("Failed forwarding with error: $e");
+          logger.e("Failed forwarding with error: $e");
         }
         break;
       case QRTyped.Profile:

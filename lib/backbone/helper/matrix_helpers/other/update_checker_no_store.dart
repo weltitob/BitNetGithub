@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart';
 
 import 'package:path_provider/path_provider.dart';
@@ -28,6 +30,7 @@ class UpdateCheckerNoStore {
   const UpdateCheckerNoStore(this.context);
 
   Future<void> checkUpdate() async {
+    LoggerService logger = Get.find();
     // platform-specific implementations
     try {
       if (PlatformInfos.isWindows) {
@@ -55,7 +58,7 @@ class UpdateCheckerNoStore {
         return;
       }
     } catch (e) {
-      Logs().i('Could not look for updates:', e);
+      logger.e('Could not look for updates: $e');
       return;
     }
   }
@@ -76,6 +79,7 @@ class UpdateCheckerNoStore {
   /// Either uses the operating systems package or app management to perform
   /// an update or launches a custom installer
   Future<void> launchUpdater(UpdateMetadata metadata) async {
+    LoggerService logger = Get.find();
     // platform specific
     try {
       if (kIsWeb) return;
@@ -91,7 +95,7 @@ class UpdateCheckerNoStore {
         }
       }
     } catch (e) {
-      Logs().w('Error launching th update:', e);
+      logger.e('Error launching th update: $e');
     }
   }
 

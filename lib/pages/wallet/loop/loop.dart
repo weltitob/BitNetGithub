@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -17,6 +18,7 @@ import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 
@@ -59,7 +61,8 @@ class LoopController extends State<Loop> {
     super.initState();
 
     subscribeInvoicesStream().listen((restResponse) {
-      Logs().w("Received data from Invoice-stream: $restResponse");
+      LoggerService logger = Get.find();
+      logger.i("Received data from Invoice-stream: $restResponse");
       ReceivedInvoice receivedInvoice =
           ReceivedInvoice.fromJson(restResponse.data);
       if (receivedInvoice.settled == true) {
@@ -76,15 +79,16 @@ class LoopController extends State<Loop> {
               txHash: receivedInvoice.rHash!, fee: 0,
             ));
         //generate a new invoice for the user with 0 amount
-        Logs().w("Generating new empty invoice for user");
+        logger.i("Generating new empty invoice for user");
 
         ReceiveController().getInvoice(0, "Empty invoice");
       } else {
-        Logs().w(
+        logger.i(
             "Invoice received but not settled yet: ${receivedInvoice.settled}");
       }
     }, onError: (error) {
-      Logs().e("Received error for Invoice-stream: $error");
+      LoggerService logger = Get.find();
+      logger.e("Received error for Invoice-stream: $error");
     });
 
     subscribeTransactionsStream().listen((restResponse) {
@@ -104,7 +108,8 @@ class LoopController extends State<Loop> {
           ));
       //});
     }, onError: (error) {
-      Logs().e("Received error for Transactions-stream: $error");
+      LoggerService logger = Get.find();
+      logger.e("Received error for Transactions-stream: $error");
     });
 
     fetchOnchainWalletBalance();

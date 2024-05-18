@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -12,7 +14,8 @@ import 'package:http/http.dart' as http;
 import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
 
 Stream<RestResponse> subscribeTransactionsStream() async* {
-  Logs().w("Called subscribeTransactions Stream!");
+  LoggerService logger = Get.find();
+  logger.i("Called subscribeTransactions Stream!");
   String restHost = AppTheme.baseUrlLightningTerminal;
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
 

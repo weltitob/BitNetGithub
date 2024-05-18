@@ -106,7 +106,7 @@
 //         benchmarkResults = benchmark;
 //       });
 //     } catch (e, s) {
-//       Logs().e('Homeserver benchmark failed', e, s);
+//       logger.e('Homeserver benchmark failed', e, s);
 //       benchmarkResults = [];
 //     }
 //   }
@@ -197,7 +197,7 @@
 //           await client.importDump(String.fromCharCodes(file.bytes!));
 //           Matrix.of(context).initMatrix();
 //         } catch (e, s) {
-//           Logs().e('Future error:', e, s);
+//           logger.e('Future error:', e, s);
 //         }
 //       },
 //     );

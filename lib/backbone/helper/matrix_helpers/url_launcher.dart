@@ -1,8 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/profile_bottom_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/public_room_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
@@ -24,12 +22,6 @@ class UrlLauncher {
   const UrlLauncher(this.context, this.url);
 
   void launchUrl() async {
-    if (url!.toLowerCase().startsWith(AppTheme.deepLinkPrefix) ||
-        url!.toLowerCase().startsWith(AppTheme.inviteLinkPrefix) ||
-        {'#', '@', '!', '+', '\$'}.contains(url![0]) ||
-        url!.toLowerCase().startsWith(AppTheme.schemePrefix)) {
-      return openMatrixToUrl();
-    }
     final uri = Uri.tryParse(url!);
     if (uri == null) {
       // we can't open this thing
@@ -105,117 +97,4 @@ class UrlLauncher {
     );
   }
 
-  void openMatrixToUrl() async {
-    final matrix = Matrix.of(context);
-    final url = this.url!.replaceFirst(
-          AppTheme.deepLinkPrefix,
-          AppTheme.inviteLinkPrefix,
-        );
-
-    // The identifier might be a matrix.to url and needs escaping. Or, it might have multiple
-    // identifiers (room id & event id), or it might also have a query part.
-    // All this needs parsing.
-    final identityParts = url.parseIdentifierIntoParts() ??
-        Uri.tryParse(url)?.host.parseIdentifierIntoParts() ??
-        Uri.tryParse(url)
-            ?.pathSegments
-            .lastWhereOrNull((_) => true)
-            ?.parseIdentifierIntoParts();
-    if (identityParts == null) {
-      return; // no match, nothing to do
-    }
-    if (identityParts.primaryIdentifier.sigil == '#' ||
-        identityParts.primaryIdentifier.sigil == '!') {
-      // we got a room! Let's open that one
-      final roomIdOrAlias = identityParts.primaryIdentifier;
-      final event = identityParts.secondaryIdentifier;
-      var room = matrix.client.getRoomByAlias(roomIdOrAlias) ??
-          matrix.client.getRoomById(roomIdOrAlias);
-      var roomId = room?.id;
-      // we make the servers a set and later on convert to a list, so that we can easily
-      // deduplicate servers added via alias lookup and query parameter
-      final servers = <String>{};
-      if (room == null && roomIdOrAlias.sigil == '#') {
-        // we were unable to find the room locally...so resolve it
-        final response = await showFutureLoadingDialog(
-          context: context,
-          future: () => matrix.client.getRoomIdByAlias(roomIdOrAlias),
-        );
-        if (response.error != null) {
-          return; // nothing to do, the alias doesn't exist
-        }
-        roomId = response.result!.roomId;
-        servers.addAll(response.result!.servers!);
-        room = matrix.client.getRoomById(roomId!);
-      }
-      servers.addAll(identityParts.via);
-      if (room != null) {
-        if (room.isSpace) {
-          // TODO: Implement navigate to space
-          context.go('rooms');
-          return;
-        }
-        // we have the room, so....just open it
-        if (event != null) {
-          context.goNamed(
-           'rooms',
-           queryParameters: {'event': event},
-           pathParameters: {'roomid': room.id}
-          );
-        } else {
-          context.goNamed('rooms', pathParameters: {'roomid': room.id});
-        }
-        return;
-      } else {
-        await BitNetBottomSheet(
-          context: context,
-          child: PublicRoomBottomSheet(
-            roomAlias: identityParts.primaryIdentifier,
-            outerContext: context,
-          ),
-        );
-      }
-      if (roomIdOrAlias.sigil == '!') {
-        if (await showOkCancelAlertDialog(
-              useRootNavigator: false,
-              context: context,
-              title: 'Join room $roomIdOrAlias',
-            ) ==
-            OkCancelResult.ok) {
-          roomId = roomIdOrAlias;
-          final response = await showFutureLoadingDialog(
-            context: context,
-            future: () => matrix.client.joinRoom(
-              roomIdOrAlias,
-              serverName: servers.isNotEmpty ? servers.toList() : null,
-            ),
-          );
-          if (response.error != null) return;
-          // wait for two seconds so that it probably came down /sync
-          await showFutureLoadingDialog(
-            context: context,
-            future: () => Future.delayed(const Duration(seconds: 2)),
-          );
-          if (event != null) {
-         
-            context.goNamed(
-              'rooms',
-              pathParameters: {'roomid': response.result!},
-              queryParameters: {'event': event}
-            );
-          } else {
-            context.goNamed('rooms', pathParameters: {'roomid': response.result!});
-          }
-        }
-      }
-    } else if (identityParts.primaryIdentifier.sigil == '@') {
-      await BitNetBottomSheet(
-        context: context,
-        child: ProfileBottomSheet(
-          userId: identityParts.primaryIdentifier,
-          outerContext: context,
-        ),
-      );
-    }
-  }
 }

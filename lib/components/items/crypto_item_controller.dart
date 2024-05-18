@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -44,6 +45,7 @@ class CryptoItemController extends GetxController
   }
 
   getChartLine(String currency) async {
+    LoggerService logger = Get.find();
     CryptoChartLine chartClassDay = CryptoChartLine(
       crypto: "bitcoin",
       currency: currency,
@@ -71,7 +73,7 @@ class CryptoItemController extends GetxController
 
       loading.value = false;
     } catch (e) {
-      Logs().e("Charts could not be created for cryptoitem resulting in error" +
+      logger.e("Charts could not be created for cryptoitem resulting in error" +
           e.toString());
     }
   }

@@ -1,10 +1,12 @@
 import 'package:bitnet/backbone/helper/platform_infos.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/matrix_models/identityprovider_matrix.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 
@@ -27,7 +29,8 @@ class CreateAccountController extends State<CreateAccount> {
   }
 
   void processParameters(BuildContext context) {
-    Logs().w("Process parameters for createAccount called");
+    LoggerService logger = Get.find();
+    logger.i("Process parameters for createAccount called");
     final Map<String, String> parameters =
         GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
     if (parameters.containsKey('code')) {
@@ -47,38 +50,19 @@ class CreateAccountController extends State<CreateAccount> {
   final TextEditingController controllerUsername = TextEditingController();
   bool isLoading = false;
 
-  bool _supportsFlow(String flowType) =>
-      Matrix.of(context)
-          .loginHomeserverSummary
-          ?.loginFlows
-          .any((flow) => flow.type == flowType) ??
-      false;
+  
 
   bool isDefaultPlatform =
       (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
 
-  bool get supportsLogin => _supportsFlow('m.login.password');
 
   void login() => context.go('/authhome/login');
 
-  Map<String, dynamic>? _rawLoginTypes;
 
-  List<IdentityProvider>? get identityProviders {
-    final loginTypes = _rawLoginTypes;
-    if (loginTypes == null) return null;
-    final rawProviders = loginTypes.tryGetList('flows')!.singleWhere(
-          (flow) => flow['type'] == AuthenticationTypes.sso,
-        )['identity_providers'];
-    final list = (rawProviders as List)
-        .map((json) => IdentityProvider.fromJson(json))
-        .toList();
-    if (PlatformInfos.isCupertinoStyle) {
-      list.sort((a, b) => a.brand == 'apple' ? -1 : 1);
-    }
-    return list;
-  }
+ 
 
   createAccountPressed() async {
+    LoggerService logger = Get.find();
     setState(() {
       errorMessage = null;
       isLoading = true;
@@ -99,11 +83,11 @@ class CreateAccountController extends State<CreateAccount> {
 
       if (!usernameExists) {
         // You can create the user here since they don't exist yet.
-        Logs().w("Username is still available");
+        logger.i("Username is still available");
 
         //VRouter.of(context).queryParameters.clear();
 
-        Logs().w(
+        logger.i(
             "Queryparameters that will be passed: $code, $issuer, $localpart");
 
         context.go(
@@ -116,7 +100,7 @@ class CreateAccountController extends State<CreateAccount> {
 
         //await createUserLocal();
       } else {
-        Logs().e("Username already exists.");
+        logger.e("Username already exists.");
         errorMessage = "This username is already taken.";
         // The username already exists.
       }
@@ -126,21 +110,6 @@ class CreateAccountController extends State<CreateAccount> {
     setState(() {
       isLoading = false;
     });
-  }
-
-  void matrixSignUp() {
-    Logs().w(
-        "!!!CHANGE NEEDED: signup matrix need to change email each time and at one point setup own matrix server without email auth");
-    Logs().w("signupmatrixfirst from Auth is called...");
-    Auth().signUpMatrixFirst(context, localpart);
-    // Logs().w("signupmatrixsecond from Auth is called...");
-    // Auth().signupMatrix(context, "testhaha@gmail.com", "i__hate..passwords!!");
-
-    //set profilepicture
-    // Logs().w("Setting profilepicture for Matrix client too...");
-    // final picked = await urlToXFile(profileimageurl);
-    //set matrix profilepicture too
-    // Matrix.of(context).loginAvatar = picked;
   }
 
   @override

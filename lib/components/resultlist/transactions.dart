@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
@@ -40,8 +41,9 @@ class _TransactionsState extends State<Transactions>
   final searchCtrl = TextEditingController();
 
   Future<bool> getOnchainTransactions() async {
+    LoggerService logger = Get.find();
     try {
-    Logs().w("Getting onchain transactions");
+    logger.i("Getting onchain transactions");
     RestResponse restBitcoinTransactions = await getTransactions();
     BitcoinTransactionsList bitcoinTransactions =
         BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
@@ -58,8 +60,9 @@ class _TransactionsState extends State<Transactions>
 
   //what i sent on the lightning network
   Future<bool> getLightningPayments() async {
+    LoggerService logger = Get.find();
     try {
-    Logs().w("Getting lightning payments");
+    logger.i("Getting lightning payments");
     RestResponse restLightningPayments = await listPayments();
     LightningPaymentsList lightningPayments =
         LightningPaymentsList.fromJson(restLightningPayments.data);
@@ -76,7 +79,8 @@ class _TransactionsState extends State<Transactions>
 
   //what I received on the lightning network
   Future<bool> getLightningInvoices() async {
-    Logs().w("Getting lightning invoices");
+    LoggerService logger = Get.find();
+    logger.i("Getting lightning invoices");
     try {
 
   RestResponse restLightningInvoices = await listInvoices();
@@ -100,7 +104,8 @@ class _TransactionsState extends State<Transactions>
 
   @override
   void initState() {
-    Logs().i("Initializing transactions page");
+    LoggerService logger = Get.find();
+    logger.i("Initializing transactions page");
     super.initState();
     setState(() {
       transactionsLoaded = false;

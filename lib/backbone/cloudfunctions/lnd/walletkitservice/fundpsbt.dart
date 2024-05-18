@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/bitcoin/walletkit/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:get/get.dart';
 
 
 Future<RestResponse> fundPsbt(TransactionData model) async {
+  LoggerService logger = Get.find();
   String restHost = AppTheme.baseUrlLightningTerminal;
 
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
@@ -25,6 +27,7 @@ Future<RestResponse> fundPsbt(TransactionData model) async {
   };
 
   final Map<String, dynamic> data = {
+    
     //'psbt': base64.b64encode(<bytes>), This stands for Partially Signed Bitcoin Transaction. It's a base64-encoded string representing a transaction that has not been fully signed yet. To generate a PSBT, you would typically use a Bitcoin wallet or library that supports PSBT creation. The library or tool you choose would allow you to specify transaction details such as inputs, outputs, amounts, and more. After creating a PSBT, you would encode it in base64 format to use in this field.
     'raw': model.raw.toJson(),
     'target_conf': model
@@ -46,7 +49,7 @@ Future<RestResponse> fundPsbt(TransactionData model) async {
 
     var response = await dioClient.post(url:url,
         headers: headers, data: data);
-    Logs().w('Raw Response Publish Transaction: ${response.data}');
+    logger.i('Raw Response Publish Transaction: ${response.data}');
 
     if (response.statusCode == 200) {
       print(response.data);
@@ -55,7 +58,7 @@ Future<RestResponse> fundPsbt(TransactionData model) async {
           message: "Successfully added invoice",
           data: response.data);
     } else {
-      Logs().e('Failed to load data: ${response.statusCode}, ${response.data}');
+      logger.e('Failed to load data: ${response.statusCode}, ${response.data}');
       return RestResponse(
           statusCode: "error",
           message:
@@ -63,7 +66,7 @@ Future<RestResponse> fundPsbt(TransactionData model) async {
           data: {});
     }
   } catch (e) {
-    Logs().e('Error trying to publish transaction: $e');
+    logger.e('Error trying to publish transaction: $e');
     return RestResponse(
         statusCode: "error",
         message:

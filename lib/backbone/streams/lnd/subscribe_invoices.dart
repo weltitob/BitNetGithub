@@ -4,13 +4,16 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 
 Stream<RestResponse> subscribeInvoicesStream() async* {
-  Logs().w("Called subscribeInvoices Stream!"); // The combined JSON response
+  LoggerService logger = Get.find();
+  logger.i("Called subscribeInvoices Stream!"); // The combined JSON response
   String restHost = AppTheme.baseUrlLightningTerminal;
   const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
 
@@ -30,7 +33,7 @@ Stream<RestResponse> subscribeInvoicesStream() async* {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    Logs().w("Trying to make request to subscribeInvoices Stream!");
+    logger.i("Trying to make request to subscribeInvoices Stream!");
     var request = http.Request('GET', Uri.parse('https://$restHost/v1/invoices/subscribe'))
       ..headers.addAll(headers)
       ..body = json.encode(data);
