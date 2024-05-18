@@ -344,7 +344,7 @@ class AppRoutes {
               : null,
         ),
          GoRoute(
-              path: 'settings',
+              path: '/settings',
               builder: (ctx, state) => Settings(),
               routes: _settingsRoutes,
             ),

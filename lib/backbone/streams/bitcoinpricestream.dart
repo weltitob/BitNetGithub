@@ -146,8 +146,9 @@ class BitcoinPriceStream {
         final data = response.data;
         final double price =
             double.parse(data['bitcoin'][localCurrency].toString());
+        // TODO: the command is not returning the time, only the price.
         final double time =
-            double.parse(data['bitcoin']['last_updated_at'].toString());
+            double.tryParse(data['bitcoin']['last_updated_at'].toString()) ?? 0;
         logger.d("Price of bitcoin in $localCurrency: $price");
         final ChartLine latestChartLine = ChartLine(time: time, price: price);
         _priceController.add(latestChartLine);

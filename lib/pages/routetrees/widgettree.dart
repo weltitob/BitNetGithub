@@ -9,6 +9,7 @@ import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -61,9 +62,9 @@ class WidgetTree extends StatelessWidget {
                   supportedLocales: L10n.supportedLocales,
                   localizationsDelegates:  [
                     L10n.delegate,
-                    // GlobalMaterialLocalizations.delegate,
-                    // GlobalCupertinoLocalizations.delegate,
-                    // GlobalWidgetsLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
                   ],
                   builder: (context, child) =>  Matrix(
                             context: context,

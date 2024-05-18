@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -126,11 +127,12 @@ class WalletsController extends BaseController {
 
   @override
   void onInit() {
+    LoggerService logger = Get.find();
     super.onInit();
     Get.put(CryptoItemController());
     Get.put(WalletFilterController());
     subscribeInvoicesStream().listen((restResponse) {
-      logger.w("Received data from Invoice-stream: $restResponse");
+      logger.i("Received data from Invoice-stream: $restResponse");
       ReceivedInvoice receivedInvoice =
           ReceivedInvoice.fromJson(restResponse.data);
       if (receivedInvoice.settled == true) {
@@ -149,10 +151,10 @@ class WalletsController extends BaseController {
           ),
         );
         //generate a new invoice for the user with 0 amount
-        logger.w("Generating new empty invoice for user");
+        logger.i("Generating new empty invoice for user");
         ReceiveController().getInvoice(0, "Empty invoice");
       } else {
-        logger.w(
+        logger.i(
             "Invoice received but not settled yet: ${receivedInvoice.settled}");
       }
     }, onError: (error) {
