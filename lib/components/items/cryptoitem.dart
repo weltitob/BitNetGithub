@@ -77,7 +77,7 @@ class _CryptoItemState extends State<CryptoItem> {
             onTap: () => context.push('/wallet/bitcoinscreen'),
             child: GlassContainer(
               borderThickness: 1,
-              height: AppTheme.cardPadding * 3,
+              height: AppTheme.cardPadding * 2.75,
               borderRadius: AppTheme.cardRadiusBig,
               child: Center(
                 child: dotProgress(context),
@@ -86,13 +86,13 @@ class _CryptoItemState extends State<CryptoItem> {
           )
         : GlassContainer(
             borderThickness: 1,
-            height: AppTheme.cardPadding * 3,
+            height: AppTheme.cardPadding * 2.75,
             borderRadius: AppTheme.cardRadiusBig,
             child: Stack(
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: AppTheme.elementSpacing),
+                      horizontal: AppTheme.elementSpacing * 0.75),
                   child: Row(
                     children: [
                       Container(

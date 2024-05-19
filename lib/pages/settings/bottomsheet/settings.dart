@@ -4,7 +4,7 @@ import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/invite/invitation_page.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/settings/security/security_page.dart';
-import 'package:bitnet/pages/settings/settings_style/settings_style.dart';
+import 'package:bitnet/pages/settings/settings_style/settings_style_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,7 +26,7 @@ class Settings extends StatelessWidget {
             ),
           if (controller.currentTab.value == 'style')
             Expanded(
-              child: SettingsStyle(),
+              child: SettingsStyleView(),
             ),
           if (controller.currentTab.value == 'security')
             Expanded(

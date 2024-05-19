@@ -76,7 +76,8 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                         ),
                       ),
                       LongButtonWidget(
-                        customWidth: AppTheme.cardPadding * 6,
+                        customHeight: AppTheme.cardPadding * 2,
+                        customWidth: AppTheme.cardPadding * 5,
                         title: 'Share',
                         leadingIcon: Icon(Icons.share_rounded),
                         onTap: () {
@@ -93,13 +94,24 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
               ),
             ),
           ),
+          SizedBox(height: AppTheme.cardPadding,),
           BitNetListTile(
+            onTap: () async {
+              await Clipboard.setData(ClipboardData(
+                  text: controller
+                      .qrCodeDataStringLightning.value));
+              // Display a snackbar to indicate that the wallet address has been copied
+              showOverlay(context,
+                  "Wallet-Adresse in Zwischenablage kopiert");
+            },
             text: 'Invoice',
             trailing: Obx(() {
               return controller.qrCodeDataStringLightning.value.isEmpty
                   ? Text('')
                   : Row(
                       children: [
+                        Icon(Icons.copy_rounded, color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,),
+                        SizedBox(width: AppTheme.elementSpacing / 2),
                         Text(controller.qrCodeDataStringLightning.value
                             .substring(0, 8)),
                         Text('....'),
@@ -107,49 +119,42 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                             .substring(controller
                                     .qrCodeDataStringLightning.value.length -
                                 5)),
-                        SizedBox(width: 10.0),
-                        RoundedButtonWidget(
-                          size: AppTheme.cardPadding * 1.5,
-                          iconData: FontAwesomeIcons.copy,
-                          onTap: () async {
-                            await Clipboard.setData(ClipboardData(
-                                text: controller
-                                    .qrCodeDataStringLightning.value));
-                            // Display a snackbar to indicate that the wallet address has been copied
-                            showOverlay(context,
-                                "Wallet-Adresse in Zwischenablage kopiert");
-                          },
-                          buttonType: ButtonType.transparent,
-                        ),
                       ],
                     );
             }),
           ),
           StatefulBuilder(builder: (context, setState) {
             return BitNetListTile(
+              onTap: () async {
+                bool res = await BitNetBottomSheet(
+                  context: context,
+                  //also add a help button as an action at the right once bitnetbottomsheet is fixed
+                  title: "Change Amount",
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: CreateInvoice(),
+                );
+                if (res) {
+                  setState(() {});
+                }
+              },
               text: 'Amount',
-              trailing: LongButtonWidget(
-                customHeight: AppTheme.cardPadding * 2,
-                customWidth: AppTheme.cardPadding * 7,
-                buttonType: ButtonType.transparent,
-                title: controller.amountController.text.isEmpty
-                    ? "Change Amount"
-                    : controller.amountController.text,
-                onTap: () async {
-                  bool res = await BitNetBottomSheet(
-                    context: context,
-                    //also add a help button as an action at the right once bitnetbottomsheet is fixed
-                    title: "Change Amount",
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    child: CreateInvoice(),
-                  );
-                  if (res) {
-                    setState(() {});
-                  }
-                },
+              trailing:
+              Row(
+                children: [
+                  Icon(Icons.edit, color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,),
+                  SizedBox(width: AppTheme.elementSpacing / 2),
+                  Text(controller.amountController.text.isEmpty
+                      ? "Change Amount"
+                      : controller.amountController.text,),
+                ],
               ),
+
             );
+
           }),
+          const SizedBox(
+            height: AppTheme.cardPadding * 2,
+          ),
         ],
       ),
     );

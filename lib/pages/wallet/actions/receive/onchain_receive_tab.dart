@@ -74,7 +74,8 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                           ),
                         ),
                         LongButtonWidget(
-                          customWidth: AppTheme.cardPadding * 6,
+                          customHeight: AppTheme.cardPadding * 2,
+                          customWidth: AppTheme.cardPadding * 5,
                           title: 'Share',
                           leadingIcon: Icon(Icons.share_rounded),
                           onTap: () {
@@ -92,49 +93,50 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
               ),
             );
           }),
+          const SizedBox(
+            height: AppTheme.cardPadding,
+          ),
           BitNetListTile(
+            onTap:  () async {
+              await Clipboard.setData(ClipboardData(
+                  text:
+                  controller.qrCodeDataStringOnchain.value));
+              // Display a snackbar to indicate that the wallet address has been copied
+              showOverlay(context,
+                  "Wallet-Adresse in Zwischenablage kopiert");
+            },
             text: 'Invoice',
             trailing: Obx(() {
               return controller.qrCodeDataStringOnchain.value.isEmpty
                   ? Text('')
                   : Row(
                       children: [
+                        Icon(Icons.copy_rounded, color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,),
+                        SizedBox(width: AppTheme.elementSpacing / 2),
                         Text(controller.qrCodeDataStringOnchain.value
                             .substring(0, 8)),
                         Text('....'),
                         Text(controller.qrCodeDataStringOnchain.value.substring(
                             controller.qrCodeDataStringOnchain.value.length -
                                 5)),
-                        SizedBox(width: 10.0),
-                        RoundedButtonWidget(
-                          size: AppTheme.cardPadding * 1.5,
-                          iconData: FontAwesomeIcons.copy,
-                          onTap: () async {
-                            await Clipboard.setData(ClipboardData(
-                                text:
-                                    controller.qrCodeDataStringOnchain.value));
-                            // Display a snackbar to indicate that the wallet address has been copied
-                            showOverlay(context,
-                                "Wallet-Adresse in Zwischenablage kopiert");
-                          },
-                          buttonType: ButtonType.transparent,
-                        ),
                       ],
                     );
             }),
           ),
-          BitNetListTile(
-            text: 'Amount',
-            trailing: LongButtonWidget(
-              customHeight: AppTheme.cardPadding * 2,
-              customWidth: AppTheme.cardPadding * 7,
-              buttonType: ButtonType.transparent,
-              title: controller.amountController.text.isEmpty
-                  ? "Change Amount"
-                  : controller.amountController.text,
-              onTap: () {},
-            ),
-          ),
+      BitNetListTile(
+        text: 'Amount',
+        trailing:
+        Row(
+          children: [
+            Icon(Icons.edit, color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,),
+            SizedBox(width: AppTheme.elementSpacing / 2),
+            Text(controller.amountController.text.isEmpty
+                ? "Change Amount"
+                : controller.amountController.text,),
+          ],
+        ),
+
+      ),
           const SizedBox(
             height: AppTheme.cardPadding * 2,
           ),

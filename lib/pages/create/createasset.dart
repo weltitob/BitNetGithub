@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/compression.dart';
 import 'package:bitnet/backbone/services/file_picker_service.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -155,6 +156,12 @@ class _CreateAssetState extends State<CreateAsset> {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
+      appBar: bitnetAppBar(
+        text: "Create Post",
+        context: context,
+        hasBackButton: true,
+
+      ),
       body: Container(
           child: isLoading
               ? avatarGlow(context, Icons.upload_rounded)

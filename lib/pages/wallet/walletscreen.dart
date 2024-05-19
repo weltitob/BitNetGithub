@@ -19,6 +19,7 @@ import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -85,7 +86,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                         Row(
                           children: [
                             Avatar(
-                              size: AppTheme.cardPadding * 3,
+                              size: AppTheme.cardPadding * 3.h,
                             ),
                             SizedBox(
                               width: AppTheme.elementSpacing * 1.5,
@@ -177,10 +178,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                     ),
                   ),
                   SizedBox(
-                    height: AppTheme.cardPadding * 1.5,
+                    height: AppTheme.cardPadding * 1.h,
                   ),
                   Container(
-                    height: AppTheme.cardPadding * 9,
+                    height: AppTheme.cardPadding * 7.5.h,
                     child: Stack(
                       children: [
                         CardSwiper(
@@ -230,9 +231,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                     () {
                       context.go('/wallet/send');
                     },
-                    //image: "assets/images/friends.png",
-                    width: AppTheme.cardPadding * 3.85,
-                    height: AppTheme.cardPadding * 3.85,
+                    image: "assets/images/send_image.png",
+                    width: AppTheme.cardPadding * 3.75,
+                    height: AppTheme.cardPadding * 3.75,
                     fallbackIcon: Icons.arrow_upward_rounded,
                   ),
                   BitNetImageWithTextContainer(
@@ -240,9 +241,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                     () {
                       context.go('/wallet/receive');
                     },
+                    image: "assets/images/receive_image.png",
                     //image: "assets/images/key_removed_bck.png",
-                    width: AppTheme.cardPadding * 3.85,
-                    height: AppTheme.cardPadding * 3.85,
+                    width: AppTheme.cardPadding * 3.75,
+                    height: AppTheme.cardPadding * 3.75,
                     fallbackIcon: Icons.arrow_downward_rounded,
                   ),
                   BitNetImageWithTextContainer(
@@ -251,9 +253,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                       Get.put(LoopsController());
                       context.go("/wallet/loop_screen");
                     },
-                    //image: "assets/images/key_removed_bck.png",
-                    width: AppTheme.cardPadding * 3.85,
-                    height: AppTheme.cardPadding * 3.85,
+                    image: "assets/images/rebalance_image.png",
+                    width: AppTheme.cardPadding * 3.75,
+                    height: AppTheme.cardPadding * 3.75,
                     fallbackIcon: Icons.sync_rounded,
                   ),
                 ],

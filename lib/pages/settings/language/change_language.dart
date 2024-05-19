@@ -24,6 +24,7 @@ class ChangeLanguage extends StatefulWidget {
 class _ChangeLanguageState extends State<ChangeLanguage> {
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<SettingsController>();
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
@@ -32,51 +33,44 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
         context: context,
         buttonType: ButtonType.transparent,
         onTap: () {
-          print("pressed");
-          final controller = Get.find<SettingsController>();
           controller.switchTab('main');
         },
       ),
-      body: LanguagePickerSheet(
-        onTapLanguage: (langCode, locale) {
-          Provider.of<LocalProvider>(context, listen: false)
-              .setLocaleInDatabase(langCode, locale);
-          setState(() {});
-        },
-      ),
+      body: LanguagePickerPage(),
     );
   }
 }
 
-class LanguagePickerSheet extends StatefulWidget {
-  const LanguagePickerSheet({super.key, required this.onTapLanguage});
-  final Function(String langCode, Locale locale) onTapLanguage;
+// onTapLanguage: (langCode, locale) {
+// Provider.of<LocalProvider>(context, listen: false)
+//     .setLocaleInDatabase(langCode, locale,
+// isUser: false);
+// setState(() {});
+// // context.go('/authhome');
+// },
+
+class LanguagePickerPage extends StatefulWidget {
+  const LanguagePickerPage({super.key});
+
   @override
-  State<LanguagePickerSheet> createState() => _LanguagePickerSheetState();
+  State<LanguagePickerPage> createState() => _LanguagePickerPageState();
 }
 
-class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
+class _LanguagePickerPageState extends State<LanguagePickerPage> {
   TextEditingController search = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final currentLanguage = Provider.of<LocalProvider>(context).locale;
-    final get = MediaQuery.of(context).size;
     final lang = L10n.of(context);
 
-    return Container(
-      //height: get.height * 0.8,
-      width: get.width.w,
-      child: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: AppTheme.elementSpacing,
-        ),
+    return bitnetScaffold(
+      context: context,
+      resizeToAvoidBottomInset: false,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
-                height: AppTheme.cardPadding * 2.h,
-              ),
               SearchFieldWidget(
                   hintText: lang!.searchL,
                   isSearchEnabled: true,
@@ -86,29 +80,8 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
                     });
                   },
                   handleSearch: (dynamic) {}),
-              VerticalFadeListView(
-                child: SizedBox(
-                  width: get.width,
-                  height: get.height * 0.6.h,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    physics: const ClampingScrollPhysics(),
-                    itemCount: flagList.length,
-                    itemBuilder: (context, index) {
-                      if (search.text.isEmpty) {
-                        return languageBox(index, languageList[index]);
-                      }
-                      if (languageList[index]
-                          .toString()
-                          .toLowerCase()
-                          .startsWith(search.text.toLowerCase())) {
-                        return languageBox(index, currentLanguage);
-                      }
-                      return Container();
-                    },
-                  ),
-                ),
+              languageData(
+                languageList,
               ),
             ],
           ),
@@ -117,22 +90,47 @@ class _LanguagePickerSheetState extends State<LanguagePickerSheet> {
     );
   }
 
-  Widget languageBox(int index, currentLanguage) {
-    final locale = Locale.fromSubtags(languageCode: codeList[index]);
+  Widget languageData(
+      List<String> languages,
+      ) {
+    final selectedLanguage = Provider.of<LocalProvider>(context).locale;
 
+    return SizedBox(
+      width: double.infinity,
+      child: ListView.builder(
+        itemCount: languages.length,
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (context, index) {
+          return languageBox(index, languages, selectedLanguage);
+        },
+      ),
+    );
+  }
+
+  Widget languageBox(int index, List<String> languages, Locale selectedLanguage) {
+    final locale = Locale.fromSubtags(languageCode: codeList[index]);
+    if (search.text.isEmpty) {
+      return myLanguageTile(languages[index], locale, selectedLanguage);
+    }
+    if (languages[index].toLowerCase().startsWith(search.text.toLowerCase())) {
+      return myLanguageTile(languages[index], locale, selectedLanguage);
+    }
+    return Container();
+  }
+
+  Widget myLanguageTile(String language, Locale locale, Locale selectedLanguage) {
     return BitNetListTile(
       leading: Text(
-        flagList[index],
+        flagList[languageList.indexOf(language)],
         style: Theme.of(context).textTheme.titleLarge,
       ),
-      selected: currentLanguage == locale ? true : false,
-      text: languageList[index],
+      text: language,
+      selected: locale == selectedLanguage,
       onTap: () {
-        // Provider.of<LocalProvider>(context, listen: false)
-        //     .setLocaleInDatabase(codeList[index],
-        //     locale);
-        //     setState((){});
-        widget.onTapLanguage(codeList[index], locale);
+        Provider.of<LocalProvider>(context, listen: false)
+            .setLocaleInDatabase(codeList[languageList.indexOf(language)], locale);
         Navigator.pop(context);
       },
     );

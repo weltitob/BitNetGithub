@@ -1,12 +1,14 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class ProfileView extends StatelessWidget {
@@ -34,6 +36,32 @@ class ProfileView extends StatelessWidget {
                   // ProfilePosts(userId: currentUserId),
                 ],
               ),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomCenter,
+          child: GestureDetector(
+            onTap: (){
+              context.go('/create');
+              //forward to post screen
+            },
+            child: GlassContainer(
+              width: AppTheme.cardPadding * 4,
+              height: AppTheme.cardPadding * 2,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+               children: [
+                 Icon(
+                   Icons.add,
+                 ),
+                 SizedBox(width: AppTheme.elementSpacing / 2,),
+                 Text(
+                   'Add',
+                 ),
+               ],
+              ),
+            ),
+          ),
+        )
       ),
     );
   }
@@ -49,6 +77,7 @@ class ProfileView extends StatelessWidget {
           key: controller.globalKeyQR,
           child: Column(
             children: [
+              SizedBox(height: AppTheme.cardPadding * 4,),
               Container(
                 margin: EdgeInsets.all(AppTheme.cardPadding),
                 decoration: BoxDecoration(
