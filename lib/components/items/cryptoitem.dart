@@ -100,11 +100,11 @@ class _CryptoItemState extends State<CryptoItem> {
                           width: AppTheme.cardPadding * 1.75,
                           child: Image.asset("assets/images/bitcoin.png")),
                       //CustomIcon(icon: currency.icon),
-                      const SizedBox(width: AppTheme.elementSpacing),
+                      const SizedBox(width: AppTheme.elementSpacing/2),
                       title(),
-                      const Spacer(),
+                      const SizedBox(width: AppTheme.elementSpacing/2),
                       chart(controllerCrypto.onedaychart),
-                      percentageChange(),
+                      Flexible(child: percentageChange()),
                     ],
                   ),
                 ),
@@ -148,12 +148,17 @@ class _CryptoItemState extends State<CryptoItem> {
                   : AppTheme.errorColor,
             ),
             const SizedBox(width: AppTheme.elementSpacing / 4),
-            Text(
-              controllerCrypto.priceChangeString.value,
-              style: TextStyle(
-                color: controllerCrypto.priceChange.value >= 0
-                    ? AppTheme.successColor
-                    : AppTheme.errorColor,
+            Container(
+              width: 80,
+              child: Text(
+                controllerCrypto.priceChangeString.value,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: controllerCrypto.priceChangeString.value.length > 6 ? 12 : 16,
+                  color: controllerCrypto.priceChange.value >= 0
+                      ? AppTheme.successColor
+                      : AppTheme.errorColor,
+                ),
               ),
             ),
           ],
@@ -204,8 +209,9 @@ class _CryptoItemState extends State<CryptoItem> {
           children: [
             // const SizedBox(width: AppTheme.elementSpacing / 2),
             Text(
-              "${controllerCrypto.currentPriceString}${getCurrency(currency)}", //bitcoinPrice!.price.toString(),
-              style: AppTheme.textTheme.bodyMedium,
+              "${controllerCrypto.currentPriceString}${getCurrency(currency)}", 
+              //bitcoinPrice!.price.toString(),
+              style: controllerCrypto.currentPriceString.value.length > 8 ? AppTheme.textTheme.bodySmall: AppTheme.textTheme.bodyMedium,
             ),
           ],
         ),

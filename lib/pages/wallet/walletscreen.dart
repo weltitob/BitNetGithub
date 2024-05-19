@@ -1,6 +1,8 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
@@ -47,7 +49,10 @@ class WalletScreen extends GetWidget<WalletsController> {
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
         double.parse(controller.onchainBalance.confirmedBalance),
         BitcoinUnits.SAT);
-
+    final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
+    final currency = Provider.of<CurrencyChangeProvider>(context, listen:true);
+    controller.coin.value = coin.coin?? controller.coin.value;
+    controller.selectedCurrency!.value = currency.selectedCurrency ?? controller.selectedCurrency!.value;
     List<Container> cards = [
       Container(
         child: GestureDetector(
@@ -112,22 +117,23 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             )
                                           : Obx(() {
                                               return GestureDetector(
-                                                onTap: () =>
-                                                    controller.setCurrencyType(
-                                                        controller.coin != null
-                                                            ? !controller
-                                                                .coin!.value
-                                                            : false),
+                                                onTap: () {
+controller.setCurrencyType(
+                                                        !controller
+                                                                .coin.value
+                                                            , updateDatabase: false);
+                                                            coin.setCurrencyType(controller.coin.value);
+                                                }
+                                                    ,
                                                 child: Container(
-                                                  child: (controller
-                                                              .coin?.value ??
-                                                          true)
+                                                  child: (controller.coin.value)
                                                       ? Row(
                                                           children: [
                                                             Text(
-                                                              controller
-                                                                  .totalBalanceSAT
-                                                                  .toString(),
+
+                                                              unitModel.amount.toString()
+                                                                    ,
+                                                                  overflow: TextOverflow.ellipsis,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme

@@ -70,6 +70,7 @@ class _FeedScreenState extends State<FeedScreen>
                           }),
                     ),
                   ),
+                  Divider()
                 ],
               ),
             ),

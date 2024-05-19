@@ -92,22 +92,25 @@ class WalletsController extends BaseController {
     selectedCard = null;
   }
 
-  RxBool? coin;
+  RxBool coin = false.obs;
 
   // Getters for currencies
 
   // Method to update the first currency and its corresponding Firestore document
-  void setCurrencyType(bool type) {
-    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+  void setCurrencyType(bool type,{ bool updateDatabase = true}) {
+    if(updateDatabase) {
+ settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       "showCoin": type,
     });
-    coin!.value = type;
+    }
+   
+    coin.value = type;
     update();
   }
 
   // Clear method adjusted to reset currency values
   void clearCurrencyType() {
-    coin!.value = false;
+    coin.value = false;
   }
 
   RxString? selectedCurrency;
@@ -131,6 +134,20 @@ class WalletsController extends BaseController {
     super.onInit();
     Get.put(CryptoItemController());
     Get.put(WalletFilterController());
+    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+      coin.value = value.data()?["showCoin"] ?? false;
+      selectedCurrency = RxString("");
+      selectedCurrency!.value = value.data()?["selectedCurrency"] ?? "USD";
+      print("Currency Value : ${selectedCurrency!.value}");
+    },
+    onError: (a,b) {
+      coin.value = false;
+            selectedCurrency = RxString("");
+      selectedCurrency!.value = "USD";
+
+      print("Currency Value : ${selectedCurrency!.value}");
+
+    });
     subscribeInvoicesStream().listen((restResponse) {
       logger.i("Received data from Invoice-stream: $restResponse");
       ReceivedInvoice receivedInvoice =

@@ -62,8 +62,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();
+  if(!kIsWeb) {
   Stripe.publishableKey = AppTheme.stripeLiveKey;
   await Stripe.instance.applySettings();
+  }
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',

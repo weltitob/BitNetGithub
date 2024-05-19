@@ -14,12 +14,14 @@ class CommonHeading extends StatefulWidget {
   final child;
   final isChild;
   final isNormalChild;
+  final IconData customButtonIcon;
 
   const CommonHeading(
       {Key? key,
       this.headingText = '',
       required this.hasButton,
       this.onPress,
+      this.customButtonIcon = Icons.arrow_right,
       this.collapseBtn = false,
       this.child,
       this.isChild,
@@ -59,7 +61,7 @@ class _CommonHeadingState extends State<CommonHeading> {
                           buttonType: ButtonType.transparent,
                     onTap:() =>                         context.go("/feed/${widget.onPress}")
 ,
-iconData: Icons.arrow_right,
+iconData: widget.customButtonIcon,
                   )
                   : Container(),
               widget.collapseBtn

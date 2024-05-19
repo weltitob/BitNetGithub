@@ -61,28 +61,28 @@ class SettingsView extends StatelessWidget {
                 controller.switchTab('invite');
               },
             ),
-            BitNetListTile(
-              leading: Icon(Icons.notifications_outlined),
-              text: L10n.of(context)!.notifications,
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
-              ),
-              onTap: () {
-                controller.switchTab('notifications');
-              },
-            ),
-            BitNetListTile(
-              leading: Icon(Icons.forum_outlined),
-              text: L10n.of(context)!.chat,
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
-              ),
-              onTap: () {
-                controller.switchTab('chat');
-              },
-            ),
+            // BitNetListTile(
+            //   leading: Icon(Icons.notifications_outlined),
+            //   text: L10n.of(context)!.notifications,
+            //   trailing: Icon(
+            //     Icons.arrow_forward_ios_rounded,
+            //     size: AppTheme.iconSize * 0.75,
+            //   ),
+            //   onTap: () {
+            //     controller.switchTab('notifications');
+            //   },
+            // ),
+            // BitNetListTile(
+            //   leading: Icon(Icons.forum_outlined),
+            //   text: L10n.of(context)!.chat,
+            //   trailing: Icon(
+            //     Icons.arrow_forward_ios_rounded,
+            //     size: AppTheme.iconSize * 0.75,
+            //   ),
+            //   onTap: () {
+            //     controller.switchTab('chat');
+            //   },
+            // ),
             BitNetListTile(
               leading: Icon(Icons.currency_bitcoin),
               text: "Change language",

@@ -32,113 +32,131 @@ class _NftProductSliderState extends State<NftProductSlider> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: 224.w,
-        padding: EdgeInsets.all(10.w),
-        margin: widget.columnMargin
-            ? EdgeInsets.symmetric(horizontal: 8.w)
-            : EdgeInsets.zero,
-        decoration: BoxDecoration(
-          color: const Color.fromRGBO(255, 255, 255, 0.1),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 10.w),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10.r),
-                  ),
-                  child: Image.asset(
-                    widget.nftImage,
-                    width: size.width,
-                    height: 134.w,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Positioned(
-                  bottom: 12,
-                  right: 6,
-                  child: GlassContainer(
-                      child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      "Rank - " + widget.rank.toString(),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ))),
-            ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Container(
+      margin: widget.columnMargin ? EdgeInsets.symmetric(horizontal: 8.w) : EdgeInsets.zero,
+      child: GestureDetector(
+        onTap: () {},
+        child: GlassContainer(
+          width: 214.w,
+          height: 50.w,
+
+          // padding: EdgeInsets.all(10.w),
+          // margin: widget.columnMargin
+          //     ? EdgeInsets.symmetric(horizontal: 8.w)
+          //     : EdgeInsets.zero,
+          // decoration: BoxDecoration(
+          //   color: const Color.fromRGBO(255, 255, 255, 0.1),
+          //   borderRadius: BorderRadius.circular(12.r),
+          // ),
+          child: Padding(
+            padding: EdgeInsets.all(10.w),
+            
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(255, 255, 255, 0.1),
-                    borderRadius: BorderRadius.circular(100.r),
+                Stack(children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.w),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.r),
+                      ),
+                      child: Image.asset(
+                        widget.nftImage,
+                        width: 220.w,
+                        height: 124.w,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  padding: EdgeInsets.only(
-                      top: 5.w, bottom: 4.w, right: 10.w, left: 10.w),
+                  Positioned(
+                      bottom: 12,
+                      right: 6,
+                      child: GlassContainer(
+                          child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          "Rank - " + widget.rank.toString(),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ))),
+                ]),
+                Flexible(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(right: 6.w),
-                        child: Image.asset(
-                          widget.cryptoImage,
-                          height: 12.w,
-                          fit: BoxFit.contain,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(255, 255, 255, 0.1),
+                          borderRadius: BorderRadius.circular(100.r),
+                        ),
+                        padding: EdgeInsets.only(
+                            top: 5.w, bottom: 4.w, right: 10.w, left: 10.w),
+                        child: Row(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(right: 6.w),
+                              child: Image.asset(
+                                widget.cryptoImage,
+                                height: 12.w,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            Text(widget.cryptoText,
+                                style: Theme.of(context).textTheme.bodyMedium)
+                          ],
                         ),
                       ),
-                      Text(widget.cryptoText,
-                          style: Theme.of(context).textTheme.bodyMedium)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            likeNft = !likeNft;
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color.fromRGBO(255, 255, 255, 0.1),
+                            borderRadius: BorderRadius.circular(100.r),
+                          ),
+                          padding: EdgeInsets.all(6.w),
+                          width: 24.w,
+                          height: 24.w,
+                          child: Image.asset(
+                            likeNft ? activeHeartIcon : unActiveHeartIcon,
+                            width: 12.w,
+                            height: 12.w,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      likeNft = !likeNft;
-                    });
-                  },
+                Flexible(
                   child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(255, 255, 255, 0.1),
-                      borderRadius: BorderRadius.circular(100.r),
+                    margin: EdgeInsets.only(top: 7.h),
+                    width: 214.w - 10,
+                    child: Text(
+                      widget.nftMainName,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontSize: 12.sp, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
                     ),
-                    padding: EdgeInsets.all(6.w),
-                    width: 24.w,
-                    height: 24.w,
-                    child: Image.asset(
-                      likeNft ? activeHeartIcon : unActiveHeartIcon,
-                      width: 12.w,
-                      height: 12.w,
-                      fit: BoxFit.contain,
-                    ),
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 5.h),
+                    width: 214.w - 10,
+                    child: Text(widget.nftName,
+                        style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ],
             ),
-            Container(
-              margin: EdgeInsets.only(top: 7.h),
-              child: Text(
-                widget.nftMainName,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontSize: 12.sp, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 5.h),
-              child: Text(widget.nftName,
-                  style: Theme.of(context).textTheme.bodyMedium),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -113,9 +113,12 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   onTap: () {
                     logger.i("AGBS and Impressum was clicked");
                   },
-                  child: Text(
-                    "AGBS and Impressum",
-                    style: Theme.of(context).textTheme.bodyMedium,
+                  child: TextButton(
+                    onPressed:()=> context.push("/agbs"),
+                    child: Text(
+                      "AGBS and Impressum",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
                 ),
               ),

@@ -9,6 +9,7 @@ import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -27,69 +28,55 @@ class HomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: AppTheme.cardPadding * 1,
+                  height: AppTheme.cardPadding * 0.1,
                 ),
                 CommonHeading(
-                  hasButton: true,
-                  headingText: 'Latest NFT Drops',
+                  hasButton: false,
+                  headingText: '',
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
                     width: size.width,
-                    height: 150.w,
+                    height: 244.w,
                     margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(
-                          top: 0.0,
-                          bottom: 0.0,
-                          right: AppTheme.elementSpacing,
-                          left: AppTheme.elementSpacing),
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: nftDropSliderData.length,
-                      itemBuilder: (context, index) {
+                    child: CarouselSlider.builder(
+                      options: CarouselOptions(
+                        viewportFraction: 0.6,
+                        enlargeCenterPage: true, 
+                        height: 244.w),
+                      // padding: EdgeInsets.only(
+                      //     top: 0.0,
+                      //     bottom: 0.0,
+                      //     right: AppTheme.elementSpacing,
+                      //     left: AppTheme.elementSpacing),
+                      // shrinkWrap: true,
+                      // physics: const BouncingScrollPhysics(),
+                      itemCount: nftHotProductSliderData.length,
+                      itemBuilder: (context, index, index2) {
                         return GestureDetector(
                           onTap: () => context.goNamed(kNftProductScreenRoute,
                               pathParameters: {
                                 'nft_id': nftDropSliderData[index].nftName
                               }),
-                          child: NftDropSlider(
-                            nftImage: nftDropSliderData[index].nftImage,
-                            nftName: nftDropSliderData[index].nftName,
+                          child: NftProductSlider(
+                             nftImage: nftHotProductSliderData[index].nftImage,
+                            cryptoImage:
+                                nftHotProductSliderData[index].cryptoImage,
+                            nftName: nftHotProductSliderData[index].nftName,
+                            nftMainName:
+                                nftHotProductSliderData[index].nftMainName,
+                            cryptoText:
+                                nftHotProductSliderData[index].cryptoText,
+                            columnMargin:
+                                nftHotProductSliderData[index].columnMargin,
+                            rank: nftHotProductSliderData[index].rank
                           ),
                         );
                       },
                     ),
                   ),
                 ),
-                CommonHeading(
-                  hasButton: true,
-                  headingText: 'Trending Collections',
-                  onPress: route.kListScreenRoute,
-                  isNormalChild: true,
-                  isChild: Container(
-                    width: size.width,
-                    height: 230.h,
-                    margin: EdgeInsets.only(bottom: 30.h),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.only(
-                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: trendingSellersSliderData.length,
-                      itemBuilder: (context, index) {
-                        return TrendingSellersSlider(
-                          nftImage: trendingSellersSliderData[index].nftImage,
-                          userImage: trendingSellersSliderData[index].userImage,
-                          nftName: trendingSellersSliderData[index].nftName,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                CommonHeading(
+                 CommonHeading(
                   hasButton: true,
                   headingText: 'Most Viewed',
                   onPress: route.kListScreenRoute,
@@ -119,6 +106,34 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                CommonHeading(
+                  hasButton: true,
+                  customButtonIcon: Icons.info,
+                  headingText: 'Spotlight Projects',
+                  onPress: route.kListScreenRoute,
+                  isNormalChild: true,
+                  isChild: Container(
+                    width: size.width,
+                    height: 170.h,
+                    margin: EdgeInsets.only(bottom: 30.h),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.only(
+                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: trendingSellersSliderData.length,
+                      itemBuilder: (context, index) {
+                        return TrendingSellersSlider(
+                          nftImage: trendingSellersSliderData[index].nftImage,
+                          userImage: trendingSellersSliderData[index].userImage,
+                          nftName: trendingSellersSliderData[index].nftName,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+               
                 CommonHeading(
                   hasButton: true,
                   headingText: 'Hot New Items',

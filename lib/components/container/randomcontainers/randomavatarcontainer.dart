@@ -103,7 +103,7 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget>
         final avatar = AnimatedAvatar(
           position: newPos,
           vsync: this,
-          uri: 'https://bitnet-test.herokuapp.com/assets/images/avatars/1.png',
+          uri: 'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png',
         );
 
         avatar.size =
