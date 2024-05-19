@@ -108,7 +108,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
             text: 'Invoice',
             trailing: Obx(() {
               return controller.qrCodeDataStringOnchain.value.isEmpty
-                  ? Text('')
+                  ? Text('loading...')
                   : Row(
                       children: [
                         Icon(Icons.copy_rounded, color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,),

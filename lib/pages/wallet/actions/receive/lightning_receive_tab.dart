@@ -1,5 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
@@ -107,7 +109,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
             text: 'Invoice',
             trailing: Obx(() {
               return controller.qrCodeDataStringLightning.value.isEmpty
-                  ? Text('')
+                  ? Text('loading...')
                   : Row(
                       children: [
                         Icon(Icons.copy_rounded, color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,),
@@ -129,9 +131,15 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                 bool res = await BitNetBottomSheet(
                   context: context,
                   //also add a help button as an action at the right once bitnetbottomsheet is fixed
-                  title: "Change Amount",
                   height: MediaQuery.of(context).size.height * 0.7,
-                  child: CreateInvoice(),
+                  child: bitnetScaffold(
+                    extendBodyBehindAppBar: true,
+                      appBar: bitnetAppBar(
+                        buttonType: ButtonType.transparent,
+                        text: "Change Amount",
+                        context: context,
+                      ),
+                      body: CreateInvoice(), context: context,),
                 );
                 if (res) {
                   setState(() {});

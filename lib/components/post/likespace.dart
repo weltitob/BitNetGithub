@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/post/comments.dart';
 import 'package:bitnet/models/user/userdata.dart';
@@ -40,12 +42,12 @@ class buildLikeSpace extends StatefulWidget {
 
   @override
   _buildLikeSpaceState createState() => _buildLikeSpaceState(
-    type: this.type,
-    targetId: this.targetId,
-    ownerId: this.ownerId,
-    rocketsmap: this.rockets,
-    rocketcount: getRocketCount(),
-  );
+        type: this.type,
+        targetId: this.targetId,
+        ownerId: this.ownerId,
+        rocketsmap: this.rockets,
+        rocketcount: getRocketCount(),
+      );
 }
 
 class _buildLikeSpaceState extends State<buildLikeSpace> {
@@ -73,8 +75,12 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
     bool isNotPostOwner = currentUser.did != ownerId;
 
     if (isNotPostOwner) {
-      activityFeedRef.
-      doc(ownerId).collection('feedItems').doc(targetId).get().then((doc) {
+      activityFeedRef
+          .doc(ownerId)
+          .collection('feedItems')
+          .doc(targetId)
+          .get()
+          .then((doc) {
         if (doc.exists) {
           doc.reference.delete();
         }
@@ -82,15 +88,13 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
     }
   }
 
-  addLikeToAcitivityFeed(){
+  addLikeToAcitivityFeed() {
     //add a notifcation only for others likes not own
     final currentUser = Provider.of<UserData>(context, listen: false);
     bool isNotPostOwner = currentUser.did != ownerId;
 
     if (isNotPostOwner) {
-      activityFeedRef.
-      doc(ownerId).collection('feedItems').doc(targetId).
-      set({
+      activityFeedRef.doc(ownerId).collection('feedItems').doc(targetId).set({
         'type': 'like',
         'userId': currentUser.did,
         'userProfileImg': currentUser.profileImageUrl,
@@ -98,29 +102,32 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
         'timestamp': datetime,
       });
     }
-
   }
 
-  handleLikePost(){
+  handleLikePost() {
     //Provider of is broken after new auth need to use something else rewatch the
     //social media stuff after new auth
     final currentUser = Provider.of<UserData>(context, listen: false);
     final String currentUserId = currentUser.did;
     bool _isLiked = rocketsmap[currentUserId] == true;
-    if(_isLiked) {
-      postsCollection.doc(ownerId).
-      collection('userPosts').doc(targetId).
-      update({'likes.$currentUserId': false});
+    if (_isLiked) {
+      postsCollection
+          .doc(ownerId)
+          .collection('userPosts')
+          .doc(targetId)
+          .update({'likes.$currentUserId': false});
       removeLikeToAcitivityFeed();
       setState(() {
         rocketcount -= 1;
         isLiked = false;
         rocketsmap[currentUserId] = false;
       });
-    }
-    else if (!_isLiked) {
-      postsCollection.doc(ownerId).collection('userPosts').
-      doc(targetId).update({'likes.$currentUserId': true});
+    } else if (!_isLiked) {
+      postsCollection
+          .doc(ownerId)
+          .collection('userPosts')
+          .doc(targetId)
+          .update({'likes.$currentUserId': true});
       //NO ACTIVITYFEED ==> Make it a donation/ Transactionspage which everyone can see which is connected to the wallet
       addLikeToAcitivityFeed;
       setState(() {
@@ -129,7 +136,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
         rocketsmap[currentUserId] = true;
         showheart = true;
       });
-      Timer(Duration(milliseconds: 500), (){
+      Timer(Duration(milliseconds: 500), () {
         setState(() {
           showheart = false;
         });
@@ -141,105 +148,112 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
     BitNetBottomSheet(
         context: context,
         height: MediaQuery.of(context).size.height * 0.75,
-        title: "524 Comments",
-        child: Comments(
-          postId: targetId,
-          postOwnerId: ownerId,
+        child: bitnetScaffold(
+          appBar: bitnetAppBar(
+            context: context,
+            text: 'Comments',
+          ),
+          context: context,
+          body: Comments(
+            postId: targetId,
+            postOwnerId: ownerId,
+          ),
         ));
   }
+
   //looks similar to the "UPLOAD" Button on the create_post_screen
   @override
   Widget build(BuildContext context) {
-      return Center(
-        child: Container(
-          margin: EdgeInsets.only(top: 5.0),
-          width: 120,
-          height: 35,
-          decoration: BoxDecoration(
-              color: Theme.of(context).primaryColorLight,
-              borderRadius: BorderRadius.all(Radius.circular(20))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              GestureDetector(
-                onTap: ()=> onCommentButtonPressed(),
-                child: Icon(
-                  Icons.comment,
-                  size: 24,
-                  color: Colors.grey,
-                ),
+    return Center(
+      child: Container(
+        margin: EdgeInsets.only(top: 5.0),
+        width: 120,
+        height: 35,
+        decoration: BoxDecoration(
+            color: Theme.of(context).primaryColorLight,
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            GestureDetector(
+              onTap: () => onCommentButtonPressed(),
+              child: Icon(
+                Icons.comment,
+                size: 24,
+                color: Colors.grey,
               ),
-              // LikeButton(
-              //   isLiked: isLiked,
-              //   // likeCount: rocketcount,
-              //   bubblesColor: BubblesColor(
-              //     dotPrimaryColor: Colors.orange,
-              //     dotSecondaryColor: Colors.orangeAccent,
-              //   ),
-              //   likeBuilder: (bool isLiked) {
-              //     return Icon(
-              //       isLiked ? Icons.favorite : Icons.favorite_border,
-              //       color: isLiked ? Colors.orangeAccent : Colors.orangeAccent,
-              //       size: 24,
-              //     );
-              //   },
-              //   // countBuilder: (rocketcount, isLiked, text){
-              //   //   final color = Colors.grey;
-              //   //   return Text(
-              //   //     rocketcount.toString(),
-              //   //     style: TextStyle(color: color,
-              //   //         fontSize: 16,
-              //   //         fontWeight: FontWeight.bold),
-              //   //   );
-              //   // },
-              //   onTap: (isLiked) async {
-              //     final currentUser = Provider.of<UserData>(context, listen: false);
-              //     final String currentUserId = currentUser.did;
-              //
-              //     bool _isLiked = rocketsmap[currentUserId] == true;
-              //
-              //     if(_isLiked) {
-              //       postsCollection.doc(ownerId).
-              //       collection('userPosts').doc(targetId).
-              //       update({'likes.$currentUserId': false});
-              //       removeLikeToAcitivityFeed();
-              //       setState(() {
-              //         rocketcount -= 1;
-              //         this.isLiked = false;
-              //         rocketsmap[currentUserId] = false;
-              //       });
-              //     }
-              //     else if (!_isLiked) {
-              //       postsCollection.doc(ownerId).collection('userPosts').
-              //       doc(targetId).update({'likes.$currentUserId': true});
-              //       addLikeToAcitivityFeed();
-              //       setState(() {
-              //         rocketcount += 1;
-              //         this.isLiked = true;
-              //         rocketsmap[currentUserId] = true;
-              //         showheart = true;
-              //       });
-              //
-              //       Timer(Duration(milliseconds: 500), (){
-              //         setState(() {
-              //           showheart = false;
-              //         });
-              //       });
-              //     }
-              //     return !isLiked;
-              //   },
-              // ),
-              // GestureDetector(
-              //   onTap: handleLikePost,
-              //   child: Icon(
-              //     isLiked ? Icons.favorite : Icons.favorite_border,
-              //     size: 22.5,
-              //     color: Colors.greenAccent,
-              //   ),
-              // ),
-            ],
-          ),
+            ),
+            // LikeButton(
+            //   isLiked: isLiked,
+            //   // likeCount: rocketcount,
+            //   bubblesColor: BubblesColor(
+            //     dotPrimaryColor: Colors.orange,
+            //     dotSecondaryColor: Colors.orangeAccent,
+            //   ),
+            //   likeBuilder: (bool isLiked) {
+            //     return Icon(
+            //       isLiked ? Icons.favorite : Icons.favorite_border,
+            //       color: isLiked ? Colors.orangeAccent : Colors.orangeAccent,
+            //       size: 24,
+            //     );
+            //   },
+            //   // countBuilder: (rocketcount, isLiked, text){
+            //   //   final color = Colors.grey;
+            //   //   return Text(
+            //   //     rocketcount.toString(),
+            //   //     style: TextStyle(color: color,
+            //   //         fontSize: 16,
+            //   //         fontWeight: FontWeight.bold),
+            //   //   );
+            //   // },
+            //   onTap: (isLiked) async {
+            //     final currentUser = Provider.of<UserData>(context, listen: false);
+            //     final String currentUserId = currentUser.did;
+            //
+            //     bool _isLiked = rocketsmap[currentUserId] == true;
+            //
+            //     if(_isLiked) {
+            //       postsCollection.doc(ownerId).
+            //       collection('userPosts').doc(targetId).
+            //       update({'likes.$currentUserId': false});
+            //       removeLikeToAcitivityFeed();
+            //       setState(() {
+            //         rocketcount -= 1;
+            //         this.isLiked = false;
+            //         rocketsmap[currentUserId] = false;
+            //       });
+            //     }
+            //     else if (!_isLiked) {
+            //       postsCollection.doc(ownerId).collection('userPosts').
+            //       doc(targetId).update({'likes.$currentUserId': true});
+            //       addLikeToAcitivityFeed();
+            //       setState(() {
+            //         rocketcount += 1;
+            //         this.isLiked = true;
+            //         rocketsmap[currentUserId] = true;
+            //         showheart = true;
+            //       });
+            //
+            //       Timer(Duration(milliseconds: 500), (){
+            //         setState(() {
+            //           showheart = false;
+            //         });
+            //       });
+            //     }
+            //     return !isLiked;
+            //   },
+            // ),
+            // GestureDetector(
+            //   onTap: handleLikePost,
+            //   child: Icon(
+            //     isLiked ? Icons.favorite : Icons.favorite_border,
+            //     size: 22.5,
+            //     color: Colors.greenAccent,
+            //   ),
+            // ),
+          ],
         ),
-      );
-    }
+      ),
+    );
+  }
 }

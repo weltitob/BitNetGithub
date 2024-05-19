@@ -7,16 +7,11 @@ Future<T?> BitNetBottomSheet<T>(
     required Widget child,
     double? height,
     double? width,
-    String title = '',
     Color backgroundColor = Colors.transparent,
     bool isDismissible = true,
     bool isScrollControlled = true,
     bool goBack = false,
-    IconData? iconData}) {
-  bool _hasIcon = false;
-  if (iconData != null) {
-    _hasIcon = true;
-  }
+    }) {
 
   // this should use the appbar for bottomsheets by deafult and the appbar should be build in a way wher eit can have 3 values backbutton, centertext and right a action
 
@@ -55,7 +50,75 @@ Future<T?> BitNetBottomSheet<T>(
                   ? (height - AppTheme.cardPadding * 3)
                   : AppTheme.cardPadding * 24 - AppTheme.cardPadding * 3,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+                  colors:
+                  Theme.of(context).brightness == Brightness.light
+                      ? [
+                    lighten(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        40),
+                    lighten(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        40)
+                        .withOpacity(0.9),
+                    lighten(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        40)
+                        .withOpacity(0.7),
+                    lighten(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        40)
+                        .withOpacity(0.4),
+                    lighten(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        40)
+                        .withOpacity(0.0001),
+                  ]
+                      : [
+                    darken(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        70),
+                    darken(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        70)
+                        .withOpacity(0.9),
+                    darken(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        70)
+                        .withOpacity(0.7),
+                    darken(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        70)
+                        .withOpacity(0.4),
+                    darken(
+                        Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
+                        70)
+                        .withOpacity(0.0001),
+                  ],
+                ),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(borderRadius),
                   topRight: Radius.circular(borderRadius),

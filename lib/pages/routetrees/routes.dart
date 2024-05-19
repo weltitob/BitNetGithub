@@ -326,13 +326,14 @@ class AppRoutes {
             name: '/profile',
             builder: (ctx, state) => Profile(),
             routes: [
-              GoRoute(
-                path: '/create',
-                builder: (ctx, state) =>
-                //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
-                CreateAsset(),
-              ),
+
             ]),
+        GoRoute(
+          path: '/create',
+          builder: (ctx, state) =>
+          //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
+          CreateAsset(),
+        ),
         GoRoute(
           path: '/single_transaction',
           builder: _dynamicTransition == null

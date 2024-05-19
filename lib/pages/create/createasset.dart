@@ -21,13 +21,13 @@ import 'package:bitnet/components/post/post_header.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
 
 //THIS ONE HERE SEEMS TO BE TH EISSUE THIS IMPORT FUCKS EVERYTHING UP
 //import 'package:bitnet/models/postmodels/post.dart';
-
 
 class CreateAsset extends StatefulWidget {
   const CreateAsset({super.key});
@@ -155,102 +155,110 @@ class _CreateAssetState extends State<CreateAsset> {
 
   @override
   Widget build(BuildContext context) {
-    return bitnetScaffold(
-      appBar: bitnetAppBar(
-        text: "Create Post",
-        context: context,
-        hasBackButton: true,
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (bool) {
+        context.go("/profile");
+      },
+      child: bitnetScaffold(
+        appBar: bitnetAppBar(
+          text: "Create Post",
+          context: context,
+          hasBackButton: true,
+          onTap: () {
+            context.go("/profile");
+          },
+        ),
+        body: Container(
+            child: isLoading
+                ? avatarGlow(context, Icons.upload_rounded)
+                : Column(children: [
+                    Expanded(
+                        child: GlassContainer(
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppTheme.cardPadding),
+                              child: Column(
+                                children: [
+                              buildCreatePostHeader(context),
+                              Expanded(
+                                child: postFiles.isNotEmpty
+                                    ? ScrollConfiguration(
+                                  behavior: MyBehavior(),
+                                  child: ReorderableListView(
+                                    //later remove expanded to only render the normal posts when something added
+                                    shrinkWrap: true,
+                                    onReorder: (oldIndex, newIndex) {
+                                      setState(() {
+                                        final item =
+                                        postFiles.removeAt(oldIndex);
+                                        postFiles.insert(newIndex, item);
+                                      });
+                                    },
+                                    children:
+                                    postFiles.asMap().entries.map((e) {
+                                      final index = e.key;
+                                      final post = e.value;
+                                      return Dismissible(
+                                        key: ValueKey(post.file ??
+                                            post.text ??
+                                            post.type.name),
+                                        confirmDismiss: (value) async {
+                                          final result = await showDialogue(
+                                            context: context,
+                                            title: "Remove?",
+                                            image: "images/deletepost.png",
+                                            leftAction: () {
+                                              Navigator.of(context).pop(false);
+                                            },
+                                            rightAction: () {
+                                              Navigator.of(context).pop(true);
+                                            },
+                                          );
+                                          if (result == true)
+                                            postFiles.removeAt(index);
+                                          setState(() {});
+                                          return Future.value(result);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 10.0),
+                                          child: _PostItem(postFile: post),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                )
+                                    : buildAddContent(),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
 
-      ),
-      body: Container(
-          child: isLoading
-              ? avatarGlow(context, Icons.upload_rounded)
-              : Column(children: [
-                  Expanded(
-                      child: GlassContainer(
-                          child: Padding(
-                            padding: const EdgeInsets.all(AppTheme.cardPadding),
-                            child: Column(
-                              children: [
-                            buildCreatePostHeader(context),
-                            Expanded(
-                              child: postFiles.isNotEmpty
-                                  ? ScrollConfiguration(
-                                behavior: MyBehavior(),
-                                child: ReorderableListView(
-                                  //later remove expanded to only render the normal posts when something added
-                                  shrinkWrap: true,
-                                  onReorder: (oldIndex, newIndex) {
-                                    setState(() {
-                                      final item =
-                                      postFiles.removeAt(oldIndex);
-                                      postFiles.insert(newIndex, item);
-                                    });
-                                  },
-                                  children:
-                                  postFiles.asMap().entries.map((e) {
-                                    final index = e.key;
-                                    final post = e.value;
-                                    return Dismissible(
-                                      key: ValueKey(post.file ??
-                                          post.text ??
-                                          post.type.name),
-                                      confirmDismiss: (value) async {
-                                        final result = await showDialogue(
-                                          context: context,
-                                          title: "Remove?",
-                                          image: "images/deletepost.png",
-                                          leftAction: () {
-                                            Navigator.of(context).pop(false);
-                                          },
-                                          rightAction: () {
-                                            Navigator.of(context).pop(true);
-                                          },
-                                        );
-                                        if (result == true)
-                                          postFiles.removeAt(index);
-                                        setState(() {});
-                                        return Future.value(result);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            bottom: 10.0),
-                                        child: _PostItem(postFile: post),
+                                      SizedBox(
+                                        width: AppTheme.cardPadding,
                                       ),
-                                    );
-                                  }).toList(),
-                                ),
-                              )
-                                  : buildAddContent(),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
 
-                                    SizedBox(
-                                      width: AppTheme.cardPadding,
-                                    ),
+                                      SizedBox(
+                                        width: AppTheme.cardPadding,
+                                      ),
+                                      //buildCameraButton()
+                                    ],
+                                  ),
+                                //buildUploadButton(),
+                                ]),
 
-                                    SizedBox(
-                                      width: AppTheme.cardPadding,
-                                    ),
-                                    //buildCameraButton()
-                                  ],
-                                ),
-                              //buildUploadButton(),
-                              ]),
+                                ],),
+                            ))),
+                  buildTextField(),
+                 // SizedBox(height: AppTheme.cardPadding * 4,),
 
-                              ],),
-                          ))),
-                buildTextField(),
-               // SizedBox(height: AppTheme.cardPadding * 4,),
-
-                ]
-          )),
-      context: context,
+                  ]
+            )),
+        context: context,
+      ),
     );
   }
 

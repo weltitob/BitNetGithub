@@ -23,7 +23,7 @@ class bitnetScaffold extends StatelessWidget {
     this.appBar,
     this.backgroundColor,
     this.gradientColor,
-    this.extendBodyBehindAppBar = false,
+    this.extendBodyBehindAppBar = true,
     this.extendBodyBehindBottomNav = false,
     this.removeGradientColor = false,
     this.floatingActionButton,

@@ -1,4 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
@@ -15,30 +17,36 @@ class QrButton extends StatelessWidget {
     BitNetBottomSheet(
       width: double.infinity,
         context: context,
-        title: "Share Profile",
-        iconData: Icons.qr_code_rounded,
-        child: Center(
-          child: RepaintBoundary(
-            key: controller.globalKeyQR,
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.all(AppTheme.cardPadding),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: AppTheme.cardRadiusSmall),
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppTheme.elementSpacing),
-                    child: PrettyQr(
-                      typeNumber: 5,
-                      size: AppTheme.cardPadding * 10,
-                      data: 'did: ${controller.userData.did}',
-                      errorCorrectLevel: QrErrorCorrectLevel.M,
-                      roundEdges: true,
+
+        child: bitnetScaffold(
+          context: context,
+          appBar: bitnetAppBar(
+            context: context,
+            text: 'QR Code',
+          ),
+          body: Center(
+            child: RepaintBoundary(
+              key: controller.globalKeyQR,
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(AppTheme.cardPadding),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: AppTheme.cardRadiusSmall),
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppTheme.elementSpacing),
+                      child: PrettyQr(
+                        typeNumber: 5,
+                        size: AppTheme.cardPadding * 10,
+                        data: 'did: ${controller.userData.did}',
+                        errorCorrectLevel: QrErrorCorrectLevel.M,
+                        roundEdges: true,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ));

@@ -5,7 +5,7 @@ class BitcoinAddress {
   // Factory constructor for creating a new BitcoinAddress instance from a map (JSON).
   factory BitcoinAddress.fromJson(Map<String, dynamic> json) {
     return BitcoinAddress(
-      addr: json['addr'],
+      addr: json['addr'] ?? '',
     );
   }
 
