@@ -74,6 +74,7 @@ class ProfileView extends StatelessWidget {
       context: context,
 
       child: bitnetScaffold(
+        extendBodyBehindAppBar: false,
         appBar: bitnetAppBar(
           context: context,
           buttonType: ButtonType.transparent,

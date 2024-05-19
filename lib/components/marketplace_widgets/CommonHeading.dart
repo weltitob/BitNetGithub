@@ -47,20 +47,19 @@ class _CommonHeadingState extends State<CommonHeading> {
               Expanded(
                 child: Text(
                   widget.headingText,
-                  style: Theme.of(context).textTheme.titleLarge!
-                      .copyWith(
-                        fontSize: 14.sp,
-                      fontWeight: FontWeight.bold),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontSize: 14.sp, fontWeight: FontWeight.bold),
                 ),
               ),
               widget.hasButton
                   ? RoundedButtonWidget(
-                    size: AppTheme.cardPadding * 1.25,
-                          buttonType: ButtonType.transparent,
-                    onTap:() =>                         context.go("/feed/${widget.onPress}")
-,
-iconData: Icons.arrow_right,
-                  )
+                      size: AppTheme.cardPadding * 1.25,
+                      buttonType: ButtonType.transparent,
+                      onTap: () => context.go("/feed/${widget.onPress}"),
+                      iconData: Icons.arrow_forward_ios_rounded,
+                    )
                   : Container(),
               widget.collapseBtn
                   ? GestureDetector(
@@ -81,9 +80,7 @@ iconData: Icons.arrow_right,
                           horizontal: openCloseCollapse ? 7.w : 8.w,
                         ),
                         child: Image.asset(
-                          openCloseCollapse
-                              ? bottomArrowIcon
-                              : rightArrowIcon,
+                          openCloseCollapse ? bottomArrowIcon : rightArrowIcon,
                           width: openCloseCollapse ? 5.w : 10.w,
                           height: openCloseCollapse ? 10.h : 5.h,
                           fit: BoxFit.contain,
@@ -94,7 +91,11 @@ iconData: Icons.arrow_right,
             ],
           ),
         ),
-        widget.collapseBtn ? openCloseCollapse ? widget.child : Container() : Container(),
+        widget.collapseBtn
+            ? openCloseCollapse
+                ? widget.child
+                : Container()
+            : Container(),
         widget.isNormalChild ? widget.isChild : Container()
       ],
     );
