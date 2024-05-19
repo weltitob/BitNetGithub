@@ -42,7 +42,7 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
     final Size size = MediaQuery.of(context).size;
 
     return Container(
-      height: size.height * 0.6.h,
+      height: size.height * 0.7.h,
       child: ListView(
         physics: BouncingScrollPhysics(),
         children: [

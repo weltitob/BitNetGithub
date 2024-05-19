@@ -56,7 +56,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
                 mnemonicController: widget.mnemonicController,
                 triggerMnemonicCheck: triggerMnemonicCheck),
             Container(
-              margin: EdgeInsets.only(top: AppTheme.cardPadding.h),
+              margin: EdgeInsets.only(top:0),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Theme.of(context).brightness == Brightness.dark

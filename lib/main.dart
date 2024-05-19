@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
+import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
@@ -143,6 +144,9 @@ class _MyAppState extends State<MyApp> {
                 ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider(),
                 ),
+                  ChangeNotifierProvider<CountryProvider>(
+                  create: (context) => CountryProvider(),
+                ),
                 ChangeNotifierProvider<CurrencyChangeProvider>(
                   create: (context) => CurrencyChangeProvider(),
                 ),
@@ -170,6 +174,9 @@ class _MyAppState extends State<MyApp> {
               ChangeNotifierProvider<LocalProvider>(
                 create: (context) => LocalProvider(),
               ),
+                 ChangeNotifierProvider<CountryProvider>(
+                  create: (context) => CountryProvider(),
+                ),
               ChangeNotifierProvider<CurrencyChangeProvider>(
                 create: (context) => CurrencyChangeProvider(),
               ),

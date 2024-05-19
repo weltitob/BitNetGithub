@@ -24,6 +24,8 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>NFCReaderUsageDescription</key>
     <string>NFC require to read coin hash value</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location to determine country.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

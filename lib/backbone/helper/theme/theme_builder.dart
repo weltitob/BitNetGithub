@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
+import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -64,7 +65,9 @@ class ThemeController extends State<ThemeBuilder> {
       final rawColor = data.data()?['primary_color'];
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
       Provider.of<LocalProvider>(context, listen: false)
-          .setLocaleInDatabase(data.data()?['lang'], locale);
+          .setLocaleInDatabase( data.data()?['lang'], locale);
+           Provider.of<CountryProvider>(context, listen: false)
+          .setCountryInDatabase( data.data()?['country']);
       Provider.of<CardChangeProvider>(context, listen: false)
           .setCardInDatabase(data.data()?['selected_card'] ?? 'lightning');
       Get.put(WalletsController())

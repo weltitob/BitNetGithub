@@ -87,7 +87,7 @@ class _BottomNavState extends State<BottomNav>
           .setPrimaryColor(Color(data.data()?['primary_color']));
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
       Provider.of<LocalProvider>(context, listen: false)
-          .setLocaleInDatabase(data.data()?['lang'], locale);
+          .setLocaleInDatabase( data.data()?['lang'], locale);
       Provider.of<CardChangeProvider>(context, listen: false)
           .setCardInDatabase(data.data()?['selected_card']);
       final walletController = Get.find<WalletsController>();

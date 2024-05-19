@@ -132,6 +132,17 @@ class Auth {
 
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
     logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
+    await settingsCollection.doc(currentuser?.user!.uid).set(
+      {
+        "theme_mode": "system",
+        "lang": "en",
+        "primary_color": 4283657726,
+        "selected_currency": "USD",
+        "selected_card": "lightning",
+        "hide_balance": false,
+        "country": "US"
+      }
+    );
     // Call the function to generate and store verification codes
     logger.i(
         "Generating and storing verification codes for friends of the new user now...");

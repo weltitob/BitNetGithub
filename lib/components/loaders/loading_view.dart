@@ -68,7 +68,7 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
         String langCode = deviceLocale.languageCode;
 
             Provider.of<LocalProvider>(context, listen: false)
-            .setLocaleInDatabase(langCode,
+            .setLocaleInDatabase( langCode,
             deviceLocale, isUser: false);
 
             context.go('/authhome');

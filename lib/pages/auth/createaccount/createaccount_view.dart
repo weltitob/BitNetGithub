@@ -2,6 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/country_picker_widget.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
@@ -93,6 +94,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    PopUpCountryPickerWidget(),
                     FormTextField(
                       width: AppTheme.cardPadding * 14.w,
                       hintText: "Username",
