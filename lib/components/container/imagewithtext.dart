@@ -34,28 +34,26 @@ class GlassContainer extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: borderRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: Container(
-            height: height,
-            width: width,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomRight,
-                colors: [
-                  Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity + 0.1),
-                  Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity - 0.025),
-                ],
-              ),
+        child: Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            color:  Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.9) : Color(0XFF3c4451).withOpacity(0.9),
+            // gradient: LinearGradient(
+            //   begin: Alignment.topRight,
+            //   end: Alignment.bottomRight,
+            //   colors: [
+            //     Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity + 0.1),
+            //     Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity - 0.025),
+            //   ],
+            // ),
+            borderRadius: borderRadius,
+            border: GradientBoxBorder(
               borderRadius: borderRadius,
-              border: GradientBoxBorder(
-                borderRadius: borderRadius,
-                borderWidth: borderThickness,
-              ),
+              borderWidth: borderThickness,
             ),
-            child: child,
           ),
+          child: child,
         ),
       ),
     );
