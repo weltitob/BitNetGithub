@@ -123,7 +123,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
                   alignment: Alignment.center,
                   children: [
                     AnimatedPositioned(
-                      duration: const Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 0),
                       left: glassContainerLeftPosition + AppTheme.elementSpacing,
                       child: GlassContainer(
                         child: Padding(
