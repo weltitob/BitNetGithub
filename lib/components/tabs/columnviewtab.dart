@@ -26,13 +26,11 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
       isLoading = true;
     });
     try {
-      print("REQUESTING FETCHTAPROOT ASSETS NOW");
       List<Asset> fetchedAssets = await listTaprootAssets();
       setState(() {
-        assets = fetchedAssets;
+        assets = fetchedAssets.reversed.toList();
         isLoading = false;
       });
-      print("RESPONSE: $assets");
     } catch (e) {
       print('Error: $e');
       setState(() {
@@ -41,40 +39,46 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SingleChildScrollView(
       child: Column(
         children: [
-          LongButtonWidget(
+          if(!isLoading)LongButtonWidget(
             title: "FETCH ASSETS",
             onTap: fetchTaprootAssets,
           ),
           if (isLoading)
             Center(child: dotProgress(context))
           else if (assets.isEmpty)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error),
-                SizedBox(height: AppTheme.cardPadding),
-                Text(
-                  'No assets found',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error),
+                  SizedBox(width: AppTheme.cardPadding),
+                  Text(
+                    'No assets found',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
             )
           else
-            Expanded(
-              child: ListView.builder(
-                itemCount: assets.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(assets[index].assetGenesis.name),
-                    subtitle: Text('Amount: ${assets[index].amount}'),
-                  );
-                },
-              ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: assets.length,
+              itemBuilder: (context, index) {
+                // jz hier stattdessen meine posts quasie einfügen und dann die posts anzeigen lassen clean (muss noch die daten decoden teilweise)
+                //je nachdem was drin steht im asset entsprechend anzeigen jz mal heute das hall fineny quote als cleanen post
+                return ListTile(
+                  title: Text(assets[index].assetGenesis.name),
+                  subtitle: Text('Amount: ${assets[index].amount}'),
+                );
+              },
             ),
         ],
       ),

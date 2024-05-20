@@ -138,6 +138,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                     child: bitnetScaffold(
                       extendBodyBehindAppBar: true,
                         appBar: bitnetAppBar(
+                          hasBackButton: false,
                           buttonType: ButtonType.transparent,
                           text: "Change Amount",
                           context: context,
