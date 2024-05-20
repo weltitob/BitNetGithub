@@ -1,3 +1,5 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,25 +23,27 @@ class _PillLabelState extends State<PillLabel> {
         onTap: () {
           controller.toggleFilter(widget.labelText);
         },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100.r),
-            color: controller.selectedFilters.contains(widget.labelText)
-                ? Theme.of(context).colorScheme.onPrimaryContainer
-                : Theme.of(context).colorScheme.onSecondary,
-          ),
-          padding:
-              EdgeInsets.only(top: 5.w, bottom: 4.w, left: 10.w, right: 10.w),
-          child: Text(
-            widget.labelText,
-            style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                color: controller.selectedFilters.contains(widget.labelText)
-                    ? Theme.of(context).colorScheme.onSecondary
-                    : Theme.of(context).colorScheme.inversePrimary),
-          ),
-        ),
+        child: controller.selectedFilters.contains(widget.labelText)
+            ? GlassContainer(
+                child: Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing.w * 0.5,
+                      vertical: AppTheme.elementSpacing.h * 0.5),
+                  child: Text(
+                    widget.labelText,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              )
+            : Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing.w * 0.5 + 1.5,
+                    vertical: AppTheme.elementSpacing.h * 0.5 + 1.5),
+                child: Text(
+                  widget.labelText,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
       );
     });
   }

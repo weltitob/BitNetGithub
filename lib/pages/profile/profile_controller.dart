@@ -1,17 +1,13 @@
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:bitnet/components/tabs/columnviewtab.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
-import 'package:bitnet/components/tabs/wallettab.dart';
+import 'package:bitnet/components/tabs/rowviewtab.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends BaseController {
   String profileId = "GUsuvr19SPrGELGZtrAq";
@@ -67,8 +63,8 @@ class ProfileController extends BaseController {
       //PostsProfileTab(
       //profileId: widget.profileId,
       //),
-      Container(),
-      WalletTab(),
+      ColumnViewTab(),
+      RowViewTab(),
       //den nur wenn eigenes profil also abfrage ob eignes profil anonszten was anders zeigen
       EditProfileTab(),
     ];

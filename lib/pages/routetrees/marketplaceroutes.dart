@@ -27,7 +27,6 @@ Map<String, WidgetBuilder> allRoutes = {
   kSearchScreenRoute: (BuildContext context) => const SearchScreen(),
   kOwnerDetailScreenRoute: (BuildContext context) => const OwnerDetailScreen(),
   kActivityScreenRoute: (BuildContext context) => const ActivityScreen(),
-  kProfileEditScreenRoute: (BuildContext context) => const ProfileEditScreen(),
   kFavouriteScreenRoute: (BuildContext context) => const FavouriteScreen(),
   kAboutScreenRoute: (BuildContext context) => const AboutScreen(),
 };

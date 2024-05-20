@@ -94,6 +94,9 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       body: isVerified
           ? Column(
               children: <Widget>[
+                SizedBox(
+                  height: AppTheme.cardPadding * 1.5,
+                ),
                 pages[currentview].widget,
               ],
             )

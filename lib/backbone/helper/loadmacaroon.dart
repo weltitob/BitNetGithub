@@ -7,3 +7,7 @@ Future<ByteData> loadMacaroonAsset() async {
 Future<ByteData> loadLoopMacaroonAsset() async {
   return await rootBundle.load('assets/keys/loop.macaroon');
 }
+
+Future<ByteData> loadTapdMacaroonAsset() async {
+  return await rootBundle.load('assets/keys/tapd_admin.macaroon');
+}

@@ -98,203 +98,201 @@ class _TransactionItemState extends State<TransactionItem> {
           right: AppTheme.cardPadding,
           bottom: AppTheme.elementSpacing),
       child: GlassContainer(
+        height: AppTheme.cardPadding * 2.75.h,
         borderThickness: 1,
         borderRadius: AppTheme.cardRadiusBig,
         child: ClipRRect(
           borderRadius: AppTheme.cardRadiusBig,
-          child: Container(
-            height: AppTheme.cardPadding * 3.2.h,
-            child: Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if (widget.data.type == TransactionType.lightning) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LightningTransactionDetails(
-                                    data: widget.data,
-                                  )));
-                    } else {
-                      print(widget.data.txHash);
-                      final controllerTransaction = Get.put(
-                        TransactionController(
-                          txID: widget.data.txHash.toString(),
-                        ),
-                      );
-                      controllerTransaction.txID =
-                          widget.data.txHash.toString();
-                      controllerTransaction
-                          .getSingleTransaction(controllerTransaction.txID!);
-                      controllerTransaction.changeSocket();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SingleTransactionScreen()));
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: AppTheme.elementSpacing * 1,
-                        right: AppTheme.elementSpacing * 1.25,
-                        top: AppTheme.elementSpacing * 1,
-                        bottom: AppTheme.elementSpacing * 1),
-                    child: Center(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(child: Avatar()),
-                          const SizedBox(width: AppTheme.elementSpacing * 0.75),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: AppTheme.cardPadding * 5,
-                                    child: Text(
-                                      widget.data.receiver.toString(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(widget.context)
-                                          .textTheme
-                                          .titleSmall,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: AppTheme.elementSpacing / 4,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    formattedDate,
+          child: Stack(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  if (widget.data.type == TransactionType.lightning) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LightningTransactionDetails(
+                                  data: widget.data,
+                                )));
+                  } else {
+                    print(widget.data.txHash);
+                    final controllerTransaction = Get.put(
+                      TransactionController(
+                        txID: widget.data.txHash.toString(),
+                      ),
+                    );
+                    controllerTransaction.txID =
+                        widget.data.txHash.toString();
+                    controllerTransaction
+                        .getSingleTransaction(controllerTransaction.txID!);
+                    controllerTransaction.changeSocket();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SingleTransactionScreen()));
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: AppTheme.elementSpacing * 0.75,
+                      right: AppTheme.elementSpacing * 1,
+                      top: AppTheme.elementSpacing * 0.75,
+                      bottom: AppTheme.elementSpacing * 0.75),
+                  child: Center(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(child: Avatar()),
+                        const SizedBox(width: AppTheme.elementSpacing * 0.75),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: AppTheme.cardPadding * 5,
+                                  child: Text(
+                                    widget.data.receiver.toString(),
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(widget.context)
                                         .textTheme
-                                        .bodyMedium,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          Obx(
-                            () => Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                controller.hideBalance.value
-                                    ? Text(
-                                        '*****',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium,
-                                      )
-                                    : Row(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              coin.setCurrencyType(
-                                                  coin.coin != null
-                                                      ? !coin.coin!
-                                                      : false);
-                                            },
-                                            child: Text(
-                                              coin.coin ?? true
-                                                  ? widget.data.amount
-                                                  : "$currencyEquivalent${getCurrency(currency!)}",
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleMedium!
-                                                  .copyWith(
-                                                      color: widget.data
-                                                                  .direction ==
-                                                              TransactionDirection
-                                                                  .received
-                                                          ? AppTheme
-                                                              .successColor
-                                                          : AppTheme
-                                                              .errorColor),
-                                            ),
-                                          ),
-                                          coin.coin ?? true
-                                              ? Icon(
-                                                  AppTheme.satoshiIcon,
-                                                  color: widget
-                                                              .data.direction ==
-                                                          TransactionDirection
-                                                              .received
-                                                      ? AppTheme.successColor
-                                                      : AppTheme.errorColor,
-                                                )
-                                              : SizedBox.shrink(),
-                                        ],
-                                      ),
-                                // Consumer<BalanceHideProvider>(
-                                //     builder: (context, balanceHideProvider, _) {
-                                //   return balanceHideProvider.hideBalance!
-                                //       ? Text(
-                                //           '*****',
-                                //           style: Theme.of(context)
-                                //               .textTheme
-                                //               .titleMedium,
-                                //         )
-                                //       : Text(
-                                //           '\$$usd',
-                                //           style: Theme.of(context)
-                                //               .textTheme
-                                //               .titleMedium!,
-                                //         );
-                                // }),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: AppTheme.elementSpacing / 3,
-                                      vertical: AppTheme.elementSpacing / 15),
-                                  child: Row(
-                                    children: [
-                                      //only for received transactions
-                                      Icon(
-                                        Icons.circle,
-                                        color: widget.data.status ==
-                                                TransactionStatus.confirmed
-                                            ? AppTheme.successColor
-                                            : widget.data.status ==
-                                                    TransactionStatus.pending
-                                                ? AppTheme.colorBitcoin
-                                                : AppTheme.errorColor,
-                                        size: AppTheme.cardPadding * 0.75,
-                                      ),
-                                      SizedBox(
-                                        width: AppTheme.elementSpacing / 2,
-                                      ),
-                                      Image.asset(
-                                        widget.data.type ==
-                                                TransactionType.onChain
-                                            ? "assets/images/bitcoin.png"
-                                            : "assets/images/lightning.png",
-                                        width: AppTheme.cardPadding * 0.75,
-                                        height: AppTheme.cardPadding * 0.75,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ],
+                                        .titleSmall,
                                   ),
                                 ),
                               ],
                             ),
+                            SizedBox(
+                              height: AppTheme.elementSpacing / 4,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  formattedDate,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(widget.context)
+                                      .textTheme
+                                      .bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        Obx(
+                          () => Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              controller.hideBalance.value
+                                  ? Text(
+                                      '*****',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    )
+                                  : Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            coin.setCurrencyType(
+                                                coin.coin != null
+                                                    ? !coin.coin!
+                                                    : false);
+                                          },
+                                          child: Text(
+                                            coin.coin ?? true
+                                                ? widget.data.amount
+                                                : "$currencyEquivalent${getCurrency(currency!)}",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!
+                                                .copyWith(
+                                                    color: widget.data
+                                                                .direction ==
+                                                            TransactionDirection
+                                                                .received
+                                                        ? AppTheme
+                                                            .successColor
+                                                        : AppTheme
+                                                            .errorColor),
+                                          ),
+                                        ),
+                                        coin.coin ?? true
+                                            ? Icon(
+                                                AppTheme.satoshiIcon,
+                                                color: widget
+                                                            .data.direction ==
+                                                        TransactionDirection
+                                                            .received
+                                                    ? AppTheme.successColor
+                                                    : AppTheme.errorColor,
+                                              )
+                                            : SizedBox.shrink(),
+                                      ],
+                                    ),
+                              // Consumer<BalanceHideProvider>(
+                              //     builder: (context, balanceHideProvider, _) {
+                              //   return balanceHideProvider.hideBalance!
+                              //       ? Text(
+                              //           '*****',
+                              //           style: Theme.of(context)
+                              //               .textTheme
+                              //               .titleMedium,
+                              //         )
+                              //       : Text(
+                              //           '\$$usd',
+                              //           style: Theme.of(context)
+                              //               .textTheme
+                              //               .titleMedium!,
+                              //         );
+                              // }),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: AppTheme.elementSpacing / 3,
+                                    vertical: AppTheme.elementSpacing / 15),
+                                child: Row(
+                                  children: [
+                                    //only for received transactions
+                                    Icon(
+                                      Icons.circle,
+                                      color: widget.data.status ==
+                                              TransactionStatus.confirmed
+                                          ? AppTheme.successColor
+                                          : widget.data.status ==
+                                                  TransactionStatus.pending
+                                              ? AppTheme.colorBitcoin
+                                              : AppTheme.errorColor,
+                                      size: AppTheme.cardPadding * 0.75,
+                                    ),
+                                    SizedBox(
+                                      width: AppTheme.elementSpacing / 2,
+                                    ),
+                                    Image.asset(
+                                      widget.data.type ==
+                                              TransactionType.onChain
+                                          ? "assets/images/bitcoin.png"
+                                          : "assets/images/lightning.png",
+                                      width: AppTheme.cardPadding * 0.75,
+                                      height: AppTheme.cardPadding * 0.75,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

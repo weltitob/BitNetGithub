@@ -25,87 +25,89 @@ class SettingsView extends StatelessWidget {
       ),
       body: ListTileTheme(
         iconColor: Theme.of(context).colorScheme.onBackground,
-        child: ListView(
-          key: const Key('SettingsListViewContent'),
-          children: [
-            BitNetListTile(
-              leading: Icon(Icons.color_lens),
-              text: L10n.of(context)!.changeTheme,
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.25),
+          child: ListView(
+            key: const Key('SettingsListViewContent'),
+            children: [
+              BitNetListTile(
+                leading: Icon(Icons.color_lens),
+                text: L10n.of(context)!.changeTheme,
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  controller.switchTab('style');
+                },
               ),
-              onTap: () {
-                controller.switchTab('style');
-              },
-            ),
-            BitNetListTile(
-              leading: Icon(Icons.security),
-              text: "Own Security",
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
+              BitNetListTile(
+                leading: Icon(Icons.security),
+                text: "Own Security",
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  controller.switchTab('security');
+                },
               ),
-              onTap: () {
-                controller.switchTab('security');
-              },
-            ),
-            BitNetListTile(
-              leading: Icon(Icons.key_rounded),
-              text: L10n.of(context)!.inviteContact,
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
+              BitNetListTile(
+                leading: Icon(Icons.key_rounded),
+                text: L10n.of(context)!.inviteContact,
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  controller.switchTab('invite');
+                },
               ),
-              onTap: () {
-                controller.switchTab('invite');
-              },
-            ),
-            // BitNetListTile(
-            //   leading: Icon(Icons.notifications_outlined),
-            //   text: L10n.of(context)!.notifications,
-            //   trailing: Icon(
-            //     Icons.arrow_forward_ios_rounded,
-            //     size: AppTheme.iconSize * 0.75,
-            //   ),
-            //   onTap: () {
-            //     controller.switchTab('notifications');
-            //   },
-            // ),
-            // BitNetListTile(
-            //   leading: Icon(Icons.forum_outlined),
-            //   text: L10n.of(context)!.chat,
-            //   trailing: Icon(
-            //     Icons.arrow_forward_ios_rounded,
-            //     size: AppTheme.iconSize * 0.75,
-            //   ),
-            //   onTap: () {
-            //     controller.switchTab('chat');
-            //   },
-            // ),
-            BitNetListTile(
-              leading: Icon(Icons.currency_bitcoin),
-              text: "Change language",
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
+              // BitNetListTile(
+              //   leading: Icon(Icons.notifications_outlined),
+              //   text: L10n.of(context)!.notifications,
+              //   trailing: Icon(
+              //     Icons.arrow_forward_ios_rounded,
+              //     size: AppTheme.iconSize * 0.75,
+              //   ),
+              //   onTap: () {
+              //     controller.switchTab('notifications');
+              //   },
+              // ),
+              // BitNetListTile(
+              //   leading: Icon(Icons.forum_outlined),
+              //   text: L10n.of(context)!.chat,
+              //   trailing: Icon(
+              //     Icons.arrow_forward_ios_rounded,
+              //     size: AppTheme.iconSize * 0.75,
+              //   ),
+              //   onTap: () {
+              //     controller.switchTab('chat');
+              //   },
+              // ),
+              BitNetListTile(
+                leading: Icon(Icons.currency_bitcoin),
+                text: "Change language",
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  controller.switchTab('language');
+                },
               ),
-              onTap: () {
-                controller.switchTab('language');
-              },
-            ),
-            BitNetListTile(
-              leading: Icon(Icons.language),
-              text: "Change Currency",
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
+              BitNetListTile(
+                leading: Icon(Icons.language),
+                text: "Change Currency",
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  controller.switchTab('currency');
+                },
               ),
-              onTap: () {
-                controller.switchTab('currency');
-              },
-            ),
-            BitNetListTile(
+                BitNetListTile(
               leading: Icon(Icons.info),
               text: "Agbs and Impressum",
               trailing: Icon(
@@ -116,23 +118,24 @@ class SettingsView extends StatelessWidget {
                 controller.switchTab('agbs');
               },
             ),
-            BitNetListTile(
-              leading: Icon(Icons.login_rounded),
-              text: L10n.of(context)!.logout,
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
+              BitNetListTile(
+                leading: Icon(Icons.login_rounded),
+                text: L10n.of(context)!.logout,
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () async {
+                  await Auth().signOut();
+                  context.pop();
+                  context.go('/authhome');
+                },
               ),
-              onTap: () async {
-                await Auth().signOut();
-                context.pop();
-                context.go('/authhome');
-              },
-            ),
-            SizedBox(
-              height: AppTheme.cardPadding * 4,
-            )
-          ],
+              SizedBox(
+                height: AppTheme.cardPadding * 4,
+              )
+            ],
+          ),
         ),
       ),
     );

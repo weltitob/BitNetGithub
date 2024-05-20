@@ -47,25 +47,7 @@ class _PopUpLangPickerWidgetState extends State<PopUpLangPickerWidget> {
                       topRight: AppTheme.cornerRadiusBig.w,
                     ),
                   
-                    child: bitnetScaffold(
-                      extendBodyBehindAppBar: true,
-                      context: context,
-                      appBar: bitnetAppBar(
-                        hasBackButton: false,
-                        text: 'Change Language',
-                        context: context,
-                        buttonType: ButtonType.transparent,
-                      ),
-                      body: LanguagePickerSheet(
-                        onTapLanguage: (langCode, locale) {
-                          Provider.of<LocalProvider>(context, listen: false)
-                              .setLocaleInDatabase(langCode, locale,
-                                  isUser: false);
-                          setState(() {});
-                          // context.go('/authhome');
-                        },
-                      ),
-                    ),
+                    child: ChangeLanguage(),
                   ),
                 );
               },

@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/marketplace_widgets/CoinPillLabel.dart';
 import 'package:bitnet/components/marketplace_widgets/CollectionList.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonBtn.dart';
@@ -32,7 +33,8 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Scaffold(
+    return bitnetScaffold(
+      context: context,
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -86,7 +88,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       ),
                     ),
                   ),
-                  FilterPillList(
+                  BitNetFilterPillList(
                     headingText: 'Status',
                     listDataText: statusPillListData,
                   ),
@@ -253,7 +255,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       ),
                     ),
                   ),
-                  FilterPillList(
+                  BitNetFilterPillList(
                     headingText: 'Sort By',
                     listDataText: sortByPillListData,
                   ),
@@ -351,7 +353,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       ),
                     ),
                   ),
-                  FilterPillList(
+                  BitNetFilterPillList(
                     headingText: 'Categories',
                     listDataText: categoriesLabelListData,
                   ),
@@ -406,39 +408,6 @@ class _FilterScreenState extends State<FilterScreen> {
                             ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 15.h),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100.r),
-                            color: const Color.fromRGBO(255, 255, 255, 0.1),
-                          ),
-                          padding: EdgeInsets.only(
-                              top: 5.w, bottom: 4.w, left: 10.w, right: 10.w),
-                          child: Text(
-                            'Bitcoin',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color.fromRGBO(255, 255, 255, 0.7),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100.r),
-                            color: const Color.fromRGBO(255, 255, 255, 0.1),
-                          ),
-                          padding: EdgeInsets.only(
-                              top: 5.w, bottom: 4.w, left: 10.w, right: 10.w),
-                          child: Text(
-                            'Ethereum',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color.fromRGBO(255, 255, 255, 0.7),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -451,8 +420,7 @@ class _FilterScreenState extends State<FilterScreen> {
             child: Container(
               width: size.width - 40.w,
               margin: EdgeInsets.symmetric(horizontal: 20.w),
-              child: const CommonBtn(
-                  hasOnPress: false, text: 'Apply', hasBackPress: true),
+              child: const BitNetFilterPillList(),
             ),
           ),
           const StatusBarBg()

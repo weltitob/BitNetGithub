@@ -56,9 +56,10 @@ class SettingsController extends BaseController {
 
   void switchTheme(ThemeMode? newTheme, BuildContext context) {
     LoggerService logger = Get.find();
-    logger.i("switchTheme");
+    logger.i("switchTheme: $newTheme");
     if (newTheme == null) return;
-    ThemeController.of(context).setThemeMode(newTheme);
+    //Get.changeThemeMode(newTheme); // Update the theme mode using GetX
+    ThemeController.of(context).setThemeMode(newTheme); // Ensure ThemeController updates the theme
   }
 
  

@@ -64,7 +64,7 @@ class _MempoolHomeState extends State<MempoolHome> {
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
-        text: 'Mempool',
+        text: 'Blockchain',
         onTap: () {
           context.pop();
         },

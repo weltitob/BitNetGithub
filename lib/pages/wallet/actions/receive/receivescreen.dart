@@ -10,11 +10,11 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:bitnet/pages/wallet/actions/receive/lightning_receive_tab.dart';
 import 'package:bitnet/pages/wallet/actions/receive/onchain_receive_tab.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-// This class is a StatefulWidget which displays a screen where a user can receive bitcoin
 class ReceiveScreen extends StatefulWidget {
   ReceiveScreen({Key? key}) : super(key: key);
 
@@ -22,28 +22,37 @@ class ReceiveScreen extends StatefulWidget {
   State<ReceiveScreen> createState() => _ReceiveScreenState();
 }
 
-class _ReceiveScreenState extends State<ReceiveScreen> {
-  // This method builds the UI for the ReceiveScreen
+class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProviderStateMixin {
   final controller = Get.find<ReceiveController>();
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        controller.switchReceiveType();
+      }
+    });
+
+    _tabController.animation?.addListener(() {
+      setState(() {});
+    });
+
     controller.amountController = TextEditingController();
     controller.amountController.text = "1000";
     controller.currController = TextEditingController();
-    // Listen for changes
     controller.amountController.addListener(controller.updateAmountDisplay);
-    //probably need to check if other keysend invoice is still available and if not create a new one make the logic unflawed
     controller.getInvoice(0, "");
     controller.getTaprootAddress();
     controller.duration = Duration(minutes: 20);
-    controller.timer =
-        Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+    controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
   }
 
   @override
   void dispose() {
+    _tabController.dispose();
     controller.amountController.removeListener(controller.updateAmountDisplay);
     controller.currController.dispose();
     controller.amountController.dispose();
@@ -53,6 +62,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double glassContainerLeftPosition = _tabController.animation!.value * (MediaQuery.of(context).size.width / 2 - AppTheme.cardPadding * 0.75);
+
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
@@ -65,114 +76,116 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
           Obx(() {
             return controller.receiveType == ReceiveType.Lightning
                 ? Obx(() {
-                    return LongButtonWidget(
-                        buttonType: ButtonType.transparent,
-                        customHeight: AppTheme.cardPadding * 1.5,
-                        customWidth: AppTheme.cardPadding * 4,
-                        leadingIcon: controller.createdInvoice.value
-                            ? Icon(FontAwesomeIcons.cancel)
-                            : Icon(FontAwesomeIcons.refresh),
-                        title:
-                            "${controller.min.value}:${controller.sec.value}",
-                        onTap: () {
-                          controller.getInvoice(
-                              (double.parse(controller.amountController.text))
-                                  .toInt(),
-                              "");
-                          controller.timer.cancel();
-                          controller.duration = Duration(minutes: 20);
-                          controller.timer = Timer.periodic(
-                              Duration(seconds: 1), controller.updateTimer);
-                        });
-                  })
+              return LongButtonWidget(
+                  buttonType: ButtonType.transparent,
+                  customHeight: AppTheme.cardPadding * 1.5,
+                  customWidth: AppTheme.cardPadding * 4,
+                  leadingIcon: controller.createdInvoice.value
+                      ? Icon(FontAwesomeIcons.cancel)
+                      : Icon(FontAwesomeIcons.refresh),
+                  title: "${controller.min.value}:${controller.sec.value}",
+                  onTap: () {
+                    controller.getInvoice((double.parse(controller.amountController.text)).toInt(), "");
+                    controller.timer.cancel();
+                    controller.duration = Duration(minutes: 20);
+                    controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+                  });
+            })
                 : RoundedButtonWidget(
-                    size: AppTheme.cardPadding * 1.5,
-                    buttonType: ButtonType.transparent,
-                    iconData: FontAwesomeIcons.refresh,
-                    onTap: () {
-                      controller.getTaprootAddress();
-                      // logger.w(
-                      //     "Refresh button pressed: New Bitcoin Adress should be generated // not implemented yet");
-                    });
+                size: AppTheme.cardPadding * 1.5,
+                buttonType: ButtonType.transparent,
+                iconData: FontAwesomeIcons.refresh,
+                onTap: () {
+                  controller.getTaprootAddress();
+                });
           }),
           SizedBox(
             width: AppTheme.elementSpacing,
           ),
         ],
       ),
-      // The screen's body
       body: PopScope(
         canPop: false,
         onPopInvoked: (v) {
           context.go('/feed');
-          print('ppop scope receive');
         },
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          // The screen background is a gradient
-          // Padding around the screen's contents
           child: Column(
             children: [
               SizedBox(
-                height: AppTheme.cardPadding * 3.5,
+                height: AppTheme.cardPadding.h * 4,
               ),
-              Obx(() {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      controller.receiveType == ReceiveType.Lightning
-                          ? GlassContainer(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12.0, horizontal: 16.0),
-                                child: Text(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 0),
+                      left: glassContainerLeftPosition + AppTheme.elementSpacing,
+                      child: GlassContainer(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: AppTheme.elementSpacing * 0.75, horizontal: AppTheme.elementSpacing * 2.5),
+                          child: Text(
+                                ReceiveType.Lightning.name,
+                            style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.transparent),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: AppTheme.cardPadding * 2,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              _tabController.animateTo(0);
+                            },
+                            child: Row(
+                              children: [
+                                Icon(FontAwesomeIcons.bolt),
+                                SizedBox(width: AppTheme.cardPadding * 0.25,),
+                                Text(
                                   ReceiveType.Lightning.name,
                                   style: Theme.of(context).textTheme.headlineSmall,
                                 ),
-                              ),
-                            )
-                          : InkWell(
-                              onTap: () {
-                                controller.switchReceiveType();
-                              },
-                              child: Text(
-                                ReceiveType.Lightning.name,
-                                style: Theme.of(context).textTheme.headlineSmall,
-                              ),
+                              ],
                             ),
-                      SizedBox(width: AppTheme.cardPadding),
-                      controller.receiveType == ReceiveType.OnChain
-                          ? GlassContainer(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12.0, horizontal: 16.0),
-                                child: Text(
+                          ),
+                          SizedBox(width: AppTheme.cardPadding * 2,),
+                          InkWell(
+                            onTap: () {
+                              _tabController.animateTo(1);
+                            },
+                            child: Row(
+                              children: [
+                                Icon(FontAwesomeIcons.bitcoin),
+                                SizedBox(width: AppTheme.cardPadding * 0.25,),
+                                Text(
                                   ReceiveType.OnChain.name,
                                   style: Theme.of(context).textTheme.headlineSmall,
                                 ),
-                              ),
-                            )
-                          : InkWell(
-                              onTap: () {
-                                controller.switchReceiveType();
-                              },
-                              child: Text(
-                                ReceiveType.OnChain.name,
-                                style: Theme.of(context).textTheme.headlineSmall,
-                              ),
+                              ],
                             ),
-                    ],
-                  ),
-                );
-              }),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
-                child: Obx(() {
-                  return controller.receiveType == ReceiveType.Lightning
-                      ? LightningReceiveTab()
-                      : OnChainReceiveTab();
-                }),
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    LightningReceiveTab(),
+                    OnChainReceiveTab(),
+                  ],
+                ),
               ),
             ],
           ),

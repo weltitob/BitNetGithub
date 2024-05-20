@@ -11,8 +11,7 @@ import 'package:get/get.dart';
  
 Future<RestResponse> channelBalance() async {
     final DioClient dioClient = Get.find<DioClient>();
-  String restHost =
-      AppTheme.baseUrlLightningTerminal; // Update the host as needed
+  String restHost = AppTheme.baseUrlLightningTerminal; // Update the host as needed
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon'; // Update the path to the macaroon file
   String url = 'https://$restHost/v1/balance/channels';
 

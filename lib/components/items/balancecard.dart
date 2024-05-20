@@ -421,7 +421,7 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
             ),
             if (coin.coin ?? true) ...[
               controller.hideBalance.value
-                  ? Text('*****')
+                  ? Text('*****', style: Theme.of(context).textTheme.headlineLarge,)
                   : GestureDetector(
                 onTap: () => coin.setCurrencyType(
                     coin.coin != null ? !coin.coin! : false),
@@ -445,7 +445,7 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
               ),
             ] else ...[
               controller.hideBalance.value
-                  ? Text('*****')
+                  ? Text('*****', style: Theme.of(context).textTheme.headlineLarge,)
                   : GestureDetector(
                 onTap: () => coin.setCurrencyType(
                     coin.coin != null ? !coin.coin! : false),

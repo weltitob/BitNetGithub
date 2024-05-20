@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class FilterPillList extends StatefulWidget {
+class BitNetFilterPillList extends StatefulWidget {
   final headingText;
   final listDataText;
-  const FilterPillList({Key? key, this.headingText, this.listDataText})
+  const BitNetFilterPillList({Key? key, this.headingText, this.listDataText})
       : super(key: key);
   @override
-  State<FilterPillList> createState() => _FilterPillListState();
+  State<BitNetFilterPillList> createState() => _BitNetFilterPillListState();
 }
 
-class _FilterPillListState extends State<FilterPillList> {
+class _BitNetFilterPillListState extends State<BitNetFilterPillList> {
   bool openStatus = true;
   @override
   Widget build(BuildContext context) {

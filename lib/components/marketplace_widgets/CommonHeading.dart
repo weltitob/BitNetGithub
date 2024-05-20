@@ -21,7 +21,7 @@ class CommonHeading extends StatefulWidget {
       this.headingText = '',
       required this.hasButton,
       this.onPress,
-      this.customButtonIcon = Icons.arrow_right,
+      this.customButtonIcon = Icons.arrow_forward_ios_rounded,
       this.collapseBtn = false,
       this.child,
       this.isChild,
@@ -49,10 +49,10 @@ class _CommonHeadingState extends State<CommonHeading> {
               Expanded(
                 child: Text(
                   widget.headingText,
-                  style: Theme.of(context).textTheme.titleLarge!
-                      .copyWith(
-                        fontSize: 14.sp,
-                      fontWeight: FontWeight.bold),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontSize: 14.sp, fontWeight: FontWeight.bold),
                 ),
               ),
               widget.hasButton
@@ -83,9 +83,7 @@ iconData: widget.customButtonIcon,
                           horizontal: openCloseCollapse ? 7.w : 8.w,
                         ),
                         child: Image.asset(
-                          openCloseCollapse
-                              ? bottomArrowIcon
-                              : rightArrowIcon,
+                          openCloseCollapse ? bottomArrowIcon : rightArrowIcon,
                           width: openCloseCollapse ? 5.w : 10.w,
                           height: openCloseCollapse ? 10.h : 5.h,
                           fit: BoxFit.contain,
@@ -96,7 +94,11 @@ iconData: widget.customButtonIcon,
             ],
           ),
         ),
-        widget.collapseBtn ? openCloseCollapse ? widget.child : Container() : Container(),
+        widget.collapseBtn
+            ? openCloseCollapse
+                ? widget.child
+                : Container()
+            : Container(),
         widget.isNormalChild ? widget.isChild : Container()
       ],
     );

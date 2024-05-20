@@ -31,6 +31,7 @@ import 'package:bitnet/pages/secondpages/transactionsscreen.dart';
 import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
+import 'package:bitnet/pages/settings/settings_style/settings_style_view.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
@@ -51,7 +52,6 @@ import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings.dart';
 import 'package:bitnet/pages/settings/invite/invitation_page.dart';
 import 'package:bitnet/pages/settings/security/security_page.dart';
-import 'package:bitnet/pages/settings/settings_style/settings_style.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -122,12 +122,7 @@ class AppRoutes {
                         builder: (ctx, state) => NftProductScreen()),
                   ]),
             ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
-        GoRoute(
-          path: '/create',
-          builder: (ctx, state) =>
-              //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
-              CreateAsset(),
-        ),
+       
         GoRoute(
           path: "/agbs",
           builder: (ctx, state) => AgbsAndImpressumScreen(key: state.pageKey)
@@ -334,7 +329,15 @@ class AppRoutes {
             path: '/profile/:profileId',
             name: '/profile',
             builder: (ctx, state) => Profile(),
-            routes: []),
+            routes: [
+
+            ]),
+        GoRoute(
+          path: '/create',
+          builder: (ctx, state) =>
+          //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
+          CreateAsset(),
+        ),
         GoRoute(
           path: '/single_transaction',
           builder: _dynamicTransition == null
@@ -490,12 +493,12 @@ class AppRoutes {
         GoRoute(
           path: 'settings?tab=style',
           builder: _dynamicTransition == null
-              ? (ctx, state) => const SettingsStyle()
+              ? (ctx, state) => const SettingsStyleView()
               : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) => CustomTransitionPage(
                   key: state.pageKey,
-                  child: SettingsStyle(),
+                  child: SettingsStyleView(),
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),

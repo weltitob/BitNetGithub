@@ -16,23 +16,17 @@ class CenterWidgetIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
-    return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            // color: Colors.greenAccent[700],
-            borderRadius: AppTheme.cardRadiusBig,
-          ),
-          child: Icon(
-            iconData,
-            size: AppTheme.iconSize,
-            color: controller.currentview.value == index
-                ? Theme.of(context).colorScheme.onSecondaryContainer
-                : Theme.of(context)
-                    .colorScheme
-                    .onSecondaryContainer
-                    .withOpacity(0.3),
-          ),
-        ));
+    return IconButton(
+      enableFeedback: false,
+      splashColor: Colors.transparent,
+      icon: Icon(iconData, size: AppTheme.iconSize,),
+      onPressed: onTap,
+      color: controller.currentview.value == index
+          ? Theme.of(context).colorScheme.onSecondaryContainer
+          : Theme.of(context)
+              .colorScheme
+              .onSecondaryContainer
+              .withOpacity(0.3),
+    );
   }
 }

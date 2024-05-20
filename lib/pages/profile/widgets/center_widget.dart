@@ -36,32 +36,26 @@ class CenterWidget extends StatelessWidget {
                 },
               ),
               CenterWidgetIcon(
-                iconData: Icons.wallet,
+                iconData: Icons.view_column_rounded,
                 index: 1,
                 onTap: () {
                   controller.currentview.value = 1;
                 },
               ),
-              GestureDetector(
+              // CenterWidgetIcon(
+              //   iconData: Icons.wallet,
+              //   index: 1,
+              //   onTap: () {
+              //     controller.currentview.value = 1;
+              //   },
+              // ),
+
+              CenterWidgetIcon(
+                iconData: Icons.edit,
+                index: 2,
                 onTap: () {
                   controller.currentview.value = 2;
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                      // color: Colors.greenAccent[700],
-                      borderRadius: AppTheme.cardRadiusSmall),
-                  child: Icon(
-                    Icons.edit,
-                    // isProfileOwner ? Icons.edit : Icons.person_add_rounded,
-                    size: AppTheme.iconSize,
-                    color: controller.currentview.value == 2
-                        ? Theme.of(context).colorScheme.onSecondaryContainer
-                        : Theme.of(context)
-                            .colorScheme
-                            .onSecondaryContainer
-                            .withOpacity(0.3),
-                  ),
-                ),
               ),
             ],
           ),
