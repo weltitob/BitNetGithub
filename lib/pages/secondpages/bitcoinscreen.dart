@@ -131,6 +131,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                         () {
                           context.push('/wallet/bitcoinscreen/keymetrics');
                         },
+                    image: "assets/images/key.png",
                     fallbackIcon: FontAwesomeIcons.key,
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
@@ -140,6 +141,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                           () {
                             context.push('/wallet/bitcoinscreen/mempool');
                           }, //mempoolhome
+                    image: "assets/images/blockchain.png",
                     fallbackIcon: FontAwesomeIcons.bitcoinSign,
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
@@ -150,6 +152,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                           context.push('/wallet/bitcoinscreen/hashrate');
                           //context.go(Uri(path: '/hashrate', queryParameters: {}).toString());
                         },
+                    image: "assets/images/key.png",
                     fallbackIcon: FontAwesomeIcons.computer,
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
@@ -166,6 +169,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                           context.push('/wallet/bitcoinscreen/transactions');
                           //context.go(Uri(path: '/transactions', queryParameters: {}).toString());
                         },
+                    image: "assets/images/latest_transactions.png",
                     fallbackIcon: FontAwesomeIcons.addressCard,
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
@@ -173,6 +177,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   BitNetImageWithTextContainer(
                     "Whales",
                         () => context.push('/wallet/bitcoinscreen/whales'),
+                    image: "assets/images/whale.png",
                     fallbackIcon: FontAwesomeIcons.fish,
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
@@ -181,6 +186,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                     "News",
                         () => context.push('/wallet/bitcoinscreen/news'),
                     fallbackIcon: FontAwesomeIcons.newspaper,
+                    image: "assets/images/news.png",
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
                   ),
@@ -196,20 +202,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                       context.push('/wallet/bitcoinscreen/fearandgreed');
                     },
                     fallbackIcon: Icons.speed_rounded,
-                    width: AppTheme.cardPadding * 4,
-                    height: AppTheme.cardPadding * 4,
-                  ),
-                  BitNetImageWithTextContainer(
-                    "No info",
-                        () => context.push('/wallet/bitcoinscreen/whales'),
-                    fallbackIcon: FontAwesomeIcons.fish,
-                    width: AppTheme.cardPadding * 4,
-                    height: AppTheme.cardPadding * 4,
-                  ),
-                  BitNetImageWithTextContainer(
-                    "No info",
-                        () => context.push('/wallet/bitcoinscreen/news'),
-                    fallbackIcon: FontAwesomeIcons.newspaper,
+                    image: "assets/images/fagi.png",
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
                   ),
