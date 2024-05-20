@@ -66,6 +66,9 @@ class _MxcImageState extends State<WebMxcImage> {
         _imageUrl = imageUrl;
         _isCached = true;
       });
+    },
+    onError: (e,s) {
+      print("Error: $e and $s");
     });
 
   }
@@ -83,26 +86,27 @@ class _MxcImageState extends State<WebMxcImage> {
   }
    Future<String> cacheImage() async {
    
-    final Reference ref = FirebaseStorage.instance.ref(widget.ref);
-    
-    // Get your image url
-    final imageUrl = await ref.getDownloadURL();
+    String url = Uri.parse(widget.ref!).toString();
+    // // Get your image url
+    // final imageUrl = await ref.getDownloadURL();
 
-    // Download your image data
-    final imageBytes = await ref.getData(10000000);
+    // // Download your image data
+    // final imageBytes = await ref.getData(10000000);
     
-    // Put the image file in the cache
-    await DefaultCacheManager().putFile(
-      imageUrl,
-      imageBytes!,
-      fileExtension: "jpg",
-    );
-    return imageUrl;
+    // // Put the image file in the cache
+    // await DefaultCacheManager().putFile(
+    //   url,
+    //   imageBytes!,
+    //   fileExtension: "jpg",
+    // );
+    await DefaultCacheManager().getSingleFile(url);
+    return url;
   }
 
   @override
   void initState() {
     super.initState();
+    print("attempting to load: ${widget.ref}");
     WidgetsBinding.instance.addPostFrameCallback(_tryLoad);
   }
 

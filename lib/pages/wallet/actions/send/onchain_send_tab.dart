@@ -9,6 +9,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -192,7 +193,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
   }
 
   Widget bitcoinWidget(BuildContext context) {
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final chartLine =Get.find<WalletsController>().chartLines.value;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
@@ -206,7 +207,8 @@ class OnChainSendTab extends GetWidget<SendsController> {
         double.parse(controller.moneyController.text),
         currency,
         bitcoinPrice!);
-
+    return Obx((){
+      Get.find<WalletsController>().chartLines.value;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: Column(
@@ -232,6 +234,6 @@ class OnChainSendTab extends GetWidget<SendsController> {
           // )
         ],
       ),
-    );
+    );});
   }
 }

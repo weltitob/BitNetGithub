@@ -7,6 +7,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -46,7 +47,7 @@ class _CryptoItemState extends State<CryptoItem> {
   final LoggerService logger = Get.find();
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     final currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     if (chartLine != null) {
@@ -100,11 +101,11 @@ class _CryptoItemState extends State<CryptoItem> {
                           width: AppTheme.cardPadding * 1.75,
                           child: Image.asset("assets/images/bitcoin.png")),
                       //CustomIcon(icon: currency.icon),
-                      const SizedBox(width: AppTheme.elementSpacing),
+                      const SizedBox(width: AppTheme.elementSpacing/2),
                       title(),
-                      const Spacer(),
+                      const SizedBox(width: AppTheme.elementSpacing/2),
                       chart(controllerCrypto.onedaychart),
-                      percentageChange(),
+                      Flexible(child: percentageChange()),
                     ],
                   ),
                 ),
@@ -148,12 +149,17 @@ class _CryptoItemState extends State<CryptoItem> {
                   : AppTheme.errorColor,
             ),
             const SizedBox(width: AppTheme.elementSpacing / 4),
-            Text(
-              controllerCrypto.priceChangeString.value,
-              style: TextStyle(
-                color: controllerCrypto.priceChange.value >= 0
-                    ? AppTheme.successColor
-                    : AppTheme.errorColor,
+            Container(
+              width: 80,
+              child: Text(
+                controllerCrypto.priceChangeString.value,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: controllerCrypto.priceChangeString.value.length > 6 ? 12 : 16,
+                  color: controllerCrypto.priceChange.value >= 0
+                      ? AppTheme.successColor
+                      : AppTheme.errorColor,
+                ),
               ),
             ),
           ],
@@ -194,7 +200,8 @@ class _CryptoItemState extends State<CryptoItem> {
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
-
+    return Obx((){
+      Get.find<WalletsController>().chartLines.value;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -204,13 +211,14 @@ class _CryptoItemState extends State<CryptoItem> {
           children: [
             // const SizedBox(width: AppTheme.elementSpacing / 2),
             Text(
-              "${controllerCrypto.currentPriceString}${getCurrency(currency)}", //bitcoinPrice!.price.toString(),
-              style: AppTheme.textTheme.bodyMedium,
+              "${controllerCrypto.currentPriceString}${getCurrency(currency!)}", 
+              //bitcoinPrice!.price.toString(),
+              style: controllerCrypto.currentPriceString.value.length > 8 ? AppTheme.textTheme.bodySmall: AppTheme.textTheme.bodyMedium,
             ),
           ],
         ),
       ],
-    );
+    );});
   }
 
   Widget chart(onedaychart) {

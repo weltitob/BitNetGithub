@@ -12,7 +12,7 @@ class CurrencyChangeProvider extends ChangeNotifier {
   void setFirstCurrencyInDatabase(String selectedCurrency) {
     settingsCollection
         .doc(FirebaseAuth.instance.currentUser!.uid).update({
-      "selectedCurrency": selectedCurrency,
+      "selected_currency": selectedCurrency,
     });
     _selectedCurrency = selectedCurrency;
     notifyListeners();

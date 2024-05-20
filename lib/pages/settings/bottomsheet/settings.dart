@@ -1,4 +1,5 @@
 import 'package:bitnet/pages/routetrees/matrix.dart';
+import 'package:bitnet/pages/secondpages/agbs_and_impressum.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/settings/currency/change_currency.dart';
 import 'package:bitnet/pages/settings/invite/invitation_page.dart';
@@ -46,6 +47,10 @@ class Settings extends StatelessWidget {
             Expanded(
               child: ChangeLanguage(),
             ),
+          if (controller.currentTab.value == "agbs")
+            Expanded(child: AgbsAndImpressumScreen(onBackButton: () {
+              controller.switchTab("main");
+            },),)
         ],
       ),
     );

@@ -191,6 +191,7 @@ dependencies:
   country_state_city: ^0.1.6
   geolocator: ^7.7.1
   geocoding: ^3.0.0
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:

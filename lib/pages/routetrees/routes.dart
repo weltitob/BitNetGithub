@@ -17,6 +17,7 @@ import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/matrix/widgets/log_view.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
+import 'package:bitnet/pages/secondpages/agbs_and_impressum.dart';
 import 'package:bitnet/pages/secondpages/analysisscreen.dart';
 import 'package:bitnet/pages/secondpages/bitcoinscreen.dart';
 import 'package:bitnet/pages/secondpages/fear_and_greed.dart';
@@ -121,8 +122,11 @@ class AppRoutes {
                         builder: (ctx, state) => NftProductScreen()),
                   ]),
             ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
-
-
+       
+        GoRoute(
+          path: "/agbs",
+          builder: (ctx, state) => AgbsAndImpressumScreen(key: state.pageKey)
+        ),
 
         GoRoute(
           path: '/wallet',

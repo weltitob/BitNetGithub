@@ -386,7 +386,7 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
 
   @override
   Widget build(BuildContext context) {
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
@@ -398,7 +398,9 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
         .toStringAsFixed(2)
         : "0.00";
 
-    return Padding(
+    return Obx((){
+      Get.find<WalletsController>().chartLines.value;
+      return Padding(
       padding: const EdgeInsets.all(
         AppTheme.cardPadding * 1.25,
       ),
@@ -461,6 +463,6 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
           ],
         ),
       ),
-    );
+    );});
   }
 }

@@ -14,12 +14,14 @@ class CommonHeading extends StatefulWidget {
   final child;
   final isChild;
   final isNormalChild;
+  final IconData customButtonIcon;
 
   const CommonHeading(
       {Key? key,
       this.headingText = '',
       required this.hasButton,
       this.onPress,
+      this.customButtonIcon = Icons.arrow_forward_ios_rounded,
       this.collapseBtn = false,
       this.child,
       this.isChild,
@@ -55,11 +57,12 @@ class _CommonHeadingState extends State<CommonHeading> {
               ),
               widget.hasButton
                   ? RoundedButtonWidget(
-                      size: AppTheme.cardPadding * 1.25,
-                      buttonType: ButtonType.transparent,
-                      onTap: () => context.go("/feed/${widget.onPress}"),
-                      iconData: Icons.arrow_forward_ios_rounded,
-                    )
+                    size: AppTheme.cardPadding * 1.25,
+                          buttonType: ButtonType.transparent,
+                    onTap:() =>                         context.go("/feed/${widget.onPress}")
+,
+iconData: widget.customButtonIcon,
+                  )
                   : Container(),
               widget.collapseBtn
                   ? GestureDetector(

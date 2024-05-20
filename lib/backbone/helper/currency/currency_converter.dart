@@ -32,7 +32,7 @@ class CurrencyConverter {
 
   static BitcoinUnitModel convertToBitcoinUnit(double amount, BitcoinUnits unit) {
     //100k sats is the conversion to BTC
-    if(unit == BitcoinUnits.SAT && amount > 10000) {
+    if(unit == BitcoinUnits.SAT && amount > 100000) {
       return BitcoinUnitModel(
           amount: convertSatoshiToBTC(amount),
           bitcoinUnit: BitcoinUnits.BTC
@@ -40,10 +40,13 @@ class CurrencyConverter {
       //under 100k sats convert to sats
     } else if (unit == BitcoinUnits.BTC && amount < 0.001) {
       return BitcoinUnitModel(
-          amount: convertBitcoinToSats(amount),
+          amount: convertBitcoinToSats(amount).toInt(),
           bitcoinUnit: BitcoinUnits.SAT
       );
     } else{
+      if(unit == BitcoinUnits.SAT) {
+        return BitcoinUnitModel(bitcoinUnit: unit, amount: amount.toInt());
+      }
       return BitcoinUnitModel(
           amount: amount,
           bitcoinUnit: unit,
