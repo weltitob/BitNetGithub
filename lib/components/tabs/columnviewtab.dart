@@ -1,10 +1,9 @@
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/models/postmodels/post.dart';
+import 'package:bitnet/models/tapd/asset.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ColumnViewTab extends StatefulWidget {
   const ColumnViewTab({super.key});
@@ -15,8 +14,7 @@ class ColumnViewTab extends StatefulWidget {
 
 class _ColumnViewTabState extends State<ColumnViewTab> {
   bool isLoading = false;
-  List<Post> posts = [];
-  int postCount = 0;
+  List<Asset> assets = [];
 
   @override
   void initState() {
@@ -28,47 +26,58 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
       isLoading = true;
     });
     try {
-      dynamic snapshot = await listTaprootAssets();
-      print("RESPONSE: $snapshot");
-      //posts = snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
-      posts = snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
-      //order by timestamp is still needed (decening)
+      print("REQUESTING FETCHTAPROOT ASSETS NOW");
+      List<Asset> fetchedAssets = await listTaprootAssets();
+      setState(() {
+        assets = fetchedAssets;
+        isLoading = false;
+      });
+      print("RESPONSE: $assets");
     } catch (e) {
       print('Error: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
-    setState(() {
-      isLoading = false;
-    });
   }
-
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return Container(
-          height: AppTheme.cardPadding * 5.h, child: dotProgress(context));
-    } else if (posts.isEmpty && isLoading) {
-      //hier noch design definitv ändern!!! irgendein 3d bild oder so
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error,
+    return Container(
+      child: Column(
+        children: [
+          LongButtonWidget(
+            title: "FETCH ASSETS",
+            onTap: fetchTaprootAssets,
+          ),
+          if (isLoading)
+            Center(child: dotProgress(context))
+          else if (assets.isEmpty)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error),
+                SizedBox(height: AppTheme.cardPadding),
+                Text(
+                  'No assets found',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                itemCount: assets.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(assets[index].assetGenesis.name),
+                    subtitle: Text('Amount: ${assets[index].amount}'),
+                  );
+                },
+              ),
             ),
-            SizedBox(
-              height: AppTheme.cardPadding,
-            ),
-            Text(
-              'No posts found',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
-        ),
-      );
-    } else {
-      return Column(children: posts);
-    }
+        ],
+      ),
+    );
   }
 }

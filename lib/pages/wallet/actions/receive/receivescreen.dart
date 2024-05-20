@@ -120,53 +120,70 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
               Obx(() {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      controller.receiveType == ReceiveType.Lightning
-                          ? GlassContainer(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12.0, horizontal: 16.0),
-                                child: Text(
-                                  ReceiveType.Lightning.name,
-                                  style: Theme.of(context).textTheme.headlineSmall,
-                                ),
-                              ),
-                            )
-                          : InkWell(
-                              onTap: () {
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        left: controller.receiveType == ReceiveType.Lightning
+                            ? 16.0
+                            : MediaQuery.of(context).size.width / 2 + AppTheme.elementSpacing,
+                        child: GlassContainer(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: AppTheme.elementSpacing * 0.75, horizontal: AppTheme.elementSpacing),
+                            child: Text(
+                              controller.receiveType == ReceiveType.Lightning
+                                  ? ReceiveType.Lightning.name
+                                  : ReceiveType.OnChain.name,
+                              style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.transparent),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              if (controller.receiveType != ReceiveType.Lightning) {
                                 controller.switchReceiveType();
-                              },
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: AppTheme.elementSpacing * 0.75, horizontal: AppTheme.elementSpacing),
                               child: Text(
                                 ReceiveType.Lightning.name,
                                 style: Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
-                      SizedBox(width: AppTheme.cardPadding),
-                      controller.receiveType == ReceiveType.OnChain
-                          ? GlassContainer(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12.0, horizontal: 16.0),
-                                child: Text(
-                                  ReceiveType.OnChain.name,
-                                  style: Theme.of(context).textTheme.headlineSmall,
-                                ),
-                              ),
-                            )
-                          : InkWell(
-                              onTap: () {
+                          ),
+                          SizedBox(width: AppTheme.cardPadding * 3,),
+                          InkWell(
+                            onTap: () {
+                              if (controller.receiveType != ReceiveType.OnChain) {
                                 controller.switchReceiveType();
-                              },
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: AppTheme.elementSpacing * 0.75, horizontal: AppTheme.elementSpacing),
                               child: Text(
                                 ReceiveType.OnChain.name,
                                 style: Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
+                          ),
+                        ],
+                      ),
+
                     ],
                   ),
                 );
               }),
+
+
               Expanded(
                 child: Obx(() {
                   return controller.receiveType == ReceiveType.Lightning

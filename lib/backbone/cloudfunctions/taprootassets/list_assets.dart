@@ -1,15 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/models/tapd/asset.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
-
-listTaprootAssets() async {
-
+Future<List<Asset>> listTaprootAssets() async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
@@ -22,7 +21,6 @@ listTaprootAssets() async {
   // Prepare the headers
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
-    // 'User-Agent': 'Your custom user agent' // Uncomment if needed
   };
 
   // Make the GET request
@@ -30,22 +28,20 @@ listTaprootAssets() async {
   try {
     print('http ...listTaprootAssets');
 
-    //final DioClient dioClient = Get.find<DioClient>();
-    //var response = await dioClient.get(url: url, headers: headers);
-    var response = await http.get(Uri.parse(url), headers: headers);
-
+    final DioClient dioClient = Get.find<DioClient>();
+    var response = await dioClient.get(url: url, headers: headers);
 
     logger.i("Raw Response: ${response}");
 
     if (response.statusCode == 200) {
-      // If server returns an OK response, parse the JSON
-      print(response);
-      //return response;
+      List<dynamic> data = jsonDecode(response.data);
+      return data.map((item) => Asset.fromJson(item)).toList();
     } else {
-      // If the server did not return a 200 OK response, throw an exception.
-      print('Failed to load data: ${response.statusCode}, ${response}');
+      logger.e('Failed to load Taproot asset data: ${response.statusCode}, ${response}');
+      return [];
     }
   } catch (e) {
     logger.e('Error requesting taproot assets: $e');
+    return [];
   }
 }
