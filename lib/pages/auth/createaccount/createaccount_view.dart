@@ -69,22 +69,14 @@ class _CreateAccountViewState extends State<CreateAccountView>
               physics: BouncingScrollPhysics(),
               children: [
                 SizedBox(
-                  height: AppTheme.cardPadding * 4.h,
+                  height: AppTheme.cardPadding * 2.h,
                 ),
                 Container(
                   height: AppTheme.cardPadding * 5.h,
-                  child: AnimatedTextKit(
-                    animatedTexts: [
-                      TypewriterAnimatedText(
-                        L10n.of(context)!.powerToThePeople,
-                        textStyle: Theme.of(context).textTheme.displayLarge,
-                        textAlign: TextAlign.left,
-                        speed: const Duration(milliseconds: 120),
-                      ),
-                    ],
-                    totalRepeatCount: 1,
-                    displayFullTextOnTap: false,
-                    stopPauseOnTap: false,
+                  child: Text(
+                    L10n.of(context)!.powerToThePeople,
+                    style: Theme.of(context).textTheme.displayMedium,
+                    textAlign: TextAlign.left,
                   ),
                 ),
                 SizedBox(
@@ -142,6 +134,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                     Container(
                       margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
                       child: Text(
+                        textAlign: TextAlign.center,
                         L10n.of(context)!.alreadyHaveAccount,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),

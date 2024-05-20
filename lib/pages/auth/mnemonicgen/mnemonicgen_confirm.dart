@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-
 class MnemonicGenConfirm extends StatefulWidget {
   final MnemonicController mnemonicController;
 
@@ -56,7 +55,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
                 mnemonicController: widget.mnemonicController,
                 triggerMnemonicCheck: triggerMnemonicCheck),
             Container(
-              margin: EdgeInsets.only(top:0),
+              margin: EdgeInsets.only(top: AppTheme.cardPadding.h * 2),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Theme.of(context).brightness == Brightness.dark

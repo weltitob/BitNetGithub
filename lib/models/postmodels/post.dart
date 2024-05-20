@@ -165,9 +165,14 @@ class _PostState extends State<Post> {
                 if (type == "text") {
                   return Container(
                       margin: EdgeInsets.only(bottom: 10.0),
-                      child: TextBuilderNetwork(url: e.url));
+                      child: TextBuilderNetwork(url: e.data));
                 }
-                if (type == "link") {
+                if (type == "description") {
+                  return Container(
+                      margin: EdgeInsets.only(bottom: 10.0),
+                      child: TextBuilderNetwork(url: e.data));
+                }
+                if (type == "external_link") {
                   return Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: LinkBuilder(url: 'haha'));
@@ -175,16 +180,21 @@ class _PostState extends State<Post> {
                 if (type == "image" || type == "camera") {
                   return Container(
                       margin: EdgeInsets.only(bottom: 10.0),
-                      child: ImageBuilderNetwork(url: e.url));
+                      child: ImageBuilderNetwork(url: e.data));
+                }
+                if (type == "image_data" || type == "camera") {
+                  return Container(
+                      margin: EdgeInsets.only(bottom: 10.0),
+                      child: ImageBuilderNetwork(url: e.data));
                 }
                 if (type == "audio") {
                   return Container(
                       margin: EdgeInsets.only(bottom: 10.0),
-                      child: AudioBuilderNetwork(url: e.url));
+                      child: AudioBuilderNetwork(url: e.data));
                 }
                 return Container(
                     margin: EdgeInsets.only(bottom: 10.0),
-                    child: TextBuilderNetwork(url: e.url));
+                    child: TextBuilderNetwork(url: e.data));
               }).toList(),
             ),
             buildPostFooter(),

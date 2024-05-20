@@ -129,18 +129,10 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
             children: [
               Container(
                 height: AppTheme.cardPadding * 4.5.h,
-                child: AnimatedTextKit(
-                  animatedTexts: [
-                    TypewriterAnimatedText(
-                      L10n.of(context)!.welcomeBack,
-                      textStyle: Theme.of(context).textTheme.displayLarge,
-                      textAlign: TextAlign.left,
-                      speed: const Duration(milliseconds: 120),
-                    ),
-                  ],
-                  totalRepeatCount: 1,
-                  displayFullTextOnTap: false,
-                  stopPauseOnTap: false,
+                child: Text(
+                  L10n.of(context)!.welcomeBack,
+                  style: Theme.of(context).textTheme.displayLarge,
+                  textAlign: TextAlign.left,
                 ),
               ),
               Row(

@@ -136,7 +136,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                     height: AppTheme.cardPadding * 4,
                   ),
                   BitNetImageWithTextContainer(
-                      "Mempool",
+                      "Blockchain",
                           () {
                             context.push('/wallet/bitcoinscreen/mempool');
                           }, //mempoolhome
