@@ -21,7 +21,7 @@ class CreateInvoice extends GetWidget<ReceiveController> {
         Obx(() {
           return Padding(
             padding: const EdgeInsets.only(
-              top: AppTheme.cardPadding,
+              top: AppTheme.cardPadding * 2,
               left: AppTheme.cardPadding,
               right: AppTheme.cardPadding,
             ),

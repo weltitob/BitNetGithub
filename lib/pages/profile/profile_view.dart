@@ -76,6 +76,7 @@ class ProfileView extends StatelessWidget {
       child: bitnetScaffold(
         extendBodyBehindAppBar: false,
         appBar: bitnetAppBar(
+          hasBackButton: false,
           context: context,
           buttonType: ButtonType.transparent,
           text: 'Share Profile QR Code',
