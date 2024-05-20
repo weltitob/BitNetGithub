@@ -8,7 +8,9 @@ import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -520,126 +522,130 @@ class _CustomWidgetState extends State<CustomWidget>
 
   @override
   Widget build(BuildContext context) {
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
     //final currencyEquivalent = bitcoinPrice != null ? (double.parse(balance) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
 
-    return Column(
-      children: [
-        Row(
-          children: [
-            Container(
-              height: AppTheme.elementSpacing * 3.75,
-              width: AppTheme.elementSpacing * 3.75,
-              child: Image.asset("assets/images/bitcoin.png"),
-            ),
-            const Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Obx(
+      (){
+        Get.find<WalletsController>().chartLines.value;
+        return Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                height: AppTheme.elementSpacing * 3.75,
+                width: AppTheme.elementSpacing * 3.75,
+                child: Image.asset("assets/images/bitcoin.png"),
+              ),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                            "Bitcoin",
+                            style: Theme.of(context).textTheme.headlineMedium
+                        ),
+                        Text(
+                          trackBallValueDate,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          "BTC",
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        Text(
+                          "${trackBallValueTime} Uhr",
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                          "Bitcoin",
-                          style: Theme.of(context).textTheme.headlineMedium
-                      ),
-                      Text(
-                        trackBallValueDate,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        "BTC",
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      Text(
-                        "${trackBallValueTime} Uhr",
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ],
+                  // Stack(
+                  //   children: [
+                  //     Container(
+                  //       height: AppTheme.elementSpacing * 0.75,
+                  //       width: AppTheme.elementSpacing * 0.75,
+                  //       decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(500.0),
+                  //         color: Colors.white10,
+                  //       ),
+                  //     ),
+                  //     if (_isBlinking)
+                  //       Positioned.fill(
+                  //         child:  AnimatedBuilder(
+                  //           animation: _animation,
+                  //           builder: (context, child) {
+                  //             return Container(
+                  //               decoration: BoxDecoration(
+                  //                 borderRadius: BorderRadius.circular(500.0),
+                  //                 color: _animation.value,
+                  //               ),
+                  //             );
+                  //           },
+                  //         ),
+                  //       ),
+                  //   ],
+                  // ),
+                  // SizedBox(width: AppTheme.elementSpacing,),
+                  Text(
+                    "${trackBallValuePrice}${getCurrency(currency!)}",
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                // Stack(
-                //   children: [
-                //     Container(
-                //       height: AppTheme.elementSpacing * 0.75,
-                //       width: AppTheme.elementSpacing * 0.75,
-                //       decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(500.0),
-                //         color: Colors.white10,
-                //       ),
-                //     ),
-                //     if (_isBlinking)
-                //       Positioned.fill(
-                //         child:  AnimatedBuilder(
-                //           animation: _animation,
-                //           builder: (context, child) {
-                //             return Container(
-                //               decoration: BoxDecoration(
-                //                 borderRadius: BorderRadius.circular(500.0),
-                //                 color: _animation.value,
-                //               ),
-                //             );
-                //           },
-                //         ),
-                //       ),
-                //   ],
-                // ),
-                // SizedBox(width: AppTheme.elementSpacing,),
-                Text(
-                  "${trackBallValuePrice}${getCurrency(currency)}",
-                  style: Theme.of(context).textTheme.displaySmall,
-                ),
-              ],
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 15, bottom: 15),
-              child: InkWell(
-                child: Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(AppTheme.cardPadding * 2),
-                        color: trackBallValuePricechange.contains("-")
-                            ? AppTheme.errorColor.withOpacity(0.625)
-                            : AppTheme.successColor.withOpacity(0.625)),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppTheme.elementSpacing * 0.75,
-                          horizontal: AppTheme.elementSpacing,
+              Container(
+                margin: const EdgeInsets.only(top: 15, bottom: 15),
+                child: InkWell(
+                  child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(AppTheme.cardPadding * 2),
+                          color: trackBallValuePricechange.contains("-")
+                              ? AppTheme.errorColor.withOpacity(0.625)
+                              : AppTheme.successColor.withOpacity(0.625)),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppTheme.elementSpacing * 0.75,
+                            horizontal: AppTheme.elementSpacing,
+                          ),
+                          child: Text(trackBallValuePricechange,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(color: AppTheme.white100)),
                         ),
-                        child: Text(trackBallValuePricechange,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(color: AppTheme.white100)),
-                      ),
-                    )),
+                      )),
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      );}
     );
   }
 }

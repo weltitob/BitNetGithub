@@ -6,7 +6,7 @@ class BitcoinUnitModel {
   BitcoinUnits bitcoinUnit;
 
   // The amount represented as a double (or any appropriate type)
-  double amount;
+  var amount;
 
   // Constructor for the model
   BitcoinUnitModel({required this.bitcoinUnit, required this.amount});

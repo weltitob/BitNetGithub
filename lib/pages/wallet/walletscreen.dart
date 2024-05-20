@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -32,7 +33,7 @@ class WalletScreen extends GetWidget<WalletsController> {
   Widget build(BuildContext context) {
     Get.lazyPut(() => ReceiveController(), fenix: true);
     Get.lazyPut(() => SendsController(context: context), fenix: true);
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+        final ChartLine? chartLine = controller.chartLines.value;
     if(controller.queueErrorOvelay) {
       controller.queueErrorOvelay = false;
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
@@ -76,145 +77,148 @@ class WalletScreen extends GetWidget<WalletsController> {
         context: context,
         body: ListView(
           children: [
-            Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: AppTheme.cardPadding * 1.5),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.cardPadding * 1),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Avatar(
-                              size: AppTheme.cardPadding * 3,
-                            ),
-                            SizedBox(
-                              width: AppTheme.elementSpacing * 1.5,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Total Wallet Balance",
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                SizedBox(
-                                  height: AppTheme.elementSpacing * 0.25,
-                                ),
-                                Obx(
-                                  () => Row(
-                                    children: [
-                                      controller.hideBalance.value
-                                          ? Text(
-                                              '*****',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall,
-                                            )
-                                          : Obx(() {
-                                              return GestureDetector(
-                                                onTap: () {
-controller.setCurrencyType(
-                                                        !controller
-                                                                .coin.value
-                                                            , updateDatabase: false);
-                                                            coin.setCurrencyType(controller.coin.value);
-                                                }
-                                                    ,
-                                                child: Container(
-                                                  child: (controller.coin.value)
-                                                      ? Row(
-                                                          children: [
-                                                            Text(
-
-                                                              unitModel.amount.toString()
-                                                                    ,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .displaySmall,
-                                                            ),
-                                                            // const SizedBox(
-                                                            //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-                                                            // ),
-                                                            Icon(
-                                                              getCurrencyIcon(
-                                                                  unitModel
-                                                                      .bitcoinUnitAsString),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Text(
-                                                          "${currencyEquivalent}${getCurrency(controller.selectedCurrency!.value)}",
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .displaySmall,
-                                                        ),
-                                                ),
-                                              );
-                                            }),
-                                    ],
+            Obx(
+              (){ 
+                controller.chartLines.value;
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: AppTheme.cardPadding * 1.5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.cardPadding * 1),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Avatar(
+                                size: AppTheme.cardPadding * 3,
+                              ),
+                              SizedBox(
+                                width: AppTheme.elementSpacing * 1.5,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Total Wallet Balance",
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Obx(
-                          () => RoundedButtonWidget(
-                            size: AppTheme.cardPadding * 1.25,
-                            buttonType: ButtonType.transparent,
-                            iconData: controller.hideBalance.value == false
-                                ? FontAwesomeIcons.eyeSlash
-                                : FontAwesomeIcons.eye,
-                            onTap: () {
-                              controller.setHideBalance(
-                                  hide: !controller.hideBalance.value);
-                            },
+                                  SizedBox(
+                                    height: AppTheme.elementSpacing * 0.25,
+                                  ),
+                                  Obx(
+                                    () => Row(
+                                      children: [
+                                        controller.hideBalance.value
+                                            ? Text(
+                                                '*****',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .displaySmall,
+                                              )
+                                            : Obx(() {
+                                                return GestureDetector(
+                                                  onTap: () {
+              controller.setCurrencyType(
+                                                          !controller
+                                                                  .coin.value
+                                                              , updateDatabase: false);
+                                                              coin.setCurrencyType(controller.coin.value);
+                                                  }
+                                                      ,
+                                                  child: Container(
+                                                    child: (controller.coin.value)
+                                                        ? Row(
+                                                            children: [
+                                                              Text(
+              
+                                                                controller.totalBalance.value.amount.toString()
+                                                                      ,
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .displaySmall,
+                                                              ),
+                                                              // const SizedBox(
+                                                              //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                                                              // ),
+                                                              Icon(
+                                                                getCurrencyIcon(
+                                                                    controller.totalBalance.value.bitcoinUnitAsString),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : Text(
+                                                            "${currencyEquivalent}${getCurrency(controller.selectedCurrency!.value)}",
+                                                            style:
+                                                                Theme.of(context)
+                                                                    .textTheme
+                                                                    .displaySmall,
+                                                          ),
+                                                  ),
+                                                );
+                                              }),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          Obx(
+                            () => RoundedButtonWidget(
+                              size: AppTheme.cardPadding * 1.25,
+                              buttonType: ButtonType.transparent,
+                              iconData: controller.hideBalance.value == false
+                                  ? FontAwesomeIcons.eyeSlash
+                                  : FontAwesomeIcons.eye,
+                              onTap: () {
+                                controller.setHideBalance(
+                                    hide: !controller.hideBalance.value);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: AppTheme.cardPadding * 1.5,
-                  ),
-                  Container(
-                    height: AppTheme.cardPadding * 9,
-                    child: Stack(
-                      children: [
-                        CardSwiper(
-                          backCardOffset:
-                              const Offset(0, -AppTheme.cardPadding),
-                          // maxAngle: 0.0,
-                          // threshold: 10,
-                          padding: const EdgeInsets.only(
-                              left: AppTheme.cardPadding,
-                              right: AppTheme.cardPadding,
-                              top: AppTheme.cardPadding),
-                          scale: 1.0,
-                          initialIndex: cards == 'lightning' ? 0 : 1,
-                          cardsCount: cards.length,
-                          onSwipe: (int index, int? previousIndex,
-                              CardSwiperDirection direction) {
-                            controller.setCardInDatabase(
-                                cards == 'onChain' ? 'lightning' : 'onChain');
-                            return true;
-                          },
-                          cardBuilder: (context, index, percentThresholdX,
-                                  percentThresholdY) =>
-                              cards[index],
-                        )
-                      ],
+                    SizedBox(
+                      height: AppTheme.cardPadding * 1.5,
                     ),
-                  ),
-                ]),
+                    Container(
+                      height: AppTheme.cardPadding * 9,
+                      child: Stack(
+                        children: [
+                          CardSwiper(
+                            backCardOffset:
+                                const Offset(0, -AppTheme.cardPadding),
+                            // maxAngle: 0.0,
+                            // threshold: 10,
+                            padding: const EdgeInsets.only(
+                                left: AppTheme.cardPadding,
+                                right: AppTheme.cardPadding,
+                                top: AppTheme.cardPadding),
+                            scale: 1.0,
+                            initialIndex: cards == 'lightning' ? 0 : 1,
+                            cardsCount: cards.length,
+                            onSwipe: (int index, int? previousIndex,
+                                CardSwiperDirection direction) {
+                              controller.setCardInDatabase(
+                                  cards == 'onChain' ? 'lightning' : 'onChain');
+                              return true;
+                            },
+                            cardBuilder: (context, index, percentThresholdX,
+                                    percentThresholdY) =>
+                                cards[index],
+                          )
+                        ],
+                      ),
+                    ),
+                  ]);}
+            ),
             const SizedBox(height: AppTheme.cardPadding * 1.5),
             Padding(
               padding:

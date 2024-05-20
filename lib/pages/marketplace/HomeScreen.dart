@@ -41,6 +41,7 @@ class HomeScreen extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
                     child: CarouselSlider.builder(
                       options: CarouselOptions(
+                        autoPlay: true,
                         viewportFraction: 0.6,
                         enlargeCenterPage: true, 
                         height: 244.w),

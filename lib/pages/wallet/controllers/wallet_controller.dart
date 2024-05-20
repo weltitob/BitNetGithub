@@ -12,6 +12,7 @@ import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
@@ -55,9 +56,10 @@ class WalletsController extends BaseController {
 
   StreamSubscription<List<ReceivedInvoice>>? invoicesSubscription;
   StreamSubscription<List<BitcoinTransaction>>? transactionsSubscription;
-
+  Rx<ChartLine?> chartLines = ChartLine(time: 0, price: 0).obs;
   RxString totalBalanceStr = "0".obs;
   RxDouble totalBalanceSAT = 0.0.obs;
+  Rx<BitcoinUnitModel> totalBalance = BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 0).obs;
   String loadMessageError = "";
   int errorCount = 0;
   int loadedFutures = 0;
@@ -293,6 +295,7 @@ return false;
     final unit = bitcoinUnit.bitcoinUnitAsString;
 
     totalBalanceStr.value = balance.toString() + " " + unit;
+    totalBalance.value = bitcoinUnit;
   }
 
   @override

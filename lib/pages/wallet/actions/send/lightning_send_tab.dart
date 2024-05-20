@@ -9,6 +9,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -202,7 +203,7 @@ class LightningSendTab extends GetWidget<SendsController> {
         String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
-                     final chartLine = Provider.of<ChartLine?>(context, listen: false);
+                     final chartLine = Get.find<WalletsController>().chartLines.value;
 
     final bitcoinPrice = chartLine?.price;
 

@@ -7,6 +7,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -46,7 +47,7 @@ class _CryptoItemState extends State<CryptoItem> {
   final LoggerService logger = Get.find();
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     final currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     if (chartLine != null) {
@@ -199,7 +200,8 @@ class _CryptoItemState extends State<CryptoItem> {
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
-
+    return Obx((){
+      Get.find<WalletsController>().chartLines.value;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -209,14 +211,14 @@ class _CryptoItemState extends State<CryptoItem> {
           children: [
             // const SizedBox(width: AppTheme.elementSpacing / 2),
             Text(
-              "${controllerCrypto.currentPriceString}${getCurrency(currency)}", 
+              "${controllerCrypto.currentPriceString}${getCurrency(currency!)}", 
               //bitcoinPrice!.price.toString(),
               style: controllerCrypto.currentPriceString.value.length > 8 ? AppTheme.textTheme.bodySmall: AppTheme.textTheme.bodyMedium,
             ),
           ],
         ),
       ],
-    );
+    );});
   }
 
   Widget chart(onedaychart) {

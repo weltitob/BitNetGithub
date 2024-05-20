@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AgbsAndImpressumScreen extends StatelessWidget {
-  const AgbsAndImpressumScreen({super.key});
+  const AgbsAndImpressumScreen({super.key, this.onBackButton});
+  final Function()? onBackButton;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class AgbsAndImpressumScreen extends StatelessWidget {
       appBar: bitnetAppBar(
         text: "Agbs and Impressum",
         context: context,
-        onTap: ()=> context.pop(),
+        onTap: (onBackButton == null) ? ()=> context.pop() : onBackButton,
       ),
       body: SingleChildScrollView(
         child: Padding(

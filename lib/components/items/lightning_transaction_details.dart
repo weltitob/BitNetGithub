@@ -24,7 +24,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
   @override
   Widget build(BuildContext context) {
     final String formattedDate = displayTimeAgoFromInt(data.timestamp);
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
@@ -50,7 +50,9 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
           },
         ),
         body: Obx(
-          () => Column(
+          () { 
+            Get.find<WalletsController>().chartLines.value;
+            return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -231,6 +233,6 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                 )
             ),
           ],
-        )));
+        );}));
   }
 }

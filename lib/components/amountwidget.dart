@@ -7,8 +7,10 @@ import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class AmountWidget extends StatefulWidget {
@@ -78,7 +80,7 @@ class _AmountWidgetState extends State<AmountWidget> {
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
-    final chartLine = Provider.of<ChartLine?>(context, listen: false);
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     final bitcoinPrice = chartLine?.price;
 
     //String unit = bitcoinUnitAsString(bitcoinUnit);
@@ -96,7 +98,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                         this.swapped = !this.swapped;
                         if(this.swapped) {
                     
-                           final chartLine = Provider.of<ChartLine?>(context, listen: false);
+                           final chartLine =Get.find<WalletsController>().chartLines.value;
                         currency = currency ?? "USD";
                     
                         final bitcoinPrice = chartLine?.price;
@@ -107,7 +109,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                         this.widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
                         } else {
                           final chartLine =
-                              Provider.of<ChartLine?>(context, listen: false);
+                             Get.find<WalletsController>().chartLines.value;
                           currency = currency ?? "USD";
 
                           final bitcoinPrice = chartLine?.price;
@@ -295,7 +297,7 @@ class _AmountWidgetState extends State<AmountWidget> {
 
   //this automatically needs to update once there is a new value for the controller
   Widget bitcoinToMoneyWidget(BuildContext context, BitcoinUnits bitcoinUnit) {
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
@@ -312,18 +314,23 @@ class _AmountWidgetState extends State<AmountWidget> {
         : "0.00";
     // widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
 
-    return Text(
-      "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency)}", // show the converted value of Bitcoin to Euro with 2 decimal places
-      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-          color: Theme.of(context).brightness == Brightness.light
-              ? AppTheme.black70
-              : AppTheme
-                  .white90), // use the bodyLarge text theme style from the current theme
+    return Obx(
+
+      (){
+        Get.find<WalletsController>().chartLines.value;
+         return Text(
+        "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency!)}", // show the converted value of Bitcoin to Euro with 2 decimal places
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: Theme.of(context).brightness == Brightness.light
+                ? AppTheme.black70
+                : AppTheme
+                    .white90), // use the bodyLarge text theme style from the current theme
+      );}
     );
   }
 
   Widget MoneyToBitcoinWidget(BuildContext context, BitcoinUnits bitcoinUnit) {
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
@@ -339,26 +346,30 @@ class _AmountWidgetState extends State<AmountWidget> {
             bitcoinPrice)
         : "0.00";
     // widget.btcController.text = formatBtcDouble(double.parse(currencyEquivalent));
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}", // show the converted value of Bitcoin to Euro with 2 decimal places
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: Theme.of(context).brightness == Brightness.light
-                  ? AppTheme.black70
-                  : AppTheme
-                      .white90), // use the bodyLarge text theme style from the current theme
-        ),
-        Icon(
-          getCurrencyIcon(
-            bitcoinUnit.name,
+    return Obx(
+      (){ 
+        Get.find<WalletsController>().chartLines.value;
+        return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}", // show the converted value of Bitcoin to Euro with 2 decimal places
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? AppTheme.black70
+                    : AppTheme
+                        .white90), // use the bodyLarge text theme style from the current theme
           ),
-          color: Theme.of(context).brightness == Brightness.light
-              ? AppTheme.black70
-              : AppTheme.white90,
-        )
-      ],
+          Icon(
+            getCurrencyIcon(
+              bitcoinUnit.name,
+            ),
+            color: Theme.of(context).brightness == Brightness.light
+                ? AppTheme.black70
+                : AppTheme.white90,
+          )
+        ],
+      );}
     );
   }
 

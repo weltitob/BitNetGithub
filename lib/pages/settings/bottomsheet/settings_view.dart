@@ -106,6 +106,17 @@ class SettingsView extends StatelessWidget {
               },
             ),
             BitNetListTile(
+              leading: Icon(Icons.info),
+              text: "Agbs and Impressum",
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: AppTheme.iconSize * 0.75,
+              ),
+              onTap: () {
+                controller.switchTab('agbs');
+              },
+            ),
+            BitNetListTile(
               leading: Icon(Icons.login_rounded),
               text: L10n.of(context)!.logout,
               trailing: Icon(

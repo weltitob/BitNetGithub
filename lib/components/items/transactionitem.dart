@@ -78,7 +78,7 @@ class _TransactionItemState extends State<TransactionItem> {
     final controller = Get.find<WalletsController>();
     // Use DateFormat for formatting the timestamp
     final String formattedDate = displayTimeAgoFromInt(widget.data.timestamp);
-    final chartLine = Provider.of<ChartLine?>(context, listen: true);
+    final chartLine = controller.chartLines.value;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
@@ -90,6 +90,8 @@ class _TransactionItemState extends State<TransactionItem> {
         ? (double.parse(widget.data.amount) / 100000000 * bitcoinPrice)
             .toStringAsFixed(2)
         : "0.00";
+        return Obx((){
+          Get.find<WalletsController>().chartLines.value;
     return Padding(
       padding: const EdgeInsets.only(
           left: AppTheme.cardPadding,
@@ -296,6 +298,6 @@ class _TransactionItemState extends State<TransactionItem> {
           ),
         ),
       ),
-    );
+    );});
   }
 }

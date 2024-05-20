@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
@@ -72,7 +73,8 @@ class ThemeController extends State<ThemeBuilder> {
           .setCountryInDatabase( data.data()?['country']);
       Provider.of<CardChangeProvider>(context, listen: false)
           .setCardInDatabase(data.data()?['selected_card'] ?? 'lightning');
-      Provider.of<CurrencyChangeProvider>(context, listen:false).setFirstCurrencyInDatabase(data.data()?['selectedCurrency'] ?? data.data()?['selected_currency'] ?? "US");
+      Provider.of<CurrencyChangeProvider>(context, listen:false).setFirstCurrencyInDatabase(data.data()?['selected_currency'] ?? "USD");
+      Provider.of<BitcoinPriceStream>(context,listen:false)..updateCurrency(data.data()?['selected_currency'] ?? "USD");
       Provider.of<CurrencyTypeProvider>(context,listen: false ).setCurrencyType(data.data()?['showCoin'] ?? false);
       Get.put(WalletsController())
           .setHideBalance(hide: data.data()?['hide_balance'] ?? false);
