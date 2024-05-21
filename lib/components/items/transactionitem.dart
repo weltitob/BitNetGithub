@@ -98,7 +98,7 @@ class _TransactionItemState extends State<TransactionItem> {
           right: AppTheme.cardPadding,
           bottom: AppTheme.elementSpacing),
       child: GlassContainer(
-        height: AppTheme.cardPadding * 2.75.h,
+        height: AppTheme.cardPadding * 3.h,
         borderThickness: 1,
         borderRadius: AppTheme.cardRadiusBig,
         child: ClipRRect(

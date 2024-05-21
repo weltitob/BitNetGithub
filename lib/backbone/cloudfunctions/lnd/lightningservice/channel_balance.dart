@@ -29,10 +29,10 @@ Future<RestResponse> channelBalance() async {
     var response = await dioClient.get(url: url, headers: headers);
 
     // Print raw response for debugging
-    print('Raw Response: ${response.data}');
+    print('Raw Response Light: ${response.data}');
 
     if (response.statusCode == 200) {
-      print(json.decode(response.data));
+      //print(json.decode(response.data));
       return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully retrived Lightning Balance",
