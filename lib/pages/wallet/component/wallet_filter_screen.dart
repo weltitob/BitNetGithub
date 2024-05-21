@@ -26,15 +26,30 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
       ),
       context: context,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.cardPadding,
+            vertical: AppTheme.cardPadding * 2),
         child: Column(
           children: [
             Align(
                 alignment: Alignment.topRight,
                 child: GlassContainer(
                     height: AppTheme.cardPadding * 1.75,
-                    child: TextButton(child: Text('Clear',style: Theme.of(context).textTheme.bodyMedium,), onPressed: (){controller.selectedFilters.clear();},))),
-
+                    child: TextButton(
+                      child: Text(
+                        'Clear',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      onPressed: () {
+                        controller.selectedFilters.clear();
+                        controller.start =
+                            controller.startDate.value.millisecondsSinceEpoch ~/
+                                1000;
+                        controller.end =
+                            controller.endDate.value.millisecondsSinceEpoch ~/
+                                1000;
+                      },
+                    ))),
             SizedBox(height: AppTheme.cardPadding),
             BitNetFilterPillList(
               headingText: 'Filter Options',
@@ -54,81 +69,93 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                 child: Row(
                   children: [
                     Expanded(
-                        child: GlassContainer(
-                      child: InkWell(
+                        child: StatefulBuilder(builder: (context, setState) {
+                      return GlassContainer(
+                          child: InkWell(
                         onTap: () async {
                           controller.startDate.value =
                               await controller.selectDate(context);
+                          controller.start = controller
+                                  .startDate.value.millisecondsSinceEpoch ~/
+                              1000;
+                          setState(() {});
                         },
-                        child: Obx(
-                          () => Padding(
-                            padding: const EdgeInsets.all(AppTheme.elementSpacing / 2),
-                            child: Center(
-                                child: Text(
-                                    DateFormat('dd-MM-yyyy')
-                                        .format(controller.startDate.value),
-                                    style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400,
-                                          ))),
-                          ),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.all(AppTheme.elementSpacing / 2),
+                          child: Center(
+                              child: Text(
+                                  DateFormat('dd-MM-yyyy')
+                                      .format(controller.startDate.value),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                      ))),
                         ),
-                      ))),
-                      Container(
-                        margin: EdgeInsets.only(left: 10.w, right: 11.w),
-                        child: Text(
-                          'To',
-                          style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                        ),
+                      ));
+                    })),
+                    Container(
+                      margin: EdgeInsets.only(left: 10.w, right: 11.w),
+                      child: Text(
+                        'To',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
                       ),
-                      Expanded(
-                        child: GlassContainer(
+                    ),
+                    Expanded(
+                      child: StatefulBuilder(builder: (context, setState) {
+                        return GlassContainer(
                           child: InkWell(
                             onTap: () async {
                               controller.endDate.value =
                                   await controller.selectDate(context);
+                              controller.end = controller
+                                      .endDate.value.millisecondsSinceEpoch ~/
+                                  1000;
+                              setState(() {});
                             },
-                            child: Obx(
-                              () => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: Text(
-                                    DateFormat('dd-MM-yyyy')
-                                        .format(controller.endDate.value),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                  ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(
+                                  DateFormat('dd-MM-yyyy')
+                                      .format(controller.endDate.value),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                      ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
+                        );
+                      }),
+                    ),
+                  ],
                 ),
               ),
-              Spacer(),
-              LongButtonWidget(title: "Apply", onTap: (){
-                Navigator.pop(context);
-              }),
-            ],
-          ),
+            ),
+            Spacer(),
+            LongButtonWidget(
+                title: "Apply",
+                onTap: () {
+                  controller.start =
+                      controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
+                  controller.end =
+                      controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
+                  Navigator.pop(context);
+                }),
+          ],
         ),
+      ),
     );
   }
 }

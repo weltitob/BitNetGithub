@@ -40,25 +40,25 @@ class ReceivedInvoice {
       logger.e('JSON data must not be null');
       throw ArgumentError('JSON data must not be null');
     }
-    Map<String, dynamic>? result = json['result'] as Map<String, dynamic>?;
-    if (result == null) {
-      logger.e('Result key missing or null in the JSON data');
-      throw ArgumentError('Result key missing or null in the JSON data');
-    }
+    // Map<String, dynamic>? result = json['result'] as Map<String, dynamic>?;
+    // if (result == null) {
+    //   logger.e('Result key missing or null in the JSON data');
+    //   throw ArgumentError('Result key missing or null in the JSON data');
+    // }
     return ReceivedInvoice(
-      memo: result['memo'] as String?,
-      rPreimage: result['r_preimage'] as String?,
-      rHash: result['r_hash'] as String?,
-      value: int.tryParse(result['value'].toString()) ?? 0,
-      valueMsat: int.tryParse(result['value_msat'].toString()) ?? 0,
-      settled: result['settled'] as bool? ?? false,
-      creationDate: int.tryParse(result['creation_date'].toString()) ?? 0,
-      settleDate: int.tryParse(result['settle_date'].toString()) ?? 0,
-      paymentRequest: result['payment_request'] as String?,
-      state: result['state'] as String?,
-      amtPaid: int.tryParse(result['amt_paid'].toString()) ?? 0,
-      amtPaidSat: int.tryParse(result['amt_paid_sat'].toString()) ?? 0,
-      amtPaidMsat: int.tryParse(result['amt_paid_msat'].toString()) ?? 0,
+      memo: json['memo'] as String?,
+      rPreimage: json['r_preimage'] as String?,
+      rHash: json['r_hash'] as String?,
+      value: int.tryParse(json['value'].toString()) ?? 0,
+      valueMsat: int.tryParse(json['value_msat'].toString()) ?? 0,
+      settled: json['settled'] as bool? ?? false,
+      creationDate: int.tryParse(json['creation_date'].toString()) ?? 0,
+      settleDate: int.tryParse(json['settle_date'].toString()) ?? 0,
+      paymentRequest: json['payment_request'] as String?,
+      state: json['state'] as String?,
+      amtPaid: int.tryParse(json['amt_paid'].toString()) ?? 0,
+      amtPaidSat: int.tryParse(json['amt_paid_sat'].toString()) ?? 0,
+      amtPaidMsat: int.tryParse(json['amt_paid_msat'].toString()) ?? 0,
     );
   }
 }
@@ -69,6 +69,7 @@ class ReceivedInvoicesList {
   ReceivedInvoicesList({required this.invoices});
 
   factory ReceivedInvoicesList.fromJson(Map<String, dynamic>? json) {
+    print('json $json');
     if (json == null || json['invoices'] == null) {
       throw ArgumentError('JSON data or "invoices" key is missing or null');
     }
