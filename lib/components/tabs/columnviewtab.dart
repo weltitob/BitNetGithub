@@ -1,9 +1,18 @@
+import 'package:bitnet/backbone/cloudfunctions/taprootassets/fetchassetmeta.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/postmodels/media_model.dart';
+import 'package:bitnet/models/postmodels/post.dart';
 import 'package:bitnet/models/tapd/asset.dart';
+import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'dart:convert';
+import 'dart:io';
 
 class ColumnViewTab extends StatefulWidget {
   const ColumnViewTab({super.key});
@@ -15,6 +24,7 @@ class ColumnViewTab extends StatefulWidget {
 class _ColumnViewTabState extends State<ColumnViewTab> {
   bool isLoading = false;
   List<Asset> assets = [];
+  Map<String, AssetMetaResponse> assetMetaMap = {};
 
   @override
   void initState() {
@@ -27,8 +37,22 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
     });
     try {
       List<Asset> fetchedAssets = await listTaprootAssets();
+      List<Asset> reversedAssets = fetchedAssets.reversed.toList();
+      Map<String, AssetMetaResponse> metas = {};
+
+      //meta zu hallfinney quote fehlt iwie
+
+      for (int i = 0; i < reversedAssets.length && i < 15; i++) {
+        String assetId = reversedAssets[i].assetGenesis.assetId;
+        AssetMetaResponse? meta = await fetchAssetMeta(assetId);
+        if (meta != null) {
+          metas[assetId] = meta;
+        }
+      }
+
       setState(() {
-        assets = fetchedAssets.reversed.toList();
+        assets = reversedAssets;
+        assetMetaMap = metas;
         isLoading = false;
       });
     } catch (e) {
@@ -39,16 +63,16 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
-          if(!isLoading)LongButtonWidget(
-            title: "FETCH ASSETS",
-            onTap: fetchTaprootAssets,
-          ),
+          if (!isLoading && assets.isEmpty)
+            LongButtonWidget(
+              title: "FETCH ASSETS",
+              onTap: fetchTaprootAssets,
+            ),
           if (isLoading)
             Center(child: dotProgress(context))
           else if (assets.isEmpty)
@@ -67,19 +91,29 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
               ),
             )
           else
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: assets.length,
-              itemBuilder: (context, index) {
-                // jz hier stattdessen meine posts quasie einfügen und dann die posts anzeigen lassen clean (muss noch die daten decoden teilweise)
-                //je nachdem was drin steht im asset entsprechend anzeigen jz mal heute das hall fineny quote als cleanen post
-                return ListTile(
-                  title: Text(assets[index].assetGenesis.name),
-                  subtitle: Text('Amount: ${assets[index].amount}'),
+            Column(
+              children: assets.map((asset) {
+                String assetId = asset.assetGenesis.assetId;
+                AssetMetaResponse? meta = assetMetaMap[assetId];
+                return Post(
+                  postId: assetId,
+                  ownerId: asset.assetGenesis.assetId,
+                  username: asset.assetGenesis.assetType,
+                  postName: asset.assetGenesis.name,
+                  rockets: {},
+                  medias: meta != null ? meta.toMedias() : [],
+                  // medias: [
+                  //   if (meta != null) Media(type: 'text', data: meta.getShortenedData()),
+                  //   if (meta != null) Media(type: 'text', data: "Type: ${meta.getType()}",),
+                  //   Media(type: 'text', data: asset.assetGenesis.metaHash),
+                  //   Media(type: 'text', data: asset.version),
+                  //   Media(type: 'text', data: asset.chainAnchor.blockHeight.toString()),
+                  //   Media(type: 'text', data: asset.assetGenesis.version.toString()),
+                  // ],
+                  timestamp: DateTime.fromMillisecondsSinceEpoch(asset.lockTime * 1000),
                 );
-              },
-            ),
+              }).toList(),
+            )
         ],
       ),
     );

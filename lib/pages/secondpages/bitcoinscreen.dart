@@ -152,7 +152,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                           context.push('/wallet/bitcoinscreen/hashrate');
                           //context.go(Uri(path: '/hashrate', queryParameters: {}).toString());
                         },
-                    image: "assets/images/key.png",
+                    image: "assets/images/hashrate.png",
                     fallbackIcon: FontAwesomeIcons.computer,
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,

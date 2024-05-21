@@ -1,6 +1,7 @@
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
@@ -15,6 +16,7 @@ import 'package:bitnet/models/postmodels/media_model.dart';
 class Post extends StatefulWidget {
   final String postId;
   final String ownerId;
+  final String postName;
   final String username;
   final dynamic rockets;
   final List<Media> medias;
@@ -27,10 +29,12 @@ class Post extends StatefulWidget {
     required this.rockets,
     required this.medias,
     required this.timestamp,
+    required this.postName,
   });
 
   factory Post.fromDocument(DocumentSnapshot doc) {
     return Post(
+      postName: doc["postName"],
       postId: doc["postId"],
       ownerId: doc['ownerId'],
       username: doc['username'],
@@ -44,6 +48,7 @@ class Post extends StatefulWidget {
 
   Map<String, dynamic> toMap() {
     return {
+      'postName': postName,
       'postId': postId,
       'ownerId': ownerId,
       'username': username,
@@ -78,6 +83,7 @@ class Post extends StatefulWidget {
         rocketcount: getRocketCount(),
         medias: this.medias,
         timestamp: this.timestamp,
+        postName: this.postName,
       );
 }
 
@@ -86,6 +92,7 @@ class _PostState extends State<Post> {
   final String ownerId;
   final String username;
   final DateTime timestamp;
+  final String postName;
   int rocketcount;
   Map rockets;
   final List<Media> medias;
@@ -95,6 +102,7 @@ class _PostState extends State<Post> {
 
   _PostState({
     required this.postId,
+    required this.postName,
     required this.ownerId,
     required this.username,
     required this.timestamp,
@@ -104,129 +112,110 @@ class _PostState extends State<Post> {
   });
 
   //NOCHMAL GUCKEN DAS IWIE ABÄNDERN ZU GANZEM POST UND DANN AUTOMATISCH 5SATS SENDEN ODER SO
-  buildPostImage() {
-    return GestureDetector(
-      onDoubleTap: () => print('handleLikePost implement'),
-      child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          Container(margin: EdgeInsets.only(left: 15.0, right: 15, top: 10, bottom: 10),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  offset: Offset(0, 2.5),
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-            child: Text('ALTES IMAGE NUR TEST')),
-          showheart? Animator(
-            duration: Duration(milliseconds: 300),
-            tween: Tween(begin: 0.8, end: 1.4,),
-            curve: Curves.elasticOut,
-            cycles: 0, builder: (BuildContext context, AnimatorState<double> animatorState, Widget? child) {
-            return Transform.scale(
-              scale: animatorState.value,
-              child: Icon(Icons.favorite,
-                size: 60,
-                color: Colors.red,),);
-          },): Text(''),
-        ],
-      ),
-    );
-  }
+  // buildPostImage() {
+  //   return GestureDetector(
+  //     onDoubleTap: () => print('handleLikePost implement'),
+  //     child: Stack(
+  //       alignment: Alignment.center,
+  //       children: <Widget>[
+  //         Container(margin: EdgeInsets.only(left: 15.0, right: 15, top: 10, bottom: 10),
+  //           width: double.infinity,
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(20.0),
+  //             boxShadow: [
+  //               BoxShadow(
+  //                 color: Colors.black.withOpacity(0.1),
+  //                 offset: Offset(0, 2.5),
+  //                 blurRadius: 10,
+  //               ),
+  //             ],
+  //           ),
+  //           child: Text('ALTES IMAGE NUR TEST')),
+  //         showheart? Animator(
+  //           duration: Duration(milliseconds: 300),
+  //           tween: Tween(begin: 0.8, end: 1.4,),
+  //           curve: Curves.elasticOut,
+  //           cycles: 0, builder: (BuildContext context, AnimatorState<double> animatorState, Widget? child) {
+  //           return Transform.scale(
+  //             scale: animatorState.value,
+  //             child: Icon(Icons.favorite,
+  //               size: 60,
+  //               color: Colors.red,),);
+  //         },): Text(''),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  buildPostFooter() {
-    return buildLikeSpace(
-        type: 'Post',
-        targetId: postId,
-        ownerId: ownerId,
-        rockets: rockets);
-  }
+  // buildPostFooter() {
+  //   return buildLikeSpace(
+  //       type: 'Post',
+  //       targetId: postId,
+  //       ownerId: ownerId,
+  //       rockets: rockets);
+  // }
 
   @override
   Widget build(BuildContext context) {
     final String? currentUserId = Auth().currentUser!.uid;
 
     isLiked = (rockets[currentUserId] == true);
-    return RoundedBoxWidget(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            buildPostHeader(context, ownerId, postId),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: medias.map((e) {
-                final type = e.type;
-                if (type == "text") {
-                  return Container(
-                      margin: EdgeInsets.only(bottom: 10.0),
-                      child: TextBuilderNetwork(url: e.data));
-                }
-                if (type == "description") {
-                  return Container(
-                      margin: EdgeInsets.only(bottom: 10.0),
-                      child: TextBuilderNetwork(url: e.data));
-                }
-                if (type == "external_link") {
-                  return Container(
-                      margin: EdgeInsets.only(bottom: 10.0),
-                      child: LinkBuilder(url: 'haha'));
-                }
-                if (type == "image" || type == "camera") {
-                  return Container(
-                      margin: EdgeInsets.only(bottom: 10.0),
-                      child: ImageBuilderNetwork(url: e.data));
-                }
-                if (type == "image_data" || type == "camera") {
-                  return Container(
-                      margin: EdgeInsets.only(bottom: 10.0),
-                      child: ImageBuilderNetwork(url: e.data));
-                }
-                if (type == "audio") {
-                  return Container(
-                      margin: EdgeInsets.only(bottom: 10.0),
-                      child: AudioBuilderNetwork(url: e.data));
-                }
-                return Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: TextBuilderNetwork(url: e.data));
-              }).toList(),
-            ),
-            buildPostFooter(),
-          ],
-        ),
-    );
-  }
-}
-
-class RoundedBoxWidget extends StatefulWidget {
-  Widget child;
-  RoundedBoxWidget({
-    required this.child,});
-
-  @override
-  State<RoundedBoxWidget> createState() => _RoundedBoxWidgetState();
-}
-
-class _RoundedBoxWidgetState extends State<RoundedBoxWidget> {
-  @override
-  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: AppTheme.elementSpacing),
-      child: Container(
-          padding: EdgeInsets.only(top: AppTheme.elementSpacing, bottom: AppTheme.elementSpacing, left: AppTheme.cardPadding, right: AppTheme.cardPadding),
-          decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
-              boxShadow: [
-                AppTheme.boxShadowProfile
+      padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
+      child: GlassContainer(
+          child: Padding(
+            padding: const EdgeInsets.only(left: AppTheme.elementSpacing, right: AppTheme.elementSpacing,),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                PostHeader(ownerId: ownerId, postId: postId,),
+                Text(postName, style: Theme.of(context).textTheme.titleMedium,),
+                SizedBox(height: AppTheme.elementSpacing),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: medias.map((e) {
+                    final type = e.type;
+                    if (type == "text") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: TextBuilderNetwork(url: e.data));
+                    }
+                    if (type == "description") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: TextBuilderNetwork(url: e.data));
+                    }
+                    if (type == "external_link") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: LinkBuilder(url: 'haha'));
+                    }
+                    if (type == "image" || type == "camera") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: ImageBuilder(encodedData: e.data));
+                    }
+                    if (type == "image_data" || type == "camera") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: ImageBuilder(encodedData: e.data));
+                    }
+                    if (type == "audio") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: AudioBuilderNetwork(url: e.data));
+                    }
+                    return Container(
+                        margin: EdgeInsets.only(bottom: 10.0),
+                        child: TextBuilderNetwork(url: e.data));
+                  }).toList(),
+                ),
+                SizedBox(height: AppTheme.elementSpacing),
+                // buildPostFooter(),
               ],
-              borderRadius: AppTheme.cardRadiusBig),
-          child: widget.child
+            ),
+          ),
       ),
     );
   }
