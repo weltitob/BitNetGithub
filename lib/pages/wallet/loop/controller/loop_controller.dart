@@ -5,7 +5,11 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/pool/get_loopout_quote.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/pool/loop_in.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/pool/loop_out.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/loop/loop_quote_model.dart';
 import 'package:flutter/material.dart';
@@ -74,272 +78,160 @@ class LoopGetxController extends GetxController {
   }
 
   _buildLoopOutDialog(context, LoopQuoteModel data) {
-    showGeneralDialog(
-        barrierDismissible: true,
-        barrierLabel: "buy_dialog",
+    return BitNetBottomSheet(
+      context: context,
+      child: bitnetScaffold(
+        extendBodyBehindAppBar: true,
         context: context,
-        pageBuilder: (context, a1, a2) {
-          return AlertDialog(
-            insetPadding: EdgeInsets.zero,
-            backgroundColor: Colors.transparent,
-            content: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: AppTheme.colorBackground,
-                  border: Border.all(color: AppTheme.colorBitcoin, width: 2)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("Lightning to On-Chain",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(color: Colors.white)),
-                    Divider(
-                      color: AppTheme.colorBitcoin,
-                      thickness: 2,
-                    ),
-                    Container(
-                      width: AppTheme.cardPadding * 10,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Swap Fee (SAT)',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                data.swapFeeSat,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "HTLC sweep fee (SAT)",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                data.htlcSweepFeeSat.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Pre-pay ammount (SAT)",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                data.prepayAmtSat.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                        ],
+        appBar: bitnetAppBar(
+          context: context,
+          text: "Lightning to On-Chain",
+        ),
+        body: Container(
+          child: Padding(
+            padding: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                 margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: AppTheme.elementSpacing,
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          LongButtonWidget(
-                            title: "Cancel",
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            buttonType: ButtonType.transparent,
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          LongButtonWidget(
-                            title: "Transfer",
-                            onTap: () {
-                              double amount =
-                                  double.tryParse(btcController.text) ?? 0;
-                              int roundedAmount = amount.round();
-                              log(roundedAmount.toString());
-                              final mapData = {
-                                'amt': roundedAmount.toString(),
-                                'swapFee': data.swapFeeSat.toString(),
-                                'minerFee': data.htlcSweepFeeSat,
-                                'dest': data.swapPaymentDest,
-                                'maxPrepay': data.prepayAmtSat,
-                              };
-                              loopOut(mapData);
-                            },
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                        ],
+                      BitNetListTile(
+                        text: 'Swap Fee (SAT)',
+                        trailing: Text(data.swapFeeSat),
                       ),
-                    )
-                  ],
+                      BitNetListTile(
+                        text: 'HTLC Sweep Fee (SAT)',
+                        trailing: Text(data.htlcSweepFeeSat.toString()),
+                      ),
+                      BitNetListTile(
+                        text: 'Pre-pay amount (SAT)',
+                        trailing: Text(data.prepayAmtSat.toString()),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppTheme.cardPadding),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                     SizedBox(height: AppTheme.cardPadding,),
+                      LongButtonWidget(
+                        title: "Transfer",
+                        onTap: () {
+                          double amount =
+                              double.tryParse(btcController.text) ?? 0;
+                          int roundedAmount = amount.round();
+                          log(roundedAmount.toString());
+                          final mapData = {
+                            'amt': roundedAmount.toString(),
+                            'swapFee': data.swapFeeSat.toString(),
+                            'minerFee': data.htlcSweepFeeSat,
+                            'dest': data.swapPaymentDest,
+                            'maxPrepay': data.prepayAmtSat,
+                          };
+                          loopOut(mapData);
+                        },
+
+                      ),
+                      SizedBox(height: AppTheme.elementSpacing,),
+                      LongButtonWidget(
+                        title: "Cancel",
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        buttonType: ButtonType.transparent,
+
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-          );
-        });
+          ),
+        ),
+      ),
+    );
   }
 
   _buildLoopInDialog(context, LoopQuoteModel data) {
-    showGeneralDialog(
-        barrierDismissible: true,
-        barrierLabel: "buy_dialog",
+    return BitNetBottomSheet(
+      context: context,
+      child: bitnetScaffold(
+        extendBodyBehindAppBar: true,
         context: context,
-        pageBuilder: (context, a1, a2) {
-          return AlertDialog(
-            insetPadding: EdgeInsets.zero,
-            backgroundColor: Colors.transparent,
-            content: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: AppTheme.colorBackground,
-                  border: Border.all(color: AppTheme.colorBitcoin, width: 2)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("On-Chain to Lightning",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(color: Colors.white)),
-                    Divider(
-                      color: AppTheme.colorBitcoin,
-                      thickness: 2,
-                    ),
-                    Container(
-                      width: AppTheme.cardPadding * 10,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Swap Fee (SAT)',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                data.swapFeeSat,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "HTLC publish fee (SAT)",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                data.htlcPublishFeeSat.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                        ],
+        appBar: bitnetAppBar(
+          context: context,
+          text: "On-Chain to Lightning",
+        ),
+        body: Container(
+          child: Padding(
+            padding: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: AppTheme.elementSpacing,
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          LongButtonWidget(
-                            title: "Cancel",
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            buttonType: ButtonType.transparent,
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          LongButtonWidget(
-                            title: "Transfer",
-                            onTap: () {
-                              double amount =
-                                  double.tryParse(btcController.text) ?? 0;
-                              int roundedAmount = amount.round();
-                              log(roundedAmount.toString());
-                              final mapData = {
-                                'amt': roundedAmount.toString(),
-                                'swapFee': data.swapFeeSat,
-                                'minerFee': data.htlcPublishFeeSat,
-                              };
-                              loopin(mapData);
-                            },
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                        ],
+                      BitNetListTile(
+                        text: 'Swap Fee (SAT)',
+                        trailing: Text(data.swapFeeSat),
                       ),
-                    )
-                  ],
+                      BitNetListTile(
+                        text: 'HTLC publish fee (SAT)',
+                        trailing: Text(data.htlcPublishFeeSat.toString()),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppTheme.cardPadding),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(height: AppTheme.cardPadding,),
+                      LongButtonWidget(
+                        title: "Transfer",
+                        onTap: () {
+                          double amount = double.tryParse(btcController.text) ?? 0;
+                          int roundedAmount = amount.round();
+                          log(roundedAmount.toString());
+                          final mapData = {
+                            'amt': roundedAmount.toString(),
+                            'swapFee': data.swapFeeSat,
+                            'minerFee': data.htlcPublishFeeSat,
+                          };
+                          loopin(mapData);
+                        },
+                      ),
+                      SizedBox(height: AppTheme.elementSpacing,),
+                      LongButtonWidget(
+                        title: "Cancel",
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        buttonType: ButtonType.transparent,
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-          );
-        });
+          ),
+        ),
+      ),
+    );
   }
+
 }

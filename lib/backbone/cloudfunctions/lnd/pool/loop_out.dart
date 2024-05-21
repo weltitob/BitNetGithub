@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -6,6 +7,7 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:blockchain_utils/base58/base58_base.dart';
 import 'package:get/get.dart';
 
 Future<RestResponse> loopOut(Map<String, dynamic> data) async {
@@ -22,16 +24,29 @@ Future<RestResponse> loopOut(Map<String, dynamic> data) async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-  // int amount = int.parse(data['amt']);
-  // int maxswapFree = int.parse(data['swapFee']);
-  // int maxMinerfee = int.parse(data['minerFee']);
-  // int maxPrepay = int.parse(data['maxPrepay']);
+  // Extract the input string
+  String inputString = data['dest'];
 
+  // Check and remove any prefix before '/'
+  // if (inputString.contains('/')) {
+  //   inputString = inputString.split('/')[1];
+  // }
+
+  // Convert input string to Uint8List using base64.decode
+  Uint8List inputBytes = base64.decode(inputString);
+
+  // Encode the Uint8List to a Base58 string using the provided encoder with checksum
+  String base58EncodedString = Base58Encoder.encode(inputBytes);
+  String checkedBase58EncodedString = Base58Encoder.checkEncode(inputBytes);
+
+  print("Base58 Encoded String: $checkedBase58EncodedString");
+
+  // Prepare the data with the Base58 encoded string
   data = {
     'amt': data['amt'],
     'max_swap_fee': data['swapFee'],
     'max_miner_fee': data['minerFee'],
-    'dest': data['dest'],
+    //'dest': checkedBase58EncodedString, //base58Encode(),
     'max_prepay_amt': data['maxPrepay'],
   };
 
