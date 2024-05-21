@@ -294,10 +294,14 @@ class SingleTransactionScreen extends StatelessWidget {
                                                 style: TextStyle(
                                                     color: Colors.white),
                                               ),
-                                              Text(
-                                                controller.timeST.value,
-                                                style: TextStyle(
-                                                    color: Colors.white),
+                                              Obx(
+                                               () {
+                                                  return Text(
+                                                    controller.timeST.value,
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  );
+                                                }
                                               )
                                             ],
                                           ),
