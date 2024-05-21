@@ -8,6 +8,7 @@ import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
+import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/IONdata.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
@@ -286,6 +287,7 @@ class Auth {
         context.pop();
         throw Exception("User couldnt be signed in with custom Token!");
       } else {
+        WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
         //if successfull push back to homescreen
         context.go("/");
       }
