@@ -4,65 +4,57 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/models/user/userdata.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 
-buildPostHeader(BuildContext context, ownerId, postId) {
-  return FutureBuilder<DocumentSnapshot>(
-    future: usersCollection.doc(ownerId).get(),
-    builder: (context, snapshot) {
-      if (!snapshot.hasData) {
-        return dotProgress(context);
-      }
-      UserData user = UserData.fromDocument(snapshot.data!);
-      final currentUser = Auth().currentUser!.uid;
-      bool isPostOwner = ownerId == currentUser;
+class PostHeader extends StatelessWidget {
+  final String ownerId;
+  final String postId;
 
-      return ListTile(
-        contentPadding: EdgeInsets.all(0.0),
-        leading: Avatar(
-          profileId: user.did,
-          mxContent: Uri.parse(user.profileImageUrl),
-          size: AppTheme.cardPadding * 2,
-          fontSize: 18,
-          onTap: () => context.go("/showprofile/:${user.did}"),
+  const PostHeader({Key? key, required this.ownerId, required this.postId})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.all(0.0),
+      leading: Avatar(
+        profileId: ownerId,
+        mxContent: Uri.parse(''),
+        size: AppTheme.cardPadding * 2,
+        fontSize: 18,
+        onTap: () {},
+      ),
+      title: GestureDetector(
+        onTap: () {},
+        child: Text(
+          '@${ownerId}',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
-        title: GestureDetector(
-          onTap: () => context.go("/showprofile/:${user.did}"),
-          child: Text(
-            '@${user.username}',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        subtitle: Text(
-          user.username,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        trailing: isPostOwner
-            ? IconButton(
-                onPressed: () => showDialogue(
-                  title: "Remove this post?",
-                  image: "images/deletepost.png",
-                  leftAction: () {},
-                  rightAction: () {
-                    // Navigator.pop(context),
-                    deletePost(ownerId, postId);
-                  },
-                  context: context,
-                ),
-                icon: Icon(
-                  Icons.more_vert,
-                  color: Colors.white,
-                ),
-              )
-            : Container(),
-      );
-    },
-  );
+      ),
+      subtitle: Text(
+        ownerId,
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+      // trailing: isPostOwner
+      //     ? IconButton(
+      //   onPressed: () => showDialogue(
+      //     title: "Remove this post?",
+      //     image: "images/deletepost.png",
+      //     leftAction: () {},
+      //     rightAction: () {
+      //       deletePost(ownerId, postId);
+      //     },
+      //     context: context,
+      //   ),
+      //   icon: Icon(
+      //     Icons.more_vert,
+      //     color: Colors.white,
+      //   ),
+    );
+  }
 }
 
 buildCreatePostHeader(BuildContext context) {

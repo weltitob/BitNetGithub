@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 
 //USED FOR UPLOAD SCREEN (USER PICKS FILE LOCALLY)
@@ -26,28 +31,33 @@ class ImageBuilderLocal extends StatelessWidget {
 }
 
 //USED FOR POSTS IN FEED ETC. IMAGE IS FETCHED FROM DATABASE
-class ImageBuilderNetwork extends StatelessWidget {
-  final String url;
-  const ImageBuilderNetwork({
+class ImageBuilder extends StatelessWidget {
+  final String encodedData;
+
+  const ImageBuilder({
     Key? key,
-    required this.url,
+    required this.encodedData,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Decode the base64 string into bytes
+    final base64String = encodedData.split(',').last;
+    Uint8List imageBytes = base64Decode(base64String);
+
     return ImageBox(
-            child: CachedNetworkImage(
-              imageUrl: url,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Padding(
-                child: Center(child: CircularProgressIndicator()),
-                padding: EdgeInsets.all(25.0),
-              ),
-              errorWidget: (context, url, error) => Icon(
-                Icons.error,
-                color: Theme.of(context).colorScheme.error,
-              ),
-            ));
+      child: Image.memory(
+        imageBytes,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          height: AppTheme.cardPadding * 5,
+          child: Icon(
+            Icons.error,
+            color: Theme.of(context).colorScheme.error,
+          ),
+        ),
+      ),
+    );
   }
 }
 
