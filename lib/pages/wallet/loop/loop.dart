@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-
 class Loop extends StatefulWidget {
   const Loop({super.key});
 
@@ -76,7 +75,8 @@ class LoopController extends State<Loop> {
               status: TransactionStatus.confirmed,
               direction: TransactionDirection.received,
               receiver: receivedInvoice.paymentRequest!,
-              txHash: receivedInvoice.rHash!, fee: 0,
+              txHash: receivedInvoice.rHash!,
+              fee: 0,
             ));
         //generate a new invoice for the user with 0 amount
         logger.i("Generating new empty invoice for user");
@@ -104,7 +104,8 @@ class LoopController extends State<Loop> {
             status: TransactionStatus.confirmed,
             direction: TransactionDirection.received,
             receiver: bitcoinTransaction.destAddresses[0],
-            txHash: bitcoinTransaction.txHash, fee: 0,
+            txHash: bitcoinTransaction.txHash ?? 'null',
+            fee: 0,
           ));
       //});
     }, onError: (error) {

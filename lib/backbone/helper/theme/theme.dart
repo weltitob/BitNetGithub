@@ -476,7 +476,7 @@ abstract class AppTheme {
   static ThemeData customTheme(Brightness brightness, [Color? seed]) {
     //based of seed make a dark and a light color palette scheme just like google does
     Color defaultSeed = seed ??
-        Colors.blue; // Default to blue if no seed provided
+        AppTheme.primaryColor; // Default to blue if no seed provided
 
     // Generate a ColorScheme based on the seed color and desired brightness
     ColorScheme colorScheme = ColorScheme.fromSeed(

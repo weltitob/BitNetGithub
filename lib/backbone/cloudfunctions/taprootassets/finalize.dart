@@ -5,9 +5,8 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:blockchain_utils/hex/hex.dart';
-import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
+import 'package:http/http.dart' as http;
 
 Future<dynamic> finalizeMint() async {
   HttpOverrides.global = MyHttpOverrides();
@@ -21,10 +20,10 @@ Future<dynamic> finalizeMint() async {
 
   String url = 'https://$restHost/v1/taproot-assets/assets/mint/finalize';
 
-
   // Prepare the headers
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
+    'Content-Type': 'application/json',
   };
 
   // Prepare the data to be sent in the request
@@ -36,20 +35,16 @@ Future<dynamic> finalizeMint() async {
   };
 
   try {
-    Dio dio = Dio();
-    var response = await dio.post(
-      url,
-      data: json.encode(data),
-      options: Options(
-        headers: headers,
-        contentType: Headers.jsonContentType,
-      ),
+    var response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: json.encode(data),
     );
 
-    logger.i("Raw Response: ${response.data}");
+    logger.i("Raw Response: ${response.body}");
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> responseData = response.data;
+      Map<String, dynamic> responseData = json.decode(response.body);
 
       // Log the response data
       logger.i("Finalized minting batch response: ${json.encode(responseData, toEncodable: (e) => e.toString())}");
@@ -57,7 +52,7 @@ Future<dynamic> finalizeMint() async {
       // Return the response data
       return responseData;
     } else {
-      logger.e("Failed to finalize minting batch. Status code: ${response.statusCode}");
+      logger.e("Failed to finalize minting batch. Status code: ${response.statusCode}, ${response.body}");
       return null;
     }
   } catch (e) {

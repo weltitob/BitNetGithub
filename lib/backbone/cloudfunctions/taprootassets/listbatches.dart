@@ -1,82 +1,55 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
-import 'package:blockchain_utils/hex/hex.dart';
-import 'package:dio/dio.dart';
-import 'package:logger/logger.dart';
+import 'package:bitnet/backbone/helper/loadmacaroon.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/models/tapd/batch.dart';
+import 'package:bitnet/models/tapd/fetchbatchresponse.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
-Future<dynamic> fetchMintBatch(String batchKey) async {
+Future<Batch?> fetchMintBatch(String batchKey) async {
   HttpOverrides.global = MyHttpOverrides();
-  Logger logger = Logger();
+  LoggerService logger = Get.find();
 
-  String restHost = 'mybitnet.com:8443';
-  String macaroonPath = './pythonfunctions/keys/tapd_admin.macaroon';
+  String restHost = AppTheme.baseUrlLightningTerminal;
 
+  dynamic byteData = await loadTapdMacaroonAsset();
+  List<int> bytes = byteData.buffer.asUint8List();
+  String macaroon = bytesToHex(bytes);
 
   String url = 'https://$restHost/v1/taproot-assets/assets/mint/batches/$batchKey';
-
-  // Load Macaroon file and encode to hex
-  List<int> macaroonBytes = await File(macaroonPath).readAsBytes();
-  String macaroon = hex.encode(macaroonBytes);
 
   // Prepare the headers
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
+    'Content-Type': 'application/json',
   };
 
   try {
-    Dio dio = Dio();
-    var response = await dio.get(url, options: Options(headers: headers));
+    var response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
 
     if (response.statusCode == 200) {
       logger.i("RESPONSE SUCCESSFUL!");
-      Map<String, dynamic> responseData = response.data;
+      Map<String, dynamic> responseData = json.decode(response.body);
+      logger.i("Raw Response: ${response.body}");
 
-      // Iteration through all batches
-      for (var batch in responseData['batches'] ?? []) {
-        logger.i("Processing batch: ${batch['batch_key'] ?? 'N/A'}");
+      // Parse the response data into FetchBatchResponse
+      FetchBatchResponse fetchBatchResponse = FetchBatchResponse.fromJson(responseData);
 
-        // Iteration through all assets in the current batch
-        for (var asset in batch['assets'] ?? []) {
-          var assetMeta = asset['asset_meta'] ?? {};
-          var data = assetMeta['data'] ?? '';
+      // Find the batch with the specified batchKey
+      Batch? batch = fetchBatchResponse.batches.firstWhere(
+            (b) => b.batchKey == batchKey,
+      );
 
-          if (data.isEmpty) {
-            logger.w("No data field for asset ${asset['name'] ?? ''}");
-            continue;
-          }
-
-          logger.i("Decoding data for asset: ${asset['name'] ?? ''}");
-          try {
-            // Base64 decode the data
-            var decodedData = base64.decode(data);
-            try {
-              // Attempt to interpret the decoded binary data as a UTF-8 string
-              var decodedString = utf8.decode(decodedData);
-              try {
-                // Attempt to interpret the string as JSON
-                var jsonData = jsonDecode(decodedString);
-                logger.i("Decoded JSON data for asset ${asset['name'] ?? ''}: $decodedString");
-
-              } catch (e) {
-                // The decoded string is not valid JSON
-                logger.w("Decoded data for asset ${asset['name'] ?? ''} is not valid JSON. Raw data: $decodedString");
-              }
-            } catch (e) {
-              // The decoded data cannot be interpreted as UTF-8
-              logger.w("Decoded data for asset ${asset['name'] ?? ''} cannot be decoded as UTF-8. It might not be text data.");
-            }
-          } catch (e) {
-            // Error during Base64 decoding
-            logger.e("Error decoding Base64 data for asset ${asset['name'] ?? ''}: $e");
-          }
-        }
-      }
-
-      // Return the response data
-      return responseData;
+      // Return the parsed Batch object
+      return batch;
     } else {
-      logger.e("Failed to fetch data. Status code: ${response.statusCode}");
+      logger.e("Failed to fetch data. Status code: ${response.statusCode} ${response.body}");
       return null;
     }
   } catch (e) {

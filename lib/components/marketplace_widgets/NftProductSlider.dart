@@ -70,17 +70,17 @@ class _NftProductSliderState extends State<NftProductSlider> {
                       ),
                     ),
                   ),
-                  Positioned(
-                      bottom: 12,
-                      right: 6,
-                      child: GlassContainer(
-                          child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          "Rank - " + widget.rank.toString(),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ))),
+                  // Positioned(
+                  //     bottom: 12,
+                  //     right: 6,
+                  //     child: GlassContainer(
+                  //         child: Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  //       child: Text(
+                  //         "Rank - " + widget.rank.toString(),
+                  //         style: Theme.of(context).textTheme.bodySmall,
+                  //       ),
+                  //     ))),
                 ]),
                 Flexible(
                   child: Row(

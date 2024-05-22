@@ -6,12 +6,10 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/tapd/minassetresponse.dart';
-import 'package:blockchain_utils/hex/hex.dart';
-import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
-
-mintAsset(String assetDataBase64) async {
+Future<MintAssetResponse?> mintAsset(String assetName, String assetDataBase64, bool isGrouped) async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
@@ -24,6 +22,7 @@ mintAsset(String assetDataBase64) async {
   // Prepare the headers
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
+    'Content-Type': 'application/json',
   };
 
   // Prepare the data to be sent in the request
@@ -32,9 +31,9 @@ mintAsset(String assetDataBase64) async {
       // Type of asset: can be 'COLLECTIBLE' for NFTs or other types
       'asset_type': 'COLLECTIBLE',
       // Indicates if a new group key will be issued for the asset
-      'new_grouped_asset': true,
+      'new_grouped_asset': isGrouped,
       // Name of the asset
-      'name': 'Fieber Traum (Skit)',
+      'name': assetName,
       // Amount of the asset
       'amount': 1,
       // Metadata associated with the asset
@@ -52,26 +51,26 @@ mintAsset(String assetDataBase64) async {
   String url = 'https://$restHost/v1/taproot-assets/assets';
 
   try {
-    Dio dio = Dio();
-    var response = await dio.post(
-      url,
-      data: json.encode(data),
-      options: Options(
-        headers: headers,
-        contentType: Headers.jsonContentType,
-      ),
+    var response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: json.encode(data),
     );
 
-    logger.i("Raw Response: ${response.data}");
+    logger.i("Raw Response: ${response.body}");
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> responseData = response.data;
+      Map<String, dynamic> responseData = json.decode(response.body);
       MintAssetResponse mintAssetResponse = MintAssetResponse.fromJson(responseData);
       return mintAssetResponse;
+    } else if (response.statusCode == 500) {
+      logger.e("Failed to mint asset (name probably is already in another item in the batch): ${response.statusCode}");
+      return null;
     } else {
-      logger.e('Failed to load Taproot asset data: ${response.statusCode}, ${response.data}');
+      logger.e('Failed to load Taproot asset data: ${response.statusCode}, ${response.body}');
     }
   } catch (e) {
     logger.e('Error requesting taproot assets: $e');
   }
+  return null;
 }

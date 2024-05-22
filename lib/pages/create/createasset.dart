@@ -49,6 +49,7 @@ class CreateAsset extends StatefulWidget {
 class _CreateAssetState extends State<CreateAsset> {
   final postFiles = <PostFile>[];
   TextEditingController commentController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   final recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
 
@@ -173,6 +174,11 @@ class _CreateAssetState extends State<CreateAsset> {
                           vertical: AppTheme.elementSpacing),
                       child: Column(children: [
                         buildCreatePostHeader(context),
+                        TextField(
+                          controller: nameController,
+                          decoration: AppTheme.textfieldDecoration(
+                              "Name your Asset", context),
+                        ),
                         Expanded(
                           child: postFiles.isNotEmpty
                               ? ScrollConfiguration(
@@ -196,21 +202,21 @@ class _CreateAssetState extends State<CreateAsset> {
                                             post.text ??
                                             post.type.name),
                                         confirmDismiss: (value) async {
-                                          final result = await showDialogue(
-                                            context: context,
-                                            title: "Remove?",
-                                            image: "images/deletepost.png",
-                                            leftAction: () {
-                                              Navigator.of(context).pop(false);
-                                            },
-                                            rightAction: () {
-                                              Navigator.of(context).pop(true);
-                                            },
-                                          );
-                                          if (result == true)
-                                            postFiles.removeAt(index);
+                                          // final result = await showDialogue(
+                                          //   context: context,
+                                          //   title: "Remove?",
+                                          //   image: "images/deletepost.png",
+                                          //   leftAction: () {
+                                          //     // Navigator.of(context).pop(false);
+                                          //   },
+                                          //   rightAction: () {
+                                          //     // Navigator.of(context).pop(true);
+                                          //   },
+                                          // );
+                                          // if (result == true)
+                                          postFiles.removeAt(index);
                                           setState(() {});
-                                          return Future.value(result);
+                                          return Future.value(true);
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.only(
@@ -233,7 +239,7 @@ class _CreateAssetState extends State<CreateAsset> {
                           onTap: () {
                             if (postFiles.isNotEmpty) {
                               convertToBase64AndMakePushReady(
-                                  context, postFiles);
+                                  context, postFiles, nameController.text);
                             } else {
                               showOverlay(
                                 context,
@@ -434,7 +440,6 @@ class _PostItem extends StatelessWidget {
   }
 }
 
-
 Map<String, dynamic> convertToAssetJsonMap(List<Media> medias) {
   final Map<String, dynamic> jsonMap = {};
   for (var media in medias) {
@@ -443,7 +448,7 @@ Map<String, dynamic> convertToAssetJsonMap(List<Media> medias) {
   return jsonMap;
 }
 
-void tiggerAssetMinting(BuildContext context, List<Media> mediasFormatted) async {
+void triggerAssetMinting(BuildContext context, List<Media> mediasFormatted, String assetName) async {
   try {
     // Convert mediasFormatted to JSON
     final jsonMap = convertToAssetJsonMap(mediasFormatted);
@@ -452,10 +457,28 @@ void tiggerAssetMinting(BuildContext context, List<Media> mediasFormatted) async
 
     String assetDataBase64 = base64.encode(utf8.encode(jsonString));
     print(assetDataBase64);
-    MintAssetResponse mintAssetResponse = mintAsset(assetDataBase64);
 
-    //dann anhand der mintassetresponse auf den batchscreen forwarden und die batch id mitgeben
-    //bekommt alles n eigenen batch oder wann bekommt man n eigenen batch überhaupt
+    // Get the batch key for the next screen
+    MintAssetResponse? mintAssetResponse = await mintAsset(assetDataBase64, assetName, false);
+
+    if (mintAssetResponse == null) {
+      showOverlay(
+        context,
+        "Failed to mint asset: You might already have an asset with a similar name in your list.",
+        color: AppTheme.errorColor,
+      );
+      return;
+    }
+    String batchKey = mintAssetResponse.pendingBatch!.batchKey.toString();
+    // Encode the batch key without slashes to not break paths
+    print("Batch key plain: $batchKey");
+    var batchKeyBytes = utf8.encode(batchKey);
+    String base64BatchKey = base64Url.encode(batchKeyBytes);
+
+    print('Navigating to /create/finalize/$base64BatchKey');
+
+    // Use the batch key for the finalize screen
+    context.go('/create/finalize/$base64BatchKey');
 
   } catch (e) {
     showOverlay(
@@ -466,7 +489,8 @@ void tiggerAssetMinting(BuildContext context, List<Media> mediasFormatted) async
   }
 }
 
-void convertToBase64AndMakePushReady(BuildContext context, postFiles) async {
+
+void convertToBase64AndMakePushReady(BuildContext context, postFiles, String assetName) async {
   try {
     //isLoading = true;
     final mediasFormatted = <Media>[];
@@ -523,8 +547,7 @@ void convertToBase64AndMakePushReady(BuildContext context, postFiles) async {
         logger.e("file type thats not supported was added");
         // medias.add(Media(data: file.text ?? '', type: file.type.name));
       }
-      tiggerAssetMinting(context, mediasFormatted);
-      context.go('/create/finalize');
+      triggerAssetMinting(context, mediasFormatted, assetName);
     });
   } catch (e) {
     //isLoading = false;
