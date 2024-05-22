@@ -40,10 +40,12 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       setState(() {});
     });
 
-    controller.amountController = TextEditingController();
-    controller.amountController.text = "1000";
+    controller.btcController = TextEditingController();
+    controller.btcController.text = "0.00001";
+    controller.satController = TextEditingController();
+        controller.satController.text = "1000";
+
     controller.currController = TextEditingController();
-    controller.amountController.addListener(controller.updateAmountDisplay);
     controller.getInvoice(0, "");
     controller.getTaprootAddress();
     controller.duration = Duration(minutes: 20);
@@ -53,9 +55,9 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
   @override
   void dispose() {
     _tabController.dispose();
-    controller.amountController.removeListener(controller.updateAmountDisplay);
     controller.currController.dispose();
-    controller.amountController.dispose();
+    controller.btcController.dispose();
+    controller.satController.dispose();
     controller.timer.cancel();
     super.dispose();
   }
@@ -85,7 +87,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
                       : Icon(FontAwesomeIcons.refresh),
                   title: "${controller.min.value}:${controller.sec.value}",
                   onTap: () {
-                    controller.getInvoice((double.parse(controller.amountController.text)).toInt(), "");
+                    controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
                     controller.timer.cancel();
                     controller.duration = Duration(minutes: 20);
                     controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);

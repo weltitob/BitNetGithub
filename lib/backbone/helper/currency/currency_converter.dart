@@ -23,7 +23,7 @@ class CurrencyConverter {
         return (amount / bitcoinPrice!).toStringAsFixed(8);
       }
       else {
-        return (amount * bitcoinPrice! / 100000000).toStringAsFixed(8);
+        return (amount * bitcoinPrice! / 100000000).toStringAsFixed(2);
       }
     } catch (e) {
       throw Exception("Error converting currency: $e");

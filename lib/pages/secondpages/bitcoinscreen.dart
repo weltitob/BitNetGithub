@@ -27,12 +27,14 @@ class _BitcoinScreenState extends State<BitcoinScreen>
     with SingleTickerProviderStateMixin {
 
   final _controller = ScrollController();
+  late TextEditingController satCtrlSell;
     late TextEditingController btcCtrlSell;
   late TextEditingController currCtrlSell;
   FocusNode nodeSell = FocusNode();
 
   @override
   void initState() {
+    satCtrlSell = TextEditingController();
     btcCtrlSell = TextEditingController();
     currCtrlSell = TextEditingController();
     
@@ -41,6 +43,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
 
   @override
   void dispose() {
+    satCtrlSell.dispose();
     btcCtrlSell.dispose();
     currCtrlSell.dispose();
     nodeSell.dispose();
@@ -101,10 +104,12 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                               child: Column(
                                 children: [
                                   AmountWidget(
-                                      enabled: true,
+                                      enabled: ()=>true,
+                                      satController: satCtrlSell,
                                       btcController: btcCtrlSell,
                                       currController: currCtrlSell,
                                       focusNode: nodeSell,
+                                      autoConvert: true,
                                       context: context),
                                 ],
                               ));
@@ -229,6 +234,7 @@ class PurchaseSheet extends StatefulWidget {
 class _PurchaseSheetState extends State<PurchaseSheet>
     with TickerProviderStateMixin {
   late TabController controller;
+  late TextEditingController satCtrlBuy;
   late TextEditingController btcCtrlBuy;
   late TextEditingController currCtrlBuy;
   FocusNode nodeBuy = FocusNode();
@@ -237,6 +243,7 @@ class _PurchaseSheetState extends State<PurchaseSheet>
   @override
  void initState() {
   controller = TabController(length: 3, vsync: this);
+  satCtrlBuy = TextEditingController();
   btcCtrlBuy = TextEditingController();
   currCtrlBuy = TextEditingController();
 
@@ -244,6 +251,7 @@ class _PurchaseSheetState extends State<PurchaseSheet>
  }
  @override 
  void dispose() {
+  satCtrlBuy.dispose();
   btcCtrlBuy.dispose();
   currCtrlBuy.dispose();
   nodeBuy.dispose();
@@ -269,10 +277,12 @@ class _PurchaseSheetState extends State<PurchaseSheet>
                 ),
               ),
               AmountWidget(
-                  enabled: true,
+                  enabled: ()=>true,
+                  satController: satCtrlBuy,
                   btcController: btcCtrlBuy,
                   currController: currCtrlBuy,
                   focusNode: nodeBuy,
+                  autoConvert: true,
                   context: context),
               SizedBox(
                 height: AppTheme.cardPadding * 2,

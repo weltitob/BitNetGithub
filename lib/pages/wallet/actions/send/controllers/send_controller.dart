@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart';
@@ -5,11 +6,13 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/fundpsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtransaction.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/walletkit/finalizepsbtresponse.dart';
@@ -22,6 +25,7 @@ import 'package:bitnet/models/bitcoin/walletkit/utxorequest.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:dart_lnurl/dart_lnurl.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +35,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class SendsController extends BaseController {
   late BuildContext context;
@@ -70,7 +75,8 @@ class SendsController extends BaseController {
   String feesSelected = "Niedrig";
   RxString description = "".obs;
   late double feesDouble;
-  TextEditingController moneyController =
+  TextEditingController satController = TextEditingController();
+  TextEditingController btcController =
       TextEditingController(); // the controller for the amount text field
   TextEditingController currencyController = TextEditingController();
   RxBool isFinished =
@@ -99,16 +105,13 @@ class SendsController extends BaseController {
     if (invoice != null) {
       logger.i("Invoice: $invoice");
       giveValuesToInvoice(invoice);
-      moneyController.text =
-          (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
+      
       bitcoinUnit = BitcoinUnits.SAT;
     } else if (walletAdress != null) {
       onQRCodeScanned(walletAdress, context);
       // logger.w("Walletadress: $walletAdress");
 
       // giveValuesToOnchainSend(walletAdress);
-      moneyController.text =
-          (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
       bitcoinUnit = BitcoinUnits.SAT;
     } else {
       logger.i("No parameters found");
@@ -188,7 +191,8 @@ class SendsController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    moneyController.text = "0.00001"; // set the initial amount to 0.00001
+    btcController.text = "0.00001";// set the initial amount to 0.00001
+    satController.text = "1000"; 
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
     bitcoinReceiverAdressController = TextEditingController();
@@ -198,7 +202,8 @@ class SendsController extends BaseController {
   void resetValues() {
     hasReceiver.value = false;
     bitcoinReceiverAdress = "";
-    moneyController.text = "0.00001";
+    btcController.text = "0.00001";
+    satController.text = "1000";
     moneyTextFieldIsEnabled.value = true;
     description.value = "";
     //context.go("/wallet/send");
@@ -216,9 +221,6 @@ class SendsController extends BaseController {
     final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
     double sat_per_vbyte = double.parse(sat_per_kw); // / 4
     feesDouble = sat_per_vbyte;
-    moneyController.text = feesDouble.toString();
-    moneyController.text =
-        (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
     bitcoinUnit = BitcoinUnits.SAT;
 
     print("Estimated fees: $feesDouble");
@@ -242,7 +244,8 @@ class SendsController extends BaseController {
       hasReceiver.value = true;
       sendType = SendType.LightningUrl;
       bitcoinReceiverAdress = lnUrl;
-      moneyController.text = lnResult.payParams!.minSendable.toString();
+      satController.text = lnResult.payParams!.minSendable.toString();
+       
       bitcoinUnit = BitcoinUnits.SAT;
       moneyTextFieldIsEnabled.value = false;
       lowerBound = lnResult.payParams!.minSendable;
@@ -253,9 +256,9 @@ class SendsController extends BaseController {
     }
 
   }
-  void payLnUrl(String url, double amount, BuildContext context) async {
+  void payLnUrl(String url, int amount, BuildContext context) async {
     
-    Uri finalUrl = Uri.parse(url + "?amount=${amount.floor()}");
+    Uri finalUrl = Uri.parse(url + "?amount=${amount * 1000}");
 
    dynamic response = await http.get(finalUrl);
    dynamic body = jsonDecode(response.body);
@@ -266,17 +269,20 @@ class SendsController extends BaseController {
 
           Stream<RestResponse> paymentStream =
               sendPaymentV2Stream(invoiceStrings);
-          paymentStream.listen((RestResponse response) {
+              StreamSubscription? sub;
+          sub = paymentStream.listen((RestResponse response) {
             isFinished.value =
                 true; 
             if (response.statusCode == "success") {
               GoRouter.of(context).go("/feed");
                             showOverlay(context, "Payment successful!");
-
+            sub!.cancel();
             } else {
               showOverlay(context, "Payment failed: ${response.message}");
               isFinished.value =
                   false; 
+                              sub!.cancel();
+
             }
           }, onError: (error) {
             isFinished.value = false;
@@ -285,6 +291,7 @@ class SendsController extends BaseController {
           }, cancelOnError: true 
               );
     print(response.body);
+    resetValues();
   }
   void giveValuesToInvoice(String invoiceString) {
     LoggerService logger = Get.find();
@@ -294,11 +301,7 @@ class SendsController extends BaseController {
     bitcoinReceiverAdress = invoiceString;
 
     Bolt11PaymentRequest req = Bolt11PaymentRequest(invoiceString);
-    moneyController.text = req.amount.toString();
-    moneyController.text =
-        (double.parse(moneyController.text) * 100000000).toStringAsFixed(2);
-    bitcoinUnit = BitcoinUnits.SAT;
-
+    satController.text = CurrencyConverter.convertBitcoinToSats(req.amount.toDouble()).toString();
     moneyTextFieldIsEnabled.value = false;
     description.value = req.tags[1].data;
 
@@ -327,10 +330,9 @@ class SendsController extends BaseController {
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
         if(sendType == SendType.LightningUrl) {
-          payLnUrl(lnCallback!, double.parse(moneyController.text), context);
+          payLnUrl(lnCallback!, int.parse(satController.text), context);
         } 
         else if (sendType == SendType.Invoice) {
-          final amountInSat = double.parse(moneyController.text) * 100000000;
           List<String> invoiceStrings = [
             bitcoinReceiverAdress
           ]; // Assuming you want to send a list containing a single invoice for now
@@ -358,7 +360,7 @@ class SendsController extends BaseController {
           }, cancelOnError: true // Cancel the subscription upon first error
               );
         } else if (sendType == SendType.OnChain) {
-          final amountInSat = double.parse(moneyController.text) * 100000000;
+          final amountInSat = int.parse(satController.text);
 
           dynamic restResponseListUnspent = await listUnspent();
           UtxoRequestList utxos =
@@ -424,7 +426,8 @@ class SendsController extends BaseController {
   void dispose() {
     myFocusNodeAdress.dispose();
     myFocusNodeMoney.dispose();
-    moneyController.dispose();
+    btcController.dispose();
+    satController.dispose();
     currencyController.dispose();
     super.dispose();
   }

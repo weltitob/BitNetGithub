@@ -155,9 +155,9 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                   children: [
                     Icon(Icons.edit, color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,),
                     SizedBox(width: AppTheme.elementSpacing / 2),
-                    Text(controller.amountController.text.isEmpty
+                    Text(controller.satController.text.isEmpty
                         ? "Change Amount"
-                        : controller.amountController.text,),
+                        : controller.satController.text,),
                   ],
                 ),
         

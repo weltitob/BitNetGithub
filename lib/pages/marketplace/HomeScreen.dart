@@ -54,24 +54,18 @@ class HomeScreen extends StatelessWidget {
                       // physics: const BouncingScrollPhysics(),
                       itemCount: nftHotProductSliderData.length,
                       itemBuilder: (context, index, index2) {
-                        return GestureDetector(
-                          onTap: () => context.goNamed(kNftProductScreenRoute,
-                              pathParameters: {
-                                'nft_id': nftDropSliderData[index].nftName
-                              }),
-                          child: NftProductSlider(
-                             nftImage: nftHotProductSliderData[index].nftImage,
-                            cryptoImage:
-                                nftHotProductSliderData[index].cryptoImage,
-                            nftName: nftHotProductSliderData[index].nftName,
-                            nftMainName:
-                                nftHotProductSliderData[index].nftMainName,
-                            cryptoText:
-                                nftHotProductSliderData[index].cryptoText,
-                            columnMargin:
-                                nftHotProductSliderData[index].columnMargin,
-                            rank: nftHotProductSliderData[index].rank
-                          ),
+                        return NftProductSlider(
+                           nftImage: nftHotProductSliderData[index].nftImage,
+                          cryptoImage:
+                              nftHotProductSliderData[index].cryptoImage,
+                          nftName: nftHotProductSliderData[index].nftName,
+                          nftMainName:
+                              nftHotProductSliderData[index].nftMainName,
+                          cryptoText:
+                              nftHotProductSliderData[index].cryptoText,
+                          columnMargin:
+                              nftHotProductSliderData[index].columnMargin,
+                          rank: nftHotProductSliderData[index].rank
                         );
                       },
                     ),

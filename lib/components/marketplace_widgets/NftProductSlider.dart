@@ -1,7 +1,9 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class NftProductSlider extends StatefulWidget {
   final nftImage;
@@ -35,7 +37,12 @@ class _NftProductSliderState extends State<NftProductSlider> {
     return Container(
       margin: widget.columnMargin ? EdgeInsets.symmetric(horizontal: 8.w) : EdgeInsets.zero,
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          context.pushNamed(kNftProductScreenRoute,
+                              pathParameters: {
+                                'nft_id': widget.nftName
+                              });
+        },
         child: GlassContainer(
           width: 214.w,
           height: 50.w,

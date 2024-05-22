@@ -194,11 +194,6 @@ class _MyAppState extends State<MyApp> {
                     final newStream = BitcoinPriceStream();
                     newStream.updateCurrency(
                         currencyChangeProvider.selectedCurrency ?? 'usd');
-
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      _streamKey.currentState?.setState(() {});
-                      _streamKey = GlobalKey(debugLabel: currencyChangeProvider.selectedCurrency ?? 'usd');
-                    });
                     newStream.priceStream.asBroadcastStream().listen((data){
                       Get.find<WalletsController>().chartLines.value = data;
 
