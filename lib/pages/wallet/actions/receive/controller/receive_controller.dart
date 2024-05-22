@@ -25,7 +25,8 @@ class ReceiveController extends BaseController {
   //ReceiveState receiveState = ReceiveState(0);
   RxBool updatingText = false.obs;
   FocusNode myFocusNode = FocusNode();
-  late TextEditingController amountController = TextEditingController();
+  late TextEditingController satController;
+  late TextEditingController btcController = TextEditingController();
   late TextEditingController currController;
   TextEditingController messageController = TextEditingController();
   late Duration duration;
@@ -90,53 +91,53 @@ class ReceiveController extends BaseController {
     }
     // });
   }
+  //made conversion an internal feature of amountwidget
+  // void updateAmountDisplay() {
+  //   print('update amount');
+  //   String text = btcController.text;
+  //   double? currentAmountDouble = double.tryParse(text);
+  //   if (updatingText.value) return; // Prevent recursion
+  //   if (currentAmountDouble != null) {
+  //     updatingText.value = true;
+  //     if (bitcoinUnit == BitcoinUnits.SAT && currentAmountDouble >= 100000000) {
+  //       // Convert to BTC if in SATS and amount is >= 1 BTC
+  //       double btcAmount =
+  //           CurrencyConverter.convertSatoshiToBTC(currentAmountDouble);
+  //       bitcoinUnit.value = BitcoinUnits.BTC;
+  //       print(bitcoinUnit);
+  //       btcController.text = btcAmount.toString(); // Update text to BTC
+  //       // setState(() {});
+  //       //receiveState.value +=1;
+  //       // if (mounted) {
+  //       //   setState(() {
+  //       //     // Your state update logic here
+  //       //   });
+  //       // }
+  //     } else if (currentAmountDouble < 1 &&
+  //         currentAmountDouble != 0 &&
+  //         bitcoinUnit == BitcoinUnits.BTC) {
+  //       // Convert to SATS if in BTC and amount is < 1 BTC
+  //       double sats =
+  //           CurrencyConverter.convertBitcoinToSats(currentAmountDouble);
+  //       bitcoinUnit.value = BitcoinUnits.SAT;
+  //       print(bitcoinUnit);
+  //       btcController.text = sats.toInt().toString(); // Update text to SATS
+  //       // setState(() {});
+  //       //receiveState.value +=1;
 
-  void updateAmountDisplay() {
-    print('update amount');
-    String text = amountController.text;
-    double? currentAmountDouble = double.tryParse(text);
-    if (updatingText.value) return; // Prevent recursion
-    if (currentAmountDouble != null) {
-      updatingText.value = true;
-      if (bitcoinUnit == BitcoinUnits.SAT && currentAmountDouble >= 100000000) {
-        // Convert to BTC if in SATS and amount is >= 1 BTC
-        double btcAmount =
-            CurrencyConverter.convertSatoshiToBTC(currentAmountDouble);
-        bitcoinUnit.value = BitcoinUnits.BTC;
-        print(bitcoinUnit);
-        amountController.text = btcAmount.toString(); // Update text to BTC
-        // setState(() {});
-        //receiveState.value +=1;
-        // if (mounted) {
-        //   setState(() {
-        //     // Your state update logic here
-        //   });
-        // }
-      } else if (currentAmountDouble < 1 &&
-          currentAmountDouble != 0 &&
-          bitcoinUnit == BitcoinUnits.BTC) {
-        // Convert to SATS if in BTC and amount is < 1 BTC
-        double sats =
-            CurrencyConverter.convertBitcoinToSats(currentAmountDouble);
-        bitcoinUnit.value = BitcoinUnits.SAT;
-        print(bitcoinUnit);
-        amountController.text = sats.toInt().toString(); // Update text to SATS
-        // setState(() {});
-        //receiveState.value +=1;
-
-        // if (mounted) {
-        //   setState(() {
-        //     // Your state update logic here
-        //   });
-        // }
-      } else {
-        print("ELSE STATEMENT WAS TRIGGERED: " +
-            bitcoinUnit.toString() +
-            " " +
-            currentAmountDouble.toString());
-      }
-      // Your conversion logic here
-      updatingText.value = false;
-    }
-  }
+  //       // if (mounted) {
+  //       //   setState(() {
+  //       //     // Your state update logic here
+  //       //   });
+  //       // }
+  //     } else {
+  //       print("ELSE STATEMENT WAS TRIGGERED: " +
+  //           bitcoinUnit.toString() +
+  //           " " +
+  //           currentAmountDouble.toString());
+  //     }
+  //     // Your conversion logic here
+  //     updatingText.value = false;
+  //   }
+  // }
 }

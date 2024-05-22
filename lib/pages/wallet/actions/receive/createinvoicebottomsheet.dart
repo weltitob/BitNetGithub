@@ -28,9 +28,11 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             child: AmountWidget(
               context: context,
               bitcoinUnit: controller.bitcoinUnit.value,
-              enabled: true,
-              btcController: controller.amountController,
+              enabled: ()=>true,
+              btcController: controller.btcController,
+              satController: controller.satController,
               currController: controller.currController,
+              autoConvert: true,
               focusNode: controller.myFocusNode,
             ),
           );
@@ -53,7 +55,7 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             customWidth: AppTheme.cardPadding * 12,
             onTap: () {
               controller.getInvoice(
-                  (double.parse(controller.amountController.text)).toInt(), "");
+                  (double.parse(controller.satController.text)).toInt(), "");
               context.pop();
             })
       ],

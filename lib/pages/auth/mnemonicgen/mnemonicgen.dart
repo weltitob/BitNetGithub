@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
@@ -135,6 +136,7 @@ class MnemonicController extends State<MnemonicGen> {
 
       CountryProvider countryProvider = Provider.of<CountryProvider>(context, listen: false);
       countryProvider.setCountryInDatabase(countryProvider.getCountry() ?? "US");
+      WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
       logger.i("Navigating to homescreen now...");
       context.go('/');
     }  on FirebaseException catch (e) {
