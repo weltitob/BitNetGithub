@@ -149,7 +149,7 @@ String convertIntoDateFormat(int time){
   // Convert the timestamp to DateTime
   DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
   // Format the DateTime object to a readable string
-  String formattedDate = DateFormat('dd-MM-yyyy HH:mm:ss').format(date);
+  String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(date);
   print(formattedDate);
   return formattedDate;
 }

@@ -709,7 +709,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                                                             2),
                                                                     decoration: BoxDecoration(
                                                                         color: Colors
-                                                                            .black,
+                                                                            .grey,
                                                                         borderRadius:
                                                                             BorderRadius.circular(3)),
                                                                     child: controllerTransaction
@@ -862,7 +862,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                                                           BorderRadius.circular(
                                                                               5),
                                                                       color: Colors
-                                                                          .black,
+                                                                          .grey,
                                                                     ),
                                                                     child: controllerTransaction
                                                                             .isShowBTC
