@@ -143,7 +143,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                           text: "Change Amount",
                           context: context,
                         ),
-                        body: CreateInvoice(), context: context,),
+                        body: SingleChildScrollView(child: CreateInvoice()), context: context,),
                   );
                   if (res) {
                     setState(() {});

@@ -129,8 +129,6 @@ class _TransactionsState extends State<Transactions>
       
 
     });
-
-
     getLightningPayments().then((value) {
                       futuresCompleted++;
       if(!value) {
@@ -146,9 +144,6 @@ class _TransactionsState extends State<Transactions>
           }
       
     });
-
- 
-     
     getLightningInvoices().then((value) {
                 futuresCompleted++;
       if(!value) {
@@ -297,8 +292,11 @@ class _TransactionsState extends State<Transactions>
 
     combinedTransactions
         .sort((a, b) => a.data.timestamp.compareTo(b.data.timestamp));
-    combinedTransactions = combinedTransactions.reversed.toList();
+      combinedTransactions = combinedTransactions.reversed.toList();
+    if(combinedTransactions.isNotEmpty) {
 
+      controller.initialDate(combinedTransactions.last.data.timestamp);
+    }
     return transactionsLoaded
         ? widget.fullList
             ? bitnetScaffold(
@@ -347,35 +345,37 @@ class _TransactionsState extends State<Transactions>
                               itemCount: combinedTransactions.length,
                               itemBuilder: (context, index) {
                                 print(controller.selectedFilters.toJson());
-                                if (controller.selectedFilters
-                                    .contains('Sent') && controller.selectedFilters
-                                    .contains('Received')) {
-                                  return combinedTransactions[index];
-                                }
-                                if (controller.selectedFilters
-                                    .contains('Sent')) {
-                                  return combinedTransactions[index]
-                                          .data
-                                          .amount
-                                          .contains('-')
-                                      ? combinedTransactions[index]
-                                      : SizedBox();
-                                }
-                                if (controller.selectedFilters
-                                    .contains('Received')) {
-                                  return combinedTransactions[index]
-                                          .data
-                                          .amount
-                                          .contains('+')
-                                      ? combinedTransactions[index]
-                                      : SizedBox();
-                                }
-                                return combinedTransactions[index]
+                                if(combinedTransactions[index].data.timestamp >= controller.start  && combinedTransactions[index].data.timestamp <= controller.end){
+                                  if (controller.selectedFilters
+                                      .contains('Sent') && controller.selectedFilters
+                                      .contains('Received')) {
+                                    return combinedTransactions[index];
+                                  }
+                                  if (controller.selectedFilters
+                                      .contains('Sent')) {
+                                    return combinedTransactions[index]
                                         .data
-                                        .receiver
-                                        .contains(searchCtrl.text.toLowerCase())
-                                    ? combinedTransactions[index]
-                                    : SizedBox();
+                                        .amount
+                                        .contains('-')
+                                        ? combinedTransactions[index]
+                                        : SizedBox();
+                                  }
+                                  if (controller.selectedFilters
+                                      .contains('Received')) {
+                                    return combinedTransactions[index]
+                                        .data
+                                        .amount
+                                        .contains('+')
+                                        ? combinedTransactions[index]
+                                        : SizedBox();
+                                  }
+                                  return combinedTransactions[index]
+                                      .data
+                                      .receiver
+                                      .contains(searchCtrl.text.toLowerCase())
+                                      ? combinedTransactions[index]
+                                      : SizedBox();
+                                }
                               }))
                     ],
                   ),
@@ -389,6 +389,7 @@ class _TransactionsState extends State<Transactions>
                         : combinedTransactions.length,
                     itemBuilder: (context, index){
                       print(controller.selectedFilters.toJson());
+                      if(combinedTransactions[index].data.timestamp >= controller.start  && combinedTransactions[index].data.timestamp <= controller.end){
                       if (controller.selectedFilters
                           .contains('Sent') && controller.selectedFilters
                           .contains('Received')) {
@@ -418,7 +419,8 @@ class _TransactionsState extends State<Transactions>
                           .contains(searchCtrl.text.toLowerCase())
                           ? combinedTransactions[index]
                           : SizedBox();
-                    }))
+                      }
+                    }) )
         : Container(
             height: AppTheme.cardPadding * 18,
             child: dotProgress(context),

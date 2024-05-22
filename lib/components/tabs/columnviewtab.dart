@@ -28,6 +28,7 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
 
   @override
   void initState() {
+    fetchTaprootAssets();
     super.initState();
   }
 
@@ -42,7 +43,7 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
 
       //meta zu hallfinney quote fehlt iwie
 
-      for (int i = 0; i < reversedAssets.length && i < 15; i++) {
+      for (int i = 0; i < reversedAssets.length && i < 10; i++) {
         String assetId = reversedAssets[i].assetGenesis.assetId;
         AssetMetaResponse? meta = await fetchAssetMeta(assetId);
         if (meta != null) {
@@ -68,14 +69,9 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          if (!isLoading && assets.isEmpty)
-            LongButtonWidget(
-              title: "FETCH ASSETS",
-              onTap: fetchTaprootAssets,
-            ),
           if (isLoading)
             Center(child: dotProgress(context))
-          else if (assets.isEmpty)
+          else if (!isLoading && assets.isEmpty)
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Row(

@@ -8,8 +8,7 @@ class WalletFilterController extends BaseController {
   RxList<String> selectedFilters = [''].obs;
   RxBool change = true.obs;
   RxList<dynamic> filterList = [].obs;
-
-
+  int start = 0, end = 0;
 
   void toggleFilter(String filter) {
       if (selectedFilters.contains(filter)) {
@@ -20,6 +19,20 @@ class WalletFilterController extends BaseController {
       change.value = true;
   }
 
+  @override
+  void onInit() async {
+    super.onInit();
+    start = startDate.value.millisecondsSinceEpoch ~/1000;
+    end = endDate.value.millisecondsSinceEpoch ~/1000;
+  }
+
+
+
+
+  initialDate(int time){
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
+   startDate.value = date;
+  }
 
   Future<DateTime> selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
