@@ -16,7 +16,7 @@ class LoopGetxController extends GetxController {
   //false is lightning to onchain
   RxBool animate = false.obs;
   RxBool loadingState = false.obs;
-
+  TextEditingController satController = TextEditingController();
   TextEditingController btcController = TextEditingController();
   TextEditingController currencyController = TextEditingController();
 
@@ -30,11 +30,12 @@ class LoopGetxController extends GetxController {
   }
 
   void loopInQuote(BuildContext context) async {
-    log('this is the loopin amount ${btcController.text}');
-    if (btcController.text != '0.00') {
+    log('this is the loopin amount ${satController.text}');
+    if (btcController.text != '0') {
       updateLoadingState(true);
-      double amount = double.tryParse(btcController.text) ?? 0;
+      int amount = int.tryParse(satController.text) ?? 0;
       int roundedAmount = amount.round();
+
       log('this is the loopin amount $roundedAmount');
       final response = await getLoopinQuote(roundedAmount.toString());
       if (response.statusCode == 'error') {
@@ -51,10 +52,10 @@ class LoopGetxController extends GetxController {
   }
 
   void loopOutQuote(BuildContext context) async {
-    if (btcController.text != '0.00') {
-      log('this is the loopout amount ${btcController.text}');
+    if (btcController.text != '0') {
+      log('this is the loopout amount ${satController.text}');
       updateLoadingState(true);
-      double amount = double.tryParse(btcController.text) ?? 0;
+      int amount = int.tryParse(satController.text) ?? 0;
       int roundedAmount = amount.round();
       log('this is the loopout amount $roundedAmount');
 
@@ -318,8 +319,8 @@ class LoopGetxController extends GetxController {
                           LongButtonWidget(
                             title: "Transfer",
                             onTap: () {
-                              double amount =
-                                  double.tryParse(btcController.text) ?? 0;
+                              int amount =
+                                  int.tryParse(satController.text) ?? 0;
                               int roundedAmount = amount.round();
                               log(roundedAmount.toString());
                               final mapData = {

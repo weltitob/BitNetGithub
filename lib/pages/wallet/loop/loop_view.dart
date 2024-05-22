@@ -32,6 +32,7 @@ class _LoopScreenState extends State<LoopScreen> {
   void dispose() {
     loopGetController.btcController.clear();
     loopGetController.currencyController.clear();
+  
     loopGetController.dispose();
     log('Loop controller disposed');
     super.dispose();
@@ -108,16 +109,20 @@ class _LoopScreenState extends State<LoopScreen> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: AmountWidget(
-                enabled: true,
+                enabled: ()=>true,
                 bitcoinUnit: BitcoinUnits.SAT,
                 btcController: loopGetController.btcController,
                 currController: loopGetController.currencyController,
+                satController: loopGetController.satController,
                 focusNode: FocusNode(),
                 onAmountChange: (type, currency) {
                   log('This is the currencyController ${loopGetController.currencyController.text}');
                   log('This is the btcController ${loopGetController.btcController.text}');
+                                    log('This is the satController ${loopGetController.satController.text}');
+
                 },
                 context: context,
+                autoConvert: true,
               ),
             ),
             SizedBox(

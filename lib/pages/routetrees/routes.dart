@@ -13,6 +13,7 @@ import 'package:bitnet/pages/auth/restore/word_recovery/wordrecoveryscreen.dart'
 import 'package:bitnet/pages/bottomnav.dart';
 import 'package:bitnet/pages/create/createasset.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
+import 'package:bitnet/pages/marketplace/ListScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/matrix/widgets/log_view.dart';
@@ -102,10 +103,15 @@ class AppRoutes {
             path: '/feed',
             builder: (ctx, state) => BottomNav(routerState: state),
             routes: [
+
               GoRoute(
                   path: kNftProductScreenRoute + "/:nft_id",
                   name: kNftProductScreenRoute,
                   builder: (ctx, state) => NftProductScreen()),
+              GoRoute(
+                  path: kListScreenRoute,
+                  name: kListScreenRoute,
+                  builder: (ctx, state) => ListScreen()),
               GoRoute(
                   path: kNotificationScreenRoute,
                   builder: (ctx, state) => NotificationScreen()),

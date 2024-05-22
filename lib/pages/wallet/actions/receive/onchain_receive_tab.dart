@@ -140,9 +140,9 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                   ),
                   SizedBox(width: AppTheme.elementSpacing / 2),
                   Text(
-                    controller.amountController.text.isEmpty
+                    controller.satController.text.isEmpty
                         ? "Change Amount"
-                        : controller.amountController.text,
+                        : controller.satController.text,
                   ),
                 ],
               ),
