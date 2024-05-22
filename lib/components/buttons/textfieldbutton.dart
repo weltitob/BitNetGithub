@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 
 class TextFieldButton extends StatelessWidget {
@@ -46,11 +47,7 @@ class TextFieldButtonMorph extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.glassMorphColor,
-          borderRadius: AppTheme.cardRadiusBig,
-        ),
+      child: GlassContainer(
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: Icon(

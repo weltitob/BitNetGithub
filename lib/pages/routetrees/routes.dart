@@ -11,6 +11,7 @@ import 'package:bitnet/pages/auth/restore/social_recovery/info_social_recovery.d
 import 'package:bitnet/pages/auth/restore/social_recovery/socialrecoveryscreen.dart';
 import 'package:bitnet/pages/auth/restore/word_recovery/wordrecoveryscreen.dart';
 import 'package:bitnet/pages/bottomnav.dart';
+import 'package:bitnet/pages/create/batchscreen.dart';
 import 'package:bitnet/pages/create/createasset.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
@@ -337,6 +338,12 @@ class AppRoutes {
           builder: (ctx, state) =>
           //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
           CreateAsset(),
+          routes: [
+            GoRoute(
+              path: '/finalize',
+              builder: (ctx, state) => BatchScreen(),
+            ),
+          ]
         ),
         GoRoute(
           path: '/single_transaction',

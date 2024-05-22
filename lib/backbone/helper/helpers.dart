@@ -8,7 +8,17 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uuid/uuid.dart';
 
-enum MediaType { image, audio, camera, document, pdf, text, link, sticker, location, wallet }
+//camera, image_png, image_jpeg, gif, webp, audio_wav, audio_mp3, text, description, document, pdf, extenal_url, link, sticker, location, wallet
+enum MediaType {
+  image,
+  image_data,
+  description,
+  collection,
+  text,
+  audio,
+  external_url,
+  document,
+  wallet_address}
 
 Color getRandomColor() {
   final random = Random();

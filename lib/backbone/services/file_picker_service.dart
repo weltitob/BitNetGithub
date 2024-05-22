@@ -9,7 +9,7 @@ class FilePickerService {
   FilePickerService(this.mediaType);
 
   Future<File?> pickFile() async {
-    if (mediaType == MediaType.camera){
+    if (mediaType == MediaType.image){
       final file = await ImagePicker().pickImage(
           source: ImageSource.camera, imageQuality: 10
       );
@@ -33,7 +33,7 @@ class FilePickerService {
 
   List<String>? _getAllowedExtensionFromMediaType() {
     if (mediaType == MediaType.document) return ['doc'];
-    if (mediaType == MediaType.pdf) return ['pdf'];
+    //if (mediaType == MediaType.d) return ['pdf'];
     return null;
   }
 }

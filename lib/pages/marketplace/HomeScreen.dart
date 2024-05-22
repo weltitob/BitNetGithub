@@ -134,7 +134,6 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-               
                 CommonHeading(
                   hasButton: true,
                   headingText: 'Hot New Items',
@@ -143,11 +142,11 @@ class HomeScreen extends StatelessWidget {
                   isChild: Container(
                     width: size.width,
                     height: 245.w,
-                    margin: EdgeInsets.only(bottom: 30.h),
+                    margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       padding: EdgeInsets.only(
-                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                          top: 0.0, bottom: 0.0, right: AppTheme.elementSpacing.w, left: AppTheme.elementSpacing.w),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: nftHotProductSliderData.length,

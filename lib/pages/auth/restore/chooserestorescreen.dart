@@ -4,6 +4,7 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/resultlist/users.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +22,8 @@ class ChooseRestoreScreen extends StatefulWidget {
 
 class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
   void showError() {
-    showErrorDialog(
-      image: 'assets/images/error_character.png',
-      title: "An error occured, please try again later.",
-      context: context,
-    );
+    showOverlay(context, "An error occured, please try again later.", color: AppTheme.errorColor,);
+
   }
 
   @override

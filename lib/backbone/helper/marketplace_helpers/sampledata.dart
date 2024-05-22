@@ -65,6 +65,7 @@ final nftHotProductSliderData = [
       columnMargin: true,
       rank: 441),
 ];
+
 final nftExpireProductSliderData = [
   NftProductSliderModal(
       nftImage: nftImage4,

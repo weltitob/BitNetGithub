@@ -1,14 +1,22 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'package:bitnet/backbone/cloudfunctions/taprootassets/mintasset.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/compression.dart';
 import 'package:bitnet/backbone/services/file_picker_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
@@ -18,13 +26,15 @@ import 'package:bitnet/components/post/components/postfile_model.dart';
 
 import 'package:bitnet/components/post/components/textbuilder.dart';
 import 'package:bitnet/components/post/post_header.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:bitnet/models/postmodels/media_model.dart';
+import 'package:bitnet/models/tapd/minassetresponse.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:mime/mime.dart';
 
 //THIS ONE HERE SEEMS TO BE TH EISSUE THIS IMPORT FUCKS EVERYTHING UP
 //import 'package:bitnet/models/postmodels/post.dart';
@@ -65,27 +75,28 @@ class _CreateAssetState extends State<CreateAsset> {
   void _addMedia(MediaType mediaType) {
     if (mediaType == MediaType.text) {
       _addTextField();
-    } else if (mediaType == MediaType.camera || mediaType == MediaType.image) {
+    } else if (mediaType == MediaType.image || mediaType == MediaType.image) {
       _pickImageFiles(mediaType);
-    } else if (mediaType == MediaType.link) {
+    } else if (mediaType == MediaType.external_url) {
       _pickLink();
     } else {
       _pickFile(mediaType);
     }
   }
 
+  //da stettdessen den von izak mit sleection nehmen
   //imagecopression
   _pickImageFiles(MediaType mediaType) async {
     print(mediaType);
     dynamic file = await FilePickerService(mediaType).pickFile();
     if (file == null) return;
-    file = compressImage(file, postId);
+    file = compressImage(file, postId); //this is jpg now then lol
     postFiles.add(PostFile(mediaType, file: file));
     setState(() {});
   }
 
   void _pickLink() {
-    postFiles.add(PostFile(MediaType.link, text: ""));
+    postFiles.add(PostFile(MediaType.external_url, text: ""));
     setState(() {});
   }
 
@@ -134,31 +145,12 @@ class _CreateAssetState extends State<CreateAsset> {
     );
   }
 
-  Future<String?> uploadFile(File file, String path) async {
-    try {
-      final storageReference = FirebaseStorage.instance
-          .ref()
-          .child(path)
-          .child('${DateTime.now().millisecondsSinceEpoch} ${file.path}');
-      UploadTask? uploadTask;
-      uploadTask = storageReference.putFile(file);
-      final completer = Completer<void>();
-      final taskSnapshot = await uploadTask.whenComplete(completer.complete);
-      await completer.future;
-      final imageUrl = await taskSnapshot.ref.getDownloadURL();
-      return imageUrl;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: true,
       onPopInvoked: (bool) {
-        context.go("/profile");
+        context.go("/");
       },
       child: bitnetScaffold(
         appBar: bitnetAppBar(
@@ -166,7 +158,7 @@ class _CreateAssetState extends State<CreateAsset> {
           context: context,
           hasBackButton: true,
           onTap: () {
-            context.go("/profile");
+            context.go("/");
           },
         ),
         body: Container(
@@ -176,13 +168,14 @@ class _CreateAssetState extends State<CreateAsset> {
                     Expanded(
                         child: GlassContainer(
                             child: Padding(
-                              padding: const EdgeInsets.all(AppTheme.cardPadding),
-                              child: Column(
-                                children: [
-                              buildCreatePostHeader(context),
-                              Expanded(
-                                child: postFiles.isNotEmpty
-                                    ? ScrollConfiguration(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.elementSpacing,
+                          vertical: AppTheme.elementSpacing),
+                      child: Column(children: [
+                        buildCreatePostHeader(context),
+                        Expanded(
+                          child: postFiles.isNotEmpty
+                              ? ScrollConfiguration(
                                   behavior: MyBehavior(),
                                   child: ReorderableListView(
                                     //later remove expanded to only render the normal posts when something added
@@ -190,12 +183,12 @@ class _CreateAssetState extends State<CreateAsset> {
                                     onReorder: (oldIndex, newIndex) {
                                       setState(() {
                                         final item =
-                                        postFiles.removeAt(oldIndex);
+                                            postFiles.removeAt(oldIndex);
                                         postFiles.insert(newIndex, item);
                                       });
                                     },
                                     children:
-                                    postFiles.asMap().entries.map((e) {
+                                        postFiles.asMap().entries.map((e) {
                                       final index = e.key;
                                       final post = e.value;
                                       return Dismissible(
@@ -228,113 +221,36 @@ class _CreateAssetState extends State<CreateAsset> {
                                     }).toList(),
                                   ),
                                 )
-                                    : buildAddContent(),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-
-                                      SizedBox(
-                                        width: AppTheme.cardPadding,
-                                      ),
-
-                                      SizedBox(
-                                        width: AppTheme.cardPadding,
-                                      ),
-                                      //buildCameraButton()
-                                    ],
-                                  ),
-                                //buildUploadButton(),
-                                ]),
-
-                                ],),
-                            ))),
-                  buildTextField(),
-                 // SizedBox(height: AppTheme.cardPadding * 4,),
-
-                  ]
-            )),
+                              : Container(),
+                        ),
+                        LongButtonWidget(
+                          customHeight: AppTheme.cardPadding * 2,
+                          customWidth: AppTheme.cardPadding * 6,
+                          leadingIcon: postFiles.isNotEmpty
+                              ? Icon(Icons.arrow_forward_ios_rounded)
+                              : Icon(Icons.lock_rounded),
+                          title: "POST",
+                          onTap: () {
+                            if (postFiles.isNotEmpty) {
+                              convertToBase64AndMakePushReady(
+                                  context, postFiles);
+                            } else {
+                              showOverlay(
+                                context,
+                                "Please add some content to your post",
+                                color: AppTheme.errorColor,
+                              );
+                            }
+                          },
+                        )
+                      ]),
+                    ))),
+                    buildTextField(),
+                    // SizedBox(height: AppTheme.cardPadding * 4,),
+                  ])),
         context: context,
       ),
     );
-  }
-
-  Widget commentsActive(){
-    return GestureDetector(
-      child: Container(
-        height: 30,
-        width: 40,
-        child: Stack(
-          children: <Widget>[
-            Icon(
-              Icons.comment,
-              color: Theme.of(context)
-                  .colorScheme
-                  .secondary,
-            ),
-            Positioned(
-                right: 0,
-                bottom: 0,
-                child: Text(
-                  "ON",
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelLarge!
-                      .copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .secondary),
-                ))
-          ],
-        ),
-      ),
-      onTap: () {
-        //show bottom sheet or window with diffrent time options
-      },
-    );
-  }
-
-  Widget timeOnline(){
-    return  GestureDetector(
-      child: Container(
-        height: 30,
-        width: 40,
-        child: Stack(
-          children: <Widget>[
-            Icon(
-              Icons.timer,
-              color: Theme.of(context)
-                  .colorScheme
-                  .secondary,
-            ),
-            Positioned(
-                right: 0,
-                bottom: 0,
-                child: Text(
-                  "24h",
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelLarge!
-                      .copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .secondary),
-                ))
-          ],
-        ),
-      ),
-      onTap: () {
-        //show bottom sheet or window with diffrent time options
-      },
-    );
-  }
-
-
-  Widget buildAddContent() {
-    return Text("Add Content");
   }
 
   Widget buildTextField() {
@@ -353,78 +269,84 @@ class _CreateAssetState extends State<CreateAsset> {
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                height: 45,
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppTheme.elementSpacing,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: AppTheme.white60,
+              child: GlassContainer(
+                child: Container(
+                  height: AppTheme.cardPadding * 2,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing,
                   ),
-                  color: AppTheme.glassMorphColor,
-                  borderRadius: AppTheme.cardRadiusBigger,
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(width: AppTheme.cardPadding / 4),
-                    Expanded(
-                      child: recorder.isRecording
-                          ? StreamBuilder<RecordingDisposition>(
-                              stream: recorder.onProgress,
-                              builder: (context, snapshot) {
-                                final duration = snapshot.hasData
-                                    ? snapshot.data!.duration
-                                    : Duration.zero;
+                  child: Row(
+                    children: [
+                      SizedBox(width: AppTheme.cardPadding / 4),
+                      Expanded(
+                        child: recorder.isRecording
+                            ? StreamBuilder<RecordingDisposition>(
+                                stream: recorder.onProgress,
+                                builder: (context, snapshot) {
+                                  final duration = snapshot.hasData
+                                      ? snapshot.data!.duration
+                                      : Duration.zero;
 
-                                String twoDigits(int n) =>
-                                    n.toString().padLeft(2, '0');
-                                final twoDigitMinutes =
-                                    twoDigits(duration.inMinutes.remainder(60));
-                                final twoDigitSeconds =
-                                    twoDigits(duration.inSeconds.remainder(60));
+                                  String twoDigits(int n) =>
+                                      n.toString().padLeft(2, '0');
+                                  final twoDigitMinutes = twoDigits(
+                                      duration.inMinutes.remainder(60));
+                                  final twoDigitSeconds = twoDigits(
+                                      duration.inSeconds.remainder(60));
 
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 14.0, bottom: 15.0),
-                                  child:
-                                      Text('$twoDigitMinutes:$twoDigitSeconds',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          )),
-                                );
-                              },
-                            )
-                          : TextField(
-                              style: Theme.of(context).textTheme.bodyLarge,
-                              minLines: 1,
-                              maxLines: 5,
-                              keyboardType: TextInputType.multiline,
-                              controller: commentController,
-                              decoration: AppTheme.textfieldDecoration(
-                                  "Type message", context)),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppTheme.elementSpacing / 2),
-                    ),
-                    buildMicrophoneOrTextPushButton(),
-                  ],
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 14.0, bottom: 15.0),
+                                    child: Text(
+                                        '$twoDigitMinutes:$twoDigitSeconds',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  );
+                                },
+                              )
+                            : TextField(
+                                style: Theme.of(context).textTheme.bodyLarge,
+                                minLines: 1,
+                                maxLines: 5,
+                                keyboardType: TextInputType.multiline,
+                                controller: commentController,
+                                decoration: AppTheme.textfieldDecoration(
+                                    "Type message", context)),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppTheme.elementSpacing / 2),
+                      ),
+                      TextFieldButtonMorph(
+                        iconData: Icons.add_rounded,
+                        onTap: () {
+                          BitNetBottomSheet(
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            context: context,
+                            child: bitnetScaffold(
+                              context: context,
+                              extendBodyBehindAppBar: true,
+                              appBar: bitnetAppBar(
+                                hasBackButton: false,
+                                text: "Add Content",
+                                context: context,
+                              ),
+                              body: AddContentWidget(
+                                controller: this,
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-            SizedBox(width: AppTheme.cardPadding / 2),
-            // TextFieldButtonMorph(
-            //   iconData: Icons.add_rounded,
-            //   onTap: () {
-            //     showModalBottomSheet(
-            //         backgroundColor: Colors.transparent,
-            //         context: context,
-            //         builder: (builder) => AddContentWidget(controller: ,));
-            //   },
-            // )
+            SizedBox(width: AppTheme.cardPadding / 3),
+            buildMicrophoneOrTextPushButton(),
           ],
         ),
       ),
@@ -446,15 +368,9 @@ class _CreateAssetState extends State<CreateAsset> {
           : () {
               _addTextField();
             },
-      child: Container(
-        decoration: BoxDecoration(
-          color: recorder.isRecording
-              ? AppTheme.errorColor
-              : Theme.of(context).colorScheme.onSecondary,
-          borderRadius: AppTheme.cardRadiusCircular,
-        ),
+      child: GlassContainer(
         child: Padding(
-          padding: const EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(10.0),
           child: Icon(
               commentController.text.isEmpty
                   ? recorder.isRecording
@@ -462,128 +378,6 @@ class _CreateAssetState extends State<CreateAsset> {
                       : Icons.mic_rounded
                   : Icons.arrow_upward_rounded,
               color: Theme.of(context).colorScheme.secondary),
-        ),
-      ),
-    );
-  }
-  //
-  // //should look similar to likespace.dart
-  // Widget buildUploadButton() {
-  //   return InkWell(
-  //     borderRadius: AppTheme.cardRadiusBig,
-  //     child: Container(
-  //       margin: EdgeInsets.only(top: 5.0),
-  //       width: AppTheme.cardPadding * 4,
-  //       height: AppTheme.cardPadding * 1.25,
-  //       decoration: BoxDecoration(
-  //           color: postFiles.isNotEmpty
-  //               ? Theme.of(context).colorScheme.primary
-  //               : Theme.of(context).primaryColorLight.withOpacity(0.6),
-  //           borderRadius: AppTheme.cardRadiusBig),
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //         children: [
-  //           Row(
-  //             children: <Widget>[
-  //               Text(
-  //                 "POST",
-  //                 style: Theme.of(context).textTheme.subtitle1,
-  //               ),
-  //               Icon(
-  //                 postFiles.isNotEmpty
-  //                     ? Icons.arrow_forward_ios_rounded
-  //                     : Icons.lock_rounded,
-  //                 color: Colors.white.withOpacity(0.8),
-  //               ),
-  //             ],
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //     onTap: postFiles.isNotEmpty
-  //         ? () async {
-  //             try {
-  //               isLoading = true;
-  //               setState(() {});
-  //               final medias = <Media>[];
-  //               await Future.forEach(postFiles, (PostFile file) async {
-  //                 if (file.type == MediaType.text) {
-  //                   medias
-  //                       .add(Media(url: file.text ?? '', type: file.type.name));
-  //                 } else if (file.type == MediaType.link) {
-  //                   //later change url to link url
-  //                   medias
-  //                       .add(Media(url: file.text ?? '', type: file.type.name));
-  //                 } else {
-  //                   final url = await uploadFile(
-  //                       file.file!, 'posts/'); //later change to currentuserid after posts/
-  //                   if (url != null)
-  //                     medias.add(Media(url: url, type: file.type.name));
-  //                 }
-  //               });
-  //               final post = Post(
-  //                 postId: postId,
-  //                 ownerId: "currentuserid",
-  //                 username: "createpostscreen",
-  //                 medias: medias,
-  //                 timestamp: datetime,
-  //                 rockets: {},
-  //               );
-  //               await postsCollection
-  //                   .doc("REPLACE_CREATE_asset_AcurrentUserID")
-  //                   .collection('userPosts2')
-  //                   .doc(postId)
-  //                   .set(post.toMap());
-  //               print('UPLOAD SUCESSFULL');
-  //               //Push to profile is important
-  //               // Navigator.push(
-  //               //   context,
-  //               //   MaterialPageRoute(
-  //               //       builder: (context) =>
-  //               //           Profile(profileId: widget.currentUserUID)),
-  //               // );
-  //             } catch (e) {
-  //               isLoading = false;
-  //               setState(() {});
-  //               showErrorDialog(
-  //                   context: context,
-  //                   title: e.toString(),
-  //                   image: 'images/error.png');
-  //             }
-  //           }
-  //         : () => print('show you need to provide some content dialog'),
-  //   );
-  // }
-
-  Widget buildCameraButton() {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          print("Camera button pressed");
-        });
-      },
-      borderRadius: AppTheme.cardRadiusBig,
-      child: Container(
-        margin: EdgeInsets.only(top: 5.0),
-        width: AppTheme.cardPadding * 4,
-        height: AppTheme.cardPadding * 1.25,
-        decoration: BoxDecoration(
-            color: postFiles.isNotEmpty
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).primaryColorLight.withOpacity(0.6),
-            borderRadius: AppTheme.cardRadiusBig),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Row(
-              children: <Widget>[
-                Icon(
-                  Icons.camera_alt_rounded,
-                  color: Colors.white.withOpacity(0.8),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );
@@ -600,11 +394,11 @@ class _PostItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (postFile.type == MediaType.image || postFile.type == MediaType.camera) {
+    if (postFile.type == MediaType.image) {
       return ImageBuilderLocal(postFile: postFile);
     }
 
-    if (postFile.type == MediaType.link) {
+    if (postFile.type == MediaType.external_url) {
       return LinkBuilder(url: postFile.text!);
     }
 
@@ -612,8 +406,20 @@ class _PostItem extends StatelessWidget {
       return TextBuilderLocal(postFile: postFile);
     }
 
+    if (postFile.type == MediaType.description) {
+      return TextBuilderLocal(
+        postFile: postFile,
+      );
+    }
+
     if (postFile.type == MediaType.audio) {
       return AudioBuilderLocal(postfile: postFile);
+    }
+
+    if (postFile.type == MediaType.image_data) {
+      return TextBuilderLocal(
+        postFile: postFile,
+      );
     }
 
     // if (postFile.type == MediaType.pdf) {
@@ -625,5 +431,110 @@ class _PostItem extends StatelessWidget {
     // }
 
     return Container();
+  }
+}
+
+
+Map<String, dynamic> convertToAssetJsonMap(List<Media> medias) {
+  final Map<String, dynamic> jsonMap = {};
+  for (var media in medias) {
+    jsonMap[media.type] = media.data;
+  }
+  return jsonMap;
+}
+
+void tiggerAssetMinting(BuildContext context, List<Media> mediasFormatted) async {
+  try {
+    // Convert mediasFormatted to JSON
+    final jsonMap = convertToAssetJsonMap(mediasFormatted);
+    final jsonString = jsonEncode(jsonMap);
+    print(jsonString);
+
+    String assetDataBase64 = base64.encode(utf8.encode(jsonString));
+    print(assetDataBase64);
+    MintAssetResponse mintAssetResponse = mintAsset(assetDataBase64);
+
+    //dann anhand der mintassetresponse auf den batchscreen forwarden und die batch id mitgeben
+    //bekommt alles n eigenen batch oder wann bekommt man n eigenen batch überhaupt
+
+  } catch (e) {
+    showOverlay(
+      context,
+      e.toString(),
+      color: AppTheme.errorColor,
+    );
+  }
+}
+
+void convertToBase64AndMakePushReady(BuildContext context, postFiles) async {
+  try {
+    //isLoading = true;
+    final mediasFormatted = <Media>[];
+    await Future.forEach(postFiles, (PostFile file) async {
+      if (file.type == MediaType.text) {
+        mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
+      } else if (file.type == MediaType.external_url) {
+        //later change url to link url
+        mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
+      } else if (file.type == MediaType.audio) {
+        //covert audio to base64
+        final audioData = await file.file!.readAsBytes();
+        final audioBase64 = base64Encode(audioData);
+
+        final mimeType = lookupMimeType(file.file!.path);
+        if (mimeType == "audio/mpeg") {
+          mediasFormatted.add(Media(
+              data: "data:audio/mpeg;base64,$audioBase64",
+              type: file.type.name));
+        } else if (mimeType == "audio/wav") {
+          mediasFormatted.add(Media(
+              data: "data:audio/wav;base64,$audioBase64",
+              type: file.type.name));
+        } else if (mimeType == "audio/mp3") {
+          mediasFormatted.add(Media(
+              data: "data:audio/mp3;base64,$audioBase64",
+              type: file.type.name));
+        }
+      } else if (file.type == MediaType.image_data) {
+        //covert image to base64
+        //if jpg format let it be
+        // Detect the MIME type
+        final mimeType = lookupMimeType(file.file!.path);
+        final imageData = await file.file!.readAsBytes();
+        final imageBase64 = base64Encode(imageData);
+
+        if (mimeType == "image/jpeg") {
+          mediasFormatted.add(Media(
+              data: "data:image/jpeg;base64,$imageBase64",
+              type: file.type.name));
+        } else if (mimeType == "image/png") {
+          mediasFormatted.add(Media(
+              data: "data:image/png;base64,$imageBase64",
+              type: file.type.name));
+        } else if (mimeType == "image/jpg") {
+          mediasFormatted.add(Media(
+              data: "data:image/jpg;base64,$imageBase64",
+              type: file.type.name));
+        }
+      } else if (file.type == MediaType.description) {
+        mediasFormatted.add(Media(data: file.text ?? '', type: file.type.name));
+      } else {
+        LoggerService logger = Get.find();
+        logger.e("file type thats not supported was added");
+        // medias.add(Media(data: file.text ?? '', type: file.type.name));
+      }
+      tiggerAssetMinting(context, mediasFormatted);
+      context.go('/create/finalize');
+    });
+  } catch (e) {
+    //isLoading = false;
+
+    showOverlay(
+      context,
+      e.toString(),
+      color: AppTheme.errorColor,
+    );
+    // showErrorDialog(
+    //     context: context, title: e.toString(), image: 'images/error.png');
   }
 }

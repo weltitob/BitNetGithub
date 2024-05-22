@@ -49,4 +49,6 @@ class Media {
 
   @override
   int get hashCode => data.hashCode ^ type.hashCode;
+
+
 }
