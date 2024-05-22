@@ -340,7 +340,7 @@ class AppRoutes {
           CreateAsset(),
           routes: [
             GoRoute(
-              path: '/finalize',
+              path: 'finalize',
               builder: (ctx, state) => BatchScreen(),
             ),
           ]
