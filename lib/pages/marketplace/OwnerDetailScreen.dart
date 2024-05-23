@@ -235,12 +235,12 @@ class _OwnerDetailScreenState extends State<OwnerDetailScreen> {
                       itemCount: gridListData.length.clamp(0, 2),
                       itemBuilder: (BuildContext context, int index) {
                         return NftProductSlider(
-                            nftImage: gridListData[index].nftImage,
+                            encodedData: gridListData[index].nftImage,
                             nftName: gridListData[index].nftName,
                             nftMainName: gridListData[index].nftMainName,
-                            cryptoImage: gridListData[index].cryptoImage,
+
                             cryptoText: gridListData[index].cryptoText,
-                            columnMargin: gridListData[index].columnMargin,
+
                             rank: gridListData[index].rank);
                       },
                     ),

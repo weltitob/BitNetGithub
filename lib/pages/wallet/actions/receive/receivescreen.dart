@@ -43,7 +43,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
     controller.btcController = TextEditingController();
     controller.btcController.text = "0.00001";
     controller.satController = TextEditingController();
-        controller.satController.text = "1000";
+        controller.satController.text = "";
 
     controller.currController = TextEditingController();
     controller.getInvoice(0, "");

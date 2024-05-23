@@ -25,6 +25,7 @@ Future<MintAssetResponse?> mintAsset(String assetName, String assetDataBase64, b
     'Content-Type': 'application/json',
   };
 
+  logger.i("Minting asset: $assetName !");
   // Prepare the data to be sent in the request
   Map<String, dynamic> data = {
     'asset': {

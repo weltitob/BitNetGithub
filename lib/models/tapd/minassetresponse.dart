@@ -1,3 +1,4 @@
+import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/models/tapd/pendingbatch.dart';
 
 
@@ -61,7 +62,7 @@ class Asset {
   final String? assetVersion;
   final String? assetType;
   final String? name;
-  final AssetMeta? assetMeta;
+  final AssetMetaResponse? assetMeta;
   final dynamic amount;
   final bool? newGroupedAsset;
   final String? groupKey;
@@ -83,7 +84,7 @@ class Asset {
       assetVersion: json['asset_version'],
       assetType: json['asset_type'],
       name: json['name'],
-      assetMeta: json['asset_meta'] != null ? AssetMeta.fromJson(json['asset_meta']) : null,
+      assetMeta: json['asset_meta'] != null ? AssetMetaResponse.fromJson(json['asset_meta']) : null,
       amount: json['amount'],
       newGroupedAsset: json['new_grouped_asset'],
       groupKey: json['group_key'],
@@ -101,34 +102,6 @@ class Asset {
       'new_grouped_asset': newGroupedAsset,
       'group_key': groupKey,
       'group_anchor': groupAnchor,
-    };
-  }
-}
-
-class AssetMeta {
-  final String? data;
-  final dynamic type;
-  final String? metaHash;
-
-  AssetMeta({
-    this.data,
-    this.type,
-    this.metaHash,
-  });
-
-  factory AssetMeta.fromJson(Map<String, dynamic> json) {
-    return AssetMeta(
-      data: json['data'],
-      type: json['type'],
-      metaHash: json['meta_hash'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'data': data,
-      'type': type,
-      'meta_hash': metaHash,
     };
   }
 }

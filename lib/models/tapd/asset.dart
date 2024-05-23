@@ -1,10 +1,11 @@
+import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/models/tapd/minassetresponse.dart';
 
 class AssetInBatchList {
   String? version;
   String? type;
   String? name;
-  AssetMeta? assetMeta;
+  AssetMetaResponse? assetMeta;
   String? amount;
   bool? newGroupedAsset;
   String? groupKey;
@@ -26,7 +27,7 @@ class AssetInBatchList {
       version: json['asset_version'] as String?,
       type: json['asset_type'] as String?,
       name: json['name'] as String?,
-      assetMeta: json['asset_meta'] != null ? AssetMeta.fromJson(json['asset_meta']) : null,
+      assetMeta: json['asset_meta'] != null ? AssetMetaResponse.fromJson(json['asset_meta']) : null,
       amount: json['amount'] as String?,
       newGroupedAsset: json['new_grouped_asset'] as bool?,
       groupKey: json['group_key'] as String?,

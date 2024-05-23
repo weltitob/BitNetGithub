@@ -10,6 +10,12 @@ import 'package:uuid/uuid.dart';
 
 //camera, image_png, image_jpeg, gif, webp, audio_wav, audio_mp3, text, description, document, pdf, extenal_url, link, sticker, location, wallet
 enum MediaType {
+  youtube_url,
+  spotify_url,
+  instagram_url,
+  instagram,
+  twitter_url,
+  youtubemusic_url,
   image,
   image_data,
   description,

@@ -43,7 +43,7 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
 
       //meta zu hallfinney quote fehlt iwie
 
-      for (int i = 0; i < reversedAssets.length && i < 10; i++) {
+      for (int i = 0; i < reversedAssets.length && i < 20; i++) {
         String assetId = reversedAssets[i].assetGenesis!.assetId ?? '';
         AssetMetaResponse? meta = await fetchAssetMeta(assetId);
         if (meta != null) {
@@ -93,8 +93,8 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
                 AssetMetaResponse? meta = assetMetaMap[assetId];
                 return Post(
                   postId: assetId,
-                  ownerId: asset.assetGenesis!.assetId ?? '',
-                  username: asset.assetGenesis!.assetType ?? '',
+                  ownerId: "Tobias Welti" ?? '',
+                  username: "username" ?? '',
                   postName: asset.assetGenesis!.name ?? '',
                   rockets: {},
                   medias: meta != null ? meta.toMedias() : [],

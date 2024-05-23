@@ -9,9 +9,9 @@ class FilePickerService {
   FilePickerService(this.mediaType);
 
   Future<File?> pickFile() async {
-    if (mediaType == MediaType.image){
+    if (mediaType == MediaType.image || mediaType == MediaType.image_data) {
       final file = await ImagePicker().pickImage(
-          source: ImageSource.camera, imageQuality: 10
+          source: ImageSource.gallery, imageQuality: 10
       );
       if (file ==  null)return null;
       return File(file.path);
@@ -25,7 +25,7 @@ class FilePickerService {
   }
 
   FileType _getFileTypeFromMediaType() {
-    if (mediaType == MediaType.image) return FileType.image;
+    if (mediaType == MediaType.image || mediaType == MediaType.image_data) return FileType.image;
 
     if (mediaType == MediaType.audio) return FileType.audio;
     return FileType.custom;

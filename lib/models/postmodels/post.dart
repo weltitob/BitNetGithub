@@ -6,9 +6,7 @@ import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
 import 'package:bitnet/components/post/components/textbuilder.dart';
-import 'package:bitnet/components/post/likespace.dart';
 import 'package:bitnet/components/post/post_header.dart';
-import 'package:animator/animator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
@@ -110,50 +108,6 @@ class _PostState extends State<Post> {
     required this.rockets,
     required this.rocketcount,
   });
-
-  //NOCHMAL GUCKEN DAS IWIE ABÄNDERN ZU GANZEM POST UND DANN AUTOMATISCH 5SATS SENDEN ODER SO
-  // buildPostImage() {
-  //   return GestureDetector(
-  //     onDoubleTap: () => print('handleLikePost implement'),
-  //     child: Stack(
-  //       alignment: Alignment.center,
-  //       children: <Widget>[
-  //         Container(margin: EdgeInsets.only(left: 15.0, right: 15, top: 10, bottom: 10),
-  //           width: double.infinity,
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(20.0),
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 color: Colors.black.withOpacity(0.1),
-  //                 offset: Offset(0, 2.5),
-  //                 blurRadius: 10,
-  //               ),
-  //             ],
-  //           ),
-  //           child: Text('ALTES IMAGE NUR TEST')),
-  //         showheart? Animator(
-  //           duration: Duration(milliseconds: 300),
-  //           tween: Tween(begin: 0.8, end: 1.4,),
-  //           curve: Curves.elasticOut,
-  //           cycles: 0, builder: (BuildContext context, AnimatorState<double> animatorState, Widget? child) {
-  //           return Transform.scale(
-  //             scale: animatorState.value,
-  //             child: Icon(Icons.favorite,
-  //               size: 60,
-  //               color: Colors.red,),);
-  //         },): Text(''),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // buildPostFooter() {
-  //   return buildLikeSpace(
-  //       type: 'Post',
-  //       targetId: postId,
-  //       ownerId: ownerId,
-  //       rockets: rockets);
-  // }
 
   @override
   Widget build(BuildContext context) {

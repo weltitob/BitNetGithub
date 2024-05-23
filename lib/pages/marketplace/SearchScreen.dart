@@ -132,12 +132,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     itemCount: gridListData.length,
                     itemBuilder: (BuildContext context, int index) {
                       return NftProductSlider(
-                          nftImage: gridListData[index].nftImage,
+                          encodedData: gridListData[index].nftImage,
                           nftName: gridListData[index].nftName,
                           nftMainName: gridListData[index].nftMainName,
-                          cryptoImage: gridListData[index].cryptoImage,
                           cryptoText: gridListData[index].cryptoText,
-                          columnMargin: gridListData[index].columnMargin,
                           rank: gridListData[index].rank);
                     },
                   ),

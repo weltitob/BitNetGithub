@@ -2,10 +2,10 @@
 class BitcoinTransaction {
   String? txHash;
   String? amount;
-  int numConfirmations;
+  dynamic numConfirmations;
   String blockHash;
-  int blockHeight;
-  int timeStamp;
+  dynamic blockHeight;
+  dynamic timeStamp;
   String? totalFees;
   List<String> destAddresses;
   List<OutputDetail> outputDetails;

@@ -21,7 +21,7 @@ class GlassContainer extends StatelessWidget {
         Radius.circular(AppTheme.cardPadding * 2.5 / 2.5)),
     this.height,
     this.width,
-    this.borderThickness = 1.5,
+    this.borderThickness = 1,
   }) : super(key: key);
 
   @override
@@ -30,7 +30,7 @@ class GlassContainer extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: Theme.of(context).brightness == Brightness.light
             ? [AppTheme.boxShadowSmall] // Define this boxShadow in your AppTheme
-            : [AppTheme.boxShadowSmall], // Optionally, define a different shadow for dark mode
+            : [AppTheme.boxShadowSuperSmall], // Optionally, define a different shadow for dark mode
       ),
       child: ClipRRect(
         borderRadius: borderRadius,
@@ -38,21 +38,22 @@ class GlassContainer extends StatelessWidget {
           height: height,
           width: width,
           decoration: BoxDecoration(
+            color: Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity - 0.025),
             //went back to old approch
             //color:  Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.9) : Theme.of(context).colorScheme.primaryContainer.withOpacity(0.4),
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomRight,
-              colors: [
-                Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity + 0.1),
-                Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity - 0.025),
-              ],
-            ),
+            // gradient: LinearGradient(
+            //   begin: Alignment.topRight,
+            //   end: Alignment.bottomRight,
+            //   colors: [
+            //     Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity + 0.1),
+            //     Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(opacity - 0.025),
+            //   ],
+            // ),
             borderRadius: borderRadius,
-            border: GradientBoxBorder(
-              borderRadius: borderRadius,
-              borderWidth: borderThickness,
-            ),
+            // border: GradientBoxBorder(
+            //   borderRadius: borderRadius,
+            //   borderWidth: borderThickness,
+            // ),
           ),
           child: child,
         ),

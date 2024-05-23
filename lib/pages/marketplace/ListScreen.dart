@@ -44,12 +44,12 @@ class _ListScreenState extends State<ListScreen> {
               itemCount: gridListData.length,
               itemBuilder: (BuildContext context, int index) {
                 return NftProductSlider(
-                    nftImage: gridListData[index].nftImage,
-                    cryptoImage: gridListData[index].cryptoImage,
+                    encodedData: gridListData[index].nftImage,
+
                     nftName: gridListData[index].nftName,
                     nftMainName: gridListData[index].nftMainName,
                     cryptoText: gridListData[index].cryptoText,
-                    columnMargin: gridListData[index].columnMargin,
+
                     rank: gridListData[index].rank);
               },
             ),

@@ -8,6 +8,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/batch.dart';
@@ -26,7 +27,7 @@ class BatchScreen extends StatefulWidget {
 class _BatchScreenState extends State<BatchScreen> {
   bool isLoading = false;
   String batchKey = '';
-  List<AssetInBatchList > assets = [];
+  List<AssetInBatchList> assets = [];
 
   @override
   void initState() {
@@ -35,7 +36,8 @@ class _BatchScreenState extends State<BatchScreen> {
   }
 
   void _decodeBatchKey() {
-    final batchKeyUrl64Encoded = widget.routerState?.pathParameters['batch_key'];
+    final batchKeyUrl64Encoded =
+        widget.routerState?.pathParameters['batch_key'];
     print('Current route: ${widget.routerState?.path}');
     print('batchKeyUrl64Encoded: $batchKeyUrl64Encoded');
 
@@ -98,7 +100,6 @@ class _BatchScreenState extends State<BatchScreen> {
         ),
         body: SingleChildScrollView(
           child: Column(
-
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -121,13 +122,13 @@ class _BatchScreenState extends State<BatchScreen> {
                   itemCount: assets.length,
                   itemBuilder: (context, index) {
                     return NftProductSlider(
-                        nftImage: nftHotProductSliderData[index].nftImage,
-                        cryptoImage: nftHotProductSliderData[index].cryptoImage,
+                        //assets[index].assetMeta!.data ?? 'metahash',
+                        medias: assets[index].assetMeta?.toMedias(),
                         nftName: assets[index].assetMeta!.data ?? 'metahash',
-                        nftMainName: assets[index].name  ?? 'assetID',
+                        nftMainName: assets[index].name ?? 'assetID',
                         cryptoText: assets[index].groupKey ?? 'price',
-                        columnMargin: nftHotProductSliderData[index].columnMargin,
-                        rank: nftHotProductSliderData[index].rank);
+
+                       );
                   },
                 ),
               ),
@@ -138,7 +139,11 @@ class _BatchScreenState extends State<BatchScreen> {
                     buttonType: ButtonType.transparent,
                     leadingIcon: Icon(Icons.add_rounded),
                     title: "Add more",
-                    onTap: () {}),
+                    onTap: () {
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                    }),
               ),
               SizedBox(
                 height: AppTheme.cardPadding * 2.5.h,
@@ -154,16 +159,19 @@ class _BatchScreenState extends State<BatchScreen> {
                 height: AppTheme.elementSpacing,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing),
                 child: Column(
                   children: [
                     BitNetListTile(
                       text: 'Transaction fees',
-                      trailing: Text('0.25', style: Theme.of(context).textTheme.titleMedium),
+                      trailing: Text('0.25',
+                          style: Theme.of(context).textTheme.titleMedium),
                     ),
                     BitNetListTile(
                       text: 'BitNet usage fee',
-                      trailing: Text('0.001', style: Theme.of(context).textTheme.titleMedium),
+                      trailing: Text('0.001',
+                          style: Theme.of(context).textTheme.titleMedium),
                     ),
                   ],
                 ),
@@ -180,7 +188,9 @@ class _BatchScreenState extends State<BatchScreen> {
                   },
                 ),
               ),
-              SizedBox(height: AppTheme.cardPadding.h,),
+              SizedBox(
+                height: AppTheme.cardPadding.h,
+              ),
               GestureDetector(
                 onTap: () {
                   cancelBatch();
@@ -197,7 +207,7 @@ class _BatchScreenState extends State<BatchScreen> {
   }
 
   void cancelBatch() async {
-    print("Calling Cancel batch with this key: $batchKey");
+    print("Calling Cancel batch which will kill all pending batches.");
     await cancelMintAsset();
   }
 
@@ -205,12 +215,19 @@ class _BatchScreenState extends State<BatchScreen> {
     setState(() {
       isLoading = true;
     });
-
-    await finalizeMint();
-
-    setState(() {
-      isLoading = false;
-    });
-    context.go("/create");
+    try {
+      await finalizeMint();
+      setState(() {
+        isLoading = false;
+      });
+      context.go("/profile");
+    } catch (e) {
+      print("Error finalizing batch: $e");
+      setState(() {
+        isLoading = false;
+      });
+      showOverlay(context, "Error finalizing batch",
+          color: AppTheme.errorColor);
+    }
   }
 }

@@ -15,7 +15,6 @@ import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
@@ -73,14 +72,21 @@ class _CreateAssetState extends State<CreateAsset> {
     super.dispose();
   }
 
-  void _addMedia(MediaType mediaType) {
+  void addMedia(MediaType mediaType) {
     if (mediaType == MediaType.text) {
       _addTextField();
-    } else if (mediaType == MediaType.image || mediaType == MediaType.image) {
+    } else if (mediaType == MediaType.image_data || mediaType == MediaType.image) {
       _pickImageFiles(mediaType);
     } else if (mediaType == MediaType.external_url) {
       _pickLink();
-    } else {
+
+    } else if (mediaType == MediaType.youtube_url) {
+      _pickLink();
+    }
+    else if (mediaType == MediaType.spotify_url) {
+      _pickLink();
+    }
+    else {
       _pickFile(mediaType);
     }
   }
@@ -91,9 +97,14 @@ class _CreateAssetState extends State<CreateAsset> {
     print(mediaType);
     dynamic file = await FilePickerService(mediaType).pickFile();
     if (file == null) return;
-    file = compressImage(file, postId); //this is jpg now then lol
+    //removed compression only add when the file size is bigger then 1mb
+    // file = compressImage(file, postId); //this is jpg now then lol
     postFiles.add(PostFile(mediaType, file: file));
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        // Update your state here
+      });
+    }
   }
 
   void _pickLink() {
@@ -105,7 +116,11 @@ class _CreateAssetState extends State<CreateAsset> {
     final file = await FilePickerService(mediaType).pickFile();
     if (file == null) return;
     postFiles.add(PostFile(mediaType, file: file));
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        // Update your state here
+      });
+    }
   }
 
   void _addTextField() {
@@ -173,7 +188,7 @@ class _CreateAssetState extends State<CreateAsset> {
                           horizontal: AppTheme.elementSpacing,
                           vertical: AppTheme.elementSpacing),
                       child: Column(children: [
-                        buildCreatePostHeader(context),
+                        PostHeader(ownerId: '@yourself', postId: 'nopostid',),
                         TextField(
                           controller: nameController,
                           decoration: AppTheme.textfieldDecoration(
@@ -202,18 +217,6 @@ class _CreateAssetState extends State<CreateAsset> {
                                             post.text ??
                                             post.type.name),
                                         confirmDismiss: (value) async {
-                                          // final result = await showDialogue(
-                                          //   context: context,
-                                          //   title: "Remove?",
-                                          //   image: "images/deletepost.png",
-                                          //   leftAction: () {
-                                          //     // Navigator.of(context).pop(false);
-                                          //   },
-                                          //   rightAction: () {
-                                          //     // Navigator.of(context).pop(true);
-                                          //   },
-                                          // );
-                                          // if (result == true)
                                           postFiles.removeAt(index);
                                           setState(() {});
                                           return Future.value(true);
@@ -329,7 +332,7 @@ class _CreateAssetState extends State<CreateAsset> {
                         iconData: Icons.add_rounded,
                         onTap: () {
                           BitNetBottomSheet(
-                            height: MediaQuery.of(context).size.height * 0.6,
+                            height: MediaQuery.of(context).size.height * 0.5,
                             context: context,
                             child: bitnetScaffold(
                               context: context,
@@ -423,7 +426,7 @@ class _PostItem extends StatelessWidget {
     }
 
     if (postFile.type == MediaType.image_data) {
-      return TextBuilderLocal(
+      return ImageBuilderLocal(
         postFile: postFile,
       );
     }
@@ -448,18 +451,26 @@ Map<String, dynamic> convertToAssetJsonMap(List<Media> medias) {
   return jsonMap;
 }
 
-void triggerAssetMinting(BuildContext context, List<Media> mediasFormatted, String assetName) async {
+void triggerAssetMinting(
+    BuildContext context, List<Media> mediasFormatted, String assetName) async {
   try {
     // Convert mediasFormatted to JSON
     final jsonMap = convertToAssetJsonMap(mediasFormatted);
+
+    print("THE JSON MAP IS: $jsonMap");
+
     final jsonString = jsonEncode(jsonMap);
-    print(jsonString);
+    print("DER JSON STRING IST: $jsonString");
+
+
 
     String assetDataBase64 = base64.encode(utf8.encode(jsonString));
     print(assetDataBase64);
 
     // Get the batch key for the next screen
-    MintAssetResponse? mintAssetResponse = await mintAsset(assetDataBase64, assetName, false);
+    print("THE ASSETNAME WILL BE: $assetName");
+    MintAssetResponse? mintAssetResponse =
+        await mintAsset(assetName, assetDataBase64, false);
 
     if (mintAssetResponse == null) {
       showOverlay(
@@ -479,7 +490,6 @@ void triggerAssetMinting(BuildContext context, List<Media> mediasFormatted, Stri
 
     // Use the batch key for the finalize screen
     context.go('/create/finalize/$base64BatchKey');
-
   } catch (e) {
     showOverlay(
       context,
@@ -489,8 +499,8 @@ void triggerAssetMinting(BuildContext context, List<Media> mediasFormatted, Stri
   }
 }
 
-
-void convertToBase64AndMakePushReady(BuildContext context, postFiles, String assetName) async {
+void convertToBase64AndMakePushReady(
+    BuildContext context, postFiles, String assetName) async {
   try {
     //isLoading = true;
     final mediasFormatted = <Media>[];
