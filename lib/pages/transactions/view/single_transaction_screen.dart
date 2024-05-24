@@ -147,10 +147,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                         Expanded(
                                           child: Text(
                                             'Transaction',
-                                            style: TextStyle(
-                                                fontSize: 24,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
+                                            style: Theme.of(context).textTheme.headlineMedium,
                                           ),
                                         ),
                                         Container(
@@ -224,20 +221,15 @@ class SingleTransactionScreen extends StatelessWidget {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    const Text(
+                                                     Text(
                                                       'Timestamp',
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
+                                                       style: Theme.of(context).textTheme.titleMedium,                                                    ),
                                                     Row(
                                                       children: [
                                                         Text(
                                                           '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
                                                           ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))})',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 12),
+                                                          style: Theme.of(context).textTheme.bodyMedium,
                                                         ),
                                                         // const SizedBox(width: 10),
                                                         // Text(),
@@ -253,10 +245,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    const Text('Confirmed',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white)),
+                                                     Text('Confirmed',
+                                                      style: Theme.of(context).textTheme.bodyMedium),
                                                     Row(
                                                       children: [
                                                         Text(
@@ -273,10 +263,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                         1000),
                                                               ).minute.toString() +
                                                               ' minutes',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 12),
+                                                          style:Theme.of(context).textTheme.bodyMedium,
                                                         ),
                                                       ],
                                                     ),
@@ -291,15 +278,13 @@ class SingleTransactionScreen extends StatelessWidget {
                                             children: [
                                               Text(
                                                 'First seen',
-                                                style: TextStyle(
-                                                    color: Colors.white),
+                                                style: Theme.of(context).textTheme.titleMedium,
                                               ),
                                               Obx(
                                                () {
                                                   return Text(
                                                     controller.timeST.value,
-                                                    style: TextStyle(
-                                                        color: Colors.white),
+                                                    style: Theme.of(context).textTheme.bodyMedium,
                                                   );
                                                 }
                                               )
@@ -312,22 +297,18 @@ class SingleTransactionScreen extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text(
+                                         Text(
                                           'Fee',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
+                                          style: Theme.of(context).textTheme.titleMedium,                                        ),
                                         Row(
                                           children: [
                                             Text(
                                               '${controller.transactionModel == null ? '' : controller.formatPrice(controller.transactionModel!.fee.toString())} sat ',
-                                              style: TextStyle(
-                                                  color: Colors.white),
+                                              style: Theme.of(context).textTheme.bodyMedium,
                                             ),
                                             Text(
                                               '\$ ${controller.usdValue.value.toStringAsFixed(2)}  ',
-                                              style: const TextStyle(
-                                                  color: Colors.green,
-                                                  fontWeight: FontWeight.bold),
+                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green),
                                             ),
                                           ],
                                         ),
@@ -360,8 +341,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                             children: [
                                               Text(
                                                 'ETA',
-                                                style: TextStyle(
-                                                    color: Colors.white),
+                                                style: Theme.of(context).textTheme.titleMedium,
                                               ),
                                               Row(
                                                 children: [
@@ -371,8 +351,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                             7
                                                         ? 'In Several hours (or more)'
                                                         : 'In ~ ${controllerHome.txPosition.value + 1 * 10} minutes',
-                                                    style: TextStyle(
-                                                        color: Colors.white),
+                                                    style: Theme.of(context).textTheme.bodyMedium,
                                                   ),
                                                   SizedBox(
                                                     width: 5,
@@ -390,11 +369,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     child: Center(
                                                       child: Text(
                                                         'Accelerate',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                        style: Theme.of(context).textTheme.titleMedium,
                                                       ),
                                                     ),
                                                   )
@@ -413,8 +388,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                             flex: 4,
                                             child: Text(
                                               'Features',
-                                              style: TextStyle(
-                                                  color: Colors.white),
+                                              style: Theme.of(context).textTheme.titleMedium,
                                             )),
                                         Expanded(
                                           flex: 4,
@@ -553,14 +527,13 @@ class SingleTransactionScreen extends StatelessWidget {
                                       children: [
                                         Text(
                                           'Fee rate',
-                                          style: TextStyle(color: Colors.white),
+                                          style: Theme.of(context).textTheme.titleMedium,
                                         ),
                                         Row(
                                           children: [
                                             Text(
                                               '${(controller.feeRate * 4).toStringAsFixed(1)} sat/vB',
-                                              style: TextStyle(
-                                                  color: Colors.white),
+                                              style: Theme.of(context).textTheme.bodyMedium,
                                             ),
                                             SizedBox(
                                               width: 10,
@@ -593,11 +566,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                 1
                                                             ? 'Optimal'
                                                             : 'Overpaid ${controller.overpaidTimes ?? 1}x',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                        style: Theme.of(context).textTheme.bodyMedium,
                                                       ),
                                                     ),
                                                   )
@@ -641,44 +610,35 @@ class SingleTransactionScreen extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Text(
+                                             Text(
                                               'Inputs & Outputs',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20),
-                                            ),
+                                              style: Theme.of(context).textTheme.headlineSmall),
                                             ElevatedButton(
                                                 onPressed: () {
                                                   controller.toggleExpansion();
                                                 },
                                                 child: !controller
                                                         .showDetail.value
-                                                    ? const Text(
+                                                    ?  Text(
                                                         'Show Detail',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 20),
+                                                    style: Theme.of(context).textTheme.titleMedium,
                                                       )
-                                                    : const Text(
+                                                    :  Text(
                                                         'Hide Detail',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 20),
-                                                      )),
+                                                  style: Theme.of(context).textTheme.titleMedium,),)
                                           ],
                                         ),
                                         controller.showDetail.value
                                             ? Column(
                                                 children: [
-                                                  const Text(
+                                                   Text(
                                                     'Inputs\n',
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        color: Colors.white),
+                                                    style: Theme.of(context).textTheme.titleMedium,
                                                   ),
                                                   ListView.builder(
                                                     physics:
                                                         const NeverScrollableScrollPhysics(),
+                                                    padding: EdgeInsets.zero,
                                                     shrinkWrap: true,
                                                     itemCount: controller
                                                         .transactionModel
@@ -943,13 +903,12 @@ class SingleTransactionScreen extends StatelessWidget {
                                                   const SizedBox(
                                                     height: 20,
                                                   ),
-                                                  const Text(
+                                                   Text(
                                                     'Outputs\n',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 20),
+                                                    style: Theme.of(context).textTheme.titleMedium,
                                                   ),
                                                   ListView.builder(
+                                                      padding: EdgeInsets.zero,
                                                     physics:
                                                         const NeverScrollableScrollPhysics(),
                                                     shrinkWrap: true,
@@ -1211,13 +1170,12 @@ class SingleTransactionScreen extends StatelessWidget {
                                               )
                                             : Column(
                                                 children: [
-                                                  const Text(
+                                                   Text(
                                                     'Inputs\n',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 20),
+                                                    style: Theme.of(context).textTheme.titleMedium,
                                                   ),
                                                   ListView.builder(
+                                                    padding: EdgeInsets.zero,
                                                     physics:
                                                         const NeverScrollableScrollPhysics(),
                                                     shrinkWrap: true,
@@ -1348,13 +1306,12 @@ class SingleTransactionScreen extends StatelessWidget {
                                                   SizedBox(
                                                     height: 10,
                                                   ),
-                                                  const Text(
+                                                   Text(
                                                     'Outputs\n',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 20),
+                                                    style: Theme.of(context).textTheme.titleMedium,
                                                   ),
                                                   ListView.builder(
+                                                    padding: EdgeInsets.zero,
                                                     physics:
                                                         const NeverScrollableScrollPhysics(),
                                                     shrinkWrap: true,

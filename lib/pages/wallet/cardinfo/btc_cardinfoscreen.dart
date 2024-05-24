@@ -73,7 +73,7 @@ class _BitcoinCardInformationScreenState
                             child: BalanceCardBtc()),
                         BitNetListTile(
                           text: 'Address',
-                          trailing: Text('bc1qkmlp...' + '30fltzunefdjln'),
+                          trailing: Text('bc1qkmlp...' + '30fltzunefdjln', style: Theme.of(context).textTheme.bodyMedium),
                         ),
                         BitNetListTile(
                           text: 'QRCode',
@@ -106,10 +106,7 @@ class _BitcoinCardInformationScreenState
                             children: [
                               Text(
                                 '${((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000).toStringAsFixed(8)} BTC',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontSize: 12),
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -125,10 +122,7 @@ class _BitcoinCardInformationScreenState
                             children: [
                               Text(
                                 '${((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000).toStringAsFixed(8)} BTC',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontSize: 12),
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -143,20 +137,14 @@ class _BitcoinCardInformationScreenState
                             children: [
                               Text(
                                 '${(((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)).toStringAsFixed(8)} BTC',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontSize: 12),
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               const SizedBox(
                                 width: 5,
                               ),
                               Text(
                                 '\$${((((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)) * controller.currentUSD.value).toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.greenAccent,
-                                    fontSize: 12),
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green),
                               ),
                             ],
                           ),

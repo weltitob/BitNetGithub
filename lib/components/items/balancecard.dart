@@ -44,16 +44,21 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
 
 class BalanceCardBtc extends GetWidget<WalletsController> {
   // final WalletController controller;
-  const BalanceCardBtc({
+  String? balance;
+   BalanceCardBtc({
     Key? key,
+    this.balance
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print('balance');
+    print(balance);
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
-        double.parse(controller.onchainBalance.confirmedBalance),
-        BitcoinUnits.SAT);
+        double.parse(balance == null ? controller.onchainBalance.confirmedBalance : balance ?? '0'),
+        balance == null ? BitcoinUnits.SAT : BitcoinUnits.BTC);
     final balanceStr = unitModel.amount.toString();
+    print(balanceStr);
 
     return SizedBox(
       child: Stack(
