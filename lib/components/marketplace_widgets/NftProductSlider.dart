@@ -14,6 +14,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 class NftProductSlider extends StatefulWidget {
+  final double scale;
   final List<Media>? medias;
   final encodedData;
   final nftName;
@@ -33,6 +34,7 @@ class NftProductSlider extends StatefulWidget {
       this.encodedData,
       this.rank,
       this.hasLikeButton = false,
+      this.scale = 1,
       this.hasPrice = false})
       : super(key: key);
 
@@ -47,15 +49,15 @@ class _NftProductSliderState extends State<NftProductSlider> {
     dynamic firstMediaData = widget.medias?.first;
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8.w),
+      margin: EdgeInsets.symmetric(horizontal: 5.w * widget.scale),
       child: GestureDetector(
         onTap: () {
           context.pushNamed(kNftProductScreenRoute,
               pathParameters: {'nft_id': widget.nftName});
         },
         child: GlassContainer(
-          width: 214.w,
-          height: 50.w,
+          width: 214.w * widget.scale,
+          height: 50.w * widget.scale,
           // padding: EdgeInsets.all(10.w),
           // margin: widget.columnMargin
           //     ? EdgeInsets.symmetric(horizontal: 8.w)
@@ -77,7 +79,7 @@ class _NftProductSliderState extends State<NftProductSlider> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: 150.w,
+                        width: 150.w * widget.scale,
                         child: Text(
                           widget.nftMainName,
                           overflow: TextOverflow.ellipsis,

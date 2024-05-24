@@ -119,6 +119,7 @@ class Auth {
         publicIONKey: "publicIONKey",
         privateIONKey: "privateIONKey",
         mnemonic: "mnemonic");
+
     final PrivateData privateData = PrivateData(
         did: iondata.did,
         privateKey: iondata.privateIONKey,
