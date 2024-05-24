@@ -36,7 +36,7 @@ class _RowViewTabState extends State<RowViewTab>
       List<Asset> reversedAssets = fetchedAssets.reversed.toList();
       Map<String, AssetMetaResponse> metas = {};
 
-      for (int i = 0; i < reversedAssets.length && i < 20; i++) {
+      for (int i = 0; i < reversedAssets.length && i < 5; i++) {
         String assetId = reversedAssets[i].assetGenesis!.assetId ?? '';
         AssetMetaResponse? meta = await fetchAssetMeta(assetId);
         if (meta != null) {

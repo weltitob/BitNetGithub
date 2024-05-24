@@ -43,7 +43,7 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
 
       //meta zu hallfinney quote fehlt iwie
 
-      for (int i = 0; i < reversedAssets.length && i < 20; i++) {
+      for (int i = 0; i < reversedAssets.length && i < 5; i++) {
         String assetId = reversedAssets[i].assetGenesis!.assetId ?? '';
         AssetMetaResponse? meta = await fetchAssetMeta(assetId);
         if (meta != null) {

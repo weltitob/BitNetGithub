@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:bitnet/backbone/cloudfunctions/lnd/pool/get_loopin_quote.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/pool/get_loopout_quote.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/pool/loop_in.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/pool/loop_out.dart';
+import 'package:bitnet/backbone/cloudfunctions/loop/get_loopin_quote.dart';
+import 'package:bitnet/backbone/cloudfunctions/loop/get_loopout_quote.dart';
+import 'package:bitnet/backbone/cloudfunctions/loop/loop_in.dart';
+import 'package:bitnet/backbone/cloudfunctions/loop/loop_out.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
