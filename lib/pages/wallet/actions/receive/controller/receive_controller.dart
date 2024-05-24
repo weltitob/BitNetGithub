@@ -25,8 +25,8 @@ class ReceiveController extends BaseController {
   //ReceiveState receiveState = ReceiveState(0);
   RxBool updatingText = false.obs;
   FocusNode myFocusNode = FocusNode();
-  late TextEditingController satController;
-  late TextEditingController btcController = TextEditingController();
+  TextEditingController satController = TextEditingController(text: '0');
+  TextEditingController btcController = TextEditingController(text: '0');
   late TextEditingController currController;
   TextEditingController messageController = TextEditingController();
   late Duration duration;
