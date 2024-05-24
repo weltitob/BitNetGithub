@@ -50,17 +50,21 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
           metas[assetId] = meta;
         }
       }
-
-      setState(() {
-        assets = reversedAssets;
-        assetMetaMap = metas;
-        isLoading = false;
-      });
+      if(mounted){
+        setState(() {
+          assets = reversedAssets;
+          assetMetaMap = metas;
+          isLoading = false;
+        });
+      }
     } catch (e) {
       print('Error: $e');
-      setState(() {
-        isLoading = false;
-      });
+      if(mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
+import 'package:bitnet/backbone/cloudfunctions/loop/listswaps.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -14,6 +15,7 @@ import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/models/loop/swaps.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +40,7 @@ class _TransactionsState extends State<Transactions>
   List<LightningPayment> lightningPayments = [];
   List<ReceivedInvoice> lightningInvoices = [];
   List<BitcoinTransaction> onchainTransactions = [];
+  List<dynamic> loopOperations = [];
   final searchCtrl = TextEditingController();
 
   Future<bool> getOnchainTransactions() async {
@@ -57,6 +60,23 @@ class _TransactionsState extends State<Transactions>
     }
     return true;
   }
+
+  Future<bool> getLoopOperations() async {
+    LoggerService logger = Get.find();
+    try {
+      logger.i("Getting loop operations");
+      RestResponse restLoopOperations = await listSwaps();
+      SwapList swapList = SwapList.fromJson(restLoopOperations.data);
+      this.loopOperations = swapList.swaps;
+      setState(() {});
+    } on Error catch (_) {
+      return false;
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
 
   //what i sent on the lightning network
   Future<bool> getLightningPayments() async {
@@ -158,6 +178,21 @@ class _TransactionsState extends State<Transactions>
           handlePageLoadErrors(errorCount, errorMessage, context);
           }
       
+    });
+    getLoopOperations().then((value) {
+                futuresCompleted++;
+      if(!value) {
+        errorCount++;
+        errorMessage = "Failed to load Loop Operations";
+        }
+
+      if(futuresCompleted == 3) {
+         setState(() {
+      transactionsLoaded = true;
+    });
+          handlePageLoadErrors(errorCount, errorMessage, context);
+          }
+
     });
 
    
@@ -310,13 +345,13 @@ class _TransactionsState extends State<Transactions>
                   },
                 ),
                 body: Padding(
-                  padding: const EdgeInsets.only(top: 40.0),
+                  padding: const EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
                   child: Column(
                     children: [
                       //SizedBox(height: 80,),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 20.0, horizontal: 10.0),
+                            vertical: AppTheme.elementSpacing, horizontal: AppTheme.elementSpacing),
                         child: SearchFieldWidget(
                           // controller: searchCtrl,
                           hintText: 'Search',

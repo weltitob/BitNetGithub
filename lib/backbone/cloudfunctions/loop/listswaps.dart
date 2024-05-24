@@ -8,7 +8,7 @@ import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 
-Future<RestResponse> listSwaps(Map<String, dynamic> data) async {
+Future<RestResponse> listSwaps() async {
   String restHost = AppTheme.baseUrlLightningTerminal;
   String url = 'https://$restHost/v1/loop/swaps';
 
@@ -25,6 +25,7 @@ Future<RestResponse> listSwaps(Map<String, dynamic> data) async {
   try {
     final DioClient dioClient = Get.find<DioClient>();
 
+    // logger.i('GET: $url')
     var response = await dioClient.get(url: url, headers: headers);
     print('Raw Response: ${response.data}');
 
