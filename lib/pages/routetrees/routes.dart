@@ -358,12 +358,12 @@ class AppRoutes {
         GoRoute(
           path: '/single_transaction',
           builder: _dynamicTransition == null
-              ? (ctx, state) => const SingleTransactionScreen()
+              ? (ctx, state) =>  SingleTransactionScreen()
               : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) => CustomTransitionPage(
                   key: state.pageKey,
-                  child: const SingleTransactionScreen(),
+                  child:  SingleTransactionScreen(),
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
