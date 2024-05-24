@@ -34,6 +34,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
   @override
   Widget build(BuildContext context) {
     final controllerTransaction = Get.put(TransactionController());
+    final controllerHome = Get.put(HomeController());
     final String formattedDate = displayTimeAgoFromInt(data.timestamp);
     final String time = convertIntoDateFormat(data.timestamp);
     final chartLine = Get.find<WalletsController>().chartLines.value;
@@ -1100,6 +1101,150 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                       "${time}",
                       style: Theme.of(context).textTheme.bodyLarge,
                     )),
+                if(onChain)
+                  controllerHome.txConfirmed.value
+                      ? SizedBox() : BitNetListTile(
+                      text: 'ETA',
+                      trailing: Row(
+                        children: [
+                          Text(
+                            controllerHome.txPosition
+                                .value >=
+                                7
+                                ? 'In Several hours (or more)'
+                                : 'In ~ ${controllerHome.txPosition.value + 1 * 10} minutes',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Container(
+                            padding:
+                            EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4),
+                            decoration: BoxDecoration(
+                                color: Colors.purple,
+                                borderRadius:
+                                BorderRadius
+                                    .circular(5)),
+                            child: Center(
+                              child: Text(
+                                'Accelerate',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ),
+                          )
+                        ],
+                      )),
+                if(onChain)
+                  BitNetListTile(
+                      text: 'Features',
+                      trailing: Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (controllerTransaction
+                              .segwitEnabled.value)
+                            Container(
+                              padding: const EdgeInsets
+                                  .symmetric(
+                                  horizontal: 4,
+                                  vertical: 2),
+                              margin: const EdgeInsets
+                                  .symmetric(
+                                horizontal: 2,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: controllerTransaction
+                                    .realizedSegwitGains !=
+                                    0 &&
+                                    controllerTransaction
+                                        .potentialSegwitGains !=
+                                        0
+                                    ? Colors.orange
+                                    : controllerTransaction.potentialP2shSegwitGains !=
+                                    0
+                                    ? Colors.red
+                                    : Colors.green,
+                                borderRadius:
+                                BorderRadius.circular(
+                                    4),
+                              ),
+                              child: Text(
+                                'SegWit',
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(decoration: controllerTransaction
+                                    .potentialP2shSegwitGains !=
+                                    0
+                                    ? TextDecoration
+                                    .lineThrough
+                                    : TextDecoration
+                                    .none),
+                              ),
+                            ),
+                          if (controllerTransaction
+                              .taprootEnabled.value)
+                            Container(
+                              padding: const EdgeInsets
+                                  .symmetric(
+                                  horizontal: 4,
+                                  vertical: 2),
+                              margin: const EdgeInsets
+                                  .symmetric(
+                                  horizontal: 2,
+                                  vertical: 2),
+                              decoration: BoxDecoration(
+                                color: controllerTransaction
+                                    .isTaproot.value
+                                    ? Colors.green
+                                    : Colors.red,
+                                borderRadius:
+                                BorderRadius.circular(
+                                    4),
+                              ),
+                              child: Text(
+                                'Taproot',
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(decoration: controllerTransaction
+                                    .isTaproot.value
+                                    ? TextDecoration
+                                    .none
+                                    : TextDecoration
+                                    .lineThrough),
+                              ),
+                            ),
+                          if (controllerTransaction.rbfEnabled.value)
+                            Container(
+                                padding: const EdgeInsets
+                                    .symmetric(
+                                    horizontal: 4,
+                                    vertical: 2),
+                                margin:
+                                EdgeInsets.symmetric(
+                                    horizontal: 2,
+                                    vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: controllerTransaction
+                                      .isRbfTransaction
+                                      .value
+                                      ? Colors.green
+                                      : Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(
+                                      4),
+                                ),
+                                child: Text(
+                                  'RBF',
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(decoration: controllerTransaction
+                                      .isRbfTransaction
+                                      .value
+                                      ? TextDecoration
+                                      .none
+                                      : TextDecoration
+                                      .lineThrough),
+                                )),
+                        ],
+                      )),
                 BitNetListTile(
                     text: 'Fee',
                     trailing: Row(
@@ -1123,6 +1268,54 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                             : SizedBox.shrink(),
                       ],
                     )),
+                if(onChain)
+                  BitNetListTile(
+                      text: 'Fee rate',
+                      trailing: Row(
+                        children: [
+                          Text(
+                            '${(controllerTransaction.feeRate * 4).toStringAsFixed(1)} sat/vB',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          controllerHome.txConfirmed.value
+                              ? Container(
+                            padding:
+                            EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4),
+                            decoration: BoxDecoration(
+                              color: controllerTransaction
+                                  .feeRating
+                                  .value ==
+                                  1
+                                  ? Colors.green
+                                  : controllerTransaction.feeRating
+                                  .value ==
+                                  2
+                                  ? Colors.orange
+                                  : Colors.red,
+                              borderRadius:
+                              BorderRadius.circular(
+                                  5),
+                            ),
+                            child: Center(
+                              child: Text(
+                                controllerTransaction.feeRating
+                                    .value ==
+                                    1
+                                    ? 'Optimal'
+                                    : 'Overpaid ${controllerTransaction.overpaidTimes ?? 1}x',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ),
+                          )
+                              : SizedBox(),
+                        ],
+                      )),
+
               ],
             );
           }),
