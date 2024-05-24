@@ -161,6 +161,15 @@ String displayTimeAgoFromInt(int time, {bool numericDates = true}) {
   }
 }
 
+String convertIntoDateFormat(int time){
+  // Convert the timestamp to DateTime
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
+  // Format the DateTime object to a readable string
+  String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(date);
+  print(formattedDate);
+  return formattedDate;
+}
+
 // Format a double value as a percentage string
 String toPercent(double value) => NumberFormat('+#.##%; -#.##%').format(value);
 

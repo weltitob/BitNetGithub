@@ -36,7 +36,7 @@ Future<RestResponse> listPayments() async {
 
     if (response.statusCode == 200) {
       print(response.data);
-      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrieved Lightning Payments", data: json.decode(response.data));
+      return RestResponse(statusCode: "${response.statusCode}", message: "Successfully retrieved Lightning Payments", data: response.data);
 
     } else {
       print('Failed to load data: ${response.statusCode}, ${response.data}');
