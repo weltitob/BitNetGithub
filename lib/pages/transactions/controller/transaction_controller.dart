@@ -332,6 +332,7 @@ class TransactionController extends BaseController {
   Timer? timerLatest;
   Timer? timerTime;
   txModel.TxPosition? txPosition;
+  String? balance;
 
   changeSocket() {
     channel.sink.add('{"track-rbf-summary":false}');
@@ -379,6 +380,7 @@ class TransactionController extends BaseController {
                 print(value.data);
                 addressComponentModel =
                     AddressComponentModel.fromJson(value.data);
+
                 await getSubTransaction();
               })
             : null;
