@@ -45,27 +45,25 @@ class NftProductSlider extends StatefulWidget {
 class _NftProductSliderState extends State<NftProductSlider> {
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    dynamic firstMediaData = widget.medias?.first;
+    dynamic firstMediaData =
+        widget.medias?.isNotEmpty ?? false ? widget.medias?.first : null;
+
+    if (firstMediaData == null) {
+      print("firstMediaData is null");
+    } else {
+      print("firstMediaData: ${firstMediaData.toString()}");
+    }
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5.w * widget.scale),
       child: GestureDetector(
         onTap: () {
           context.pushNamed(kNftProductScreenRoute,
-              pathParameters: {'nft_id': widget.nftName});
+              pathParameters: {'nft_id': widget.nftName ?? ''});
         },
         child: GlassContainer(
           width: 214.w * widget.scale,
           height: 50.w * widget.scale,
-          // padding: EdgeInsets.all(10.w),
-          // margin: widget.columnMargin
-          //     ? EdgeInsets.symmetric(horizontal: 8.w)
-          //     : EdgeInsets.zero,
-          // decoration: BoxDecoration(
-          //   color: const Color.fromRGBO(255, 255, 255, 0.1),
-          //   borderRadius: BorderRadius.circular(12.r),
-          // ),
           child: Padding(
             padding: EdgeInsets.all(AppTheme.elementSpacing.w * 0.75),
             child: Column(
@@ -114,17 +112,6 @@ class _NftProductSliderState extends State<NftProductSlider> {
                         child: topWidget(
                             firstMediaData?.type ?? '', firstMediaData)),
                   ),
-                  // Positioned(
-                  //     bottom: 12,
-                  //     right: 6,
-                  //     child: GlassContainer(
-                  //         child: Padding(
-                  //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  //       child: Text(
-                  //         "Rank - " + widget.rank.toString(),
-                  //         style: Theme.of(context).textTheme.bodySmall,
-                  //       ),
-                  //     ))),
                 ]),
                 Flexible(
                   child: Row(
@@ -166,15 +153,6 @@ class _NftProductSliderState extends State<NftProductSlider> {
                     ],
                   ),
                 ),
-
-                // Flexible(
-                //   child: Container(
-                //     margin: EdgeInsets.only(top: 5.h),
-                //     width: 214.w - 10,
-                //     child: Text(widget.nftName,
-                //         style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -184,42 +162,36 @@ class _NftProductSliderState extends State<NftProductSlider> {
   }
 
   Widget topWidget(String? type, Media? e) {
-    if (type == "text") {
-      return Container(
-          margin: EdgeInsets.only(bottom: 10.0),
-          child: TextBuilderNetwork(url: e!.data));
-    }
-    if (type == "description") {
-      return Container(
-          margin: EdgeInsets.only(bottom: 10.0),
-          child: TextBuilderNetwork(url: e!.data));
-    }
-    if (type == "external_link") {
-      return Container(
-          margin: EdgeInsets.only(bottom: 10.0),
-          child: LinkBuilder(url: 'haha'));
-    }
-    if (type == "image" || type == "camera") {
-      return Container(
-          margin: EdgeInsets.only(bottom: 10.0),
-          child: ImageBuilder(encodedData: e!.data));
-    }
-    if (type == "image_data" || type == "camera") {
-      return Container(
-          margin: EdgeInsets.only(bottom: 10.0),
-          child: ClipRect(
-              child: Container(
-                  height: AppTheme.cardPadding.h * 5,
-                  child: ImageBuilder(encodedData: e!.data))));
-    }
-    if (type == "audio") {
-      return Container(
-          margin: EdgeInsets.only(bottom: 10.0),
-          child: AudioBuilderNetwork(url: e!.data));
+    if (e != null) {
+      if (type == "text" || type == "description") {
+        return Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            child: TextBuilderNetwork(url: e.data));
+      }
+      if (type == "external_link") {
+        return Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            child: LinkBuilder(url: 'haha'));
+      }
+      if (type == "image" || type == "camera" || type == "image_data") {
+        return Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            child: ClipRect(
+                child: Container(
+                    height: AppTheme.cardPadding.h * 5,
+                    child: ImageBuilder(encodedData: e.data))));
+      }
+      if (type == "audio") {
+        return Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            child: AudioBuilderNetwork(url: e.data));
+      } else {
+        return Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            child: TextBuilderNetwork(url: "No data found"));
+      }
     } else {
-      return Container(
-          margin: EdgeInsets.only(bottom: 10.0),
-          child: TextBuilderNetwork(url: "No data found"));
+      return Container();
     }
   }
 }
