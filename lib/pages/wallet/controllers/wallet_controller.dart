@@ -197,7 +197,7 @@ class WalletsController extends BaseController {
             status: TransactionStatus.confirmed,
             direction: TransactionDirection.received,
             receiver: bitcoinTransaction.destAddresses[0],
-            txHash: bitcoinTransaction.txHash,
+            txHash: bitcoinTransaction.txHash ?? 'null',
           ));
       //});
     }, onError: (error) {

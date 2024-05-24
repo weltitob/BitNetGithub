@@ -164,10 +164,12 @@ class _BottomNavState extends State<BottomNav>
             child: GlassContainer(
               child: Theme(
                 data: Theme.of(context).copyWith(
+                  shadowColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                 ),
                 child: BottomNavigationBar(
+                  enableFeedback: false,
                   selectedIconTheme: IconThemeData(size: 25.sp, color: Theme.of(context).colorScheme.onPrimaryContainer,),
                   //fixedColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.green,
                   useLegacyColorScheme: false,

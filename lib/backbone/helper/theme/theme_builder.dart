@@ -54,7 +54,7 @@ class ThemeController extends State<ThemeBuilder> {
         listen: false,
       );
 
-  void _loadData(_) async {
+  void loadData(_) async {
     QuerySnapshot querySnapshot = await settingsCollection.get();
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
     print('rawTheme');
@@ -63,6 +63,7 @@ class ThemeController extends State<ThemeBuilder> {
       var data = await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .get();
+          var dataBucket = data.data();
       print(data.data());
       final rawThemeMode = data.data()?['theme_mode'];
       final rawColor = data.data()?['primary_color'];
@@ -150,7 +151,7 @@ class ThemeController extends State<ThemeBuilder> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(_loadData);
+    WidgetsBinding.instance.addPostFrameCallback(loadData);
     super.initState();
   }
 

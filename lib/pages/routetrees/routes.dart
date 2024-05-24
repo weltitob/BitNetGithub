@@ -12,7 +12,9 @@ import 'package:bitnet/pages/auth/restore/social_recovery/socialrecoveryscreen.d
 import 'package:bitnet/pages/auth/restore/word_recovery/wordrecoveryscreen.dart';
 import 'package:bitnet/pages/bottomnav.dart';
 import 'package:bitnet/pages/create/createasset.dart';
+import 'package:bitnet/pages/create/finalizescreen.dart';
 import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
+import 'package:bitnet/pages/marketplace/ListScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/matrix/widgets/log_view.dart';
@@ -88,8 +90,9 @@ class AppRoutes {
                 : null),
         GoRoute(
           path: '/error',
-          builder:
-              _dynamicTransition == null ? (ctx, state) => ReceiveScreen() : null,
+          builder: _dynamicTransition == null
+              ? (ctx, state) => ReceiveScreen()
+              : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) => CustomTransitionPage(
                   key: state.pageKey,
@@ -102,10 +105,15 @@ class AppRoutes {
             path: '/feed',
             builder: (ctx, state) => BottomNav(routerState: state),
             routes: [
+
               GoRoute(
                   path: kNftProductScreenRoute + "/:nft_id",
                   name: kNftProductScreenRoute,
                   builder: (ctx, state) => NftProductScreen()),
+              GoRoute(
+                  path: kListScreenRoute,
+                  name: kListScreenRoute,
+                  builder: (ctx, state) => ListScreen()),
               GoRoute(
                   path: kNotificationScreenRoute,
                   builder: (ctx, state) => NotificationScreen()),
@@ -122,11 +130,11 @@ class AppRoutes {
                         builder: (ctx, state) => NftProductScreen()),
                   ]),
             ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
-       
+
         GoRoute(
-          path: "/agbs",
-          builder: (ctx, state) => AgbsAndImpressumScreen(key: state.pageKey)
-        ),
+            path: "/agbs",
+            builder: (ctx, state) =>
+                AgbsAndImpressumScreen(key: state.pageKey)),
 
         GoRoute(
           path: '/wallet',
@@ -139,9 +147,9 @@ class AppRoutes {
                     : null,
                 pageBuilder: _dynamicTransition != null
                     ? (ctx, state) => CustomTransitionPage(
-                    key: state.pageKey,
-                    child: const BitcoinScreen(),
-                    transitionsBuilder: _dynamicTransition!)
+                        key: state.pageKey,
+                        child: const BitcoinScreen(),
+                        transitionsBuilder: _dynamicTransition!)
                     : null,
                 routes: [
                   GoRoute(
@@ -151,9 +159,9 @@ class AppRoutes {
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const BlockTransactions(),
-                        transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
@@ -163,9 +171,9 @@ class AppRoutes {
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const BlockTransactions(),
-                        transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
@@ -175,9 +183,9 @@ class AppRoutes {
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const BlockTransactions(),
-                        transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
@@ -187,9 +195,9 @@ class AppRoutes {
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const BlockTransactions(),
-                        transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
@@ -199,9 +207,9 @@ class AppRoutes {
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const BlockTransactions(),
-                        transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
@@ -211,9 +219,9 @@ class AppRoutes {
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const BlockTransactions(),
-                        transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
@@ -223,9 +231,9 @@ class AppRoutes {
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const BlockTransactions(),
-                        transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                   GoRoute(
@@ -235,9 +243,9 @@ class AppRoutes {
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const BlockTransactions(),
-                        transitionsBuilder: _dynamicTransition!)
+                            key: state.pageKey,
+                            child: const BlockTransactions(),
+                            transitionsBuilder: _dynamicTransition!)
                         : null,
                   ),
                 ]),
@@ -267,8 +275,9 @@ class AppRoutes {
             ),
             GoRoute(
               path: 'receive',
-              builder:
-                  _dynamicTransition == null ? (ctx, state) => ReceiveScreen() : null,
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => ReceiveScreen()
+                  : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
                       key: state.pageKey,
@@ -290,7 +299,7 @@ class AppRoutes {
             GoRoute(
               path: 'send',
               builder: _dynamicTransition == null
-                  ? (ctx, state) =>  Send(key: state.pageKey)
+                  ? (ctx, state) => Send(key: state.pageKey)
                   : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
@@ -314,7 +323,7 @@ class AppRoutes {
             GoRoute(
               path: 'bitcoincard',
               builder: _dynamicTransition == null
-                  ? (ctx, state) =>  BitcoinCardInformationScreen()
+                  ? (ctx, state) => BitcoinCardInformationScreen()
                   : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
@@ -329,15 +338,23 @@ class AppRoutes {
             path: '/profile/:profileId',
             name: '/profile',
             builder: (ctx, state) => Profile(),
-            routes: [
-
-            ]),
+            routes: []),
         GoRoute(
           path: '/create',
-          builder: (ctx, state) =>
-          //CreatePostScreen(currentUserUID: '', onCameraButtonPressed: () {  },)
-          CreateAsset(),
+          builder: (ctx, state) => CreateAsset(),
+          routes: [
+            GoRoute(
+              name: 'finalize',
+              path: 'finalize/:batch_key',
+              builder: (ctx, state) {
+                final batchKey = state.pathParameters['batch_key'];
+                print('Batch key in route: $batchKey');
+                return BatchScreen(routerState: state);
+              },
+            ),
+          ],
         ),
+
         GoRoute(
           path: '/single_transaction',
           builder: _dynamicTransition == null
@@ -350,12 +367,12 @@ class AppRoutes {
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
-         GoRoute(
-              path: '/settings',
-              builder: (ctx, state) => Settings(),
-              routes: _settingsRoutes,
-            ),
-     
+        GoRoute(
+          path: '/settings',
+          builder: (ctx, state) => Settings(),
+          routes: _settingsRoutes,
+        ),
+
         // ShellRoute(
         //   builder: (ctx, state, child) {
         //     return BottomNav(routerState: state);
@@ -368,8 +385,6 @@ class AppRoutes {
         //
         //   ],
         // ),
-
-
       ];
 
   List<GoRoute> get _authRoutes => [
@@ -458,12 +473,10 @@ class AppRoutes {
             //   builder: (ctx,state) => const LogViewer(),
             //   pageBuilder:_dynamicTransition != null ? (ctx,state) => CustomTransitionPage(key: state.pageKey ,child: , transitionsBuilder: _dynamicTransition!) : null,
             // ),
-            
           ],
         ),
       ];
 
- 
   List<GoRoute> get _settingsRoutes => [
         GoRoute(
           path: 'settings?tab=language',
@@ -489,7 +502,6 @@ class AppRoutes {
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
-       
         GoRoute(
           path: 'settings?tab=style',
           builder: _dynamicTransition == null
@@ -502,7 +514,6 @@ class AppRoutes {
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
-       
         GoRoute(
           path: 'settings?tab=invite_friends',
           builder: _dynamicTransition == null

@@ -78,6 +78,9 @@ class _HashrateScreenState extends State<HashrateScreen> {
       ),
       body: Column(
         children: [
+          SizedBox(
+            height: AppTheme.cardPadding * 3.5,
+          ),
           DropdownButtonHideUnderline(
             child: DropdownButton<String>(
                 value: selectedMonth,
@@ -100,6 +103,9 @@ class _HashrateScreenState extends State<HashrateScreen> {
           HashrateChart(
             chartData: chartData,
             difficulty: difficulty,
+          ),
+          SizedBox(
+            height: AppTheme.cardPadding,
           ),
         ],
       ),

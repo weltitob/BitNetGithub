@@ -222,15 +222,15 @@ class _TransactionsState extends State<Transactions>
                           ? TransactionStatus.confirmed
                           : TransactionStatus.pending,
                       type: TransactionType.onChain,
-                      direction: transaction.amount.contains("-")
+                      direction: transaction.amount!.contains("-")
                           ? TransactionDirection.sent
                           : TransactionDirection.received,
-                      receiver: transaction.amount.contains("-")
+                      receiver: transaction.amount!.contains("-")
                           ? transaction.destAddresses.last.toString()
                           : transaction.destAddresses.first.toString(),
                       txHash: transaction.txHash.toString(),
                       fee: 0,
-                      amount: transaction.amount.contains("-")
+                      amount: transaction.amount!.contains("-")
                           ? transaction.amount.toString()
                           : "+" + transaction.amount.toString(),
                     ))),
@@ -276,15 +276,15 @@ class _TransactionsState extends State<Transactions>
                           ? TransactionStatus.confirmed
                           : TransactionStatus.pending,
                       type: TransactionType.onChain,
-                      direction: transaction.amount.contains("-")
+                      direction: transaction.amount!.contains("-")
                           ? TransactionDirection.sent
                           : TransactionDirection.received,
-                      receiver: transaction.amount.contains("-")
+                      receiver: transaction.amount!.contains("-")
                           ? transaction.destAddresses.last.toString()
                           : transaction.destAddresses.first.toString(),
                       txHash: transaction.txHash.toString(),
                       fee: 0,
-                      amount: transaction.amount.contains("-")
+                      amount: transaction.amount!.contains("-")
                           ? transaction.amount.toString()
                           : "+" + transaction.amount.toString(),
                     ))),

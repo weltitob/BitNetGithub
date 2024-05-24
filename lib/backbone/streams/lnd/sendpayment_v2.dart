@@ -12,7 +12,6 @@ import 'package:http/http.dart' as http;
 
 Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings) async* {
   String restHost = AppTheme.baseUrlLightningTerminal;
-  const String macaroonPath = 'assets/keys/lnd_admin.macaroon';  // Update the path to the macaroon file
 
   ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

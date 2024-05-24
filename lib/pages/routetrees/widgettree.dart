@@ -44,7 +44,6 @@ class WidgetTree extends StatelessWidget {
               };
             });
           }
-          print("running");
           return ScreenUtilInit(
               designSize: const Size(375, 812),
               minTextAdapt: false,

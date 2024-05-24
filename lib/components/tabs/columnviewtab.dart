@@ -43,8 +43,8 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
 
       //meta zu hallfinney quote fehlt iwie
 
-      for (int i = 0; i < reversedAssets.length && i < 10; i++) {
-        String assetId = reversedAssets[i].assetGenesis.assetId;
+      for (int i = 0; i < reversedAssets.length && i < 20; i++) {
+        String assetId = reversedAssets[i].assetGenesis!.assetId ?? '';
         AssetMetaResponse? meta = await fetchAssetMeta(assetId);
         if (meta != null) {
           metas[assetId] = meta;
@@ -89,13 +89,13 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
           else
             Column(
               children: assets.map((asset) {
-                String assetId = asset.assetGenesis.assetId;
+                String assetId = asset.assetGenesis!.assetId ?? '';
                 AssetMetaResponse? meta = assetMetaMap[assetId];
                 return Post(
                   postId: assetId,
-                  ownerId: asset.assetGenesis.assetId,
-                  username: asset.assetGenesis.assetType,
-                  postName: asset.assetGenesis.name,
+                  ownerId: "Tobias Welti" ?? '',
+                  username: "username" ?? '',
+                  postName: asset.assetGenesis!.name ?? '',
                   rockets: {},
                   medias: meta != null ? meta.toMedias() : [],
                   // medias: [
@@ -106,7 +106,7 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
                   //   Media(type: 'text', data: asset.chainAnchor.blockHeight.toString()),
                   //   Media(type: 'text', data: asset.assetGenesis.version.toString()),
                   // ],
-                  timestamp: DateTime.fromMillisecondsSinceEpoch(asset.lockTime * 1000),
+                  timestamp: DateTime.fromMillisecondsSinceEpoch(asset.lockTime! * 1000),
                 );
               }).toList(),
             )

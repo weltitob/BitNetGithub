@@ -1,12 +1,12 @@
 
 class BitcoinTransaction {
-  String txHash;
-  String amount;
-  int numConfirmations;
+  String? txHash;
+  String? amount;
+  dynamic numConfirmations;
   String blockHash;
-  int blockHeight;
-  int timeStamp;
-  String totalFees;
+  dynamic blockHeight;
+  dynamic timeStamp;
+  String? totalFees;
   List<String> destAddresses;
   List<OutputDetail> outputDetails;
   String? rawTxHex; // Make nullable if not always provided
@@ -30,13 +30,13 @@ class BitcoinTransaction {
 
   factory BitcoinTransaction.fromJson(Map<String, dynamic> json) {
     return BitcoinTransaction(
-      txHash: json['tx_hash']!,
-      amount: json['amount']!,
-      numConfirmations: json['num_confirmations']!,
-      blockHash: json['block_hash']!,
-      blockHeight: json['block_height']!,
+      txHash: json['tx_hash'] ?? '',
+      amount: json['amount'] ?? '',
+      numConfirmations: json['num_confirmations'] ?? '',
+      blockHash: json['block_hash'] ?? '',
+      blockHeight: json['block_height'] ?? '',
       timeStamp: int.parse(json['time_stamp']),
-      totalFees: json['total_fees']!,
+      totalFees: json['total_fees'] ?? '',
       destAddresses: List<String>.from(json['dest_addresses'].map((x) => x as String)),
       outputDetails: List<OutputDetail>.from(json['output_details'].map((x) => OutputDetail.fromJson(x as Map<String, dynamic>))),
       rawTxHex: json['raw_tx_hex'] as String?,

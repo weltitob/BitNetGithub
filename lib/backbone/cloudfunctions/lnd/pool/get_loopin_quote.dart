@@ -49,13 +49,3 @@ Future<RestResponse> getLoopinQuote(String price) async {
   }
 }
 
-
-//  {
-//     "id": <string>,
-//     "id_bytes": <bytes>,
-//     "htlc_address": <string>,
-//     "htlc_address_p2wsh": <string>,
-//     "htlc_address_p2tr": <string>,
-//     "server_message": <string>,
-//  }
-

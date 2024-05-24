@@ -3,9 +3,7 @@ import 'dart:typed_data';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 
 //USED FOR UPLOAD SCREEN (USER PICKS FILE LOCALLY)
@@ -18,13 +16,20 @@ class ImageBuilderLocal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return ImageBox(
       child: Image.file(
         postFile.file!,
-        height: size.height * 0.4,
-        width: double.infinity,
+        // height: size.height * 0.4,
+        // width: double.infinity,
+        // fit: BoxFit.cover,
         fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          height: AppTheme.cardPadding * 5,
+          child: Icon(
+            Icons.error,
+            color: Theme.of(context).colorScheme.error,
+          ),
+        ),
       ),
     );
   }
@@ -42,6 +47,8 @@ class ImageBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Decode the base64 string into bytes
+    final imageType = encodedData.split(',').first.split('/').last.split(';').first;
+    print("Image Builder detected imagetype: $imageType");
     final base64String = encodedData.split(',').last;
     Uint8List imageBytes = base64Decode(base64String);
 

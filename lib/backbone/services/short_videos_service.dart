@@ -369,7 +369,7 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
               top: 10.0,
               left: 15.0,
               right: 15.0,
-              child: buildPostHeaderShorts(context),
+              child: PostHeader(ownerId: 'yourself', postId: 'nopostid',),
             ),
           if (!controller.value.isFullScreen &&
               !controller.flags.hideControls &&

@@ -1,13 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
+
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/models/tapd/asset.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
-Future<List<Asset>> listTaprootAssets() async {
+//USING DIO HERE WILL BREAK THE CODE PLEASE DO NOT UPDATE
+cancelMintAsset() async {
   HttpOverrides.global = MyHttpOverrides();
   LoggerService logger = Get.find();
 
@@ -20,26 +22,28 @@ Future<List<Asset>> listTaprootAssets() async {
   // Prepare the headers
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
+    'Content-Type': 'application/json',
   };
 
-  // Make the GET request
-  String url = 'https://$restHost/v1/taproot-assets/assets';
-  try {
-    final DioClient dioClient = Get.find<DioClient>();
-    var response = await dioClient.get(url: url, headers: headers);
+  String url = 'https://$restHost/v1/taproot-assets/assets/mint/cancel';
 
-    logger.i("Raw Response: ${response}");
+  try {
+    var response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: json.encode({}),
+    );
+
+    logger.i("Raw Response: ${response.body}");
 
     if (response.statusCode == 200) {
-
-      List<dynamic> data = response.data['assets'];
-      return data.map((item) => Asset.fromJson(item)).toList();
+      Map<String, dynamic> responseData = json.decode(response.body);
+      // Process responseData if needed
+      return responseData;
     } else {
-      logger.e('Failed to load Taproot asset data: ${response.statusCode}, ${response}');
-      return [];
+      logger.e('Failed to cancel minting: ${response.statusCode}, ${response.body}');
     }
   } catch (e) {
-    logger.e('Error requesting taproot assets: $e');
-    return [];
+    logger.e('Error requesting cancel minting: $e');
   }
 }

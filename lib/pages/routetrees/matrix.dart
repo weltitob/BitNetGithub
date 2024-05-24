@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_app_lock/flutter_app_lock.dart';
@@ -46,31 +45,31 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   late BuildContext navigatorContext;
 
 
-
-  final onRoomKeyRequestSub = <String, StreamSubscription>{};
-  final onKeyVerificationRequestSub = <String, StreamSubscription>{};
-  final onNotification = <String, StreamSubscription>{};
-
-  StreamSubscription<html.Event>? onFocusSub;
-  StreamSubscription<html.Event>? onBlurSub;
-
-  String? _cachedPassword;
-  Timer? _cachedPasswordClearTimer;
-
-  String? get cachedPassword => _cachedPassword;
-
-  set cachedPassword(String? p) {
-    LoggerService logger = Get.find();
-    logger.d('Password cached');
-    _cachedPasswordClearTimer?.cancel();
-    _cachedPassword = p;
-    _cachedPasswordClearTimer = Timer(const Duration(minutes: 10), () {
-      _cachedPassword = null;
-      logger.d('Cached Password cleared');
-    });
-  }
-
-  bool webHasFocus = true;
+  //
+  // final onRoomKeyRequestSub = <String, StreamSubscription>{};
+  // final onKeyVerificationRequestSub = <String, StreamSubscription>{};
+  // final onNotification = <String, StreamSubscription>{};
+  //
+  // StreamSubscription<html.Event>? onFocusSub;
+  // StreamSubscription<html.Event>? onBlurSub;
+  //
+  // String? _cachedPassword;
+  // Timer? _cachedPasswordClearTimer;
+  //
+  // String? get cachedPassword => _cachedPassword;
+  //
+  // set cachedPassword(String? p) {
+  //   LoggerService logger = Get.find();
+  //   logger.d('Password cached');
+  //   _cachedPasswordClearTimer?.cancel();
+  //   _cachedPassword = p;
+  //   _cachedPasswordClearTimer = Timer(const Duration(minutes: 10), () {
+  //     _cachedPassword = null;
+  //     logger.d('Cached Password cleared');
+  //   });
+  // }
+  //
+  // bool webHasFocus = true;
 
 
 
@@ -102,12 +101,12 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     }
 
 
-    if (kIsWeb) {
-      onFocusSub = html.window.onFocus.listen((_) => webHasFocus = true);
-      onBlurSub = html.window.onBlur.listen((_) => webHasFocus = false);
-    }
+    // if (kIsWeb) {
+    //   onFocusSub = html.window.onFocus.listen((_) => webHasFocus = true);
+    //   onBlurSub = html.window.onBlur.listen((_) => webHasFocus = false);
+    // }
 
-    
+
   }
 
   void initLoadingDialog() {
@@ -131,7 +130,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     }
   }
 
- 
+
 
 
   @override
@@ -144,11 +143,11 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
 
-    onRoomKeyRequestSub.values.map((s) => s.cancel());
-    onKeyVerificationRequestSub.values.map((s) => s.cancel());
-    onNotification.values.map((s) => s.cancel());
-    onFocusSub?.cancel();
-    onBlurSub?.cancel();
+    // onRoomKeyRequestSub.values.map((s) => s.cancel());
+    // onKeyVerificationRequestSub.values.map((s) => s.cancel());
+    // onNotification.values.map((s) => s.cancel());
+    // onFocusSub?.cancel();
+    // onBlurSub?.cancel();
 
 
     super.dispose();

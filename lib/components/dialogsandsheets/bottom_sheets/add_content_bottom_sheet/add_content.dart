@@ -2,66 +2,132 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:flutter/material.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 
-// Define the StatefulWidget
-class AddContentWidget extends StatefulWidget {
+class AddContentWidget extends StatelessWidget {
   final controller;
 
   AddContentWidget({Key? key, required this.controller}) : super(key: key);
 
   @override
-  _AddContentWidgetState createState() => _AddContentWidgetState();
-}
-
-// The state class of the StatefulWidget
-class _AddContentWidgetState extends State<AddContentWidget> {
-
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      height: AppTheme.cardPadding * 12,
-      width: AppTheme.cardPadding * 18,
-      child: Card(
-        color: Theme.of(context).canvasColor,
-        margin: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                iconCreation(Icons.insert_drive_file, Colors.orange, "Document", MediaType.document),
-                SizedBox(width: AppTheme.cardPadding),
-                iconCreation(Icons.link_rounded, Colors.orange, "Link", MediaType.link),
-                SizedBox(width: AppTheme.cardPadding),
-                iconCreation(Icons.insert_photo, Colors.orange, "Gallery", MediaType.image),
-              ],
+            IconCreationWidget(
+              icon: Icons.collections_rounded,
+              color: Colors.orange,
+              text: "Collection",
+              mediaType: MediaType.collection,
+              onTap: (mediaType) => controller.addMedia(mediaType),
             ),
-            SizedBox(height: AppTheme.cardPadding),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                iconCreation(Icons.headset, Colors.orange, "Audio", MediaType.audio),
-                SizedBox(width: AppTheme.cardPadding),
-                iconCreation(Icons.location_pin, Colors.orange, "Location", MediaType.location),
-                SizedBox(width: AppTheme.cardPadding),
-                iconCreation(Icons.qr_code_rounded, Colors.orange, "Wallet", MediaType.wallet),
-              ],
+            IconCreationWidget(
+              icon: Icons.abc,
+              color: Colors.orange,
+              text: "Description",
+              mediaType: MediaType.description,
+              onTap: (mediaType) => controller.addMedia(mediaType),
+            ),
+            IconCreationWidget(
+              icon: Icons.link_rounded,
+              color: Colors.orange,
+              text: "Youtube Link",
+              mediaType: MediaType.youtube_url,
+              onTap: (mediaType) => controller.addMedia(mediaType),
+            ),
+
+          ],
+        ),
+        SizedBox(height: AppTheme.cardPadding),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconCreationWidget(
+              icon: Icons.insert_drive_file,
+              color: Colors.orange,
+              text: "Document",
+              mediaType: MediaType.document,
+              onTap: (mediaType) => controller.addMedia(mediaType),
+            ),
+
+
+            IconCreationWidget(
+              icon: Icons.insert_photo,
+              color: Colors.orange,
+              text: "Gallery",
+              mediaType: MediaType.image_data,
+              onTap: (mediaType) => controller.addMedia(mediaType),
+            ),
+
+            IconCreationWidget(
+              icon: Icons.qr_code_rounded,
+              color: Colors.orange,
+              text: "Wallet",
+              mediaType: MediaType.wallet_address,
+              onTap: (mediaType) => controller.addMedia(mediaType),
             ),
           ],
         ),
-      ),
+        // SizedBox(height: AppTheme.cardPadding),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     //location
+        //     // IconCreationWidget(
+        //     //   icon: Icons.location_on,
+        //     //   color: Colors.orange,
+        //     //   text: "Location",
+        //     //   mediaType: MediaType.text,
+        //     //   onTap: (mediaType) => controller.onAddPopupMenuButtonSelected(mediaType),
+        //     // ),
+        //     //
+        //     // IconCreationWidget(
+        //     //   icon: Icons.headset,
+        //     //   color: Colors.orange,
+        //     //   text: "Audio",
+        //     //   mediaType: MediaType.audio,
+        //     //   onTap: (mediaType) => controller.onAddPopupMenuButtonSelected(mediaType),
+        //     // ),
+        //     SizedBox(width: AppTheme.cardPadding),
+        //
+        //   ],
+        // ),
+      ],
     );
   }
+}
 
-  Widget iconCreation(IconData icons, Color color, String text, MediaType mediaType) {
+
+class IconCreationWidget extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String text;
+  final MediaType mediaType;
+  final Function(MediaType) onTap;
+
+  IconCreationWidget({
+    required this.icon,
+    required this.color,
+    required this.text,
+    required this.mediaType,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(24),
-      onTap: () => widget.controller.onAddPopupMenuButtonSelected(mediaType),
+      borderRadius: AppTheme.cardRadiusMid,
+      onTap: () => onTap(mediaType),
       child: Container(
+        width: AppTheme.cardPadding * 3,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: AppTheme.cardRadiusMid,
         ),
         margin: EdgeInsets.symmetric(
             horizontal: AppTheme.elementSpacing,
@@ -69,14 +135,13 @@ class _AddContentWidgetState extends State<AddContentWidget> {
         child: Column(
           children: [
             RoundedButtonWidget(
-                iconData: icons,
-              onTap: () {  },),
-            SizedBox(height: 5),
+              iconData: icon,
+              onTap: () => onTap(mediaType),
+            ),
+            SizedBox(height: AppTheme.cardPadding / 2.5),
             Text(
               text,
-              style: TextStyle(
-                fontSize: 12,
-              ),
+              style: Theme.of(context).textTheme.labelSmall,
             )
           ],
         ),

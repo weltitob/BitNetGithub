@@ -9,6 +9,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -63,11 +64,10 @@ class _CryptoItemState extends State<CryptoItem> {
           toPercent(controllerCrypto.priceChange.value);
       controllerCrypto.colorUpdater();
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      controllerCrypto.isBlinking.value = true;
-      controllerCrypto.controller.forward();
-      logger.d("Cryptoitem (bitcoinchart) ui has been updated!");
-
-       });
+        controllerCrypto.isBlinking.value = true;
+        controllerCrypto.controller.forward();
+        logger.d("Cryptoitem (bitcoinchart) ui has been updated!");
+      });
     }
   }
 
@@ -101,9 +101,50 @@ class _CryptoItemState extends State<CryptoItem> {
                           width: AppTheme.cardPadding * 1.75,
                           child: Image.asset("assets/images/bitcoin.png")),
                       //CustomIcon(icon: currency.icon),
-                      const SizedBox(width: AppTheme.elementSpacing/2),
-                      title(),
-                      const SizedBox(width: AppTheme.elementSpacing/2),
+                      SizedBox(width: AppTheme.elementSpacing.w / 1.5),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(widget.currency.name,
+                              style: Theme.of(widget.context)
+                                  .textTheme
+                                  .titleLarge),
+                          Row(
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                    height: AppTheme.elementSpacing * 0.75,
+                                    width: AppTheme.elementSpacing * 0.75,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(500.0),
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  if (controllerCrypto.isBlinking.value)
+                                    Positioned.fill(
+                                      child: AnimatedBuilder(
+                                        animation: controllerCrypto.animation,
+                                        builder: (context, child) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(500.0),
+                                              color: controllerCrypto.animation.value,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(width: 4),
+                              price(),
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(width: AppTheme.elementSpacing.w / 1.75),
                       chart(controllerCrypto.onedaychart),
                       Flexible(child: percentageChange()),
                     ],
@@ -117,19 +158,7 @@ class _CryptoItemState extends State<CryptoItem> {
                 )
               ],
             ),
-          )
- ); }
-
-  Widget title() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(widget.currency.name,
-            style: Theme.of(widget.context).textTheme.titleLarge),
-        price()
-      ],
-    );
+          ));
   }
 
   Widget percentageChange() {
@@ -150,12 +179,13 @@ class _CryptoItemState extends State<CryptoItem> {
             ),
             const SizedBox(width: AppTheme.elementSpacing / 4),
             Container(
-              width: 80,
               child: Text(
                 controllerCrypto.priceChangeString.value,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: controllerCrypto.priceChangeString.value.length > 6 ? 12 : 16,
+                  fontSize: controllerCrypto.priceChangeString.value.length > 6
+                      ? 12
+                      : 16,
                   color: controllerCrypto.priceChange.value >= 0
                       ? AppTheme.successColor
                       : AppTheme.errorColor,
@@ -164,33 +194,7 @@ class _CryptoItemState extends State<CryptoItem> {
             ),
           ],
         ),
-        const SizedBox(height: 4),
-        Stack(
-          children: [
-            Container(
-              height: AppTheme.elementSpacing * 0.75,
-              width: AppTheme.elementSpacing * 0.75,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(500.0),
-                color: Colors.grey,
-              ),
-            ),
-            if (controllerCrypto.isBlinking.value)
-              Positioned.fill(
-                child: AnimatedBuilder(
-                  animation: controllerCrypto.animation,
-                  builder: (context, child) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(500.0),
-                        color: controllerCrypto.animation.value,
-                      ),
-                    );
-                  },
-                ),
-              ),
-          ],
-        ),
+
       ],
     );
   }
@@ -200,31 +204,34 @@ class _CryptoItemState extends State<CryptoItem> {
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
-    return Obx((){
+    return Obx(() {
       Get.find<WalletsController>().chartLines.value;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            // const SizedBox(width: AppTheme.elementSpacing / 2),
-            Text(
-              "${controllerCrypto.currentPriceString}${getCurrency(currency!)}", 
-              //bitcoinPrice!.price.toString(),
-              style: controllerCrypto.currentPriceString.value.length > 8 ? AppTheme.textTheme.bodySmall: AppTheme.textTheme.bodyMedium,
-            ),
-          ],
-        ),
-      ],
-    );});
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              // const SizedBox(width: AppTheme.elementSpacing / 2),
+              Text(
+                "${controllerCrypto.currentPriceString}${getCurrency(currency!)}",
+                //bitcoinPrice!.price.toString(),
+                style: controllerCrypto.currentPriceString.value.length > 8
+                    ? AppTheme.textTheme.bodySmall
+                    : AppTheme.textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ],
+      );
+    });
   }
 
   Widget chart(onedaychart) {
     return Container(
       margin: EdgeInsets.only(right: AppTheme.elementSpacing),
-      width: AppTheme.cardPadding * 3.75,
+      width: AppTheme.cardPadding * 3.75.w,
       color: Colors.transparent,
       child: SfCartesianChart(
           enableAxisAnimation: true,

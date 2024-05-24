@@ -204,7 +204,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
         : "0.00";
     controller.currencyController.text = CurrencyConverter.convertCurrency(
         "SATS",
-        double.parse(controller.moneyController.text),
+        double.parse(controller.satController.text),
         currency,
         bitcoinPrice!);
     return Obx((){
@@ -216,11 +216,13 @@ class OnChainSendTab extends GetWidget<SendsController> {
         children: [
           AmountWidget(
             bitcoinUnit: controller.bitcoinUnit,
-            enabled: double.parse(controller.currencyController.text) == 0,
-            btcController: controller.moneyController,
+            enabled: ()=> double.parse(controller.currencyController.text) == 0,
+            satController: controller.satController,
+            btcController: controller.btcController,
             currController: controller.currencyController,
             focusNode: controller.myFocusNodeMoney,
             context: context,
+            autoConvert: true
           ),
           // const SizedBox(
           //   height: AppTheme.cardPadding,

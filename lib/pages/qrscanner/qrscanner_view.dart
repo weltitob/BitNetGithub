@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -100,13 +99,9 @@ class QRScannerView extends StatelessWidget {
                               final PermissionState ps =
                                   await PhotoManager.requestPermissionExtend();
                               if (ps.isAuth || ps.hasAccess) {
-                                List<AssetPathEntity> albums =
-                                    await BitnetPhotoManager.loadAlbums();
-                                List<AssetEntity> photos =
-                                    await BitnetPhotoManager.loadImages(
-                                        albums[0]);
+                              
                                 ImagePickerBottomSheet(context,
-                                    albums: albums, recent_photos: photos,
+                                    
                                     onImageTap: (album, img) async {
                                   String? fileUrl =
                                       (await img.loadFile())!.path;
@@ -157,28 +152,21 @@ class QRScannerView extends StatelessWidget {
 }
 
 Future<T?> ImagePickerBottomSheet<T>(BuildContext context,
-    {required List<AssetPathEntity> albums,
-    required List<AssetEntity> recent_photos,
+    {
     required Function(AssetPathEntity album, AssetEntity image)? onImageTap}) {
   return BitNetBottomSheet<T>(
       context: context,
       width: MediaQuery.sizeOf(context).width,
       height: MediaQuery.sizeOf(context).height * 0.7,
       child: ImagePicker(
-        albums: albums,
-        photos: recent_photos,
         onImageTap: onImageTap,
       ));
 }
 
 class ImagePicker extends StatefulWidget {
-  final List<AssetPathEntity> albums;
-  final List<AssetEntity> photos;
   final Function(AssetPathEntity album, AssetEntity image)? onImageTap;
   const ImagePicker({
     super.key,
-    required this.albums,
-    required this.photos,
     this.onImageTap,
   });
 
@@ -188,23 +176,37 @@ class ImagePicker extends StatefulWidget {
 
 class _ImagePickerState extends State<ImagePicker> {
   bool selecting_photos = true;
+  List<AssetPathEntity>? albums = null;
   AssetPathEntity? current_album = null;
   List<AssetEntity>? current_photos = null;
   List<AssetEntity>? album_thumbnails = null;
+  bool loading = true;
   bool loaded_thumbnails = false;
   @override
   void initState() {
-    current_album = widget.albums[0];
-    current_photos = widget.photos;
+    loadData();
     super.initState();
   }
 
+  void loadData() async {
+       List<AssetPathEntity> loadedAlbums =
+                                    await BitnetPhotoManager.loadAlbums();
+                                List<AssetEntity> photos =
+                                    await BitnetPhotoManager.loadImages(
+                                        loadedAlbums[0]);
+                                  albums = loadedAlbums;
+                                  current_album = albums![0];
+                                  current_photos = photos;
+  setState((){});
+
+  }
   @override
   Widget build(BuildContext context) {
-    if (selecting_photos == false && !loaded_thumbnails) {
+    
+    if (selecting_photos == false && !loaded_thumbnails && albums != null) {
       album_thumbnails = null;
 
-      BitnetPhotoManager.loadAlbumThumbnails(widget.albums).then((value) {
+      BitnetPhotoManager.loadAlbumThumbnails(albums!).then((value) {
         loaded_thumbnails = true;
         album_thumbnails = value;
         setState(() {});
@@ -223,7 +225,8 @@ class _ImagePickerState extends State<ImagePicker> {
         SizedBox(
           height: AppTheme.cardPadding,
         ),
-        TextButton(
+        if(albums == null || current_photos == null) Center(child:CircularProgressIndicator()),
+       if(albums != null && current_photos != null )...[ TextButton(
           child: Row(
             children: [
               Text(current_album!.name,
@@ -285,7 +288,7 @@ class _ImagePickerState extends State<ImagePicker> {
                     : (loaded_thumbnails && album_thumbnails != null)
                         ? GridView.builder(
                             shrinkWrap: true,
-                            itemCount: widget.albums.length,
+                            itemCount: albums!.length,
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2),
@@ -294,7 +297,7 @@ class _ImagePickerState extends State<ImagePicker> {
                                   padding: EdgeInsets.all(16),
                                   child: InkWell(
                                     onTap: () {
-                                      current_album = widget.albums[i];
+                                      current_album = albums![i];
                                       selecting_photos = true;
                                       setState(() {});
                                     },
@@ -321,7 +324,7 @@ class _ImagePickerState extends State<ImagePicker> {
                                                 ),
                                               ),
                                             ),
-                                            Text(widget.albums[i].name,
+                                            Text(albums![i].name,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .titleSmall)
@@ -332,7 +335,7 @@ class _ImagePickerState extends State<ImagePicker> {
                                   ));
                             },
                           )
-                        : Center(child: CircularProgressIndicator()))
+                        : Center(child: CircularProgressIndicator()))]
       ],
     );
   }

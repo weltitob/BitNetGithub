@@ -207,7 +207,6 @@ class LightningSendTab extends GetWidget<SendsController> {
 
     final bitcoinPrice = chartLine?.price;
 
-    controller.currencyController.text = CurrencyConverter.convertCurrency("SATS", double.parse(controller.moneyController.text), currency, bitcoinPrice!);
  
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -217,15 +216,21 @@ class LightningSendTab extends GetWidget<SendsController> {
           AmountWidget(
             ctrler: controller,
             bitcoinUnit: controller.bitcoinUnit,
-            enabled: double.parse(controller.currencyController.text) == 0 || controller.sendType == SendType.LightningUrl,
-            btcController: controller.moneyController,
+            init: (controller.sendType == SendType.LightningUrl || controller.sendType == SendType.Invoice) ? (){
+    controller.currencyController.text = CurrencyConverter.convertCurrency("SATS", double.parse(controller.satController.text), currency!, bitcoinPrice!);
+
+            }:null,
+            enabled:()=> double.parse(controller.currencyController.text) == 0 || controller.sendType == SendType.LightningUrl,
+            btcController: controller.btcController,
+            satController: controller.satController,
             currController: controller.currencyController,
             focusNode: controller.myFocusNodeMoney,
             context: context,
             swapped: true,
             lowerBound: controller.lowerBound,
             upperBound: controller.upperBound,
-            boundType: controller.boundType
+            boundType: controller.boundType,
+            autoConvert: !(controller.sendType == SendType.LightningUrl)
           ),
         ],
       ),

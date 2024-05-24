@@ -54,24 +54,14 @@ class HomeScreen extends StatelessWidget {
                       // physics: const BouncingScrollPhysics(),
                       itemCount: nftHotProductSliderData.length,
                       itemBuilder: (context, index, index2) {
-                        return GestureDetector(
-                          onTap: () => context.goNamed(kNftProductScreenRoute,
-                              pathParameters: {
-                                'nft_id': nftDropSliderData[index].nftName
-                              }),
-                          child: NftProductSlider(
-                             nftImage: nftHotProductSliderData[index].nftImage,
-                            cryptoImage:
-                                nftHotProductSliderData[index].cryptoImage,
-                            nftName: nftHotProductSliderData[index].nftName,
-                            nftMainName:
-                                nftHotProductSliderData[index].nftMainName,
-                            cryptoText:
-                                nftHotProductSliderData[index].cryptoText,
-                            columnMargin:
-                                nftHotProductSliderData[index].columnMargin,
-                            rank: nftHotProductSliderData[index].rank
-                          ),
+                        return NftProductSlider(
+                          hasLikeButton: true,
+                          hasPrice: true,
+                          nftName: nftHotProductSliderData[index].nftName,
+                          nftMainName:
+                              nftHotProductSliderData[index].nftMainName,
+                          cryptoText:
+                              nftHotProductSliderData[index].cryptoText,
                         );
                       },
                     ),
@@ -134,7 +124,6 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-               
                 CommonHeading(
                   hasButton: true,
                   headingText: 'Hot New Items',
@@ -143,26 +132,24 @@ class HomeScreen extends StatelessWidget {
                   isChild: Container(
                     width: size.width,
                     height: 245.w,
-                    margin: EdgeInsets.only(bottom: 30.h),
+                    margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       padding: EdgeInsets.only(
-                          top: 0.0, bottom: 0.0, right: 12.w, left: 12.w),
+                          top: 0.0, bottom: 0.0, right: AppTheme.elementSpacing.w, left: AppTheme.elementSpacing.w),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: nftHotProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                            nftImage: nftHotProductSliderData[index].nftImage,
-                            cryptoImage:
-                                nftHotProductSliderData[index].cryptoImage,
+                            encodedData: nftHotProductSliderData[index].nftImage,
+
                             nftName: nftHotProductSliderData[index].nftName,
                             nftMainName:
                                 nftHotProductSliderData[index].nftMainName,
                             cryptoText:
                                 nftHotProductSliderData[index].cryptoText,
-                            columnMargin:
-                                nftHotProductSliderData[index].columnMargin,
+
                             rank: nftHotProductSliderData[index].rank);
                       },
                     ),
@@ -188,17 +175,15 @@ class HomeScreen extends StatelessWidget {
                       itemCount: nftExpireProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                            nftImage:
+                            encodedData:
                                 nftExpireProductSliderData[index].nftImage,
-                            cryptoImage:
-                                nftExpireProductSliderData[index].cryptoImage,
+
                             nftName: nftExpireProductSliderData[index].nftName,
                             nftMainName:
                                 nftExpireProductSliderData[index].nftMainName,
                             cryptoText:
                                 nftExpireProductSliderData[index].cryptoText,
-                            columnMargin:
-                                nftExpireProductSliderData[index].columnMargin,
+
                             rank: nftExpireProductSliderData[index].rank);
                       },
                     ),
@@ -222,18 +207,17 @@ class HomeScreen extends StatelessWidget {
                       itemCount: nftExpensiveProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                            nftImage:
+                            encodedData:
                                 nftExpensiveProductSliderData[index].nftImage,
-                            cryptoImage: nftExpensiveProductSliderData[index]
-                                .cryptoImage,
+
                             nftName:
                                 nftExpensiveProductSliderData[index].nftName,
                             nftMainName: nftExpensiveProductSliderData[index]
                                 .nftMainName,
                             cryptoText:
                                 nftExpensiveProductSliderData[index].cryptoText,
-                            columnMargin: nftExpensiveProductSliderData[index]
-                                .columnMargin,
+
+
                             rank: nftExpensiveProductSliderData[index].rank);
                       },
                     ),
@@ -257,18 +241,17 @@ class HomeScreen extends StatelessWidget {
                       itemCount: nftTopSellersProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                            nftImage:
-                                nftTopSellersProductSliderData[index].nftImage,
-                            cryptoImage: nftTopSellersProductSliderData[index]
-                                .cryptoImage,
+                            medias: [],
+                            // encodedData:
+                            //     nftTopSellersProductSliderData[index].nftImage,
+
                             nftName:
                                 nftTopSellersProductSliderData[index].nftName,
                             nftMainName: nftTopSellersProductSliderData[index]
                                 .nftMainName,
                             cryptoText: nftTopSellersProductSliderData[index]
                                 .cryptoText,
-                            columnMargin: nftTopSellersProductSliderData[index]
-                                .columnMargin,
+
                             rank: nftTopSellersProductSliderData[index].rank);
                       },
                     ),
