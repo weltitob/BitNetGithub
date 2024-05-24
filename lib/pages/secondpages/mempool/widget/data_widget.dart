@@ -88,7 +88,7 @@ class _DataWidgetState extends State<DataWidget> {
                 ),
           const SizedBox(height: AppTheme.elementSpacing),
           Container(
-            height: AppTheme.cardPadding * 5.h,
+            height: AppTheme.cardPadding * 6.h,
             width: AppTheme.cardPadding *
                 6.w, //MediaQuery.of(context).size.height * 0.2,
             margin: widget.isAccepted

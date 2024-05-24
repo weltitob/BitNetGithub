@@ -4,6 +4,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/colorhelper.dart';
@@ -11,6 +12,7 @@ import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart
 import 'package:bitnet/pages/secondpages/mempool/widget/data_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -126,7 +128,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                     ),
                   ),
                   SizedBox(
-                    height: AppTheme.elementSpacing / 2,
+                    height: AppTheme.cardPadding.h,
                   ),
                   SingleChildScrollView(
                     controller: _controller,
@@ -148,7 +150,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           fontSize: 22),
                                     )
                                   : SizedBox(
-                                      height: 255,
+                                      height: 255.h,
                                       child: ListView.builder(
                                           shrinkWrap: true,
                                           reverse: true,
@@ -441,19 +443,14 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                               text: controller
                                                                   .txDetailsConfirmed!
                                                                   .id));
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                              const SnackBar(
-                                                                  content: Text(
-                                                                      'Copied to Clipboard')));
+                                                    showOverlay(context, "Copied to Clipboard");
                                                     },
                                                     child: Row(
                                                       children: [
                                                         Icon(
                                                           Icons.copy,
                                                           color:
-                                                              AppTheme.black60,
+                                                              Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,
                                                           size: AppTheme
                                                                   .elementSpacing *
                                                               1.5,
@@ -533,6 +530,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                 ),
                                                 Container(
                                                   child: Column(children: [
+                                                    SizedBox(height: AppTheme.cardPadding.h,),
                                                     BitNetListTile(
                                                       leading:
                                                           Icon(Icons.timelapse),

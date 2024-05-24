@@ -209,6 +209,8 @@ class _BatchScreenState extends State<BatchScreen> {
   void cancelBatch() async {
     print("Calling Cancel batch which will kill all pending batches.");
     await cancelMintAsset();
+    //navigate to profile
+    context.go("/profile");
   }
 
   void finalizeBatch() async {

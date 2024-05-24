@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -83,7 +84,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     LongButtonWidget(
-                        customWidth: AppTheme.cardPadding * 7.5,
+                        customWidth: AppTheme.cardPadding * 7.w,
                         customHeight: AppTheme.cardPadding * 2.5,
                         title: "Buy",
                         onTap: () {
@@ -95,7 +96,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                     ),
                     LongButtonWidget(
                         buttonType: ButtonType.transparent,
-                        customWidth: AppTheme.cardPadding * 7.5,
+                        customWidth: AppTheme.cardPadding * 7.w,
                         customHeight: AppTheme.cardPadding * 2.5,
                         title: "Sell",
                         onTap: () {
@@ -120,6 +121,22 @@ class _BitcoinScreenState extends State<BitcoinScreen>
             ),
           ),
           SizedBox(height: AppTheme.cardPadding * 4,),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text("About", style: Theme.of(context).textTheme.displayMedium,) ,
+                SizedBox(height: AppTheme.elementSpacing * 1,),
+
+                Text("Bitcoin (BTC) is the first cryptocurrency built. Unlike government-issued or fiat currencies such as US Dollars or Euro which are controlled by central banks, Bitcoin can operate without the need of a central authority like a central bank or a company. Users are able to send funds to each other without going through intermediaries."),
+
+              ],
+            ),
+          ),
+          SizedBox(height: AppTheme.cardPadding * 2,),
+
           RoundedContainer(
               child: Column(
             children: [
@@ -131,16 +148,16 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  BitNetImageWithTextContainer(
-                    "Key Metrics",
-                        () {
-                          context.push('/wallet/bitcoinscreen/keymetrics');
-                        },
-                    image: "assets/images/key.png",
-                    fallbackIcon: FontAwesomeIcons.key,
-                    width: AppTheme.cardPadding * 4,
-                    height: AppTheme.cardPadding * 4,
-                  ),
+                  // BitNetImageWithTextContainer(
+                  //   "Key Metrics",
+                  //       () {
+                  //         context.push('/wallet/bitcoinscreen/keymetrics');
+                  //       },
+                  //   image: "assets/images/key.png",
+                  //   fallbackIcon: FontAwesomeIcons.key,
+                  //   width: AppTheme.cardPadding * 4,
+                  //   height: AppTheme.cardPadding * 4,
+                  // ),
                   BitNetImageWithTextContainer(
                       "Blockchain",
                           () {
@@ -161,46 +178,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                     fallbackIcon: FontAwesomeIcons.computer,
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
-                  )
-                ],
-              ),
-              SizedBox(height: AppTheme.cardPadding * 1,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  BitNetImageWithTextContainer(
-                    "Transactions",
-                        () {
-                          context.push('/wallet/bitcoinscreen/transactions');
-                          //context.go(Uri(path: '/transactions', queryParameters: {}).toString());
-                        },
-                    image: "assets/images/latest_transactions.png",
-                    fallbackIcon: FontAwesomeIcons.addressCard,
-                    width: AppTheme.cardPadding * 4,
-                    height: AppTheme.cardPadding * 4,
                   ),
-                  BitNetImageWithTextContainer(
-                    "Whales",
-                        () => context.push('/wallet/bitcoinscreen/whales'),
-                    image: "assets/images/whale.png",
-                    fallbackIcon: FontAwesomeIcons.fish,
-                    width: AppTheme.cardPadding * 4,
-                    height: AppTheme.cardPadding * 4,
-                  ),
-                  BitNetImageWithTextContainer(
-                    "News",
-                        () => context.push('/wallet/bitcoinscreen/news'),
-                    fallbackIcon: FontAwesomeIcons.newspaper,
-                    image: "assets/images/news.png",
-                    width: AppTheme.cardPadding * 4,
-                    height: AppTheme.cardPadding * 4,
-                  ),
-                ],
-              ),
-              SizedBox(height: AppTheme.cardPadding * 1,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
                   BitNetImageWithTextContainer(
                     "Fear and Greed",
                         () {
@@ -211,6 +189,46 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                     width: AppTheme.cardPadding * 4,
                     height: AppTheme.cardPadding * 4,
                   ),
+                ],
+              ),
+              SizedBox(height: AppTheme.cardPadding * 1,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  // BitNetImageWithTextContainer(
+                  //   "Transactions",
+                  //       () {
+                  //         context.push('/wallet/bitcoinscreen/transactions');
+                  //         //context.go(Uri(path: '/transactions', queryParameters: {}).toString());
+                  //       },
+                  //   image: "assets/images/latest_transactions.png",
+                  //   fallbackIcon: FontAwesomeIcons.addressCard,
+                  //   width: AppTheme.cardPadding * 4,
+                  //   height: AppTheme.cardPadding * 4,
+                  // ),
+                  // BitNetImageWithTextContainer(
+                  //   "Whales",
+                  //       () => context.push('/wallet/bitcoinscreen/whales'),
+                  //   image: "assets/images/whale.png",
+                  //   fallbackIcon: FontAwesomeIcons.fish,
+                  //   width: AppTheme.cardPadding * 4,
+                  //   height: AppTheme.cardPadding * 4,
+                  // ),
+                  // BitNetImageWithTextContainer(
+                  //   "News",
+                  //       () => context.push('/wallet/bitcoinscreen/news'),
+                  //   fallbackIcon: FontAwesomeIcons.newspaper,
+                  //   image: "assets/images/news.png",
+                  //   width: AppTheme.cardPadding * 4,
+                  //   height: AppTheme.cardPadding * 4,
+                  // ),
+                ],
+              ),
+              SizedBox(height: AppTheme.cardPadding * 1,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+
                 ],
               ),
               SizedBox(height: AppTheme.cardPadding * 2,),
