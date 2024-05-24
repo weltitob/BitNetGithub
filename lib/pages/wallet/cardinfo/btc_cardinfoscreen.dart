@@ -251,7 +251,7 @@ class _BitcoinCardInformationScreenState
                                                             index]
                                                         .txid!;
                                                     Get.to(
-                                                        const SingleTransactionScreen(),
+                                                         SingleTransactionScreen(),
                                                         arguments: controller
                                                             .subTransactionModel[
                                                                 index]

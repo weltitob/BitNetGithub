@@ -113,7 +113,7 @@ class _TransactionItemState extends State<TransactionItem> {
                         MaterialPageRoute(
                             builder: (context) => LightningTransactionDetails(
                                   data: widget.data,
-                                  onChain: false,
+
                                 )));
                   } else {
                     print(widget.data.txHash);
@@ -130,10 +130,7 @@ class _TransactionItemState extends State<TransactionItem> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => LightningTransactionDetails(
-                              data: widget.data,
-                              onChain: true,
-                            )));
+                            builder: (context) => SingleTransactionScreen()));
                   }
                 },
                 child: Padding(
