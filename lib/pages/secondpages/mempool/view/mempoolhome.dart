@@ -4,12 +4,14 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/mydivider.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/colorhelper.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/widget/data_widget.dart';
+import 'package:bitnet/pages/secondpages/transactionsscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -347,7 +349,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                 visible: controller.showNextBlock.value,
                                 child: Container(
                                   child: Column(children: [
-                                     
                                     GestureDetector(
                                       onTap: () {
                                         context.go(
@@ -377,7 +378,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                     SizedBox(
                                       height: AppTheme.elementSpacing,
                                     ),
-
                                     Container(
                                       margin: EdgeInsets.symmetric(
                                           horizontal: AppTheme.cardPadding),
@@ -443,14 +443,20 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                               text: controller
                                                                   .txDetailsConfirmed!
                                                                   .id));
-                                                    showOverlay(context, "Copied to Clipboard");
+                                                      showOverlay(context,
+                                                          "Copied to Clipboard");
                                                     },
                                                     child: Row(
                                                       children: [
                                                         Icon(
                                                           Icons.copy,
-                                                          color:
-                                                              Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,
+                                                          color: Theme.of(context)
+                                                                      .brightness ==
+                                                                  Brightness
+                                                                      .light
+                                                              ? AppTheme.black60
+                                                              : AppTheme
+                                                                  .white60,
                                                           size: AppTheme
                                                                   .elementSpacing *
                                                               1.5,
@@ -530,7 +536,10 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                 ),
                                                 Container(
                                                   child: Column(children: [
-                                                    SizedBox(height: AppTheme.cardPadding.h,),
+                                                    SizedBox(
+                                                      height: AppTheme
+                                                          .cardPadding.h,
+                                                    ),
                                                     BitNetListTile(
                                                       leading:
                                                           Icon(Icons.timelapse),
@@ -720,6 +729,9 @@ class _MempoolHomeState extends State<MempoolHome> {
           ? const SizedBox()
           : Column(
               children: [
+                const SizedBox(
+                  height: AppTheme.elementSpacing * 1,
+                ),
                 Container(
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.only(left: AppTheme.cardPadding),
@@ -729,7 +741,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                   ),
                 ),
                 const SizedBox(
-                  height: AppTheme.elementSpacing,
+                  height: AppTheme.cardPadding,
                 ),
                 Container(
                   margin:
@@ -743,30 +755,33 @@ class _MempoolHomeState extends State<MempoolHome> {
                             children: [
                               Column(
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: AppTheme.cardRadiusSmall,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                  GlassContainer(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: AppTheme.cardRadiusSmall,
+
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              AppTheme.elementSpacing * 1,
+                                          vertical:
+                                              AppTheme.elementSpacing / 3),
+                                      child: Text(
+                                        'Low',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
                                     ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: AppTheme.elementSpacing * 1,
-                                        vertical: AppTheme.elementSpacing / 3),
-                                    child: Text(
-                                      'Low',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
                                   ),
-                                  SizedBox(
-                                    height: AppTheme.elementSpacing,
-                                  ),
-                                  Text(
-                                    '${controller.fees?.hourFee} sat/vB' ?? '',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                  // SizedBox(
+                                  //   height: AppTheme.elementSpacing,
+                                  // ),
+                                  // Text(
+                                  //   '${controller.fees?.hourFee} sat/vB' ?? '',
+                                  //   maxLines: 1,
+                                  //   overflow: TextOverflow.ellipsis,
+                                  // ),
                                   SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
@@ -793,31 +808,33 @@ class _MempoolHomeState extends State<MempoolHome> {
                               ),
                               Column(
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: AppTheme.cardRadiusSmall,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                  GlassContainer(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: AppTheme.cardRadiusSmall,
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              AppTheme.elementSpacing * 1,
+                                          vertical:
+                                              AppTheme.elementSpacing / 3),
+                                      child: Text(
+                                        'Medium',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
                                     ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: AppTheme.elementSpacing * 1,
-                                        vertical: AppTheme.elementSpacing / 3),
-                                    child: Text(
-                                      'Medium',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
                                   ),
-                                  SizedBox(
-                                    height: AppTheme.elementSpacing,
-                                  ),
-                                  Text(
-                                    '${controller.fees?.halfHourFee} sat/vB' ??
-                                        '',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                  // SizedBox(
+                                  //   height: AppTheme.elementSpacing,
+                                  // ),
+                                  // Text(
+                                  //   '${controller.fees?.halfHourFee} sat/vB' ??
+                                  //       '',
+                                  //   maxLines: 1,
+                                  //   overflow: TextOverflow.ellipsis,
+                                  // ),
                                   SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
@@ -844,31 +861,30 @@ class _MempoolHomeState extends State<MempoolHome> {
                               ),
                               Column(
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: AppTheme.cardRadiusSmall,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                  GlassContainer(
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              AppTheme.elementSpacing * 1,
+                                          vertical:
+                                              AppTheme.elementSpacing / 3),
+                                      child: Text(
+                                        'High',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
                                     ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: AppTheme.elementSpacing * 1,
-                                        vertical: AppTheme.elementSpacing / 3),
-                                    child: Text(
-                                      'High',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
                                   ),
-                                  SizedBox(
-                                    height: AppTheme.elementSpacing,
-                                  ),
-                                  Text(
-                                    '${controller.highPriority.value} sat/vB' ??
-                                        '',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                  // SizedBox(
+                                  //   height: AppTheme.elementSpacing,
+                                  // ),
+                                  // Text(
+                                  //   '${controller.highPriority.value} sat/vB' ??
+                                  //       '',
+                                  //   maxLines: 1,
+                                  //   overflow: TextOverflow.ellipsis,
+                                  // ),
                                   SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
@@ -895,9 +911,17 @@ class _MempoolHomeState extends State<MempoolHome> {
                           );
                   }),
                 ),
+                SizedBox(
+                  height: AppTheme.cardPadding * 2,
+                ),
+                LastTransactions(),
+
                 difficultyAdjustment(),
                 //recentReplacements(),
                 //recentTransactions(),
+                SizedBox(
+                  height: AppTheme.cardPadding.h * 2,
+                ),
               ],
             ),
     );

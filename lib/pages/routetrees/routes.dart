@@ -203,7 +203,7 @@ class AppRoutes {
                   GoRoute(
                     path: 'transactions',
                     builder: _dynamicTransition == null
-                        ? (ctx, state) => const LastTransactionsScreen()
+                        ? (ctx, state) => const LastTransactions()
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(

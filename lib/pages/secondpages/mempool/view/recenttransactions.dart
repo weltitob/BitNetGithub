@@ -1,5 +1,6 @@
 //recent transacctions
 
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/view_sockets.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
@@ -53,12 +54,12 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                 ),
               ),
               SizedBox(width: 20),
-              Expanded(
-                child: Text(
-                  'USD',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
+              // Expanded(
+              //   child: Text(
+              //     'USD',
+              //     style: TextStyle(fontWeight: FontWeight.bold),
+              //   ),
+              // ),
               SizedBox(width: 20),
               Expanded(
                 child: Text(
@@ -146,17 +147,17 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: AppTheme.elementSpacing),
                       Expanded(
                           child: Text(
                               '${btcValue.toStringAsFixed(4)} BTC' ??
                                   '')),
-                      const SizedBox(width: 20),
-                      Expanded(
-                          child: Text(
-                              '\$${formatPriceDecimal(usdValue)}' ??
-                                  '')),
-                      const SizedBox(width: 20),
+
+                      // Expanded(
+                      //     child: Text(
+                      //         '\$${formatPriceDecimal(usdValue)}' ??
+                      //             '')),
+                      const SizedBox(width: AppTheme.elementSpacing),
                       Expanded(
                           child: Text(
                               '\$${(feeSatVb / 100000000 * 140 * controller.currentUSD.value).toStringAsFixed(2)}' ??

@@ -2,19 +2,20 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recentreplacements.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recenttransactions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class LastTransactionsScreen extends StatefulWidget {
-  const LastTransactionsScreen({super.key});
+class LastTransactions extends StatefulWidget {
+  const LastTransactions({super.key});
 
   @override
-  State<LastTransactionsScreen> createState() => _LastTransactionsScreenState();
+  State<LastTransactions> createState() => _LastTransactionsState();
 }
 
-class _LastTransactionsScreenState extends State<LastTransactionsScreen> with SingleTickerProviderStateMixin {
+class _LastTransactionsState extends State<LastTransactions> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -28,20 +29,16 @@ class _LastTransactionsScreenState extends State<LastTransactionsScreen> with Si
     _tabController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return bitnetScaffold(
-      context: context,
-      extendBodyBehindAppBar: true,
-      appBar: bitnetAppBar(
-        context: context,
-        text: "Last Transactions",
-        onTap: (){
-          context.pop();
-        },
-      ),
-      body: RoundedContainer(
-        contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding * 2.5),
+    return GlassContainer(
+      height: 600,
+      width: 900,
+      //contentPadding: const EdgeInsets.only(top: AppTheme.cardPadding * 2.5),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
         child: Column(
           children: [
             TabBar(
