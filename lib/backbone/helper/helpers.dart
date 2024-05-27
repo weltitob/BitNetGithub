@@ -23,6 +23,7 @@ enum MediaType {
   text,
   audio,
   external_url,
+  attributes,
   document,
   wallet_address}
 

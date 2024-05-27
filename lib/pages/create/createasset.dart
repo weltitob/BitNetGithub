@@ -16,7 +16,9 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/components/post/components/attributesbuilder.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
@@ -28,6 +30,7 @@ import 'package:bitnet/components/post/post_header.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/models/tapd/minassetresponse.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -75,20 +78,104 @@ class _CreateAssetState extends State<CreateAsset> {
   void addMedia(MediaType mediaType) {
     if (mediaType == MediaType.text) {
       _addTextField();
-    } else if (mediaType == MediaType.image_data || mediaType == MediaType.image) {
+    } else if (mediaType == MediaType.image_data ||
+        mediaType == MediaType.image) {
       _pickImageFiles(mediaType);
     } else if (mediaType == MediaType.external_url) {
       _pickLink();
-
     } else if (mediaType == MediaType.youtube_url) {
       _pickLink();
-    }
-    else if (mediaType == MediaType.spotify_url) {
+    } else if (mediaType == MediaType.attributes) {
+      _addAttributes();
+    } else if (mediaType == MediaType.spotify_url) {
       _pickLink();
-    }
-    else {
+    } else {
       _pickFile(mediaType);
     }
+  }
+
+  _addAttributes() {
+    return BitNetBottomSheet(
+        context: context,
+        child: bitnetScaffold(
+          extendBodyBehindAppBar: true,
+            appBar: bitnetAppBar(context: context,
+            text: "Add attributes",),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: AppTheme.cardPadding.h * 3,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Container(
+                        width: AppTheme.cardPadding.w * 7,
+                        child: FormTextField(
+                          controller: nameController,
+                          hintText: "Name",
+                          width: 0.8.sw,
+                        ),
+                      ),
+                      Container(
+                        width: AppTheme.cardPadding.w * 7,
+                        child: FormTextField(
+                          controller: nameController,
+                          hintText: "Value",
+                          width: 0.8.sw,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Container(
+                        width: AppTheme.cardPadding.w * 7,
+                        child: FormTextField(
+                          controller: nameController,
+                          hintText: "Name",
+                          width: 0.8.sw,
+                        ),
+                      ),
+                      Container(
+                        width: AppTheme.cardPadding.w * 7,
+                        child: FormTextField(
+                          controller: nameController,
+                          hintText: "Value",
+                          width: 0.8.sw,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Container(
+                        width: AppTheme.cardPadding.w * 7,
+                        child: FormTextField(
+                          controller: nameController,
+                          hintText: "Name",
+                          width: 0.8.sw,
+                        ),
+                      ),
+                      Container(
+                        width: AppTheme.cardPadding.w * 7,
+                        child: FormTextField(
+                          controller: nameController,
+                          hintText: "Value",
+                          width: 0.8.sw,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            context: context
+        ));
   }
 
   //da stettdessen den von izak mit sleection nehmen
@@ -188,7 +275,10 @@ class _CreateAssetState extends State<CreateAsset> {
                           horizontal: AppTheme.elementSpacing,
                           vertical: AppTheme.elementSpacing),
                       child: Column(children: [
-                        PostHeader(ownerId: '@yourself', postId: 'nopostid',),
+                        PostHeader(
+                          ownerId: '@yourself',
+                          postId: 'nopostid',
+                        ),
                         TextField(
                           controller: nameController,
                           decoration: AppTheme.textfieldDecoration(
@@ -332,7 +422,7 @@ class _CreateAssetState extends State<CreateAsset> {
                         iconData: Icons.add_rounded,
                         onTap: () {
                           BitNetBottomSheet(
-                            height: MediaQuery.of(context).size.height * 0.5,
+                            height: MediaQuery.of(context).size.height * 0.6,
                             context: context,
                             child: bitnetScaffold(
                               context: context,
@@ -407,6 +497,10 @@ class _PostItem extends StatelessWidget {
       return ImageBuilderLocal(postFile: postFile);
     }
 
+    if (postFile.type == MediaType.attributes) {
+      return AttributesBuilder(attributes: postFile.text!);
+    }
+
     if (postFile.type == MediaType.external_url) {
       return LinkBuilder(url: postFile.text!);
     }
@@ -461,8 +555,6 @@ void triggerAssetMinting(
 
     final jsonString = jsonEncode(jsonMap);
     print("DER JSON STRING IST: $jsonString");
-
-
 
     String assetDataBase64 = base64.encode(utf8.encode(jsonString));
     print(assetDataBase64);

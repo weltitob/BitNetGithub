@@ -3,10 +3,12 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/textfieldbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -132,29 +134,27 @@ class CommentsState extends State<Comments> {
                 fontSize: 18,
                 onTap: () => print('tapped'),
               ),
-              Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+              Padding(padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2 )),
               Expanded(
-                child: Container(
-                  height: 45,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: AppTheme.cardRadiusMid,
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(width: AppTheme.elementSpacing),
-                      Expanded(
-                        child: TextField(
-                          controller: commentController,
-                          decoration: AppTheme.textfieldDecoration("Write a comment...", context)
+                child: GlassContainer(
+                  child: Container(
+                    height: AppTheme.cardPadding.h *  2,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing,
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(width: AppTheme.elementSpacing),
+                        Expanded(
+                          child: TextField(
+                            controller: commentController,
+                            decoration: AppTheme.textfieldDecoration("Write a comment...", context)
+                          ),
                         ),
-                      ),
-                      TextFieldButton(iconData: Icons.arrow_upward_rounded,
-                        onTap: () => addComment(),)
-                    ],
+                        TextFieldButton(iconData: Icons.arrow_upward_rounded,
+                          onTap: () => addComment(),)
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -44,7 +44,7 @@ class AddContentWidget extends StatelessWidget {
 
           ],
         ),
-        SizedBox(height: AppTheme.cardPadding),
+        SizedBox(height: AppTheme.elementSpacing),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -72,6 +72,34 @@ class AddContentWidget extends StatelessWidget {
               mediaType: MediaType.wallet_address,
               onTap: (mediaType) => controller.addMedia(mediaType),
             ),
+          ],
+        ),
+        SizedBox(height: AppTheme.elementSpacing),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconCreationWidget(
+              icon: Icons.attractions_rounded,
+              color: Colors.orange,
+              text: "Attributes",
+              mediaType: MediaType.attributes,
+              onTap: (mediaType) => controller.addMedia(mediaType),
+            ),
+            IconCreationWidget(
+              icon: Icons.audiotrack_rounded,
+              color: Colors.orange,
+              text: "Audio",
+              mediaType: MediaType.audio,
+              onTap: (mediaType) => controller.addMedia(mediaType),
+            ),
+
+            // IconCreationWidget(
+            //   icon: Icons.picture_as_pdf,
+            //   color: Colors.orange,
+            //   text: "PDF",
+            //   mediaType: MediaType.pdf,
+            //   onTap: (mediaType) => controller.addMedia(mediaType),
+            // ),
           ],
         ),
         // SizedBox(height: AppTheme.cardPadding),
