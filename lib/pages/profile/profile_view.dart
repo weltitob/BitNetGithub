@@ -34,10 +34,15 @@ class ProfileView extends StatelessWidget {
             : ListView(
                 children: [
                   ProfileHeader(),
-                  controller.pages[controller.currentview.value],
+                  Obx(
+                    () {
+                      return controller.pages[controller.currentview.value];
+                    }
+                  ),
                   // ProfilePosts(userId: currentUserId),
                 ],
               ),
+
         floatingActionButton: Align(
           alignment: Alignment.bottomCenter,
           child: GestureDetector(
