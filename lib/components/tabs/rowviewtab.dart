@@ -5,8 +5,10 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class RowViewTab extends StatefulWidget {
   @override
@@ -16,58 +18,21 @@ class RowViewTab extends StatefulWidget {
 class _RowViewTabState extends State<RowViewTab>
     with SingleTickerProviderStateMixin {
   bool get wantKeepAlive => true;
+  final controller = Get.put(ProfileController());
 
-  bool isLoading = false;
-  List<Asset> assets = [];
-  Map<String, AssetMetaResponse> assetMetaMap = {};
-
-  @override
-  void initState() {
-    fetchTaprootAssets();
-    super.initState();
-  }
-
-  void fetchTaprootAssets() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      List<Asset> fetchedAssets = await listTaprootAssets();
-      List<Asset> reversedAssets = fetchedAssets.reversed.toList();
-      Map<String, AssetMetaResponse> metas = {};
-
-      for (int i = 0; i < reversedAssets.length && i < 5; i++) {
-        String assetId = reversedAssets[i].assetGenesis!.assetId ?? '';
-        AssetMetaResponse? meta = await fetchAssetMeta(assetId);
-        if (meta != null) {
-          metas[assetId] = meta;
-        }
-      }
-
-      setState(() {
-        assets = reversedAssets;
-        assetMetaMap = metas;
-        isLoading = false;
-      });
-    } catch (e) {
-      print('Error: $e');
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return SafeArea(
-      child: Container(
-        height: size.height,
-        child: isLoading
-            ? Center(child: dotProgress(context))
+      child: SingleChildScrollView(
+        child: Obx((){
+          return controller.isLoading.value
+            ? dotProgress(context)
             : LayoutBuilder(
           builder: (context, constraints) {
             return GridView.builder(
+              shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing.w),
@@ -77,10 +42,10 @@ class _RowViewTabState extends State<RowViewTab>
                 mainAxisSpacing: AppTheme.elementSpacing.h,
                 childAspectRatio: (size.width / 2) / 230.w, // Adjust according to your design
               ),
-              itemCount: assets.length,
+              itemCount: controller.assets.length,
               itemBuilder: (context, index) {
-                final asset = assets[index];
-                final meta = assetMetaMap[asset.assetGenesis!.assetId ?? ''];
+                final asset = controller.assets[index];
+                final meta = controller.assetMetaMap[asset.assetGenesis!.assetId ?? ''];
                 return Container(
                   constraints: BoxConstraints(
                     minHeight: 230.w, // Set minimum height to match childAspectRatio
@@ -96,7 +61,7 @@ class _RowViewTabState extends State<RowViewTab>
               },
             );
           },
-        ),
+        );}),
       ),
     );
   }

@@ -1,9 +1,13 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/cloudfunctions/taprootassets/fetchassetmeta.dart';
+import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/components/tabs/columnviewtab.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
 import 'package:bitnet/components/tabs/rowviewtab.dart';
+import 'package:bitnet/models/tapd/asset.dart';
+import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +19,8 @@ class ProfileController extends BaseController {
   late List<Widget> pages;
   RxInt currentview = 0.obs;
   RxBool isUserLoading = true.obs;
+  RxBool isLoading = true.obs;
+
   late UserData userData;
 
   RxBool? isPrivate;
@@ -47,6 +53,9 @@ class ProfileController extends BaseController {
   final focusNodeDisplayName = FocusNode();
   final focusNodeUsername = FocusNode();
   final focusNodeBio = FocusNode();
+
+  RxList<dynamic> assets = [].obs;
+  Map<String, AssetMetaResponse> assetMetaMap = {};
   
   bool get profileReady =>
       gotIsFollowing.value == true &&
@@ -303,6 +312,30 @@ class ProfileController extends BaseController {
     } catch (e, tr) {
       print(e);
       print(tr);
+    }
+  }
+
+
+  void fetchTaprootAssets() async {
+      isLoading.value = true;
+    try {
+      List<Asset> fetchedAssets = await listTaprootAssets();
+      List<Asset> reversedAssets = fetchedAssets.reversed.toList();
+      Map<String, AssetMetaResponse> metas = {};
+
+      for (int i = 0; i < reversedAssets.length && i < 5; i++) {
+        String assetId = reversedAssets[i].assetGenesis!.assetId ?? '';
+        AssetMetaResponse? meta = await fetchAssetMeta(assetId);
+        if (meta != null) {
+          metas[assetId] = meta;
+        }
+      }
+        assets.value = reversedAssets;
+        assetMetaMap = metas;
+      isLoading.value = false;
+    } catch (e) {
+      print('Error: $e');
+      isLoading.value = false;
     }
   }
 }
