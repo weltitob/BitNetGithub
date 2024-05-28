@@ -2,11 +2,15 @@ import 'package:animator/animator.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/post/components/applemusicbuilder.dart';
 import 'package:bitnet/components/post/components/attributesbuilder.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
+import 'package:bitnet/components/post/components/deezerbuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
+import 'package:bitnet/components/post/components/spotifybuilder.dart';
 import 'package:bitnet/components/post/components/textbuilder.dart';
+import 'package:bitnet/components/post/components/youtubemusicbuilder.dart';
 import 'package:bitnet/components/post/likespace.dart';
 import 'package:bitnet/components/post/post_header.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -155,6 +159,26 @@ class _PostState extends State<Post> {
                     return Container(
                         margin: EdgeInsets.only(bottom: 10.0),
                         child: AttributesBuilder(attributes: e.data));
+                  }
+                  if (type == "spotify_url") {
+                    return Container(
+                        margin: EdgeInsets.only(bottom: 10.0),
+                        child: SpotifyBuilder(spotifyUrl: e.data));
+                  }
+                  if (type == "youtubemusic_url") {
+                    return Container(
+                        margin: EdgeInsets.only(bottom: 10.0),
+                        child: YoutubeMusicBuilder(youtubeUrl: e.data));
+                  }
+                  if (type == "deezer_url") {
+                    return Container(
+                        margin: EdgeInsets.only(bottom: 10.0),
+                        child: DeezerBuilder(deezerUrl: e.data));
+                  }
+                  if (type == "applemusic_url") {
+                    return Container(
+                        margin: EdgeInsets.only(bottom: 10.0),
+                        child: AppleMusicBuilder(applemusicUrl: e.data));
                   }
                   if (type == "external_link") {
                     return Container(

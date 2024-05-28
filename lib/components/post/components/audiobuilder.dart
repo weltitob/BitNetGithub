@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +16,11 @@ class AdjustSpeedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
-      decoration: BoxDecoration(
-          color: Colors.grey.shade900.withOpacity(0.4),
-          borderRadius: BorderRadius.circular(20.0)
+    return GlassContainer(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+        child: child,
       ),
-      child: child,
     );
   }
 }

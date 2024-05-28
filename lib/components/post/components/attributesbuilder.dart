@@ -16,8 +16,8 @@ class AttributesBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //cinvert the data to a map and then create a widget for each attribute
     print("Attributes should be displayed here: $attributes");
-
     return Text("Attributes should be displayed here: $attributes");
   }
 }

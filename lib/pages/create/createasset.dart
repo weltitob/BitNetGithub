@@ -5,7 +5,6 @@ import 'package:bitnet/backbone/cloudfunctions/taprootassets/mintasset.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/backbone/services/compression.dart';
 import 'package:bitnet/backbone/services/file_picker_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 
@@ -102,76 +101,81 @@ class _CreateAssetState extends State<CreateAsset> {
             appBar: bitnetAppBar(context: context,
             text: "Add attributes",),
             body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: AppTheme.cardPadding.h * 3,),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        width: AppTheme.cardPadding.w * 7,
-                        child: FormTextField(
-                          controller: nameController,
-                          hintText: "Name",
-                          width: 0.8.sw,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                child: Column(
+                  children: [
+                    SizedBox(height: AppTheme.cardPadding.h * 3,),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          width: AppTheme.cardPadding.w * 6.75,
+                          child: FormTextField(
+                            controller: nameController,
+                            hintText: "Name",
+                            width: 0.8.sw,
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: AppTheme.cardPadding.w * 7,
-                        child: FormTextField(
-                          controller: nameController,
-                          hintText: "Value",
-                          width: 0.8.sw,
+                        Container(
+                          width: AppTheme.cardPadding.w * 6.75,
+                          child: FormTextField(
+                            controller: nameController,
+                            hintText: "Value",
+                            width: 0.8.sw,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        width: AppTheme.cardPadding.w * 7,
-                        child: FormTextField(
-                          controller: nameController,
-                          hintText: "Name",
-                          width: 0.8.sw,
+                      ],
+                    ),
+                    SizedBox(height: AppTheme.elementSpacing,),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          width: AppTheme.cardPadding.w * 6.75,
+                          child: FormTextField(
+                            controller: nameController,
+                            hintText: "Name",
+                            width: 0.8.sw,
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: AppTheme.cardPadding.w * 7,
-                        child: FormTextField(
-                          controller: nameController,
-                          hintText: "Value",
-                          width: 0.8.sw,
+                        Container(
+                          width: AppTheme.cardPadding.w * 6.75,
+                          child: FormTextField(
+                            controller: nameController,
+                            hintText: "Value",
+                            width: 0.8.sw,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        width: AppTheme.cardPadding.w * 7,
-                        child: FormTextField(
-                          controller: nameController,
-                          hintText: "Name",
-                          width: 0.8.sw,
+                      ],
+                    ),
+                    SizedBox(height: AppTheme.elementSpacing,),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          width: AppTheme.cardPadding.w * 6.75,
+                          child: FormTextField(
+                            controller: nameController,
+                            hintText: "Name",
+                            width: 0.8.sw,
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: AppTheme.cardPadding.w * 7,
-                        child: FormTextField(
-                          controller: nameController,
-                          hintText: "Value",
-                          width: 0.8.sw,
+                        Container(
+                          width: AppTheme.cardPadding.w * 6.75,
+                          child: FormTextField(
+                            controller: nameController,
+                            hintText: "Value",
+                            width: 0.8.sw,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             context: context
