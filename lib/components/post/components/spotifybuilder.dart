@@ -11,14 +11,16 @@ class SpotifyBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("spotifyUrl should be displayed here: $spotifyUrl");
-
     return Container(
         height: AppTheme.cardPadding * 2,
         child: Row(
           children: [
             IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.spotify)),
-            Text("$spotifyUrl", overflow: TextOverflow.ellipsis,),
+            Container(
+              width: AppTheme.cardPadding * 12,
+              child: Text(
+                "$spotifyUrl", overflow: TextOverflow.ellipsis,),
+            ),
           ],
         ));
   }

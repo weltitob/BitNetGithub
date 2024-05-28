@@ -92,10 +92,6 @@ class AudioBuilderLocalState extends State<AudioBuilderLocal>
         padding: EdgeInsets.symmetric(
           horizontal: 10.0,
         ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(40),
-          color: Colors.grey[800],
-        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -198,54 +194,52 @@ class AudioBuilderNetworkState extends State<AudioBuilderNetwork>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: EdgeInsets.symmetric(
-        horizontal: 10.0,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(40),
-        color: Colors.grey[800],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          AudioControlButton(player),
-          AdjustSpeedContainer(
-            child: StreamBuilder<double>(
-              stream: player.speedStream,
-              builder: (context, snapshot) => GestureDetector(
-                child: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                onTap: () {
-                  showSliderDialog(
-                    context: context,
-                    title: "Adjust speed",
-                    divisions: 10,
-                    min: 0.5,
-                    max: 2.0,
-                    value: player.speed,
-                    stream: player.speedStream,
-                    onChanged: player.setSpeed,
-                  );
-                },
+    return GlassContainer(
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        padding: EdgeInsets.symmetric(
+          horizontal: 10.0,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            AudioControlButton(player),
+            AdjustSpeedContainer(
+              child: StreamBuilder<double>(
+                stream: player.speedStream,
+                builder: (context, snapshot) => GestureDetector(
+                  child: Text("${snapshot.data?.toStringAsFixed(1)}x",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  onTap: () {
+                    showSliderDialog(
+                      context: context,
+                      title: "Adjust speed",
+                      divisions: 10,
+                      min: 0.5,
+                      max: 2.0,
+                      value: player.speed,
+                      stream: player.speedStream,
+                      onChanged: player.setSpeed,
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-          StreamBuilder<PositionData>(
-            stream: _positionDataStream,
-            builder: (context, snapshot) {
-              final positionData = snapshot.data;
-              return AudioSeekBar(
-                duration: positionData?.duration ?? Duration.zero,
-                position: positionData?.position ?? Duration.zero,
-                bufferedPosition:
-                positionData?.bufferedPosition ?? Duration.zero,
-                onChangeEnd: player.seek,
-              );
-            },
-          ),
-        ],
+            StreamBuilder<PositionData>(
+              stream: _positionDataStream,
+              builder: (context, snapshot) {
+                final positionData = snapshot.data;
+                return AudioSeekBar(
+                  duration: positionData?.duration ?? Duration.zero,
+                  position: positionData?.position ?? Duration.zero,
+                  bufferedPosition:
+                  positionData?.bufferedPosition ?? Duration.zero,
+                  onChangeEnd: player.seek,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -292,12 +286,12 @@ class AudioControlButton extends StatelessWidget {
 
   Widget buildAudioButtons(BuildContext context, onTap, IconData iconData) {
     return Padding(
-      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, right: 10.0),
+      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10.0),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.orange[600],
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(40.0),
           ),
           child: Padding(

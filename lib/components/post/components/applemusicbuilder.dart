@@ -11,16 +11,20 @@ class AppleMusicBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("applemusicUrl should be displayed here: $applemusicUrl");
-
     return Container(
         height: AppTheme.cardPadding * 2,
         child: Row(
           children: [
-            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.apple)),
-            Text("$applemusicUrl", overflow: TextOverflow.ellipsis,),
+            IconButton(
+                onPressed: () {}, icon: Icon(FontAwesomeIcons.apple)),
+            Container(
+              width: AppTheme.cardPadding * 12,
+              child: Text(
+                "$applemusicUrl",
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ));
   }
 }
-

@@ -11,14 +11,14 @@ class DeezerBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("applemusicUrl should be displayed here: $deezerUrl");
-
     return Container(
         height: AppTheme.cardPadding * 2,
         child: Row(
           children: [
             IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.deezer)),
-            Text("$deezerUrl", overflow: TextOverflow.ellipsis,),
+            Container(
+                width: AppTheme.cardPadding * 12,
+                child: Text("$deezerUrl", overflow: TextOverflow.ellipsis,)),
           ],
         ));
   }

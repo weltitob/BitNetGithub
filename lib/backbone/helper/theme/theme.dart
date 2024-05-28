@@ -16,19 +16,8 @@ abstract class AppTheme {
 
   static String coinGeckoApiKey = 'CG-12UjARcpudDsAw5CKgGxNRqe';
   static String _applicationName = 'bitnet';
-  static String get applicationName => _applicationName;
-  static String? _applicationWelcomeMessage;
-  static String? get applicationWelcomeMessage => _applicationWelcomeMessage;
-  static String _defaultHomeserver = 'matrix.org';
-  static String get defaultHomeserver => _defaultHomeserver;
 
   static dynamic targetConf = 4;
-
-  static double bubbleSizeFactor = 0.8;
-  static double fontSizeFactor = 1;
-  static const double messageFontSize = 15;
-
-  static const Color chatColor = primaryColor;
 
   static Color? colorSchemeSeed = Color(0xFF5625BA);
   static const Color colorBackground = Color(0xff130036);

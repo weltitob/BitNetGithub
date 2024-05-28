@@ -5,6 +5,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/post/components/applemusicbuilder.dart';
 import 'package:bitnet/components/post/components/attributesbuilder.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
+import 'package:bitnet/components/post/components/collectionbuilder.dart';
 import 'package:bitnet/components/post/components/deezerbuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
@@ -136,11 +137,12 @@ class _PostState extends State<Post> {
                 ownerId: ownerId,
                 postId: postId,
               ),
+              SizedBox(height: AppTheme.elementSpacing),
               Text(
                 postName,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(height: AppTheme.elementSpacing),
+              SizedBox(height: AppTheme.cardPadding),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: medias.map((e) {
@@ -149,6 +151,11 @@ class _PostState extends State<Post> {
                     return Container(
                         margin: EdgeInsets.only(bottom: 10.0),
                         child: TextBuilderNetwork(url: e.data));
+                  }
+                  if (type == "collection") {
+                    return Container(
+                        margin: EdgeInsets.only(bottom: 10.0),
+                        child: CollectionBuilder(data: e.data));
                   }
                   if (type == "description") {
                     return Container(
@@ -200,6 +207,7 @@ class _PostState extends State<Post> {
                         margin: EdgeInsets.only(bottom: 10.0),
                         child: AudioBuilderNetwork(url: e.data));
                   }
+
                   return Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextBuilderNetwork(url: e.data));

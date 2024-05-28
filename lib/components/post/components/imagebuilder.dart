@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/post/components/postfile_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 //USED FOR UPLOAD SCREEN (USER PICKS FILE LOCALLY)
@@ -57,7 +58,7 @@ class ImageBuilder extends StatelessWidget {
         imageBytes,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => Container(
-          height: AppTheme.cardPadding * 5,
+          height: AppTheme.cardPadding * 4,
           child: Icon(
             Icons.error,
             color: Theme.of(context).colorScheme.error,
@@ -83,7 +84,7 @@ class ImageBox extends StatelessWidget {
         Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
+              borderRadius: AppTheme.cardRadiusMid.r,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -93,7 +94,7 @@ class ImageBox extends StatelessWidget {
               ],
             ),
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius: AppTheme.cardRadiusMid.r,
                 child: child)),
       ],
     );
