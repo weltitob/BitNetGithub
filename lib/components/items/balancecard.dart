@@ -23,7 +23,12 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
         double.parse(controller.lightningBalance.balance), BitcoinUnits.SAT);
     final balanceStr = unitModel.amount.toString();
 
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          AppTheme.boxShadowBig,
+        ]
+      ),
       child: Stack(
         children: [
           const CardBackgroundLightning(),
@@ -60,7 +65,12 @@ class BalanceCardBtc extends GetWidget<WalletsController> {
     final balanceStr = unitModel.amount.toString();
     print(balanceStr);
 
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          AppTheme.boxShadowBig,
+        ]
+      ),
       child: Stack(
         children: [
           const CardBackgroundOnchain(),
@@ -72,7 +82,15 @@ class BalanceCardBtc extends GetWidget<WalletsController> {
             walletAddress: "safdadasdas",
             cardname: 'On-Chain Balance',
           ),
-          paymentNetworkPicture(context, 'assets/images/bitcoin.png')
+          paymentNetworkPicture(context, 'assets/images/bitcoin.png'),
+          Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25,),
+                //unconfirmed balance if there is one display here
+                child: Text("Incoming Balance: 32.21 (BItcoinsymbol/USD)",
+                style: Theme.of(context).textTheme.bodySmall,),
+              )),
         ],
       ),
     );
@@ -330,8 +348,8 @@ class CardBackgroundOnchain extends StatelessWidget {
               //stops: [0.25, 1],
               stops: [0, 0.75],
               colors: [
-                Theme.of(context).colorScheme.secondaryContainer,
-                Theme.of(context).colorScheme.secondary,
+                Theme.of(context).colorScheme.tertiaryContainer,
+                Theme.of(context).colorScheme.tertiary,
               ],
             ),
           ),
@@ -422,7 +440,7 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
               ],
             ),
             SizedBox(
-              height: AppTheme.elementSpacing * 0.75,
+              height: AppTheme.elementSpacing * 0.5,
             ),
             if (coin.coin ?? true) ...[
               controller.hideBalance.value

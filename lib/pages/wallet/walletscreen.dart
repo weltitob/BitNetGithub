@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -34,12 +33,11 @@ class WalletScreen extends GetWidget<WalletsController> {
   Widget build(BuildContext context) {
     Get.lazyPut(() => ReceiveController(), fenix: true);
     Get.lazyPut(() => SendsController(context: context), fenix: true);
-        final ChartLine? chartLine = controller.chartLines.value;
-    if(controller.queueErrorOvelay) {
+    final ChartLine? chartLine = controller.chartLines.value;
+    if (controller.queueErrorOvelay) {
       controller.queueErrorOvelay = false;
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
-              controller.handleFuturesCompleted(context);
-
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        controller.handleFuturesCompleted(context);
       });
     }
     final bitcoinPrice = chartLine?.price;
@@ -52,9 +50,10 @@ class WalletScreen extends GetWidget<WalletsController> {
         double.parse(controller.onchainBalance.confirmedBalance),
         BitcoinUnits.SAT);
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
-    final currency = Provider.of<CurrencyChangeProvider>(context, listen:true);
-    controller.coin.value = coin.coin?? controller.coin.value;
-    controller.selectedCurrency!.value = currency.selectedCurrency ?? controller.selectedCurrency!.value;
+    final currency = Provider.of<CurrencyChangeProvider>(context, listen: true);
+    controller.coin.value = coin.coin ?? controller.coin.value;
+    controller.selectedCurrency!.value =
+        currency.selectedCurrency ?? controller.selectedCurrency!.value;
     List<Container> cards = [
       Container(
         child: GestureDetector(
@@ -78,10 +77,9 @@ class WalletScreen extends GetWidget<WalletsController> {
         context: context,
         body: ListView(
           children: [
-            Obx(
-              (){ 
-                controller.chartLines.value;
-                return Column(
+            Obx(() {
+              controller.chartLines.value;
+              return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -105,7 +103,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 children: [
                                   Text(
                                     "Total Wallet Balance",
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                   SizedBox(
                                     height: AppTheme.elementSpacing * 0.25,
@@ -123,43 +122,49 @@ class WalletScreen extends GetWidget<WalletsController> {
                                             : Obx(() {
                                                 return GestureDetector(
                                                   onTap: () {
-              controller.setCurrencyType(
-                                                          !controller
-                                                                  .coin.value
-                                                              , updateDatabase: false);
-                                                              coin.setCurrencyType(controller.coin.value);
-                                                  }
-                                                      ,
+                                                    controller.setCurrencyType(
+                                                        !controller.coin.value,
+                                                        updateDatabase: false);
+                                                    coin.setCurrencyType(
+                                                        controller.coin.value);
+                                                  },
                                                   child: Container(
-                                                    child: (controller.coin.value)
-                                                        ? Row(
-                                                            children: [
-                                                              Text(
-              
-                                                                controller.totalBalance.value.amount.toString()
-                                                                      ,
-                                                                    overflow: TextOverflow.ellipsis,
+                                                    child:
+                                                        (controller.coin.value)
+                                                            ? Row(
+                                                                children: [
+                                                                  Text(
+                                                                    controller
+                                                                        .totalBalance
+                                                                        .value
+                                                                        .amount
+                                                                        .toString(),
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .displaySmall,
+                                                                  ),
+                                                                  // const SizedBox(
+                                                                  //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                                                                  // ),
+                                                                  Icon(
+                                                                    getCurrencyIcon(controller
+                                                                        .totalBalance
+                                                                        .value
+                                                                        .bitcoinUnitAsString),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Text(
+                                                                "${currencyEquivalent}${getCurrency(controller.selectedCurrency!.value)}",
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
                                                                     .displaySmall,
                                                               ),
-                                                              // const SizedBox(
-                                                              //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-                                                              // ),
-                                                              Icon(
-                                                                getCurrencyIcon(
-                                                                    controller.totalBalance.value.bitcoinUnitAsString),
-                                                              ),
-                                                            ],
-                                                          )
-                                                        : Text(
-                                                            "${currencyEquivalent}${getCurrency(controller.selectedCurrency!.value)}",
-                                                            style:
-                                                                Theme.of(context)
-                                                                    .textTheme
-                                                                    .displaySmall,
-                                                          ),
                                                   ),
                                                 );
                                               }),
@@ -190,7 +195,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                       height: AppTheme.cardPadding * 1.h,
                     ),
                     Container(
-                      height: AppTheme.cardPadding * 7.5.h,
+                      height: AppTheme.cardPadding * 7.75.h,
                       child: Stack(
                         children: [
                           CardSwiper(
@@ -218,8 +223,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                         ],
                       ),
                     ),
-                  ]);}
-            ),
+                  ]);
+            }),
             const SizedBox(height: AppTheme.cardPadding * 1.5),
             Padding(
               padding:
@@ -354,5 +359,4 @@ class WalletScreen extends GetWidget<WalletsController> {
           ],
         ));
   }
-  
 }
