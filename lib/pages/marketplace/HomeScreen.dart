@@ -239,24 +239,27 @@ class HomeScreen extends StatelessWidget {
                       itemCount: nftTopSellersProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                            medias: [],
-                            // encodedData:
-                            //     nftTopSellersProductSliderData[index].nftImage,
+                          medias: [],
+                          // encodedData:
+                          //     nftTopSellersProductSliderData[index].nftImage,
 
-                            nftName:
-                                nftTopSellersProductSliderData[index].nftName,
-                            nftMainName: nftTopSellersProductSliderData[index]
-                                .nftMainName,
-                            cryptoText: nftTopSellersProductSliderData[index]
-                                .cryptoText,
-                            rank: nftTopSellersProductSliderData[index]
-                                .rank
-                                .toString());
+                          nftName:
+                              nftTopSellersProductSliderData[index].nftName,
+                          nftMainName:
+                              nftTopSellersProductSliderData[index].nftMainName,
+                          cryptoText:
+                              nftTopSellersProductSliderData[index].cryptoText,
+                          rank: nftTopSellersProductSliderData[index]
+                              .rank
+                              .toString(),
+                        );
                       },
                     ),
                   ),
                 ),
-                SizedBox(height: AppTheme.cardPadding * 3.5),
+                SizedBox(
+                  height: AppTheme.cardPadding * 3.5,
+                ),
               ],
             ),
           ),
