@@ -1,11 +1,7 @@
-import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/marketplace_widgets/FilterBtn.dart';
-import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
-import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -29,7 +25,6 @@ class _ListScreenState extends State<ListScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-        
             GridView.builder(
               gridDelegate:
                   const SliverGridDelegateWithFixedCrossAxisCount(
@@ -44,13 +39,11 @@ class _ListScreenState extends State<ListScreen> {
               itemCount: gridListData.length,
               itemBuilder: (BuildContext context, int index) {
                 return NftProductSlider(
-                    encodedData: gridListData[index].nftImage,
-
+                    encodedData: gridListData[index].nftImage, 
                     nftName: gridListData[index].nftName,
                     nftMainName: gridListData[index].nftMainName,
                     cryptoText: gridListData[index].cryptoText,
-
-                    rank: gridListData[index].rank);
+                    rank: gridListData[index].rank.toString());
               },
             ),
           ],
