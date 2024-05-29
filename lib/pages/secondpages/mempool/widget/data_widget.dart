@@ -86,9 +86,11 @@ class _DataWidgetState extends State<DataWidget> {
                       .titleMedium!
                       .copyWith(color: Colors.transparent),
                 ),
-          const SizedBox(height: AppTheme.elementSpacing),
+          const SizedBox(
+            height: AppTheme.elementSpacing,
+          ),
           Container(
-            height: AppTheme.cardPadding * 6.h,
+            height: AppTheme.cardPadding * 5.6.h,
             width: AppTheme.cardPadding *
                 6.w, //MediaQuery.of(context).size.height * 0.2,
             margin: widget.isAccepted
@@ -140,20 +142,22 @@ class _DataWidgetState extends State<DataWidget> {
                 SizedBox(height: AppTheme.elementSpacing * 0.4.h),
                 widget.isAccepted
                     ? FittedBox(
-                      child: Text(
+                        child: Text(
                           '${formatPrice(widget.blockData?.txCount)} transactions',
                           maxLines: 1,
-                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                          style:
+                              TextStyle(fontSize: 14.sp, color: Colors.white),
                         ),
-                    )
+                      )
                     : FittedBox(
-                      child: Text(
+                        child: Text(
                           '${formatPrice(widget.mempoolBlocks?.nTx)} transactions',
                           maxLines: 1,
-                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                          style:
+                              TextStyle(fontSize: 14.sp, color: Colors.white),
                           overflow: TextOverflow.ellipsis,
                         ),
-                    ),
+                      ),
                 SizedBox(height: AppTheme.elementSpacing * 0.4.h),
                 widget.isAccepted
                     ? Text(
@@ -162,12 +166,13 @@ class _DataWidgetState extends State<DataWidget> {
                         style: TextStyle(fontSize: 14.sp, color: Colors.white),
                       )
                     : FittedBox(
-                      child: Text(
+                        child: Text(
                           'In ~${widget.mins} minutes',
                           maxLines: 1,
-                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                          style:
+                              TextStyle(fontSize: 14.sp, color: Colors.white),
                         ),
-                    ),
+                      ),
               ],
             ),
           ),
@@ -177,7 +182,7 @@ class _DataWidgetState extends State<DataWidget> {
                       ? const EdgeInsets.only(left: AppTheme.cardPadding)
                       : const EdgeInsets.only(left: 0),
                   child: Icon(Icons.arrow_drop_down_rounded,
-                      size: AppTheme.cardPadding * 2.h),
+                      size: AppTheme.cardPadding * 2),
                 )
               : SizedBox(
                   height: AppTheme.cardPadding * 1.h,
