@@ -15,7 +15,7 @@ abstract class AppTheme {
   static String baseUrlLightningTerminal = 'mybitnet.com:8443';
 
   static String coinGeckoApiKey = 'CG-12UjARcpudDsAw5CKgGxNRqe';
-  static String _applicationName = 'bitnet';
+  static String applicationName = 'BitNet';
 
   static dynamic targetConf = 4;
 
@@ -157,15 +157,6 @@ abstract class AppTheme {
           
         );
       }
-    }
-    if (json['application_name'] is String) {
-      _applicationName = json['application_name'];
-    }
-    if (json['application_welcome_message'] is String) {
-      _applicationWelcomeMessage = json['application_welcome_message'];
-    }
-    if (json['default_homeserver'] is String) {
-      _defaultHomeserver = json['default_homeserver'];
     }
     if (json['privacy_url'] is String) {
       _webBaseUrl = json['privacy_url'];

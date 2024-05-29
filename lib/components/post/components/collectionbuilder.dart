@@ -21,11 +21,12 @@ class CollectionBuilder extends StatelessWidget {
               Avatar(),
               SizedBox(width: AppTheme.elementSpacing / 2),
               Container(
-                color: Colors.green,
-                  width: AppTheme.cardPadding * 10,
-                  child: Text("$data",
-                      style: Theme.of(context).textTheme.titleMedium,
-                      overflow: TextOverflow.ellipsis)),
+                  width: AppTheme.cardPadding * 11,
+                  child: Center(
+                    child: Text("$data",
+                        style: Theme.of(context).textTheme.titleMedium,
+                        overflow: TextOverflow.ellipsis),
+                  )),
             ],
           ),
         ),
