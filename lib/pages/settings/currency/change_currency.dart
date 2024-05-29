@@ -30,7 +30,7 @@ class _ChangeCurrencyState extends State<ChangeCurrency> {
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
-        text: 'Change Currency',
+        text: L10n.of(context)!.changeCurrency,
         context: context,
         buttonType: ButtonType.transparent,
         onTap: () {
@@ -135,11 +135,7 @@ class _DashboardPageState extends State<DashboardPage> {
         style: Theme.of(context).textTheme.titleMedium,
       ),
       selected: key == selectedCurrency,
-      onTap: () {
-        print("First Selected");
-        print("Key: $key");
-        print("Value: $value");
-        print("Curr: $curr");
+      onTap: () { 
 
         Provider.of<CurrencyChangeProvider>(context, listen: false)
             .setFirstCurrencyInDatabase(

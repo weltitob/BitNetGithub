@@ -58,23 +58,18 @@ class HomeController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+    print('on init home controller called ');
     allData();
-    // Future.delayed(Duration(milliseconds: 5000)).then((value) {
-    //   Scrollable.ensureVisible(
-    //     containerKey.currentContext!,
-    //     curve: Curves.bounceIn,
-    //   );
-    //   print('called scroll');
-    // });
-    // getTransactions();
   }
 
   allData() async {
-    await getData();
+    socketLoading.value = true;
     await getWebSocketData();
+    await getData();
     await callApiWithDelay();
-    await dollarRate();
-  }
+    await txDetailsConfirmedF(bitcoinData.first.id!);
+    await txDetailsF(bitcoinData.first.id!, 0);
+   }
 
   String formatAmount(String price) {
     String priceInText = "";
@@ -166,18 +161,13 @@ class HomeController extends BaseController {
       }
       // isLoading.value = false;
       update();
-    } on DioError {
+    } on DioException {
       isLoading.value = false;
       update();
     } catch (e) {
       isLoading.value = false;
       update();
     }
-  }
-
-  void printWrapped(String text) {
-    final pattern = RegExp('.{1,1000}'); // 800 is the size of each chunk
-    pattern.allMatches(text).forEach((match) => print(match.group(0)));
   }
 
   RxBool isRbfTransaction = false.obs;
@@ -202,10 +192,7 @@ class HomeController extends BaseController {
       },
     );
     subscription = channel.stream.listen((message) {
-      // printWrapped('message+ $message');
-      // print('message+1 ${json.decode(message)}');
       Map<String, dynamic> data = jsonDecode(message);
-      print('message+2 ${data['projected-block-transactions']}');
       if (data['projected-block-transactions'] != null) {
         if (data['projected-block-transactions']['blockTransactions'] != null) {
           blockTransactions.clear();
@@ -218,19 +205,12 @@ class HomeController extends BaseController {
           blockTransactions
               .addAll(data['projected-block-transactions']['delta']['added']);
         }
-        // if(data['projected-block-transactions']['delta']['changes'] != null){
-        //   List changed = data['projected-block-transactions']['delta']['changed'];
-        //   for(int i=0; i<blockTransactions.length; i++){
-        //     blockTransactions.
-        //   }
-        //   blockTransactions.addAll(data['projected-block-transactions']['delta']['added']);
-        // }
+
         if (data['projected-block-transactions']['delta']['removed'] != null) {
           List remove =
               data['projected-block-transactions']['delta']['removed'];
-          print(remove.length);
           for (int i = 0; i < blockTransactions.length; i++) {
-            String e = blockTransactions[i][0];
+            String e = blockTransactions[i].first;
             print(remove.contains(e));
             if (remove.contains(e)) {
               print('remove');
@@ -250,28 +230,14 @@ class HomeController extends BaseController {
         replacedTx.value = memPool.rbfTransaction!.txid;
         Get.forceAppUpdate();
       }
-      // if (message['rbfTransaction'] != null) {
-      //   isRbfTransaction.value = true;
-      //   replacedTx.value = message['rbfTransaction']['txid'];
-      // }
-      // if (message['txPosition'] != null) {
-      //   txPosition.value = message['txPosition']['position']['block'];
-      // }
       if (memPool.conversions != null) {
-        // usdPrice = memPool.conversions!.uSD ?? 0;
         currentUSD.value = int.parse(memPool.conversions!.uSD.toString());
-        print(currentUSD.value);
-        print('\n\nabove is current usd value');
       }
       if (memPool.mempoolBlocks != null) {
         mempoolBlocks.clear();
         mempoolBlocks.addAll(memPool.mempoolBlocks!);
       }
 
-      // if (message['transactions'] != null) {
-      //   print(message['transactions']);
-      //   print('inisde tranaction');
-      // }
       if (memPool.transactions != null) {
         transaction.clear();
         transaction.addAll(memPool.transactions!);
@@ -304,12 +270,6 @@ class HomeController extends BaseController {
       socketLoading.value = false;
       transactionLoading.value = false;
       update();
-      // if (memPool.txConfirmed != null) {
-      //   txConfirmed.value = true;
-      //   print(memPool.txConfirmed);
-      //   print('txConfirmed');
-      //   Get.forceAppUpdate();
-      // }
     }, onError: (error) {
       socketLoading.value = false;
       transactionLoading.value = false;
@@ -318,8 +278,10 @@ class HomeController extends BaseController {
     });
   }
 
+  late Timer timer;
   callApiWithDelay() {
-    Timer.periodic(const Duration(seconds: 5), (timer) async {
+    print('callapi with delay called ');
+    timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
       try {
         String url = 'https://mempool.space/api/v1/blocks';
         final response = await dioClient.get(url: url);
@@ -329,10 +291,10 @@ class HomeController extends BaseController {
           bitcoinData.add(BlockData.fromJson(response.data[i]));
         }
         dollarRate();
-        // isLoading.value = false;
+        isLoading.value = false;
         Get.forceAppUpdate();
         update();
-      } on DioError {
+      } on DioException {
         isLoading.value = false;
         update();
       } catch (e) {
@@ -342,11 +304,10 @@ class HomeController extends BaseController {
     });
   }
 
-  txDetailsConfirmedF(String txId) async {
+  Future<void> txDetailsConfirmedF(String txId) async {
     loadingDetail.value = true;
     try {
       String url = 'https://mempool.space/api/v1/block/$txId';
-
       final response = await dioClient.get(url: url);
       txDetailsConfirmed = TransactionConfirmedDetail.fromJson(
         jsonDecode(
@@ -355,7 +316,7 @@ class HomeController extends BaseController {
       );
       // isLoading.value = false;
       update();
-    } on DioError {
+    } on DioException {
       isLoading.value = false;
       update();
     } catch (e, tr) {
@@ -368,7 +329,7 @@ class HomeController extends BaseController {
     return null;
   }
 
-  txDetailsF(String txId, int page) async {
+  Future<void> txDetailsF(String txId, int page) async {
     try {
       isLoadingTx.value = true;
       String url = 'https://mempool.space/api/block/$txId/txs/$page';
@@ -382,15 +343,12 @@ class HomeController extends BaseController {
       opReturns.clear();
       for (int i = 0; i < response.data.length; i++) {
         txDetails.add(TransactionDetailsModel.fromJson(response.data[i]));
-        // opReturns.add(txDetails[i].vout.where((element) =>
-        //     element.scriptpubkeyType == 'op_return' &&
-        //     element.scriptpubkeyAsm != 'OP_RETURN'));
       }
       txDetailsFound = txDetails;
       txDetailsReset = txDetails;
       isLoadingTx.value = false;
       update();
-    } on DioError {
+    } on DioException {
       isLoadingTx.value = false;
       update();
     } catch (e) {

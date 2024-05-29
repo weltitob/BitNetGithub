@@ -3,10 +3,7 @@ import 'package:bitnet/pages/website/widgets/webmxcimage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
-
 import 'package:bitnet/backbone/helper/matrix_helpers/string_color.dart';
-
 
 class WebAvatar extends StatelessWidget {
   final String? profileId;
@@ -47,14 +44,6 @@ class WebAvatar extends StatelessWidget {
         size: size / 2,
         color: Colors.white,
       ),
-
-      // Text(
-      //   fallbackLetters,
-      //   style: TextStyle(
-      //     color: noPic ? Colors.white : null,
-      //     fontSize: fontSize,
-      //   ),
-      // ),
     );
     final borderRadius = BorderRadius.circular(size / 2.5);
 
@@ -67,8 +56,7 @@ class WebAvatar extends StatelessWidget {
           height: size,
           color: noPic
               ? name?.lightColorAvatar
-              : Theme.of(context)
-                  .secondaryHeaderColor, //getRandomColor(), //getRandomColor(), //Theme.of(context).secondaryHeaderColor
+              : Theme.of(context).secondaryHeaderColor,
           child: noPic
               ? textWidget
               : WebMxcImage(

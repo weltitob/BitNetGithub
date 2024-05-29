@@ -3971,10 +3971,10 @@ class S {
     );
   }
 
-  /// `System`
+  /// `System Theme`
   String get systemTheme {
     return Intl.message(
-      'System',
+      'System Theme',
       name: 'systemTheme',
       desc: '',
       args: [],
@@ -5758,6 +5758,256 @@ class S {
     return Intl.message(
       'report',
       name: 'report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Wallet Balance`
+  String get totalWalletBal {
+    return Intl.message(
+      'Total Wallet Balance',
+      name: 'totalWalletBal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actions`
+  String get actions {
+    return Intl.message(
+      'Actions',
+      name: 'actions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive`
+  String get receive {
+    return Intl.message(
+      'Receive',
+      name: 'receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rebalance`
+  String get rebalance {
+    return Intl.message(
+      'Rebalance',
+      name: 'rebalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy & Sell`
+  String get buySell {
+    return Intl.message(
+      'Buy & Sell',
+      name: 'buySell',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity`
+  String get activity {
+    return Intl.message(
+      'Activity',
+      name: 'activity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add`
+  String get add {
+    return Intl.message(
+      'Add',
+      name: 'add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loop Screen`
+  String get loopScreen {
+    return Intl.message(
+      'Loop Screen',
+      name: 'loopScreen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Onchain to Lightning`
+  String get onChainLightning {
+    return Intl.message(
+      'Onchain to Lightning',
+      name: 'onChainLightning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lightning to Onchain`
+  String get lightningOnChain {
+    return Intl.message(
+      'Lightning to Onchain',
+      name: 'lightningOnChain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share Profile QR Code`
+  String get shareQrCode {
+    return Intl.message(
+      'Share Profile QR Code',
+      name: 'shareQrCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Language`
+  String get changeLanguage {
+    return Intl.message(
+      'Change Language',
+      name: 'changeLanguage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Currency`
+  String get changeCurrency {
+    return Intl.message(
+      'Change Currency',
+      name: 'changeCurrency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plain Key and DID`
+  String get plainKeyDID {
+    return Intl.message(
+      'Plain Key and DID',
+      name: 'plainKeyDID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get recoverQrCode {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'recoverQrCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery phrases`
+  String get recoveryPhrases {
+    return Intl.message(
+      'Recovery phrases',
+      name: 'recoveryPhrases',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Social recovery`
+  String get socialRecovery {
+    return Intl.message(
+      'Social recovery',
+      name: 'socialRecovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Human Identity`
+  String get humanIdentity {
+    return Intl.message(
+      'Human Identity',
+      name: 'humanIdentity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Extended Sec`
+  String get extendedSec {
+    return Intl.message(
+      'Extended Sec',
+      name: 'extendedSec',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify your identity`
+  String get verifyYourIdentity {
+    return Intl.message(
+      'Verify your identity',
+      name: 'verifyYourIdentity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DID and private key`
+  String get diDprivateKey {
+    return Intl.message(
+      'DID and private key',
+      name: 'diDprivateKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `12 Word recovery`
+  String get wordRecovery {
+    return Intl.message(
+      '12 Word recovery',
+      name: 'wordRecovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color`
+  String get color {
+    return Intl.message(
+      'Color',
+      name: 'color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Own Security`
+  String get ownSecurity {
+    return Intl.message(
+      'Own Security',
+      name: 'ownSecurity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Agbs and Impressum`
+  String get agbsImpress {
+    return Intl.message(
+      'Agbs and Impressum',
+      name: 'agbsImpress',
       desc: '',
       args: [],
     );

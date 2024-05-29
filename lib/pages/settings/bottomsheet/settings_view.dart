@@ -15,7 +15,7 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<SettingsController>();
-     return bitnetScaffold(
+    return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
@@ -26,7 +26,8 @@ class SettingsView extends StatelessWidget {
       body: ListTileTheme(
         iconColor: Theme.of(context).colorScheme.onBackground,
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.25),
+          margin:
+              EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.25),
           child: ListView(
             key: const Key('SettingsListViewContent'),
             children: [
@@ -43,7 +44,7 @@ class SettingsView extends StatelessWidget {
               ),
               BitNetListTile(
                 leading: Icon(Icons.security),
-                text: "Own Security",
+                text: L10n.of(context)!.ownSecurity,
                 trailing: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
@@ -63,31 +64,9 @@ class SettingsView extends StatelessWidget {
                   controller.switchTab('invite');
                 },
               ),
-              // BitNetListTile(
-              //   leading: Icon(Icons.notifications_outlined),
-              //   text: L10n.of(context)!.notifications,
-              //   trailing: Icon(
-              //     Icons.arrow_forward_ios_rounded,
-              //     size: AppTheme.iconSize * 0.75,
-              //   ),
-              //   onTap: () {
-              //     controller.switchTab('notifications');
-              //   },
-              // ),
-              // BitNetListTile(
-              //   leading: Icon(Icons.forum_outlined),
-              //   text: L10n.of(context)!.chat,
-              //   trailing: Icon(
-              //     Icons.arrow_forward_ios_rounded,
-              //     size: AppTheme.iconSize * 0.75,
-              //   ),
-              //   onTap: () {
-              //     controller.switchTab('chat');
-              //   },
-              // ),
               BitNetListTile(
                 leading: Icon(Icons.currency_bitcoin),
-                text: "Change language",
+                text: L10n.of(context)!.changeLanguage,
                 trailing: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
@@ -98,7 +77,7 @@ class SettingsView extends StatelessWidget {
               ),
               BitNetListTile(
                 leading: Icon(Icons.language),
-                text: "Change Currency",
+                text: L10n.of(context)!.changeCurrency,
                 trailing: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
@@ -107,17 +86,17 @@ class SettingsView extends StatelessWidget {
                   controller.switchTab('currency');
                 },
               ),
-                BitNetListTile(
-              leading: Icon(Icons.info),
-              text: "Agbs and Impressum",
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: AppTheme.iconSize * 0.75,
+              BitNetListTile(
+                leading: Icon(Icons.info),
+                text: L10n.of(context)!.agbsImpress,
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () {
+                  controller.switchTab('agbs');
+                },
               ),
-              onTap: () {
-                controller.switchTab('agbs');
-              },
-            ),
               BitNetListTile(
                 leading: Icon(Icons.login_rounded),
                 text: L10n.of(context)!.logout,

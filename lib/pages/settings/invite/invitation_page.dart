@@ -52,7 +52,6 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
           context: context,
           buttonType: ButtonType.transparent,
           onTap: () {
-            print("pressed");
             final controller = Get.find<SettingsController>();
             controller.switchTab('main');
           }),

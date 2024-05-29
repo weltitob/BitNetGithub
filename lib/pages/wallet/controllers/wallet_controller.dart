@@ -20,13 +20,14 @@ import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-
 
 class WalletsController extends BaseController {
   RxBool hideBalance = false.obs;
@@ -59,7 +60,8 @@ class WalletsController extends BaseController {
   Rx<ChartLine?> chartLines = ChartLine(time: 0, price: 0).obs;
   RxString totalBalanceStr = "0".obs;
   RxDouble totalBalanceSAT = 0.0.obs;
-  Rx<BitcoinUnitModel> totalBalance = BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 0).obs;
+  Rx<BitcoinUnitModel> totalBalance =
+      BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 0).obs;
   String loadMessageError = "";
   int errorCount = 0;
   int loadedFutures = 0;
@@ -99,13 +101,13 @@ class WalletsController extends BaseController {
   // Getters for currencies
 
   // Method to update the first currency and its corresponding Firestore document
-  void setCurrencyType(bool type,{ bool updateDatabase = true}) {
-    if(updateDatabase) {
- settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
-      "showCoin": type,
-    });
+  void setCurrencyType(bool type, {bool updateDatabase = true}) {
+    if (updateDatabase) {
+      settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+        "showCoin": type,
+      });
     }
-   
+
     coin.value = type;
     update();
   }
@@ -136,19 +138,20 @@ class WalletsController extends BaseController {
     super.onInit();
     Get.put(CryptoItemController());
     Get.put(WalletFilterController());
-    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+    Get.put(BitcoinScreenController());
+    Get.put(PurchaseSheetController());
+    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then(
+        (value) {
       coin.value = value.data()?["showCoin"] ?? false;
       selectedCurrency = RxString("");
       selectedCurrency!.value = value.data()?["selectedCurrency"] ?? "USD";
       print("Currency Value : ${selectedCurrency!.value}");
-    },
-    onError: (a,b) {
+    }, onError: (a, b) {
       coin.value = false;
-            selectedCurrency = RxString("");
+      selectedCurrency = RxString("");
       selectedCurrency!.value = "USD";
 
       print("Currency Value : ${selectedCurrency!.value}");
-
     });
     subscribeInvoicesStream().listen((restResponse) {
       logger.i("Received data from Invoice-stream: $restResponse");
@@ -177,7 +180,6 @@ class WalletsController extends BaseController {
             "Invoice received but not settled yet: ${receivedInvoice.settled}");
       }
     }, onError: (error) {
-      
       logger.e("Received error for Invoice-stream: $error");
     });
 
@@ -201,46 +203,45 @@ class WalletsController extends BaseController {
           ));
       //});
     }, onError: (error) {
-
       logger.e("Received error for Transactions-stream: $error");
     });
     fetchOnchainWalletBalance().then((value) {
       loadedFutures++;
-      if(!value) {
-      errorCount++;
-      loadMessageError = "Failed to load Onchain Balance";
+      if (!value) {
+        errorCount++;
+        loadMessageError = "Failed to load Onchain Balance";
       }
-   if(loadedFutures == 2) {
-queueErrorOvelay = true;      }
+      if (loadedFutures == 2) {
+        queueErrorOvelay = true;
+      }
     });
 
-  
     fetchLightingWalletBalance().then((value) {
-
-       loadedFutures++;
-      if(!value) {
-      errorCount++;
-      loadMessageError = "Failed to load Lightning Balance";
+      loadedFutures++;
+      if (!value) {
+        errorCount++;
+        loadMessageError = "Failed to load Lightning Balance";
       }
-      if(loadedFutures == 2) {
-queueErrorOvelay = true;
+      if (loadedFutures == 2) {
+        queueErrorOvelay = true;
       }
     });
-
-   
-   
   }
-  void handleFuturesCompleted(BuildContext context) {
-    logger.i("Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
-    if(errorCount>1) {
-      showOverlay(context, "Failed to load certain services, please try again later.", color: AppTheme.errorColor);
-    } else if(errorCount ==1) {
-            showOverlay(context, loadMessageError, color: AppTheme.errorColor);
 
+  void handleFuturesCompleted(BuildContext context) {
+    logger.i(
+        "Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
+    if (errorCount > 1) {
+      showOverlay(
+          context, "Failed to load certain services, please try again later.",
+          color: AppTheme.errorColor);
+    } else if (errorCount == 1) {
+      showOverlay(context, loadMessageError, color: AppTheme.errorColor);
     }
   }
+
   Future<bool> fetchOnchainWalletBalance() async {
-      try {
+    try {
       RestResponse onchainBalanceRest = await walletBalance();
       if (!onchainBalanceRest.data.isEmpty) {
         OnchainBalance onchainBalance =
@@ -248,19 +249,17 @@ queueErrorOvelay = true;
         this.onchainBalance = onchainBalance;
       }
       changeTotalBalanceStr();
-
-      }
-      on Error catch(_) {
-return false;
-      } catch (e){
-return false;
-      }
+    } on Error catch (_) {
+      return false;
+    } catch (e) {
+      return false;
+    }
     return true;
   }
 
   Future<bool> fetchLightingWalletBalance() async {
     try {
-  RestResponse lightningBalanceRest = await channelBalance();
+      RestResponse lightningBalanceRest = await channelBalance();
 
       LightningBalance lightningBalance =
           LightningBalance.fromJson(lightningBalanceRest.data);
@@ -268,15 +267,12 @@ return false;
         this.lightningBalance = lightningBalance;
       }
       changeTotalBalanceStr();
-
-    } on Error catch(_) {
+    } on Error catch (_) {
       return false;
     } catch (e) {
       return false;
     }
     return true;
-    
-    
   }
 
   changeTotalBalanceStr() {

@@ -49,62 +49,7 @@ class LoopController extends State<Loop> {
 
   @override
   void initState() {
-    super.initState();
-
-  //   subscribeInvoicesStream().listen((restResponse) {
-  //     LoggerService logger = Get.find();
-  //     logger.i("Received data from Invoice-stream: $restResponse");
-  //     ReceivedInvoice receivedInvoice =
-  //         ReceivedInvoice.fromJson(restResponse.data);
-  //     if (receivedInvoice.settled == true) {
-  //       showOverlayTransaction(
-  //           context,
-  //           "Lightning invoice settled",
-  //           TransactionItemData(
-  //             amount: receivedInvoice.amtPaidSat.toString(),
-  //             timestamp: receivedInvoice.settleDate,
-  //             type: TransactionType.lightning,
-  //             status: TransactionStatus.confirmed,
-  //             direction: TransactionDirection.received,
-  //             receiver: receivedInvoice.paymentRequest!,
-  //             txHash: receivedInvoice.rHash!,
-  //             fee: 0,
-  //           ));
-  //       //generate a new invoice for the user with 0 amount
-  //       logger.i("Generating new empty invoice for user");
-  //
-  //       ReceiveController().getInvoice(0, "Empty invoice");
-  //     } else {
-  //       logger.i(
-  //           "Invoice received but not settled yet: ${receivedInvoice.settled}");
-  //     }
-  //   }, onError: (error) {
-  //     LoggerService logger = Get.find();
-  //     logger.e("Received error for Invoice-stream: $error");
-  //   });
-  //
-  //   subscribeTransactionsStream().listen((restResponse) {
-  //     BitcoinTransaction bitcoinTransaction =
-  //         BitcoinTransaction.fromJson(restResponse.data);
-  //     showOverlayTransaction(
-  //         context,
-  //         "Onchain transaction settled",
-  //         TransactionItemData(
-  //           amount: bitcoinTransaction.amount.toString(),
-  //           timestamp: bitcoinTransaction.timeStamp,
-  //           type: TransactionType.onChain,
-  //           status: TransactionStatus.confirmed,
-  //           direction: TransactionDirection.received,
-  //           receiver: bitcoinTransaction.destAddresses[0],
-  //           txHash: bitcoinTransaction.txHash ?? 'null',
-  //           fee: 0,
-  //         ));
-  //     //});
-  //   }, onError: (error) {
-  //     LoggerService logger = Get.find();
-  //     logger.e("Received error for Transactions-stream: $error");
-  //   });
-
+    super.initState(); 
     fetchOnchainWalletBalance();
     fetchLightingWalletBalance();
   }

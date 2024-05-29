@@ -400,7 +400,7 @@ class _AmountWidgetState extends State<AmountWidget> {
             bitcoinPrice)
         : "0.00";
     widget.btcController.text = double.parse(currencyEquivalent).toString();
-    widget.satController.text = double.parse(currencyEquivalentSats).round().toString();
+    widget.satController.text = double.parse(currencyEquivalentSats).toString();
      if(widget.autoConvert) {
           final unitEquivalent = CurrencyConverter.convertToBitcoinUnit(currentUnit == BitcoinUnits.BTC ? double.parse((!widget.btcController.text.isEmpty ? widget.btcController.text : "0.0")) : double.parse(!widget.satController.text.isEmpty ? widget.satController.text : "0"), currentUnit);
 

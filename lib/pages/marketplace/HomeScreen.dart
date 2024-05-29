@@ -3,16 +3,13 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/MostView.dart';
-import 'package:bitnet/components/marketplace_widgets/NftDropSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -41,10 +38,10 @@ class HomeScreen extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
                     child: CarouselSlider.builder(
                       options: CarouselOptions(
-                        autoPlay: true,
-                        viewportFraction: 0.6,
-                        enlargeCenterPage: true, 
-                        height: 244.w),
+                          autoPlay: true,
+                          viewportFraction: 0.6,
+                          enlargeCenterPage: true,
+                          height: 244.w),
                       // padding: EdgeInsets.only(
                       //     top: 0.0,
                       //     bottom: 0.0,
@@ -60,14 +57,13 @@ class HomeScreen extends StatelessWidget {
                           nftName: nftHotProductSliderData[index].nftName,
                           nftMainName:
                               nftHotProductSliderData[index].nftMainName,
-                          cryptoText:
-                              nftHotProductSliderData[index].cryptoText,
+                          cryptoText: nftHotProductSliderData[index].cryptoText,
                         );
                       },
                     ),
                   ),
                 ),
-                 CommonHeading(
+                CommonHeading(
                   hasButton: true,
                   headingText: 'Most Viewed',
                   onPress: route.kListScreenRoute,
@@ -136,21 +132,24 @@ class HomeScreen extends StatelessWidget {
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       padding: EdgeInsets.only(
-                          top: 0.0, bottom: 0.0, right: AppTheme.elementSpacing.w, left: AppTheme.elementSpacing.w),
+                          top: 0.0,
+                          bottom: 0.0,
+                          right: AppTheme.elementSpacing.w,
+                          left: AppTheme.elementSpacing.w),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: nftHotProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                            encodedData: nftHotProductSliderData[index].nftImage,
-
+                            encodedData:
+                                nftHotProductSliderData[index].nftImage,
                             nftName: nftHotProductSliderData[index].nftName,
                             nftMainName:
                                 nftHotProductSliderData[index].nftMainName,
                             cryptoText:
                                 nftHotProductSliderData[index].cryptoText,
-
-                            rank: nftHotProductSliderData[index].rank);
+                            rank:
+                                nftHotProductSliderData[index].rank.toString());
                       },
                     ),
                   ),
@@ -177,14 +176,14 @@ class HomeScreen extends StatelessWidget {
                         return NftProductSlider(
                             encodedData:
                                 nftExpireProductSliderData[index].nftImage,
-
                             nftName: nftExpireProductSliderData[index].nftName,
                             nftMainName:
                                 nftExpireProductSliderData[index].nftMainName,
                             cryptoText:
                                 nftExpireProductSliderData[index].cryptoText,
-
-                            rank: nftExpireProductSliderData[index].rank);
+                            rank: nftExpireProductSliderData[index]
+                                .rank
+                                .toString());
                       },
                     ),
                   ),
@@ -209,16 +208,15 @@ class HomeScreen extends StatelessWidget {
                         return NftProductSlider(
                             encodedData:
                                 nftExpensiveProductSliderData[index].nftImage,
-
                             nftName:
                                 nftExpensiveProductSliderData[index].nftName,
                             nftMainName: nftExpensiveProductSliderData[index]
                                 .nftMainName,
                             cryptoText:
                                 nftExpensiveProductSliderData[index].cryptoText,
-
-
-                            rank: nftExpensiveProductSliderData[index].rank);
+                            rank: nftExpensiveProductSliderData[index]
+                                .rank
+                                .toString());
                       },
                     ),
                   ),
@@ -241,23 +239,27 @@ class HomeScreen extends StatelessWidget {
                       itemCount: nftTopSellersProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                            medias: [],
-                            // encodedData:
-                            //     nftTopSellersProductSliderData[index].nftImage,
+                          medias: [],
+                          // encodedData:
+                          //     nftTopSellersProductSliderData[index].nftImage,
 
-                            nftName:
-                                nftTopSellersProductSliderData[index].nftName,
-                            nftMainName: nftTopSellersProductSliderData[index]
-                                .nftMainName,
-                            cryptoText: nftTopSellersProductSliderData[index]
-                                .cryptoText,
-
-                            rank: nftTopSellersProductSliderData[index].rank);
+                          nftName:
+                              nftTopSellersProductSliderData[index].nftName,
+                          nftMainName:
+                              nftTopSellersProductSliderData[index].nftMainName,
+                          cryptoText:
+                              nftTopSellersProductSliderData[index].cryptoText,
+                          rank: nftTopSellersProductSliderData[index]
+                              .rank
+                              .toString(),
+                        );
                       },
                     ),
                   ),
                 ),
-                SizedBox(height: AppTheme.cardPadding * 3.5),
+                SizedBox(
+                  height: AppTheme.cardPadding * 3.5,
+                ),
               ],
             ),
           ),

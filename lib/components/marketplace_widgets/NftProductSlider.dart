@@ -77,7 +77,7 @@ class _NftProductSliderState extends State<NftProductSlider> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: 150.w * widget.scale,
+                        width: 115.w * widget.scale,
                         child: Text(
                           widget.nftMainName,
                           overflow: TextOverflow.ellipsis,

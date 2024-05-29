@@ -4,13 +4,11 @@ import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +27,7 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
-        text: 'Change Language',
+        text: L10n.of(context)!.changeLanguage,
         context: context,
         buttonType: ButtonType.transparent,
         onTap: () {
@@ -39,16 +37,7 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
       body: LanguagePickerPage(),
     );
   }
-}
-
-// onTapLanguage: (langCode, locale) {
-// Provider.of<LocalProvider>(context, listen: false)
-//     .setLocaleInDatabase(langCode, locale,
-// isUser: false);
-// setState(() {});
-// // context.go('/authhome');
-// },
-
+} 
 class LanguagePickerPage extends StatefulWidget {
   const LanguagePickerPage({super.key});
 

@@ -1,72 +1,43 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:bitnet/components/chart/chart.dart';
-import 'package:bitnet/components/appstandards/buildroundedbox.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-class BitcoinScreen extends StatefulWidget {
+class BitcoinScreen extends GetWidget<BitcoinScreenController> {
   const BitcoinScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  _BitcoinScreenState createState() => _BitcoinScreenState();
-}
-
-class _BitcoinScreenState extends State<BitcoinScreen>
-    with SingleTickerProviderStateMixin {
-
-  final _controller = ScrollController();
-  late TextEditingController satCtrlSell;
-    late TextEditingController btcCtrlSell;
-  late TextEditingController currCtrlSell;
-  FocusNode nodeSell = FocusNode();
-
-  @override
-  void initState() {
-    satCtrlSell = TextEditingController();
-    btcCtrlSell = TextEditingController();
-    currCtrlSell = TextEditingController();
-    
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    satCtrlSell.dispose();
-    btcCtrlSell.dispose();
-    currCtrlSell.dispose();
-    nodeSell.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(HomeController());
     return bitnetScaffold(
       context: context,
       extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: bitnetAppBar(
-          text: "Bitcoin chart",
-          context: context,
-          onTap: () {
-            Navigator.of(context).pop();
-          }),
+        text: "Bitcoin chart",
+        context: context,
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+      ),
       body: ListView(
         scrollDirection: Axis.vertical,
-        controller: _controller,
+        controller: controller.controller,
         children: [
           SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
@@ -105,11 +76,11 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                               child: Column(
                                 children: [
                                   AmountWidget(
-                                      enabled: ()=>true,
-                                      satController: satCtrlSell,
-                                      btcController: btcCtrlSell,
-                                      currController: currCtrlSell,
-                                      focusNode: nodeSell,
+                                      enabled: () => true,
+                                      satController: controller.satCtrlSell,
+                                      btcController: controller.btcCtrlSell,
+                                      currController: controller.currCtrlSell,
+                                      focusNode: controller.nodeSell,
                                       autoConvert: true,
                                       context: context),
                                 ],
@@ -120,23 +91,30 @@ class _BitcoinScreenState extends State<BitcoinScreen>
               ],
             ),
           ),
-          SizedBox(height: AppTheme.cardPadding * 4,),
+          SizedBox(
+            height: AppTheme.cardPadding * 4,
+          ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("About", style: Theme.of(context).textTheme.displayMedium,) ,
-                SizedBox(height: AppTheme.elementSpacing * 1,),
-
-                Text("Bitcoin (BTC) is the first cryptocurrency built. Unlike government-issued or fiat currencies such as US Dollars or Euro which are controlled by central banks, Bitcoin can operate without the need of a central authority like a central bank or a company. Users are able to send funds to each other without going through intermediaries."),
-
+                Text(
+                  "About",
+                  style: Theme.of(context).textTheme.displayMedium,
+                ),
+                SizedBox(
+                  height: AppTheme.elementSpacing * 1,
+                ),
+                Text(
+                    "Bitcoin (BTC) is the first cryptocurrency built. Unlike government-issued or fiat currencies such as US Dollars or Euro which are controlled by central banks, Bitcoin can operate without the need of a central authority like a central bank or a company. Users are able to send funds to each other without going through intermediaries."),
               ],
             ),
           ),
-          SizedBox(height: AppTheme.cardPadding * 2,),
-
+          SizedBox(
+            height: AppTheme.cardPadding * 2,
+          ),
           RoundedContainer(
               child: Column(
             children: [
@@ -144,25 +122,17 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                 "Quick Links",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(height: AppTheme.cardPadding,),
+              SizedBox(
+                height: AppTheme.cardPadding,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  // BitNetImageWithTextContainer(
-                  //   "Key Metrics",
-                  //       () {
-                  //         context.push('/wallet/bitcoinscreen/keymetrics');
-                  //       },
-                  //   image: "assets/images/key.png",
-                  //   fallbackIcon: FontAwesomeIcons.key,
-                  //   width: AppTheme.cardPadding * 4,
-                  //   height: AppTheme.cardPadding * 4,
-                  // ),
                   BitNetImageWithTextContainer(
-                      "Blockchain",
-                          () {
-                            context.push('/wallet/bitcoinscreen/mempool');
-                          }, //mempoolhome
+                    "Blockchain",
+                    () {
+                      context.push('/wallet/bitcoinscreen/mempool');
+                    },
                     image: "assets/images/blockchain.png",
                     fallbackIcon: FontAwesomeIcons.bitcoinSign,
                     width: AppTheme.cardPadding * 4,
@@ -170,10 +140,9 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   ),
                   BitNetImageWithTextContainer(
                     "Hashrate & Difficulty",
-                        () {
-                          context.push('/wallet/bitcoinscreen/hashrate');
-                          //context.go(Uri(path: '/hashrate', queryParameters: {}).toString());
-                        },
+                    () {
+                      context.push('/wallet/bitcoinscreen/hashrate');
+                    },
                     image: "assets/images/hashrate.png",
                     fallbackIcon: FontAwesomeIcons.computer,
                     width: AppTheme.cardPadding * 4,
@@ -181,7 +150,7 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   ),
                   BitNetImageWithTextContainer(
                     "Fear and Greed",
-                        () {
+                    () {
                       context.push('/wallet/bitcoinscreen/fearandgreed');
                     },
                     fallbackIcon: Icons.speed_rounded,
@@ -191,47 +160,16 @@ class _BitcoinScreenState extends State<BitcoinScreen>
                   ),
                 ],
               ),
-              SizedBox(height: AppTheme.cardPadding * 1,),
+              SizedBox(
+                height: AppTheme.cardPadding * 1,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  // BitNetImageWithTextContainer(
-                  //   "Transactions",
-                  //       () {
-                  //         context.push('/wallet/bitcoinscreen/transactions');
-                  //         //context.go(Uri(path: '/transactions', queryParameters: {}).toString());
-                  //       },
-                  //   image: "assets/images/latest_transactions.png",
-                  //   fallbackIcon: FontAwesomeIcons.addressCard,
-                  //   width: AppTheme.cardPadding * 4,
-                  //   height: AppTheme.cardPadding * 4,
-                  // ),
-                  // BitNetImageWithTextContainer(
-                  //   "Whales",
-                  //       () => context.push('/wallet/bitcoinscreen/whales'),
-                  //   image: "assets/images/whale.png",
-                  //   fallbackIcon: FontAwesomeIcons.fish,
-                  //   width: AppTheme.cardPadding * 4,
-                  //   height: AppTheme.cardPadding * 4,
-                  // ),
-                  // BitNetImageWithTextContainer(
-                  //   "News",
-                  //       () => context.push('/wallet/bitcoinscreen/news'),
-                  //   fallbackIcon: FontAwesomeIcons.newspaper,
-                  //   image: "assets/images/news.png",
-                  //   width: AppTheme.cardPadding * 4,
-                  //   height: AppTheme.cardPadding * 4,
-                  // ),
-                ],
+                children: [],
               ),
-              SizedBox(height: AppTheme.cardPadding * 1,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-
-                ],
+              SizedBox(
+                height: AppTheme.cardPadding * 2,
               ),
-              SizedBox(height: AppTheme.cardPadding * 2,),
             ],
           )),
         ],
@@ -240,47 +178,16 @@ class _BitcoinScreenState extends State<BitcoinScreen>
   }
 }
 
-class PurchaseSheet extends StatefulWidget {
+class PurchaseSheet extends GetWidget<PurchaseSheetController> {
   const PurchaseSheet({
     super.key,
   });
 
   @override
-  State<PurchaseSheet> createState() => _PurchaseSheetState();
-}
-
-class _PurchaseSheetState extends State<PurchaseSheet>
-    with TickerProviderStateMixin {
-  late TabController controller;
-  late TextEditingController satCtrlBuy;
-  late TextEditingController btcCtrlBuy;
-  late TextEditingController currCtrlBuy;
-  FocusNode nodeBuy = FocusNode();
-  
-
-  @override
- void initState() {
-  controller = TabController(length: 3, vsync: this);
-  satCtrlBuy = TextEditingController();
-  btcCtrlBuy = TextEditingController();
-  currCtrlBuy = TextEditingController();
-
-  super.initState();
- }
- @override 
- void dispose() {
-  satCtrlBuy.dispose();
-  btcCtrlBuy.dispose();
-  currCtrlBuy.dispose();
-  nodeBuy.dispose();
-  controller.dispose();
-  super.dispose();
- }
-  @override
   Widget build(BuildContext context) {
     return TabBarView(
         physics: NeverScrollableScrollPhysics(),
-        controller: controller,
+        controller: controller.controller,
         children: [
           Column(
             children: [
@@ -295,11 +202,11 @@ class _PurchaseSheetState extends State<PurchaseSheet>
                 ),
               ),
               AmountWidget(
-                  enabled: ()=>true,
-                  satController: satCtrlBuy,
-                  btcController: btcCtrlBuy,
-                  currController: currCtrlBuy,
-                  focusNode: nodeBuy,
+                  enabled: () => true,
+                  satController: controller.satCtrlBuy,
+                  btcController: controller.btcCtrlBuy,
+                  currController: controller.currCtrlBuy,
+                  focusNode: controller.nodeBuy,
                   autoConvert: true,
                   context: context),
               SizedBox(
@@ -317,7 +224,7 @@ class _PurchaseSheetState extends State<PurchaseSheet>
                 ),
               ),
               SizedBox(height: 16),
-              PaymentCardHorizontalWidget(controller: controller),
+              PaymentCardHorizontalWidget(controller: controller.controller),
               SizedBox(height: AppTheme.elementSpacing * 8),
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
@@ -341,7 +248,7 @@ class _PurchaseSheetState extends State<PurchaseSheet>
                     IconButton(
                       icon: Icon(Icons.arrow_back),
                       onPressed: () {
-                        controller.animateTo(0);
+                        controller.controller.animateTo(0);
                       },
                     ),
                     Text(
@@ -360,25 +267,26 @@ class _PurchaseSheetState extends State<PurchaseSheet>
                 child: ListView(
                   children: [
                     PaymentCardHorizontalWidget(
-                        controller: controller, check: true),
+                        controller: controller.controller, check: true),
                     SizedBox(
                       height: AppTheme.elementSpacing,
                     ),
                     PaymentCardHorizontalWidget(
-                      controller: controller,
+                      controller: controller.controller,
                       forward: false,
                     ),
                     SizedBox(
                       height: AppTheme.elementSpacing,
                     ),
                     PaymentCardHorizontalWidget(
-                      controller: controller,
+                      controller: controller.controller,
                       forward: false,
                     ),
                     SizedBox(
                       height: AppTheme.elementSpacing,
                     ),
-                    NewPaymentCardHorizontalWidget(controller: controller)
+                    NewPaymentCardHorizontalWidget(
+                        controller: controller.controller)
                   ],
                 ),
               )
@@ -397,7 +305,7 @@ class _PurchaseSheetState extends State<PurchaseSheet>
                     IconButton(
                       icon: Icon(Icons.arrow_back, color: Colors.white),
                       onPressed: () {
-                        controller.animateTo(1);
+                        controller.controller.animateTo(1);
                       },
                     ),
                     Text(
