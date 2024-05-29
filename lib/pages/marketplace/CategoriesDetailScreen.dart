@@ -152,7 +152,7 @@ class _CategoriesDetailScreenState extends State<CategoriesDetailScreen> {
             ),
           ),
           const FilterBtn(),
-          const StatusBarBg()
+          // const StatusBarBg()
         ],
       ),
     );

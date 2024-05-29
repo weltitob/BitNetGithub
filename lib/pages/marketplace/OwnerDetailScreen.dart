@@ -250,7 +250,7 @@ class _OwnerDetailScreenState extends State<OwnerDetailScreen> {
             ),
           ),
           const FilterBtn(),
-          const StatusBarBg()
+          // const StatusBarBg()
         ],
       ),
     );

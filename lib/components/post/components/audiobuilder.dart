@@ -177,9 +177,6 @@ class AudioBuilderNetworkState extends State<AudioBuilderNetwork>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      // Release the player's resources when not in use. We use "stop" so that
-      // if the app resumes later, it will still remember what position to
-      // resume from.
       player.stop();
     }
   }
@@ -196,7 +193,7 @@ class AudioBuilderNetworkState extends State<AudioBuilderNetwork>
   Widget build(BuildContext context) {
     return GlassContainer(
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.of(context).size.width * 1,
         padding: EdgeInsets.symmetric(
           horizontal: 10.0,
         ),
@@ -255,36 +252,47 @@ class AudioControlButton extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        /// This StreamBuilder rebuilds whenever the player state changes, which
-        /// includes the playing/paused state and also the
-        /// loading/buffering/ready state. Depending on the state we show the
-        /// appropriate button or loading indicator.
         StreamBuilder<PlayerState>(
-          stream: player.playerStateStream,
-          builder: (context, snapshot) {
-            final playerState = snapshot.data;
-            final processingState = playerState?.processingState;
-            final playing = playerState?.playing;
-            if (processingState == ProcessingState.loading ||
-                processingState == ProcessingState.buffering) {
-              return avatarGlowProgressAudio(context);
-            } else if (playing != true) {
-              return buildAudioButtons(
-                  context, player.play, Icons.play_arrow_rounded);
-            } else if (processingState != ProcessingState.completed) {
-              return buildAudioButtons(
-                  context, player.pause, Icons.pause_rounded);
-            } else {
-              return buildAudioButtons(context,
-                      () => player.seek(Duration.zero), Icons.replay_rounded);
-            }
-          },
-        )
+        stream: player.playerStateStream,
+        builder: (context, snapshot) {
+          final playerState = snapshot.data;
+          final processingState = playerState?.processingState;
+          final playing = playerState?.playing;
+          if (processingState == ProcessingState.loading ||
+              processingState == ProcessingState.buffering) {
+            return avatarGlowProgressAudio(context);
+          } else if (playing != true) {
+            return AudioButton(
+              onTap: player.play,
+              iconData: Icons.play_arrow_rounded,
+            );
+          } else if (processingState != ProcessingState.completed) {
+            return AudioButton(
+              onTap: player.pause,
+              iconData: Icons.pause_rounded,
+            );
+          } else {
+            return AudioButton(
+              onTap: () => player.seek(Duration.zero),
+              iconData: Icons.replay_rounded,
+            );
+          }
+        },
+      )
       ],
     );
   }
 
-  Widget buildAudioButtons(BuildContext context, onTap, IconData iconData) {
+}
+
+class AudioButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final IconData iconData;
+
+  const AudioButton({required this.onTap, required this.iconData, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10.0),
       child: GestureDetector(
@@ -311,6 +319,7 @@ class AudioControlButton extends StatelessWidget {
     );
   }
 }
+
 
 class AudioComponentShape extends SliderComponentShape {
   @override

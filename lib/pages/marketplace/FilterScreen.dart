@@ -423,7 +423,7 @@ class _FilterScreenState extends State<FilterScreen> {
               child: const BitNetFilterPillList(),
             ),
           ),
-          const StatusBarBg()
+          // const StatusBarBg()
         ],
       ),
     );

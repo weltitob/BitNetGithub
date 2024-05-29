@@ -263,7 +263,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
-          const StatusBarBg()
+          // const StatusBarBg()
         ],
       ),
       context: context,

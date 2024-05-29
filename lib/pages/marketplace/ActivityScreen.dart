@@ -147,7 +147,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
               ),
             ),
           ),
-          const StatusBarBg()
+          // const StatusBarBg()
         ],
       ),
     );

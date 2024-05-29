@@ -16,9 +16,11 @@ import 'package:like_button/like_button.dart';
 //import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
 
+enum likeSpaceType { Post, News, Crypto }
+
 class buildLikeSpace extends StatefulWidget {
   //Crypto, News, User
-  final String type;
+  final likeSpaceType type;
   final String targetId;
   final String ownerId;
   final dynamic rockets;
@@ -56,7 +58,7 @@ class buildLikeSpace extends StatefulWidget {
 }
 
 class _buildLikeSpaceState extends State<buildLikeSpace> {
-  final String type;
+  final likeSpaceType type;
   final String targetId;
   final String ownerId;
 
@@ -75,53 +77,57 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
   });
 
   //broken after new auth shit anyways dont want likes lol
-  removeLikeToAcitivityFeed() {
-    final currentUser = Provider.of<UserData>(context, listen: false);
-    bool isNotPostOwner = currentUser.did != ownerId;
+  // removeLikeToAcitivityFeed() {
+  //   final currentUser = Provider.of<UserData>(context, listen: false);
+  //   bool isNotPostOwner = currentUser.did != ownerId;
+  //
+  //   if (isNotPostOwner) {
+  //     activityFeedRef
+  //         .doc(ownerId)
+  //         .collection('feedItems')
+  //         .doc(targetId)
+  //         .get()
+  //         .then((doc) {
+  //       if (doc.exists) {
+  //         doc.reference.delete();
+  //       }
+  //     });
+  //   }
+  // }
 
-    if (isNotPostOwner) {
-      activityFeedRef
-          .doc(ownerId)
-          .collection('feedItems')
-          .doc(targetId)
-          .get()
-          .then((doc) {
-        if (doc.exists) {
-          doc.reference.delete();
-        }
-      });
-    }
-  }
+  // addLikeToAcitivityFeed() {
+  //   //add a notifcation only for others likes not own
+  //   final currentUser = Provider.of<UserData>(context, listen: false);
+  //   bool isNotPostOwner = currentUser.did != ownerId;
+  //
+  //   if (isNotPostOwner) {
+  //     activityFeedRef.doc(ownerId).collection('feedItems').doc(targetId).set({
+  //       'type': 'like',
+  //       'userId': currentUser.did,
+  //       'userProfileImg': currentUser.profileImageUrl,
+  //       'postId': targetId,
+  //       'timestamp': datetime,
+  //     });
+  //   }
+  // }
 
-  addLikeToAcitivityFeed() {
-    //add a notifcation only for others likes not own
-    final currentUser = Provider.of<UserData>(context, listen: false);
-    bool isNotPostOwner = currentUser.did != ownerId;
 
-    if (isNotPostOwner) {
-      activityFeedRef.doc(ownerId).collection('feedItems').doc(targetId).set({
-        'type': 'like',
-        'userId': currentUser.did,
-        'userProfileImg': currentUser.profileImageUrl,
-        'postId': targetId,
-        'timestamp': datetime,
-      });
-    }
-  }
 
   handleLikePost() {
     //Provider of is broken after new auth need to use something else rewatch the
     //social media stuff after new auth
     final currentUser = Provider.of<UserData>(context, listen: false);
     final String currentUserId = currentUser.did;
+
     bool _isLiked = rocketsmap[currentUserId] == true;
+
     if (_isLiked) {
       postsCollection
           .doc(ownerId)
           .collection('userPosts')
           .doc(targetId)
           .update({'likes.$currentUserId': false});
-      removeLikeToAcitivityFeed();
+      // removeLikeToAcitivityFeed();
       setState(() {
         rocketcount -= 1;
         isLiked = false;
@@ -134,7 +140,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
           .doc(targetId)
           .update({'likes.$currentUserId': true});
       //NO ACTIVITYFEED ==> Make it a donation/ Transactionspage which everyone can see which is connected to the wallet
-      addLikeToAcitivityFeed;
+      // addLikeToAcitivityFeed;
       setState(() {
         rocketcount += 1;
         isLiked = true;
@@ -147,6 +153,12 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
         });
       });
     }
+  }
+
+  void handleSharePost() {
+    //auto redirect to web to the post if not logged in with create account at the bottom
+    print('Share Post cliked make a share function of the post here / gorouter will instantly route to the correct thing');
+    //if app is given auto redirect user into the app when link clicked
   }
 
   void onCommentButtonPressed() {
@@ -181,7 +193,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
               GestureDetector(
                 onTap: () => onCommentButtonPressed(),
                 child: Icon(
-                  Icons.comment,
+                  FontAwesomeIcons.comment,
                   size: 24,
                   color: Colors.grey,
                 ),
@@ -190,25 +202,25 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
                 isLiked: isLiked,
                 // likeCount: rocketcount,
                 bubblesColor: BubblesColor(
-                  dotPrimaryColor: Colors.orange,
-                  dotSecondaryColor: Colors.orangeAccent,
+                  dotPrimaryColor: AppTheme.colorBitcoin,
+                  dotSecondaryColor: AppTheme.colorBitcoin,
                 ),
                 likeBuilder: (bool isLiked) {
                   return Icon(
                     isLiked ? Icons.favorite : Icons.favorite_border,
-                    color: isLiked ? Colors.orangeAccent : Colors.orangeAccent,
+                    color: isLiked ? AppTheme.colorBitcoin : AppTheme.colorBitcoin,
                     size: 24,
                   );
                 },
-                // countBuilder: (rocketcount, isLiked, text){
-                //   final color = Colors.grey;
-                //   return Text(
-                //     rocketcount.toString(),
-                //     style: TextStyle(color: color,
-                //         fontSize: 16,
-                //         fontWeight: FontWeight.bold),
-                //   );
-                // },
+                countBuilder: (rocketcount, isLiked, text){
+                  final color = Colors.grey;
+                  return Text(
+                    rocketcount.toString(),
+                    style: TextStyle(color: color,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  );
+                },
                 onTap: (isLiked) async {
                   final currentUser = Provider.of<UserData>(context, listen: false);
                   final String currentUserId = currentUser.did;
@@ -219,7 +231,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
                     postsCollection.doc(ownerId).
                     collection('userPosts').doc(targetId).
                     update({'likes.$currentUserId': false});
-                    removeLikeToAcitivityFeed();
+                    // removeLikeToAcitivityFeed();
                     setState(() {
                       rocketcount -= 1;
                       this.isLiked = false;
@@ -229,7 +241,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
                   else if (!_isLiked) {
                     postsCollection.doc(ownerId).collection('userPosts').
                     doc(targetId).update({'likes.$currentUserId': true});
-                    addLikeToAcitivityFeed();
+                    // addLikeToAcitivityFeed();
                     setState(() {
                       rocketcount += 1;
                       this.isLiked = true;
@@ -247,7 +259,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
                 },
               ),
               GestureDetector(
-                onTap: handleLikePost,
+                onTap: handleSharePost,
                 child: Icon(
                   FontAwesomeIcons.share,
                   size: 22.5,

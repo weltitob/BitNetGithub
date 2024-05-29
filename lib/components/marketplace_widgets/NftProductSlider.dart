@@ -48,12 +48,6 @@ class _NftProductSliderState extends State<NftProductSlider> {
     dynamic firstMediaData =
         widget.medias?.isNotEmpty ?? false ? widget.medias?.first : null;
 
-    if (firstMediaData == null) {
-      print("firstMediaData is null");
-    } else {
-      print("firstMediaData: ${firstMediaData.toString()}");
-    }
-
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5.w * widget.scale),
       child: GestureDetector(

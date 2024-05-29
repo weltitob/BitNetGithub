@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
+import 'package:bitnet/components/appstandards/bottomnavgradient.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
@@ -135,20 +136,21 @@ class _BottomNavState extends State<BottomNav>
     Get.put(WalletsController());
 
     //final navItems = getNavItems();
-    print(widget.routerState.fullPath);
-    void onTabTapped(String route, dynamic item) {
-      setState(() {
-        animationControllers.forEach((route, controller) {
-          if (item['route'] == route) {
-            controller.forward();
-          } else {
-            controller.reverse();
-          }
-        });
-        context.go(item['route']);
-      });
-      context.go(route);
-    }
+    // print(widget.routerState.fullPath);
+
+    // void onTabTapped(String route, dynamic item) {
+    //   setState(() {
+    //     animationControllers.forEach((route, controller) {
+    //       if (item['route'] == route) {
+    //         controller.forward();
+    //       } else {
+    //         controller.reverse();
+    //       }
+    //     });
+    //     context.go(item['route']);
+    //   });
+    //   context.go(route);
+    // }
 
     return Scaffold(
         resizeToAvoidBottomInset: false, // Add this line
@@ -210,82 +212,7 @@ class _BottomNavState extends State<BottomNav>
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Container(
-                height: AppTheme.cardPadding * 1.75.h,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    // Use color stops to create an "exponential" effect
-                    stops: [0.0, 0.3, 0.6, 0.7, 0.9, 1.0],
-                    colors: Theme.of(context).brightness == Brightness.light
-                        ? [
-                            lighten(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                40)
-                                .withOpacity(0.0001),
-                            lighten(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                40)
-                                .withOpacity(0.3),
-                            lighten(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                40)
-                                .withOpacity(0.6),
-                            lighten(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                40)
-                                .withOpacity(0.9),
-                            lighten(
-                                Theme.of(context).colorScheme.primaryContainer,
-                                40),
-                            lighten(
-                                Theme.of(context).colorScheme.primaryContainer,
-                                40)
-                          ]
-                        : [
-                            darken(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                70)
-                                .withOpacity(0.0001),
-                            darken(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                70)
-                                .withOpacity(0.3),
-                            darken(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                70)
-                                .withOpacity(0.6),
-                            darken(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                70)
-                                .withOpacity(0.9),
-                            darken(
-                                Theme.of(context).colorScheme.primaryContainer,
-                                70),
-                            darken(
-                                Theme.of(context).colorScheme.primaryContainer,
-                                70)
-                          ],
-                  ),
-                ),
-              ),
+              child: BottomNavGradient(),
             ),
           ],
         ));

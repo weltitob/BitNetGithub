@@ -108,7 +108,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
               ),
             ),
           ),
-          const StatusBarBg()
+          // const StatusBarBg()
         ],
       ),
     );

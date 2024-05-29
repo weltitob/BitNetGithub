@@ -239,25 +239,25 @@ class Comment extends StatelessWidget {
                   ),
                 ]),
           ),
-          trailing: buildCommentFooter(context),
+          //trailing: buildCommentFooter(context),
         ),
         // Divider(color: Colors.white,),
       ],
     );
   }
 
-  buildCommentFooter(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        GestureDetector(
-          onTap: () => print('pressed'),
-          child: Icon(
-            LineAwesomeIcons.bitcoin,
-            size: 20,
-          ),
-        ),
-      ],
-    );
-  }
+  // buildCommentFooter(BuildContext context) {
+  //   return Column(
+  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //     children: [
+  //       GestureDetector(
+  //         onTap: () => print('pressed'),
+  //         child: Icon(
+  //           Icons.favorite,
+  //           size: 20,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 }
