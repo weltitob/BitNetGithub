@@ -10,6 +10,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -142,21 +143,12 @@ class _ChartWidgetState extends State<ChartWidget> {
     });
   }
 
-  //BitcoinPriceStream _priceStream = BitcoinPriceStream();
 
   @override
   void initState() {
-    super.initState();
-    //final chartLine = Provider.of<ChartLine?>(context, listen: true);
-    //final currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    super.initState(); 
     getChartLine("USD");
-    _loading = true;
-    // _priceStream.start();
-    // print('Bitcoin pricestream started');
-    // _priceStream.priceStream.listen((newChartLine) {
-    //   print('pricestream changes detected...');
-    //   key.currentState!.blinkAnimation();
-    // });
+    _loading = true; 
     _trackballBehavior = TrackballBehavior(
       lineColor: Colors.grey[400],
       enable: true,
@@ -215,7 +207,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     double _firstpriceexact = currentline.first.price;
 
     return SizedBox(
-      height: AppTheme.cardPadding * 16,
+      height: AppTheme.cardPadding * 16.h,
       child: SfCartesianChart(
           trackballBehavior: _trackballBehavior,
           onTrackballPositionChanging: (args) {

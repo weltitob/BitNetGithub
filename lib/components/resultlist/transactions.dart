@@ -23,7 +23,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-
 class Transactions extends StatefulWidget {
   bool fullList;
   Transactions({Key? key, this.fullList = false}) : super(key: key);
@@ -46,16 +45,15 @@ class _TransactionsState extends State<Transactions>
   Future<bool> getOnchainTransactions() async {
     LoggerService logger = Get.find();
     try {
-    logger.i("Getting onchain transactions");
-    RestResponse restBitcoinTransactions = await getTransactions();
-    BitcoinTransactionsList bitcoinTransactions =
-        BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
-    onchainTransactions = bitcoinTransactions.transactions;
-    setState(() {});
-
-    } on Error catch(_) {
+      logger.i("Getting onchain transactions");
+      RestResponse restBitcoinTransactions = await getTransactions();
+      BitcoinTransactionsList bitcoinTransactions =
+          BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
+      onchainTransactions = bitcoinTransactions.transactions;
+      setState(() {});
+    } on Error catch (_) {
       return false;
-    } catch(e) {
+    } catch (e) {
       return false;
     }
     return true;
@@ -77,21 +75,19 @@ class _TransactionsState extends State<Transactions>
     return true;
   }
 
-
   //what i sent on the lightning network
   Future<bool> getLightningPayments() async {
     LoggerService logger = Get.find();
     try {
-    logger.i("Getting lightning payments");
-    RestResponse restLightningPayments = await listPayments();
-    LightningPaymentsList lightningPayments =
-        LightningPaymentsList.fromJson(restLightningPayments.data);
-    this.lightningPayments = lightningPayments.payments;
-    setState(() {});
-
-    } on Error catch(_) {
+      logger.i("Getting lightning payments");
+      RestResponse restLightningPayments = await listPayments();
+      LightningPaymentsList lightningPayments =
+          LightningPaymentsList.fromJson(restLightningPayments.data);
+      this.lightningPayments = lightningPayments.payments;
+      setState(() {});
+    } on Error catch (_) {
       return false;
-    } catch(e) {
+    } catch (e) {
       return false;
     }
     return true;
@@ -102,22 +98,20 @@ class _TransactionsState extends State<Transactions>
     LoggerService logger = Get.find();
     logger.i("Getting lightning invoices");
     try {
-
-  RestResponse restLightningInvoices = await listInvoices();
-    ReceivedInvoicesList lightningInvoices =
-        ReceivedInvoicesList.fromJson(restLightningInvoices.data);
-    List<ReceivedInvoice> settledInvoices =
-        lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
-    this.lightningInvoices = settledInvoices;
-    setState(() {});
-
-    }on Error catch(_) {
+      RestResponse restLightningInvoices = await listInvoices();
+      ReceivedInvoicesList lightningInvoices =
+          ReceivedInvoicesList.fromJson(restLightningInvoices.data);
+      List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices
+          .where((invoice) => invoice.settled)
+          .toList();
+      this.lightningInvoices = settledInvoices;
+      setState(() {});
+    } on Error catch (_) {
       return false;
-    } catch(e) {
+    } catch (e) {
       return false;
-    } 
+    }
     return true;
-  
   }
 
   // Subscriptions
@@ -131,80 +125,77 @@ class _TransactionsState extends State<Transactions>
       transactionsLoaded = false;
     });
     int futuresCompleted = 0;
-    int errorCount=0;
+    int errorCount = 0;
     String errorMessage = "";
     getOnchainTransactions().then((value) {
       futuresCompleted++;
-      if(!value) {
+      if (!value) {
         errorCount++;
         errorMessage = "Failed to load Onchain Transactions";
-        }
-       
-      if(futuresCompleted == 3) {
-         setState(() {
-      transactionsLoaded = true;
-    });      
-          handlePageLoadErrors(errorCount, errorMessage, context);
-          }
-      
+      }
 
+      if (futuresCompleted == 3) {
+        setState(() {
+          transactionsLoaded = true;
+        });
+        handlePageLoadErrors(errorCount, errorMessage, context);
+      }
     });
     getLightningPayments().then((value) {
-                      futuresCompleted++;
-      if(!value) {
+      futuresCompleted++;
+      if (!value) {
         errorCount++;
         errorMessage = "Failed to load Lightning Payments";
-        }
-       
-      if(futuresCompleted == 3) {
-         setState(() {
-      transactionsLoaded = true;
-    });      
-          handlePageLoadErrors(errorCount, errorMessage, context);
-          }
-      
+      }
+
+      if (futuresCompleted == 3) {
+        setState(() {
+          transactionsLoaded = true;
+        });
+        handlePageLoadErrors(errorCount, errorMessage, context);
+      }
     });
     getLightningInvoices().then((value) {
-                futuresCompleted++;
-      if(!value) {
+      futuresCompleted++;
+      if (!value) {
         errorCount++;
         errorMessage = "Failed to load Lightning Invoices";
-        }
-       
-      if(futuresCompleted == 3) {
-         setState(() {
-      transactionsLoaded = true;
-    });      
-          handlePageLoadErrors(errorCount, errorMessage, context);
-          }
-      
+      }
+
+      if (futuresCompleted == 3) {
+        setState(() {
+          transactionsLoaded = true;
+        });
+        handlePageLoadErrors(errorCount, errorMessage, context);
+      }
     });
     getLoopOperations().then((value) {
-                futuresCompleted++;
-      if(!value) {
+      futuresCompleted++;
+      if (!value) {
         errorCount++;
         errorMessage = "Failed to load Loop Operations";
-        }
-
-      if(futuresCompleted == 3) {
-         setState(() {
-      transactionsLoaded = true;
-    });
-          handlePageLoadErrors(errorCount, errorMessage, context);
-          }
-
-    });
-
-   
-
-  }
-    void handlePageLoadErrors(int errorCount, String errorMessage, BuildContext context) {
-      if(errorCount == 1) {
-        showOverlay(context, errorMessage, color: AppTheme.errorColor);
-      } else if(errorCount > 1) {
-        showOverlay(context, "Failed to load certain data in this page, please try again later", color: AppTheme.errorColor);
       }
+
+      if (futuresCompleted == 3) {
+        setState(() {
+          transactionsLoaded = true;
+        });
+        handlePageLoadErrors(errorCount, errorMessage, context);
+      }
+    });
+  }
+
+  void handlePageLoadErrors(
+      int errorCount, String errorMessage, BuildContext context) {
+    if (errorCount == 1) {
+      showOverlay(context, errorMessage, color: AppTheme.errorColor);
+    } else if (errorCount > 1) {
+      showOverlay(context,
+          "Failed to load certain data in this page, please try again later",
+          color: AppTheme.errorColor);
     }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -271,7 +262,8 @@ class _TransactionsState extends State<Transactions>
                     ))),
               ].toList()
             : [
-                ...lightningInvoices.map((transaction) => TransactionItem(
+                ...lightningInvoices.map(
+                  (transaction) => TransactionItem(
                     context: context,
                     data: TransactionItemData(
                       timestamp: transaction.settleDate,
@@ -286,7 +278,9 @@ class _TransactionsState extends State<Transactions>
                           : TransactionStatus.failed,
 
                       // other properties
-                    ))),
+                    ),
+                  ),
+                ),
                 ...lightningPayments.map((transaction) => TransactionItem(
                     context: context,
                     data: TransactionItemData(
@@ -303,7 +297,8 @@ class _TransactionsState extends State<Transactions>
                               ? TransactionStatus.failed
                               : TransactionStatus.pending,
                     ))),
-                ...onchainTransactions.map((transaction) => TransactionItem(
+                ...onchainTransactions.map(
+                  (transaction) => TransactionItem(
                     context: context,
                     data: TransactionItemData(
                       timestamp: transaction.timeStamp,
@@ -322,14 +317,15 @@ class _TransactionsState extends State<Transactions>
                       amount: transaction.amount!.contains("-")
                           ? transaction.amount.toString()
                           : "+" + transaction.amount.toString(),
-                    ))),
+                    ),
+                  ),
+                ),
               ].toList();
 
     combinedTransactions
         .sort((a, b) => a.data.timestamp.compareTo(b.data.timestamp));
-      combinedTransactions = combinedTransactions.reversed.toList();
-    if(combinedTransactions.isNotEmpty) {
-
+    combinedTransactions = combinedTransactions.reversed.toList();
+    if (combinedTransactions.isNotEmpty) {
       controller.initialDate(combinedTransactions.last.data.timestamp);
     }
     return transactionsLoaded
@@ -345,13 +341,16 @@ class _TransactionsState extends State<Transactions>
                   },
                 ),
                 body: Padding(
-                  padding: const EdgeInsets.only(top: AppTheme.cardPadding * 1.5),
+                  padding: const EdgeInsets.only(
+                    top: AppTheme.cardPadding * 1.5,
+                  ),
                   child: Column(
                     children: [
                       //SizedBox(height: 80,),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: AppTheme.elementSpacing, horizontal: AppTheme.elementSpacing),
+                            vertical: AppTheme.elementSpacing,
+                            horizontal: AppTheme.elementSpacing),
                         child: SearchFieldWidget(
                           // controller: searchCtrl,
                           hintText: 'Search',
@@ -380,34 +379,43 @@ class _TransactionsState extends State<Transactions>
                               itemCount: combinedTransactions.length,
                               itemBuilder: (context, index) {
                                 print(controller.selectedFilters.toJson());
-                                if(combinedTransactions[index].data.timestamp >= controller.start  && combinedTransactions[index].data.timestamp <= controller.end){
+                                if (combinedTransactions[index]
+                                            .data
+                                            .timestamp >=
+                                        controller.start &&
+                                    combinedTransactions[index]
+                                            .data
+                                            .timestamp <=
+                                        controller.end) {
                                   if (controller.selectedFilters
-                                      .contains('Sent') && controller.selectedFilters
-                                      .contains('Received')) {
+                                          .contains('Sent') &&
+                                      controller.selectedFilters
+                                          .contains('Received')) {
                                     return combinedTransactions[index];
                                   }
                                   if (controller.selectedFilters
                                       .contains('Sent')) {
                                     return combinedTransactions[index]
-                                        .data
-                                        .amount
-                                        .contains('-')
+                                            .data
+                                            .amount
+                                            .contains('-')
                                         ? combinedTransactions[index]
                                         : SizedBox();
                                   }
                                   if (controller.selectedFilters
                                       .contains('Received')) {
                                     return combinedTransactions[index]
-                                        .data
-                                        .amount
-                                        .contains('+')
+                                            .data
+                                            .amount
+                                            .contains('+')
                                         ? combinedTransactions[index]
                                         : SizedBox();
                                   }
                                   return combinedTransactions[index]
-                                      .data
-                                      .receiver
-                                      .contains(searchCtrl.text.toLowerCase())
+                                          .data
+                                          .receiver
+                                          .contains(
+                                              searchCtrl.text.toLowerCase())
                                       ? combinedTransactions[index]
                                       : SizedBox();
                                 }
@@ -422,45 +430,43 @@ class _TransactionsState extends State<Transactions>
                     itemCount: combinedTransactions.length > 5
                         ? 5
                         : combinedTransactions.length,
-                    itemBuilder: (context, index){
+                    itemBuilder: (context, index) {
                       print(controller.selectedFilters.toJson());
-                      if(combinedTransactions[index].data.timestamp >= controller.start  && combinedTransactions[index].data.timestamp <= controller.end){
-                      if (controller.selectedFilters
-                          .contains('Sent') && controller.selectedFilters
-                          .contains('Received')) {
-                        return combinedTransactions[index];
-                      }
-                      if (controller.selectedFilters
-                          .contains('Sent')) {
+                      if (combinedTransactions[index].data.timestamp >=
+                              controller.start &&
+                          combinedTransactions[index].data.timestamp <=
+                              controller.end) {
+                        if (controller.selectedFilters.contains('Sent') &&
+                            controller.selectedFilters.contains('Received')) {
+                          return combinedTransactions[index];
+                        }
+                        if (controller.selectedFilters.contains('Sent')) {
+                          return combinedTransactions[index]
+                                  .data
+                                  .amount
+                                  .contains('-')
+                              ? combinedTransactions[index]
+                              : SizedBox();
+                        }
+                        if (controller.selectedFilters.contains('Received')) {
+                          return combinedTransactions[index]
+                                  .data
+                                  .amount
+                                  .contains('+')
+                              ? combinedTransactions[index]
+                              : SizedBox();
+                        }
                         return combinedTransactions[index]
-                            .data
-                            .amount
-                            .contains('-')
+                                .data
+                                .receiver
+                                .contains(searchCtrl.text.toLowerCase())
                             ? combinedTransactions[index]
                             : SizedBox();
                       }
-                      if (controller.selectedFilters
-                          .contains('Received')) {
-                        return combinedTransactions[index]
-                            .data
-                            .amount
-                            .contains('+')
-                            ? combinedTransactions[index]
-                            : SizedBox();
-                      }
-                      return combinedTransactions[index]
-                          .data
-                          .receiver
-                          .contains(searchCtrl.text.toLowerCase())
-                          ? combinedTransactions[index]
-                          : SizedBox();
-                      }
-                    }) )
+                    }))
         : Container(
             height: AppTheme.cardPadding * 18,
             child: dotProgress(context),
           );
   }
-  
- 
 }
