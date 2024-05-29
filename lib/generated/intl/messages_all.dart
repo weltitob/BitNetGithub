@@ -11,6 +11,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 import 'package:intl/src/intl_helpers.dart';
@@ -63,51 +64,51 @@ import 'messages_zh_Hant.dart' as messages_zh_hant;
 
 typedef Future<dynamic> LibraryLoader();
 Map<String, LibraryLoader> _deferredLibraries = {
-  'ar': () => new Future.value(null),
-  'bn': () => new Future.value(null),
-  'bo': () => new Future.value(null),
-  'ca': () => new Future.value(null),
-  'cs': () => new Future.value(null),
-  'de': () => new Future.value(null),
-  'en': () => new Future.value(null),
-  'eo': () => new Future.value(null),
-  'es': () => new Future.value(null),
-  'et': () => new Future.value(null),
-  'eu': () => new Future.value(null),
-  'fa': () => new Future.value(null),
-  'fi': () => new Future.value(null),
-  'fr': () => new Future.value(null),
-  'ga': () => new Future.value(null),
-  'gl': () => new Future.value(null),
-  'he': () => new Future.value(null),
-  'hi': () => new Future.value(null),
-  'hr': () => new Future.value(null),
-  'hu': () => new Future.value(null),
-  'id': () => new Future.value(null),
-  'ie': () => new Future.value(null),
-  'it': () => new Future.value(null),
-  'ja': () => new Future.value(null),
-  'ko': () => new Future.value(null),
-  'lt': () => new Future.value(null),
-  'nb': () => new Future.value(null),
-  'nl': () => new Future.value(null),
-  'pl': () => new Future.value(null),
-  'pt': () => new Future.value(null),
-  'pt_BR': () => new Future.value(null),
-  'pt_PT': () => new Future.value(null),
-  'ro': () => new Future.value(null),
-  'ru': () => new Future.value(null),
-  'sk': () => new Future.value(null),
-  'sl': () => new Future.value(null),
-  'sr': () => new Future.value(null),
-  'sv': () => new Future.value(null),
-  'ta': () => new Future.value(null),
-  'th': () => new Future.value(null),
-  'tr': () => new Future.value(null),
-  'uk': () => new Future.value(null),
-  'vi': () => new Future.value(null),
-  'zh': () => new Future.value(null),
-  'zh_Hant': () => new Future.value(null),
+  'ar': () => new SynchronousFuture(null),
+  'bn': () => new SynchronousFuture(null),
+  'bo': () => new SynchronousFuture(null),
+  'ca': () => new SynchronousFuture(null),
+  'cs': () => new SynchronousFuture(null),
+  'de': () => new SynchronousFuture(null),
+  'en': () => new SynchronousFuture(null),
+  'eo': () => new SynchronousFuture(null),
+  'es': () => new SynchronousFuture(null),
+  'et': () => new SynchronousFuture(null),
+  'eu': () => new SynchronousFuture(null),
+  'fa': () => new SynchronousFuture(null),
+  'fi': () => new SynchronousFuture(null),
+  'fr': () => new SynchronousFuture(null),
+  'ga': () => new SynchronousFuture(null),
+  'gl': () => new SynchronousFuture(null),
+  'he': () => new SynchronousFuture(null),
+  'hi': () => new SynchronousFuture(null),
+  'hr': () => new SynchronousFuture(null),
+  'hu': () => new SynchronousFuture(null),
+  'id': () => new SynchronousFuture(null),
+  'ie': () => new SynchronousFuture(null),
+  'it': () => new SynchronousFuture(null),
+  'ja': () => new SynchronousFuture(null),
+  'ko': () => new SynchronousFuture(null),
+  'lt': () => new SynchronousFuture(null),
+  'nb': () => new SynchronousFuture(null),
+  'nl': () => new SynchronousFuture(null),
+  'pl': () => new SynchronousFuture(null),
+  'pt': () => new SynchronousFuture(null),
+  'pt_BR': () => new SynchronousFuture(null),
+  'pt_PT': () => new SynchronousFuture(null),
+  'ro': () => new SynchronousFuture(null),
+  'ru': () => new SynchronousFuture(null),
+  'sk': () => new SynchronousFuture(null),
+  'sl': () => new SynchronousFuture(null),
+  'sr': () => new SynchronousFuture(null),
+  'sv': () => new SynchronousFuture(null),
+  'ta': () => new SynchronousFuture(null),
+  'th': () => new SynchronousFuture(null),
+  'tr': () => new SynchronousFuture(null),
+  'uk': () => new SynchronousFuture(null),
+  'vi': () => new SynchronousFuture(null),
+  'zh': () => new SynchronousFuture(null),
+  'zh_Hant': () => new SynchronousFuture(null),
 };
 
 MessageLookupByLibrary? _findExact(String localeName) {
@@ -208,18 +209,18 @@ MessageLookupByLibrary? _findExact(String localeName) {
 }
 
 /// User programs should call this before using [localeName] for messages.
-Future<bool> initializeMessages(String localeName) async {
+Future<bool> initializeMessages(String localeName) {
   var availableLocale = Intl.verifiedLocale(
       localeName, (locale) => _deferredLibraries[locale] != null,
       onFailure: (_) => null);
   if (availableLocale == null) {
-    return new Future.value(false);
+    return new SynchronousFuture(false);
   }
   var lib = _deferredLibraries[availableLocale];
-  await (lib == null ? new Future.value(false) : lib());
+  lib == null ? new SynchronousFuture(false) : lib();
   initializeInternalMessageLookup(() => new CompositeMessageLookup());
   messageLookup.addLocale(availableLocale, _findGeneratedMessagesFor);
-  return new Future.value(true);
+  return new SynchronousFuture(true);
 }
 
 bool _messagesExistFor(String locale) {

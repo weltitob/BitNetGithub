@@ -26,6 +26,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class WalletScreen extends GetWidget<WalletsController> {
   const WalletScreen({Key? key}) : super(key: key);
@@ -104,7 +105,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Total Wallet Balance",
+                                    L10n.of(context)!.totalWalletBal,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
@@ -149,9 +150,6 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                                         .textTheme
                                                                         .displaySmall,
                                                                   ),
-                                                                  // const SizedBox(
-                                                                  //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-                                                                  // ),
                                                                   Icon(
                                                                     getCurrencyIcon(controller
                                                                         .totalBalance
@@ -232,7 +230,7 @@ class WalletScreen extends GetWidget<WalletsController> {
               padding:
                   const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Text(
-                "Actions",
+                L10n.of(context)!.actions,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
@@ -244,7 +242,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   BitNetImageWithTextContainer(
-                    "Send",
+                    L10n.of(context)!.send,
                     () {
                       context.go('/wallet/send');
                     },
@@ -254,7 +252,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                     fallbackIcon: Icons.arrow_upward_rounded,
                   ),
                   BitNetImageWithTextContainer(
-                    "Receive",
+                    L10n.of(context)!.receive,
                     () {
                       context.go('/wallet/receive');
                     },
@@ -265,7 +263,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                     fallbackIcon: Icons.arrow_downward_rounded,
                   ),
                   BitNetImageWithTextContainer(
-                    "Rebalance",
+                    L10n.of(context)!.rebalance,
                     () {
                       Get.put(LoopsController());
                       context.go("/wallet/loop_screen");
@@ -285,7 +283,7 @@ class WalletScreen extends GetWidget<WalletsController> {
               padding:
                   const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Text(
-                "Buy & Sell",
+                L10n.of(context)!.buySell,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
@@ -315,7 +313,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Activity",
+                          L10n.of(context)!.activity,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         Row(
@@ -334,16 +332,18 @@ class WalletScreen extends GetWidget<WalletsController> {
                               width: AppTheme.elementSpacing,
                             ),
                             LongButtonWidget(
-                                title: "All",
+                                title: L10n.of(context)!.all,
                                 buttonType: ButtonType.transparent,
                                 customWidth: AppTheme.cardPadding * 2.5,
                                 customHeight: AppTheme.cardPadding * 1.25,
                                 onTap: () {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              Transactions(fullList: true)));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          Transactions(fullList: true),
+                                    ),
+                                  );
                                 }),
                           ],
                         ),

@@ -13,6 +13,7 @@ import 'package:bitnet/pages/wallet/loop/loop.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class LoopScreen extends StatefulWidget {
   final LoopController controller;
@@ -32,7 +33,7 @@ class _LoopScreenState extends State<LoopScreen> {
   void dispose() {
     loopGetController.btcController.clear();
     loopGetController.currencyController.clear();
-  
+
     loopGetController.dispose();
     log('Loop controller disposed');
     super.dispose();
@@ -41,8 +42,8 @@ class _LoopScreenState extends State<LoopScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (bool bool){
-        if(bool){
+      onPopInvoked: (bool bool) {
+        if (bool) {
           context.go('/feed');
         }
       },
@@ -52,7 +53,7 @@ class _LoopScreenState extends State<LoopScreen> {
         resizeToAvoidBottomInset: true,
         // backgroundColor: AppTheme.colorBackground,
         appBar: bitnetAppBar(
-          text: 'Loop Screen',
+          text: L10n.of(context)!.loopScreen,
           context: context,
           onTap: () {
             context.go('/feed');
@@ -84,8 +85,7 @@ class _LoopScreenState extends State<LoopScreen> {
                             margin: EdgeInsets.symmetric(
                               horizontal: AppTheme.cardPadding,
                             ),
-                            child: BalanceCardLightning(
-                                )),
+                            child: BalanceCardLightning()),
                       ],
                     ),
                     Align(
@@ -115,21 +115,20 @@ class _LoopScreenState extends State<LoopScreen> {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                 child: AmountWidget(
-                  enabled: ()=>true,
+                  enabled: () => true,
                   bitcoinUnit: BitcoinUnits.SAT,
                   btcController: loopGetController.btcController,
                   currController: loopGetController.currencyController,
                   satController: loopGetController.satController,
-                focusNode: FocusNode(),
+                  focusNode: FocusNode(),
                   onAmountChange: (type, currency) {
                     log('This is the currencyController ${loopGetController.currencyController.text}');
                     log('This is the btcController ${loopGetController.btcController.text}');
-                                      log('This is the satController ${loopGetController.satController.text}');
-
-                },
+                    log('This is the satController ${loopGetController.satController.text}');
+                  },
                   context: context,
                   autoConvert: true,
-              ),
+                ),
               ),
               SizedBox(
                 height: AppTheme.cardPadding * 1,

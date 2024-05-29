@@ -7,17 +7,17 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
 import 'package:provider/provider.dart';
 
 class LightningSendTab extends GetWidget<SendsController> {
-  const LightningSendTab({super.key,  });
+  const LightningSendTab({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +49,10 @@ class LightningSendTab extends GetWidget<SendsController> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: AppTheme.cardPadding),
                       child: Obx(
-                        ()=> Text(
-                          controller.description.value.isEmpty ? "" : ',,${controller.description}"',
+                        () => Text(
+                          controller.description.value.isEmpty
+                              ? ""
+                              : ',,${controller.description}"',
                           style:
                               Theme.of(context).textTheme.bodyLarge!.copyWith(),
                           textAlign: TextAlign.center,
@@ -60,26 +62,34 @@ class LightningSendTab extends GetWidget<SendsController> {
                   ],
                 ),
                 Obx(
-                        ()=> Text(
-                          controller.amountWidgetOverBound.value ? "You are over the sending limit." : controller.amountWidgetUnderBound.value ? "You are under the sending baseline." : "",
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                  () => Text(
+                    controller.amountWidgetOverBound.value
+                        ? "You are over the sending limit."
+                        : controller.amountWidgetUnderBound.value
+                            ? "You are under the sending baseline."
+                            : "",
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
                 // A Padding widget that contains a button widget
                 Padding(
                     padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
-                    child: 
-                    Obx( () => LongButtonWidget(
-                      title: "JETZT SENDEN!",
-                      buttonType: (!controller.amountWidgetOverBound.value && !controller.amountWidgetUnderBound.value) ? ButtonType.solid : ButtonType.transparent,
-                      onTap: (!controller.amountWidgetOverBound.value && !controller.amountWidgetUnderBound.value) ? () async {
-                        logger.i("lightning SendBTC getting called");
-                        await controller.sendBTC(context);
-                      } : null,
-                    ))
-                ),
+                    child: Obx(() => LongButtonWidget(
+                          title: "JETZT SENDEN!",
+                          buttonType:
+                              (!controller.amountWidgetOverBound.value &&
+                                      !controller.amountWidgetUnderBound.value)
+                                  ? ButtonType.solid
+                                  : ButtonType.transparent,
+                          onTap: (!controller.amountWidgetOverBound.value &&
+                                  !controller.amountWidgetUnderBound.value)
+                              ? () async {
+                                  logger.i("lightning SendBTC getting called");
+                                  await controller.sendBTC(context);
+                                }
+                              : null,
+                        ))),
               ],
             ),
           ),
@@ -200,38 +210,45 @@ class LightningSendTab extends GetWidget<SendsController> {
   }
 
   Widget bitcoinWidget(BuildContext context) {
-        String? currency =
+    String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
-                     final chartLine = Get.find<WalletsController>().chartLines.value;
+    final chartLine = Get.find<WalletsController>().chartLines.value;
 
     final bitcoinPrice = chartLine?.price;
 
- 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AmountWidget(
-            ctrler: controller,
-            bitcoinUnit: controller.bitcoinUnit,
-            init: (controller.sendType == SendType.LightningUrl || controller.sendType == SendType.Invoice) ? (){
-    controller.currencyController.text = CurrencyConverter.convertCurrency("SATS", double.parse(controller.satController.text), currency!, bitcoinPrice!);
-
-            }:null,
-            enabled:()=> double.parse(controller.currencyController.text) == 0 || controller.sendType == SendType.LightningUrl,
-            btcController: controller.btcController,
-            satController: controller.satController,
-            currController: controller.currencyController,
-            focusNode: controller.myFocusNodeMoney,
-            context: context,
-            swapped: true,
-            lowerBound: controller.lowerBound,
-            upperBound: controller.upperBound,
-            boundType: controller.boundType,
-            autoConvert: !(controller.sendType == SendType.LightningUrl)
-          ),
+              ctrler: controller,
+              bitcoinUnit: controller.bitcoinUnit,
+              init: (controller.sendType == SendType.LightningUrl ||
+                      controller.sendType == SendType.Invoice)
+                  ? () {
+                      controller.currencyController.text =
+                          CurrencyConverter.convertCurrency(
+                              "SATS",
+                              double.parse(controller.satController.text),
+                              currency!,
+                              bitcoinPrice!);
+                    }
+                  : null,
+              enabled: () =>
+                  double.parse(controller.currencyController.text) == 0 ||
+                  controller.sendType == SendType.LightningUrl,
+              btcController: controller.btcController,
+              satController: controller.satController,
+              currController: controller.currencyController,
+              focusNode: controller.myFocusNodeMoney,
+              context: context,
+              swapped: true,
+              lowerBound: controller.lowerBound,
+              upperBound: controller.upperBound,
+              boundType: controller.boundType,
+              autoConvert: !(controller.sendType == SendType.LightningUrl)),
         ],
       ),
     );

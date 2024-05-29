@@ -6,6 +6,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
@@ -25,51 +26,49 @@ class ProfileView extends StatelessWidget {
 
     return Obx(
       () => bitnetScaffold(
-        context: context,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: controller.isUserLoading.value
-            ? Center(
-                child: dotProgress(context),
-              )
-            : ListView(
-                children: [
-                  ProfileHeader(),
-                  Obx(
-                    () {
+          context: context,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          body: controller.isUserLoading.value
+              ? Center(
+                  child: dotProgress(context),
+                )
+              : ListView(
+                  children: [
+                    ProfileHeader(),
+                    Obx(() {
                       return controller.pages[controller.currentview.value];
-                    }
-                  ),
-                  // ProfilePosts(userId: currentUserId),
-                ],
-              ),
-
-        floatingActionButton: Align(
-          alignment: Alignment.bottomCenter,
-          child: GestureDetector(
-            onTap: (){
-              context.go('/create');
-              //forward to post screen
-            },
-            child: GlassContainer(
-              width: AppTheme.cardPadding * 4,
-              height: AppTheme.cardPadding * 2,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-               children: [
-                 Icon(
-                   Icons.add,
-                 ),
-                 SizedBox(width: AppTheme.elementSpacing / 2,),
-                 Text(
-                   'Add',
-                 ),
-               ],
+                    }),
+                    // ProfilePosts(userId: currentUserId),
+                  ],
+                ),
+          floatingActionButton: Align(
+            alignment: Alignment.bottomCenter,
+            child: GestureDetector(
+              onTap: () {
+                context.go('/create');
+                //forward to post screen
+              },
+              child: GlassContainer(
+                width: AppTheme.cardPadding * 4,
+                height: AppTheme.cardPadding * 2,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add,
+                    ),
+                    SizedBox(
+                      width: AppTheme.elementSpacing / 2,
+                    ),
+                    Text(
+                      L10n.of(context)!.add,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        )
-      ),
+          )),
     );
   }
 
@@ -77,14 +76,13 @@ class ProfileView extends StatelessWidget {
     BitNetBottomSheet(
       width: MediaQuery.sizeOf(context).width,
       context: context,
-
       child: bitnetScaffold(
         extendBodyBehindAppBar: false,
         appBar: bitnetAppBar(
           hasBackButton: false,
           context: context,
           buttonType: ButtonType.transparent,
-          text: 'Share Profile QR Code',
+          text: L10n.of(context)!.shareQrCode,
         ),
         context: context,
         body: Center(
@@ -92,7 +90,9 @@ class ProfileView extends StatelessWidget {
             key: controller.globalKeyQR,
             child: Column(
               children: [
-                SizedBox(height: AppTheme.cardPadding * 4,),
+                SizedBox(
+                  height: AppTheme.cardPadding * 4,
+                ),
                 Container(
                   margin: EdgeInsets.all(AppTheme.cardPadding),
                   decoration: BoxDecoration(

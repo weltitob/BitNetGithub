@@ -8,7 +8,7 @@ import 'package:bitnet/components/dialogsandsheets/dialogs/colorpicker.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:get/get.dart'; 
+import 'package:get/get.dart';
 
 class SettingsStyleView extends StatelessWidget {
   const SettingsStyleView({Key? key}) : super(key: key);
@@ -17,166 +17,176 @@ class SettingsStyleView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<SettingsController>();
     const colorPickerSize = AppTheme.cardPadding * 1.5;
-    return   bitnetScaffold(
-        extendBodyBehindAppBar: true,
+    return bitnetScaffold(
+      extendBodyBehindAppBar: true,
+      context: context,
+      appBar: bitnetAppBar(
+        text: L10n.of(context)!.changeTheme,
+        buttonType: ButtonType.transparent,
         context: context,
-        appBar: bitnetAppBar(
-          text: L10n.of(context)!.changeTheme,
-          buttonType: ButtonType.transparent,
-          context: context,
-          onTap: () {
-            print("pressed");
-            final controller = Get.find<SettingsController>();
-            controller.switchTab('main');
-          },
-        ),
-        // backgroundColor: Theme.of(context).colorScheme.surface,
-        body: MaxWidthBody(
-          withScrolling: true,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: AppTheme.cardPadding * 3,
-                ),
-                Text(
-                  "Color",
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                SizedBox(
-                  height: AppTheme.elementSpacing,
-                ),
-                SizedBox(
-                  height: colorPickerSize + 24,
-                  child: ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: controller.customColors
-                        .map(
-                          (color) => Padding(
-                            padding: const EdgeInsets.all(AppTheme.elementSpacing),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(colorPickerSize),
-                              onTap: () {
-                                controller.setChatColor(color,context);
-                              },
-                              child: color == null
-                                  ? GestureDetector(
-                                      onTap: () => showColorPickerDialouge(
-                                        actionright: () {
-                                          controller.setChatColor(
-                                              controller.pickerColor.value,context);
-                                          Navigator.of(context, rootNavigator: true)
-                                              .pop();
-                                        },
-                                        actionleft: () {
-                                          Navigator.of(context, rootNavigator: true)
-                                              .pop();
-                                        },
-                                        pickerColor:
-                                            controller.currentColor(context) ?? Colors.white,
-                                        context: context,
-                                        onColorChanged: controller.changeColor,
-                                      ),
-                                      child: Material(
-                                        elevation:
-                                            AppTheme.colorSchemeSeed?.value == null
-                                                ? 100
-                                                : 0,
-                                        shadowColor: AppTheme.colorSchemeSeed,
-                                        borderRadius:
-                                            BorderRadius.circular(colorPickerSize),
-                                        child: Image.asset(
-                                          'assets/colors.png',
-                                          width: colorPickerSize,
-                                          height: colorPickerSize,
-                                        ),
-                                      ),
-                                    )
-                                  : Material(
-                                      color: color,
-                                      elevation: 6,
-                                      borderRadius:
-                                          BorderRadius.circular(colorPickerSize),
-                                      child: SizedBox(
+        onTap: () {
+          print("pressed");
+          final controller = Get.find<SettingsController>();
+          controller.switchTab('main');
+        },
+      ),
+      // backgroundColor: Theme.of(context).colorScheme.surface,
+      body: MaxWidthBody(
+        withScrolling: true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: AppTheme.cardPadding * 3,
+              ),
+              Text(
+                L10n.of(context)!.color,
+                textAlign: TextAlign.start,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(
+                height: AppTheme.elementSpacing,
+              ),
+              SizedBox(
+                height: colorPickerSize + 24,
+                child: ListView(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  children: controller.customColors
+                      .map(
+                        (color) => Padding(
+                          padding:
+                              const EdgeInsets.all(AppTheme.elementSpacing),
+                          child: InkWell(
+                            borderRadius:
+                                BorderRadius.circular(colorPickerSize),
+                            onTap: () {
+                              controller.setChatColor(color, context);
+                            },
+                            child: color == null
+                                ? GestureDetector(
+                                    onTap: () => showColorPickerDialouge(
+                                      actionright: () {
+                                        controller.setChatColor(
+                                            controller.pickerColor.value,
+                                            context);
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                      },
+                                      actionleft: () {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                      },
+                                      pickerColor:
+                                          controller.currentColor(context) ??
+                                              Colors.white,
+                                      context: context,
+                                      onColorChanged: controller.changeColor,
+                                    ),
+                                    child: Material(
+                                      elevation:
+                                          AppTheme.colorSchemeSeed?.value ==
+                                                  null
+                                              ? 100
+                                              : 0,
+                                      shadowColor: AppTheme.colorSchemeSeed,
+                                      borderRadius: BorderRadius.circular(
+                                          colorPickerSize),
+                                      child: Image.asset(
+                                        'assets/colors.png',
                                         width: colorPickerSize,
                                         height: colorPickerSize,
-                                        child: controller.currentColor == color
-                                            ? const Center(
-                                                child: Icon(
-                                                  Icons.check,
-                                                  color: Colors.white,
-                                                ),
-                                              )
-                                            : null,
                                       ),
                                     ),
-                            ),
+                                  )
+                                : Material(
+                                    color: color,
+                                    elevation: 6,
+                                    borderRadius:
+                                        BorderRadius.circular(colorPickerSize),
+                                    child: SizedBox(
+                                      width: colorPickerSize,
+                                      height: colorPickerSize,
+                                      child: controller.currentColor == color
+                                          ? const Center(
+                                              child: Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                  ),
                           ),
-                        )
-                        .toList(),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+              SizedBox(
+                height: AppTheme.cardPadding,
+              ),
+              Text(
+                L10n.of(context)!.systemTheme,
+                textAlign: TextAlign.start,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(
+                height: AppTheme.elementSpacing,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  BitNetImageWithTextContainer(
+                    L10n.of(context)!.systemTheme,
+                    () {
+                      controller.switchTheme(ThemeMode.system, context);
+                    },
+                    isActive:
+                        controller.currentTheme(context) == ThemeMode.system,
+                    image: "assets/images/system_theme.png",
+                    height: AppTheme.cardPadding * 5.5,
+                    width: AppTheme.cardPadding * 4,
                   ),
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding,
-                ),
-                Text(
-                  "System Theme",
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                SizedBox(
-                  height: AppTheme.elementSpacing,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    BitNetImageWithTextContainer(
-                      L10n.of(context)!.systemTheme,
-                      () {
-                        controller.switchTheme(ThemeMode.system,context);
-                      },
-                      isActive: controller.currentTheme(context) == ThemeMode.system,
-                      image: "assets/images/system_theme.png",
-                      height: AppTheme.cardPadding * 5.5,
-                      width: AppTheme.cardPadding * 4,
-                    ),
-                    SizedBox(
-                      width: AppTheme.cardPadding,
-                    ),
-                    BitNetImageWithTextContainer(
-                      L10n.of(context)!.lightTheme,
-                      () {
-                        controller.switchTheme(ThemeMode.light,context);
-                      },
-                      image: "assets/images/sun_theme.png",
-                      height: AppTheme.cardPadding * 5.5,
-                      isActive: controller.currentTheme(context) == ThemeMode.light,
-                      width: AppTheme.cardPadding * 4,
-                    ),
-                    SizedBox(
-                      width: AppTheme.cardPadding,
-                    ),
-                    BitNetImageWithTextContainer(
-                      L10n.of(context)!.darkTheme,
-                      () {
-                        controller.switchTheme(ThemeMode.dark,context);
-                      },
-                      image: "assets/images/moon_theme.png",
-                      height: AppTheme.cardPadding * 5.5,
-                      isActive: controller.currentTheme(context) == ThemeMode.dark,
-                      width: AppTheme.cardPadding * 4,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  SizedBox(
+                    width: AppTheme.cardPadding,
+                  ),
+                  BitNetImageWithTextContainer(
+                    L10n.of(context)!.lightTheme,
+                    () {
+                      controller.switchTheme(ThemeMode.light, context);
+                    },
+                    image: "assets/images/sun_theme.png",
+                    height: AppTheme.cardPadding * 5.5,
+                    isActive:
+                        controller.currentTheme(context) == ThemeMode.light,
+                    width: AppTheme.cardPadding * 4,
+                  ),
+                  SizedBox(
+                    width: AppTheme.cardPadding,
+                  ),
+                  BitNetImageWithTextContainer(
+                    L10n.of(context)!.darkTheme,
+                    () {
+                      controller.switchTheme(ThemeMode.dark, context);
+                    },
+                    image: "assets/images/moon_theme.png",
+                    height: AppTheme.cardPadding * 5.5,
+                    isActive:
+                        controller.currentTheme(context) == ThemeMode.dark,
+                    width: AppTheme.cardPadding * 4,
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
+      ),
     );
   }
 }
