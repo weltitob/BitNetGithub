@@ -206,12 +206,12 @@ class _BottomBuyButtonsState extends State<BottomBuyButtons> {
                   //if post owner put a list for sale and view offers
                   // LongButtonWidget(title: title, onTap: onTap)
                   LongButtonWidget(
-                      customWidth: AppTheme.cardPadding * 8,
+                      customWidth: AppTheme.cardPadding * 6.5.w,
                       customHeight: AppTheme.cardPadding * 2.5,
                       title: "Buy",
                       onTap: _buildBuySlidingPanel),
                   LongButtonWidget(
-                      customWidth: AppTheme.cardPadding * 8,
+                      customWidth: AppTheme.cardPadding * 6.5.w,
                       customHeight: AppTheme.cardPadding * 2.5,
                       buttonType: ButtonType.transparent,
                       title: "Make Offer",
