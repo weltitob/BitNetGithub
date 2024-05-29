@@ -15,30 +15,37 @@ class $AssetsImagesGen {
   /// File path: assets/images/bitcoin.png
   AssetGenImage get bitcoin => const AssetGenImage('assets/images/bitcoin.png');
 
-  /// File path: assets/images/darkmode.png
-  AssetGenImage get darkmode =>
-      const AssetGenImage('assets/images/darkmode.png');
+  /// File path: assets/images/blockchain.png
+  AssetGenImage get blockchain =>
+      const AssetGenImage('assets/images/blockchain.png');
 
   /// File path: assets/images/error_character.png
   AssetGenImage get errorCharacter =>
       const AssetGenImage('assets/images/error_character.png');
 
+  /// File path: assets/images/fagi.png
+  AssetGenImage get fagi => const AssetGenImage('assets/images/fagi.png');
+
   /// File path: assets/images/friends.png
   AssetGenImage get friends => const AssetGenImage('assets/images/friends.png');
+
+  /// File path: assets/images/hashrate.png
+  AssetGenImage get hashrate =>
+      const AssetGenImage('assets/images/hashrate.png');
 
   /// File path: assets/images/ion.png
   AssetGenImage get ion => const AssetGenImage('assets/images/ion.png');
 
-  /// File path: assets/images/iphone.png
-  AssetGenImage get iphone => const AssetGenImage('assets/images/iphone.png');
+  /// File path: assets/images/key.png
+  AssetGenImage get key => const AssetGenImage('assets/images/key.png');
 
   /// File path: assets/images/key_removed_bck.png
   AssetGenImage get keyRemovedBck =>
       const AssetGenImage('assets/images/key_removed_bck.png');
 
-  /// File path: assets/images/lightmode.png
-  AssetGenImage get lightmode =>
-      const AssetGenImage('assets/images/lightmode.png');
+  /// File path: assets/images/latest_transactions.png
+  AssetGenImage get latestTransactions =>
+      const AssetGenImage('assets/images/latest_transactions.png');
 
   /// File path: assets/images/lightning.png
   AssetGenImage get lightning =>
@@ -64,9 +71,16 @@ class $AssetsImagesGen {
   AssetGenImage get metaverseFb =>
       const AssetGenImage('assets/images/metaverse_fb.png');
 
+  /// File path: assets/images/moon_theme.png
+  AssetGenImage get moonTheme =>
+      const AssetGenImage('assets/images/moon_theme.png');
+
   /// File path: assets/images/new_chat.png
   AssetGenImage get newChat =>
       const AssetGenImage('assets/images/new_chat.png');
+
+  /// File path: assets/images/news.png
+  AssetGenImage get news => const AssetGenImage('assets/images/news.png');
 
   /// File path: assets/images/paper_wallet.png
   AssetGenImage get paperWallet =>
@@ -82,6 +96,14 @@ class $AssetsImagesGen {
   AssetGenImage get prisonBackground =>
       const AssetGenImage('assets/images/prison_background.png');
 
+  /// File path: assets/images/rebalance_image.png
+  AssetGenImage get rebalanceImage =>
+      const AssetGenImage('assets/images/rebalance_image.png');
+
+  /// File path: assets/images/receive_image.png
+  AssetGenImage get receiveImage =>
+      const AssetGenImage('assets/images/receive_image.png');
+
   /// File path: assets/images/scan_qr_device.png
   AssetGenImage get scanQrDevice =>
       const AssetGenImage('assets/images/scan_qr_device.png');
@@ -89,6 +111,18 @@ class $AssetsImagesGen {
   /// File path: assets/images/screenshot_small.png
   AssetGenImage get screenshotSmall =>
       const AssetGenImage('assets/images/screenshot_small.png');
+
+  /// File path: assets/images/send_image.png
+  AssetGenImage get sendImage =>
+      const AssetGenImage('assets/images/send_image.png');
+
+  /// File path: assets/images/sun_theme.png
+  AssetGenImage get sunTheme =>
+      const AssetGenImage('assets/images/sun_theme.png');
+
+  /// File path: assets/images/system_theme.png
+  AssetGenImage get systemTheme =>
+      const AssetGenImage('assets/images/system_theme.png');
 
   /// File path: assets/images/trash.png
   AssetGenImage get trash => const AssetGenImage('assets/images/trash.png');
@@ -99,35 +133,48 @@ class $AssetsImagesGen {
   /// File path: assets/images/wallet.png
   AssetGenImage get wallet => const AssetGenImage('assets/images/wallet.png');
 
+  /// File path: assets/images/whale.png
+  AssetGenImage get whale => const AssetGenImage('assets/images/whale.png');
+
   /// File path: assets/images/x.png
   AssetGenImage get x => const AssetGenImage('assets/images/x.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
         bitcoin,
-        darkmode,
+        blockchain,
         errorCharacter,
+        fagi,
         friends,
+        hashrate,
         ion,
-        iphone,
+        key,
         keyRemovedBck,
-        lightmode,
+        latestTransactions,
         lightning,
         logoclean,
         logotransparent,
         mastercard,
         metaverse,
         metaverseFb,
+        moonTheme,
         newChat,
+        news,
         paperWallet,
         paypal,
         phone,
         prisonBackground,
+        rebalanceImage,
+        receiveImage,
         scanQrDevice,
         screenshotSmall,
+        sendImage,
+        sunTheme,
+        systemTheme,
         trash,
         visa,
         wallet,
+        whale,
         x
       ];
 }
@@ -560,9 +607,11 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName);
+  const AssetGenImage(this._assetName, {this.size = null});
 
   final String _assetName;
+
+  final Size? size;
 
   Image image({
     Key? key,

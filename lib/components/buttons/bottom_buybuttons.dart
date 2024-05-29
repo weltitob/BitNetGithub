@@ -191,7 +191,6 @@ class _BottomBuyButtonsState extends State<BottomBuyButtons> {
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.dark
                 ? darken(Theme.of(context).colorScheme.primaryContainer, 70)
-                .withOpacity(0.0001)
                 : lighten(Theme.of(context).colorScheme.primaryContainer, 40),
               //boxShadow: [AppTheme.boxShadowProfile],
             ),
@@ -207,12 +206,12 @@ class _BottomBuyButtonsState extends State<BottomBuyButtons> {
                   //if post owner put a list for sale and view offers
                   // LongButtonWidget(title: title, onTap: onTap)
                   LongButtonWidget(
-                      customWidth: AppTheme.cardPadding * 5,
+                      customWidth: AppTheme.cardPadding * 8,
                       customHeight: AppTheme.cardPadding * 2.5,
                       title: "Buy",
                       onTap: _buildBuySlidingPanel),
                   LongButtonWidget(
-                      customWidth: AppTheme.cardPadding * 5,
+                      customWidth: AppTheme.cardPadding * 8,
                       customHeight: AppTheme.cardPadding * 2.5,
                       buttonType: ButtonType.transparent,
                       title: "Make Offer",
