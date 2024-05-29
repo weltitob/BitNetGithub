@@ -206,7 +206,7 @@ class WavyGleamPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.white
-          .withOpacity(0.065) // Mehr Opazität für bessere Sichtbarkeit
+          .withOpacity(0.05) // Mehr Opazität für bessere Sichtbarkeit
       ..style = PaintingStyle.fill;
 
     // Erste Welle breiter machen
