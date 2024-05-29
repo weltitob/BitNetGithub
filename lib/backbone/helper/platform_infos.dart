@@ -30,9 +30,6 @@ abstract class PlatformInfos {
 
   static bool get platformCanRecord => (isMobile || isMacOS);
 
-  static String get clientName =>
-      '${AppTheme.applicationName} ${isWeb ? 'web' : Platform.operatingSystem}${kReleaseMode ? '' : 'Debug'}';
-
   static Future<String> getVersion() async {
     var version = kIsWeb ? 'Web' : 'Unknown';
     try {
@@ -63,7 +60,7 @@ abstract class PlatformInfos {
         height: AppTheme.cardPadding * 2,
         filterQuality: FilterQuality.medium,
       ),
-      applicationName: AppTheme.applicationName,
+      // applicationName: AppTheme.applicationName,
     );
   }
 }

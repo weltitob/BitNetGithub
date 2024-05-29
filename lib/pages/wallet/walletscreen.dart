@@ -195,7 +195,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                       height: AppTheme.cardPadding * 1.h,
                     ),
                     Container(
-                      height: AppTheme.cardPadding * 7.5.h,
+                      height: AppTheme.cardPadding * 7.75.h,
                       child: Stack(
                         children: [
                           CardSwiper(
