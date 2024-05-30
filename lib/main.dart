@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
@@ -9,13 +8,12 @@ import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
-import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +22,6 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -65,9 +62,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();
-  if(!kIsWeb) {
-  Stripe.publishableKey = AppTheme.stripeLiveKey;
-  await Stripe.instance.applySettings();
+  if (!kIsWeb) {
+    Stripe.publishableKey = AppTheme.stripeLiveKey;
+    await Stripe.instance.applySettings();
   }
   await Firebase.initializeApp(
     options: FirebaseOptions(
@@ -90,6 +87,7 @@ Future<void> main() async {
 
   Get.put(LoggerService(), permanent: true);
   Get.put(DioClient(), permanent: true);
+  Get.put(SettingsController());
 
   // Run the app
   runApp(
@@ -149,7 +147,7 @@ class _MyAppState extends State<MyApp> {
                 ChangeNotifierProvider<LocalProvider>(
                   create: (context) => LocalProvider(),
                 ),
-                  ChangeNotifierProvider<CountryProvider>(
+                ChangeNotifierProvider<CountryProvider>(
                   create: (context) => CountryProvider(),
                 ),
                 ChangeNotifierProvider<CurrencyChangeProvider>(
@@ -179,9 +177,9 @@ class _MyAppState extends State<MyApp> {
               ChangeNotifierProvider<LocalProvider>(
                 create: (context) => LocalProvider(),
               ),
-                 ChangeNotifierProvider<CountryProvider>(
-                  create: (context) => CountryProvider(),
-                ),
+              ChangeNotifierProvider<CountryProvider>(
+                create: (context) => CountryProvider(),
+              ),
               ChangeNotifierProvider<CurrencyChangeProvider>(
                 create: (context) => CurrencyChangeProvider(),
               ),
@@ -194,23 +192,22 @@ class _MyAppState extends State<MyApp> {
                     final newStream = BitcoinPriceStream();
                     newStream.updateCurrency(
                         currencyChangeProvider.selectedCurrency ?? 'usd');
-                    newStream.priceStream.asBroadcastStream().listen((data){
+                    newStream.priceStream.asBroadcastStream().listen((data) {
                       Get.find<WalletsController>().chartLines.value = data;
-
-                    }
-                    );
+                    });
                     return newStream;
                   }
-                   bitcoinPriceStream.priceStream.asBroadcastStream().listen((data){
-                      Get.find<WalletsController>().chartLines.value = data;
-
-                    });
+                  bitcoinPriceStream.priceStream
+                      .asBroadcastStream()
+                      .listen((data) {
+                    Get.find<WalletsController>().chartLines.value = data;
+                  });
                   return bitcoinPriceStream;
                 },
                 dispose: (context, bitcoinPriceStream) =>
                     bitcoinPriceStream.dispose(),
               ),
-              // This provider is now made redundant, use WalletsController.chartlines and 
+              // This provider is now made redundant, use WalletsController.chartlines and
               //Obx if you need to listen for changes.
               // StreamProvider<ChartLine?>(
               //   key: _streamKey,
