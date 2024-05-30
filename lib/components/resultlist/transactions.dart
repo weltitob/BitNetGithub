@@ -340,98 +340,100 @@ class _TransactionsState extends State<Transactions>
                     Navigator.pop(context);
                   },
                 ),
-                body: Padding(
-                  padding: const EdgeInsets.only(
-                    top: AppTheme.cardPadding * 1.5,
-                  ),
-                  child: Column(
-                    children: [
-                      //SizedBox(height: 80,),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: AppTheme.elementSpacing,
-                            horizontal: AppTheme.elementSpacing),
-                        child: SearchFieldWidget(
-                          // controller: searchCtrl,
-                          hintText: 'Search',
-                          handleSearch: (v) {
-                            setState(() {
-                              searchCtrl.text = v;
-                            });
-                          },
-                          suffixIcon: IconButton(
-                              // size: AppTheme.cardPadding * 1.25,
-                              // buttonType: ButtonType.transparent,
-                              icon: Icon(FontAwesomeIcons.filter),
-                              onPressed: () async {
-                                await BitNetBottomSheet(
-                                    context: context,
-                                    child: WalletFilterScreen());
-                                setState(() {});
-                              }),
-                          isSearchEnabled: true,
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: AppTheme.cardPadding * 1.5,
+                    ),
+                    child: Column(
+                      children: [
+                        //SizedBox(height: 80,),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: AppTheme.elementSpacing,
+                              horizontal: AppTheme.elementSpacing),
+                          child: SearchFieldWidget(
+                            // controller: searchCtrl,
+                            hintText: 'Search',
+                            handleSearch: (v) {
+                              setState(() {
+                                searchCtrl.text = v;
+                              });
+                            },
+                            suffixIcon: IconButton(
+                                // size: AppTheme.cardPadding * 1.25,
+                                // buttonType: ButtonType.transparent,
+                                icon: Icon(FontAwesomeIcons.filter),
+                                onPressed: () async {
+                                  await BitNetBottomSheet(
+                                      context: context,
+                                      child: WalletFilterScreen());
+                                  setState(() {});
+                                }),
+                            isSearchEnabled: true,
+                          ),
                         ),
-                      ),
-                      Expanded(
-                          child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              physics: AlwaysScrollableScrollPhysics(),
-                              itemCount: combinedTransactions.length,
-                              itemBuilder: (context, index) {
-                                print(controller.selectedFilters.toJson());
-                                if (combinedTransactions[index]
-                                            .data
-                                            .timestamp >=
-                                        controller.start &&
-                                    combinedTransactions[index]
-                                            .data
-                                            .timestamp <=
-                                        controller.end) {
-                                  if (controller.selectedFilters
-                                          .contains('Sent') &&
-                                      controller.selectedFilters
-                                          .contains('Received')) {
-                                    return combinedTransactions[index];
-                                  }
-                                  if (controller.selectedFilters
-                                      .contains('Sent')) {
+                        Expanded(
+                            child: ListView.builder(
+                                padding: EdgeInsets.zero,
+                                physics: ClampingScrollPhysics(),
+                                itemCount: combinedTransactions.length,
+                                itemBuilder: (context, index) {
+                                  print(controller.selectedFilters.toJson());
+                                  if (combinedTransactions[index]
+                                              .data
+                                              .timestamp >=
+                                          controller.start &&
+                                      combinedTransactions[index]
+                                              .data
+                                              .timestamp <=
+                                          controller.end) {
+                                    if (controller.selectedFilters
+                                            .contains('Sent') &&
+                                        controller.selectedFilters
+                                            .contains('Received')) {
+                                      return combinedTransactions[index];
+                                    }
+                                    if (controller.selectedFilters
+                                        .contains('Sent')) {
+                                      return combinedTransactions[index]
+                                              .data
+                                              .amount
+                                              .contains('-')
+                                          ? combinedTransactions[index]
+                                          : SizedBox();
+                                    }
+                                    if (controller.selectedFilters
+                                        .contains('Received')) {
+                                      return combinedTransactions[index]
+                                              .data
+                                              .amount
+                                              .contains('+')
+                                          ? combinedTransactions[index]
+                                          : SizedBox();
+                                    }
                                     return combinedTransactions[index]
                                             .data
-                                            .amount
-                                            .contains('-')
+                                            .receiver
+                                            .contains(
+                                                searchCtrl.text.toLowerCase())
                                         ? combinedTransactions[index]
                                         : SizedBox();
                                   }
-                                  if (controller.selectedFilters
-                                      .contains('Received')) {
-                                    return combinedTransactions[index]
-                                            .data
-                                            .amount
-                                            .contains('+')
-                                        ? combinedTransactions[index]
-                                        : SizedBox();
-                                  }
-                                  return combinedTransactions[index]
-                                          .data
-                                          .receiver
-                                          .contains(
-                                              searchCtrl.text.toLowerCase())
-                                      ? combinedTransactions[index]
-                                      : SizedBox();
-                                }
-                              }))
-                    ],
+                                }))
+                      ],
+                    ),
                   ),
                 ))
             : Container(
                 height: AppTheme.cardPadding * 18,
+                padding: EdgeInsets.only(bottom: 30),
                 child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: ClampingScrollPhysics(),
                     itemCount: combinedTransactions.length > 5
                         ? 5
                         : combinedTransactions.length,
                     itemBuilder: (context, index) {
-                      print(controller.selectedFilters.toJson());
                       if (combinedTransactions[index].data.timestamp >=
                               controller.start &&
                           combinedTransactions[index].data.timestamp <=
