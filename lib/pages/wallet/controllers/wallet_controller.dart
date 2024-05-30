@@ -31,6 +31,7 @@ import 'package:lottie/lottie.dart';
 
 class WalletsController extends BaseController {
   RxBool hideBalance = false.obs;
+  RxBool showInfo = false.obs;
   late final Future<LottieComposition> compositionSend;
   late final Future<LottieComposition> compositionReceive;
   late OnchainBalance onchainBalance = OnchainBalance(
@@ -41,7 +42,6 @@ class WalletsController extends BaseController {
     reservedBalanceAnchorChan: '',
     accountBalance: '',
   );
-
   late LightningBalance lightningBalance = LightningBalance(
     balance: '0',
     pendingOpenBalance: '0',
