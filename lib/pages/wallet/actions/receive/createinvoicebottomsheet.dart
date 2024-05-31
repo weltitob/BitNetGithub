@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class CreateInvoice extends GetWidget<ReceiveController> {
+  bool onChain;
+  CreateInvoice({this.onChain = false});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -54,6 +56,7 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             title: "Generate Invoice",
             customWidth: AppTheme.cardPadding * 12,
             onTap: () {
+             controller.getTaprootAddress();
               controller.getInvoice(
                   (double.parse(controller.satController.text)).toInt(), "");
               context.pop(true);

@@ -148,7 +148,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                           text: "Change Amount",
                           context: context,
                         ),
-                        body: SingleChildScrollView(child: CreateInvoice()), context: context,),
+                        body: SingleChildScrollView(child: CreateInvoice(onChain: true,)), context: context,),
                     );
 
                     setState(() {});
