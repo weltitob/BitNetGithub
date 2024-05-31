@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
@@ -6,6 +7,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +133,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
             StatefulBuilder(builder: (context, setState) {
               return BitNetListTile(
                 onTap: () async {
-                  bool res = await BitNetBottomSheet(
+                   await BitNetBottomSheet(
                     context: context,
                     //also add a help button as an action at the right once bitnetbottomsheet is fixed
                     height: MediaQuery.of(context).size.height * 0.7,
@@ -145,9 +147,9 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                         ),
                         body: SingleChildScrollView(child: CreateInvoice()), context: context,),
                   );
-                  if (res) {
+
                     setState(() {});
-                  }
+
                 },
                 text: 'Amount',
                 trailing:
@@ -158,6 +160,14 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                     Text(controller.satController.text == "0" || controller.satController.text.isEmpty
                         ? "Change Amount"
                         : controller.satController.text,),
+                    Icon(
+                      getCurrencyIcon(
+                        BitcoinUnits.SAT.name,
+                      ),
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? AppTheme.black70
+                          : AppTheme.white90,
+                    )
                   ],
                 ),
         

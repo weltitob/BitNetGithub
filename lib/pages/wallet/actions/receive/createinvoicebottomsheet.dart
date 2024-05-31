@@ -56,7 +56,7 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             onTap: () {
               controller.getInvoice(
                   (double.parse(controller.satController.text)).toInt(), "");
-              context.pop();
+              context.pop(true);
             })
       ],
     );
