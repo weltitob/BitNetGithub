@@ -3,13 +3,13 @@ import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/marketplace_widgets/CoinPillLabel.dart';
 import 'package:bitnet/components/marketplace_widgets/CollectionList.dart';
-import 'package:bitnet/components/marketplace_widgets/CommonBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/FilterPillList.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({Key? key}) : super(key: key);
@@ -80,7 +80,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   Container(
                     margin: EdgeInsets.only(bottom: 15.h),
                     child: Text(
-                      'Filter',
+                      L10n.of(context)!.filter,
                       style: TextStyle(
                         fontSize: 28.sp,
                         fontWeight: FontWeight.w700,
@@ -89,11 +89,11 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                   ),
                   BitNetFilterPillList(
-                    headingText: 'Status',
+                    headingText: L10n.of(context)!.status,
                     listDataText: statusPillListData,
                   ),
                   CommonHeading(
-                    headingText: 'Price',
+                    headingText: L10n.of(context)!.price,
                     hasButton: false,
                     collapseBtn: true,
                     child: Container(
@@ -180,7 +180,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                       top: 12.h,
                                       right: 20.w,
                                     ),
-                                    hintText: "Min",
+                                    hintText:L10n.of(context)!.min,
                                     hintStyle: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
@@ -204,7 +204,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 margin:
                                     EdgeInsets.only(left: 10.w, right: 11.w),
                                 child: Text(
-                                  'To',
+                                  L10n.of(context)!.to,
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w400,
@@ -229,7 +229,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                       top: 12.h,
                                       right: 20.w,
                                     ),
-                                    hintText: "Max",
+                                    hintText: L10n.of(context)!.max,
                                     hintStyle: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
@@ -256,11 +256,11 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                   ),
                   BitNetFilterPillList(
-                    headingText: 'Sort By',
+                    headingText: L10n.of(context)!.sortBy,
                     listDataText: sortByPillListData,
                   ),
                   CommonHeading(
-                    headingText: 'Collections',
+                    headingText: L10n.of(context)!.collections,
                     hasButton: false,
                     collapseBtn: true,
                     child: Column(
@@ -291,7 +291,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                 top: 12.h,
                                 right: 20.w,
                               ),
-                              hintText: "Filter",
+                              hintText: L10n.of(context)!.filter,
                               hintStyle: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,
@@ -332,7 +332,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                   ),
                   CommonHeading(
-                    headingText: 'Chains',
+                    headingText: L10n.of(context)!.chains,
                     hasButton: false,
                     collapseBtn: true,
                     child: Container(
@@ -354,11 +354,11 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                   ),
                   BitNetFilterPillList(
-                    headingText: 'Categories',
+                    headingText: L10n.of(context)!.categories,
                     listDataText: categoriesLabelListData,
                   ),
                   CommonHeading(
-                    headingText: 'On Sale In',
+                    headingText: L10n.of(context)!.onSaleIn,
                     hasButton: false,
                     collapseBtn: true,
                     child: Column(
@@ -389,7 +389,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                   bottom: 12.h,
                                   top: 12.h,
                                   right: 20.w),
-                              hintText: "Filter",
+                              hintText: L10n.of(context)! .filter,
                               hintStyle: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,

@@ -34,7 +34,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Bitcoin versenden",
+            Text("Send Bitcoin",
                 style: Theme.of(context).textTheme.titleLarge),
           ],
         ),

@@ -5,6 +5,7 @@ import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class ListScreen extends StatefulWidget {
   const ListScreen({Key? key}) : super(key: key);
@@ -19,15 +20,17 @@ class _ListScreenState extends State<ListScreen> {
     final Size size = MediaQuery.of(context).size;
     return bitnetScaffold(
       context: context,
-      appBar: bitnetAppBar(context: context,onTap:()=>context.pop(),text: 'Hot New Items'),
+      appBar: bitnetAppBar(
+          context: context,
+          onTap: () => context.pop(),
+          text: L10n.of(context)!.hotNewItems),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(bottom: 20.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GridView.builder(
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 childAspectRatio: 4 / 5.9,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
@@ -39,7 +42,7 @@ class _ListScreenState extends State<ListScreen> {
               itemCount: gridListData.length,
               itemBuilder: (BuildContext context, int index) {
                 return NftProductSlider(
-                    encodedData: gridListData[index].nftImage, 
+                    encodedData: gridListData[index].nftImage,
                     nftName: gridListData[index].nftName,
                     nftMainName: gridListData[index].nftMainName,
                     cryptoText: gridListData[index].cryptoText,

@@ -79,7 +79,6 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
                     size: AppTheme.iconSize * 0.75,
                   ),
                   onTap: () {
-                    print("Share button pressed");
                   },
                 ),
                 Padding(

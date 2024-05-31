@@ -9,20 +9,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 class QrButton extends StatelessWidget {
   const QrButton({super.key});
 
   void onQRButtonPressed(BuildContext context) {
     final controller = Get.find<ProfileController>();
     BitNetBottomSheet(
-      width: double.infinity,
+        width: double.infinity,
         context: context,
-
         child: bitnetScaffold(
           context: context,
           appBar: bitnetAppBar(
             context: context,
-            text: 'QR Code',
+            text: L10n.of(context)!.qrCode,
           ),
           body: Center(
             child: RepaintBoundary(

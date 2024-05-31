@@ -9,6 +9,7 @@ import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class LockScreen extends StatefulWidget {
   const LockScreen({Key? key}) : super(key: key);
@@ -33,7 +34,7 @@ class LockScreenState extends State<LockScreen> {
           context: context,
           appBar: bitnetAppBar(
             context: context,
-            text: "Please enter your Pin",
+            text: L10n.of(context)!.pleaseEnterYourPin,
           ),
           body: Container(
             decoration: BoxDecoration(

@@ -70,7 +70,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         context: context,
-        text: "Bitcoin empfangen",
+        text: "Receive Bitcoin",
         onTap: () {
           context.go('/feed');
         },

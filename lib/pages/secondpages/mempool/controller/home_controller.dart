@@ -69,7 +69,7 @@ class HomeController extends BaseController {
     await callApiWithDelay();
     await txDetailsConfirmedF(bitcoinData.first.id!);
     await txDetailsF(bitcoinData.first.id!, 0);
-   }
+  }
 
   String formatAmount(String price) {
     String priceInText = "";
@@ -288,7 +288,11 @@ class HomeController extends BaseController {
         response.data.length;
         bitcoinData.clear();
         for (int i = 0; i < response.data.length; i++) {
-          bitcoinData.add(BlockData.fromJson(response.data[i]));
+          bitcoinData.add(
+            BlockData.fromJson(
+              response.data[i],
+            ),
+          );
         }
         dollarRate();
         isLoading.value = false;
@@ -319,10 +323,8 @@ class HomeController extends BaseController {
     } on DioException {
       isLoading.value = false;
       update();
-    } catch (e, tr) {
-      print(tr);
-      print(e);
-      isLoading.value = false;
+    } catch (e ) { 
+      isLoading.value = false;  
       update();
     }
     loadingDetail.value = false;

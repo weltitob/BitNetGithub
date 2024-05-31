@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:number_paginator/number_paginator.dart';
 
 class BlockTransactions extends StatefulWidget {
@@ -19,7 +20,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
   final controller = Get.put(HomeController());
   final NumberPaginatorController _controller = NumberPaginatorController();
   int _currentPage = 0;
-  String selectedOption = 'Transaction';
+  String selectedOption = L10n.of(Get.context!)!.transactions;
   final TextFieldController = TextEditingController();
   handleSearch(String query) {}
 
@@ -27,7 +28,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
   Widget build(BuildContext context) {
     return bitnetScaffold(
       appBar: bitnetAppBar(
-        text: 'Block Transactions',
+        text: L10n.of(context)!.blockTransaction,
         context: context,
         onTap: () {
           Navigator.of(context).pop();
@@ -104,7 +105,8 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                       await Clipboard.setData(ClipboardData(
                                         text: controller.txDetails[index].txid,
                                       ));
-                                      Get.snackbar('Copied',
+                                      Get.snackbar(
+                                          L10n.of(context)!.copiedToClipboard,
                                           controller.txDetails[index].txid);
                                     },
                                     child: Row(
@@ -191,7 +193,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                               child: Text(
                                                 controller.txDetails[index].vin
                                                         .first.isCoinbase
-                                                    ? 'Coinbase (Newly Generated Coins)\n'
+                                                    ? '${L10n.of(context)!.coinBase}'
                                                         '${controller.hex2ascii(controller.txDetails[index].vin.first.scriptsig.substring(0, 50))}'
                                                     : '',
                                                 style: const TextStyle(

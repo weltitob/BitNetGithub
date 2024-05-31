@@ -7,6 +7,7 @@ import "package:bitnet/components/container/futurelottie.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:lottie/lottie.dart";
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class InfoSocialRecoveryScreen extends StatefulWidget {
   const InfoSocialRecoveryScreen({super.key});
@@ -25,7 +26,8 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
   void initState() {
     super.initState();
     key_composition = loadComposition('assets/lottiefiles/btc_key.json');
-    friends_composition = loadComposition('assets/lottiefiles/three_friends.json');
+    friends_composition =
+        loadComposition('assets/lottiefiles/three_friends.json');
     time_composition =
         loadComposition('assets/lottiefiles/time_animation.json');
   }
@@ -49,7 +51,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
-          text: "Social Recovery Info",
+          text: L10n.of(context)!.socialRecoveryInfo,
           context: context,
           onTap: () {
             Navigator.of(context).pop();
@@ -59,15 +61,15 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
           ],
         ),
         body: Padding(
-          padding:   EdgeInsets.symmetric(
-              horizontal: AppTheme.cardPadding * 1.5.w),
+          padding:
+              EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5.w),
           child: ListView(
             children: [
               SizedBox(
                 height: AppTheme.cardPadding * 1.5.h,
               ),
               Text(
-                "Step 1: Activate social recovery",
+                L10n.of(context)!.stepOneSocialRecovery,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
@@ -79,7 +81,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      "Social recovery needs to activated in Settings by each user manually. You have to choose 3 friends whom you can meet in person and trust.",
+                      L10n.of(context)!.socialRecoveryTrustSettings,
                       textAlign: TextAlign.left,
                       maxLines: 50,
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -101,7 +103,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 height: AppTheme.cardPadding * 2.h,
               ),
               Text(
-                "Step 2. Contact each of your friends",
+                L10n.of(context)!.recoveryStep2,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
@@ -121,7 +123,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      "Ask your friends to open the app and navigate to Profile > Settings > Security > Social Recovery for friends.",
+                      L10n.of(context)!.askFriendsForRecovery,
                       textAlign: TextAlign.left,
                       maxLines: 50,
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -133,7 +135,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 height: AppTheme.cardPadding * 2.25.h,
               ),
               Text(
-                "Step 3: Wait 24 hours and then login",
+                L10n.of(context)!.recoveryStepThree,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
@@ -145,7 +147,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      "To increase security, the recovered user will get contacted, if there is no awnser after 24 hours your account will be freed.",
+                      L10n.of(context)!.recoverySecurityIncrease,
                       textAlign: TextAlign.left,
                       maxLines: 50,
                       style: Theme.of(context).textTheme.bodyMedium,

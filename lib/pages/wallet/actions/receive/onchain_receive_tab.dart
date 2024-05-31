@@ -7,6 +7,7 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -37,7 +38,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                       text: controller.qrCodeDataStringOnchain.value));
                   // Display a snackbar to indicate that the wallet address has been copied
                   showOverlay(
-                      context, "Wallet-Adresse in Zwischenablage kopiert");
+                      context, "Wallet address copied to clipboard");
                 },
                 child: SizedBox(
                   child: Center(
@@ -77,7 +78,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                           LongButtonWidget(
                             customHeight: AppTheme.cardPadding * 2,
                             customWidth: AppTheme.cardPadding * 5,
-                            title: 'Share',
+                            title: L10n.of(context)!.share,
                             leadingIcon: Icon(Icons.share_rounded),
                             onTap: () {
                               // Share the wallet address
@@ -103,7 +104,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                     text: controller.qrCodeDataStringOnchain.value));
                 // Display a snackbar to indicate that the wallet address has been copied
                 showOverlay(
-                    context, "Wallet-Adresse in Zwischenablage kopiert");
+                    context, "Wallet address copied to clipboard");
               },
               text: 'Invoice',
               trailing: Obx(() {

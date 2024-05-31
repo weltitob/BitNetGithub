@@ -223,8 +223,7 @@ class _BitcoinCardInformationScreenState
                                           int value = controller
                                               .calculateAddressValue(controller
                                                   .subTransactionModel[index]);
-                                          print('difference $value');
-                                          if (controller
+                                           if (controller
                                                   .subTransactionModel[index]
                                                   .status!
                                                   .blockTime !=

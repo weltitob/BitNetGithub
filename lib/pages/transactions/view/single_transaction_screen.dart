@@ -1,9 +1,3 @@
-//single transaction
-
-// ignore_for_file: prefer_interpolation_to_compose_strings, prefer_const_constructors
-
-import 'dart:math';
-import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
@@ -16,7 +10,7 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
@@ -39,7 +33,6 @@ class SingleTransactionScreen extends StatelessWidget {
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
-    print('cooin ${coin.coin}');
     currency = currency ?? "USD";
 
     return bitnetScaffold(
@@ -59,7 +52,6 @@ class SingleTransactionScreen extends StatelessWidget {
           Navigator.pop(context);
           controller.homeController.isRbfTransaction.value = false;
           // controller.txID = '';
-          print('arrow pop');
         },
       ),
       body: PopScope(
@@ -124,7 +116,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                                       .replacedTx.value,
                                                 ));
                                                 Get.snackbar(
-                                                    'Copied', controller.txID!);
+                                                    L10n.of(context)
+                                                        .copiedToClipboard,
+                                                    controller.txID!);
                                               },
                                               child: Row(
                                                 children: [
@@ -204,7 +198,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     ),
                                                     SearchFieldWidget(
                                                       // controller: searchCtrl,
-                                                      hintText: 'Search',
+                                                      hintText: L10n.of(context)
+                                                          .search,
                                                       handleSearch: (v) {
                                                         setState(() {
                                                           inputCtrl.text = v;
@@ -588,7 +583,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     ),
                                                     SearchFieldWidget(
                                                       // controller: searchCtrl,
-                                                      hintText: 'Search',
+                                                      hintText: L10n.of(context)
+                                                          .search,
                                                       handleSearch: (v) {
                                                         setState(() {
                                                           outputCtrl.text = v;
@@ -927,12 +923,14 @@ class SingleTransactionScreen extends StatelessWidget {
                                       ],
                                     ),
                               SizedBox(height: AppTheme.elementSpacing),
-                              Obx(
-                              () {
-                                  return Text( controllerHome.txConfirmed.value ? '${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}' : '${controller.timeST.value}',
-                                      style: Theme.of(context).textTheme.bodyLarge);
-                                }
-                              ),
+                              Obx(() {
+                                return Text(
+                                    controllerHome.txConfirmed.value
+                                        ? '${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
+                                        : '${controller.timeST.value}',
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge);
+                              }),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: AppTheme.cardPadding * 2),
@@ -953,7 +951,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                             text: controller.txID!,
                                           ));
                                           Get.snackbar(
-                                              'Copied', controller.txID!);
+                                              L10n.of(context)
+                                                  .copiedToClipboard,
+                                              controller.txID!);
                                         },
                                         icon: const Icon(Icons.copy))
                                   ],
@@ -966,7 +966,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                 child: MyDivider(),
                               ),
                               BitNetListTile(
-                                text: 'Status',
+                                text: L10n.of(context).status,
                                 trailing: Container(
                                   height: AppTheme.cardPadding * 1.5,
                                   padding: const EdgeInsets.symmetric(
@@ -1006,7 +1006,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                     height: AppTheme.cardPadding * 1.5,
                                   )),
                               BitNetListTile(
-                                  text: 'Time',
+                                  text:L10n.of(context).time,
                                   trailing: controllerHome.txConfirmed.value
                                       ? Container(
                                           child: Column(

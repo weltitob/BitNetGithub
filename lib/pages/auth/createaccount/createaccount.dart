@@ -1,14 +1,11 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/models/matrix_models/identityprovider_matrix.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/pages/routetrees/matrix.dart';
-import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-
 
 class CreateAccount extends StatefulWidget {
   CreateAccount({
@@ -50,16 +47,10 @@ class CreateAccountController extends State<CreateAccount> {
   final TextEditingController controllerUsername = TextEditingController();
   bool isLoading = false;
 
-  
-
   bool isDefaultPlatform =
       (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
 
-
   void login() => context.go('/authhome/login');
-
-
- 
 
   createAccountPressed() async {
     LoggerService logger = Get.find();
@@ -74,7 +65,6 @@ class CreateAccountController extends State<CreateAccount> {
       setState(() {
         errorMessage = L10n.of(context)!.pleaseChooseAUsername;
       });
-      print("Failed signup Matrix");
       throw Exception(L10n.of(context)!.pleaseChooseAUsername);
     }
 
@@ -101,7 +91,7 @@ class CreateAccountController extends State<CreateAccount> {
         //await createUserLocal();
       } else {
         logger.e("Username already exists.");
-        errorMessage = "This username is already taken.";
+        errorMessage = L10n.of(context)!.usernameTaken;
         // The username already exists.
       }
     } catch (e) {

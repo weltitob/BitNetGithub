@@ -5,6 +5,7 @@ import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class FavouriteScreen extends StatefulWidget {
   const FavouriteScreen({Key? key}) : super(key: key);
@@ -63,7 +64,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     margin: EdgeInsets.only(bottom: 15.h),
                     width: size.width,
                     child: Text(
-                      'Favourite',
+                      L10n.of(context)!.favorite,
                       style: TextStyle(
                         fontSize: 28.sp,
                         fontWeight: FontWeight.w700,
@@ -74,7 +75,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                   Container(
                     margin: EdgeInsets.only(bottom: 30.h),
                     child: Text(
-                      'Press the Favorites button again to unfavorite',
+                      L10n.of(context)!.pressedFavorite,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,

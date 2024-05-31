@@ -14,6 +14,7 @@ import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class NftProductScreen extends StatefulWidget {
   const NftProductScreen({Key? key}) : super(key: key);
@@ -28,8 +29,10 @@ class _NftProductScreenState extends State<NftProductScreen> {
     final Size size = MediaQuery.of(context).size;
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
-      appBar: bitnetAppBar(context: context,
-      onTap: ()=>context.pop(),),
+      appBar: bitnetAppBar(
+        context: context,
+        onTap: () => context.pop(),
+      ),
       context: context,
       body: Stack(
         children: [
@@ -64,28 +67,31 @@ class _NftProductScreenState extends State<NftProductScreen> {
                           margin: EdgeInsets.only(bottom: 15.h),
                           child: Text(
                             'NFToker #2293',
-                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontSize: 28.sp,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  fontSize: 28.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
                           ),
                         ),
                         Row(
-                          children: const [
+                          children: [
                             OwnerDataText(
                               hasText: true,
                               ownerDataText: '1',
-                              ownerDataTitle: 'Owners',
+                              ownerDataTitle: L10n.of(context)!.owners,
                             ),
                             OwnerDataText(
                               hasText: true,
                               ownerDataText: '1',
-                              ownerDataTitle: 'Items total',
+                              ownerDataTitle: L10n.of(context)!.itemsTotal,
                             ),
                             OwnerDataText(
                               hasText: true,
                               ownerDataText: '1',
-                              ownerDataTitle: 'Views',
+                              ownerDataTitle: L10n.of(context)!.views,
                             ),
                           ],
                         ),
@@ -107,11 +113,14 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                 margin:
                                     EdgeInsets.only(bottom: 15.h, top: 30.h),
                                 child: Text(
-                                  'Current Price',
-                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                     fontSize: 18.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  L10n.of(context)!.currentPrice,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                 ),
                               ),
                               Row(
@@ -125,18 +134,24 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                     margin: EdgeInsets.only(left: 8.w),
                                     child: Text(
                                       '12.5',
-                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w400,
                                           ),
                                     ),
                                   ),
                                   Text(
                                     ' (\$1717.17)',
-                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w400,
-                                     ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -151,13 +166,13 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               LongButtonWidget(
                                   customWidth: 17 * 10,
                                   customHeight: 17 * 3.5,
-                                  title: "Buy Now",
+                                  title: L10n.of(context)!.buyNow,
                                   onTap: _buildBuySlidingPanel),
                               LongButtonWidget(
                                   customWidth: 17 * 10,
                                   customHeight: 17 * 3.5,
                                   buttonType: ButtonType.transparent,
-                                  title: "View Offers",
+                                  title: L10n.of(context)!.viewOffers,
                                   onTap: () {}),
                             ],
                           ),
@@ -173,11 +188,14 @@ class _NftProductScreenState extends State<NftProductScreen> {
                         Container(
                           margin: EdgeInsets.only(bottom: 15.h),
                           child: Text(
-                            'Created By',
-                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            L10n.of(context)!.createdBy,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                         ),
                         Padding(
@@ -203,19 +221,25 @@ class _NftProductScreenState extends State<NftProductScreen> {
                                       Container(
                                         margin: EdgeInsets.only(bottom: 5.w),
                                         child: Text(
-                                          'Crypto-Pills',
-                                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                          ),
+                                          L10n.of(context)!.cryptoPills,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                         ),
                                       ),
                                       Text(
                                         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w400,
-                                         ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -229,8 +253,8 @@ class _NftProductScreenState extends State<NftProductScreen> {
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: const CommonHeading(
-                      headingText: 'Price History',
+                    child: CommonHeading(
+                      headingText: L10n.of(context)!.priceHistory,
                       hasButton: false,
                       collapseBtn: true,
                       child: BarChart(),
@@ -239,7 +263,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: CommonHeading(
-                      headingText: 'Properties',
+                      headingText: L10n.of(context)!.properties,
                       hasButton: false,
                       collapseBtn: true,
                       child: Container(
@@ -270,7 +294,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: CommonHeading(
-                      headingText: 'About Crypto-Pills',
+                      headingText: L10n.of(context)!.aboutCryptoPills,
                       hasButton: false,
                       collapseBtn: true,
                       child: Container(
@@ -280,65 +304,75 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             Container(
                               margin: EdgeInsets.only(bottom: 15.h),
                               child: Text(
-                                'Guardians of the Metaverse are a collection of 10,000 unique 3D hero-like avatars living as NFTs on the blockchain.',
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w400,
-                                 ),
+                                L10n.of(context)!.propertiesDescription,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                               ),
                             ),
                             Container(
                               margin: EdgeInsets.only(bottom: 15.h),
                               child: Text(
-                                'Guardians are stored as ERC721 tokens on the Ethereum blockchain. Owners can download their Guardians in .png format, they can also request a high resolution image of them, with 3D models coming soon for everyone.',
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w400,
-                                 ),
+                                L10n.of(context)!.guardiansStored,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                               ),
                             ),
                             Text(
-                              'Not only are Guardians dope designed character-collectibles, they also serve as your ticket to a world of exclusive content. From developing new collections to fill our universe, to metaverse avatars, we have bundles of awesome features in the pipeline.',
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                               ),
+                              L10n.of(context)!.guardiansDesigned,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                             ),
                           ],
                         ),
                       ),
                     ),
                   ),
-                  const CommonHeading(
-                    headingText: 'Chain Info',
+                  CommonHeading(
+                    headingText: L10n.of(context)!.chainInfo,
                     hasButton: false,
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     margin: EdgeInsets.only(bottom: 15.h),
                     child: Column(
-                      children: const [
+                      children: [
                         ChaunInfo(
-                          chainHeading: 'Contract address',
+                          chainHeading: L10n.of(context)!.contractAddress,
                           chainPeragraph:
                               '0x495f947276749ce646f68ac8c24842004512345478',
                           hasBtn: true,
                         ),
                         ChaunInfo(
-                          chainHeading: 'Token ID',
+                          chainHeading: L10n.of(context)!.tokenId,
                           chainPeragraph:
                               '8425989087892580822781084918495798454',
                           hasBtn: true,
                         ),
                         ChaunInfo(
-                          chainHeading: 'Blockchain',
-                          chainPeragraph: 'ETHEREUM',
+                          chainHeading:
+                              L10n.of(context)!.blockChain.toUpperCase(),
+                          chainPeragraph: L10n.of(context)!.ethereum,
                         ),
                       ],
                     ),
                   ),
-                  const CommonHeading(
-                    headingText: 'Open On Etherscan',
+                  CommonHeading(
+                    headingText: L10n.of(context)!.openOnEtherscan,
                     hasButton: false,
                   ),
                 ],
@@ -372,7 +406,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Buy",
+                    Text(L10n.of(context)!.buy,
                         style: Theme.of(context)
                             .textTheme
                             .headlineMedium!
@@ -391,7 +425,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Subtotal",
+                                L10n.of(context)!.subTotal,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -411,7 +445,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Network Fee",
+                                L10n.of(context)!.networkFee,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -431,7 +465,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Market Fee",
+                                L10n.of(context)!.marketFee,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -451,7 +485,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Total Price",
+                                L10n.of(context)!.totalPrice,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -476,7 +510,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           LongButtonWidget(
-                            title: "Cancel",
+                            title:  L10n.of(context)!.cancel,
                             onTap: () {
                               Navigator.pop(context);
                             },
@@ -485,7 +519,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             customHeight: 15 * 2.5,
                           ),
                           LongButtonWidget(
-                            title: "Buy Now",
+                            title:  L10n.of(context)!.buyNow,
                             onTap: () {},
                             customWidth: 15 * 10,
                             customHeight: 15 * 2.5,

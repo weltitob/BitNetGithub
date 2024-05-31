@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class UserInformation extends StatelessWidget {
   const UserInformation({super.key});
@@ -25,7 +26,7 @@ class UserInformation extends StatelessWidget {
                 border: InputBorder.none,
                 errorText: controller.displayNameValid.value
                     ? null
-                    : 'Bad characters', // Add this line
+                    : L10n.of(context)!.badCharacters, // Add this line
               ),
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: AppTheme.white70,
@@ -44,7 +45,7 @@ class UserInformation extends StatelessWidget {
                   border: InputBorder.none,
                   errorText: controller.displayNameValid.value
                       ? null
-                      : "Couldn't change username"),
+                      : L10n.of(context)!.coudntChangeUsername),
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall!

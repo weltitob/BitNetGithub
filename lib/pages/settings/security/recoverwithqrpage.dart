@@ -34,9 +34,7 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
     super.dispose();
   }
 
-  getPrivateKey() async {
-    print("Trying to read data from secure storage(QR)...");
-    print(myuserdid);
+  getPrivateKey() async { 
     PrivateData privateuserdata = await getPrivateData(myuserdid);
 
 

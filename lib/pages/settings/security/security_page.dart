@@ -33,7 +33,6 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       setState(() {});
     } else {
       isVerified = false;
-      print("Biometrics unsuccessfull");
     }
   }
 

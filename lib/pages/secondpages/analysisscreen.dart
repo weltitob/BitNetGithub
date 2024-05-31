@@ -5,6 +5,8 @@ import 'package:bitnet/pages/secondpages/whalebehaviour.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 
 
@@ -27,7 +29,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         context: context,
-        text: "Analysis",
+        text: L10n.of(context)!.analysis,
       ),
       body: Column(
         children: [
@@ -39,7 +41,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                 Container(
                   width: 300,
                   child: Text(
-                    "The stock is covered by 67 analysts. The average assesment is:",
+                    L10n.of(context)!.analysisStockCovered,
                     style: TextStyle(
                       color: Colors.grey[400],
                       fontWeight: FontWeight.w500,
@@ -114,8 +116,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     padding: EdgeInsets.only(
                       top: 5,
                     )),
-                ChildbuildAnalysis2("Highest assesment:", 1200.28),
-                ChildbuildAnalysis2("Lowest assesment:", 321.1),
+                ChildbuildAnalysis2("${L10n.of(context)!.highestAssesment}", 1200.28),
+                ChildbuildAnalysis2("${L10n.of(context)!.lowestAssesment}", 321.1),
                 Padding(
                   padding: EdgeInsets.only(
                     top: 5,
@@ -229,12 +231,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             height: 110,
             width: 110,
             child: Container(
-                child: SfCircularChart(margin: const EdgeInsets.all(0),
-                    // legend: Legend(
-                    //     isVisible: true,
-                    //     position: LegendPosition.right,
-                    //     textStyle: TextStyle(
-                    //         color: Colors.white, fontWeight: FontWeight.w500)),
+                child: SfCircularChart(margin: const EdgeInsets.all(0), 
                     series: <CircularSeries>[
                       DoughnutSeries<PieChartData, String>(
                           dataSource: getPieData(),

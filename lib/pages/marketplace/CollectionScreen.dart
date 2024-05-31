@@ -15,9 +15,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:popover/popover.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class CollectionScreen extends StatefulWidget {
   final GoRouterState? routerState;
@@ -30,7 +33,7 @@ class CollectionScreen extends StatefulWidget {
 class _CollectionScreenState extends State<CollectionScreen> {
   final inscriptions = [2424242, 3434343];
   var search_filter = 1;
-  var sorting_filter = "Recently Listed";
+  var sorting_filter = L10n.of(Get.context!)!.recentlyListed;
   var sortedGridList = gridListData;
   var selected_products = [];
   var showCartBottomSheet = false;
@@ -106,7 +109,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           context, route.kOwnerDetailScreenRoute);
                     },
                     child: Text(
-                      name != null ? name : "Unknown",
+                      name != null ? name : L10n.of(context)!.unknown,
                       textAlign: TextAlign.center,
                       style:Theme.of(context).textTheme.bodyLarge!.copyWith(
                         decoration: TextDecoration.underline,
@@ -158,9 +161,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           Navigator.pushNamed(
                               context, route.kActivityScreenRoute);
                         },
-                        child: const OwnerDataText(
+                        child:   OwnerDataText(
                           ownerDataImg: activityIcon,
-                          ownerDataTitle: 'Activity',
+                          ownerDataTitle: L10n.of(context)!.activity,
                           hasImage: true,
                         ),
                       ),
@@ -179,7 +182,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Floor Price",
+                            L10n.of(context)!.floorPrice,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
@@ -210,7 +213,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Sales",
+                            L10n.of(context)!.sales,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
@@ -265,7 +268,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Total Volume",
+                            L10n.of(context)!.totalVolume,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
@@ -296,7 +299,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Listed",
+                            L10n.of(context)!.listed,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
@@ -320,7 +323,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Supply",
+                            L10n.of(context)!.supply,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
@@ -344,7 +347,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Owners",
+                            L10n.of(context)!.owners,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
@@ -370,7 +373,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                       LongButtonWidget(
                         customWidth: 10 * 8,
                         customHeight: 10 * 2.5,
-                        title: "For Sale",
+                        title: L10n.of(context)!.forSale,
                         titleStyle: Theme.of(context).textTheme.bodySmall,
                         onTap: () {
                           setState(() {
@@ -383,7 +386,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             : ButtonType.transparent,
                       ),
                       LongButtonWidget(
-                        title: "Show All",
+                        title: L10n.of(context)!.showAll,
                         customWidth: 10 * 8,
                         customHeight: 10 * 2.5,
                         onTap: () {
@@ -397,7 +400,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             : ButtonType.transparent,
                       ),
                       LongButtonWidget(
-                        title: "Sold",
+                        title: L10n.of(context)!.sold,
                         customWidth: 10 * 8,
                         customHeight: 10 * 2.5,
                         onTap: () {
@@ -508,7 +511,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             child: Row(
                               children: [
                                 Icon(Icons.shopping_cart_outlined),
-                                Text("Cart (${selected_products.length})",
+                                Text("${L10n.of(context)!.cart}(${selected_products.length})",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineMedium),
@@ -519,7 +522,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: TextButton(
-                              child: Text("Clear All",
+                              child: Text(L10n.of(context)!.clearAll,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
@@ -548,22 +551,22 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text("Subtotal"), Text("0.024")],
+                              children: [Text(L10n.of(context)!.subTotal), Text("0.024")],
                             ),
                             SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text("Network Fee"), Text("0.024")],
+                              children: [Text(L10n.of(context)!.networkFee), Text("0.024")],
                             ),
                             SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text("Market Fee"), Text("0.024")],
+                              children: [Text(L10n.of(context)!.marketFee), Text("0.024")],
                             ),
                             SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text("Total Price"), Text("0.024")],
+                              children: [Text(L10n.of(context)!.totalPrice), Text("0.024")],
                             ),
                             SizedBox(height: 10),
                           ],
@@ -571,7 +574,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: LongButtonWidget(title: "Buy Now", onTap: () {}),
+                        child: LongButtonWidget(title: L10n.of(context)!.buyNow, onTap: () {}),
                       )
                     ],
                   ),

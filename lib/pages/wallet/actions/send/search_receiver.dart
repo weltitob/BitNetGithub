@@ -36,7 +36,7 @@ class SearchReceiver extends GetWidget<SendsController> {
               height: AppTheme.cardPadding * 2.5,
             ),
             SearchFieldWidget(
-              hintText: "Empfänger suchen",
+              hintText: "Search for recipients",
               isSearchEnabled: true,
               handleSearch: controller.handleSearch,
             ),
@@ -61,9 +61,10 @@ class SearchReceiver extends GetWidget<SendsController> {
                     margin: EdgeInsets.only(top: AppTheme.elementSpacing),
                     child: LongButtonWidget(
                       //customWidth: AppTheme.cardPadding * 7,
-                      onTap: ()async {
-controller.processParameters(context, (await context.push("/qrscanner")) as String?);
-                      } ,
+                      onTap: () async {
+                        controller.processParameters(context,
+                            (await context.push("/qrscanner")) as String?);
+                      },
                       title: 'Scan QR',
                     ),
                   ),

@@ -23,10 +23,8 @@ class _WalletState extends State<Wallet> {
   @override
   void initState() {
     super.initState();
-    // TODO: implement initState
     subscribeInvoicesStream().listen((restResponse) {
       LoggerService logger = Get.find();
-      logger.i("Received data from Invoice-stream: $restResponse");
       ReceivedInvoice receivedInvoice =
           ReceivedInvoice.fromJson(restResponse.data);
       if (receivedInvoice.settled == true) {

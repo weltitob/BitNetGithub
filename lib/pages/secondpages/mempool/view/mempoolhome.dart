@@ -18,8 +18,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class MempoolHome extends StatefulWidget {
   const MempoolHome({Key? key}) : super(key: key);
@@ -72,7 +75,7 @@ class _MempoolHomeState extends State<MempoolHome> {
           extendBodyBehindAppBar: true,
           context: context,
           appBar: bitnetAppBar(
-            text: 'Blockchain',
+            text: L10n.of(context)!.blockChain,
             onTap: () {
               controller.timer.cancel();
               channel.sink.close();
@@ -116,7 +119,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Blockchain",
+                                  L10n.of(context)!.blockChain,
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 Row(
@@ -247,22 +250,23 @@ class _MempoolHomeState extends State<MempoolHome> {
                                   height: AppTheme.cardPadding * 6,
                                   width: AppTheme.elementSpacing / 3,
                                 ),
-                                Obx(() {
-                                  return controller.isLoading.isTrue
-                                      ? const Center(
-                                          child: CircularProgressIndicator(),
-                                        )
-                                      : controller.bitcoinData.isEmpty
-                                          ? const Text(
-                                              'Something went wrong!',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 22),
-                                            )
-                                          : SizedBox(
-                                              height: 255,
-                                              child: ListView.builder(
+                                Obx(
+                                  () {
+                                    return controller.isLoading.isTrue
+                                        ? const Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : controller.bitcoinData.isEmpty
+                                            ? const Text(
+                                                'Something went wrong!',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 22),
+                                              )
+                                            : SizedBox(
+                                                height: 255,
+                                                child: ListView.builder(
                                                   shrinkWrap: true,
                                                   physics:
                                                       const NeverScrollableScrollPhysics(),
@@ -313,13 +317,17 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                             .bitcoinData[index]
                                                             .id,
                                                         size: size,
-                                                        time: controller.formatTimeAgo(
-                                                            DateTime.fromMillisecondsSinceEpoch(
-                                                                (controller
-                                                                        .bitcoinData[
-                                                                            index]
-                                                                        .timestamp! *
-                                                                    1000))),
+                                                        time: controller
+                                                            .formatTimeAgo(
+                                                          DateTime
+                                                              .fromMillisecondsSinceEpoch(
+                                                            (controller
+                                                                    .bitcoinData[
+                                                                        index]
+                                                                    .timestamp! *
+                                                                1000),
+                                                          ),
+                                                        ),
                                                         index: controller
                                                                     .selectedIndex ==
                                                                 index
@@ -328,9 +336,11 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                         singleTx: false,
                                                       ),
                                                     );
-                                                  }),
-                                            );
-                                }),
+                                                  },
+                                                ),
+                                              );
+                                  },
+                                ),
                               ],
                             ),
                           ),
@@ -355,8 +365,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                 Text(
                                                   controller.selectedIndexData ==
                                                           0
-                                                      ? 'Next Block'
-                                                      : 'Mempool block ${controller.selectedIndexData + 1}',
+                                                      ? L10n.of(context)!.nextBlock
+                                                      : '${L10n.of(context)!.mempoolBlock}${controller.selectedIndexData + 1}',
                                                   textAlign: TextAlign.left,
                                                   style: Theme.of(context)
                                                       .textTheme
@@ -465,7 +475,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                       Row(
                                                         children: [
                                                           Text(
-                                                            'Block',
+                                                            L10n.of(context)!.block,
                                                             textAlign:
                                                                 TextAlign.left,
                                                             style: Theme.of(
@@ -497,7 +507,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                           .id));
                                                               showOverlay(
                                                                   context,
-                                                                  "Copied to Clipboard");
+                                                                  L10n.of(context)!
+                                                                      .copiedToClipboard);
                                                             },
                                                             child: Row(
                                                               children: [
@@ -611,7 +622,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                       Icons
                                                                           .timelapse),
                                                                   text:
-                                                                      'Mined at',
+                                                                      L10n.of(context)!.minedAt,
                                                                   trailing:
                                                                       Container(
                                                                     child:
@@ -623,7 +634,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                             style:
                                                                                 Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
                                                                         Text(
-                                                                            "time ago..."),
+                                                                            "${L10n.of(context)!.timeAgo}"),
                                                                       ],
                                                                     ),
                                                                   ),
@@ -632,7 +643,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   leading: Icon(
                                                                       FontAwesomeIcons
                                                                           .truckPickup),
-                                                                  text: 'Miner',
+                                                                  text: L10n.of(context)!.mined,
                                                                   trailing:
                                                                       Container(
                                                                     child:
@@ -665,7 +676,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                       FontAwesomeIcons
                                                                           .bitcoin),
                                                                   text:
-                                                                      'Miner Reward (Subsidy + fees)',
+                                                                      L10n.of(context)!.minerRewardAndFees,
                                                                   trailing:
                                                                       Container(
                                                                     child:
@@ -777,7 +788,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.only(left: AppTheme.cardPadding),
                   child: Text(
-                    "Transaction fees:",
+                    "${L10n.of(context)!.transactionFees}:",
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
@@ -807,21 +818,14 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           vertical:
                                               AppTheme.elementSpacing / 3),
                                       child: Text(
-                                        'Low',
+                                        L10n.of(context)!.low,
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleMedium,
                                       ),
                                     ),
                                   ),
-                                  // SizedBox(
-                                  //   height: AppTheme.elementSpacing,
-                                  // ),
-                                  // Text(
-                                  //   '${controller.fees?.hourFee} sat/vB' ?? '',
-                                  //   maxLines: 1,
-                                  //   overflow: TextOverflow.ellipsis,
-                                  // ),
+                                  
                                   SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
@@ -859,22 +863,13 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           vertical:
                                               AppTheme.elementSpacing / 3),
                                       child: Text(
-                                        'Medium',
+                                        L10n.of(context)!.medium,
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleMedium,
                                       ),
                                     ),
-                                  ),
-                                  // SizedBox(
-                                  //   height: AppTheme.elementSpacing,
-                                  // ),
-                                  // Text(
-                                  //   '${controller.fees?.halfHourFee} sat/vB' ??
-                                  //       '',
-                                  //   maxLines: 1,
-                                  //   overflow: TextOverflow.ellipsis,
-                                  // ),
+                                  ), 
                                   SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
@@ -909,22 +904,14 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           vertical:
                                               AppTheme.elementSpacing / 3),
                                       child: Text(
-                                        'High',
+                                        L10n.of(context)!.high,
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleMedium,
                                       ),
                                     ),
                                   ),
-                                  // SizedBox(
-                                  //   height: AppTheme.elementSpacing,
-                                  // ),
-                                  // Text(
-                                  //   '${controller.highPriority.value} sat/vB' ??
-                                  //       '',
-                                  //   maxLines: 1,
-                                  //   overflow: TextOverflow.ellipsis,
-                                  // ),
+                                  
                                   SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
@@ -974,7 +961,7 @@ class _MempoolHomeState extends State<MempoolHome> {
         alignment: Alignment.centerLeft,
         margin: const EdgeInsets.only(left: AppTheme.cardPadding),
         child: Text(
-          "Difficulty Adjustment",
+          L10n.of(context)!.difficultyAdjustment,
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
@@ -1062,7 +1049,7 @@ class _MempoolHomeState extends State<MempoolHome> {
         Row(
           children: [
             Text(
-              'Health',
+              L10n.of(context)!.health,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             SizedBox(
@@ -1121,7 +1108,7 @@ class _MempoolHomeState extends State<MempoolHome> {
         Row(
           children: [
             Text(
-              'Block Size',
+              L10n.of(context)!.blockSize,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             SizedBox(
@@ -1218,7 +1205,7 @@ class _MempoolHomeState extends State<MempoolHome> {
         Row(
           children: [
             Text(
-              'Block Size',
+              L10n.of(context)!.blockSize,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             SizedBox(
@@ -1301,7 +1288,7 @@ class _MempoolHomeState extends State<MempoolHome> {
     return Column(children: [
       BitNetListTile(
         leading: Icon(FontAwesomeIcons.moneyBill),
-        text: 'Fee Distribution',
+        text: L10n.of(context)!.feeDistribution,
         trailing: Container(
           child: Row(
             children: [
@@ -1336,7 +1323,7 @@ class _MempoolHomeState extends State<MempoolHome> {
         height: AppTheme.elementSpacing,
       ),
       Text(
-          'Median: ' +
+          '${L10n.of(context)!.median}' +
               '~' +
               '\$${(((controller.txDetailsConfirmed!.extras.medianFee * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -1407,7 +1394,7 @@ class _MempoolHomeState extends State<MempoolHome> {
     return Column(children: [
       BitNetListTile(
         leading: Icon(FontAwesomeIcons.moneyBill),
-        text: 'Fee Distribution',
+        text: L10n.of(context)!.feeDistribution,
         trailing: Container(
           child: Row(
             children: [
@@ -1448,7 +1435,7 @@ class _MempoolHomeState extends State<MempoolHome> {
         height: AppTheme.elementSpacing,
       ),
       Text(
-          'Median: ' +
+          '${L10n.of(context)!.median}' +
               '~' +
               '\$${(((controller.mempoolBlocks.isEmpty ? 0 : controller.mempoolBlocks[controller.indexShowBlock.value].medianFee! * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(

@@ -3,9 +3,6 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/center_widget.dart';
-import 'package:bitnet/pages/profile/widgets/count_column.dart';
-import 'package:bitnet/pages/profile/widgets/edit_eye_left.dart';
-import 'package:bitnet/pages/profile/widgets/edit_eye_right.dart';
 import 'package:bitnet/pages/profile/widgets/profile_button.dart';
 import 'package:bitnet/pages/profile/widgets/qr_button.dart';
 import 'package:bitnet/pages/profile/widgets/setting_button.dart';
@@ -45,24 +42,6 @@ class ProfileHeader extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // controller.currentview.value == 2
-                        //     ? CountColumn(
-                        //         count: controller.followingCount == null
-                        //             ? 0
-                        //             : controller.followingCount!.value,
-                        //         label: 'Following')
-                        //     : controller.userData.showFollowers
-                        //         ? CountColumn(
-                        //             count: controller.followerCount != null
-                        //                 ? controller.followingCount!.value
-                        //                 : 0,
-                        //             label: 'Following')
-                        //         : Container(
-                        //             width: 100,
-                        //           ),
-                        // SizedBox(
-                        //   width: AppTheme.elementSpacing,
-                        // ),
                         Center(
                           child: GestureDetector(
                             onTap: controller.currentview.value != 2
@@ -115,24 +94,6 @@ class ProfileHeader extends StatelessWidget {
                             ),
                           ),
                         ),
-                        // SizedBox(
-                        //   width: AppTheme.elementSpacing,
-                        // ),
-                        // controller.currentview.value == 2
-                        //     ? CountColumn(
-                        //         count: controller.followerCount == null
-                        //             ? 0
-                        //             : controller.followerCount!.value,
-                        //         label: 'Followers')
-                        //     : controller.userData.showFollowers
-                        //         ? CountColumn(
-                        //             count: controller.followerCount == null
-                        //                 ? 0
-                        //                 : controller.followerCount!.value,
-                        //             label: 'Followers')
-                        //         : Container(
-                        //             width: 100,
-                        //           ),
                       ],
                     ),
                     const SizedBox(height: AppTheme.elementSpacing / 2),
@@ -148,8 +109,6 @@ class ProfileHeader extends StatelessWidget {
           ),
           SettingsButton(),
           QrButton(),
-          // EditEyeLeft(),
-          // EditEyeRight(),
           CenterWidget(),
         ]),
       ],

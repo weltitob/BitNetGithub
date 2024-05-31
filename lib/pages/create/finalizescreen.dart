@@ -1,8 +1,8 @@
 import 'dart:convert';
+
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/cancelpendingbatch.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/finalize.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/listbatches.dart';
-import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
@@ -15,6 +15,8 @@ import 'package:bitnet/models/tapd/batch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class BatchScreen extends StatefulWidget {
   final GoRouterState? routerState;
@@ -96,7 +98,7 @@ class _BatchScreenState extends State<BatchScreen> {
             }
           },
           context: context,
-          text: 'Finalize Posts',
+          text: L10n.of(context)!.fianlizePosts,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -138,7 +140,7 @@ class _BatchScreenState extends State<BatchScreen> {
                     customHeight: AppTheme.cardPadding * 1.75,
                     buttonType: ButtonType.transparent,
                     leadingIcon: Icon(Icons.add_rounded),
-                    title: "Add more",
+                    title: L10n.of(context)!.addMore,
                     onTap: () {
                       if (mounted) {
                         Navigator.pop(context);
@@ -151,7 +153,7 @@ class _BatchScreenState extends State<BatchScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: AppTheme.cardPadding),
                 child: Text(
-                  'Cost Estimation',
+                  L10n.of(context)!.costEstimation,
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(),
                 ),
               ),
@@ -164,12 +166,12 @@ class _BatchScreenState extends State<BatchScreen> {
                 child: Column(
                   children: [
                     BitNetListTile(
-                      text: 'Transaction fees',
+                      text: L10n.of(context)!.transactionFees,
                       trailing: Text('0.25',
                           style: Theme.of(context).textTheme.titleMedium),
                     ),
                     BitNetListTile(
-                      text: 'BitNet usage fee',
+                      text: L10n.of(context)!.bitnetUsageFee,
                       trailing: Text('0.001',
                           style: Theme.of(context).textTheme.titleMedium),
                     ),
@@ -182,7 +184,7 @@ class _BatchScreenState extends State<BatchScreen> {
               Center(
                 child: LongButtonWidget(
                   state: isLoading ? ButtonState.loading : ButtonState.idle,
-                  title: 'Upload to Blockchain',
+                  title: L10n.of(context)!.uploadToBlockchain,
                   onTap: () {
                     finalizeBatch();
                   },
@@ -196,7 +198,7 @@ class _BatchScreenState extends State<BatchScreen> {
                   cancelBatch();
                 },
                 child: Center(
-                  child: Text("Cancel and delete"),
+                  child: Text(L10n.of(context)!.cancelDelete),
                 ),
               ),
             ],
@@ -228,7 +230,7 @@ class _BatchScreenState extends State<BatchScreen> {
       setState(() {
         isLoading = false;
       });
-      showOverlay(context, "Error finalizing batch",
+      showOverlay(context, L10n.of(context)!.errorFinalizingBatch,
           color: AppTheme.errorColor);
     }
   }

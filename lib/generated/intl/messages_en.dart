@@ -211,35 +211,51 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about": MessageLookupByLibrary.simpleMessage("About"),
+        "aboutCryptoPills":
+            MessageLookupByLibrary.simpleMessage("About Crypto-Pills"),
+        "accelerate": MessageLookupByLibrary.simpleMessage("Accelerate"),
         "accept": MessageLookupByLibrary.simpleMessage("Accept"),
         "acceptedTheInvitation": m0,
         "account": MessageLookupByLibrary.simpleMessage("Account"),
         "actions": MessageLookupByLibrary.simpleMessage("Actions"),
         "activatedEndToEndEncryption": m1,
+        "activities": MessageLookupByLibrary.simpleMessage("Activities"),
         "activity": MessageLookupByLibrary.simpleMessage("Activity"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
+        "addAMessage": MessageLookupByLibrary.simpleMessage("Add a message..."),
         "addAccount": MessageLookupByLibrary.simpleMessage("Add account"),
+        "addAttributes": MessageLookupByLibrary.simpleMessage("Add attributes"),
+        "addContent": MessageLookupByLibrary.simpleMessage("Add Content"),
         "addDescription":
             MessageLookupByLibrary.simpleMessage("Add description"),
         "addEmail": MessageLookupByLibrary.simpleMessage("Add email"),
         "addGroupDescription":
             MessageLookupByLibrary.simpleMessage("Add a group description"),
+        "addMore": MessageLookupByLibrary.simpleMessage("Add more"),
+        "addNewCard": MessageLookupByLibrary.simpleMessage("Add New Card"),
         "addToBundle": MessageLookupByLibrary.simpleMessage("Add to bundle"),
         "addToSpace": MessageLookupByLibrary.simpleMessage("Add to space"),
         "addToSpaceDescription": MessageLookupByLibrary.simpleMessage(
             "Select a space to add this chat to it."),
         "addToStory": MessageLookupByLibrary.simpleMessage("Add to story"),
         "addWidget": MessageLookupByLibrary.simpleMessage("Add widget"),
+        "address": MessageLookupByLibrary.simpleMessage("Address"),
         "admin": MessageLookupByLibrary.simpleMessage("Admin"),
+        "afterTx": MessageLookupByLibrary.simpleMessage("After "),
         "agbsImpress":
             MessageLookupByLibrary.simpleMessage("Agbs and Impressum"),
         "alias": MessageLookupByLibrary.simpleMessage("alias"),
         "all": MessageLookupByLibrary.simpleMessage("All"),
         "allChats": MessageLookupByLibrary.simpleMessage("All chats"),
+        "allItems": MessageLookupByLibrary.simpleMessage("All Items"),
         "allRooms": MessageLookupByLibrary.simpleMessage("All Group Chats"),
         "allSpaces": MessageLookupByLibrary.simpleMessage("All spaces"),
         "alreadyHaveAccount": MessageLookupByLibrary.simpleMessage(
             "You already have an registered Account?"),
+        "amount": MessageLookupByLibrary.simpleMessage("Amount"),
+        "analysis": MessageLookupByLibrary.simpleMessage("Analysis"),
+        "analysisStockCovered": MessageLookupByLibrary.simpleMessage(
+            "The stock is covered by 67 analysts. The average assesment is:"),
         "answeredTheCall": m2,
         "anyoneCanJoin":
             MessageLookupByLibrary.simpleMessage("Anyone can join"),
@@ -247,25 +263,54 @@ class MessageLookup extends MessageLookupByLibrary {
         "appearOnTop": MessageLookupByLibrary.simpleMessage("Appear on top"),
         "appearOnTopDetails": MessageLookupByLibrary.simpleMessage(
             "Allows the app to appear on top (not needed if you already have Fluffychat setup as a calling account)"),
+        "apply": MessageLookupByLibrary.simpleMessage("Apply"),
         "archive": MessageLookupByLibrary.simpleMessage("Archive"),
         "areGuestsAllowedToJoin": MessageLookupByLibrary.simpleMessage(
             "Are guest users allowed to join"),
         "areYouSure": MessageLookupByLibrary.simpleMessage("Are you sure?"),
         "areYouSureYouWantToLogout": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to log out?"),
+        "art": MessageLookupByLibrary.simpleMessage("Art"),
+        "askFriendsForRecovery": MessageLookupByLibrary.simpleMessage(
+            "Ask your friends to open the app and navigate to Profile > Settings > Security > Social Recovery for friends."),
         "askSSSSSign": MessageLookupByLibrary.simpleMessage(
             "To be able to sign the other person, please enter your secure store passphrase or recovery key."),
         "askVerificationRequest": m3,
+        "assetMintError": MessageLookupByLibrary.simpleMessage(
+            "Failed to mint asset: You might already have an asset with a similar name in your list."),
+        "assets": MessageLookupByLibrary.simpleMessage("Assets"),
+        "autoLong": MessageLookupByLibrary.simpleMessage("auto long"),
+        "autoShort": MessageLookupByLibrary.simpleMessage("auto short"),
         "autoplayImages": MessageLookupByLibrary.simpleMessage(
             "Automatically play animated stickers and emotes"),
+        "badCharacters": MessageLookupByLibrary.simpleMessage("Bad characters"),
+        "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "banFromChat": MessageLookupByLibrary.simpleMessage("Ban from chat"),
         "banned": MessageLookupByLibrary.simpleMessage("Banned"),
         "bannedUser": m4,
+        "bear": MessageLookupByLibrary.simpleMessage("Bear"),
+        "bitcoin": MessageLookupByLibrary.simpleMessage("Bitcoin"),
+        "bitcoinChart": MessageLookupByLibrary.simpleMessage("Bitcoin chart"),
+        "bitcoinDescription": MessageLookupByLibrary.simpleMessage(
+            "Bitcoin (BTC) is the first cryptocurrency built. Unlike government-issued or fiat currencies such as US Dollars or Euro which are controlled by central banks, Bitcoin can operate without the need of a central authority like a central bank or a company. Users are able to send funds to each other without going through intermediaries."),
+        "bitcoinInfoCard":
+            MessageLookupByLibrary.simpleMessage("Bitcoin Card Information"),
+        "bitcoinNews": MessageLookupByLibrary.simpleMessage("Bitcoin News"),
+        "bitnetUsageFee":
+            MessageLookupByLibrary.simpleMessage("BitNet usage fee"),
+        "block": MessageLookupByLibrary.simpleMessage("Block"),
+        "blockChain": MessageLookupByLibrary.simpleMessage("Blockchain"),
         "blockDevice": MessageLookupByLibrary.simpleMessage("Block Device"),
+        "blockSize": MessageLookupByLibrary.simpleMessage("Block Size"),
+        "blockTransaction":
+            MessageLookupByLibrary.simpleMessage("Block Transactions"),
         "blocked": MessageLookupByLibrary.simpleMessage("Blocked"),
         "botMessages": MessageLookupByLibrary.simpleMessage("Bot messages"),
         "bubbleSize": MessageLookupByLibrary.simpleMessage("Bubble size"),
         "bundleName": MessageLookupByLibrary.simpleMessage("Bundle name"),
+        "buy": MessageLookupByLibrary.simpleMessage("Buy"),
+        "buyBitcoin": MessageLookupByLibrary.simpleMessage("Buy Bitcoin"),
+        "buyNow": MessageLookupByLibrary.simpleMessage("Buy Now"),
         "buySell": MessageLookupByLibrary.simpleMessage("Buy & Sell"),
         "callingAccount":
             MessageLookupByLibrary.simpleMessage("Calling account"),
@@ -274,8 +319,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "callingPermissions":
             MessageLookupByLibrary.simpleMessage("Calling permissions"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "cancelDelete":
+            MessageLookupByLibrary.simpleMessage("Cancel and delete"),
         "cantOpenUri": m5,
+        "cart": MessageLookupByLibrary.simpleMessage("Cart"),
+        "categories": MessageLookupByLibrary.simpleMessage("Categories"),
         "cc": MessageLookupByLibrary.simpleMessage("Currency Converter"),
+        "chainInfo": MessageLookupByLibrary.simpleMessage("Chain Info"),
+        "chains": MessageLookupByLibrary.simpleMessage("Chains"),
+        "changeAmount": MessageLookupByLibrary.simpleMessage("Change Amount"),
         "changeCurrency":
             MessageLookupByLibrary.simpleMessage("Change Currency"),
         "changeDeviceName":
@@ -322,12 +374,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Choose a strong password"),
         "chooseAUsername":
             MessageLookupByLibrary.simpleMessage("Choose a username"),
+        "chooseReceipient":
+            MessageLookupByLibrary.simpleMessage("Choose Receipient"),
+        "clear": MessageLookupByLibrary.simpleMessage("Clear"),
+        "clearAll": MessageLookupByLibrary.simpleMessage("Clear All"),
         "clearArchive": MessageLookupByLibrary.simpleMessage("Clear archive"),
         "close": MessageLookupByLibrary.simpleMessage("Close"),
         "codeAlreadyUsed": MessageLookupByLibrary.simpleMessage(
             "It seems like this code has already been used"),
         "codeNotValid":
             MessageLookupByLibrary.simpleMessage("Code is not valid."),
+        "coinBase": MessageLookupByLibrary.simpleMessage(
+            "Coinbase (Newly Generated Coins)\n"),
+        "collections": MessageLookupByLibrary.simpleMessage("Collections"),
         "color": MessageLookupByLibrary.simpleMessage("Color"),
         "commandHint_ban": MessageLookupByLibrary.simpleMessage(
             "Ban the given user from this room"),
@@ -384,9 +443,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "confirmEventUnpin": MessageLookupByLibrary.simpleMessage(
             "Are you sure to permanently unpin the event?"),
+        "confirmKey": MessageLookupByLibrary.simpleMessage("Confirm Key"),
         "confirmMatrixId": MessageLookupByLibrary.simpleMessage(
             "Please confirm your Matrix ID in order to delete your account."),
+        "confirmMnemonic":
+            MessageLookupByLibrary.simpleMessage("Confirm your mnemonic"),
+        "confirmed": MessageLookupByLibrary.simpleMessage("Confirmed"),
         "connect": MessageLookupByLibrary.simpleMessage("Connect"),
+        "connectWithOtherDevices":
+            MessageLookupByLibrary.simpleMessage("Connect with other device"),
+        "contactFriendsForRecovery": MessageLookupByLibrary.simpleMessage(
+            "Contact your friends and tell them to free-up your key! The free-ups will only be valid for 24 hours. After their keys are freed up the login sign will appear green and you\'ll have to wait additional 24hours before you can login to your recovered account."),
         "contactHasBeenInvitedToTheGroup": MessageLookupByLibrary.simpleMessage(
             "Contact has been invited to the group"),
         "containsDisplayName":
@@ -395,12 +462,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Contains username"),
         "contentHasBeenReported": MessageLookupByLibrary.simpleMessage(
             "The content has been reported to the server admins"),
+        "continues": MessageLookupByLibrary.simpleMessage("Continue"),
+        "contractAddress":
+            MessageLookupByLibrary.simpleMessage("Contract address"),
         "convert": MessageLookupByLibrary.simpleMessage("Convert"),
         "copiedToClipboard":
             MessageLookupByLibrary.simpleMessage("Copied to clipboard"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copyToClipboard":
             MessageLookupByLibrary.simpleMessage("Copy to clipboard"),
+        "costEstimation":
+            MessageLookupByLibrary.simpleMessage("Cost Estimation"),
+        "coudntChangeUsername":
+            MessageLookupByLibrary.simpleMessage("Couldn\'t change username"),
         "couldNotDecryptMessage": m21,
         "countFiles": m22,
         "countParticipants": m23,
@@ -408,13 +482,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "createNewGroup":
             MessageLookupByLibrary.simpleMessage("Create new group"),
         "createNewSpace": MessageLookupByLibrary.simpleMessage("New space"),
+        "createPost": MessageLookupByLibrary.simpleMessage("Create Post"),
+        "createdBy": MessageLookupByLibrary.simpleMessage("Created By"),
         "createdTheChat": m24,
+        "cryptoPills": MessageLookupByLibrary.simpleMessage("Crypto-Pills"),
         "cuddleContent": m25,
+        "currentBatches":
+            MessageLookupByLibrary.simpleMessage("Current Batches"),
+        "currentPrice": MessageLookupByLibrary.simpleMessage("Current Price"),
         "currentlyActive":
             MessageLookupByLibrary.simpleMessage("Currently active"),
         "custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "darkTheme": MessageLookupByLibrary.simpleMessage("Dark"),
         "dateAndTimeOfDay": m26,
+        "dateBehavior": MessageLookupByLibrary.simpleMessage(" DATE"),
         "dateWithYear": m27,
         "dateWithoutYear": m28,
         "deactivateAccountWarning": MessageLookupByLibrary.simpleMessage(
@@ -439,6 +520,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "devices": MessageLookupByLibrary.simpleMessage("Devices"),
         "diDprivateKey":
             MessageLookupByLibrary.simpleMessage("DID and private key"),
+        "difficulty": MessageLookupByLibrary.simpleMessage("Difficulty"),
+        "difficultyAdjustment":
+            MessageLookupByLibrary.simpleMessage("Difficulty Adjustment"),
         "directChats": MessageLookupByLibrary.simpleMessage("Direct Chats"),
         "disableEncryptionWarning": MessageLookupByLibrary.simpleMessage(
             "For security reasons you can not disable encryption in a chat, where it has been enabled before."),
@@ -448,6 +532,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Displayname has been changed"),
         "doNotShowAgain":
             MessageLookupByLibrary.simpleMessage("Do not show again"),
+        "dontShareAnyone": MessageLookupByLibrary.simpleMessage(
+            "DON\'T SHARE THIS QR CODE TO ANYONE!"),
         "downloadFile": MessageLookupByLibrary.simpleMessage("Download file"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "editBlockedServers":
@@ -506,13 +592,18 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enter invite link or Matrix ID..."),
         "enterRoom": MessageLookupByLibrary.simpleMessage("Enter room"),
         "enterSpace": MessageLookupByLibrary.simpleMessage("Enter space"),
+        "enterWordsRightOrder": MessageLookupByLibrary.simpleMessage(
+            "Enter your 24 words in the right order"),
         "enterYourHomeserver":
             MessageLookupByLibrary.simpleMessage("Enter your homeserver"),
         "errorAddingWidget":
             MessageLookupByLibrary.simpleMessage("Error adding the widget."),
+        "errorFinalizingBatch":
+            MessageLookupByLibrary.simpleMessage("Error finalizing batch"),
         "errorObtainingLocation": m30,
         "errorSomethingWrong":
             MessageLookupByLibrary.simpleMessage("Something went wrong"),
+        "ethereum": MessageLookupByLibrary.simpleMessage("ETHEREUM"),
         "everythingReady":
             MessageLookupByLibrary.simpleMessage("Everything ready!"),
         "experimentalVideoCalls":
@@ -520,19 +611,39 @@ class MessageLookup extends MessageLookupByLibrary {
         "extendedSec": MessageLookupByLibrary.simpleMessage("Extended Sec"),
         "extremeOffensive":
             MessageLookupByLibrary.simpleMessage("Extremely offensive"),
+        "favorite": MessageLookupByLibrary.simpleMessage("Favourite"),
+        "fearAndGreed": MessageLookupByLibrary.simpleMessage("Fear and Greed"),
+        "fearAndGreedIndex":
+            MessageLookupByLibrary.simpleMessage("Fear & Greed Index"),
+        "features": MessageLookupByLibrary.simpleMessage("Features"),
+        "fee": MessageLookupByLibrary.simpleMessage("Fee"),
+        "feeDistribution":
+            MessageLookupByLibrary.simpleMessage("Fee Distribution"),
+        "feeRate": MessageLookupByLibrary.simpleMessage("Fee rate"),
+        "fianlizePosts": MessageLookupByLibrary.simpleMessage("Finalize Posts"),
         "fileHasBeenSavedAt": m31,
         "fileIsTooBigForServer": MessageLookupByLibrary.simpleMessage(
             "The server reports that the file is too large to be sent."),
         "fileName": MessageLookupByLibrary.simpleMessage("File name"),
+        "filter": MessageLookupByLibrary.simpleMessage("Filter"),
+        "filterOptions": MessageLookupByLibrary.simpleMessage("Filter Options"),
+        "fixed": MessageLookupByLibrary.simpleMessage("fixed"),
+        "floorPrice": MessageLookupByLibrary.simpleMessage("Floor Price"),
         "fluffychat": MessageLookupByLibrary.simpleMessage("FluffyChat"),
         "fontSize": MessageLookupByLibrary.simpleMessage("Font size"),
+        "forSale": MessageLookupByLibrary.simpleMessage("For Sale"),
         "foregroundServiceRunning": MessageLookupByLibrary.simpleMessage(
             "This notification appears when the foreground service is running."),
         "forward": MessageLookupByLibrary.simpleMessage("Forward"),
+        "friendsKeyIssuers":
+            MessageLookupByLibrary.simpleMessage("Friends / Key-Issuers"),
         "from": MessageLookupByLibrary.simpleMessage("From"),
         "fromJoining": MessageLookupByLibrary.simpleMessage("From joining"),
         "fromTheInvitation":
             MessageLookupByLibrary.simpleMessage("From the invitation"),
+        "fullRbf": MessageLookupByLibrary.simpleMessage("Full RBF"),
+        "generateInvoice":
+            MessageLookupByLibrary.simpleMessage("Generate Invoice"),
         "goToTheNewRoom":
             MessageLookupByLibrary.simpleMessage("Go to the new room"),
         "googlyEyesContent": m32,
@@ -545,21 +656,34 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Group is public"),
         "groupWith": m33,
         "groups": MessageLookupByLibrary.simpleMessage("Groups"),
+        "guardiansDesigned": MessageLookupByLibrary.simpleMessage(
+            "Not only are Guardians dope designed character-collectibles, they also serve as your ticket to a world of exclusive content. From developing new collections to fill our universe, to metaverse avatars, we have bundles of awesome features in the pipeline."),
+        "guardiansStored": MessageLookupByLibrary.simpleMessage(
+            "Guardians are stored as ERC721 tokens on the Ethereum blockchain. Owners can download their Guardians in .png format, they can also request a high resolution image of them, with 3D models coming soon for everyone."),
         "guestsAreForbidden":
             MessageLookupByLibrary.simpleMessage("Guests are forbidden"),
         "guestsCanJoin":
             MessageLookupByLibrary.simpleMessage("Guests can join"),
         "hasWithdrawnTheInvitationFor": m34,
+        "hashrate": MessageLookupByLibrary.simpleMessage("Hashrate"),
+        "hashrateDifficulty":
+            MessageLookupByLibrary.simpleMessage("Hashrate & Difficulty"),
+        "health": MessageLookupByLibrary.simpleMessage("Health"),
         "helloWorld": MessageLookupByLibrary.simpleMessage("Hello World!"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
+        "hideDetails": MessageLookupByLibrary.simpleMessage("Hide Details"),
         "hideRedactedEvents":
             MessageLookupByLibrary.simpleMessage("Hide redacted events"),
         "hideUnimportantStateEvents": MessageLookupByLibrary.simpleMessage(
             "Hide unimportant state events"),
         "hideUnknownEvents":
             MessageLookupByLibrary.simpleMessage("Hide unknown events"),
+        "high": MessageLookupByLibrary.simpleMessage("High"),
+        "highestAssesment":
+            MessageLookupByLibrary.simpleMessage("Highest assesment:"),
         "his": MessageLookupByLibrary.simpleMessage("History"),
         "homeserver": MessageLookupByLibrary.simpleMessage("Homeserver"),
+        "hotNewItems": MessageLookupByLibrary.simpleMessage("Hot New Items"),
         "howOffensiveIsThisContent": MessageLookupByLibrary.simpleMessage(
             "How offensive is this content?"),
         "hugContent": m35,
@@ -581,6 +705,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "ignoreUsername":
             MessageLookupByLibrary.simpleMessage("Ignore username"),
         "ignoredUsers": MessageLookupByLibrary.simpleMessage("Ignored users"),
+        "inSeveralHours":
+            MessageLookupByLibrary.simpleMessage("In Several hours (or more)"),
         "incorrectPassphraseOrKey": MessageLookupByLibrary.simpleMessage(
             "Incorrect passphrase or recovery key"),
         "indexedDbErrorLong": MessageLookupByLibrary.simpleMessage(
@@ -588,22 +714,32 @@ class MessageLookup extends MessageLookupByLibrary {
         "indexedDbErrorTitle":
             MessageLookupByLibrary.simpleMessage("Private mode issues"),
         "inoffensive": MessageLookupByLibrary.simpleMessage("Inoffensive"),
+        "inputTx": MessageLookupByLibrary.simpleMessage("\'Inputs\n\'"),
+        "intrinsicValue":
+            MessageLookupByLibrary.simpleMessage("Intrinsic Value:"),
         "invitationCode":
             MessageLookupByLibrary.simpleMessage("Invitation Code"),
         "inviteContact": MessageLookupByLibrary.simpleMessage("Invite contact"),
         "inviteContactToGroup": m36,
+        "inviteDescription": MessageLookupByLibrary.simpleMessage(
+            "Our service is currently in beta and \nlimited to invited users. You can share these invitation \nkeys with your friends and family!"),
         "inviteForMe": MessageLookupByLibrary.simpleMessage("Invite for me"),
         "inviteText": m37,
         "invited": MessageLookupByLibrary.simpleMessage("Invited"),
         "invitedUser": m38,
         "invitedUsersOnly":
             MessageLookupByLibrary.simpleMessage("Invited users only"),
+        "invoice": MessageLookupByLibrary.simpleMessage("Invoice"),
         "isTyping": MessageLookupByLibrary.simpleMessage("is typing…"),
+        "itemsTotal": MessageLookupByLibrary.simpleMessage("Items total"),
         "joinRoom": MessageLookupByLibrary.simpleMessage("Join room"),
+        "joinedRevolution": MessageLookupByLibrary.simpleMessage(
+            "Hey there Bitcoiners! I joined the revolution!"),
         "joinedTheChat": m39,
         "jump": MessageLookupByLibrary.simpleMessage("Jump"),
         "jumpToLastReadMessage":
             MessageLookupByLibrary.simpleMessage("Jump to last read message"),
+        "keyMetrics": MessageLookupByLibrary.simpleMessage("Key metrics"),
         "kickFromChat": MessageLookupByLibrary.simpleMessage("Kick from chat"),
         "kicked": m40,
         "kickedAndBanned": m41,
@@ -611,18 +747,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "lastActiveAgo": m42,
         "lastSeenLongTimeAgo":
             MessageLookupByLibrary.simpleMessage("Seen a long time ago"),
+        "lastUpdated": MessageLookupByLibrary.simpleMessage("Last updated: "),
+        "launchBitnetApp": MessageLookupByLibrary.simpleMessage(
+            "Launch the bitnet app on an alternative device where your account is already active and logged in."),
         "leave": MessageLookupByLibrary.simpleMessage("Leave"),
         "leftTheChat": MessageLookupByLibrary.simpleMessage("Left the chat"),
         "letsStart": MessageLookupByLibrary.simpleMessage("Let\'s start"),
         "license": MessageLookupByLibrary.simpleMessage("License"),
         "lightTheme": MessageLookupByLibrary.simpleMessage("Light"),
+        "lightning": MessageLookupByLibrary.simpleMessage("Lightning"),
+        "lightningCardInfo":
+            MessageLookupByLibrary.simpleMessage("Lightning Card Information"),
         "lightningOnChain":
             MessageLookupByLibrary.simpleMessage("Lightning to Onchain"),
+        "lightningTransactionSettled":
+            MessageLookupByLibrary.simpleMessage("Lightning invoice settled"),
+        "liked": MessageLookupByLibrary.simpleMessage("Liked"),
         "link": MessageLookupByLibrary.simpleMessage("Link"),
+        "listed": MessageLookupByLibrary.simpleMessage("Listed"),
         "loadCountMoreParticipants": m43,
         "loadMore": MessageLookupByLibrary.simpleMessage("Load more…"),
+        "loading": MessageLookupByLibrary.simpleMessage("Loading"),
         "loadingPleaseWait":
             MessageLookupByLibrary.simpleMessage("Loading… Please wait."),
+        "locallySavedAccounts":
+            MessageLookupByLibrary.simpleMessage("Locally saved accounts"),
         "locationDisabledNotice": MessageLookupByLibrary.simpleMessage(
             "Location services are disabled. Please enable them to be able to share your location."),
         "locationPermissionDeniedNotice": MessageLookupByLibrary.simpleMessage(
@@ -633,37 +782,71 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sign in with one click"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
         "loopScreen": MessageLookupByLibrary.simpleMessage("Loop Screen"),
+        "low": MessageLookupByLibrary.simpleMessage("Low"),
+        "lowestAssesment":
+            MessageLookupByLibrary.simpleMessage("Lowest assesment:"),
         "makeSureTheIdentifierIsValid": MessageLookupByLibrary.simpleMessage(
             "Make sure the identifier is valid"),
         "markAsRead": MessageLookupByLibrary.simpleMessage("Mark as read"),
+        "marketFee": MessageLookupByLibrary.simpleMessage("Market Fee"),
         "matrixWidgets": MessageLookupByLibrary.simpleMessage("Matrix Widgets"),
+        "max": MessageLookupByLibrary.simpleMessage("Max"),
+        "median": MessageLookupByLibrary.simpleMessage("Median: "),
+        "medium": MessageLookupByLibrary.simpleMessage("Medium"),
         "memberChanges": MessageLookupByLibrary.simpleMessage("Member changes"),
+        "mempoolBlock": MessageLookupByLibrary.simpleMessage("Mempool block"),
         "mention": MessageLookupByLibrary.simpleMessage("Mention"),
         "messageInfo": MessageLookupByLibrary.simpleMessage("Message info"),
         "messageType": MessageLookupByLibrary.simpleMessage("Message Type"),
         "messageWillBeRemovedWarning": MessageLookupByLibrary.simpleMessage(
             "Message will be removed for all participants"),
         "messages": MessageLookupByLibrary.simpleMessage("Messages"),
+        "min": MessageLookupByLibrary.simpleMessage("Min"),
+        "mined": MessageLookupByLibrary.simpleMessage("Mined "),
+        "minedAt": MessageLookupByLibrary.simpleMessage("Mined at"),
+        "miner": MessageLookupByLibrary.simpleMessage("Miner"),
+        "minerRewardAndFees": MessageLookupByLibrary.simpleMessage(
+            "Miner Reward (Subsidy + fees)"),
+        "minutesTx": MessageLookupByLibrary.simpleMessage(" minutes"),
+        "mnemonicCorrect": MessageLookupByLibrary.simpleMessage(
+            "Your mnemonic is correct! Please keep it safe."),
+        "mnemonicInCorrect": MessageLookupByLibrary.simpleMessage(
+            "Your mnemonic does not match. Please try again."),
         "moderator": MessageLookupByLibrary.simpleMessage("Moderator"),
+        "mostHypedNewDeals":
+            MessageLookupByLibrary.simpleMessage("Most Hyped New Deals"),
+        "mostViewed": MessageLookupByLibrary.simpleMessage("Most Viewed"),
         "muteChat": MessageLookupByLibrary.simpleMessage("Mute chat"),
+        "nameBehavior": MessageLookupByLibrary.simpleMessage(" NAME"),
+        "nameYourAsset":
+            MessageLookupByLibrary.simpleMessage("Name your Asset"),
+        "navQrRecovery": MessageLookupByLibrary.simpleMessage(
+            "Navigate to Profile > Settings > Security > Scan QR-Code for Recovery. You will need to verify your identity now."),
         "needPantalaimonWarning": MessageLookupByLibrary.simpleMessage(
             "Please be aware that you need Pantalaimon to use end-to-end encryption for now."),
+        "networkFee": MessageLookupByLibrary.simpleMessage("Network Fee"),
         "newChat": MessageLookupByLibrary.simpleMessage("New chat"),
+        "newFee": MessageLookupByLibrary.simpleMessage("New Fee"),
         "newGroup": MessageLookupByLibrary.simpleMessage("New group"),
         "newMessageInFluffyChat": MessageLookupByLibrary.simpleMessage(
             "💬 New message in FluffyChat"),
         "newSpace": MessageLookupByLibrary.simpleMessage("New space"),
         "newSpaceDescription": MessageLookupByLibrary.simpleMessage(
             "Spaces allows you to consolidate your chats and build private or public communities."),
+        "newTopSellers":
+            MessageLookupByLibrary.simpleMessage("New Top Sellers"),
         "newVerificationRequest":
             MessageLookupByLibrary.simpleMessage("New verification request!"),
         "next": MessageLookupByLibrary.simpleMessage("Next"),
         "nextAccount": MessageLookupByLibrary.simpleMessage("Next account"),
+        "nextBlock": MessageLookupByLibrary.simpleMessage("Next Block"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
         "noAccountYet": MessageLookupByLibrary.simpleMessage(
             "You don\'t have an account yet?"),
         "noBackupWarning": MessageLookupByLibrary.simpleMessage(
             "Warning! Without enabling chat backup, you will lose access to your encrypted messages. It is highly recommended to enable the chat backup first before logging out."),
+        "noCodeFoundOverlayError":
+            MessageLookupByLibrary.simpleMessage("No code was found."),
         "noConnectionToTheServer":
             MessageLookupByLibrary.simpleMessage("No connection to the server"),
         "noEmailWarning": MessageLookupByLibrary.simpleMessage(
@@ -682,12 +865,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "noPasswordRecoveryDescription": MessageLookupByLibrary.simpleMessage(
             "You have not added a way to recover your password yet."),
         "noPermission": MessageLookupByLibrary.simpleMessage("No permission"),
+        "noResultsFound":
+            MessageLookupByLibrary.simpleMessage(" No results found"),
         "noRoomsFound": MessageLookupByLibrary.simpleMessage("No rooms found…"),
+        "noUserFound": MessageLookupByLibrary.simpleMessage("No users found."),
+        "noUsersFound":
+            MessageLookupByLibrary.simpleMessage("No users could be found"),
         "none": MessageLookupByLibrary.simpleMessage("None"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "notificationsEnabledForThisAccount":
             MessageLookupByLibrary.simpleMessage(
                 "Notifications enabled for this account"),
+        "now": MessageLookupByLibrary.simpleMessage("Now: "),
         "numChats": m46,
         "numUsersTyping": m47,
         "obtainingLocation":
@@ -695,8 +884,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "offensive": MessageLookupByLibrary.simpleMessage("Offensive"),
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
         "ok": MessageLookupByLibrary.simpleMessage("Ok"),
+        "onChainInvoiceSettled":
+            MessageLookupByLibrary.simpleMessage("Onchain transaction settled"),
         "onChainLightning":
             MessageLookupByLibrary.simpleMessage("Onchain to Lightning"),
+        "onSaleIn": MessageLookupByLibrary.simpleMessage("On Sale In"),
+        "onchain": MessageLookupByLibrary.simpleMessage("Onchain"),
         "oneClientLoggedOut": MessageLookupByLibrary.simpleMessage(
             "One of your clients has been logged out"),
         "online": MessageLookupByLibrary.simpleMessage("Online"),
@@ -714,14 +907,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "openInMaps": MessageLookupByLibrary.simpleMessage("Open in maps"),
         "openLinkInBrowser":
             MessageLookupByLibrary.simpleMessage("Open link in browser"),
+        "openOnEtherscan":
+            MessageLookupByLibrary.simpleMessage("Open On Etherscan"),
         "openVideoCamera":
             MessageLookupByLibrary.simpleMessage("Open camera for a video"),
+        "optimal": MessageLookupByLibrary.simpleMessage("Optimal"),
         "optionalGroupName":
             MessageLookupByLibrary.simpleMessage("(Optional) Group name"),
         "or": MessageLookupByLibrary.simpleMessage("Or"),
         "otherCallingPermissions": MessageLookupByLibrary.simpleMessage(
             "Microphone, camera and other FluffyChat permissions"),
+        "outputTx": MessageLookupByLibrary.simpleMessage("Outputs\n"),
+        "overlayErrorOccured": MessageLookupByLibrary.simpleMessage(
+            "An error occured, please try again later."),
+        "overpaid": MessageLookupByLibrary.simpleMessage("Overpaid"),
         "ownSecurity": MessageLookupByLibrary.simpleMessage("Own Security"),
+        "owners": MessageLookupByLibrary.simpleMessage("Owners"),
         "participant": MessageLookupByLibrary.simpleMessage("Participant"),
         "passphraseOrKey":
             MessageLookupByLibrary.simpleMessage("passphrase or recovery key"),
@@ -732,8 +933,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Password has been changed"),
         "passwordRecovery":
             MessageLookupByLibrary.simpleMessage("Password recovery"),
+        "passwordShouldBeSixDig": MessageLookupByLibrary.simpleMessage(
+            "The password must contain at least 6 characters"),
         "passwordsDoNotMatch":
             MessageLookupByLibrary.simpleMessage("Passwords do not match!"),
+        "payemntMethod": MessageLookupByLibrary.simpleMessage("Payment Method"),
+        "paymentNetwork":
+            MessageLookupByLibrary.simpleMessage("Payment Network"),
         "people": MessageLookupByLibrary.simpleMessage("People"),
         "pickImage": MessageLookupByLibrary.simpleMessage("Pick an image"),
         "pin": MessageLookupByLibrary.simpleMessage("Pin"),
@@ -768,6 +974,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "To unlock your old messages, please enter your recovery key that has been generated in a previous session. Your recovery key is NOT your password."),
         "pleaseEnterValidEmail": MessageLookupByLibrary.simpleMessage(
             "Please enter a valid email address."),
+        "pleaseEnterValidUsername": MessageLookupByLibrary.simpleMessage(
+            "The username you entered is not valid."),
         "pleaseEnterYourPassword":
             MessageLookupByLibrary.simpleMessage("Please enter your password"),
         "pleaseEnterYourPin":
@@ -776,25 +984,63 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Please enter your username"),
         "pleaseFollowInstructionsOnWeb": MessageLookupByLibrary.simpleMessage(
             "Please follow the instructions on the website and tap on next."),
+        "pleaseGiveAccess": MessageLookupByLibrary.simpleMessage(
+            "Please give the app photo access to use this feature."),
+        "post": MessageLookupByLibrary.simpleMessage("POST"),
+        "postContentError": MessageLookupByLibrary.simpleMessage(
+            "Please add some content to your post"),
         "powerToThePeople":
             MessageLookupByLibrary.simpleMessage("Power to the people!"),
         "poweredByDIDs":
             MessageLookupByLibrary.simpleMessage("Powered with DIDs by"),
+        "pressBtnScanQr": MessageLookupByLibrary.simpleMessage(
+            "Press the Button below and scan the QR Code. Wait until the process is finished don\'t leave the app."),
+        "pressedFavorite": MessageLookupByLibrary.simpleMessage(
+            "Press the Favorites button again to unfavorite"),
         "previousAccount":
             MessageLookupByLibrary.simpleMessage("Previous account"),
+        "previousFee": MessageLookupByLibrary.simpleMessage("Previous fee"),
+        "previousOutputScripts":
+            MessageLookupByLibrary.simpleMessage("Previous output script"),
+        "previousOutputType":
+            MessageLookupByLibrary.simpleMessage("Previous output type"),
+        "price": MessageLookupByLibrary.simpleMessage("Price"),
+        "priceHistory": MessageLookupByLibrary.simpleMessage("Price History"),
         "privacy": MessageLookupByLibrary.simpleMessage("Privacy"),
         "privateKey": MessageLookupByLibrary.simpleMessage("Private Key"),
+        "privateKeyLogin":
+            MessageLookupByLibrary.simpleMessage("DID and Private Key Login"),
+        "properties": MessageLookupByLibrary.simpleMessage("Properties"),
+        "propertiesDescription": MessageLookupByLibrary.simpleMessage(
+            "Guardians of the Metaverse are a collection of 10,000 unique 3D hero-like avatars living as NFTs on the blockchain."),
         "publicRooms": MessageLookupByLibrary.simpleMessage("Public Rooms"),
         "publish": MessageLookupByLibrary.simpleMessage("Publish"),
+        "purchaseBitcoin":
+            MessageLookupByLibrary.simpleMessage("Purchase Bitcoin"),
         "pushRules": MessageLookupByLibrary.simpleMessage("Push rules"),
         "qou": MessageLookupByLibrary.simpleMessage(
             "Currency Rates by Open Exchange Rates"),
+        "qrCode": MessageLookupByLibrary.simpleMessage("QR Code"),
+        "qrCodeFormatInvalid": MessageLookupByLibrary.simpleMessage(
+            "The scanned QR code does not have an approved format"),
+        "quickLinks": MessageLookupByLibrary.simpleMessage("Quick Links"),
+        "rbf": MessageLookupByLibrary.simpleMessage("RBF"),
         "reactedWith": m50,
         "readUpToHere": MessageLookupByLibrary.simpleMessage("Read up to here"),
         "reason": MessageLookupByLibrary.simpleMessage("Reason"),
         "rebalance": MessageLookupByLibrary.simpleMessage("Rebalance"),
         "receive": MessageLookupByLibrary.simpleMessage("Receive"),
+        "receiveBitcoin":
+            MessageLookupByLibrary.simpleMessage("Receive Bitcoin"),
+        "recentReplacements":
+            MessageLookupByLibrary.simpleMessage("Recent replacements"),
+        "recentTransactions":
+            MessageLookupByLibrary.simpleMessage("Recent transactions"),
+        "recentlyListed":
+            MessageLookupByLibrary.simpleMessage("Recently Listed"),
         "recording": MessageLookupByLibrary.simpleMessage("Recording"),
+        "recoverAccount":
+            MessageLookupByLibrary.simpleMessage("Recovery account"),
         "recoverQrCode":
             MessageLookupByLibrary.simpleMessage("Recover with QR Code"),
         "recoveryKey": MessageLookupByLibrary.simpleMessage("Recovery key"),
@@ -802,6 +1048,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Recovery key lost?"),
         "recoveryPhrases":
             MessageLookupByLibrary.simpleMessage("Recovery phrases"),
+        "recoverySecurityIncrease": MessageLookupByLibrary.simpleMessage(
+            "To increase security, the recovered user will get contacted, if there is no awnser after 24 hours your account will be freed."),
+        "recoveryStep2": MessageLookupByLibrary.simpleMessage(
+            "Step 2. Contact each of your friends"),
+        "recoveryStepThree": MessageLookupByLibrary.simpleMessage(
+            "Step 3: Wait 24 hours and then login"),
         "redactMessage": MessageLookupByLibrary.simpleMessage("Redact message"),
         "redactedAnEvent": m51,
         "register": MessageLookupByLibrary.simpleMessage("Create Account"),
@@ -826,6 +1078,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Repeat password"),
         "replaceRoomWithNewerVersion": MessageLookupByLibrary.simpleMessage(
             "Replace room with newer version"),
+        "replaced": MessageLookupByLibrary.simpleMessage("Replaced"),
         "reply": MessageLookupByLibrary.simpleMessage("Reply"),
         "replyHasBeenSent":
             MessageLookupByLibrary.simpleMessage("Reply has been sent"),
@@ -838,26 +1091,49 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Request permission"),
         "restoreAccount":
             MessageLookupByLibrary.simpleMessage("Restore Account"),
+        "restoreOptions":
+            MessageLookupByLibrary.simpleMessage("Restore options"),
         "restoreWithSocialRecovery": MessageLookupByLibrary.simpleMessage(
             "Restore with social recovery"),
         "roomHasBeenUpgraded":
             MessageLookupByLibrary.simpleMessage("Room has been upgraded"),
         "roomVersion": MessageLookupByLibrary.simpleMessage("Room version"),
+        "sales": MessageLookupByLibrary.simpleMessage("Sales"),
+        "saveCard": MessageLookupByLibrary.simpleMessage("Save Card"),
         "saveFile": MessageLookupByLibrary.simpleMessage("Save file"),
         "saveKeyManuallyDescription": MessageLookupByLibrary.simpleMessage(
             "Save this key manually by triggering the system share dialog or clipboard."),
+        "saveYourmnemonicSecurely": MessageLookupByLibrary.simpleMessage(
+            "Save your mnemonic securely!"),
+        "saveYourmnemonicSecurelyDescription": MessageLookupByLibrary.simpleMessage(
+            "Save this sequence on a piece of paper it acts as your password to your account, a loss of this sequence will result in a loss of your funds."),
+        "scanQr": MessageLookupByLibrary.simpleMessage("Scan QR"),
         "scanQrCode": MessageLookupByLibrary.simpleMessage("Scan QR code"),
+        "scanQrStepOne": MessageLookupByLibrary.simpleMessage(
+            "Step 1: Open the app on a different device."),
+        "scanQrStepThree": MessageLookupByLibrary.simpleMessage(
+            "Step 3: Scan the QR-Code with this device"),
+        "scanQrStepTwo":
+            MessageLookupByLibrary.simpleMessage("Step 2: Open the QR-Code"),
         "screenSharingDetail": MessageLookupByLibrary.simpleMessage(
             "You are sharing your screen in FuffyChat"),
         "screenSharingTitle":
             MessageLookupByLibrary.simpleMessage("screen sharing"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "searchC": MessageLookupByLibrary.simpleMessage("Search Currency Here"),
+        "searchItemsAndCollections": MessageLookupByLibrary.simpleMessage(
+            "Search items and collections"),
         "searchL": MessageLookupByLibrary.simpleMessage("Search Language Here"),
+        "searchReceipient":
+            MessageLookupByLibrary.simpleMessage("Search for recipients"),
         "security": MessageLookupByLibrary.simpleMessage("Security"),
+        "seeMore": MessageLookupByLibrary.simpleMessage("See more"),
         "seenByUser": m54,
         "seenByUserAndCountOthers": m55,
         "seenByUserAndUser": m56,
+        "selectImageQrCode":
+            MessageLookupByLibrary.simpleMessage("Select Image for QR Scan"),
+        "sell": MessageLookupByLibrary.simpleMessage("Sell"),
         "send": MessageLookupByLibrary.simpleMessage("Send"),
         "sendAMessage": MessageLookupByLibrary.simpleMessage("Send a message"),
         "sendAsText": MessageLookupByLibrary.simpleMessage("Send as text"),
@@ -865,6 +1141,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendFile": MessageLookupByLibrary.simpleMessage("Send file"),
         "sendImage": MessageLookupByLibrary.simpleMessage("Send image"),
         "sendMessages": MessageLookupByLibrary.simpleMessage("Send messages"),
+        "sendNow": MessageLookupByLibrary.simpleMessage("SEND NOW!"),
         "sendOnEnter": MessageLookupByLibrary.simpleMessage("Send on enter"),
         "sendOriginal": MessageLookupByLibrary.simpleMessage("Send original"),
         "sendSticker": MessageLookupByLibrary.simpleMessage("Send sticker"),
@@ -899,20 +1176,32 @@ class MessageLookup extends MessageLookupByLibrary {
         "shareYourInviteLink":
             MessageLookupByLibrary.simpleMessage("Share your invite link"),
         "sharedTheLocation": m63,
+        "showAll": MessageLookupByLibrary.simpleMessage("Show All"),
+        "showDetails": MessageLookupByLibrary.simpleMessage("Show Details"),
         "showDirectChatsInSpaces": MessageLookupByLibrary.simpleMessage(
             "Show related Direct Chats in Spaces"),
         "showPassword": MessageLookupByLibrary.simpleMessage("Show password"),
         "signUp": MessageLookupByLibrary.simpleMessage("Sign up"),
         "singlesignon": MessageLookupByLibrary.simpleMessage("Single Sign on"),
         "skip": MessageLookupByLibrary.simpleMessage("Skip"),
+        "skipAtOwnRisk":
+            MessageLookupByLibrary.simpleMessage("Skip at own risk"),
         "socialRecovery":
             MessageLookupByLibrary.simpleMessage("Social recovery"),
+        "socialRecoveryInfo":
+            MessageLookupByLibrary.simpleMessage("Social Recovery Info"),
+        "socialRecoveryTrustSettings": MessageLookupByLibrary.simpleMessage(
+            "Social recovery needs to activated in Settings by each user manually. You have to choose 3 friends whom you can meet in person and trust."),
+        "sold": MessageLookupByLibrary.simpleMessage("Sold"),
         "sorryThatsNotPossible": MessageLookupByLibrary.simpleMessage(
             "Sorry... that is not possible"),
+        "sortBy": MessageLookupByLibrary.simpleMessage("Sort By"),
         "sourceCode": MessageLookupByLibrary.simpleMessage("Source code"),
         "spaceIsPublic":
             MessageLookupByLibrary.simpleMessage("Space is public"),
         "spaceName": MessageLookupByLibrary.simpleMessage("Space name"),
+        "spotlightProjects":
+            MessageLookupByLibrary.simpleMessage("Spotlight Projects"),
         "start": MessageLookupByLibrary.simpleMessage("Start"),
         "startFirstChat":
             MessageLookupByLibrary.simpleMessage("Start your first chat"),
@@ -920,6 +1209,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "status": MessageLookupByLibrary.simpleMessage("Status"),
         "statusExampleMessage":
             MessageLookupByLibrary.simpleMessage("How are you today?"),
+        "stepOneSocialRecovery": MessageLookupByLibrary.simpleMessage(
+            "Step 1: Activate social recovery"),
         "storeInAndroidKeystore":
             MessageLookupByLibrary.simpleMessage("Store in Android KeyStore"),
         "storeInAppleKeyChain":
@@ -932,7 +1223,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "storyFrom": m65,
         "storyPrivacyWarning": MessageLookupByLibrary.simpleMessage(
             "Please note that people can see and contact each other in your story. Your stories will be visible for 24 hours but there is no guarantee that they will be deleted from all devices and servers."),
+        "subTotal": MessageLookupByLibrary.simpleMessage("Subtotal"),
         "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+        "supply": MessageLookupByLibrary.simpleMessage("Supply"),
         "supposedMxid": m66,
         "switchToAccount": m67,
         "synchronizingPleaseWait":
@@ -944,6 +1237,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "thisUserHasNotPostedAnythingYet": MessageLookupByLibrary.simpleMessage(
             "This user has not posted anything in their story yet"),
         "time": MessageLookupByLibrary.simpleMessage("Time"),
+        "timeAgo": MessageLookupByLibrary.simpleMessage("time ago..."),
+        "timeFrame": MessageLookupByLibrary.simpleMessage("TimeFrame"),
+        "timestamp": MessageLookupByLibrary.simpleMessage("Timestamp"),
         "title": MessageLookupByLibrary.simpleMessage("FluffyChat"),
         "to": MessageLookupByLibrary.simpleMessage("To"),
         "toggleFavorite":
@@ -951,19 +1247,37 @@ class MessageLookup extends MessageLookupByLibrary {
         "toggleMuted": MessageLookupByLibrary.simpleMessage("Toggle Muted"),
         "toggleUnread":
             MessageLookupByLibrary.simpleMessage("Mark Read/Unread"),
+        "tokenId": MessageLookupByLibrary.simpleMessage("Token ID"),
         "tooManyRequestsWarning": MessageLookupByLibrary.simpleMessage(
             "Too many requests. Please try again later!"),
+        "totalPrice": MessageLookupByLibrary.simpleMessage("Total Price"),
+        "totalReceived": MessageLookupByLibrary.simpleMessage("Total Received"),
+        "totalSent": MessageLookupByLibrary.simpleMessage("Total Sent"),
+        "totalVolume": MessageLookupByLibrary.simpleMessage("Total Volume"),
         "totalWalletBal":
             MessageLookupByLibrary.simpleMessage("Total Wallet Balance"),
+        "tradingHistory":
+            MessageLookupByLibrary.simpleMessage("Trading History"),
+        "transactionFees":
+            MessageLookupByLibrary.simpleMessage("Transaction fees"),
+        "transactionReplaced": MessageLookupByLibrary.simpleMessage(
+            "This transaction has been replaced by:"),
+        "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "transferFromAnotherDevice": MessageLookupByLibrary.simpleMessage(
             "Transfer from another device"),
+        "trendingSellers":
+            MessageLookupByLibrary.simpleMessage("Trending Sellers"),
         "tryToSendAgain":
             MessageLookupByLibrary.simpleMessage("Try to send again"),
+        "typeBehavior": MessageLookupByLibrary.simpleMessage(" TYPE"),
+        "typeMessage": MessageLookupByLibrary.simpleMessage("Type message"),
+        "typeTx": MessageLookupByLibrary.simpleMessage("Type"),
         "unavailable": MessageLookupByLibrary.simpleMessage("Unavailable"),
         "unbanFromChat":
             MessageLookupByLibrary.simpleMessage("Unban from chat"),
         "unbannedUser": m68,
         "unblockDevice": MessageLookupByLibrary.simpleMessage("Unblock Device"),
+        "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
         "unknownDevice": MessageLookupByLibrary.simpleMessage("Unknown device"),
         "unknownEncryptionAlgorithm": MessageLookupByLibrary.simpleMessage(
             "Unknown encryption algorithm"),
@@ -983,6 +1297,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("FluffyChat update available"),
         "updateNow":
             MessageLookupByLibrary.simpleMessage("Start update in background"),
+        "uploadToBlockchain":
+            MessageLookupByLibrary.simpleMessage("Upload to Blockchain"),
+        "useDidPrivateKey":
+            MessageLookupByLibrary.simpleMessage("Use DID and Private Key"),
         "user": MessageLookupByLibrary.simpleMessage("User"),
         "userAndOthersAreTyping": m70,
         "userAndUserAreTyping": m71,
@@ -992,7 +1310,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "usernameOrDID":
             MessageLookupByLibrary.simpleMessage("Username or DID"),
+        "usernameTaken": MessageLookupByLibrary.simpleMessage(
+            "This username is already taken."),
         "users": MessageLookupByLibrary.simpleMessage("Users"),
+        "value": MessageLookupByLibrary.simpleMessage("Value"),
+        "valueBehavior": MessageLookupByLibrary.simpleMessage(" VALUE"),
         "verified": MessageLookupByLibrary.simpleMessage("Verified"),
         "verify": MessageLookupByLibrary.simpleMessage("Verify"),
         "verifyStart":
@@ -1007,6 +1329,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "videoCallsBetaWarning": MessageLookupByLibrary.simpleMessage(
             "Please note that video calls are currently in beta. They might not work as expected or work at all on all platforms."),
         "videoWithSize": m75,
+        "viewOffers": MessageLookupByLibrary.simpleMessage("View Offers"),
+        "views": MessageLookupByLibrary.simpleMessage("Views"),
         "visibilityOfTheChatHistory": MessageLookupByLibrary.simpleMessage(
             "Visibility of the chat history"),
         "visibleForAllParticipants": MessageLookupByLibrary.simpleMessage(
@@ -1021,12 +1345,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "Waiting for partner to accept the emoji…"),
         "waitingPartnerNumbers": MessageLookupByLibrary.simpleMessage(
             "Waiting for partner to accept the numbers…"),
+        "walletAddressCopied": MessageLookupByLibrary.simpleMessage(
+            "Wallet address copied to clipboard"),
         "wallpaper": MessageLookupByLibrary.simpleMessage("Wallpaper"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning!"),
         "wasDirectChatDisplayName": m76,
         "weSentYouAnEmail":
             MessageLookupByLibrary.simpleMessage("We sent you an email"),
         "welcomeBack": MessageLookupByLibrary.simpleMessage("Welcome back!"),
+        "whaleBehavior":
+            MessageLookupByLibrary.simpleMessage("Whale Behaviour"),
         "whatIsGoingOn":
             MessageLookupByLibrary.simpleMessage("What is going on?"),
         "whoCanPerformWhichAction": MessageLookupByLibrary.simpleMessage(
@@ -1055,8 +1383,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "withTheseAddressesRecoveryDescription":
             MessageLookupByLibrary.simpleMessage(
                 "With these addresses you can recover your password."),
-        "wordRecovery":
-            MessageLookupByLibrary.simpleMessage("12 Word recovery"),
+        "witness": MessageLookupByLibrary.simpleMessage("Witness"),
+        "wordRecovery": MessageLookupByLibrary.simpleMessage("Word recovery"),
         "writeAMessage":
             MessageLookupByLibrary.simpleMessage("Write a message…"),
         "yes": MessageLookupByLibrary.simpleMessage("Yes"),
@@ -1068,6 +1396,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "youAreNoLongerParticipatingInThisChat":
             MessageLookupByLibrary.simpleMessage(
                 "You are no longer participating in this chat"),
+        "youAreOverLimit": MessageLookupByLibrary.simpleMessage(
+            "You are over the sending limit."),
+        "youAreUnderLimit": MessageLookupByLibrary.simpleMessage(
+            "You are under the sending baseline"),
         "youBannedUser": m77,
         "youCannotInviteYourself":
             MessageLookupByLibrary.simpleMessage("You cannot invite yourself"),
@@ -1085,6 +1417,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "youUnbannedUser": m83,
         "yourChatBackupHasBeenSetUp": MessageLookupByLibrary.simpleMessage(
             "Your chat backup has been set up."),
+        "yourPassowrdBackup":
+            MessageLookupByLibrary.simpleMessage("Your Password & Backup"),
         "yourPublicKey":
             MessageLookupByLibrary.simpleMessage("Your public key"),
         "yourStory": MessageLookupByLibrary.simpleMessage("Your story")

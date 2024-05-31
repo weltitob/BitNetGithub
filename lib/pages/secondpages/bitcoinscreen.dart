@@ -8,7 +8,6 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
-import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +15,8 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class BitcoinScreen extends GetWidget<BitcoinScreenController> {
   const BitcoinScreen({
@@ -29,7 +30,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
       extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: bitnetAppBar(
-        text: "Bitcoin chart",
+        text: L10n.of(context)!.bitcoinChart,
         context: context,
         onTap: () {
           Navigator.of(context).pop();
@@ -57,7 +58,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                     LongButtonWidget(
                         customWidth: AppTheme.cardPadding * 7.w,
                         customHeight: AppTheme.cardPadding * 2.5,
-                        title: "Buy",
+                        title: L10n.of(context)!.buy,
                         onTap: () {
                           BitNetBottomSheet(
                               context: context, child: PurchaseSheet());
@@ -69,7 +70,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                         buttonType: ButtonType.transparent,
                         customWidth: AppTheme.cardPadding * 7.w,
                         customHeight: AppTheme.cardPadding * 2.5,
-                        title: "Sell",
+                        title: L10n.of(context)!.sell,
                         onTap: () {
                           BitNetBottomSheet(
                               context: context,
@@ -101,14 +102,14 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  "About",
+                  L10n.of(context)!.about,
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
                 SizedBox(
                   height: AppTheme.elementSpacing * 1,
                 ),
                 Text(
-                    "Bitcoin (BTC) is the first cryptocurrency built. Unlike government-issued or fiat currencies such as US Dollars or Euro which are controlled by central banks, Bitcoin can operate without the need of a central authority like a central bank or a company. Users are able to send funds to each other without going through intermediaries."),
+                    L10n.of(context)!.bitcoinDescription),
               ],
             ),
           ),
@@ -119,7 +120,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
               child: Column(
             children: [
               Text(
-                "Quick Links",
+                L10n.of(context)!.quickLinks,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(
@@ -129,7 +130,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   BitNetImageWithTextContainer(
-                    "Blockchain",
+                    L10n.of(context)!.bitcoin,
                     () {
                       context.push('/wallet/bitcoinscreen/mempool');
                     },
@@ -139,7 +140,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                     height: AppTheme.cardPadding * 4,
                   ),
                   BitNetImageWithTextContainer(
-                    "Hashrate & Difficulty",
+                    L10n.of(context)!.hashrateDifficulty,
                     () {
                       context.push('/wallet/bitcoinscreen/hashrate');
                     },
@@ -149,7 +150,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                     height: AppTheme.cardPadding * 4,
                   ),
                   BitNetImageWithTextContainer(
-                    "Fear and Greed",
+                    L10n.of(context)!.fearAndGreed,
                     () {
                       context.push('/wallet/bitcoinscreen/fearandgreed');
                     },
@@ -197,7 +198,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                     right: AppTheme.cardPadding,
                     top: AppTheme.elementSpacing),
                 child: Text(
-                  "Purchase Bitcoin",
+                  L10n.of(context)!.purchaseBitcoin,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
@@ -217,7 +218,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                 child: Row(
                   children: [
                     Text(
-                      'Payment Method',
+                      L10n.of(context)!.payemntMethod,
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ],
@@ -229,7 +230,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: LongButtonWidget(
-                    title: "Buy Bitcoin",
+                    title: L10n.of(context)!.buyBitcoin,
                     onTap: () {},
                     customWidth: double.infinity,
                   ))
@@ -252,7 +253,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                       },
                     ),
                     Text(
-                      "Purchase Bitcoin",
+                      L10n.of(context)!.purchaseBitcoin,
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     SizedBox(width: 32)
@@ -309,7 +310,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                       },
                     ),
                     Text(
-                      "Save Card",
+                      L10n.of(context)!.saveCard,
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     SizedBox(width: 48)
@@ -324,7 +325,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: LongButtonWidget(
-                  title: "Save Card",
+                  title:  L10n.of(context)!.saveCard,
                   onTap: () {},
                   customWidth: double.infinity,
                 ),
@@ -347,21 +348,22 @@ class NewPaymentCardHorizontalWidget extends StatelessWidget {
           controller.animateTo(2);
         },
         child: Container(
-            height: 60,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add),
-                SizedBox(width: AppTheme.elementSpacing),
-                Text("Add New Card",
-                    style: Theme.of(context).textTheme.titleSmall)
-              ],
-            )),
+          height: 60,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.add),
+              SizedBox(width: AppTheme.elementSpacing),
+              Text(L10n.of(context)!.addNewCard,
+                  style: Theme.of(context).textTheme.titleSmall)
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -415,7 +417,6 @@ class PaymentCardHorizontalWidget extends StatelessWidget {
                               Icons.arrow_right,
                             ),
                             onPressed: () {
-                              print("controller is moving");
                               controller.animateTo(1);
                             },
                           )

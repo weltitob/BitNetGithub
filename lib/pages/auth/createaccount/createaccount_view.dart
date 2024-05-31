@@ -1,4 +1,3 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -15,7 +14,7 @@ import 'package:go_router/go_router.dart';
 //import 'package:universal_html/html.dart' as html;
 
 class CreateAccountView extends StatefulWidget {
-  CreateAccountController controller;
+  final CreateAccountController controller;
   CreateAccountView({required this.controller});
 
   @override
@@ -24,9 +23,6 @@ class CreateAccountView extends StatefulWidget {
 
 class _CreateAccountViewState extends State<CreateAccountView>
     with TickerProviderStateMixin {
-  //MERGED connect_page from matrix in this screen
-  //String? get domain => VRouter.of(context).queryParameters['domain'];
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -56,9 +52,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   context.go('/authhome');
                 }
               },
-              actions: [
-         PopUpLangPickerWidget()
-        ]),
+              actions: [PopUpLangPickerWidget()]),
           body: Form(
             key: widget.controller.form,
             child: ListView(
@@ -89,9 +83,9 @@ class _CreateAccountViewState extends State<CreateAccountView>
                     PopUpCountryPickerWidget(),
                     FormTextField(
                       width: AppTheme.cardPadding * 14.w,
-                      hintText: "Username",
+                      hintText: L10n.of(context)!.username,
                       validator: (val) => val!.isEmpty
-                          ? 'The username you entered is not valid'
+                          ? L10n.of(context)!.pleaseEnterValidUsername
                           : null,
                       onChanged: (val) {
                         setState(() {
@@ -120,8 +114,8 @@ class _CreateAccountViewState extends State<CreateAccountView>
                     widget.controller.errorMessage == null
                         ? Container()
                         : Padding(
-                            padding:   EdgeInsets.only(
-                                top: AppTheme.cardPadding.h),
+                            padding:
+                                EdgeInsets.only(top: AppTheme.cardPadding.h),
                             child: Text(
                               widget.controller.errorMessage!,
                               textAlign: TextAlign.center,
@@ -143,7 +137,9 @@ class _CreateAccountViewState extends State<CreateAccountView>
                       margin: EdgeInsets.only(top: AppTheme.cardPadding.h),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black60,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.white60
+                              : AppTheme.black60,
                           width: 2,
                         ),
                         borderRadius: AppTheme.cardRadiusCircular,

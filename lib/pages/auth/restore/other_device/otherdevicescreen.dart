@@ -8,6 +8,8 @@ import 'package:bitnet/components/container/futurelottie.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 import 'package:lottie/lottie.dart';
 
 class OtherDeviceScreen extends StatefulWidget {
@@ -51,24 +53,22 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
-            text: "Connect with other device",
+            text: L10n.of(context)!.connectWithOtherDevices,
             context: context,
             onTap: () {
               Navigator.of(context).pop();
             },
-            actions: [
-         PopUpLangPickerWidget()
-        ]),
+            actions: [PopUpLangPickerWidget()]),
         body: Padding(
-          padding:   EdgeInsets.symmetric(
-              horizontal: AppTheme.cardPadding * 1.5.w),
+          padding:
+              EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5.w),
           child: ListView(
             children: [
               SizedBox(
                 height: AppTheme.cardPadding * 1.5.h,
               ),
               Text(
-                "Step 1: Open the app on a different device.",
+                L10n.of(context)!.scanQrStepOne,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
@@ -77,30 +77,31 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      "Launch the bitnet app on an alternative device where your account is already active and logged in.",
+                      L10n.of(context)!.launchBitnetApp,
                       textAlign: TextAlign.left,
                       maxLines: 50,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
                   Container(
-                      height: AppTheme.cardPadding * 7.h,
-                      width: AppTheme.cardPadding * 7.w,
-                      color: Colors.transparent,
-                      child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: AppTheme.cardRadiusMid,
-                            color: Colors.orange.withAlpha(2),
-                          ),
-                          child: buildFutureLottie(
-                              device_morph_composition, true))),
+                    height: AppTheme.cardPadding * 7.h,
+                    width: AppTheme.cardPadding * 7.w,
+                    color: Colors.transparent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: AppTheme.cardRadiusMid,
+                        color: Colors.orange.withAlpha(2),
+                      ),
+                      child: buildFutureLottie(device_morph_composition, true),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(
                 height: AppTheme.cardPadding * 1.h,
               ),
               Text(
-                "Step 2: Open the QR-Code",
+                L10n.of(context)!.scanQrStepTwo,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
@@ -120,7 +121,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      "Navigate to Profile > Settings > Security > Scan QR-Code for Recovery. You will need to verify your identity now.",
+                      L10n.of(context)!.navQrRecovery,
                       textAlign: TextAlign.left,
                       maxLines: 50,
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -132,7 +133,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                 height: AppTheme.cardPadding * 2.25.h,
               ),
               Text(
-                "Step 3: Scan the QR-Code with this device",
+                L10n.of(context)!.scanQrStepThree,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
@@ -144,7 +145,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      "Press the Button below and scan the QR Code. Wait until the process is finished don't leave the app.",
+                      L10n.of(context)!.pressBtnScanQr,
                       textAlign: TextAlign.left,
                       maxLines: 50,
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -157,13 +158,11 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                       child: buildFutureLottie(scan_qr_composition, true)),
                 ],
               ),
-              SizedBox(
-                height: AppTheme.cardPadding.h
-              ),
+              SizedBox(height: AppTheme.cardPadding.h),
               Center(
                 child: LongButtonWidget(
                     customWidth: AppTheme.cardPadding * 14.w,
-                    title: "Scan QR",
+                    title: L10n.of(context)!.scanQr,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
