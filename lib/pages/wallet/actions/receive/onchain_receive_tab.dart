@@ -170,7 +170,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                             ? "Change Amount"
                             : controller.currController.text,
                       ),
-                      Text(getCurrency('USD'),
+                      controller.currController.text == "0" || controller.currController.text.isEmpty ? SizedBox() :Text(getCurrency('USD'),
                           style: TextStyle(
                               fontSize: 16,
                               color:

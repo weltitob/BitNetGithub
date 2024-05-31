@@ -160,7 +160,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                     Text(controller.satController.text == "0" || controller.satController.text.isEmpty
                         ? "Change Amount"
                         : controller.satController.text,),
-                    Icon(
+                    controller.satController.text == "0" || controller.satController.text.isEmpty ? SizedBox() : Icon(
                       getCurrencyIcon(
                         BitcoinUnits.SAT.name,
                       ),
