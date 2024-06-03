@@ -18,6 +18,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class BitcoinCardInformationScreen extends StatefulWidget {
   BitcoinCardInformationScreen({super.key});
@@ -49,7 +51,7 @@ class _BitcoinCardInformationScreenState
         onTap: () {
           context.go("/feed");
         },
-        text: "Bitcoin Card Information",
+        text: L10n.of(context)!.bitcoinInfoCard,
       ),
       context: context,
       body: PopScope(
@@ -72,11 +74,11 @@ class _BitcoinCardInformationScreenState
                             padding: EdgeInsets.symmetric(horizontal: 12.0),
                             child: BalanceCardBtc()),
                         BitNetListTile(
-                          text: 'Address',
+                          text: L10n.of(context)!.address,
                           trailing: Text('bc1qkmlp...' + '30fltzunefdjln', style: Theme.of(context).textTheme.bodyMedium),
                         ),
                         BitNetListTile(
-                          text: 'QRCode',
+                          text: L10n.of(context)!.scanQr,
                           trailing: Expanded(
                             child: Container(
                               padding: const EdgeInsets.all(
@@ -101,7 +103,7 @@ class _BitcoinCardInformationScreenState
                         ),
 
                         BitNetListTile(
-                          text: 'Total Received',
+                          text: L10n.of(context)!.totalReceived,
                           trailing: Row(
                             children: [
                               Text(
@@ -117,7 +119,7 @@ class _BitcoinCardInformationScreenState
                         ),
 
                         BitNetListTile(
-                          text: 'Total Sent',
+                          text: L10n.of(context)!.totalSent,
                           trailing: Row(
                             children: [
                               Text(
@@ -132,7 +134,7 @@ class _BitcoinCardInformationScreenState
                           height: 5,
                         ),
                         BitNetListTile(
-                          text: 'Balance',
+                          text: L10n.of(context)!.balance,
                           trailing: Row(
                             children: [
                               Text(
@@ -157,7 +159,7 @@ class _BitcoinCardInformationScreenState
                           return Column(
                             children: [
                               SearchFieldWidget(
-                                hintText: 'Search',
+                                hintText: L10n.of(context)!.search,
                                 handleSearch: (v) {
                                   setState(() {
                                     controller.searchValue = v;
@@ -223,8 +225,7 @@ class _BitcoinCardInformationScreenState
                                           int value = controller
                                               .calculateAddressValue(controller
                                                   .subTransactionModel[index]);
-                                          print('difference $value');
-                                          if (controller
+                                           if (controller
                                                   .subTransactionModel[index]
                                                   .status!
                                                   .blockTime !=

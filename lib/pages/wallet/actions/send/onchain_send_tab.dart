@@ -7,14 +7,14 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class OnChainSendTab extends GetWidget<SendsController> {
   const OnChainSendTab({
@@ -67,9 +67,8 @@ class OnChainSendTab extends GetWidget<SendsController> {
                 Padding(
                     padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
                     child: LongButtonWidget(
-                      title: "JETZT SENDEN!",
+                      title: L10n.of(context)!.sendNow,
                       onTap: () async {
-                        logger.i("onchain SendBTC getting called");
                         await controller.sendBTC(context);
                       },
                     )),
@@ -147,7 +146,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
           leading: Avatar(),
           // The title displays the user's name.
           title: Text(
-            "Unbekannt",
+            L10n.of(context)!.unknown,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           // The subtitle displays a card number.
@@ -157,7 +156,6 @@ class OnChainSendTab extends GetWidget<SendsController> {
               child: const Icon(Icons.edit_rounded,
                   color: Colors.grey, size: AppTheme.cardPadding),
               onTap: () {
-                logger.i("Edit button pressed");
                 controller.resetValues();
               }),
         ),
@@ -172,11 +170,11 @@ class OnChainSendTab extends GetWidget<SendsController> {
       onTap: () async {
         await Clipboard.setData(
             ClipboardData(text: controller.bitcoinReceiverAdress));
-        showOverlay(context, "Wallet-Adresse in Zwischenablage kopiert");
+        showOverlay(context, L10n.of(context)!.walletAddressCopied);
       },
       child: Row(
         children: [
-          // Icon for copying the receiver address to clipboard
+          // Icon for copying the receiver address to 
           const Icon(Icons.copy_rounded, color: Colors.grey, size: 16),
           SizedBox(
             width: AppTheme.cardPadding * 8,
@@ -193,7 +191,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
   }
 
   Widget bitcoinWidget(BuildContext context) {
-    final chartLine =Get.find<WalletsController>().chartLines.value;
+    final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
@@ -207,35 +205,26 @@ class OnChainSendTab extends GetWidget<SendsController> {
         double.parse(controller.satController.text),
         currency,
         bitcoinPrice!);
-    return Obx((){
+    return Obx(() {
       Get.find<WalletsController>().chartLines.value;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          AmountWidget(
-            bitcoinUnit: controller.bitcoinUnit,
-            enabled: ()=> double.parse(controller.currencyController.text) == 0,
-            satController: controller.satController,
-            btcController: controller.btcController,
-            currController: controller.currencyController,
-            focusNode: controller.myFocusNodeMoney,
-            context: context,
-            autoConvert: true
-          ),
-          // const SizedBox(
-          //   height: AppTheme.cardPadding,
-          // ),
-          // Container(
-          //   child: Text(
-          //     "Fees ≈ ${currencyEquivalent}${getCurrency(currency)}",
-          //     textAlign: TextAlign.center,
-          //     style: Theme.of(context).textTheme.bodyLarge,
-          //   ),
-          // )
-        ],
-      ),
-    );});
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AmountWidget(
+                bitcoinUnit: controller.bitcoinUnit,
+                enabled: () =>
+                    double.parse(controller.currencyController.text) == 0,
+                satController: controller.satController,
+                btcController: controller.btcController,
+                currController: controller.currencyController,
+                focusNode: controller.myFocusNodeMoney,
+                context: context,
+                autoConvert: true),
+          ],
+        ),
+      );
+    });
   }
 }

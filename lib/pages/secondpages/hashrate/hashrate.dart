@@ -7,6 +7,8 @@ import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class HashrateScreen extends StatefulWidget {
   const HashrateScreen({super.key});
@@ -70,7 +72,7 @@ class _HashrateScreenState extends State<HashrateScreen> {
       extendBodyBehindAppBar: true,
 
       appBar: bitnetAppBar(
-        text: 'Hashrate',
+        text: L10n.of(context)!.hashrate,
         context: context,
         onTap: (){
           context.pop();

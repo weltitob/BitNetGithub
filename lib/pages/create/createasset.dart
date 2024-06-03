@@ -36,6 +36,7 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mime/mime.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 //THIS ONE HERE SEEMS TO BE TH EISSUE THIS IMPORT FUCKS EVERYTHING UP
 //import 'package:bitnet/models/postmodels/post.dart';
@@ -97,15 +98,20 @@ class _CreateAssetState extends State<CreateAsset> {
     return BitNetBottomSheet(
         context: context,
         child: bitnetScaffold(
-          extendBodyBehindAppBar: true,
-            appBar: bitnetAppBar(context: context,
-            text: "Add attributes",),
+            extendBodyBehindAppBar: true,
+            appBar: bitnetAppBar(
+              context: context,
+              text: L10n.of(context)!.addAttributes,
+            ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing),
                 child: Column(
                   children: [
-                    SizedBox(height: AppTheme.cardPadding.h * 3,),
+                    SizedBox(
+                      height: AppTheme.cardPadding.h * 3,
+                    ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -114,7 +120,7 @@ class _CreateAssetState extends State<CreateAsset> {
                           width: AppTheme.cardPadding.w * 6.75,
                           child: FormTextField(
                             controller: nameController,
-                            hintText: "Name",
+                            hintText: L10n.of(context)!.widgetName,
                             width: 0.8.sw,
                           ),
                         ),
@@ -122,13 +128,15 @@ class _CreateAssetState extends State<CreateAsset> {
                           width: AppTheme.cardPadding.w * 6.75,
                           child: FormTextField(
                             controller: nameController,
-                            hintText: "Value",
+                            hintText: L10n.of(context)!.value,
                             width: 0.8.sw,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: AppTheme.elementSpacing,),
+                    SizedBox(
+                      height: AppTheme.elementSpacing,
+                    ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -137,7 +145,7 @@ class _CreateAssetState extends State<CreateAsset> {
                           width: AppTheme.cardPadding.w * 6.75,
                           child: FormTextField(
                             controller: nameController,
-                            hintText: "Name",
+                            hintText: L10n.of(context)!.widgetName,
                             width: 0.8.sw,
                           ),
                         ),
@@ -145,13 +153,15 @@ class _CreateAssetState extends State<CreateAsset> {
                           width: AppTheme.cardPadding.w * 6.75,
                           child: FormTextField(
                             controller: nameController,
-                            hintText: "Value",
+                            hintText: L10n.of(context)!.value,
                             width: 0.8.sw,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: AppTheme.elementSpacing,),
+                    SizedBox(
+                      height: AppTheme.elementSpacing,
+                    ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -160,7 +170,7 @@ class _CreateAssetState extends State<CreateAsset> {
                           width: AppTheme.cardPadding.w * 6.75,
                           child: FormTextField(
                             controller: nameController,
-                            hintText: "Name",
+                            hintText: L10n.of(context)!.widgetName,
                             width: 0.8.sw,
                           ),
                         ),
@@ -168,7 +178,7 @@ class _CreateAssetState extends State<CreateAsset> {
                           width: AppTheme.cardPadding.w * 6.75,
                           child: FormTextField(
                             controller: nameController,
-                            hintText: "Value",
+                            hintText: L10n.of(context)!.value,
                             width: 0.8.sw,
                           ),
                         ),
@@ -178,8 +188,7 @@ class _CreateAssetState extends State<CreateAsset> {
                 ),
               ),
             ),
-            context: context
-        ));
+            context: context));
   }
 
   //da stettdessen den von izak mit sleection nehmen
@@ -261,7 +270,7 @@ class _CreateAssetState extends State<CreateAsset> {
       },
       child: bitnetScaffold(
         appBar: bitnetAppBar(
-          text: "Create Post",
+          text: L10n.of(context)!.createPost,
           context: context,
           hasBackButton: true,
           onTap: () {
@@ -286,7 +295,7 @@ class _CreateAssetState extends State<CreateAsset> {
                         TextField(
                           controller: nameController,
                           decoration: AppTheme.textfieldDecoration(
-                              "Name your Asset", context),
+                              L10n.of(context)!.nameYourAsset, context),
                         ),
                         Expanded(
                           child: postFiles.isNotEmpty
@@ -332,7 +341,7 @@ class _CreateAssetState extends State<CreateAsset> {
                           leadingIcon: postFiles.isNotEmpty
                               ? Icon(Icons.arrow_forward_ios_rounded)
                               : Icon(Icons.lock_rounded),
-                          title: "POST",
+                          title: L10n.of(context)!.post,
                           onTap: () {
                             if (postFiles.isNotEmpty) {
                               convertToBase64AndMakePushReady(
@@ -340,7 +349,7 @@ class _CreateAssetState extends State<CreateAsset> {
                             } else {
                               showOverlay(
                                 context,
-                                "Please add some content to your post",
+                                L10n.of(context)!.postContentError,
                                 color: AppTheme.errorColor,
                               );
                             }
@@ -416,7 +425,7 @@ class _CreateAssetState extends State<CreateAsset> {
                                 keyboardType: TextInputType.multiline,
                                 controller: commentController,
                                 decoration: AppTheme.textfieldDecoration(
-                                    "Type message", context)),
+                                    L10n.of(context)!.typeMessage, context)),
                       ),
                       Container(
                         margin: EdgeInsets.symmetric(
@@ -433,7 +442,7 @@ class _CreateAssetState extends State<CreateAsset> {
                               extendBodyBehindAppBar: true,
                               appBar: bitnetAppBar(
                                 hasBackButton: false,
-                                text: "Add Content",
+                                text: L10n.of(context)!.addContent,
                                 context: context,
                               ),
                               body: AddContentWidget(
@@ -528,14 +537,7 @@ class _PostItem extends StatelessWidget {
         postFile: postFile,
       );
     }
-
-    // if (postFile.type == MediaType.pdf) {
-    //   return _PdfBuilder(postFile: postFile);
-    // }
-    //
-    // if (postFile.type == MediaType.document) {
-    //   return _DocumentBuilder(postFile: postFile);
-    // }
+ 
 
     return Container();
   }
@@ -571,7 +573,7 @@ void triggerAssetMinting(
     if (mintAssetResponse == null) {
       showOverlay(
         context,
-        "Failed to mint asset: You might already have an asset with a similar name in your list.",
+        L10n.of(context)!.assetMintError,
         color: AppTheme.errorColor,
       );
       return;

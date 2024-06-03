@@ -6,6 +6,8 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class CreateInvoice extends GetWidget<ReceiveController> {
   @override
@@ -44,14 +46,14 @@ class CreateInvoice extends GetWidget<ReceiveController> {
           width: AppTheme.cardPadding * 12,
           child: FormTextField(
             controller: controller.messageController,
-            hintText: "Add a message...",
+            hintText: L10n.of(context)!.addAMessage,
           ),
         ),
         SizedBox(
           height: AppTheme.cardPadding * 0.75,
         ),
         LongButtonWidget(
-            title: "Generate Invoice",
+            title: L10n.of(context)!.generateInvoice,
             customWidth: AppTheme.cardPadding * 12,
             onTap: () {
               controller.getInvoice(

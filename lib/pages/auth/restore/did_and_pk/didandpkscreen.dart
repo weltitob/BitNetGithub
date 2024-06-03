@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
@@ -17,7 +16,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-
 
 Random random = new Random();
 
@@ -109,7 +107,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
         context: context,
         gradientColor: Colors.black,
         appBar: bitnetAppBar(
-          text: "DID and Private Key Login",
+          text: L10n.of(context)!.privateKeyLogin,
           context: context,
           onTap: () {
             Navigator.of(context).pop();
@@ -143,7 +141,8 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: AppTheme.elementSpacing / 2.w),
+                    margin:
+                        EdgeInsets.only(left: AppTheme.elementSpacing / 2.w),
                     height: AppTheme.cardPadding * 1.5.h,
                     child: Image.asset("assets/images/ion.png"),
                   ),
@@ -172,15 +171,14 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     ),
                   ),
                   Padding(
-                    padding:
-                          EdgeInsets.only(bottom: AppTheme.cardPadding.h),
+                    padding: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
                     child: Container(
                       child: FormTextField(
                         validator: (val) {
                           if (val!.isEmpty) {
-                            return "Bitte geben Sie ihr Passwort ein";
+                            return L10n.of(context)!.pleaseEnterYourPassword;
                           } else if (val.length < 6) {
-                            return "Das Passwort muss mindestens 6 Zeichen enthalten";
+                            return L10n.of(context)!.passwordShouldBeSixDig;
                           } else {
                             return null;
                           }

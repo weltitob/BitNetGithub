@@ -3,17 +3,15 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
-import 'package:bitnet/components/loaders/empty_page.dart';
 import 'package:bitnet/intl/generated/l10n.dart' as intl;
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/pages/routetrees/controllers/widget_tree_controller.dart';
 import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:bitnet/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -81,23 +79,5 @@ class WidgetTree extends StatelessWidget {
 
   int? primaryColor;
   SharedPreferences? preferences;
-
-  // Future getColor() async {
-  //   preferences = await SharedPreferences.getInstance();
-  //   var data = await settingsCollection.doc(profileId).get();
-  //   primaryColor = data['primary_color'];
-  //   setState(() {});
-  //   return primaryColor.toString();
-  // }
-  //
-  // ThemeMode? theme_mode;
-  //
-  // Future getBrightness() async {
-  //   preferences = await SharedPreferences.getInstance();
-  //   String theme = preferences!.getString("theme_mode") ?? '';
-  //   print('theeme');
-  //   print(theme);
-  //   setState(() {});
-  //   return theme_mode.toString();
-  // }
+ 
 }

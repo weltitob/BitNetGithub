@@ -11,6 +11,7 @@ import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 
 import '../../components/appstandards/BitNetAppBar.dart';
 import '../../components/appstandards/BitNetScaffold.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import 'package:flutter/services.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
@@ -34,7 +35,7 @@ class QRScannerView extends StatelessWidget {
         backgroundColor: Colors.transparent,
         gradientColor: Colors.black,
         appBar: bitnetAppBar(
-            text: "Scan QR",
+            text: L10n.of(context)!.qrCode,
             context: context,
             onTap: () {
               context.pop();
@@ -99,9 +100,7 @@ class QRScannerView extends StatelessWidget {
                               final PermissionState ps =
                                   await PhotoManager.requestPermissionExtend();
                               if (ps.isAuth || ps.hasAccess) {
-                              
                                 ImagePickerBottomSheet(context,
-                                    
                                     onImageTap: (album, img) async {
                                   String? fileUrl =
                                       (await img.loadFile())!.path;
@@ -123,13 +122,13 @@ class QRScannerView extends StatelessWidget {
                                           code.rawValue!, context);
                                     }
                                   } else {
-                                    showOverlay(context, "No code was found.",
+                                    showOverlay(context, L10n.of(context)!.noCodeFoundOverlayError,
                                         color: AppTheme.errorColor);
                                   }
                                 });
                               } else {
                                 showOverlay(context,
-                                    "Please give the app photo access to use this feature.");
+                                    L10n.of(context)!.pleaseGiveAccess);
                               }
                             },
                             child: Icon(Icons.image))
@@ -152,8 +151,7 @@ class QRScannerView extends StatelessWidget {
 }
 
 Future<T?> ImagePickerBottomSheet<T>(BuildContext context,
-    {
-    required Function(AssetPathEntity album, AssetEntity image)? onImageTap}) {
+    {required Function(AssetPathEntity album, AssetEntity image)? onImageTap}) {
   return BitNetBottomSheet<T>(
       context: context,
       width: MediaQuery.sizeOf(context).width,
@@ -189,20 +187,17 @@ class _ImagePickerState extends State<ImagePicker> {
   }
 
   void loadData() async {
-       List<AssetPathEntity> loadedAlbums =
-                                    await BitnetPhotoManager.loadAlbums();
-                                List<AssetEntity> photos =
-                                    await BitnetPhotoManager.loadImages(
-                                        loadedAlbums[0]);
-                                  albums = loadedAlbums;
-                                  current_album = albums![0];
-                                  current_photos = photos;
-  setState((){});
-
+    List<AssetPathEntity> loadedAlbums = await BitnetPhotoManager.loadAlbums();
+    List<AssetEntity> photos =
+        await BitnetPhotoManager.loadImages(loadedAlbums[0]);
+    albums = loadedAlbums;
+    current_album = albums![0];
+    current_photos = photos;
+    setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
-    
     if (selecting_photos == false && !loaded_thumbnails && albums != null) {
       album_thumbnails = null;
 
@@ -219,41 +214,43 @@ class _ImagePickerState extends State<ImagePicker> {
           height: AppTheme.cardPadding / 2,
         ),
         Center(
-          child: Text("Select Image for QR Scan",
+          child: Text(L10n.of(context)!.selectImageQrCode,
               style: Theme.of(context).textTheme.titleSmall),
         ),
         SizedBox(
           height: AppTheme.cardPadding,
         ),
-        if(albums == null || current_photos == null) Center(child:CircularProgressIndicator()),
-       if(albums != null && current_photos != null )...[ TextButton(
-          child: Row(
-            children: [
-              Text(current_album!.name,
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      fontSize: 18, decoration: TextDecoration.underline)),
-              Icon(
-                  selecting_photos
-                      ? Icons.arrow_drop_down_rounded
-                      : Icons.arrow_drop_up_rounded,
-                  color: Colors.white)
-            ],
+        if (albums == null || current_photos == null)
+          Center(child: CircularProgressIndicator()),
+        if (albums != null && current_photos != null) ...[
+          TextButton(
+            child: Row(
+              children: [
+                Text(current_album!.name,
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                        fontSize: 18, decoration: TextDecoration.underline)),
+                Icon(
+                    selecting_photos
+                        ? Icons.arrow_drop_down_rounded
+                        : Icons.arrow_drop_up_rounded,
+                    color: Colors.white)
+              ],
+            ),
+            onPressed: () {
+              if (selecting_photos) {
+                loaded_thumbnails = false;
+                selecting_photos = false;
+              } else {
+                selecting_photos = true;
+              }
+              setState(() {});
+            },
           ),
-          onPressed: () {
-            if (selecting_photos) {
-              loaded_thumbnails = false;
-              selecting_photos = false;
-            } else {
-              selecting_photos = true;
-            }
-            setState(() {});
-          },
-        ),
-        Divider(),
-        SizedBox(
-          height: AppTheme.cardPadding / 2,
-        ),
-        Container(
+          Divider(),
+          SizedBox(
+            height: AppTheme.cardPadding / 2,
+          ),
+          Container(
             height: MediaQuery.sizeOf(context).height * 0.45,
             child: (current_photos == null)
                 ? Center(child: CircularProgressIndicator())
@@ -335,7 +332,11 @@ class _ImagePickerState extends State<ImagePicker> {
                                   ));
                             },
                           )
-                        : Center(child: CircularProgressIndicator()))]
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          ),
+          )
+        ]
       ],
     );
   }

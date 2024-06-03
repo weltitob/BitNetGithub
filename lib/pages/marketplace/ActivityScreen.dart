@@ -7,6 +7,7 @@ import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:bitnet/components/marketplace_widgets/TradingHistoryList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({Key? key}) : super(key: key);
@@ -89,7 +90,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     width: size.width,
                     child: Text(
-                      'Activities',
+                      L10n.of(context)!.activities,
                       style: TextStyle(
                         fontSize: 28.sp,
                         fontWeight: FontWeight.w700,
@@ -111,15 +112,15 @@ class _ActivityScreenState extends State<ActivityScreen> {
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: const CommonHeading(
-                      headingText: 'Price History',
+                    child:   CommonHeading(
+                      headingText: L10n.of(context)!.priceHistory,
                       hasButton: false,
                       collapseBtn: true,
                       child: BarChart()
                     ),
                   ),
                   CommonHeading(
-                    headingText: 'Trading History',
+                    headingText: L10n.of(context)!.tradingHistory,
                     hasButton: false,
                     isNormalChild: true,
                     isChild: Container(

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class FeedController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -33,28 +34,28 @@ class FeedController extends GetxController
   final List<WalletCategory> walletcategorys = [
     WalletCategory(
       'assets/images/paper_wallet.png',
-      'Assets',
-      'Assets',
+      L10n.of(Get.context!)!.assets,
+      L10n.of(Get.context!)!.assets,
     ),
     WalletCategory(
       'assets/images/bitcoin.png',
-      'Bitcoin',
-      'Bitcoin',
+      L10n.of(Get.context!)!.bitcoin,
+      L10n.of(Get.context!)!.bitcoin,
     ),
     WalletCategory(
       'assets/images/friends.png',
-      'People',
-      'People',
+      L10n.of(Get.context!)!.people,
+      L10n.of(Get.context!)!.people,
     ),
     WalletCategory(
       'assets/images/new_chat.png',
-      'Groups',
-      'Groups',
+      L10n.of(Get.context!)!.group,
+      L10n.of(Get.context!)!.group,
     ),
     WalletCategory(
       'assets/marketplace/ActiveHeart.png',
-      'Liked',
-      'Liked',
+      L10n.of(Get.context!)!.liked,
+      L10n.of(Get.context!)!.liked,
     ),
   ];
 
@@ -101,7 +102,6 @@ class FeedController extends GetxController
       // Start Session
       NfcManager.instance.startSession(
         onDiscovered: (NfcTag tag) async {
-          print('asdd');
           var ndef = Ndef.from(tag);
           if (ndef != null) {
             if (ndef.cachedMessage != null) {

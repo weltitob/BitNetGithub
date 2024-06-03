@@ -120,6 +120,16 @@ class S {
     );
   }
 
+  /// `DID and Private Key Login`
+  String get privateKeyLogin {
+    return Intl.message(
+      'DID and Private Key Login',
+      name: 'privateKeyLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Restore with social recovery`
   String get restoreWithSocialRecovery {
     return Intl.message(
@@ -255,6 +265,456 @@ class S {
     return Intl.message(
       'Please enter a valid email address.',
       name: 'pleaseEnterValidEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The username you entered is not valid.`
+  String get pleaseEnterValidUsername {
+    return Intl.message(
+      'The username you entered is not valid.',
+      name: 'pleaseEnterValidUsername',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This username is already taken.`
+  String get usernameTaken {
+    return Intl.message(
+      'This username is already taken.',
+      name: 'usernameTaken',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your 24 words in the right order`
+  String get enterWordsRightOrder {
+    return Intl.message(
+      'Enter your 24 words in the right order',
+      name: 'enterWordsRightOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Key`
+  String get confirmKey {
+    return Intl.message(
+      'Confirm Key',
+      name: 'confirmKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip at own risk`
+  String get skipAtOwnRisk {
+    return Intl.message(
+      'Skip at own risk',
+      name: 'skipAtOwnRisk',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Password & Backup`
+  String get yourPassowrdBackup {
+    return Intl.message(
+      'Your Password & Backup',
+      name: 'yourPassowrdBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save your mnemonic securely!`
+  String get saveYourmnemonicSecurely {
+    return Intl.message(
+      'Save your mnemonic securely!',
+      name: 'saveYourmnemonicSecurely',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get continues {
+    return Intl.message(
+      'Continue',
+      name: 'continues',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `fixed`
+  String get fixed {
+    return Intl.message(
+      'fixed',
+      name: 'fixed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `time ago...`
+  String get timeAgo {
+    return Intl.message(
+      'time ago...',
+      name: 'timeAgo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No users found.`
+  String get noUserFound {
+    return Intl.message(
+      'No users found.',
+      name: 'noUserFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assets`
+  String get assets {
+    return Intl.message(
+      'Assets',
+      name: 'assets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bitcoin`
+  String get bitcoin {
+    return Intl.message(
+      'Bitcoin',
+      name: 'bitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Whale Behaviour`
+  String get whaleBehavior {
+    return Intl.message(
+      'Whale Behaviour',
+      name: 'whaleBehavior',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` NAME`
+  String get nameBehavior {
+    return Intl.message(
+      ' NAME',
+      name: 'nameBehavior',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` DATE`
+  String get dateBehavior {
+    return Intl.message(
+      ' DATE',
+      name: 'dateBehavior',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` VALUE`
+  String get valueBehavior {
+    return Intl.message(
+      ' VALUE',
+      name: 'valueBehavior',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` Send Bitcoin`
+  String get sendBitcoin {
+    return Intl.message(
+      ' Send Bitcoin',
+      name: 'sendBitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DON'T SHARE THIS QR CODE TO ANYONE!`
+  String get dontShareAnyone {
+    return Intl.message(
+      'DON\'T SHARE THIS QR CODE TO ANYONE!',
+      name: 'dontShareAnyone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` TYPE`
+  String get typeBehavior {
+    return Intl.message(
+      ' TYPE',
+      name: 'typeBehavior',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Our service is currently in beta and \nlimited to invited users. You can share these invitation \nkeys with your friends and family!`
+  String get inviteDescription {
+    return Intl.message(
+      'Our service is currently in beta and \nlimited to invited users. You can share these invitation \nkeys with your friends and family!',
+      name: 'inviteDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` No results found`
+  String get noResultsFound {
+    return Intl.message(
+      ' No results found',
+      name: 'noResultsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bitcoin News`
+  String get bitcoinNews {
+    return Intl.message(
+      'Bitcoin News',
+      name: 'bitcoinNews',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Quick Links`
+  String get quickLinks {
+    return Intl.message(
+      'Quick Links',
+      name: 'quickLinks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fear & Greed Index`
+  String get fearAndGreedIndex {
+    return Intl.message(
+      'Fear & Greed Index',
+      name: 'fearAndGreedIndex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bitcoin (BTC) is the first cryptocurrency built. Unlike government-issued or fiat currencies such as US Dollars or Euro which are controlled by central banks, Bitcoin can operate without the need of a central authority like a central bank or a company. Users are able to send funds to each other without going through intermediaries.`
+  String get bitcoinDescription {
+    return Intl.message(
+      'Bitcoin (BTC) is the first cryptocurrency built. Unlike government-issued or fiat currencies such as US Dollars or Euro which are controlled by central banks, Bitcoin can operate without the need of a central authority like a central bank or a company. Users are able to send funds to each other without going through intermediaries.',
+      name: 'bitcoinDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `People`
+  String get people {
+    return Intl.message(
+      'People',
+      name: 'people',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Now: `
+  String get now {
+    return Intl.message(
+      'Now: ',
+      name: 'now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last updated: `
+  String get lastUpdated {
+    return Intl.message(
+      'Last updated: ',
+      name: 'lastUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy Bitcoin`
+  String get buyBitcoin {
+    return Intl.message(
+      'Buy Bitcoin',
+      name: 'buyBitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Card`
+  String get saveCard {
+    return Intl.message(
+      'Save Card',
+      name: 'saveCard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Card`
+  String get addNewCard {
+    return Intl.message(
+      'Add New Card',
+      name: 'addNewCard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment Method`
+  String get payemntMethod {
+    return Intl.message(
+      'Payment Method',
+      name: 'payemntMethod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purchase Bitcoin`
+  String get purchaseBitcoin {
+    return Intl.message(
+      'Purchase Bitcoin',
+      name: 'purchaseBitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fear and Greed`
+  String get fearAndGreed {
+    return Intl.message(
+      'Fear and Greed',
+      name: 'fearAndGreed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hashrate & Difficulty`
+  String get hashrateDifficulty {
+    return Intl.message(
+      'Hashrate & Difficulty',
+      name: 'hashrateDifficulty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Groups`
+  String get groups {
+    return Intl.message(
+      'Groups',
+      name: 'groups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Liked`
+  String get liked {
+    return Intl.message(
+      'Liked',
+      name: 'liked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `auto long`
+  String get autoLong {
+    return Intl.message(
+      'auto long',
+      name: 'autoLong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `auto short`
+  String get autoShort {
+    return Intl.message(
+      'auto short',
+      name: 'autoShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No users could be found`
+  String get noUsersFound {
+    return Intl.message(
+      'No users could be found',
+      name: 'noUsersFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hey there Bitcoiners! I joined the revolution!`
+  String get joinedRevolution {
+    return Intl.message(
+      'Hey there Bitcoiners! I joined the revolution!',
+      name: 'joinedRevolution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your mnemonic is correct! Please keep it safe.`
+  String get mnemonicCorrect {
+    return Intl.message(
+      'Your mnemonic is correct! Please keep it safe.',
+      name: 'mnemonicCorrect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your mnemonic does not match. Please try again.`
+  String get mnemonicInCorrect {
+    return Intl.message(
+      'Your mnemonic does not match. Please try again.',
+      name: 'mnemonicInCorrect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save this sequence on a piece of paper it acts as your password to your account, a loss of this sequence will result in a loss of your funds.`
+  String get saveYourmnemonicSecurelyDescription {
+    return Intl.message(
+      'Save this sequence on a piece of paper it acts as your password to your account, a loss of this sequence will result in a loss of your funds.',
+      name: 'saveYourmnemonicSecurelyDescription',
       desc: '',
       args: [],
     );
@@ -2010,16 +2470,6 @@ class S {
     );
   }
 
-  /// `Groups`
-  String get groups {
-    return Intl.message(
-      'Groups',
-      name: 'groups',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Group with {displayname}`
   String groupWith(Object displayname) {
     return Intl.message(
@@ -2510,6 +2960,116 @@ class S {
     );
   }
 
+  /// `Previous output type`
+  String get previousOutputType {
+    return Intl.message(
+      'Previous output type',
+      name: 'previousOutputType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous output script`
+  String get previousOutputScripts {
+    return Intl.message(
+      'Previous output script',
+      name: 'previousOutputScripts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Witness`
+  String get witness {
+    return Intl.message(
+      'Witness',
+      name: 'witness',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Outputs\n`
+  String get outputTx {
+    return Intl.message(
+      'Outputs\n',
+      name: 'outputTx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show Details`
+  String get showDetails {
+    return Intl.message(
+      'Show Details',
+      name: 'showDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hide Details`
+  String get hideDetails {
+    return Intl.message(
+      'Hide Details',
+      name: 'hideDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `'Inputs\n'`
+  String get inputTx {
+    return Intl.message(
+      '\'Inputs\n\'',
+      name: 'inputTx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This transaction has been replaced by:`
+  String get transactionReplaced {
+    return Intl.message(
+      'This transaction has been replaced by:',
+      name: 'transactionReplaced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading`
+  String get loading {
+    return Intl.message(
+      'Loading',
+      name: 'loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replaced`
+  String get replaced {
+    return Intl.message(
+      'Replaced',
+      name: 'replaced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment Network`
+  String get paymentNetwork {
+    return Intl.message(
+      'Payment Network',
+      name: 'paymentNetwork',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Log in to {homeserver}`
   String logInTo(Object homeserver) {
     return Intl.message(
@@ -2735,6 +3295,1316 @@ class S {
     return Intl.message(
       'Scan QR code',
       name: 'scanQrCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan QR`
+  String get scanQr {
+    return Intl.message(
+      'Scan QR',
+      name: 'scanQr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter`
+  String get filter {
+    return Intl.message(
+      'Filter',
+      name: 'filter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Art`
+  String get art {
+    return Intl.message(
+      'Art',
+      name: 'art',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supply`
+  String get supply {
+    return Intl.message(
+      'Supply',
+      name: 'supply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subtotal`
+  String get subTotal {
+    return Intl.message(
+      'Subtotal',
+      name: 'subTotal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Favourite`
+  String get favorite {
+    return Intl.message(
+      'Favourite',
+      name: 'favorite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price`
+  String get price {
+    return Intl.message(
+      'Price',
+      name: 'price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Press the Favorites button again to unfavorite`
+  String get pressedFavorite {
+    return Intl.message(
+      'Press the Favorites button again to unfavorite',
+      name: 'pressedFavorite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network Fee`
+  String get networkFee {
+    return Intl.message(
+      'Network Fee',
+      name: 'networkFee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Market Fee`
+  String get marketFee {
+    return Intl.message(
+      'Market Fee',
+      name: 'marketFee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy Now`
+  String get buyNow {
+    return Intl.message(
+      'Buy Now',
+      name: 'buyNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Price`
+  String get totalPrice {
+    return Intl.message(
+      'Total Price',
+      name: 'totalPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `For Sale`
+  String get forSale {
+    return Intl.message(
+      'For Sale',
+      name: 'forSale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Owners`
+  String get owners {
+    return Intl.message(
+      'Owners',
+      name: 'owners',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search items and collections`
+  String get searchItemsAndCollections {
+    return Intl.message(
+      'Search items and collections',
+      name: 'searchItemsAndCollections',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Crypto-Pills`
+  String get cryptoPills {
+    return Intl.message(
+      'Crypto-Pills',
+      name: 'cryptoPills',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Created By`
+  String get createdBy {
+    return Intl.message(
+      'Created By',
+      name: 'createdBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Offers`
+  String get viewOffers {
+    return Intl.message(
+      'View Offers',
+      name: 'viewOffers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Items total`
+  String get itemsTotal {
+    return Intl.message(
+      'Items total',
+      name: 'itemsTotal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Top Sellers`
+  String get newTopSellers {
+    return Intl.message(
+      'New Top Sellers',
+      name: 'newTopSellers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Most Hyped New Deals`
+  String get mostHypedNewDeals {
+    return Intl.message(
+      'Most Hyped New Deals',
+      name: 'mostHypedNewDeals',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sold`
+  String get sold {
+    return Intl.message(
+      'Sold',
+      name: 'sold',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cart`
+  String get cart {
+    return Intl.message(
+      'Cart',
+      name: 'cart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chains`
+  String get chains {
+    return Intl.message(
+      'Chains',
+      name: 'chains',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collections`
+  String get collections {
+    return Intl.message(
+      'Collections',
+      name: 'collections',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sort By`
+  String get sortBy {
+    return Intl.message(
+      'Sort By',
+      name: 'sortBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Min`
+  String get min {
+    return Intl.message(
+      'Min',
+      name: 'min',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Max`
+  String get max {
+    return Intl.message(
+      'Max',
+      name: 'max',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear All`
+  String get clearAll {
+    return Intl.message(
+      'Clear All',
+      name: 'clearAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show All`
+  String get showAll {
+    return Intl.message(
+      'Show All',
+      name: 'showAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Volume`
+  String get totalVolume {
+    return Intl.message(
+      'Total Volume',
+      name: 'totalVolume',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sales`
+  String get sales {
+    return Intl.message(
+      'Sales',
+      name: 'sales',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Listed`
+  String get listed {
+    return Intl.message(
+      'Listed',
+      name: 'listed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Views`
+  String get views {
+    return Intl.message(
+      'Views',
+      name: 'views',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Price`
+  String get currentPrice {
+    return Intl.message(
+      'Current Price',
+      name: 'currentPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hot New Items`
+  String get hotNewItems {
+    return Intl.message(
+      'Hot New Items',
+      name: 'hotNewItems',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Most Viewed`
+  String get mostViewed {
+    return Intl.message(
+      'Most Viewed',
+      name: 'mostViewed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Floor Price`
+  String get floorPrice {
+    return Intl.message(
+      'Floor Price',
+      name: 'floorPrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recently Listed`
+  String get recentlyListed {
+    return Intl.message(
+      'Recently Listed',
+      name: 'recentlyListed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trading History`
+  String get tradingHistory {
+    return Intl.message(
+      'Trading History',
+      name: 'tradingHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price History`
+  String get priceHistory {
+    return Intl.message(
+      'Price History',
+      name: 'priceHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activities`
+  String get activities {
+    return Intl.message(
+      'Activities',
+      name: 'activities',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chain Info`
+  String get chainInfo {
+    return Intl.message(
+      'Chain Info',
+      name: 'chainInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Properties`
+  String get properties {
+    return Intl.message(
+      'Properties',
+      name: 'properties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ETHEREUM`
+  String get ethereum {
+    return Intl.message(
+      'ETHEREUM',
+      name: 'ethereum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mission`
+  String get mission {
+    return Intl.message(
+      'Mission',
+      name: 'mission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download`
+  String get download {
+    return Intl.message(
+      'Download',
+      name: 'download',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wow! Bitnet is the part that I was always missing for bitcoin. Now we will only see more and more bitcoin adoption.`
+  String get wowBitnet {
+    return Intl.message(
+      'Wow! Bitnet is the part that I was always missing for bitcoin. Now we will only see more and more bitcoin adoption.',
+      name: 'wowBitnet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `So happy to be part of the club 1 million! Lightning is the future.`
+  String get soHappy {
+    return Intl.message(
+      'So happy to be part of the club 1 million! Lightning is the future.',
+      name: 'soHappy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I have always been a Bitcoin enthusiast, so BitNet was a no-brainer for me. Its great to see how far we have come with Bitcoin.`
+  String get iHaveAlways {
+    return Intl.message(
+      'I have always been a Bitcoin enthusiast, so BitNet was a no-brainer for me. Its great to see how far we have come with Bitcoin.',
+      name: 'iHaveAlways',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` just joined the BitNet!`
+  String get justJoinedBitnet {
+    return Intl.message(
+      ' just joined the BitNet!',
+      name: 'justJoinedBitnet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` User-change in the last 7 days!`
+  String get userCharged {
+    return Intl.message(
+      ' User-change in the last 7 days!',
+      name: 'userCharged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We have Beta liftoff! Exclusive Early Access for Invited Users.`
+  String get weHaveBetaLiftOff {
+    return Intl.message(
+      'We have Beta liftoff! Exclusive Early Access for Invited Users.',
+      name: 'weHaveBetaLiftOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join us Today!`
+  String get joinUsToday {
+    return Intl.message(
+      'Join us Today!',
+      name: 'joinUsToday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We empower Our Tomorrow!`
+  String get weEmpowerTomorrow {
+    return Intl.message(
+      'We empower Our Tomorrow!',
+      name: 'weEmpowerTomorrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `History in Making: Claim your free Bitcoin NFT.`
+  String get historyClaim {
+    return Intl.message(
+      'History in Making: Claim your free Bitcoin NFT.',
+      name: 'historyClaim',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Claim your free Bitcoin NFT`
+  String get claimNFT {
+    return Intl.message(
+      'Claim your free Bitcoin NFT',
+      name: 'claimNFT',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Be among the first million users and secure your exclusive early-bird Bitcoin inscription.`
+  String get beAmongFirst {
+    return Intl.message(
+      'Be among the first million users and secure your exclusive early-bird Bitcoin inscription.',
+      name: 'beAmongFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We unlock our future of digital assets!`
+  String get weUnlockAssets {
+    return Intl.message(
+      'We unlock our future of digital assets!',
+      name: 'weUnlockAssets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Explore BTC`
+  String get exploreBtc {
+    return Intl.message(
+      'Explore BTC',
+      name: 'exploreBtc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We build a transparent platform that uses verification - not trust.`
+  String get weBuildTransparent {
+    return Intl.message(
+      'We build a transparent platform that uses verification - not trust.',
+      name: 'weBuildTransparent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Give power back to the people!`
+  String get givePowerBack {
+    return Intl.message(
+      'Give power back to the people!',
+      name: 'givePowerBack',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get a profile`
+  String get getAProfile {
+    return Intl.message(
+      'Get a profile',
+      name: 'getAProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We digitize all sorts of assets on top of the Bitcoin Network.`
+  String get weDigitizeAllSorts {
+    return Intl.message(
+      'We digitize all sorts of assets on top of the Bitcoin Network.',
+      name: 'weDigitizeAllSorts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Grow a fair Cyberspace!`
+  String get growAFair {
+    return Intl.message(
+      'Grow a fair Cyberspace!',
+      name: 'growAFair',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send BTC`
+  String get sendBtc {
+    return Intl.message(
+      'Send BTC',
+      name: 'sendBtc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We offer the easiest, most secure, and most advanced web wallet.`
+  String get weOfferEasiest {
+    return Intl.message(
+      'We offer the easiest, most secure, and most advanced web wallet.',
+      name: 'weOfferEasiest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make Bitcoin easy for everyone!`
+  String get makeBitcoinEasy {
+    return Intl.message(
+      'Make Bitcoin easy for everyone!',
+      name: 'makeBitcoinEasy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Our mission.`
+  String get ourMissionn {
+    return Intl.message(
+      'Our mission.',
+      name: 'ourMissionn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `limited spots left!`
+  String get limitedSpotsLeft {
+    return Intl.message(
+      'limited spots left!',
+      name: 'limitedSpotsLeft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.`
+  String get weAreGrowingBitcoin {
+    return Intl.message(
+      'We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.',
+      name: 'weAreGrowingBitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We build the Bitcoin Network!`
+  String get weBuildBitcoin {
+    return Intl.message(
+      'We build the Bitcoin Network!',
+      name: 'weBuildBitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Our mission is simple but profound: To innovate in the digital \neconomy by integrating blockchain technology with asset digitization, \ncreating a secure and transparent platform that empowers users to engage \nwith the metaverse through Bitcoin. We are dedicated to making digital interactions \nmore accessible, equitable, and efficient for everyone. To accelerate the adoption of Bitcoin and create a world\n where digital assets are accessible, understandable, and beneficial to all. Where people can verify information \n on their own.`
+  String get ourMission {
+    return Intl.message(
+      'Our mission is simple but profound: To innovate in the digital \neconomy by integrating blockchain technology with asset digitization, \ncreating a secure and transparent platform that empowers users to engage \nwith the metaverse through Bitcoin. We are dedicated to making digital interactions \nmore accessible, equitable, and efficient for everyone. To accelerate the adoption of Bitcoin and create a world\n where digital assets are accessible, understandable, and beneficial to all. Where people can verify information \n on their own.',
+      name: 'ourMission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open On Etherscan`
+  String get openOnEtherscan {
+    return Intl.message(
+      'Open On Etherscan',
+      name: 'openOnEtherscan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Token ID`
+  String get tokenId {
+    return Intl.message(
+      'Token ID',
+      name: 'tokenId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contract address`
+  String get contractAddress {
+    return Intl.message(
+      'Contract address',
+      name: 'contractAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not only are Guardians dope designed character-collectibles, they also serve as your ticket to a world of exclusive content. From developing new collections to fill our universe, to metaverse avatars, we have bundles of awesome features in the pipeline.`
+  String get guardiansDesigned {
+    return Intl.message(
+      'Not only are Guardians dope designed character-collectibles, they also serve as your ticket to a world of exclusive content. From developing new collections to fill our universe, to metaverse avatars, we have bundles of awesome features in the pipeline.',
+      name: 'guardiansDesigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Guardians are stored as ERC721 tokens on the Ethereum blockchain. Owners can download their Guardians in .png format, they can also request a high resolution image of them, with 3D models coming soon for everyone.`
+  String get guardiansStored {
+    return Intl.message(
+      'Guardians are stored as ERC721 tokens on the Ethereum blockchain. Owners can download their Guardians in .png format, they can also request a high resolution image of them, with 3D models coming soon for everyone.',
+      name: 'guardiansStored',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Guardians of the Metaverse are a collection of 10,000 unique 3D hero-like avatars living as NFTs on the blockchain.`
+  String get propertiesDescription {
+    return Intl.message(
+      'Guardians of the Metaverse are a collection of 10,000 unique 3D hero-like avatars living as NFTs on the blockchain.',
+      name: 'propertiesDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About Crypto-Pills`
+  String get aboutCryptoPills {
+    return Intl.message(
+      'About Crypto-Pills',
+      name: 'aboutCryptoPills',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Categories`
+  String get categories {
+    return Intl.message(
+      'Categories',
+      name: 'categories',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spotlight Projects`
+  String get spotlightProjects {
+    return Intl.message(
+      'Spotlight Projects',
+      name: 'spotlightProjects',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On Sale In`
+  String get onSaleIn {
+    return Intl.message(
+      'On Sale In',
+      name: 'onSaleIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Items`
+  String get allItems {
+    return Intl.message(
+      'All Items',
+      name: 'allItems',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trending Sellers`
+  String get trendingSellers {
+    return Intl.message(
+      'Trending Sellers',
+      name: 'trendingSellers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lightning`
+  String get lightning {
+    return Intl.message(
+      'Lightning',
+      name: 'lightning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Onchain`
+  String get onchain {
+    return Intl.message(
+      'Onchain',
+      name: 'onchain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TimeFrame`
+  String get timeFrame {
+    return Intl.message(
+      'TimeFrame',
+      name: 'timeFrame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear`
+  String get clear {
+    return Intl.message(
+      'Clear',
+      name: 'clear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply`
+  String get apply {
+    return Intl.message(
+      'Apply',
+      name: 'apply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sent`
+  String get sent {
+    return Intl.message(
+      'Sent',
+      name: 'sent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Founded in 2023, BitNet was born out of the belief that Bitcoin is not just a digital asset for the tech-savvy and financial experts,\n but a revolutionary tool that has the potential to build the foundations of cyberspace empowering individuals worldwide.\n We recognized the complexity and the mystique surrounding Bitcoin and cryptocurrencies,\n and we decided it was time to demystify it and make it accessible to everyone.\n We are a pioneering platform dedicated to bringing Bitcoin closer to everyday people like you.`
+  String get foundedIn2023 {
+    return Intl.message(
+      'Founded in 2023, BitNet was born out of the belief that Bitcoin is not just a digital asset for the tech-savvy and financial experts,\n but a revolutionary tool that has the potential to build the foundations of cyberspace empowering individuals worldwide.\n We recognized the complexity and the mystique surrounding Bitcoin and cryptocurrencies,\n and we decided it was time to demystify it and make it accessible to everyone.\n We are a pioneering platform dedicated to bringing Bitcoin closer to everyday people like you.',
+      name: 'foundedIn2023',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `History`
+  String get history {
+    return Intl.message(
+      'History',
+      name: 'history',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Received`
+  String get received {
+    return Intl.message(
+      'Received',
+      name: 'received',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please give the app photo access to use this feature.`
+  String get pleaseGiveAccess {
+    return Intl.message(
+      'Please give the app photo access to use this feature.',
+      name: 'pleaseGiveAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No code was found.`
+  String get noCodeFoundOverlayError {
+    return Intl.message(
+      'No code was found.',
+      name: 'noCodeFoundOverlayError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bad characters`
+  String get badCharacters {
+    return Intl.message(
+      'Bad characters',
+      name: 'badCharacters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter Options`
+  String get filterOptions {
+    return Intl.message(
+      'Filter Options',
+      name: 'filterOptions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bitcoin Card Information`
+  String get bitcoinInfoCard {
+    return Intl.message(
+      'Bitcoin Card Information',
+      name: 'bitcoinInfoCard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lightning Card Information`
+  String get lightningCardInfo {
+    return Intl.message(
+      'Lightning Card Information',
+      name: 'lightningCardInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Received`
+  String get totalReceived {
+    return Intl.message(
+      'Total Received',
+      name: 'totalReceived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Sent`
+  String get totalSent {
+    return Intl.message(
+      'Total Sent',
+      name: 'totalSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QR Code`
+  String get qrCode {
+    return Intl.message(
+      'QR Code',
+      name: 'qrCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Key metrics`
+  String get keyMetrics {
+    return Intl.message(
+      'Key metrics',
+      name: 'keyMetrics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Intrinsic Value:`
+  String get intrinsicValue {
+    return Intl.message(
+      'Intrinsic Value:',
+      name: 'intrinsicValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hashrate`
+  String get hashrate {
+    return Intl.message(
+      'Hashrate',
+      name: 'hashrate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bear`
+  String get bear {
+    return Intl.message(
+      'Bear',
+      name: 'bear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coinbase (Newly Generated Coins)\n`
+  String get coinBase {
+    return Intl.message(
+      'Coinbase (Newly Generated Coins)\n',
+      name: 'coinBase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transactions`
+  String get transactions {
+    return Intl.message(
+      'Transactions',
+      name: 'transactions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `See more`
+  String get seeMore {
+    return Intl.message(
+      'See more',
+      name: 'seeMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block Transactions`
+  String get blockTransaction {
+    return Intl.message(
+      'Block Transactions',
+      name: 'blockTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The scanned QR code does not have an approved format`
+  String get qrCodeFormatInvalid {
+    return Intl.message(
+      'The scanned QR code does not have an approved format',
+      name: 'qrCodeFormatInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Image for QR Scan`
+  String get selectImageQrCode {
+    return Intl.message(
+      'Select Image for QR Scan',
+      name: 'selectImageQrCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't change username`
+  String get coudntChangeUsername {
+    return Intl.message(
+      'Couldn\'t change username',
+      name: 'coudntChangeUsername',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery account`
+  String get recoverAccount {
+    return Intl.message(
+      'Recovery account',
+      name: 'recoverAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact your friends and tell them to free-up your key! The free-ups will only be valid for 24 hours. After their keys are freed up the login sign will appear green and you'll have to wait additional 24hours before you can login to your recovered account.`
+  String get contactFriendsForRecovery {
+    return Intl.message(
+      'Contact your friends and tell them to free-up your key! The free-ups will only be valid for 24 hours. After their keys are freed up the login sign will appear green and you\'ll have to wait additional 24hours before you can login to your recovered account.',
+      name: 'contactFriendsForRecovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Friends / Key-Issuers`
+  String get friendsKeyIssuers {
+    return Intl.message(
+      'Friends / Key-Issuers',
+      name: 'friendsKeyIssuers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Social Recovery Info`
+  String get socialRecoveryInfo {
+    return Intl.message(
+      'Social Recovery Info',
+      name: 'socialRecoveryInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step 1: Activate social recovery`
+  String get stepOneSocialRecovery {
+    return Intl.message(
+      'Step 1: Activate social recovery',
+      name: 'stepOneSocialRecovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Social recovery needs to activated in Settings by each user manually. You have to choose 3 friends whom you can meet in person and trust.`
+  String get socialRecoveryTrustSettings {
+    return Intl.message(
+      'Social recovery needs to activated in Settings by each user manually. You have to choose 3 friends whom you can meet in person and trust.',
+      name: 'socialRecoveryTrustSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step 2. Contact each of your friends`
+  String get recoveryStep2 {
+    return Intl.message(
+      'Step 2. Contact each of your friends',
+      name: 'recoveryStep2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ask your friends to open the app and navigate to Profile > Settings > Security > Social Recovery for friends.`
+  String get askFriendsForRecovery {
+    return Intl.message(
+      'Ask your friends to open the app and navigate to Profile > Settings > Security > Social Recovery for friends.',
+      name: 'askFriendsForRecovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step 3: Wait 24 hours and then login`
+  String get recoveryStepThree {
+    return Intl.message(
+      'Step 3: Wait 24 hours and then login',
+      name: 'recoveryStepThree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To increase security, the recovered user will get contacted, if there is no awnser after 24 hours your account will be freed.`
+  String get recoverySecurityIncrease {
+    return Intl.message(
+      'To increase security, the recovered user will get contacted, if there is no awnser after 24 hours your account will be freed.',
+      name: 'recoverySecurityIncrease',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect with other device`
+  String get connectWithOtherDevices {
+    return Intl.message(
+      'Connect with other device',
+      name: 'connectWithOtherDevices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step 1: Open the app on a different device.`
+  String get scanQrStepOne {
+    return Intl.message(
+      'Step 1: Open the app on a different device.',
+      name: 'scanQrStepOne',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Launch the bitnet app on an alternative device where your account is already active and logged in.`
+  String get launchBitnetApp {
+    return Intl.message(
+      'Launch the bitnet app on an alternative device where your account is already active and logged in.',
+      name: 'launchBitnetApp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step 2: Open the QR-Code`
+  String get scanQrStepTwo {
+    return Intl.message(
+      'Step 2: Open the QR-Code',
+      name: 'scanQrStepTwo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Navigate to Profile > Settings > Security > Scan QR-Code for Recovery. You will need to verify your identity now.`
+  String get navQrRecovery {
+    return Intl.message(
+      'Navigate to Profile > Settings > Security > Scan QR-Code for Recovery. You will need to verify your identity now.',
+      name: 'navQrRecovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step 3: Scan the QR-Code with this device`
+  String get scanQrStepThree {
+    return Intl.message(
+      'Step 3: Scan the QR-Code with this device',
+      name: 'scanQrStepThree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Press the Button below and scan the QR Code. Wait until the process is finished don't leave the app.`
+  String get pressBtnScanQr {
+    return Intl.message(
+      'Press the Button below and scan the QR Code. Wait until the process is finished don\'t leave the app.',
+      name: 'pressBtnScanQr',
       desc: '',
       args: [],
     );
@@ -2980,6 +4850,16 @@ class S {
     );
   }
 
+  /// `Difficulty`
+  String get difficulty {
+    return Intl.message(
+      'Difficulty',
+      name: 'difficulty',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `(BETA) Enable multi accounts on this device`
   String get enableMultiAccounts {
     return Intl.message(
@@ -3100,16 +4980,6 @@ class S {
     );
   }
 
-  /// `People`
-  String get people {
-    return Intl.message(
-      'People',
-      name: 'people',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Pick an image`
   String get pickImage {
     return Intl.message(
@@ -3215,6 +5085,16 @@ class S {
     return Intl.message(
       'Please enter your password',
       name: 'pleaseEnterYourPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The password must contain at least 6 characters`
+  String get passwordShouldBeSixDig {
+    return Intl.message(
+      'The password must contain at least 6 characters',
+      name: 'passwordShouldBeSixDig',
       desc: '',
       args: [],
     );
@@ -5023,6 +6903,246 @@ class S {
     );
   }
 
+  /// `Value`
+  String get value {
+    return Intl.message(
+      'Value',
+      name: 'value',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Batches`
+  String get currentBatches {
+    return Intl.message(
+      'Current Batches',
+      name: 'currentBatches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Post`
+  String get createPost {
+    return Intl.message(
+      'Create Post',
+      name: 'createPost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `POST`
+  String get post {
+    return Intl.message(
+      'POST',
+      name: 'post',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next Block`
+  String get nextBlock {
+    return Intl.message(
+      'Next Block',
+      name: 'nextBlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mempool block`
+  String get mempoolBlock {
+    return Intl.message(
+      'Mempool block',
+      name: 'mempoolBlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block`
+  String get block {
+    return Intl.message(
+      'Block',
+      name: 'block',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mined at`
+  String get minedAt {
+    return Intl.message(
+      'Mined at',
+      name: 'minedAt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Miner`
+  String get miner {
+    return Intl.message(
+      'Miner',
+      name: 'miner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Miner Reward (Subsidy + fees)`
+  String get minerRewardAndFees {
+    return Intl.message(
+      'Miner Reward (Subsidy + fees)',
+      name: 'minerRewardAndFees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Blockchain`
+  String get blockChain {
+    return Intl.message(
+      'Blockchain',
+      name: 'blockChain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel and delete`
+  String get cancelDelete {
+    return Intl.message(
+      'Cancel and delete',
+      name: 'cancelDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload to Blockchain`
+  String get uploadToBlockchain {
+    return Intl.message(
+      'Upload to Blockchain',
+      name: 'uploadToBlockchain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BitNet usage fee`
+  String get bitnetUsageFee {
+    return Intl.message(
+      'BitNet usage fee',
+      name: 'bitnetUsageFee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction fees`
+  String get transactionFees {
+    return Intl.message(
+      'Transaction fees',
+      name: 'transactionFees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cost Estimation`
+  String get costEstimation {
+    return Intl.message(
+      'Cost Estimation',
+      name: 'costEstimation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add more`
+  String get addMore {
+    return Intl.message(
+      'Add more',
+      name: 'addMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error finalizing batch`
+  String get errorFinalizingBatch {
+    return Intl.message(
+      'Error finalizing batch',
+      name: 'errorFinalizingBatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finalize Posts`
+  String get fianlizePosts {
+    return Intl.message(
+      'Finalize Posts',
+      name: 'fianlizePosts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to mint asset: You might already have an asset with a similar name in your list.`
+  String get assetMintError {
+    return Intl.message(
+      'Failed to mint asset: You might already have an asset with a similar name in your list.',
+      name: 'assetMintError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Content`
+  String get addContent {
+    return Intl.message(
+      'Add Content',
+      name: 'addContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type message`
+  String get typeMessage {
+    return Intl.message(
+      'Type message',
+      name: 'typeMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please add some content to your post`
+  String get postContentError {
+    return Intl.message(
+      'Please add some content to your post',
+      name: 'postContentError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name your Asset`
+  String get nameYourAsset {
+    return Intl.message(
+      'Name your Asset',
+      name: 'nameYourAsset',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `This is not a valid URL.`
   String get widgetUrlError {
     return Intl.message(
@@ -5543,11 +7663,471 @@ class S {
     );
   }
 
+  /// `Amount`
+  String get amount {
+    return Intl.message(
+      'Amount',
+      name: 'amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bitcoin chart`
+  String get bitcoinChart {
+    return Intl.message(
+      'Bitcoin chart',
+      name: 'bitcoinChart',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `To`
   String get to {
     return Intl.message(
       'To',
       name: 'to',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recent transactions`
+  String get recentTransactions {
+    return Intl.message(
+      'Recent transactions',
+      name: 'recentTransactions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fee`
+  String get fee {
+    return Intl.message(
+      'Fee',
+      name: 'fee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Analysis`
+  String get analysis {
+    return Intl.message(
+      'Analysis',
+      name: 'analysis',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a message...`
+  String get addAMessage {
+    return Intl.message(
+      'Add a message...',
+      name: 'addAMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmed`
+  String get confirmed {
+    return Intl.message(
+      'Confirmed',
+      name: 'confirmed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accelerate`
+  String get accelerate {
+    return Intl.message(
+      'Accelerate',
+      name: 'accelerate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate Invoice`
+  String get generateInvoice {
+    return Intl.message(
+      'Generate Invoice',
+      name: 'generateInvoice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Features`
+  String get features {
+    return Intl.message(
+      'Features',
+      name: 'features',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SEND NOW!`
+  String get sendNow {
+    return Intl.message(
+      'SEND NOW!',
+      name: 'sendNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are over the sending limit.`
+  String get youAreOverLimit {
+    return Intl.message(
+      'You are over the sending limit.',
+      name: 'youAreOverLimit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are under the sending baseline`
+  String get youAreUnderLimit {
+    return Intl.message(
+      'You are under the sending baseline',
+      name: 'youAreUnderLimit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet address copied to clipboard`
+  String get walletAddressCopied {
+    return Intl.message(
+      'Wallet address copied to clipboard',
+      name: 'walletAddressCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invoice`
+  String get invoice {
+    return Intl.message(
+      'Invoice',
+      name: 'invoice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive Bitcoin`
+  String get receiveBitcoin {
+    return Intl.message(
+      'Receive Bitcoin',
+      name: 'receiveBitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Amount`
+  String get changeAmount {
+    return Intl.message(
+      'Change Amount',
+      name: 'changeAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Optimal`
+  String get optimal {
+    return Intl.message(
+      'Optimal',
+      name: 'optimal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Overpaid`
+  String get overpaid {
+    return Intl.message(
+      'Overpaid',
+      name: 'overpaid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search for recipients`
+  String get searchReceipient {
+    return Intl.message(
+      'Search for recipients',
+      name: 'searchReceipient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Receipient`
+  String get chooseReceipient {
+    return Intl.message(
+      'Choose Receipient',
+      name: 'chooseReceipient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fee rate`
+  String get feeRate {
+    return Intl.message(
+      'Fee rate',
+      name: 'feeRate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `After `
+  String get afterTx {
+    return Intl.message(
+      'After ',
+      name: 'afterTx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Highest assesment:`
+  String get highestAssesment {
+    return Intl.message(
+      'Highest assesment:',
+      name: 'highestAssesment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lowest assesment:`
+  String get lowestAssesment {
+    return Intl.message(
+      'Lowest assesment:',
+      name: 'lowestAssesment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In Several hours (or more)`
+  String get inSeveralHours {
+    return Intl.message(
+      'In Several hours (or more)',
+      name: 'inSeveralHours',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` minutes`
+  String get minutesTx {
+    return Intl.message(
+      ' minutes',
+      name: 'minutesTx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The stock is covered by 67 analysts. The average assesment is:`
+  String get analysisStockCovered {
+    return Intl.message(
+      'The stock is covered by 67 analysts. The average assesment is:',
+      name: 'analysisStockCovered',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Low`
+  String get low {
+    return Intl.message(
+      'Low',
+      name: 'low',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown`
+  String get unknown {
+    return Intl.message(
+      'Unknown',
+      name: 'unknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timestamp`
+  String get timestamp {
+    return Intl.message(
+      'Timestamp',
+      name: 'timestamp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type`
+  String get typeTx {
+    return Intl.message(
+      'Type',
+      name: 'typeTx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address`
+  String get address {
+    return Intl.message(
+      'Address',
+      name: 'address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RBF`
+  String get rbf {
+    return Intl.message(
+      'RBF',
+      name: 'rbf',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mined `
+  String get mined {
+    return Intl.message(
+      'Mined ',
+      name: 'mined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Full RBF`
+  String get fullRbf {
+    return Intl.message(
+      'Full RBF',
+      name: 'fullRbf',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Fee`
+  String get newFee {
+    return Intl.message(
+      'New Fee',
+      name: 'newFee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous fee`
+  String get previousFee {
+    return Intl.message(
+      'Previous fee',
+      name: 'previousFee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recent replacements`
+  String get recentReplacements {
+    return Intl.message(
+      'Recent replacements',
+      name: 'recentReplacements',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Median: `
+  String get median {
+    return Intl.message(
+      'Median: ',
+      name: 'median',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fee Distribution`
+  String get feeDistribution {
+    return Intl.message(
+      'Fee Distribution',
+      name: 'feeDistribution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block Size`
+  String get blockSize {
+    return Intl.message(
+      'Block Size',
+      name: 'blockSize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Health`
+  String get health {
+    return Intl.message(
+      'Health',
+      name: 'health',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Difficulty Adjustment`
+  String get difficultyAdjustment {
+    return Intl.message(
+      'Difficulty Adjustment',
+      name: 'difficultyAdjustment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High`
+  String get high {
+    return Intl.message(
+      'High',
+      name: 'high',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medium`
+  String get medium {
+    return Intl.message(
+      'Medium',
+      name: 'medium',
       desc: '',
       args: [],
     );
@@ -5783,6 +8363,36 @@ class S {
     );
   }
 
+  /// `Buy`
+  String get buy {
+    return Intl.message(
+      'Buy',
+      name: 'buy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sell`
+  String get sell {
+    return Intl.message(
+      'Sell',
+      name: 'sell',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Balance`
+  String get balance {
+    return Intl.message(
+      'Balance',
+      name: 'balance',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Receive`
   String get receive {
     return Intl.message(
@@ -5833,6 +8443,596 @@ class S {
     );
   }
 
+  /// `Whitepaper`
+  String get whitePaper {
+    return Intl.message(
+      'Whitepaper',
+      name: 'whitePaper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fund us`
+  String get fundUs {
+    return Intl.message(
+      'Fund us',
+      name: 'fundUs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Our Team`
+  String get ourTeam {
+    return Intl.message(
+      'Our Team',
+      name: 'ourTeam',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We are the light that helps others see Bitcoin.`
+  String get weAreLight {
+    return Intl.message(
+      'We are the light that helps others see Bitcoin.',
+      name: 'weAreLight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About us`
+  String get aboutUs {
+    return Intl.message(
+      'About us',
+      name: 'aboutUs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report`
+  String get reportWeb {
+    return Intl.message(
+      'Report',
+      name: 'reportWeb',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Be a Part of the Revolution - Download Our App Today!`
+  String get beAPart {
+    return Intl.message(
+      'Be a Part of the Revolution - Download Our App Today!',
+      name: 'beAPart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `More and more decide to join our community each day! Let's build something extraordinary together.`
+  String get moreAndMore {
+    return Intl.message(
+      'More and more decide to join our community each day! Let\'s build something extraordinary together.',
+      name: 'moreAndMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please let us know what went wrong...`
+  String get pleaseLetUsKnow {
+    return Intl.message(
+      'Please let us know what went wrong...',
+      name: 'pleaseLetUsKnow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report error`
+  String get reportError {
+    return Intl.message(
+      'Report error',
+      name: 'reportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please provide an error message first.`
+  String get pleaseProvideErrorMsg {
+    return Intl.message(
+      'Please provide an error message first.',
+      name: 'pleaseProvideErrorMsg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your error report has been forwarded.`
+  String get yourErrorReportForwarded {
+    return Intl.message(
+      'Your error report has been forwarded.',
+      name: 'yourErrorReportForwarded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm literally the only person who has submitted an idea so far.`
+  String get imLiterallyOnlyPerson {
+    return Intl.message(
+      'I\'m literally the only person who has submitted an idea so far.',
+      name: 'imLiterallyOnlyPerson',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm literally the only submitted an idea so far.`
+  String get imLiterallyOnlyPerson2 {
+    return Intl.message(
+      'I\'m literally the only submitted an idea so far.',
+      name: 'imLiterallyOnlyPerson2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `y the only person who has submitted an idea so far.`
+  String get imLiterallyOnlyPerson3 {
+    return Intl.message(
+      'y the only person who has submitted an idea so far.',
+      name: 'imLiterallyOnlyPerson3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit Idea`
+  String get submitIdea {
+    return Intl.message(
+      'Submit Idea',
+      name: 'submitIdea',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Idea Leaderboard`
+  String get ideaLeaderboard {
+    return Intl.message(
+      'Idea Leaderboard',
+      name: 'ideaLeaderboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shape the Future with us! We Want to Hear Your Brilliant Ideas!`
+  String get shapeTheFuture {
+    return Intl.message(
+      'Shape the Future with us! We Want to Hear Your Brilliant Ideas!',
+      name: 'shapeTheFuture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit report!`
+  String get submitReport {
+    return Intl.message(
+      'Submit report!',
+      name: 'submitReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your issue goes here`
+  String get yourIssuesGoesHere {
+    return Intl.message(
+      'Your issue goes here',
+      name: 'yourIssuesGoesHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your idea goes here`
+  String get yourIdeasGoesHere {
+    return Intl.message(
+      'Your idea goes here',
+      name: 'yourIdeasGoesHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact information (Email, username, did...)`
+  String get contactInfoHint {
+    return Intl.message(
+      'Contact information (Email, username, did...)',
+      name: 'contactInfoHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact information`
+  String get contactInfo {
+    return Intl.message(
+      'Contact information',
+      name: 'contactInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report Issue`
+  String get reportIssue {
+    return Intl.message(
+      'Report Issue',
+      name: 'reportIssue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email:`
+  String get email {
+    return Intl.message(
+      'Email:',
+      name: 'email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone:`
+  String get phone {
+    return Intl.message(
+      'Phone:',
+      name: 'phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disclaimer:`
+  String get disclaimer {
+    return Intl.message(
+      'Disclaimer:',
+      name: 'disclaimer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `References and links: In the case of direct or indirect references \nto external websites that are outside the provider's area of responsibility, \na liability obligation would only come into effect in the event that the provider \nhas knowledge of the content and it is technically possible and reasonable to prevent \nthe use in the case of illegal content. The provider hereby expressly declares \nthat at the time the links were set, no illegal content was recognizable on the linked pages. \nThe provider has no influence on the current and future design, content, or authorship of \nthe linked/connected pages. Therefore, the provider hereby expressly distances himself from all contents \nof all linked/connected pages.`
+  String get referencesLinks {
+    return Intl.message(
+      'References and links: In the case of direct or indirect references \nto external websites that are outside the provider\'s area of responsibility, \na liability obligation would only come into effect in the event that the provider \nhas knowledge of the content and it is technically possible and reasonable to prevent \nthe use in the case of illegal content. The provider hereby expressly declares \nthat at the time the links were set, no illegal content was recognizable on the linked pages. \nThe provider has no influence on the current and future design, content, or authorship of \nthe linked/connected pages. Therefore, the provider hereby expressly distances himself from all contents \nof all linked/connected pages.',
+      name: 'referencesLinks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Availability: The provider expressly reserves the right to \nchange, supplement, delete parts of the pages or the entire offer without \nspecial notice, or to temporarily or permanently cease publication.`
+  String get availabilityProvider {
+    return Intl.message(
+      'Availability: The provider expressly reserves the right to \nchange, supplement, delete parts of the pages or the entire offer without \nspecial notice, or to temporarily or permanently cease publication.',
+      name: 'availabilityProvider',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Content of the online offer: The provider assumes no responsibility for the timeliness, \ncorrectness, completeness, or quality of the provided \ninformation. Liability claims against the provider relating to \nmaterial or immaterial damage caused by the use or \nnon-use of the provided information or by the use of \nincorrect and incomplete information are \ngenerally excluded, provided that there is no demonstrable \nintentional or grossly negligent fault on the part of the provider.`
+  String get contentOnlineOffer {
+    return Intl.message(
+      'Content of the online offer: The provider assumes no responsibility for the timeliness, \ncorrectness, completeness, or quality of the provided \ninformation. Liability claims against the provider relating to \nmaterial or immaterial damage caused by the use or \nnon-use of the provided information or by the use of \nincorrect and incomplete information are \ngenerally excluded, provided that there is no demonstrable \nintentional or grossly negligent fault on the part of the provider.',
+      name: 'contentOnlineOffer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Responsible for the content:`
+  String get responsibleForContent {
+    return Intl.message(
+      'Responsible for the content:',
+      name: 'responsibleForContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact:`
+  String get contact {
+    return Intl.message(
+      'Contact:',
+      name: 'contact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact`
+  String get contacts {
+    return Intl.message(
+      'Contact',
+      name: 'contacts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Help Center`
+  String get helpCenter {
+    return Intl.message(
+      'Help Center',
+      name: 'helpCenter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `88405 Friedrichshafen`
+  String get friedrichshafen {
+    return Intl.message(
+      '88405 Friedrichshafen',
+      name: 'friedrichshafen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Imprint`
+  String get imprint {
+    return Intl.message(
+      'Imprint',
+      name: 'imprint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vision`
+  String get vision {
+    return Intl.message(
+      'Vision',
+      name: 'vision',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Product`
+  String get product {
+    return Intl.message(
+      'Product',
+      name: 'product',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get Started`
+  String get getStarted {
+    return Intl.message(
+      'Get Started',
+      name: 'getStarted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We believe in empowering our people and building true loyalty!`
+  String get weBelieve {
+    return Intl.message(
+      'We believe in empowering our people and building true loyalty!',
+      name: 'weBelieve',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `But Bitcoin is more than just a digital asset; it's a movement. A movement towards a more open, accessible, and equitable future. \nBitNet wants be at the forefront of the digital age as a pioneer in asset digitization using Bitcoin,\n shaping a metaverse where equality, security, and sustainability\n are not just ideals, but realities. Our vision is to create an\n interconnected digital world where every user can seamlessly and\n fairly access, exchange, and grow their digital assets.`
+  String get butBitcoin {
+    return Intl.message(
+      'But Bitcoin is more than just a digital asset; it\'s a movement. A movement towards a more open, accessible, and equitable future. \nBitNet wants be at the forefront of the digital age as a pioneer in asset digitization using Bitcoin,\n shaping a metaverse where equality, security, and sustainability\n are not just ideals, but realities. Our vision is to create an\n interconnected digital world where every user can seamlessly and\n fairly access, exchange, and grow their digital assets.',
+      name: 'butBitcoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fallenbrunnen 12`
+  String get fallenBrunnen {
+    return Intl.message(
+      'Fallenbrunnen 12',
+      name: 'fallenBrunnen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BitNet GmbH`
+  String get bitnerGMBH {
+    return Intl.message(
+      'BitNet GmbH',
+      name: 'bitnerGMBH',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Functionality:`
+  String get functionality {
+    return Intl.message(
+      'Functionality:',
+      name: 'functionality',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `These terms and conditions govern the use of the Bitcoin Wallet App\n(hereinafter referred to as BitNet), which is provided by BitNet GmbH.\nBy using the app, you agree to these terms and conditions.`
+  String get termsAndConditionsDescription {
+    return Intl.message(
+      'These terms and conditions govern the use of the Bitcoin Wallet App\n(hereinafter referred to as BitNet), which is provided by BitNet GmbH.\nBy using the app, you agree to these terms and conditions.',
+      name: 'termsAndConditionsDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scope:`
+  String get scope {
+    return Intl.message(
+      'Scope:',
+      name: 'scope',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Provider:`
+  String get provider {
+    return Intl.message(
+      'Provider:',
+      name: 'provider',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fees:`
+  String get fees {
+    return Intl.message(
+      'Fees:',
+      name: 'fees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Changes:`
+  String get changes {
+    return Intl.message(
+      'Changes:',
+      name: 'changes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `These terms and conditions constitute the entire agreement between the user and NexusWallet.\nShould any provision be ineffective, the remaining provisions shall remain in force.`
+  String get termsAndConditionsEntire {
+    return Intl.message(
+      'These terms and conditions constitute the entire agreement between the user and NexusWallet.\nShould any provision be ineffective, the remaining provisions shall remain in force.',
+      name: 'termsAndConditionsEntire',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Final Provisions:`
+  String get finalProvisions {
+    return Intl.message(
+      'Final Provisions:',
+      name: 'finalProvisions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NexusWallet reserves the right to change these terms and conditions at any time.\nThe user will be informed of such changes and must agree to them in order to continue using the app.`
+  String get nexusWalletReserves {
+    return Intl.message(
+      'NexusWallet reserves the right to change these terms and conditions at any time.\nThe user will be informed of such changes and must agree to them in order to continue using the app.',
+      name: 'nexusWalletReserves',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NexusWallet is only liable for damages caused by intentional or grossly negligent actions by\nNexusWallet. The company is not liable for damages resulting from the use of the app or the loss of Bitcoins.`
+  String get nexusWalletLiable {
+    return Intl.message(
+      'NexusWallet is only liable for damages caused by intentional or grossly negligent actions by\nNexusWallet. The company is not liable for damages resulting from the use of the app or the loss of Bitcoins.',
+      name: 'nexusWalletLiable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Limitation of Liability:`
+  String get limitationOfLiability {
+    return Intl.message(
+      'Limitation of Liability:',
+      name: 'limitationOfLiability',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Certain features of the app may incur fees.\nThese fees will be communicated to the user in advance and\nare visible in the app.`
+  String get certainFeaturesOfApp {
+    return Intl.message(
+      'Certain features of the app may incur fees.\nThese fees will be communicated to the user in advance and\nare visible in the app.',
+      name: 'certainFeaturesOfApp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The user is solely responsible for the security of their Bitcoins. The app offers security features such as password protection and two-factor authentication,\nbut it is the user's responsibility to use these features carefully.\nNexusWallet is not liable for losses due to negligence, loss of devices, or user access data.`
+  String get userSolelyResponsible {
+    return Intl.message(
+      'The user is solely responsible for the security of their Bitcoins. The app offers security features such as password protection and two-factor authentication,\nbut it is the user\'s responsibility to use these features carefully.\nNexusWallet is not liable for losses due to negligence, loss of devices, or user access data.',
+      name: 'userSolelyResponsible',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User Responsibility:`
+  String get userResponsibility {
+    return Intl.message(
+      'User Responsibility:',
+      name: 'userResponsibility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The app allows users to receive, send, and manage Bitcoins.\nThe app is not a bank and does not offer banking services.`
+  String get appAllowsUsers {
+    return Intl.message(
+      'The app allows users to receive, send, and manage Bitcoins.\nThe app is not a bank and does not offer banking services.',
+      name: 'appAllowsUsers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms and Conditions`
+  String get termsAndConditions {
+    return Intl.message(
+      'Terms and Conditions',
+      name: 'termsAndConditions',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Loop Screen`
   String get loopScreen {
     return Intl.message(
@@ -5848,6 +9048,26 @@ class S {
     return Intl.message(
       'Onchain to Lightning',
       name: 'onChainLightning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lightning invoice settled`
+  String get lightningTransactionSettled {
+    return Intl.message(
+      'Lightning invoice settled',
+      name: 'lightningTransactionSettled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Onchain transaction settled`
+  String get onChainInvoiceSettled {
+    return Intl.message(
+      'Onchain transaction settled',
+      name: 'onChainInvoiceSettled',
       desc: '',
       args: [],
     );
@@ -5973,10 +9193,10 @@ class S {
     );
   }
 
-  /// `12 Word recovery`
+  /// `Word recovery`
   String get wordRecovery {
     return Intl.message(
-      '12 Word recovery',
+      'Word recovery',
       name: 'wordRecovery',
       desc: '',
       args: [],
@@ -5988,6 +9208,66 @@ class S {
     return Intl.message(
       'Color',
       name: 'color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add attributes`
+  String get addAttributes {
+    return Intl.message(
+      'Add attributes',
+      name: 'addAttributes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error occured, please try again later.`
+  String get overlayErrorOccured {
+    return Intl.message(
+      'An error occured, please try again later.',
+      name: 'overlayErrorOccured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore options`
+  String get restoreOptions {
+    return Intl.message(
+      'Restore options',
+      name: 'restoreOptions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use DID and Private Key`
+  String get useDidPrivateKey {
+    return Intl.message(
+      'Use DID and Private Key',
+      name: 'useDidPrivateKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locally saved accounts`
+  String get locallySavedAccounts {
+    return Intl.message(
+      'Locally saved accounts',
+      name: 'locallySavedAccounts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm your mnemonic`
+  String get confirmMnemonic {
+    return Intl.message(
+      'Confirm your mnemonic',
+      name: 'confirmMnemonic',
       desc: '',
       args: [],
     );

@@ -11,6 +11,7 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class WordRecoveryScreen extends StatefulWidget {
   @override
@@ -24,40 +25,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
   bool _isLoading = false;
   String? username = '';
 
-  // String bipwords = '';
-  // List<String> splittedbipwords = [];
-
-  // late String lottiefile;
-  //bool _visible = false;
-
   TextEditingController _usernameController = TextEditingController();
-
-  // List<TextEditingController> textControllers =
-  //     List.generate(24, (index) => TextEditingController());
-  // List<FocusNode> focusNodes = List.generate(24, (index) => FocusNode());
-
-  // void moveToNext() async {
-  //   print("MOVETONEXT TRIGGERED");
-  //   int currentFocusIndex = focusNodes.indexWhere((node) => node.hasFocus);
-
-  //   if (currentFocusIndex == -1 || currentFocusIndex == 11) {
-  //     return;
-  //   }
-
-  //   // If the current focus index is 3 or 7 (the index starts from 0), move to the next page
-  //   if (currentFocusIndex == 3 || currentFocusIndex == 7) {
-  //     nextPageFunction();
-  //   }
-
-  //   focusNodes[currentFocusIndex].unfocus();
-  //   FocusScope.of(context).requestFocus(focusNodes[currentFocusIndex + 1]);
-  //   setState(() {});
-  // }
-
-  // void nextPageFunction() async {
-  //   await _pageController.nextPage(
-  //       duration: Duration(milliseconds: 500), curve: Curves.easeIn);
-  // }
 
   @override
   void initState() {
@@ -97,52 +65,50 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
         did = await Auth().getUserDID(_usernameController.text);
       }
       final PrivateData privateData =
-          await recoverKeyWithMnemonic(mnemonic, did); 
+          await recoverKeyWithMnemonic(mnemonic, did);
       final signedMessage =
           await Auth().signMessageAuth(privateData.did, privateData.privateKey);
       print("Signed message: $signedMessage");
       await Auth().signIn(privateData.did, signedMessage, context);
-                  showOverlay(context, "Successfully Signed In.", color: AppTheme.successColor);
-
+      showOverlay(context, "Successfully Signed In.",
+          color: AppTheme.successColor);
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-            showOverlay(context, "No User was found with the provided Mnemonic.", color: AppTheme.errorColor);
+      showOverlay(context, "No User was found with the provided Mnemonic.",
+          color: AppTheme.errorColor);
 
       throw Exception("Irgendeine error message lel: $e");
     }
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          final screenWidth = MediaQuery.of(context).size.width;
-          bool isSuperSmallScreen =
-              constraints.maxWidth < AppTheme.isSuperSmallScreen;
-          return bitnetScaffold(
+      final screenWidth = MediaQuery.of(context).size.width;
+      bool isSuperSmallScreen =
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      return bitnetScaffold(
+        context: context,
+        margin: isSuperSmallScreen
+            ? EdgeInsets.symmetric(horizontal: 0)
+            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
+        extendBodyBehindAppBar: true,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        appBar: bitnetAppBar(
+            text: L10n.of(context)!.confirmMnemonic,
             context: context,
-            margin: isSuperSmallScreen
-                ? EdgeInsets.symmetric(horizontal: 0)
-                : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
-            extendBodyBehindAppBar: true,
-            backgroundColor: Theme.of(context).colorScheme.background,
-            appBar: bitnetAppBar(
-                text: "Confirm your mnemonic",
-                context: context,
-                onTap: () {
-                  context.go('/authhome/login');
-                },
-                actions: [
-         PopUpLangPickerWidget()
-        ]),
-
-     body: MnemonicFieldWidget(mnemonicController: null, triggerMnemonicCheck: onSignInPressesd,),
-          );});
+            onTap: () {
+              context.go('/authhome/login');
+            },
+            actions: [PopUpLangPickerWidget()]),
+        body: MnemonicFieldWidget(
+          mnemonicController: null,
+          triggerMnemonicCheck: onSignInPressesd,
+        ),
+      );
+    });
   }
-
-
-
 }

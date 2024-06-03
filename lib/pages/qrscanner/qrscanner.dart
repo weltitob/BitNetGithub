@@ -1,7 +1,6 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/matrix_helpers/url_launcher.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
@@ -11,8 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 
 enum QRTyped {
@@ -86,18 +85,11 @@ class QRScannerController extends State<QrScanner> {
         //cxt.go("/wallet/send?walletAdress=$encodedString");
         context.pop(encodedString);
         break;
-      case QRTyped.Invoice:
-        print("INVIUCE DETECTED!");
-        logger.i("Invoice was detected will forward to Send screen...");
+      case QRTyped.Invoice: 
         context.pop(encodedString);
       
 
-        //have to parse or give the page everything I know about the invoice
-        try {
-          //cxt.go(Uri(path: '/wallet/send', queryParameters: {'invoice': encodedString}).toString());
-
-          //Navigator.pushReplacement(cxt, MaterialPageRoute(builder: (context)=>Send()));
-        // cxt.go("/wallet/send");
+        try { 
         } catch (e) {
           logger.e("Failed forwarding with error: $e");
         }
@@ -156,7 +148,7 @@ class QRScannerController extends State<QrScanner> {
     if(isValid){
       context.go("/wallet/send");
     } else {
-      showOverlay(context, "Der eingescannte QR-Code hat kein zugelassenes Format");
+      showOverlay(context, L10n.of(context)!.qrCodeFormatInvalid);
     }
   }
 

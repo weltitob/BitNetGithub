@@ -10,6 +10,7 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
@@ -39,7 +40,8 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                 await Clipboard.setData(ClipboardData(
                     text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
-                showOverlay(context, "Wallet-Adresse in Zwischenablage kopiert");
+                showOverlay(
+                    context, L10n.of(context)!.walletAddressCopied);
               },
               child: SizedBox(
                 child: Center(
@@ -81,11 +83,10 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                         LongButtonWidget(
                           customHeight: AppTheme.cardPadding * 2,
                           customWidth: AppTheme.cardPadding * 5,
-                          title: 'Share',
+                          title: L10n.of(context)!.share,
                           leadingIcon: Icon(Icons.share_rounded),
                           onTap: () {
-                            // Share the wallet address
-                            Share.share(
+                             Share.share(
                                 '${controller.qrCodeDataStringLightning}');
                           },
                           buttonType: ButtonType.transparent,
@@ -97,27 +98,39 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                 ),
               ),
             ),
-            SizedBox(height: AppTheme.cardPadding,),
+            SizedBox(
+              height: AppTheme.cardPadding,
+            ),
             BitNetListTile(
               onTap: () async {
                 await Clipboard.setData(ClipboardData(
-                    text: controller
-                        .qrCodeDataStringLightning.value));
+                    text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
-                showOverlay(context,
-                    "Wallet-Adresse in Zwischenablage kopiert");
+                showOverlay(
+                    context, L10n.of(context)!.walletAddressCopied);
               },
-              text: 'Invoice',
+              text: L10n.of(context)!.invoice,
               trailing: Obx(() {
-                final qrCodeData = controller.qrCodeDataStringLightning.value ?? '';
+                final qrCodeData =
+                    controller.qrCodeDataStringLightning.value ?? '';
                 if (qrCodeData.isEmpty) {
-                  return Text('loading...');
+                  return Text('${L10n.of(context)!.loading}...');
                 } else {
-                  final start = qrCodeData.length >= 8 ? qrCodeData.substring(0, 8) : qrCodeData;
-                  final end = qrCodeData.length > 8 ? qrCodeData.substring(qrCodeData.length - 5) : '';
+                  final start = qrCodeData.length >= 8
+                      ? qrCodeData.substring(0, 8)
+                      : qrCodeData;
+                  final end = qrCodeData.length > 8
+                      ? qrCodeData.substring(qrCodeData.length - 5)
+                      : '';
                   return Row(
                     children: [
-                      Icon(Icons.copy_rounded, color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,),
+                      Icon(
+                        Icons.copy_rounded,
+                        color: Theme.of(context).colorScheme.brightness ==
+                                Brightness.dark
+                            ? AppTheme.white60
+                            : AppTheme.black80,
+                      ),
                       SizedBox(width: AppTheme.elementSpacing / 2),
                       Text(start),
                       if (qrCodeData.length > 8) Text('....'),
@@ -126,7 +139,6 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                   );
                 }
               }),
-
             ),
             StatefulBuilder(builder: (context, setState) {
               return BitNetListTile(
@@ -137,32 +149,40 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                     height: MediaQuery.of(context).size.height * 0.7,
                     child: bitnetScaffold(
                       extendBodyBehindAppBar: true,
-                        appBar: bitnetAppBar(
-                          hasBackButton: false,
-                          buttonType: ButtonType.transparent,
-                          text: "Change Amount",
-                          context: context,
-                        ),
-                        body: SingleChildScrollView(child: CreateInvoice()), context: context,),
+                      appBar: bitnetAppBar(
+                        hasBackButton: false,
+                        buttonType: ButtonType.transparent,
+                        text: "${L10n.of(context)!.changeLanguage}",
+                        context: context,
+                      ),
+                      body: SingleChildScrollView(child: CreateInvoice()),
+                      context: context,
+                    ),
                   );
                   if (res) {
                     setState(() {});
                   }
                 },
-                text: 'Amount',
-                trailing:
-                Row(
+                text: L10n.of(context)!.amount,
+                trailing: Row(
                   children: [
-                    Icon(Icons.edit, color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,),
+                    Icon(
+                      Icons.edit,
+                      color: Theme.of(context).colorScheme.brightness ==
+                              Brightness.dark
+                          ? AppTheme.white60
+                          : AppTheme.black80,
+                    ),
                     SizedBox(width: AppTheme.elementSpacing / 2),
-                    Text(controller.satController.text == "0" || controller.satController.text.isEmpty
-                        ? "Change Amount"
-                        : controller.satController.text,),
+                    Text(
+                      controller.satController.text == "0" ||
+                              controller.satController.text.isEmpty
+                          ? "${L10n.of(context)!.changeAmount}"
+                          : controller.satController.text,
+                    ),
                   ],
                 ),
-        
               );
-        
             }),
             const SizedBox(
               height: AppTheme.cardPadding * 2,

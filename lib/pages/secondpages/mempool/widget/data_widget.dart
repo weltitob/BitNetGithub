@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/pages/secondpages/mempool/colorhelper.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class DataWidget extends StatefulWidget {
   final bool isAccepted;
@@ -111,14 +112,13 @@ class _DataWidgetState extends State<DataWidget> {
               children: [
                 widget.isAccepted
                     ? Text(
-                        'Fee: ~' +
+                        '${L10n.of(context)!.fee}: ~' +
                             '\$' +
                             '${(widget.blockData!.extras!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
                         style: const TextStyle(color: Colors.white),
                       )
                     : Text(
-                        //controller.mempoolBlocks[controller.indexShowBlock.value].medianFee! * 140) / 100000000) * controller.currentUSD.value).toStringAsFixed(2)}
-                        'Fee: ~' +
+                        '${L10n.of(context)!.fee}: ~' +
                             '\$' +
                             '${(widget.mempoolBlocks!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
                         style: TextStyle(fontSize: 14.sp, color: Colors.white),
@@ -167,7 +167,7 @@ class _DataWidgetState extends State<DataWidget> {
                       )
                     : FittedBox(
                         child: Text(
-                          'In ~${widget.mins} minutes',
+                          'In ~${widget.mins} ${L10n.of(context)!.minutesTx}',
                           maxLines: 1,
                           style:
                               TextStyle(fontSize: 14.sp, color: Colors.white),

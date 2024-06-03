@@ -5,6 +5,8 @@ import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MnemonicFieldWidget extends StatefulWidget {
@@ -55,7 +57,7 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
                   top: AppTheme.cardPadding * 3.h,
                 ),
                 child: Text(
-                  'Enter your 24 words in the right order',
+                  L10n.of(context)!.enterWordsRightOrder,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
@@ -171,7 +173,9 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
                 padding: EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding * 2.w),
                 child: LongButtonWidget(
-                  title: onLastPage ? "Confirm Key" : "Next",
+                  title: onLastPage
+                      ? L10n.of(context)!.confirmKey
+                      : L10n.of(context)!.next,
                   onTap: onLastPage ? triggerCheck : nextPageFunction,
                   state: (widget.mnemonicController != null &&
                           widget.mnemonicController!.isLoadingSignUp)

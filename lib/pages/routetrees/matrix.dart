@@ -6,17 +6,14 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_app_lock/flutter_app_lock.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:universal_html/html.dart' as html;
-
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Matrix extends StatefulWidget {
@@ -27,7 +24,6 @@ class Matrix extends StatefulWidget {
 
   const Matrix({
     this.child,
-
     required this.context,
     this.queryParameters,
     Key? key,
@@ -44,35 +40,6 @@ class Matrix extends StatefulWidget {
 class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   late BuildContext navigatorContext;
 
-
-  //
-  // final onRoomKeyRequestSub = <String, StreamSubscription>{};
-  // final onKeyVerificationRequestSub = <String, StreamSubscription>{};
-  // final onNotification = <String, StreamSubscription>{};
-  //
-  // StreamSubscription<html.Event>? onFocusSub;
-  // StreamSubscription<html.Event>? onBlurSub;
-  //
-  // String? _cachedPassword;
-  // Timer? _cachedPasswordClearTimer;
-  //
-  // String? get cachedPassword => _cachedPassword;
-  //
-  // set cachedPassword(String? p) {
-  //   LoggerService logger = Get.find();
-  //   logger.d('Password cached');
-  //   _cachedPasswordClearTimer?.cancel();
-  //   _cachedPassword = p;
-  //   _cachedPasswordClearTimer = Timer(const Duration(minutes: 10), () {
-  //     _cachedPassword = null;
-  //     logger.d('Cached Password cleared');
-  //   });
-  // }
-  //
-  // bool webHasFocus = true;
-
-
-
   @override
   void initState() {
     super.initState();
@@ -81,16 +48,15 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     initLoadingDialog();
   }
 
-
   void initMatrix() {
     // Display the app lock
     if (PlatformInfos.isMobile) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ([TargetPlatform.linux].contains(Theme.of(context).platform)
-            ? SharedPreferences.getInstance()
-            .then((prefs) => prefs.getString(SettingKeys.appLockKey))
-            : const FlutterSecureStorage()
-            .read(key: SettingKeys.appLockKey))
+                ? SharedPreferences.getInstance()
+                    .then((prefs) => prefs.getString(SettingKeys.appLockKey))
+                : const FlutterSecureStorage()
+                    .read(key: SettingKeys.appLockKey))
             .then((lock) {
           if (lock?.isNotEmpty ?? false) {
             AppLock.of(widget.context)!.enable();
@@ -99,14 +65,6 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
         });
       });
     }
-
-
-    // if (kIsWeb) {
-    //   onFocusSub = html.window.onFocus.listen((_) => webHasFocus = true);
-    //   onBlurSub = html.window.onBlur.listen((_) => webHasFocus = false);
-    // }
-
-
   }
 
   void initLoadingDialog() {
@@ -130,9 +88,6 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     }
   }
 
-
-
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     LoggerService logger = Get.find();
@@ -142,13 +97,6 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-
-    // onRoomKeyRequestSub.values.map((s) => s.cancel());
-    // onKeyVerificationRequestSub.values.map((s) => s.cancel());
-    // onNotification.values.map((s) => s.cancel());
-    // onFocusSub?.cancel();
-    // onBlurSub?.cancel();
-
 
     super.dispose();
   }

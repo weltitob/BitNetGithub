@@ -1,5 +1,7 @@
 import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class UsdModel {
   final num price;
@@ -144,24 +146,17 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
   late dynamic currentprice;
 
   @override
-  Widget build(BuildContext context) {
-    //KeyMetricsWidget
-    //double _currentprice = widget.coin.quoteModel.usdModel.price.toDouble();
-    double _min = 237723.2;
-    double _max = 2882892.20;
+  Widget build(BuildContext context) { 
     //Formatteddata
     var formattedMarketCap = ""; //NumberFormat.compactLong().format(widget.coin.quoteModel.usdModel.marketCap);
     var formattedCircSupply = ""; //NumberFormat.compactLong().format(widget.coin.circulatingSupply);
-    var formattedMaxSupply = ""; //NumberFormat.compactLong().format(widget.coin.maxSupply);
     var formattedMinPrice = ""; //NumberFormat.compact().format(widget.coin.quoteModel.usdModel.price);
     var formattedMaxPrice = ""; //NumberFormat.compact().format(widget.coin.quoteModel.usdModel.price);
     return Padding(
       padding: const EdgeInsets.only(left: 25, right: 25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // MyDivider(),
-          // ChildbuildKeyMetrics3(),
+        children: [ 
           ChildbuildInformation("Market cap:", "${formattedMarketCap}"),
           ChildbuildInformation("Circulating supply:", "${formattedCircSupply}"),
           //widget.coin.maxSupply == 0 ?
@@ -177,9 +172,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
               "Volume:", "${""}", "Aver. Vol.:", "22.970.134"),
           MyDivider(),
           ChildbuildKeyMetrics("Long:", "801,74M", "Supply:", "990,01M"),
-          ChildbuildKeyMetrics("Short:", "29,91M", "Locked:", "1,41"),
-          // MyDivider(),
-          // ChildbuildInformation("Website", "tesla.com"),
+          ChildbuildKeyMetrics("Short:", "29,91M", "Locked:", "1,41"), 
           MyDivider(),
           buildInformation(),
         ],
@@ -225,7 +218,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                "Intrinsic Value:",
+                L10n.of(context)!.intrinsicValue,
                 style: TextStyle(
                   color: Colors.grey[400],
                   fontWeight: FontWeight.w500,
@@ -263,7 +256,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
                         size: 14,
                       ),
                       Padding(padding: EdgeInsets.only(left: 5)),
-                      Text("Bear",
+                      Text(L10n.of(context)!.bear,
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 14,
@@ -432,7 +425,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
       child: Align(
         alignment: Alignment.center,
         child: Text(
-          "see more",
+          L10n.of(context)!.seeMore,
           style: TextStyle(
             decoration: TextDecoration.underline,
             color: Colors.blue,

@@ -79,15 +79,11 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
                     size: AppTheme.iconSize * 0.75,
                   ),
                   onTap: () {
-                    print("Share button pressed");
                   },
                 ),
                 Padding(
                   padding: const EdgeInsets.all(AppTheme.cardPadding),
-                  child: Text(
-                    "Our service is currently in beta and "
-                    "limited to invited users. You can share these invitation "
-                    "keys with your friends and family!",
+                  child: Text( L10n.of(context)!.inviteDescription,
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),

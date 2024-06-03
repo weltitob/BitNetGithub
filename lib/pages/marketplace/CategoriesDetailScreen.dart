@@ -9,6 +9,7 @@ import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class CategoriesDetailScreen extends StatefulWidget {
   const CategoriesDetailScreen({Key? key}) : super(key: key);
@@ -69,7 +70,7 @@ class _CategoriesDetailScreenState extends State<CategoriesDetailScreen> {
                     margin: EdgeInsets.only(bottom: 5.h),
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Text(
-                      'Art',
+                      L10n.of(context)!.art,
                       style: TextStyle(
                         fontSize: 28.sp,
                         fontWeight: FontWeight.w700,
@@ -90,7 +91,7 @@ class _CategoriesDetailScreenState extends State<CategoriesDetailScreen> {
                     ),
                   ),
                   CommonHeading(
-                    headingText: 'Trending Sellers',
+                    headingText: L10n.of(context)!.trendingSellers,
                     hasButton: true,
                     onPress: route.kListScreenRoute,
                     isNormalChild: true,
@@ -117,7 +118,7 @@ class _CategoriesDetailScreenState extends State<CategoriesDetailScreen> {
                     ),
                   ),
                   CommonHeading(
-                    headingText: 'All Items',
+                    headingText: L10n.of(context)!.allItems,
                     hasButton: false,
                     isNormalChild: true,
                     isChild: Container(
@@ -137,11 +138,9 @@ class _CategoriesDetailScreenState extends State<CategoriesDetailScreen> {
                         itemBuilder: (BuildContext context, int index) {
                           return NftProductSlider(
                               encodedData: gridListData[index].nftImage,
-
                               nftName: gridListData[index].nftName,
                               nftMainName: gridListData[index].nftMainName,
                               cryptoText: gridListData[index].cryptoText,
-
                               rank: gridListData[index].rank);
                         },
                       ),

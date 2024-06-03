@@ -5,6 +5,9 @@ import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 
 class SearchScreen extends StatefulWidget {
@@ -65,7 +68,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   Container(
                     margin: EdgeInsets.only(bottom: 15.h),
                     child: Text(
-                      'Search',
+                      L10n.of(context)!.search,
                       style: TextStyle(
                         fontSize: 28.sp,
                         fontWeight: FontWeight.w700,
@@ -99,7 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           top: 12.h,
                           right: 20.w,
                         ),
-                        hintText: "Search items and collections",
+                        hintText: L10n.of(context)!.searchItemsAndCollections,
                         hintStyle: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,

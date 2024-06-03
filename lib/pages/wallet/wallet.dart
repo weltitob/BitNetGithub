@@ -11,6 +11,8 @@ import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/walletscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class Wallet extends StatefulWidget {
   const Wallet({super.key});
@@ -23,16 +25,14 @@ class _WalletState extends State<Wallet> {
   @override
   void initState() {
     super.initState();
-    // TODO: implement initState
     subscribeInvoicesStream().listen((restResponse) {
       LoggerService logger = Get.find();
-      logger.i("Received data from Invoice-stream: $restResponse");
       ReceivedInvoice receivedInvoice =
           ReceivedInvoice.fromJson(restResponse.data);
       if (receivedInvoice.settled == true) {
         showOverlayTransaction(
             context,
-            "Lightning invoice settled",
+            L10n.of(context)!.lightningTransactionSettled,
             TransactionItemData(
               amount: receivedInvoice.amtPaidSat.toString(),
               timestamp: receivedInvoice.settleDate,
@@ -61,7 +61,7 @@ class _WalletState extends State<Wallet> {
           BitcoinTransaction.fromJson(restResponse.data);
       showOverlayTransaction(
           context,
-          "Onchain transaction settled",
+          L10n.of(context)!.onChainInvoiceSettled,
           TransactionItemData(
             amount: bitcoinTransaction.amount.toString(),
             timestamp: bitcoinTransaction.timeStamp,

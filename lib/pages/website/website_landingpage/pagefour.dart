@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:seo/seo.dart';
-
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageFour extends StatefulWidget {
   const PageFour({super.key});
@@ -29,13 +29,6 @@ class _PageFourState extends State<PageFour> {
         bool isIntermediateScreen =
             constraints.maxWidth < AppTheme.isIntermediateScreen;
 
-        double bigtextWidth = isMidScreen
-            ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.cardPadding * 13
-                    : AppTheme.cardPadding * 24
-                : AppTheme.cardPadding * 28
-            : AppTheme.cardPadding * 30;
         double textWidth = isMidScreen
             ? isSmallScreen
                 ? isSuperSmallScreen
@@ -88,23 +81,6 @@ class _PageFourState extends State<PageFour> {
                     isSmallScreen ? Container() : mobileWithPicture(),
                     Stack(
                       children: [
-                        // isSmallScreen
-                        //     ? Positioned(
-                        //         left: MediaQuery.of(context).size.width / 10,
-                        //         top: MediaQuery.of(context).size.height / 10,
-                        //         child: Container(
-                        //           alignment: Alignment.center,
-                        //           height:
-                        //               MediaQuery.of(context).size.width * 0.25,
-                        //           width:
-                        //               MediaQuery.of(context).size.width * 0.25,
-                        //           child: Image.asset(
-                        //             'assets/images/logoclean.png',
-                        //             fit: BoxFit.cover,
-                        //           ),
-                        //         ),
-                        //       )
-                        //     : Container(),
                         isSmallScreen
                             ? Align(
                                 child: Container(
@@ -119,21 +95,6 @@ class _PageFourState extends State<PageFour> {
                                         280,
                                     child: Stack(
                                       children: [
-                                        // Align(
-                                        //   alignment: Alignment.center,
-                                        //   child: Container(
-                                        //     height:
-                                        //         MediaQuery.of(context).size.height *
-                                        //             0.5,
-                                        //     decoration: BoxDecoration(
-                                        //       borderRadius: AppTheme.cardRadiusBig,
-                                        //       color: Theme.of(context).colorScheme.background,
-                                        //     ),
-                                        //     margin: EdgeInsets.symmetric(
-                                        //       horizontal:
-                                        //             AppTheme.elementSpacing,
-                                        //     )),
-                                        // ),
                                         Align(
                                           alignment: Alignment.center,
                                           child: Container(
@@ -174,7 +135,7 @@ class _PageFourState extends State<PageFour> {
                                     : textWidth,
                                 child: SeoText(
                                   tagStyle: TextTagStyle.h2,
-                                  "Be a Part of the Revolution - Download Our App Today!",
+                                  L10n.of(context)!.beAPart,
                                   style:
                                       Theme.of(context).textTheme.displayMedium,
                                 ),
@@ -190,7 +151,7 @@ class _PageFourState extends State<PageFour> {
                                         MediaQuery.of(context).size.width / 3.5
                                     : subtitleWidth,
                                 child: SeoText(
-                                  "More and more decide to join our community each day! Let's build something extraordinary together.",
+                                  L10n.of(context)!.moreAndMore,
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ),
@@ -218,13 +179,11 @@ class _PageFourState extends State<PageFour> {
                                     fit: BoxFit.cover,
                                     repeat: false,
                                   ),
-                                ))
+                                ),
+                              )
                             : Container(),
                       ],
                     ),
-                    // Container(
-                    //     height: AppTheme.cardPadding * 15,
-                    //     child: buildFutureLottie(controller.composition, true))
                   ],
                 ),
               ],
@@ -278,7 +237,7 @@ class _PageFourState extends State<PageFour> {
                 width: AppTheme.elementSpacing,
               ),
               Text(
-                "OR",
+                L10n.of(context)!.or.toUpperCase(),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               SizedBox(
@@ -295,7 +254,7 @@ class _PageFourState extends State<PageFour> {
           width: AppTheme.cardPadding * 10,
           child: LongButtonWidget(
               leadingIcon: Icon(FontAwesomeIcons.download),
-              title: "Download .apk",
+              title: "${L10n.of(context)!.download} .apk",
               buttonType: ButtonType.solid,
               onTap: () async {
                 context.go('/authhome/pinverification');
@@ -371,12 +330,6 @@ class _PageFourState extends State<PageFour> {
           Container(
             height: AppTheme.cardPadding * 2,
             decoration: BoxDecoration(
-                // borderRadius: BorderRadius.only(
-                //   bottomLeft: Radius.circular(AppTheme.cardPadding),
-                //   bottomRight: Radius.circular(AppTheme.cardPadding),
-                //   topLeft: Radius.circular(AppTheme.cardPadding),
-                //   topRight: Radius.circular(AppTheme.cardPadding),
-                // ),
                 gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,

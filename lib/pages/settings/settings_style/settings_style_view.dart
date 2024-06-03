@@ -25,12 +25,10 @@ class SettingsStyleView extends StatelessWidget {
         buttonType: ButtonType.transparent,
         context: context,
         onTap: () {
-          print("pressed");
           final controller = Get.find<SettingsController>();
           controller.switchTab('main');
         },
       ),
-      // backgroundColor: Theme.of(context).colorScheme.surface,
       body: MaxWidthBody(
         withScrolling: true,
         child: Padding(

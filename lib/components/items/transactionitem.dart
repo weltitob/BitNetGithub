@@ -28,7 +28,7 @@ enum TransactionDirection { received, sent }
 class TransactionItem extends StatefulWidget {
   final TransactionItemData data;
   final BuildContext context;
- 
+
   const TransactionItem({
     Key? key,
     required this.context,
@@ -82,10 +82,10 @@ class _TransactionItemState extends State<TransactionItem> {
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
-    print('cooin ${coin.coin}');
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
+
     final currencyEquivalent = bitcoinPrice != null
         ? (double.parse(widget.data.amount) / 100000000 * bitcoinPrice)
             .toStringAsFixed(2)
@@ -112,8 +112,7 @@ class _TransactionItemState extends State<TransactionItem> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  LightningTransactionDetails(
+                              builder: (context) => LightningTransactionDetails(
                                     data: widget.data,
                                   )));
                     } else {
@@ -125,14 +124,13 @@ class _TransactionItemState extends State<TransactionItem> {
                       );
                       controllerTransaction.txID =
                           widget.data.txHash.toString();
-                      controllerTransaction.getSingleTransaction(
-                          controllerTransaction.txID!);
+                      controllerTransaction
+                          .getSingleTransaction(controllerTransaction.txID!);
                       controllerTransaction.changeSocket();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  SingleTransactionScreen()));
+                              builder: (context) => SingleTransactionScreen()));
                     }
                   },
                   child: Padding(
@@ -146,8 +144,7 @@ class _TransactionItemState extends State<TransactionItem> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(child: Avatar()),
-                          const SizedBox(
-                              width: AppTheme.elementSpacing * 0.75),
+                          const SizedBox(width: AppTheme.elementSpacing * 0.75),
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,8 +169,7 @@ class _TransactionItemState extends State<TransactionItem> {
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     formattedDate,
@@ -212,8 +208,7 @@ class _TransactionItemState extends State<TransactionItem> {
                                               coin.coin ?? true
                                                   ? widget.data.amount
                                                   : "$currencyEquivalent${getCurrency(currency!)}",
-                                              overflow:
-                                                  TextOverflow.ellipsis,
+                                              overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleMedium!
@@ -231,12 +226,11 @@ class _TransactionItemState extends State<TransactionItem> {
                                           coin.coin ?? true
                                               ? Icon(
                                                   AppTheme.satoshiIcon,
-                                                  color: widget.data
-                                                              .direction ==
+                                                  color: widget
+                                                              .data.direction ==
                                                           TransactionDirection
                                                               .received
-                                                      ? AppTheme
-                                                          .successColor
+                                                      ? AppTheme.successColor
                                                       : AppTheme.errorColor,
                                                 )
                                               : SizedBox.shrink(),
@@ -244,10 +238,8 @@ class _TransactionItemState extends State<TransactionItem> {
                                       ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal:
-                                          AppTheme.elementSpacing / 3,
-                                      vertical:
-                                          AppTheme.elementSpacing / 15),
+                                      horizontal: AppTheme.elementSpacing / 3,
+                                      vertical: AppTheme.elementSpacing / 15),
                                   child: Row(
                                     children: [
                                       //only for received transactions
@@ -259,12 +251,10 @@ class _TransactionItemState extends State<TransactionItem> {
                                         child: Icon(
                                           Icons.circle,
                                           color: widget.data.status ==
-                                                  TransactionStatus
-                                                      .confirmed
+                                                  TransactionStatus.confirmed
                                               ? AppTheme.successColor
                                               : widget.data.status ==
-                                                      TransactionStatus
-                                                          .pending
+                                                      TransactionStatus.pending
                                                   ? AppTheme.colorBitcoin
                                                   : AppTheme.errorColor,
                                           size: AppTheme.cardPadding * 0.75,

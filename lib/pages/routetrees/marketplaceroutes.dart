@@ -1,15 +1,14 @@
 import 'package:bitnet/pages/marketplace/AboutScreen.dart';
 import 'package:bitnet/pages/marketplace/ActivityScreen.dart';
 import 'package:bitnet/pages/marketplace/CategoriesDetailScreen.dart';
+import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/FavouriteScreen.dart';
 import 'package:bitnet/pages/marketplace/FilterScreen.dart';
 import 'package:bitnet/pages/marketplace/HomeScreen.dart';
 import 'package:bitnet/pages/marketplace/ListScreen.dart';
+import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/marketplace/OwnerDetailScreen.dart';
-import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
-import 'package:bitnet/pages/marketplace/ProfileEditScreen.dart';
-import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/marketplace/SearchScreen.dart';
 import 'package:flutter/material.dart';
 

@@ -5,6 +5,7 @@ import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/pages/secondpages/keymetrics/keymetrics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class KeyMetricsScreen extends StatefulWidget {
   const KeyMetricsScreen({super.key});
@@ -20,9 +21,9 @@ class _KeyMetricsScreenState extends State<KeyMetricsScreen> {
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
-          text: "Key metrics",
-          context: context,
-        onTap: (){
+        text: L10n.of(context)!.keyMetrics,
+        context: context,
+        onTap: () {
           context.pop();
         },
       ),
@@ -34,7 +35,7 @@ class _KeyMetricsScreenState extends State<KeyMetricsScreen> {
             Padding(
               padding: const EdgeInsets.only(left: AppTheme.cardPadding),
               child: Text(
-                "Key metrics",
+                L10n.of(context)!.keyMetrics,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),

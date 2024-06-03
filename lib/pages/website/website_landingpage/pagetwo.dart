@@ -39,14 +39,7 @@ class _PageTwoState extends State<PageTwo> {
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
         bool isIntermediateScreen =
             constraints.maxWidth < AppTheme.isIntermediateScreen;
-
-        double bigtextWidth = isMidScreen
-            ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.cardPadding * 13
-                    : AppTheme.cardPadding * 24
-                : AppTheme.cardPadding * 28
-            : AppTheme.cardPadding * 30;
+ 
         double textWidth = isMidScreen
             ? isSmallScreen
                 ? isSuperSmallScreen
@@ -106,7 +99,7 @@ class _PageTwoState extends State<PageTwo> {
                         width: textWidth,
                         child: SeoText(
                           tagStyle: TextTagStyle.h1,
-                          "We unlock our future of digital assets!",
+                          L10n.of(context)!.weUnlockAssets,
                           style: Theme.of(context).textTheme.displayMedium,
                         ),
                       ),
@@ -116,8 +109,7 @@ class _PageTwoState extends State<PageTwo> {
                       Container(
                         width: subtitleWidth,
                         child: SeoText(
-                            //Join the Exclusive Circle of the First Million Users - We Embrace the Future with the latest Bitcoin Digital Asset Technology.
-                            "Be among the first million users and secure your exclusive early-bird Bitcoin inscription.",
+                            L10n.of(context)!.beAmongFirst,
                             style: Theme.of(context).textTheme.bodyLarge),
                       ),
                       SizedBox(
@@ -146,7 +138,7 @@ class _PageTwoState extends State<PageTwo> {
                           children: [
                             SeoText(
                               tagStyle: TextTagStyle.h2,
-                              "Claim your free Bitcoin NFT",
+                              L10n.of(context)!.claimNFT,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             SizedBox(
@@ -170,7 +162,7 @@ class _PageTwoState extends State<PageTwo> {
                               width: AppTheme.elementSpacing,
                             ),
                             SeoText(
-                              "History in Making: Claim your free Bitcoin NFT.",
+                              L10n.of(context)!.historyClaim,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             SizedBox(

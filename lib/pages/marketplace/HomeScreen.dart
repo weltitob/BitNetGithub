@@ -9,6 +9,8 @@ import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -42,13 +44,6 @@ class HomeScreen extends StatelessWidget {
                           viewportFraction: 0.6,
                           enlargeCenterPage: true,
                           height: 244.w),
-                      // padding: EdgeInsets.only(
-                      //     top: 0.0,
-                      //     bottom: 0.0,
-                      //     right: AppTheme.elementSpacing,
-                      //     left: AppTheme.elementSpacing),
-                      // shrinkWrap: true,
-                      // physics: const BouncingScrollPhysics(),
                       itemCount: nftHotProductSliderData.length,
                       itemBuilder: (context, index, index2) {
                         return NftProductSlider(
@@ -65,7 +60,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 CommonHeading(
                   hasButton: true,
-                  headingText: 'Most Viewed',
+                  headingText: L10n.of(context)!.mostViewed,
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
@@ -96,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                 CommonHeading(
                   hasButton: true,
                   customButtonIcon: Icons.info,
-                  headingText: 'Spotlight Projects',
+                  headingText: L10n.of(context)!.spotlightProjects,
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
@@ -122,7 +117,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 CommonHeading(
                   hasButton: true,
-                  headingText: 'Hot New Items',
+                  headingText: L10n.of(context)!.hotNewItems,
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
@@ -156,7 +151,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 CommonHeading(
                   hasButton: true,
-                  headingText: 'For sale',
+                  headingText: L10n.of(context)!.forSale,
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
@@ -190,7 +185,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 CommonHeading(
                   hasButton: true,
-                  headingText: 'Most Hyped New Deals',
+                  headingText: L10n.of(context)!.mostHypedNewDeals,
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
@@ -223,7 +218,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 CommonHeading(
                   hasButton: true,
-                  headingText: 'New Top Sellers',
+                  headingText: L10n.of(context)!.newTopSellers,
                   onPress: route.kListScreenRoute,
                   isNormalChild: true,
                   isChild: Container(
@@ -239,10 +234,7 @@ class HomeScreen extends StatelessWidget {
                       itemCount: nftTopSellersProductSliderData.length,
                       itemBuilder: (context, index) {
                         return NftProductSlider(
-                          medias: [],
-                          // encodedData:
-                          //     nftTopSellersProductSliderData[index].nftImage,
-
+                          medias: [], 
                           nftName:
                               nftTopSellersProductSliderData[index].nftName,
                           nftMainName:

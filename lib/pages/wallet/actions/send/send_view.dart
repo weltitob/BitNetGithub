@@ -9,6 +9,8 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 // Define a stateful widget called SendBTCScreen, which allows the user to send Bitcoin
 class SendBTCScreen extends GetWidget<SendsController> {
@@ -34,7 +36,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Bitcoin versenden",
+            Text(L10n.of(context)!.sendBitcoin,
                 style: Theme.of(context).textTheme.titleLarge),
           ],
         ),

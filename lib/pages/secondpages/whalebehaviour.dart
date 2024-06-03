@@ -3,6 +3,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart';
@@ -203,9 +204,9 @@ class InsiderWidget extends StatelessWidget {
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
-        text: 'Whale Behaviour',
+        text: L10n.of(context)!.whaleBehavior,
         context: context,
-        onTap: (){
+        onTap: () {
           context.pop();
         },
       ),
@@ -240,7 +241,7 @@ class InsiderWidget extends StatelessWidget {
                             size: 12,
                           ),
                           Text(
-                            " NAME",
+                            L10n.of(context)!.nameBehavior,
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -260,7 +261,7 @@ class InsiderWidget extends StatelessWidget {
                             size: 12,
                           ),
                           Text(
-                            " DATE",
+                          L10n.of(context)!.dateBehavior,
                             style: TextStyle(
                               color: Colors.grey[400],
                               fontWeight: FontWeight.bold,
@@ -277,7 +278,7 @@ class InsiderWidget extends StatelessWidget {
                           Icon(Icons.monetization_on_rounded,
                               color: Colors.grey[400], size: 12),
                           Text(
-                            " VALUE",
+                            L10n.of(context)!.value,
                             style: TextStyle(
                               color: Colors.grey[400],
                               fontWeight: FontWeight.bold,
@@ -295,7 +296,7 @@ class InsiderWidget extends StatelessWidget {
                           size: 12,
                         ),
                         Text(
-                          " TYPE",
+                          L10n.of(context)!.typeBehavior,
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -321,17 +322,17 @@ class InsiderWidget extends StatelessWidget {
                               "${snapshot.data![0].fullName}",
                               "${snapshot.data![0].filingDate}",
                               "${snapshot.data![0].transactionValue}\$",
-                              false),
+                              false,context),
                           ChildbuildWhaleBehavior(
                               "${snapshot.data![1].fullName}",
                               "${snapshot.data![1].filingDate}",
                               "${snapshot.data![1].transactionValue}\$",
-                              false),
+                              false,context),
                           ChildbuildWhaleBehavior(
                               "${snapshot.data![2].fullName}",
                               "${snapshot.data![2].filingDate}",
                               "${snapshot.data![2].transactionValue}\$",
-                              false),
+                              false,context),
                         ],
                       );
                     }
@@ -347,7 +348,7 @@ class InsiderWidget extends StatelessWidget {
                     } else
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: const Text('No results found',
+                        child:   Text(L10n.of(context)!.noResultsFound,
                             style: TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.bold)),
@@ -360,7 +361,7 @@ class InsiderWidget extends StatelessWidget {
     );
   }
 
-  Widget ChildbuildWhaleBehavior(String name, String date, String value, type) {
+  Widget ChildbuildWhaleBehavior(String name, String date, String value, type, BuildContext context) {
     return Column(
       children: [
         Padding(
@@ -420,7 +421,7 @@ class InsiderWidget extends StatelessWidget {
                             size: 12,
                           ),
                           Padding(padding: EdgeInsets.only(left: 5)),
-                          Text("Buy",
+                          Text(L10n.of(context)!.buy,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -446,7 +447,7 @@ class InsiderWidget extends StatelessWidget {
                             size: 12,
                           ),
                           Padding(padding: EdgeInsets.only(left: 5)),
-                          Text("Sell",
+                          Text(L10n.of(context)!.sell,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,

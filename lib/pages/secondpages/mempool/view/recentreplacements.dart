@@ -4,7 +4,7 @@ import 'package:bitnet/pages/transactions/controller/transaction_controller.dart
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class RecentReplacements extends StatefulWidget {
   const RecentReplacements({super.key});
@@ -22,11 +22,11 @@ class _RecentReplacementsState extends State<RecentReplacements> {
       children: [
         const SizedBox(height: AppTheme.cardPadding),
         Text(
-          'Recent replacements'.toUpperCase(),
+          '${L10n.of(context)!.recentReplacements}'.toUpperCase(),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 20),
-        const Padding(
+          Padding(
           padding: EdgeInsets.all(8.0),
           child: Row(
             children: [
@@ -41,7 +41,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
               Expanded(
                 flex: 2,
                 child: Text(
-                  'Previous fee',
+                  '${L10n.of(context)!.previousFee}',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -49,14 +49,14 @@ class _RecentReplacementsState extends State<RecentReplacements> {
               Expanded(
                 flex: 2,
                 child: Text(
-                  'New Fee',
+                  L10n.of(context)!.newFee,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(width: 0),
               Expanded(
                 child: Text(
-                  'Status',
+                  L10n.of(context)!.status,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -98,18 +98,23 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                   flex: 2,
                                   child: InkWell(
                                     onTap: () {
-                                      print(controller.transactionReplacements[index].txid
-                                             );
-                                     final controllerTransaction =   Get.put(
+                                      print(controller
+                                          .transactionReplacements[index].txid);
+                                      final controllerTransaction = Get.put(
                                         TransactionController(
-                                          txID:controller.transactionReplacements[index].txid
+                                          txID: controller
+                                              .transactionReplacements[index]
+                                              .txid
                                               .toString(),
                                         ),
                                       );
-                                      controllerTransaction.txID = controller.transactionReplacements[index].txid
+                                      controllerTransaction.txID = controller
+                                          .transactionReplacements[index].txid
                                           .toString();
-                                          controllerTransaction.getSingleTransaction(controllerTransaction.txID!);
-                                          controllerTransaction.changeSocket();
+                                      controllerTransaction
+                                          .getSingleTransaction(
+                                              controllerTransaction.txID!);
+                                      controllerTransaction.changeSocket();
                                       // Get.to(()=>SingleTransactionScreen());
                                       Navigator.push(
                                         context,
@@ -117,42 +122,6 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                             builder: (context) =>
                                                 SingleTransactionScreen()),
                                       );
-                                      // VRouter.of(context)
-                                      //     .to('/single_transaction');
-
-                                      // Get.to(const SingleTransactionScreen(),
-                                      //     arguments: controller
-                                      //         .transactionReplacements[index]
-                                      //         .txid
-                                      //         .toString());
-
-                                      // final controllerTransaction =
-                                      //     Get.put(
-                                      //         TransactionController());
-                                      // Future.delayed(
-                                      //         const Duration(
-                                      //             seconds:
-                                      //                 5))
-                                      //     .then((value) =>
-                                      //         controllerTransaction
-                                      //                 .replaced =
-                                      //             true);
-                                      // controllerTransaction.getSingleTransactionCache(controller
-                                      // .transactionReplacements[
-                                      //     index]
-                                      // .txid
-                                      // .toString());
-                                      // controllerTransaction
-                                      //     .replaced = true;
-                                      // controllerTransaction
-                                      //     .getTrans(controller
-                                      //         .transactionReplacements[
-                                      //             index]
-                                      //         .txid
-                                      //         .toString());
-                                      // controllerTransaction
-                                      //         .hideUnconfirmed =
-                                      //     false;
                                     },
                                     child: Text(
                                       '${controller.transactionReplacements[index].txid!.substring(0, 5)}...${controller.transactionReplacements[index].txid!.substring(controller.transactionReplacements[index].txid!.length - 5)}' ??
@@ -195,8 +164,8 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                       child: Text(controller
                                               .transactionReplacements[index]
                                               .fullRbf!
-                                          ? 'Full RBF'
-                                          : 'RBF'),
+                                          ? L10n.of(context)!.fullRbf
+                                          : L10n.of(context)!.rbf),
                                     ),
                                     const SizedBox(width: 10),
                                     controller.transactionReplacements[index]
@@ -207,7 +176,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                                 borderRadius:
                                                     BorderRadius.circular(5),
                                                 color: Colors.green),
-                                            child: Text('Mined '),
+                                            child: Text('${L10n.of(context)!.mined}'),
                                           )
                                         : SizedBox.shrink(),
                                   ],
