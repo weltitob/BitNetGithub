@@ -72,6 +72,7 @@ class _BottomNavState extends State<BottomNav>
   }
 
   void loadData() async {
+    Get.put(WalletsController());
     QuerySnapshot querySnapshot = await settingsCollection.get();
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
     print(allData);
