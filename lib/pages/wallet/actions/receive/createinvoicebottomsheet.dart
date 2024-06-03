@@ -10,6 +10,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 
 class CreateInvoice extends GetWidget<ReceiveController> {
+  bool onChain;
+  CreateInvoice({this.onChain = false});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -56,9 +58,10 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             title: L10n.of(context)!.generateInvoice,
             customWidth: AppTheme.cardPadding * 12,
             onTap: () {
+             controller.getTaprootAddress();
               controller.getInvoice(
                   (double.parse(controller.satController.text)).toInt(), "");
-              context.pop();
+              context.pop(true);
             })
       ],
     );
