@@ -97,10 +97,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                           Row(
                             children: [
                               Avatar(
-                                size: AppTheme.cardPadding * 3.h,
+                                size: AppTheme.cardPadding * 2.85.h,
                               ),
                               SizedBox(
-                                width: AppTheme.elementSpacing * 1.5,
+                                width: AppTheme.elementSpacing * 1.w,
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

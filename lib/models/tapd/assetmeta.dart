@@ -70,4 +70,19 @@ class AssetMetaResponse {
 
     return medias;
   }
+
+  // String? findCollectionValue() {
+  //   String decodedData = decodeData();
+  //   Map<String, dynamic> jsonMap;
+  //   try {
+  //     jsonMap = jsonDecode(decodedData);
+  //
+  //     if (jsonMap.containsKey('collection')) {
+  //       return jsonMap['collection'].toString();
+  //     }
+  //   } catch (e) {
+  //     // Handle error if decoding or parsing fails
+  //   }
+  //   return null;
+  // }
 }

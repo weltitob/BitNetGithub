@@ -233,7 +233,7 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
             ),
           ),
-          const StatusBarBg()
+          // const StatusBarBg()
         ],
       ),
     );

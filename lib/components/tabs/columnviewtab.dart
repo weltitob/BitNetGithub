@@ -1,19 +1,12 @@
-import 'package:bitnet/backbone/cloudfunctions/taprootassets/fetchassetmeta.dart';
-import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/models/postmodels/post.dart';
-import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
+import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'dart:convert';
-import 'dart:io';
+import 'package:go_router/go_router.dart';
 
 class ColumnViewTab extends StatefulWidget {
   const ColumnViewTab({super.key});
@@ -62,23 +55,29 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
             children: controller.assets.map((asset) {
               String assetId = asset.assetGenesis!.assetId ?? '';
               AssetMetaResponse? meta = controller.assetMetaMap[assetId];
-              return Post(
-                postId: assetId,
-                ownerId: "Tobias Welti" ?? '',
-                username: "username" ?? '',
-                postName: asset.assetGenesis!.name ?? '',
-                rockets: {},
-                medias: meta != null ? meta.toMedias() : [],
-                // medias: [
-                //   if (meta != null) Media(type: 'text', data: meta.getShortenedData()),
-                //   if (meta != null) Media(type: 'text', data: "Type: ${meta.getType()}",),
-                //   Media(type: 'text', data: asset.assetGenesis.metaHash),
-                //   Media(type: 'text', data: asset.version),
-                //   Media(type: 'text', data: asset.chainAnchor.blockHeight.toString()),
-                //   Media(type: 'text', data: asset.assetGenesis.version.toString()),
-                // ],
-                timestamp: DateTime.fromMillisecondsSinceEpoch(
-                    asset.lockTime! * 1000),
+              return GestureDetector(
+                onTap: (){
+                  context.pushNamed(kNftProductScreenRoute,
+                      pathParameters: {'nft_id': assetId ?? ''});
+                },
+                child: Post(
+                  postId: assetId,
+                  ownerId: "Tobias Welti" ?? '',
+                  username: "username" ?? '',
+                  postName: asset.assetGenesis!.name ?? '',
+                  rockets: {},
+                  medias: meta != null ? meta.toMedias() : [],
+                  // medias: [
+                  //   if (meta != null) Media(type: 'text', data: meta.getShortenedData()),
+                  //   if (meta != null) Media(type: 'text', data: "Type: ${meta.getType()}",),
+                  //   Media(type: 'text', data: asset.assetGenesis.metaHash),
+                  //   Media(type: 'text', data: asset.version),
+                  //   Media(type: 'text', data: asset.chainAnchor.blockHeight.toString()),
+                  //   Media(type: 'text', data: asset.assetGenesis.version.toString()),
+                  // ],
+                  timestamp: DateTime.fromMillisecondsSinceEpoch(
+                      asset.lockTime! * 1000),
+                ),
               );
             }).toList(),
           );

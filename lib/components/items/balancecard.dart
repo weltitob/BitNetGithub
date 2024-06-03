@@ -3,7 +3,6 @@ import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
-import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,59 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+
+class TopLeftGradient extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: -AppTheme.cardPadding * 7.5,
+      top: -AppTheme.cardPadding * 7.5,
+      child: Container(
+        width: AppTheme.cardPadding * 15,
+        height: AppTheme.cardPadding * 15,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0, 0.7],
+            colors: [
+              Color(0x99FFFFFF),
+              Color(0x00FFFFFF),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BottomRightGradient extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      right: -AppTheme.cardPadding * 7.5,
+      bottom: -AppTheme.cardPadding * 7.5,
+      child: Container(
+        width: AppTheme.cardPadding * 15,
+        height: AppTheme.cardPadding * 15,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.bottomRight,
+            end: Alignment.topLeft,
+            stops: [0, 0.7],
+            colors: [
+              Color(0x99FFFFFF),
+              Color(0x00FFFFFF),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 class BalanceCardLightning extends GetWidget<WalletsController> {
   const BalanceCardLightning({
@@ -40,7 +92,7 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
             cardname: 'Lightning Balance',
             iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
           ),
-          paymentNetworkPicture(context, "assets/images/lightning.png"),
+          PaymentNetworkPicture(imageUrl:  "assets/images/lightning.png"),
         ],
       ),
     );
@@ -82,13 +134,13 @@ class BalanceCardBtc extends GetWidget<WalletsController> {
             walletAddress: "safdadasdas",
             cardname: 'On-Chain Balance',
           ),
-          paymentNetworkPicture(context, 'assets/images/bitcoin.png'),
+          PaymentNetworkPicture(imageUrl: 'assets/images/bitcoin.png'),
           Align(
               alignment: Alignment.bottomLeft,
               child: Padding(
                 padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25,),
                 //unconfirmed balance if there is one display here
-                child: Text("Incoming Balance: 32.21 (BItcoinsymbol/USD)",
+                child: Text("Incoming: 32.21 (BItcoinsymbol/USD)",
                 style: Theme.of(context).textTheme.bodySmall,),
               )),
         ],
@@ -99,52 +151,6 @@ class BalanceCardBtc extends GetWidget<WalletsController> {
 
 class CardBackgroundLightning extends StatelessWidget {
   const CardBackgroundLightning({Key? key}) : super(key: key);
-
-  Widget topLeftGradient() {
-    return Positioned(
-      left: -AppTheme.cardPadding * 7.5,
-      top: -AppTheme.cardPadding * 7.5,
-      child: Container(
-        width: AppTheme.cardPadding * 15,
-        height: AppTheme.cardPadding * 15,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0, 0.7],
-            colors: [
-              Color(0x99FFFFFF),
-              Color(0x00FFFFFF),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget bottomRightGradient() {
-    return Positioned(
-      right: -AppTheme.cardPadding * 7.5,
-      bottom: -AppTheme.cardPadding * 7.5,
-      child: Container(
-        width: AppTheme.cardPadding * 15,
-        height: AppTheme.cardPadding * 15,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.bottomRight,
-            end: Alignment.topLeft,
-            stops: [0, 0.7],
-            colors: [
-              Color(0x99FFFFFF),
-              Color(0x00FFFFFF),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,15 +179,15 @@ class CardBackgroundLightning extends StatelessWidget {
               end: Alignment.topRight,
               stops: [0, 0.75],
               colors: [
-                Theme.of(context).colorScheme.primaryContainer,
-                Theme.of(context).colorScheme.tertiaryContainer,
+                Theme.of(context).brightness == Brightness.light ? darken(Theme.of(context).colorScheme.primaryContainer, 10) : Theme.of(context).colorScheme.primaryContainer,
+                Theme.of(context).brightness == Brightness.light ? darken(Theme.of(context).colorScheme.tertiaryContainer, 10) : Theme.of(context).colorScheme.tertiaryContainer,
               ],
             ),
           ),
           child: Stack(
             children: [
-              topLeftGradient(),
-              bottomRightGradient(),
+              TopLeftGradient(),
+              BottomRightGradient(),
               CustomPaint(
                 size: Size(double.infinity,
                     double.infinity), // nimmt die Größe des Containers an
@@ -200,7 +206,7 @@ class WavyGleamPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.white
-          .withOpacity(0.04) // Mehr Opazität für bessere Sichtbarkeit
+          .withOpacity(0.05) // Mehr Opazität für bessere Sichtbarkeit
       ..style = PaintingStyle.fill;
 
     // Erste Welle breiter machen
@@ -274,51 +280,6 @@ class WavyGleamPainter extends CustomPainter {
 class CardBackgroundOnchain extends StatelessWidget {
   const CardBackgroundOnchain({Key? key}) : super(key: key);
 
-  Widget topLeftGradient() {
-    return Positioned(
-      left: -AppTheme.cardPadding * 7.5,
-      top: -AppTheme.cardPadding * 7.5,
-      child: Container(
-        width: AppTheme.cardPadding * 15,
-        height: AppTheme.cardPadding * 15,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0, 0.7],
-            colors: [
-              Color(0x99FFFFFF),
-              Color(0x00FFFFFF),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget bottomRightGradient() {
-    return Positioned(
-      right: -AppTheme.cardPadding * 7.5,
-      bottom: -AppTheme.cardPadding * 7.5,
-      child: Container(
-        width: AppTheme.cardPadding * 15,
-        height: AppTheme.cardPadding * 15,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.bottomRight,
-            end: Alignment.topLeft,
-            stops: [0, 0.7],
-            colors: [
-              Color(0x99FFFFFF),
-              Color(0x00FFFFFF),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -356,8 +317,8 @@ class CardBackgroundOnchain extends StatelessWidget {
           child: Stack(
             children: [
               //iconOnchain(),
-              topLeftGradient(),
-              bottomRightGradient(),
+              TopLeftGradient(),
+              BottomRightGradient(),
               CustomPaint(
                 size: Size(double.infinity,
                     double.infinity), // nimmt die Größe des Containers an
@@ -371,23 +332,31 @@ class CardBackgroundOnchain extends StatelessWidget {
   }
 }
 
-Widget paymentNetworkPicture(BuildContext context, String imageUrl) {
-  return Positioned(
-    right: AppTheme.cardPadding * 1.25,
-    top: AppTheme.cardPadding * 1.25,
-    child: Container(
-      height: AppTheme.cardPadding * 2,
-      width: AppTheme.cardPadding * 2,
-      decoration: BoxDecoration(
-        borderRadius: AppTheme.cardRadiusCircular,
-        color: Theme.of(context).colorScheme.background.withOpacity(0.25),
+class PaymentNetworkPicture extends StatelessWidget {
+  final String imageUrl;
+
+  PaymentNetworkPicture({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      right: AppTheme.cardPadding * 1.25,
+      top: AppTheme.cardPadding * 1.25,
+      child: Container(
+        height: AppTheme.cardPadding * 2,
+        width: AppTheme.cardPadding * 2,
+        decoration: BoxDecoration(
+          borderRadius: AppTheme.cardRadiusCircular,
+          color: Theme.of(context).colorScheme.background.withOpacity(0.25),
+        ),
+        child: Image.asset(
+          imageUrl,
+        ),
       ),
-      child: Image.asset(
-        imageUrl,
-      ),
-    ),
-  );
+    );
+  }
 }
+
 
 class BalanceTextWidget extends GetWidget<WalletsController> {
   final String balanceSAT;

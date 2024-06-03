@@ -12,7 +12,7 @@ class AppleMusicBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: AppTheme.cardPadding * 2,
+        height: AppTheme.cardPadding * 1.5,
         child: Row(
           children: [
             IconButton(

@@ -99,7 +99,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
             ),
           ),
-          const StatusBarBg()
+          // const StatusBarBg()
         ],
       ),
     );

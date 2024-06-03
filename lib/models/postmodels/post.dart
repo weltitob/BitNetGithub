@@ -7,6 +7,7 @@ import 'package:bitnet/components/post/components/attributesbuilder.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/collectionbuilder.dart';
 import 'package:bitnet/components/post/components/deezerbuilder.dart';
+import 'package:bitnet/components/post/components/descriptionbuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
 import 'package:bitnet/components/post/components/spotifybuilder.dart';
@@ -137,12 +138,11 @@ class _PostState extends State<Post> {
                 ownerId: ownerId,
                 postId: postId,
               ),
-              SizedBox(height: AppTheme.elementSpacing),
               Text(
                 postName,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(height: AppTheme.cardPadding),
+              SizedBox(height: AppTheme.elementSpacing * 1.5),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: medias.map((e) {
@@ -160,7 +160,7 @@ class _PostState extends State<Post> {
                   if (type == "description") {
                     return Container(
                         margin: EdgeInsets.only(bottom: 10.0),
-                        child: TextBuilderNetwork(url: e.data));
+                        child: DescriptionBuilder(descirption: e.data));
                   }
                   if (type == "attributes") {
                     return Container(
@@ -215,7 +215,7 @@ class _PostState extends State<Post> {
               ),
               SizedBox(height: AppTheme.elementSpacing),
               buildLikeSpace(
-                  type: 'Post',
+                  type: likeSpaceType.Post,
                   targetId: postId,
                   ownerId: ownerId,
                   rockets: rockets),
@@ -226,53 +226,53 @@ class _PostState extends State<Post> {
       ),
     );
   }
-
-//NOCHMAL GUCKEN DAS IWIE ABÄNDERN ZU GANZEM POST UND DANN AUTOMATISCH 5SATS SENDEN ODER SO
-  buildPostImage() {
-    return GestureDetector(
-      onDoubleTap: () => print('handleLikePost implement'),
-      child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          Container(
-              margin:
-                  EdgeInsets.only(left: 15.0, right: 15, top: 10, bottom: 10),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    offset: Offset(0, 2.5),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Text('ALTES IMAGE NUR TEST')),
-          showheart
-              ? Animator(
-                  duration: Duration(milliseconds: 300),
-                  tween: Tween(
-                    begin: 0.8,
-                    end: 1.4,
-                  ),
-                  curve: Curves.elasticOut,
-                  cycles: 0,
-                  builder: (BuildContext context,
-                      AnimatorState<double> animatorState, Widget? child) {
-                    return Transform.scale(
-                      scale: animatorState.value,
-                      child: Icon(
-                        Icons.favorite,
-                        size: 60,
-                        color: AppTheme.colorBitcoin,
-                      ),
-                    );
-                  },
-                )
-              : Text(''),
-        ],
-      ),
-    );
-  }
+//
+// //NOCHMAL GUCKEN DAS IWIE ABÄNDERN ZU GANZEM POST UND DANN AUTOMATISCH 5SATS SENDEN ODER SO
+//   buildPostImage() {
+//     return GestureDetector(
+//       onDoubleTap: () => print('handleLikePost implement'),
+//       child: Stack(
+//         alignment: Alignment.center,
+//         children: <Widget>[
+//           Container(
+//               margin:
+//                   EdgeInsets.only(left: 15.0, right: 15, top: 10, bottom: 10),
+//               width: double.infinity,
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.circular(20.0),
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: Colors.black.withOpacity(0.1),
+//                     offset: Offset(0, 2.5),
+//                     blurRadius: 10,
+//                   ),
+//                 ],
+//               ),
+//               child: Text('ALTES IMAGE NUR TEST')),
+//           showheart
+//               ? Animator(
+//                   duration: Duration(milliseconds: 300),
+//                   tween: Tween(
+//                     begin: 0.8,
+//                     end: 1.4,
+//                   ),
+//                   curve: Curves.elasticOut,
+//                   cycles: 0,
+//                   builder: (BuildContext context,
+//                       AnimatorState<double> animatorState, Widget? child) {
+//                     return Transform.scale(
+//                       scale: animatorState.value,
+//                       child: Icon(
+//                         Icons.favorite,
+//                         size: 60,
+//                         color: AppTheme.colorBitcoin,
+//                       ),
+//                     );
+//                   },
+//                 )
+//               : Text(''),
+//         ],
+//       ),
+//     );
+//   }
 }
