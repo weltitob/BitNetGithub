@@ -5,6 +5,8 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class SearchResultWidget extends StatelessWidget {
   const SearchResultWidget({super.key});
@@ -30,7 +32,7 @@ class SearchResultWidget extends StatelessWidget {
           });
           if (searchresults.isEmpty) {
             return Center(
-              child: Text('No users could be found'),
+              child: Text(L10n.of(context)!.noUsersFound),
             );
           } else {
             return Padding(

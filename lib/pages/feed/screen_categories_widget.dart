@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+
 class ScreenCategoryWidget extends StatelessWidget {
   final String image;
   final String text;

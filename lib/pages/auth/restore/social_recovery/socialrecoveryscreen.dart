@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class SocialRecoveryScreen extends StatefulWidget {
   const SocialRecoveryScreen({Key? key}) : super(key: key);
@@ -39,18 +39,16 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
           appBar: bitnetAppBar(
               actions: [
                 GestureDetector(
-                  onTap: () {
-                    print("Forwarding to social recovery info sceen...");
-                    context.go('/authhome/login/social_recovery/info_social_recovery');
-                  },
+                    onTap: () {
+                      context.go(
+                          '/authhome/login/social_recovery/info_social_recovery');
+                    },
                     child: AppBarActionButton(
                       iconData: Icons.info_outline_rounded,
-                    )
-                  ),
-                                  PopUpLangPickerWidget(),
-
+                    )),
+                PopUpLangPickerWidget(),
               ],
-              text: "Social recovery",
+              text: L10n.of(context)!.socialRecovery,
               context: context,
               onTap: () {
                 context.pop();
@@ -68,7 +66,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                       height: AppTheme.cardPadding * 3.h,
                     ),
                     Text(
-                      "Recovery account",
+                      L10n.of(context)!.recoverAccount,
                       textAlign: TextAlign.left,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
@@ -77,30 +75,29 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                     ),
                     UserResult(
                       onTap: () async {
-                        print("Test");
                       },
                       onDelete: () {},
                       userData: UserData(
-                          backgroundImageUrl: "",
-                          isPrivate: false,
-                          showFollowers: true,
-                          did: "did",
-                          displayName: "displayName",
-                          bio: "bio",
-                          customToken: "customToken",
-                          username: "username",
-                          profileImageUrl: "profileImageUrl",
-                          createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
-                          updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
-                          isActive: true,
-                          dob: 10,
-                          ),
+                        backgroundImageUrl: "",
+                        isPrivate: false,
+                        showFollowers: true,
+                        did: "did",
+                        displayName: "displayName",
+                        bio: "bio",
+                        customToken: "customToken",
+                        username: "username",
+                        profileImageUrl: "profileImageUrl",
+                        createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
+                        updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
+                        isActive: true,
+                        dob: 10,
+                      ),
                     ),
                     Container(
                       height: AppTheme.elementSpacing,
                     ),
                     Text(
-                      "Contact your friends and tell them to free-up your key! The free-ups will only be valid for 24 hours. After their keys are freed up the login sign will appear green and you'll have to wait additional 24hours before you can login to your recovered account.",
+                      L10n.of(context)!.contactFriendsForRecovery,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
@@ -108,7 +105,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                       height: AppTheme.cardPadding * 2.h,
                     ),
                     Text(
-                      "Friends / Key-Issuers",
+                      L10n.of(context)!.friendsKeyIssuers,
                       textAlign: TextAlign.left,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
@@ -118,59 +115,9 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                     Container(
                       child: UserResult(
                         onTap: () async {
-                          print("Test");
                         },
                         onDelete: () {},
                         userData: UserData(
-                            backgroundImageUrl: "",
-                            isPrivate: false,
-                            showFollowers: true,
-                            did: "did",
-                            displayName: "displayName",
-                            bio: "bio",
-                            customToken: "customToken",
-                            username: "username",
-                            profileImageUrl: "profileImageUrl",
-                            createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
-                            updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
-                            isActive: true,
-                            dob: 10,
-                            ),
-                      ),
-                    ),
-                    Container(
-                      height: AppTheme.elementSpacing.h,
-                    ),
-                    UserResult(
-                      onTap: () async {
-                        print("Test");
-                      },
-                      onDelete: () {},
-                      userData: UserData(
-                          backgroundImageUrl: "",
-                          isPrivate: false,
-                          showFollowers: true,
-                          did: "did",
-                          displayName: "displayName",
-                          bio: "bio",
-                          customToken: "customToken",
-                          username: "username",
-                          profileImageUrl: "profileImageUrl",
-                          createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
-                          updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
-                          isActive: true,
-                          dob: 10, 
-                          ),
-                    ),
-                    Container(
-                      height: AppTheme.elementSpacing.h,
-                    ),
-                    UserResult(
-                      onTap: () async {
-                        print("Test");
-                      },
-                      onDelete: () {},
-                      userData: UserData(
                           backgroundImageUrl: "",
                           isPrivate: false,
                           showFollowers: true,
@@ -185,6 +132,54 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                           isActive: true,
                           dob: 10,
                         ),
+                      ),
+                    ),
+                    Container(
+                      height: AppTheme.elementSpacing.h,
+                    ),
+                    UserResult(
+                      onTap: () async {
+                      },
+                      onDelete: () {},
+                      userData: UserData(
+                        backgroundImageUrl: "",
+                        isPrivate: false,
+                        showFollowers: true,
+                        did: "did",
+                        displayName: "displayName",
+                        bio: "bio",
+                        customToken: "customToken",
+                        username: "username",
+                        profileImageUrl: "profileImageUrl",
+                        createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
+                        updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
+                        isActive: true,
+                        dob: 10,
+                      ),
+                    ),
+                    Container(
+                      height: AppTheme.elementSpacing.h,
+                    ),
+                    UserResult(
+                      onTap: () async {
+                        print("Test");
+                      },
+                      onDelete: () {},
+                      userData: UserData(
+                        backgroundImageUrl: "",
+                        isPrivate: false,
+                        showFollowers: true,
+                        did: "did",
+                        displayName: "displayName",
+                        bio: "bio",
+                        customToken: "customToken",
+                        username: "username",
+                        profileImageUrl: "profileImageUrl",
+                        createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
+                        updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
+                        isActive: true,
+                        dob: 10,
+                      ),
                     ),
                     Container(
                       height: AppTheme.cardPadding.h,
@@ -199,15 +194,14 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding),
                   child: Container(
-                    alignment: Alignment.center,
-                    height: AppTheme.cardPadding * 2.5.h,
-                    width: screenWidth - AppTheme.cardPadding * 2.w,
-                    child: LongButtonWidget(
-                      customWidth: AppTheme.cardPadding * 14.w,
-                      title: "RECOVER ACCOUNT",
-                      onTap: () {  },
-                    )
-                  ),
+                      alignment: Alignment.center,
+                      height: AppTheme.cardPadding * 2.5.h,
+                      width: screenWidth - AppTheme.cardPadding * 2.w,
+                      child: LongButtonWidget(
+                        customWidth: AppTheme.cardPadding * 14.w,
+                        title: L10n.of(context)!.recoverAccount,
+                        onTap: () {},
+                      )),
                 )),
           ]),
           context: context);

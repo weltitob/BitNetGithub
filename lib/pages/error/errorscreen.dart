@@ -17,7 +17,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
             child: Text("Error"),
           ),
         ),
-        context: context
-    );
+        context: context);
   }
 }

@@ -3,13 +3,13 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/resultlist/users.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class ChooseRestoreScreen extends StatefulWidget {
   ChooseRestoreScreen({
@@ -22,8 +22,11 @@ class ChooseRestoreScreen extends StatefulWidget {
 
 class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
   void showError() {
-    showOverlay(context, "An error occured, please try again later.", color: AppTheme.errorColor,);
-
+    showOverlay(
+      context,
+      L10n.of(context)!.overlayErrorOccured,
+      color: AppTheme.errorColor,
+    );
   }
 
   @override
@@ -32,8 +35,8 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
         builder: (BuildContext context, BoxConstraints constraints) {
       final screenWidth = MediaQuery.of(context).size.width;
       bool isSuperSmallScreen =
-          constraints.maxWidth < AppTheme.isSuperSmallScreen; 
-       
+          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+
       return bitnetScaffold(
         margin: isSuperSmallScreen
             ? EdgeInsets.symmetric(horizontal: 0)
@@ -44,9 +47,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
           text: L10n.of(context)!.restoreAccount,
           context: context,
           onTap: () {
-            print('popping');
             Navigator.pop(context);
-            // context.go('/authhome');
           },
           actions: [PopUpLangPickerWidget()],
         ),
@@ -59,7 +60,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               padding:
                   const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Text(
-                "Restore options",
+                L10n.of(context)!.restoreOptions,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
@@ -70,10 +71,12 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                BitNetImageWithTextContainer("Word recovery", () {
+                BitNetImageWithTextContainer(L10n.of(context)!.wordRecovery,
+                    () {
                   context.go('/authhome/login/word_recovery');
                 }, image: "assets/images/wallet.png"),
-                BitNetImageWithTextContainer("Connect with other device", () {
+                BitNetImageWithTextContainer(
+                    L10n.of(context)!.connectWithOtherDevices, () {
                   context.go('/authhome/login/device_recovery');
                 }, image: "assets/images/scan_qr_device.png"),
               ],
@@ -84,10 +87,12 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                BitNetImageWithTextContainer("Social recovery", () {
+                BitNetImageWithTextContainer(L10n.of(context)!.socialRecovery,
+                    () {
                   context.go('/authhome/login/social_recovery');
                 }, image: "assets/images/friends.png"),
-                BitNetImageWithTextContainer("Use DID and Private Key", () {
+                BitNetImageWithTextContainer(L10n.of(context)!.useDidPrivateKey,
+                    () {
                   context.go('/authhome/login/did_recovery');
                 }, image: "assets/images/key_removed_bck.png"),
               ],
@@ -96,10 +101,9 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
               height: AppTheme.cardPadding * 2.h,
             ),
             Padding(
-              padding:
-                    EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+              padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
               child: Text(
-                "Locally saved accounts",
+                L10n.of(context)!.locallySavedAccounts,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),

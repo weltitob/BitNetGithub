@@ -35,7 +35,6 @@ class _LoopScreenState extends State<LoopScreen> {
     loopGetController.currencyController.clear();
 
     loopGetController.dispose();
-    log('Loop controller disposed');
     super.dispose();
   }
 
@@ -51,7 +50,6 @@ class _LoopScreenState extends State<LoopScreen> {
         extendBodyBehindAppBar: true,
         context: context,
         resizeToAvoidBottomInset: true,
-        // backgroundColor: AppTheme.colorBackground,
         appBar: bitnetAppBar(
           text: L10n.of(context)!.loopScreen,
           context: context,
@@ -121,11 +119,7 @@ class _LoopScreenState extends State<LoopScreen> {
                   currController: loopGetController.currencyController,
                   satController: loopGetController.satController,
                   focusNode: FocusNode(),
-                  onAmountChange: (type, currency) {
-                    log('This is the currencyController ${loopGetController.currencyController.text}');
-                    log('This is the btcController ${loopGetController.btcController.text}');
-                    log('This is the satController ${loopGetController.satController.text}');
-                  },
+                  onAmountChange: (type, currency) {   },
                   context: context,
                   autoConvert: true,
                 ),
@@ -140,8 +134,8 @@ class _LoopScreenState extends State<LoopScreen> {
                       )
                     : LongButtonWidget(
                         title: loopGetController.animate.value
-                            ? 'Onchain to Lightning'
-                            : 'Lightning to Onchain',
+                            ? L10n.of(context)!.onChainLightning
+                            : L10n.of(context)!.lightningOnChain,
                         onTap: () {
                           loopGetController.animate.value
                               ? loopGetController.loopInQuote(context)

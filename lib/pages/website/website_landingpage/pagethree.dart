@@ -6,6 +6,7 @@ import 'package:bitnet/models/website/carddata.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:flutter/material.dart';
 import 'package:seo/seo.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageThree extends StatefulWidget {
   const PageThree({super.key});
@@ -20,12 +21,34 @@ class _PageThreeState extends State<PageThree> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Diese sind die Breite und Höhe aus den Constraints
-        double width = constraints.maxWidth;
-        double height = constraints.maxHeight;
 
+List<CardData> cardDataList = [
+  CardData(
+    lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
+    mainTitle: L10n.of(context)!.makeBitcoinEasy,
+    subTitle:
+        L10n.of(context)!.weOfferEasiest,
+    buttonText: L10n.of(context)!.sendBtc,
+    onButtonTap: () {},
+  ),
+  CardData(
+    lottieAssetPath: 'assets/lottiefiles/plant.json',
+    mainTitle: L10n.of(context)!.growAFair,
+    subTitle: L10n.of(context)!.weDigitizeAllSorts,
+    buttonText: L10n.of(context)!.getAProfile,
+    onButtonTap: () {},
+  ),
+  CardData(
+    lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
+    mainTitle: L10n.of(context)!.givePowerBack,
+    subTitle:
+      L10n.of(context)!.weBuildTransparent,
+    buttonText: L10n.of(context)!.exploreBtc,
+    onButtonTap: () {},
+  ),
+];
+    return LayoutBuilder(
+      builder: (context, constraints) { 
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
         bool isSuperSmallScreen =
@@ -35,28 +58,7 @@ class _PageThreeState extends State<PageThree> {
 
         bool isSmallIntermediateScreen =
             constraints.maxWidth < AppTheme.isSmallIntermediateScreen;
-
-        double bigtextWidth = isMidScreen
-            ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.cardPadding * 13
-                    : AppTheme.cardPadding * 24
-                : AppTheme.cardPadding * 28
-            : AppTheme.cardPadding * 30;
-        double textWidth = isMidScreen
-            ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.cardPadding * 13
-                    : AppTheme.cardPadding * 16
-                : AppTheme.cardPadding * 22
-            : AppTheme.cardPadding * 24;
-        double subtitleWidth = isMidScreen
-            ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.cardPadding * 13
-                    : AppTheme.cardPadding * 16
-                : AppTheme.cardPadding * 18
-            : AppTheme.cardPadding * 22;
+ 
         double spacingMultiplier = isMidScreen
             ? isSmallScreen
                 ? isSuperSmallScreen
@@ -89,7 +91,7 @@ class _PageThreeState extends State<PageThree> {
                       height: AppTheme.cardPadding * 2 * spacingMultiplier),
                   SeoText(
                     tagStyle: TextTagStyle.h1,
-                    "Our mission.",
+                    L10n.of(context)!.ourMissionn,
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
                   SizedBox(
@@ -137,63 +139,7 @@ class _PageThreeState extends State<PageThree> {
                         )
                       : Container(),
                 ],
-              ),
-              // isSmallScreen ? AnimatedOpacity(
-              //   duration: Duration(
-              //       milliseconds: 200), // Adjust the duration as needed
-              //   opacity: _selectedindex != 2
-              //       ? 1.0
-              //       : 0.0, // Fully visible or completely transparent
-              //   child: Align(
-              //     alignment: Alignment.centerRight,
-              //     child: Padding(
-              //       padding: EdgeInsets.symmetric(
-              //           horizontal: AppTheme.elementSpacing * spacingMultiplier),
-              //       child: Transform.rotate(
-              //         angle: math.pi * 1.5, // 270 degrees in radians
-              //         child: BitNetFAB(
-              //             iconData: Icons.keyboard_arrow_down_rounded,
-              //             onPressed: () {
-              //
-              //           if (_selectedindex < 2) {
-              //             pageController.nextPage(
-              //               duration: Duration(milliseconds: 400),
-              //               curve: Curves.easeInOut,
-              //             );
-              //           }
-              //         }),
-              //       ),
-              //     ),
-              //   ),
-              // ) : Container(),
-              // isSmallScreen ? AnimatedOpacity(
-              //   duration: Duration(
-              //       milliseconds: 200), // Adjust the duration as needed
-              //   opacity: _selectedindex != 0
-              //       ? 1.0
-              //       : 0.0, // Fully visible or completely transparent
-              //   child: Align(
-              //     alignment: Alignment.centerLeft,
-              //     child: Padding(
-              //       padding:
-              //           EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * spacingMultiplier),
-              //       child: Transform.rotate(
-              //         angle: math.pi / 2, // 90 degrees in radians
-              //         child: BitNetFAB(
-              //             iconData: Icons.keyboard_arrow_down_rounded,
-              //             onPressed: () {
-              //           if (_selectedindex > 0) {
-              //             pageController.previousPage(
-              //               duration: Duration(milliseconds: 400),
-              //               curve: Curves.easeInOut,
-              //             );
-              //           }
-              //         }),
-              //       ),
-              //     ),
-              //   ),
-              // ) : Container(),
-            ],
+              ),   ],
           ),
         );
       },
@@ -231,30 +177,7 @@ class _PageThreeState extends State<PageThree> {
       );
     }).toList();
   }
+
 }
 
-List<CardData> cardDataList = [
-  CardData(
-    lottieAssetPath: 'assets/lottiefiles/wallet_animation.json',
-    mainTitle: "Make Bitcoin easy for everyone!",
-    subTitle:
-        "We offer the easiest, most secure, and most advanced web wallet.",
-    buttonText: "Send BTC",
-    onButtonTap: () {},
-  ),
-  CardData(
-    lottieAssetPath: 'assets/lottiefiles/plant.json',
-    mainTitle: "Grow a fair Cyberspace!",
-    subTitle: "We digitize all sorts of assets on top of the Bitcoin Network.",
-    buttonText: "Get a profile",
-    onButtonTap: () {},
-  ),
-  CardData(
-    lottieAssetPath: 'assets/lottiefiles/asset_animation.json',
-    mainTitle: "Give power back to the people!",
-    subTitle:
-        "We build a transparent platform that uses verification - not trust.",
-    buttonText: "Explore BTC",
-    onButtonTap: () {},
-  ),
-];
+

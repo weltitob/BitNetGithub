@@ -14,6 +14,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class ReceiveScreen extends StatefulWidget {
   ReceiveScreen({Key? key}) : super(key: key);
@@ -70,7 +72,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         context: context,
-        text: "Bitcoin empfangen",
+        text: L10n.of(context)!.receiveBitcoin,
         onTap: () {
           context.go('/feed');
         },

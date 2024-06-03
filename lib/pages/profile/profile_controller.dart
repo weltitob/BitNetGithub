@@ -65,16 +65,11 @@ class ProfileController extends BaseController {
 
   @override
   void onInit() {
-    print('oninit profile controller');
     super.onInit();
     loadData();
      pages = [
-      //PostsProfileTab(
-      //profileId: widget.profileId,
-      //),
       ColumnViewTab(),
       RowViewTab(),
-      //den nur wenn eigenes profil also abfrage ob eignes profil anonszten was anders zeigen
       EditProfileTab(),
     ];
   }
@@ -96,15 +91,12 @@ class ProfileController extends BaseController {
     focusNode.addListener(() {
       print("$focusNode has focus: ${focusNode.hasFocus}");
       if (focusNode.hasFocus == false) {
-        print("lost focus");
-        //final String currentusername = userNameController.text;
-        //print(currentusername);
+        print("lost focus"); 
         func();
       }
     });
   }
 
-  //editprofile related stuff
 
   getUser() async {
     try {
@@ -151,7 +143,6 @@ class ProfileController extends BaseController {
       usersCollection.doc(profileId).update({
         'profileImageUrl': _profileImage,
       });
-      print('Profilepic updated successfully');
     }
   }
 
@@ -160,7 +151,6 @@ class ProfileController extends BaseController {
     usersCollection.doc(profileId).update({
       'username': userNameController.text,
     });
-    print('username updated successfully');
   }
 
   void updateDisplayName() {
@@ -172,7 +162,6 @@ class ProfileController extends BaseController {
       usersCollection.doc(profileId).update({
         'displayName': displayNameController.text,
       });
-      print('displayName updated successfully');
     }
   }
 
@@ -181,7 +170,6 @@ class ProfileController extends BaseController {
       usersCollection.doc(profileId).update({
         'backgroundImageUrl': _backgroundImage,
       });
-      print('Background updated successfully');
     }
   }
 
@@ -194,7 +182,6 @@ class ProfileController extends BaseController {
       usersCollection.doc(profileId).update({
         'bio': bioController.text,
       });
-      print('Bio updated successfully');
     }
   }
 
@@ -203,7 +190,6 @@ class ProfileController extends BaseController {
       usersCollection.doc(profileId).update({
         'showFollowers': showFollowers,
       });
-      print('showFollowers updated successfully');
     }
   }
 
@@ -218,15 +204,7 @@ class ProfileController extends BaseController {
     //PUT THAT USER ON YOUR FOLLOWING COLLECTION (update your followung collection)
     followingRef.doc(myuser).collection('userFollowing').doc(profileId).set({});
     //add activityfeed ITEM for that user to notify about new user
-
-    // activityFeedRef.doc(widget.profileId).collection('feedItems').doc(myuser).set({
-    //   'type': 'follow',
-    //   'ownerId': widget.profileId,
-    //   'username': myuser.did,
-    //   'userId': myuser.did,
-    //   'userProfileImg': myuser.profileImageUrl,
-    //   'timestamp': timestamp,
-    // });
+ 
   }
 
   void handleUnfollowUser() {
@@ -289,7 +267,6 @@ class ProfileController extends BaseController {
       followingCount?.value = snapshot.docs.length;
       gotFollowingCount.value = true;
       print(gotFollowingCount.value);
-      print('get following');
     } catch (e, tr) {
       print(e);
       print(tr);
@@ -308,7 +285,6 @@ class ProfileController extends BaseController {
       isFollowing?.value = doc.exists;
       gotIsFollowing.value = true;
       print(gotIsFollowing.value);
-      print('check if following ');
     } catch (e, tr) {
       print(e);
       print(tr);

@@ -11,6 +11,7 @@ import 'package:bitnet/models/bitcoin/news.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class NewsScreen extends StatefulWidget {
   @override
@@ -80,7 +81,7 @@ class _NewsScreenState extends State<NewsScreen> {
       context: context,
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
-        text: "Bitcoin News",
+        text: L10n.of(context)!.bitcoinNews,
         context: context,
         onTap: () {
           context.pop();

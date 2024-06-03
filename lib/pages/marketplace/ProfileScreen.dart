@@ -1,11 +1,4 @@
-import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
-import 'package:bitnet/components/marketplace_widgets/Header.dart';
-import 'package:bitnet/components/marketplace_widgets/LogoutModal.dart';
-import 'package:bitnet/components/marketplace_widgets/ProfileList.dart';
-import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+
 
 //
 // class ProfileScreen extends StatefulWidget {

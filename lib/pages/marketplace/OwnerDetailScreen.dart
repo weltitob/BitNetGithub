@@ -7,6 +7,7 @@ import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class OwnerDetailScreen extends StatefulWidget {
   const OwnerDetailScreen({Key? key}) : super(key: key);
@@ -127,7 +128,7 @@ class _OwnerDetailScreenState extends State<OwnerDetailScreen> {
                     margin: EdgeInsets.only(bottom: 15.h),
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Text(
-                      'Crypto-Pills',
+                      L10n.of(context)!.cryptoPills,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 28.sp,
@@ -201,7 +202,7 @@ class _OwnerDetailScreenState extends State<OwnerDetailScreen> {
                         ),
                         contentPadding: EdgeInsets.only(
                             left: 20.w, bottom: 12.h, top: 12.h, right: 20.w),
-                        hintText: "Search items and collections",
+                        hintText: L10n.of(context)!.searchItemsAndCollections,
                         hintStyle: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
@@ -238,9 +239,7 @@ class _OwnerDetailScreenState extends State<OwnerDetailScreen> {
                             encodedData: gridListData[index].nftImage,
                             nftName: gridListData[index].nftName,
                             nftMainName: gridListData[index].nftMainName,
-
                             cryptoText: gridListData[index].cryptoText,
-
                             rank: gridListData[index].rank);
                       },
                     ),

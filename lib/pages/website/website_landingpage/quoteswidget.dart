@@ -12,6 +12,7 @@ import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dar
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 
 class Quotes extends StatefulWidget {
@@ -38,39 +39,14 @@ class _QuotesState extends State<Quotes> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      // Diese sind die Breite und Höhe aus den Constraints
-      double width = constraints.maxWidth;
-      double height = constraints.maxHeight;
-
+        builder: (BuildContext context, BoxConstraints constraints) { 
       bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
       bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
       bool isSuperSmallScreen =
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       bool isIntermediateScreen =
           constraints.maxWidth < AppTheme.isIntermediateScreen;
-
-      double bigtextWidth = isMidScreen
-          ? isSmallScreen
-              ? isSuperSmallScreen
-                  ? AppTheme.cardPadding * 13
-                  : AppTheme.cardPadding * 24
-              : AppTheme.cardPadding * 28
-          : AppTheme.cardPadding * 30;
-      double textWidth = isMidScreen
-          ? isSmallScreen
-              ? isSuperSmallScreen
-                  ? AppTheme.cardPadding * 13
-                  : AppTheme.cardPadding * 16
-              : AppTheme.cardPadding * 22
-          : AppTheme.cardPadding * 24;
-      double subtitleWidth = isMidScreen
-          ? isSmallScreen
-              ? isSuperSmallScreen
-                  ? AppTheme.cardPadding * 13
-                  : AppTheme.cardPadding * 16
-              : AppTheme.cardPadding * 18
-          : AppTheme.cardPadding * 22;
+ 
       double spacingMultiplier = isMidScreen
           ? isSmallScreen
               ? isSuperSmallScreen
@@ -191,7 +167,7 @@ class _QuotesState extends State<Quotes> {
                                           isRepeatingAnimation: false,
                                           animatedTexts: [
                                             TypewriterAnimatedText(
-                                              '"We empower Our Tomorrow!"',
+                                              L10n.of(context)!.weEmpowerTomorrow,
                                               textAlign: TextAlign.center,
                                               textStyle: Theme.of(context)
                                                   .textTheme
@@ -204,7 +180,7 @@ class _QuotesState extends State<Quotes> {
                                                   milliseconds: 50),
                                             ),
                                             TypewriterAnimatedText(
-                                              'Join us Today!',
+                                              L10n.of(context)!.joinUsToday,
                                               textAlign: TextAlign.center,
                                               textStyle: Theme.of(context)
                                                   .textTheme

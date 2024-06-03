@@ -41,15 +41,7 @@ class CenterWidget extends StatelessWidget {
                 onTap: () {
                   controller.currentview.value = 1;
                 },
-              ),
-              // CenterWidgetIcon(
-              //   iconData: Icons.wallet,
-              //   index: 1,
-              //   onTap: () {
-              //     controller.currentview.value = 1;
-              //   },
-              // ),
-
+              ), 
               CenterWidgetIcon(
                 iconData: Icons.edit,
                 index: 2,

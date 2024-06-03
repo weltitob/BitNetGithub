@@ -19,6 +19,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class MnemonicGen extends StatefulWidget {
   const MnemonicGen({super.key});
@@ -80,12 +81,12 @@ class MnemonicController extends State<MnemonicGen> {
   void confirmMnemonic(String typedMnemonic) {
     LoggerService logger = Get.find();
     if (mnemonicString == typedMnemonic) {
-      showOverlay(context, "Your mnemonic is correct! Please keep it safe.",
+      showOverlay(context, L10n.of(context)!.mnemonicCorrect,
           color: AppTheme.successColor);
       signUp();
     } else {
       //implement error throw
-      showOverlay(context, "Your mnemonic does not match. Please try again.",
+      showOverlay(context, L10n.of(context)!.mnemonicInCorrect,
           color: AppTheme.errorColor);
       logger.e("Mnemonic does not match");
       changeWrittenDown();
@@ -107,7 +108,7 @@ class MnemonicController extends State<MnemonicGen> {
         showFollowers: false,
         did: "",
         displayName: username,
-        bio: "Hey there Bitcoiners! I joined the revolution!",
+        bio: L10n.of(context)!.joinedRevolution,
         customToken: "customToken",
         username: username,
         profileImageUrl: profileimageurl,
@@ -130,16 +131,18 @@ class MnemonicController extends State<MnemonicGen> {
           PlatformDispatcher.instance.locale; // or html.window.locale
       String langCode = deviceLocale.languageCode;
       localeProvider.setLocaleInDatabase(
-       
           localeProvider.locale.languageCode ?? langCode,
           localeProvider.locale ?? deviceLocale);
 
-      CountryProvider countryProvider = Provider.of<CountryProvider>(context, listen: false);
-      countryProvider.setCountryInDatabase(countryProvider.getCountry() ?? "US");
-      WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
+      CountryProvider countryProvider =
+          Provider.of<CountryProvider>(context, listen: false);
+      countryProvider
+          .setCountryInDatabase(countryProvider.getCountry() ?? "US");
+      WidgetsBinding.instance
+          .addPostFrameCallback(ThemeController.of(context).loadData);
       logger.i("Navigating to homescreen now...");
       context.go('/');
-    }  on FirebaseException catch (e) {
+    } on FirebaseException catch (e) {
       logger.e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
       throw Exception(
           "We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");
@@ -154,7 +157,7 @@ class MnemonicController extends State<MnemonicGen> {
 
   Future<UserData?> firebaseAuthentication(
       UserData userData, VerificationCode code) async {
-        LoggerService logger = Get.find();
+    LoggerService logger = Get.find();
     try {
       //blablabla
       logger.i("Creating firebase user now...");

@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -44,7 +45,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                       text: controller.qrCodeDataStringOnchain.value));
                   // Display a snackbar to indicate that the wallet address has been copied
                   showOverlay(
-                      context, "Wallet-Adresse in Zwischenablage kopiert");
+                      context, L10n.of(context)!.walletAddressCopied);
                 },
                 child: SizedBox(
                   child: Center(
@@ -84,7 +85,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                           LongButtonWidget(
                             customHeight: AppTheme.cardPadding * 2,
                             customWidth: AppTheme.cardPadding * 5,
-                            title: 'Share',
+                            title: L10n.of(context)!.share,
                             leadingIcon: Icon(Icons.share_rounded),
                             onTap: () {
                               // Share the wallet address
@@ -110,9 +111,9 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                     text: controller.qrCodeDataStringOnchain.value));
                 // Display a snackbar to indicate that the wallet address has been copied
                 showOverlay(
-                    context, "Wallet-Adresse in Zwischenablage kopiert");
+                    context, L10n.of(context)!.walletAddressCopied);
               },
-              text: 'Invoice',
+              text: L10n.of(context)!.invoice,
               trailing: Obx(() {
                 final qrCodeData = controller.qrCodeDataStringOnchain.value ?? '';
                 if (qrCodeData.isEmpty) {
@@ -154,7 +155,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                     setState(() {});
 
                   },
-                  text: 'Amount',
+                  text: L10n.of(context)!.amount,
                   trailing: Row(
                     children: [
                       Icon(

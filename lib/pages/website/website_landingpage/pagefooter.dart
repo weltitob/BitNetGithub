@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:seo/seo.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageFooter extends StatefulWidget {
   final WebsiteLandingPageController controller;
@@ -37,10 +37,6 @@ class _PageFooterState extends State<PageFooter> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      // Diese sind die Breite und Höhe aus den Constraints
-      double width = constraints.maxWidth;
-      double height = constraints.maxHeight;
-
       bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
       bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
       bool isSuperSmallScreen =
@@ -48,27 +44,6 @@ class _PageFooterState extends State<PageFooter> {
       bool isIntermediateScreen =
           constraints.maxWidth < AppTheme.isIntermediateScreen;
 
-      double bigtextWidth = isMidScreen
-          ? isSmallScreen
-              ? isSuperSmallScreen
-                  ? AppTheme.cardPadding * 13
-                  : AppTheme.cardPadding * 24
-              : AppTheme.cardPadding * 28
-          : AppTheme.cardPadding * 30;
-      double textWidth = isMidScreen
-          ? isSmallScreen
-              ? isSuperSmallScreen
-                  ? AppTheme.cardPadding * 13
-                  : AppTheme.cardPadding * 16
-              : AppTheme.cardPadding * 22
-          : AppTheme.cardPadding * 24;
-      double subtitleWidth = isMidScreen
-          ? isSmallScreen
-              ? isSuperSmallScreen
-                  ? AppTheme.cardPadding * 13
-                  : AppTheme.cardPadding * 16
-              : AppTheme.cardPadding * 18
-          : AppTheme.cardPadding * 22;
       double spacingMultiplier = isMidScreen
           ? isSmallScreen
               ? isSuperSmallScreen
@@ -117,7 +92,8 @@ class _PageFooterState extends State<PageFooter> {
                         bottom: AppTheme.cardPadding * 10 * spacingMultiplier),
                     child: Quotes(
                       controller: widget.controller,
-                    )), //PageFive(controller: widget.controller,),
+                    ),
+                  ), //PageFive(controller: widget.controller,),
             buildFooter(
                 context, centerSpacing, spacingMultiplier, isSmallScreen),
           ]));
@@ -139,9 +115,7 @@ class _PageFooterState extends State<PageFooter> {
             Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                //mainAxisSize: double.infinity,
-                //mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+               crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
@@ -362,38 +336,34 @@ class _PageFooterState extends State<PageFooter> {
       children: [
         SeoText(
           tagStyle: TextTagStyle.h3,
-          "Product",
+          L10n.of(context)!.product,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         SizedBox(
           height: AppTheme.elementSpacing,
         ),
         SocialRow(
-          platformName: "Get Started",
+          platformName: L10n.of(context)!.getStarted,
           onTap: () => context.go('/website'),
         ), // VRouter auth
         SocialRow(
-          platformName: "About us",
+          platformName: L10n.of(context)!.aboutUs,
           onTap: () => context.go('/website/aboutus'),
         ), // About us page (nur ich lol)make roadmap how the app should develop
         SocialRow(
-          platformName: "Our Team",
+          platformName: L10n.of(context)!.ourTeam,
           onTap: () => context.go('/website/ourteam'),
         ),
         SocialRow(
-            platformName: "Fund us",
+            platformName: L10n.of(context)!.fundUs,
             onTap: () {
               launchUrlString(AppTheme.goFundMeUrl);
             }), // Support the project give money or buy these nfts
         SocialRow(
-          platformName: "Whitepaper",
+          platformName: L10n.of(context)!.whitePaper,
           onTap: () {
-            print("Download whitepaper as pdf or smth...");
           },
-        ), // whitepaper (webbrowser einfach n tab mit dem whitepaper öffnen
-
-        //reddit??
-        //tumblr??
+        ), 
       ],
     );
   }
@@ -404,35 +374,32 @@ class _PageFooterState extends State<PageFooter> {
       children: [
         SeoText(
           tagStyle: TextTagStyle.h3,
-          "Contact",
+          L10n.of(context)!.contacts,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         SizedBox(
           height: AppTheme.elementSpacing,
         ),
         SocialRow(
-          platformName: "Help Center",
+          platformName: L10n.of(context)!.helpCenter,
           onTap: () {
-            print("Help and Support");
             context.go("/help");
           },
         ), //vrouter help page (faq voreingetsellt)
         SocialRow(
           platformName:
-              "Report issue", //bugs, incidents, security issues etc abuse and fraud etc problems in general
+              L10n.of(context)!.reportIssue, //bugs, incidents, security issues etc abuse and fraud etc problems in general
           onTap: () {
-            print("Help and Support");
             context.go("/website/report");
           },
         ), //vrouter reporting page (bug voreingetsellt)
         SocialRow(
-            platformName: "Submit Idea",
+            platformName: L10n.of(context)!.submitIdea,
             onTap: () {
               context.go('/website/submitidea');
             }), //vrouter reporting page (fraud voreingetsellt)//vrouter reporting page (security voreingetsellt)
         SocialRow(
-            platformName: "AGBS",
-            onTap: () => context.go('/website/agbs')), //
+            platformName: "AGBS", onTap: () => context.go('/website/agbs')), //
         SocialRow(
             platformName: "Impressum",
             onTap: () => context.go('/website/impressum')), //

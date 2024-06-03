@@ -7,6 +7,8 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 import 'package:get/get.dart';
 
 class MnemonicGenConfirm extends StatefulWidget {
@@ -40,7 +42,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
         extendBodyBehindAppBar: true,
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: bitnetAppBar(
-          text: "Confirm your mnemonic",
+          text: L10n.of(context)!.confirmMnemonic,
           context: context,
           onTap: () {
             widget.mnemonicController.changeWrittenDown();
@@ -80,7 +82,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
                   widget.mnemonicController.signUp();
                 },
                 child: Text(
-                  "Skip at own risk",
+                  L10n.of(context)!.skipAtOwnRisk,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),

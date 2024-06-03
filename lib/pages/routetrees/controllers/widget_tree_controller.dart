@@ -1,13 +1,8 @@
 import 'package:app_links/app_links.dart';
-import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
-import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
-import 'package:bitnet/backbone/helper/platform_infos.dart';
-
 import 'package:bitnet/backbone/security/biometrics/biometric_helper.dart';
 import 'package:bitnet/backbone/security/security.dart';
-
-import 'package:universal_html/html.dart' as html;
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:get/get.dart';
 
 class WidgetTreeController extends BaseController {
   RxBool hasBiometrics = true.obs;
@@ -21,13 +16,10 @@ class WidgetTreeController extends BaseController {
 
   @override
   void onInit() {
-    super.onInit();
-    getclientsfunc();
+    super.onInit(); 
     isBiometricsAvailable();
     appLinks = AppLinks(
-      onAppLink: (Uri uri, String string) {
-        // Handle the deep link here. You can push to a new page, or perform
-        // some action based on the data in the URI.
+      onAppLink: (Uri uri, String string) { 
         print('Got deep link: $uri');
       },
     );
@@ -51,56 +43,5 @@ class WidgetTreeController extends BaseController {
     } else {
       hasBiometrics.value = false;
     }
-  }
-
-  getclientsfunc() async { 
-  Stopwatch stopwatch = Stopwatch()..start();
-
-  // try {
-  //   print('getting clients///////');
-  //   clients = await ClientManager.getClients();
-  //   print('gotted the clients////////////');
-  //   isLoadingClients.value = false;
-  //   print("Fetched clients: ${clients.toString()}");
-
-  //   if (clients.isNotEmpty) {
-  //     // Preload first client if we have clients
-  //     final firstClient = clients.first;
-  //     await firstClient.roomsLoading;
-  //     await firstClient.accountDataLoading;
- 
-  //     print("clients after loading: $clients");
-
-  //     if (PlatformInfos.isMobile) {
-  //       BackgroundPush.clientOnly(clients.first);
-  //     }
-  //   }
-
-  //   // Load query parameters if it's a web platform
-  //   if (kIsWeb) {
-  //     final queryParameters = Uri.parse(html.window.location.href).queryParameters;
-  //     print("Loaded query parameters: $queryParameters");
-  //   }
-
-  //   print("Loading should be finished");
-  // } catch (e) {
-  //   throw Exception("error loading matrix: $e");
-  // }
-
-  // // Set initial URL based on platform and client status
-  // if (kIsWeb) {
-  //   initialUrl!.value = '/website';
-  // } else {
-  //   if (clients.isNotEmpty && clients.any((client) => client.isLogged())) {
-  //     initialUrl!.value = '/feed';
-  //   } else {
-  //     initialUrl!.value = '/authhome';
-  //   }
-  // }
-
-  stopwatch.stop();
-  print("Execution Time: ${stopwatch.elapsedMilliseconds} milliseconds");
-
-
-  }
+  }  
 }

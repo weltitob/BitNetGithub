@@ -9,6 +9,8 @@ import 'package:bitnet/pages/marketplace/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class WalletCategory {
   final String imageURL;
@@ -31,11 +33,9 @@ class _FeedScreenState extends State<FeedScreen>
     with SingleTickerProviderStateMixin {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Get.put(FeedController()).initNFC(context);
   }
-  // bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class _FeedScreenState extends State<FeedScreen>
                 children: [
                   SearchFieldWithNotificationsWidget(
                     isSearchEnabled: true,
-                    hintText: "Search...",
+                    hintText: "${L10n.of(context)!.search}...",
                     handleSearch: controller.handleSearch,
                   ),
                   HorizontalFadeListView(
@@ -86,7 +86,7 @@ class _FeedScreenState extends State<FeedScreen>
                       Container(
                         child: Center(
                             child: Text(
-                          "No users found.",
+                          L10n.of(context)!.noUserFound,
                           style: Theme.of(context).textTheme.bodyMedium,
                         )),
                       ),
@@ -97,39 +97,4 @@ class _FeedScreenState extends State<FeedScreen>
       context: context,
     );
   }
-
-//get the watchlist of an user
-//
-//   WatchList() {
-//     if (watchlist != "") {
-//       // return Text(Watchlist.decode(watchlist).toString());
-//       return UsersWatchlist(coins: Watchlist.decode(watchlist));
-//     } else {
-//       return Text("NO DATA");
-//     }
-//   }
-
-//Widget for diffrent Lists
-// was mylist before to work with swiching the diffrent categorys
-//
-//   @override
-//   Widget CurrentList() {
-//     return FutureBuilder<BigDataModel>(
-//       future: _futureCoins,
-//       builder: (context, snapshot) {
-//         if (snapshot.connectionState == ConnectionState.done) {
-//           if (snapshot.hasData) {
-//             var coinsData = snapshot.data!.dataModel;
-//             return SizedBox(
-//                 height: MediaQuery.of(context).size.height,
-//                 child: TopCoinsByMarketcap(coins: coinsData)
-//             );
-//           } else if (snapshot.hasError) {
-//             return Text('${snapshot.error}');
-//           }
-//         }
-//         return dotProgress(context);
-//       },
-//     );
-//   }
-}
+ }

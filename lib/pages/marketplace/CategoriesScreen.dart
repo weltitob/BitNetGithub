@@ -6,6 +6,8 @@ import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({Key? key}) : super(key: key);
@@ -63,7 +65,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   Container(
                     margin: EdgeInsets.only(bottom: 5.h),
                     child: Text(
-                      'Categories',
+                      L10n.of(context)!.categories,
                       style: TextStyle(
                         fontSize: 28.sp,
                         fontWeight: FontWeight.w700,

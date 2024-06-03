@@ -10,7 +10,7 @@ import 'package:bitnet/pages/website/website_landingpage/pagefour.dart';
 import 'package:bitnet/pages/website/website_landingpage/pageone.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagethree.dart';
 import 'package:bitnet/pages/website/website_landingpage/pagetwo.dart';
-
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,9 +41,7 @@ class WebsiteLandingPageView extends StatelessWidget {
                         duration: Duration(milliseconds: 400),
                         curve: Curves.easeInOut,
                       );
-                    } else {
-                      print("Last page reached");
-                    }
+                    } else {}
                   }
                 },
               ),
@@ -56,7 +54,6 @@ class WebsiteLandingPageView extends StatelessWidget {
       context: context,
       body: PageView(
         padEnds: false,
-        //physics: FastScrollPhysics(), //FastScrollPhysics was causing a bug where pagecontroller would jump back up to the first page when it reached the last page
         scrollDirection: Axis.vertical,
         controller: controller.pageController,
         children: [
@@ -68,9 +65,6 @@ class WebsiteLandingPageView extends StatelessWidget {
           ),
           PageThree(),
           PageFour(),
-          // PageFive(
-          //   controller: controller,
-          // ),
           PageFooter(
             controller: controller,
           ),
@@ -88,8 +82,6 @@ class WebsiteLandingPageView extends StatelessWidget {
       // Check if the screen width is less than 600 pixels.
       bool isSmallScreen =
           MediaQuery.of(context).size.width < AppTheme.isSmallScreen;
-      bool isMidScreen =
-          MediaQuery.of(context).size.width < AppTheme.isMidScreen;
 
       List<UserData> all_userresults = lastRegisteredUsers;
       List<String> firstFourUsernames = all_userresults.reversed
@@ -110,17 +102,17 @@ class WebsiteLandingPageView extends StatelessWidget {
                       pause: Duration(milliseconds: 1000),
                       animatedTexts: [
                         RotateAnimatedText(
-                          "We have Beta liftoff! Exclusive Early Access for Invited Users.",
+                          L10n.of(context)!.weHaveBetaLiftOff,
                           duration: Duration(milliseconds: 2400),
                           textStyle: Theme.of(context).textTheme.titleSmall,
                         ),
                         RotateAnimatedText(
-                          '+${percentagechange.toStringAsFixed(1)}% User-change in the last 7 days!',
+                          '+${percentagechange.toStringAsFixed(1)}%${L10n.of(context)!.userCharged}',
                           duration: Duration(milliseconds: 2400),
                           textStyle: Theme.of(context).textTheme.titleSmall,
                         ),
                         RotateAnimatedText(
-                          '@${firstFourUsernames[0]} just joined the BitNet!',
+                          '@${firstFourUsernames[0]}${L10n.of(context)!.justJoinedBitnet}',
                           duration: Duration(milliseconds: 2400),
                           textStyle: Theme.of(context).textTheme.titleSmall,
                         ),
