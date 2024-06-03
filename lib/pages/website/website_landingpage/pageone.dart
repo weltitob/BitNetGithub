@@ -92,7 +92,8 @@ class _PageOneState extends State<PageOne> {
                     Container(
                       width: bigtextWidth,
                       child: SeoText(
-                        "We build the Bitcoin Network!", //We bring Bitcoin to ordinary people! //We digitize the world with Bitcoin!
+                        L10n.of(context)!
+                            .weBuildBitcoin, //We bring Bitcoin to ordinary people! //We digitize the world with Bitcoin!
                         tagStyle: TextTagStyle.h1,
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen
@@ -106,7 +107,7 @@ class _PageOneState extends State<PageOne> {
                     Container(
                       width: subtitleWidth,
                       child: SeoText(
-                        "We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future.", //Bitcoin can solve almost all of our problems, but it is up to us, the people, to solve them by adopting the Bitcoin standard!
+                        L10n.of(context)!.weAreGrowingBitcoin,
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen
                             ? Theme.of(context).textTheme.bodyLarge
@@ -125,8 +126,7 @@ class _PageOneState extends State<PageOne> {
                       },
                     ),
                     SizedBox(
-                      //height: AppTheme.cardPadding * 8 * spacingMultiplier,
-                      height: AppTheme.cardPadding * 10 * spacingMultiplier,
+                       height: AppTheme.cardPadding * 10 * spacingMultiplier,
                     ),
                     TweenAnimationBuilder<num>(
                       duration: Duration(
@@ -154,7 +154,7 @@ class _PageOneState extends State<PageOne> {
                       height: AppTheme.cardPadding * spacingMultiplier,
                     ),
                     SeoText(
-                      "limited spots left!",
+                      L10n.of(context)!.limitedSpotsLeft,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     Row(
@@ -164,27 +164,6 @@ class _PageOneState extends State<PageOne> {
                 ),
               ),
             ),
-            // Align(
-            //     alignment: Alignment.bottomCenter,
-            //     child: Expanded(
-            //       child: Lottie.asset(
-            //         'assets/lottiefiles/stars.json',
-            //         fit: BoxFit.cover,
-            //       ),
-            //     )
-            // ),
-            // Align(
-            //     alignment: Alignment.bottomRight,
-            //     child: Container(
-            //       height: AppTheme.cardPadding * 25 * spacingMultiplier,
-            //       width: AppTheme.cardPadding * 25 * spacingMultiplier,
-            //       margin: EdgeInsets.only(right: AppTheme.cardPadding * 5 * spacingMultiplier),
-            //       child: Lottie.asset(
-            //         'assets/lottiefiles/astronaut_lp.json',
-            //         fit: BoxFit.cover,
-            //       ),
-            //     )
-            // ),
           ],
         );
       },

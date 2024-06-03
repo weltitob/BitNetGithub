@@ -134,8 +134,8 @@ class _LoopScreenState extends State<LoopScreen> {
                       )
                     : LongButtonWidget(
                         title: loopGetController.animate.value
-                            ? 'Onchain to Lightning'
-                            : 'Lightning to Onchain',
+                            ? L10n.of(context)!.onChainLightning
+                            : L10n.of(context)!.lightningOnChain,
                         onTap: () {
                           loopGetController.animate.value
                               ? loopGetController.loopInQuote(context)

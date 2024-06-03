@@ -41,7 +41,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                     text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
                 showOverlay(
-                    context, "Wallet-Adresse in Zwischenablage kopiert");
+                    context, L10n.of(context)!.walletAddressCopied);
               },
               child: SizedBox(
                 child: Center(
@@ -107,14 +107,14 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                     text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
                 showOverlay(
-                    context, "Wallet-Adresse in Zwischenablage kopiert");
+                    context, L10n.of(context)!.walletAddressCopied);
               },
-              text: 'Invoice',
+              text: L10n.of(context)!.invoice,
               trailing: Obx(() {
                 final qrCodeData =
                     controller.qrCodeDataStringLightning.value ?? '';
                 if (qrCodeData.isEmpty) {
-                  return Text('loading...');
+                  return Text('${L10n.of(context)!.loading}...');
                 } else {
                   final start = qrCodeData.length >= 8
                       ? qrCodeData.substring(0, 8)
@@ -152,7 +152,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                       appBar: bitnetAppBar(
                         hasBackButton: false,
                         buttonType: ButtonType.transparent,
-                        text: "Change Amount",
+                        text: "${L10n.of(context)!.changeLanguage}",
                         context: context,
                       ),
                       body: SingleChildScrollView(child: CreateInvoice()),
@@ -163,7 +163,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                     setState(() {});
                   }
                 },
-                text: 'Amount',
+                text: L10n.of(context)!.amount,
                 trailing: Row(
                   children: [
                     Icon(
@@ -177,7 +177,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                     Text(
                       controller.satController.text == "0" ||
                               controller.satController.text.isEmpty
-                          ? "Change Amount"
+                          ? "${L10n.of(context)!.changeAmount}"
                           : controller.satController.text,
                     ),
                   ],

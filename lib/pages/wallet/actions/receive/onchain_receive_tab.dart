@@ -38,7 +38,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                       text: controller.qrCodeDataStringOnchain.value));
                   // Display a snackbar to indicate that the wallet address has been copied
                   showOverlay(
-                      context, "Wallet address copied to clipboard");
+                      context, L10n.of(context)!.walletAddressCopied);
                 },
                 child: SizedBox(
                   child: Center(
@@ -104,9 +104,9 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                     text: controller.qrCodeDataStringOnchain.value));
                 // Display a snackbar to indicate that the wallet address has been copied
                 showOverlay(
-                    context, "Wallet address copied to clipboard");
+                    context, L10n.of(context)!.walletAddressCopied);
               },
-              text: 'Invoice',
+              text: L10n.of(context)!.invoice,
               trailing: Obx(() {
                 final qrCodeData = controller.qrCodeDataStringOnchain.value ?? '';
                 if (qrCodeData.isEmpty) {
@@ -127,7 +127,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
               }),
             ),
             BitNetListTile(
-              text: 'Amount',
+              text: L10n.of(context)!.amount,
               trailing: Row(
                 children: [
                   Icon(
@@ -140,7 +140,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                   SizedBox(width: AppTheme.elementSpacing / 2),
                   Text(
                     controller.satController.text == "0" || controller.satController.text.isEmpty
-                        ? "Change Amount"
+                        ? L10n.of(context)!.changeAmount
                         : controller.satController.text,
                   ),
                 ],

@@ -52,11 +52,11 @@ class AddressComponent extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 12.0),
                           child: BalanceCardBtc(balance:'${(((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)).toStringAsFixed(8)}')),
                       BitNetListTile(
-                        text: 'Address',
+                        text: L10n.of(context)!.address,
                         trailing: Text('${controller.addressId.substring(0,8)}.....' + '${controller.addressId.substring(controller.addressId.length - 8)}', style: Theme.of(context).textTheme.bodyMedium,),
                       ),
                       BitNetListTile(
-                        text: 'QRCode',
+                        text: L10n.of(context)!.qrCode,
                         trailing: Expanded(
                           child: Container(
                             padding: const EdgeInsets.all(
@@ -81,7 +81,7 @@ class AddressComponent extends StatelessWidget {
                       ),
 
                       BitNetListTile(
-                        text: 'Total Received',
+                        text: L10n.of(context)!.totalReceived,
                         trailing: Row(
                           children: [
                             Text(
@@ -97,7 +97,7 @@ class AddressComponent extends StatelessWidget {
                       ),
 
                       BitNetListTile(
-                        text: 'Total Sent',
+                        text: L10n.of(context)!.totalSent,
                         trailing: Row(
                           children: [
                             Text(
@@ -112,7 +112,7 @@ class AddressComponent extends StatelessWidget {
                         height: 5,
                       ),
                       BitNetListTile(
-                        text: 'Balance',
+                        text: L10n.of(context)!.balance,
                         trailing: Row(
                           children: [
                             Text(
@@ -155,7 +155,7 @@ class AddressComponent extends StatelessWidget {
                             ),
                             Obx(() {
                               return controller.subTransactionModel.isEmpty
-                                  ? const Text('Loading')
+                                  ?   Text(L10n.of(context)!.loading)
                                   : ListView.builder(
                                   shrinkWrap: true,
                                   padding: EdgeInsets.symmetric(

@@ -113,12 +113,7 @@ class _BottomNavState extends State<BottomNav>
     super.dispose();
   }
 
-  static List<Widget> navItems = <Widget>[
-    FeedScreen(),
-    // CreateAsset(),
-    Wallet(),
-    Profile()
-  ];
+  static List<Widget> navItems = <Widget>[FeedScreen(), Wallet(), Profile()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -157,7 +152,7 @@ class _BottomNavState extends State<BottomNav>
                 ? lighten(Theme.of(context).colorScheme.primaryContainer, 40)
                 : darken(Theme.of(context).colorScheme.primaryContainer, 70),
             padding: const EdgeInsets.only(
-              top: 3,
+                top: 3,
                 left: AppTheme.cardPadding,
                 right: AppTheme.cardPadding,
                 bottom: AppTheme.elementSpacing),
@@ -170,7 +165,10 @@ class _BottomNavState extends State<BottomNav>
                 ),
                 child: BottomNavigationBar(
                   enableFeedback: false,
-                  selectedIconTheme: IconThemeData(size: 25.sp, color: Theme.of(context).colorScheme.onPrimaryContainer,),
+                  selectedIconTheme: IconThemeData(
+                    size: 25.sp,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
                   //fixedColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.green,
                   useLegacyColorScheme: false,
                   items: const <BottomNavigationBarItem>[
@@ -224,25 +222,25 @@ class _BottomNavState extends State<BottomNav>
                                     Theme.of(context)
                                         .colorScheme
                                         .primaryContainer,
-                                40)
+                                    40)
                                 .withOpacity(0.0001),
                             lighten(
                                     Theme.of(context)
                                         .colorScheme
                                         .primaryContainer,
-                                40)
+                                    40)
                                 .withOpacity(0.3),
                             lighten(
                                     Theme.of(context)
                                         .colorScheme
                                         .primaryContainer,
-                                40)
+                                    40)
                                 .withOpacity(0.6),
                             lighten(
                                     Theme.of(context)
                                         .colorScheme
                                         .primaryContainer,
-                                40)
+                                    40)
                                 .withOpacity(0.9),
                             lighten(
                                 Theme.of(context).colorScheme.primaryContainer,
@@ -256,25 +254,25 @@ class _BottomNavState extends State<BottomNav>
                                     Theme.of(context)
                                         .colorScheme
                                         .primaryContainer,
-                                70)
+                                    70)
                                 .withOpacity(0.0001),
                             darken(
                                     Theme.of(context)
                                         .colorScheme
                                         .primaryContainer,
-                                70)
+                                    70)
                                 .withOpacity(0.3),
                             darken(
                                     Theme.of(context)
                                         .colorScheme
                                         .primaryContainer,
-                                70)
+                                    70)
                                 .withOpacity(0.6),
                             darken(
                                     Theme.of(context)
                                         .colorScheme
                                         .primaryContainer,
-                                70)
+                                    70)
                                 .withOpacity(0.9),
                             darken(
                                 Theme.of(context).colorScheme.primaryContainer,

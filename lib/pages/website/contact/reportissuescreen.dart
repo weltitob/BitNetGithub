@@ -12,6 +12,8 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/models/user/userwallet.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class ReportIssueScreen extends StatefulWidget {
   const ReportIssueScreen({Key? key}) : super(key: key);
@@ -25,7 +27,6 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
   final User? user = Auth().currentUser;
 
   void sendIssue() async {
-    print('Issue commited');
     if (issueController.text.isNotEmpty) {
       issueController.text = "";
       String uid = user!.uid;
@@ -34,10 +35,10 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
           useremail: mail, issue: issueController.text);
       // Push issuereport object to Firebase Realtime Database
       await issueCollection.doc(uid).set(issuereport.toMap());
-      showOverlay(context, "Deine Fehlermeldung wurde weitergeleitet");
+      showOverlay(context, L10n.of(context)!.yourErrorReportForwarded);
       Navigator.of(context).pop();
     } else {
-      showOverlay(context, "Bitte geben Sie erst einen Fehlertext an");
+      showOverlay(context, L10n.of(context)!.pleaseProvideErrorMsg);
     }
   }
 
@@ -72,7 +73,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                   width: AppTheme.elementSpacing / 2,
                 ),
                 Text(
-                  "Fehler melden",
+                  L10n.of(context)!.reportError,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ],
@@ -100,7 +101,6 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                     autofocus: false,
                     onSubmitted: (text) {
                       setState(() {
-                        print('pressed');
                         sendIssue();
                       });
                       ;
@@ -110,7 +110,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                       border: InputBorder.none,
                       counterText: "",
                       hintText:
-                          "Bitte teile uns mit was schief gelaufen ist...",
+                          L10n.of(context)!.pleaseLetUsKnow,
                       hintStyle: TextStyle(color: AppTheme.white60),
                     ),
                   ),
@@ -124,7 +124,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
               child:
               LongButtonWidget(
                 buttonType: ButtonType.transparent,
-                title: "Melden",
+                title: L10n.of(context)!.reportWeb,
                 leadingIcon: Icon(
                   Icons.send,
                   size: AppTheme.cardPadding,

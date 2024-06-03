@@ -28,6 +28,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+
 class WalletScreen extends GetWidget<WalletsController> {
   const WalletScreen({Key? key}) : super(key: key);
   @override

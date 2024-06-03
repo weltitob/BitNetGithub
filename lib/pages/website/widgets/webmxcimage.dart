@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -87,18 +86,7 @@ class _MxcImageState extends State<WebMxcImage> {
    Future<String> cacheImage() async {
    
     String url = Uri.parse(widget.ref!).toString();
-    // // Get your image url
-    // final imageUrl = await ref.getDownloadURL();
-
-    // // Download your image data
-    // final imageBytes = await ref.getData(10000000);
-    
-    // // Put the image file in the cache
-    // await DefaultCacheManager().putFile(
-    //   url,
-    //   imageBytes!,
-    //   fileExtension: "jpg",
-    // );
+     
     await DefaultCacheManager().getSingleFile(url);
     return url;
   }

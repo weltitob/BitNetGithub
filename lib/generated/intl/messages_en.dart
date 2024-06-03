@@ -213,6 +213,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about": MessageLookupByLibrary.simpleMessage("About"),
         "aboutCryptoPills":
             MessageLookupByLibrary.simpleMessage("About Crypto-Pills"),
+        "aboutUs": MessageLookupByLibrary.simpleMessage("About us"),
         "accelerate": MessageLookupByLibrary.simpleMessage("Accelerate"),
         "accept": MessageLookupByLibrary.simpleMessage("Accept"),
         "acceptedTheInvitation": m0,
@@ -259,6 +260,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "answeredTheCall": m2,
         "anyoneCanJoin":
             MessageLookupByLibrary.simpleMessage("Anyone can join"),
+        "appAllowsUsers": MessageLookupByLibrary.simpleMessage(
+            "The app allows users to receive, send, and manage Bitcoins.\nThe app is not a bank and does not offer banking services."),
         "appLock": MessageLookupByLibrary.simpleMessage("App lock"),
         "appearOnTop": MessageLookupByLibrary.simpleMessage("Appear on top"),
         "appearOnTopDetails": MessageLookupByLibrary.simpleMessage(
@@ -283,11 +286,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "autoShort": MessageLookupByLibrary.simpleMessage("auto short"),
         "autoplayImages": MessageLookupByLibrary.simpleMessage(
             "Automatically play animated stickers and emotes"),
+        "availabilityProvider": MessageLookupByLibrary.simpleMessage(
+            "Availability: The provider expressly reserves the right to \nchange, supplement, delete parts of the pages or the entire offer without \nspecial notice, or to temporarily or permanently cease publication."),
         "badCharacters": MessageLookupByLibrary.simpleMessage("Bad characters"),
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "banFromChat": MessageLookupByLibrary.simpleMessage("Ban from chat"),
         "banned": MessageLookupByLibrary.simpleMessage("Banned"),
         "bannedUser": m4,
+        "beAPart": MessageLookupByLibrary.simpleMessage(
+            "Be a Part of the Revolution - Download Our App Today!"),
+        "beAmongFirst": MessageLookupByLibrary.simpleMessage(
+            "Be among the first million users and secure your exclusive early-bird Bitcoin inscription."),
         "bear": MessageLookupByLibrary.simpleMessage("Bear"),
         "bitcoin": MessageLookupByLibrary.simpleMessage("Bitcoin"),
         "bitcoinChart": MessageLookupByLibrary.simpleMessage("Bitcoin chart"),
@@ -296,6 +305,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bitcoinInfoCard":
             MessageLookupByLibrary.simpleMessage("Bitcoin Card Information"),
         "bitcoinNews": MessageLookupByLibrary.simpleMessage("Bitcoin News"),
+        "bitnerGMBH": MessageLookupByLibrary.simpleMessage("BitNet GmbH"),
         "bitnetUsageFee":
             MessageLookupByLibrary.simpleMessage("BitNet usage fee"),
         "block": MessageLookupByLibrary.simpleMessage("Block"),
@@ -308,6 +318,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "botMessages": MessageLookupByLibrary.simpleMessage("Bot messages"),
         "bubbleSize": MessageLookupByLibrary.simpleMessage("Bubble size"),
         "bundleName": MessageLookupByLibrary.simpleMessage("Bundle name"),
+        "butBitcoin": MessageLookupByLibrary.simpleMessage(
+            "But Bitcoin is more than just a digital asset; it\'s a movement. A movement towards a more open, accessible, and equitable future. \nBitNet wants be at the forefront of the digital age as a pioneer in asset digitization using Bitcoin,\n shaping a metaverse where equality, security, and sustainability\n are not just ideals, but realities. Our vision is to create an\n interconnected digital world where every user can seamlessly and\n fairly access, exchange, and grow their digital assets."),
         "buy": MessageLookupByLibrary.simpleMessage("Buy"),
         "buyBitcoin": MessageLookupByLibrary.simpleMessage("Buy Bitcoin"),
         "buyNow": MessageLookupByLibrary.simpleMessage("Buy Now"),
@@ -325,6 +337,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "cart": MessageLookupByLibrary.simpleMessage("Cart"),
         "categories": MessageLookupByLibrary.simpleMessage("Categories"),
         "cc": MessageLookupByLibrary.simpleMessage("Currency Converter"),
+        "certainFeaturesOfApp": MessageLookupByLibrary.simpleMessage(
+            "Certain features of the app may incur fees.\nThese fees will be communicated to the user in advance and\nare visible in the app."),
         "chainInfo": MessageLookupByLibrary.simpleMessage("Chain Info"),
         "chains": MessageLookupByLibrary.simpleMessage("Chains"),
         "changeAmount": MessageLookupByLibrary.simpleMessage("Change Amount"),
@@ -360,6 +374,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "changedTheProfileAvatar": m17,
         "changedTheRoomAliases": m18,
         "changedTheRoomInvitationLink": m19,
+        "changes": MessageLookupByLibrary.simpleMessage("Changes:"),
         "channelCorruptedDecryptError": MessageLookupByLibrary.simpleMessage(
             "The encryption has been corrupted"),
         "chat": MessageLookupByLibrary.simpleMessage("Chat"),
@@ -376,6 +391,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Choose a username"),
         "chooseReceipient":
             MessageLookupByLibrary.simpleMessage("Choose Receipient"),
+        "claimNFT":
+            MessageLookupByLibrary.simpleMessage("Claim your free Bitcoin NFT"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
         "clearAll": MessageLookupByLibrary.simpleMessage("Clear All"),
         "clearArchive": MessageLookupByLibrary.simpleMessage("Clear archive"),
@@ -452,16 +469,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "connect": MessageLookupByLibrary.simpleMessage("Connect"),
         "connectWithOtherDevices":
             MessageLookupByLibrary.simpleMessage("Connect with other device"),
+        "contact": MessageLookupByLibrary.simpleMessage("Contact:"),
         "contactFriendsForRecovery": MessageLookupByLibrary.simpleMessage(
             "Contact your friends and tell them to free-up your key! The free-ups will only be valid for 24 hours. After their keys are freed up the login sign will appear green and you\'ll have to wait additional 24hours before you can login to your recovered account."),
         "contactHasBeenInvitedToTheGroup": MessageLookupByLibrary.simpleMessage(
             "Contact has been invited to the group"),
+        "contactInfo":
+            MessageLookupByLibrary.simpleMessage("Contact information"),
+        "contactInfoHint": MessageLookupByLibrary.simpleMessage(
+            "Contact information (Email, username, did...)"),
+        "contacts": MessageLookupByLibrary.simpleMessage("Contact"),
         "containsDisplayName":
             MessageLookupByLibrary.simpleMessage("Contains display name"),
         "containsUserName":
             MessageLookupByLibrary.simpleMessage("Contains username"),
         "contentHasBeenReported": MessageLookupByLibrary.simpleMessage(
             "The content has been reported to the server admins"),
+        "contentOnlineOffer": MessageLookupByLibrary.simpleMessage(
+            "Content of the online offer: The provider assumes no responsibility for the timeliness, \ncorrectness, completeness, or quality of the provided \ninformation. Liability claims against the provider relating to \nmaterial or immaterial damage caused by the use or \nnon-use of the provided information or by the use of \nincorrect and incomplete information are \ngenerally excluded, provided that there is no demonstrable \nintentional or grossly negligent fault on the part of the provider."),
         "continues": MessageLookupByLibrary.simpleMessage("Continue"),
         "contractAddress":
             MessageLookupByLibrary.simpleMessage("Contract address"),
@@ -526,6 +551,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "directChats": MessageLookupByLibrary.simpleMessage("Direct Chats"),
         "disableEncryptionWarning": MessageLookupByLibrary.simpleMessage(
             "For security reasons you can not disable encryption in a chat, where it has been enabled before."),
+        "disclaimer": MessageLookupByLibrary.simpleMessage("Disclaimer:"),
         "discover": MessageLookupByLibrary.simpleMessage("Discover"),
         "dismiss": MessageLookupByLibrary.simpleMessage("Dismiss"),
         "displaynameHasBeenChanged": MessageLookupByLibrary.simpleMessage(
@@ -534,6 +560,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Do not show again"),
         "dontShareAnyone": MessageLookupByLibrary.simpleMessage(
             "DON\'T SHARE THIS QR CODE TO ANYONE!"),
+        "download": MessageLookupByLibrary.simpleMessage("Download"),
         "downloadFile": MessageLookupByLibrary.simpleMessage("Download file"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "editBlockedServers":
@@ -549,6 +576,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "editRoomAvatar":
             MessageLookupByLibrary.simpleMessage("Edit room avatar"),
         "editWidgets": MessageLookupByLibrary.simpleMessage("Edit widgets"),
+        "email": MessageLookupByLibrary.simpleMessage("Email:"),
         "emailOrUsername":
             MessageLookupByLibrary.simpleMessage("Email or username"),
         "emojis": MessageLookupByLibrary.simpleMessage("Emojis"),
@@ -608,9 +636,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Everything ready!"),
         "experimentalVideoCalls":
             MessageLookupByLibrary.simpleMessage("Experimental video calls"),
+        "exploreBtc": MessageLookupByLibrary.simpleMessage("Explore BTC"),
         "extendedSec": MessageLookupByLibrary.simpleMessage("Extended Sec"),
         "extremeOffensive":
             MessageLookupByLibrary.simpleMessage("Extremely offensive"),
+        "fallenBrunnen":
+            MessageLookupByLibrary.simpleMessage("Fallenbrunnen 12"),
         "favorite": MessageLookupByLibrary.simpleMessage("Favourite"),
         "fearAndGreed": MessageLookupByLibrary.simpleMessage("Fear and Greed"),
         "fearAndGreedIndex":
@@ -620,6 +651,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "feeDistribution":
             MessageLookupByLibrary.simpleMessage("Fee Distribution"),
         "feeRate": MessageLookupByLibrary.simpleMessage("Fee rate"),
+        "fees": MessageLookupByLibrary.simpleMessage("Fees:"),
         "fianlizePosts": MessageLookupByLibrary.simpleMessage("Finalize Posts"),
         "fileHasBeenSavedAt": m31,
         "fileIsTooBigForServer": MessageLookupByLibrary.simpleMessage(
@@ -627,6 +659,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "fileName": MessageLookupByLibrary.simpleMessage("File name"),
         "filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "filterOptions": MessageLookupByLibrary.simpleMessage("Filter Options"),
+        "finalProvisions":
+            MessageLookupByLibrary.simpleMessage("Final Provisions:"),
         "fixed": MessageLookupByLibrary.simpleMessage("fixed"),
         "floorPrice": MessageLookupByLibrary.simpleMessage("Floor Price"),
         "fluffychat": MessageLookupByLibrary.simpleMessage("FluffyChat"),
@@ -635,6 +669,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "foregroundServiceRunning": MessageLookupByLibrary.simpleMessage(
             "This notification appears when the foreground service is running."),
         "forward": MessageLookupByLibrary.simpleMessage("Forward"),
+        "foundedIn2023": MessageLookupByLibrary.simpleMessage(
+            "Founded in 2023, BitNet was born out of the belief that Bitcoin is not just a digital asset for the tech-savvy and financial experts,\n but a revolutionary tool that has the potential to build the foundations of cyberspace empowering individuals worldwide.\n We recognized the complexity and the mystique surrounding Bitcoin and cryptocurrencies,\n and we decided it was time to demystify it and make it accessible to everyone.\n We are a pioneering platform dedicated to bringing Bitcoin closer to everyday people like you."),
+        "friedrichshafen":
+            MessageLookupByLibrary.simpleMessage("88405 Friedrichshafen"),
         "friendsKeyIssuers":
             MessageLookupByLibrary.simpleMessage("Friends / Key-Issuers"),
         "from": MessageLookupByLibrary.simpleMessage("From"),
@@ -642,8 +680,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "fromTheInvitation":
             MessageLookupByLibrary.simpleMessage("From the invitation"),
         "fullRbf": MessageLookupByLibrary.simpleMessage("Full RBF"),
+        "functionality": MessageLookupByLibrary.simpleMessage("Functionality:"),
+        "fundUs": MessageLookupByLibrary.simpleMessage("Fund us"),
         "generateInvoice":
             MessageLookupByLibrary.simpleMessage("Generate Invoice"),
+        "getAProfile": MessageLookupByLibrary.simpleMessage("Get a profile"),
+        "getStarted": MessageLookupByLibrary.simpleMessage("Get Started"),
+        "givePowerBack": MessageLookupByLibrary.simpleMessage(
+            "Give power back to the people!"),
         "goToTheNewRoom":
             MessageLookupByLibrary.simpleMessage("Go to the new room"),
         "googlyEyesContent": m32,
@@ -656,6 +700,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Group is public"),
         "groupWith": m33,
         "groups": MessageLookupByLibrary.simpleMessage("Groups"),
+        "growAFair":
+            MessageLookupByLibrary.simpleMessage("Grow a fair Cyberspace!"),
         "guardiansDesigned": MessageLookupByLibrary.simpleMessage(
             "Not only are Guardians dope designed character-collectibles, they also serve as your ticket to a world of exclusive content. From developing new collections to fill our universe, to metaverse avatars, we have bundles of awesome features in the pipeline."),
         "guardiansStored": MessageLookupByLibrary.simpleMessage(
@@ -671,6 +717,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "health": MessageLookupByLibrary.simpleMessage("Health"),
         "helloWorld": MessageLookupByLibrary.simpleMessage("Hello World!"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
+        "helpCenter": MessageLookupByLibrary.simpleMessage("Help Center"),
         "hideDetails": MessageLookupByLibrary.simpleMessage("Hide Details"),
         "hideRedactedEvents":
             MessageLookupByLibrary.simpleMessage("Hide redacted events"),
@@ -682,6 +729,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "highestAssesment":
             MessageLookupByLibrary.simpleMessage("Highest assesment:"),
         "his": MessageLookupByLibrary.simpleMessage("History"),
+        "history": MessageLookupByLibrary.simpleMessage("History"),
+        "historyClaim": MessageLookupByLibrary.simpleMessage(
+            "History in Making: Claim your free Bitcoin NFT."),
         "homeserver": MessageLookupByLibrary.simpleMessage("Homeserver"),
         "hotNewItems": MessageLookupByLibrary.simpleMessage("Hot New Items"),
         "howOffensiveIsThisContent": MessageLookupByLibrary.simpleMessage(
@@ -694,10 +744,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "TOR Users: Import session export"),
         "hydrateTorLong": MessageLookupByLibrary.simpleMessage(
             "Did you export your session last time on TOR? Quickly import it and continue chatting."),
+        "iHaveAlways": MessageLookupByLibrary.simpleMessage(
+            "I have always been a Bitcoin enthusiast, so BitNet was a no-brainer for me. Its great to see how far we have come with Bitcoin."),
         "iHaveClickedOnLink":
             MessageLookupByLibrary.simpleMessage("I have clicked on the link"),
         "iUnderstand": MessageLookupByLibrary.simpleMessage("I understand"),
         "id": MessageLookupByLibrary.simpleMessage("ID"),
+        "ideaLeaderboard":
+            MessageLookupByLibrary.simpleMessage("Idea Leaderboard"),
         "identity": MessageLookupByLibrary.simpleMessage("Identity"),
         "ignore": MessageLookupByLibrary.simpleMessage("Ignore"),
         "ignoreListDescription": MessageLookupByLibrary.simpleMessage(
@@ -705,6 +759,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "ignoreUsername":
             MessageLookupByLibrary.simpleMessage("Ignore username"),
         "ignoredUsers": MessageLookupByLibrary.simpleMessage("Ignored users"),
+        "imLiterallyOnlyPerson": MessageLookupByLibrary.simpleMessage(
+            "I\'m literally the only person who has submitted an idea so far."),
+        "imLiterallyOnlyPerson2": MessageLookupByLibrary.simpleMessage(
+            "I\'m literally the only submitted an idea so far."),
+        "imLiterallyOnlyPerson3": MessageLookupByLibrary.simpleMessage(
+            "y the only person who has submitted an idea so far."),
+        "imprint": MessageLookupByLibrary.simpleMessage("Imprint"),
         "inSeveralHours":
             MessageLookupByLibrary.simpleMessage("In Several hours (or more)"),
         "incorrectPassphraseOrKey": MessageLookupByLibrary.simpleMessage(
@@ -733,12 +794,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "isTyping": MessageLookupByLibrary.simpleMessage("is typing…"),
         "itemsTotal": MessageLookupByLibrary.simpleMessage("Items total"),
         "joinRoom": MessageLookupByLibrary.simpleMessage("Join room"),
+        "joinUsToday": MessageLookupByLibrary.simpleMessage("Join us Today!"),
         "joinedRevolution": MessageLookupByLibrary.simpleMessage(
             "Hey there Bitcoiners! I joined the revolution!"),
         "joinedTheChat": m39,
         "jump": MessageLookupByLibrary.simpleMessage("Jump"),
         "jumpToLastReadMessage":
             MessageLookupByLibrary.simpleMessage("Jump to last read message"),
+        "justJoinedBitnet":
+            MessageLookupByLibrary.simpleMessage(" just joined the BitNet!"),
         "keyMetrics": MessageLookupByLibrary.simpleMessage("Key metrics"),
         "kickFromChat": MessageLookupByLibrary.simpleMessage("Kick from chat"),
         "kicked": m40,
@@ -763,6 +827,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "lightningTransactionSettled":
             MessageLookupByLibrary.simpleMessage("Lightning invoice settled"),
         "liked": MessageLookupByLibrary.simpleMessage("Liked"),
+        "limitationOfLiability":
+            MessageLookupByLibrary.simpleMessage("Limitation of Liability:"),
+        "limitedSpotsLeft":
+            MessageLookupByLibrary.simpleMessage("limited spots left!"),
         "link": MessageLookupByLibrary.simpleMessage("Link"),
         "listed": MessageLookupByLibrary.simpleMessage("Listed"),
         "loadCountMoreParticipants": m43,
@@ -785,6 +853,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "low": MessageLookupByLibrary.simpleMessage("Low"),
         "lowestAssesment":
             MessageLookupByLibrary.simpleMessage("Lowest assesment:"),
+        "makeBitcoinEasy": MessageLookupByLibrary.simpleMessage(
+            "Make Bitcoin easy for everyone!"),
         "makeSureTheIdentifierIsValid": MessageLookupByLibrary.simpleMessage(
             "Make sure the identifier is valid"),
         "markAsRead": MessageLookupByLibrary.simpleMessage("Mark as read"),
@@ -808,11 +878,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "minerRewardAndFees": MessageLookupByLibrary.simpleMessage(
             "Miner Reward (Subsidy + fees)"),
         "minutesTx": MessageLookupByLibrary.simpleMessage(" minutes"),
+        "mission": MessageLookupByLibrary.simpleMessage("Mission"),
         "mnemonicCorrect": MessageLookupByLibrary.simpleMessage(
             "Your mnemonic is correct! Please keep it safe."),
         "mnemonicInCorrect": MessageLookupByLibrary.simpleMessage(
             "Your mnemonic does not match. Please try again."),
         "moderator": MessageLookupByLibrary.simpleMessage("Moderator"),
+        "moreAndMore": MessageLookupByLibrary.simpleMessage(
+            "More and more decide to join our community each day! Let\'s build something extraordinary together."),
         "mostHypedNewDeals":
             MessageLookupByLibrary.simpleMessage("Most Hyped New Deals"),
         "mostViewed": MessageLookupByLibrary.simpleMessage("Most Viewed"),
@@ -840,6 +913,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("Next"),
         "nextAccount": MessageLookupByLibrary.simpleMessage("Next account"),
         "nextBlock": MessageLookupByLibrary.simpleMessage("Next Block"),
+        "nexusWalletLiable": MessageLookupByLibrary.simpleMessage(
+            "NexusWallet is only liable for damages caused by intentional or grossly negligent actions by\nNexusWallet. The company is not liable for damages resulting from the use of the app or the loss of Bitcoins."),
+        "nexusWalletReserves": MessageLookupByLibrary.simpleMessage(
+            "NexusWallet reserves the right to change these terms and conditions at any time.\nThe user will be informed of such changes and must agree to them in order to continue using the app."),
         "no": MessageLookupByLibrary.simpleMessage("No"),
         "noAccountYet": MessageLookupByLibrary.simpleMessage(
             "You don\'t have an account yet?"),
@@ -917,6 +994,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "or": MessageLookupByLibrary.simpleMessage("Or"),
         "otherCallingPermissions": MessageLookupByLibrary.simpleMessage(
             "Microphone, camera and other FluffyChat permissions"),
+        "ourMission": MessageLookupByLibrary.simpleMessage(
+            "Our mission is simple but profound: To innovate in the digital \neconomy by integrating blockchain technology with asset digitization, \ncreating a secure and transparent platform that empowers users to engage \nwith the metaverse through Bitcoin. We are dedicated to making digital interactions \nmore accessible, equitable, and efficient for everyone. To accelerate the adoption of Bitcoin and create a world\n where digital assets are accessible, understandable, and beneficial to all. Where people can verify information \n on their own."),
+        "ourMissionn": MessageLookupByLibrary.simpleMessage("Our mission."),
+        "ourTeam": MessageLookupByLibrary.simpleMessage("Our Team"),
         "outputTx": MessageLookupByLibrary.simpleMessage("Outputs\n"),
         "overlayErrorOccured": MessageLookupByLibrary.simpleMessage(
             "An error occured, please try again later."),
@@ -941,6 +1022,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "paymentNetwork":
             MessageLookupByLibrary.simpleMessage("Payment Network"),
         "people": MessageLookupByLibrary.simpleMessage("People"),
+        "phone": MessageLookupByLibrary.simpleMessage("Phone:"),
         "pickImage": MessageLookupByLibrary.simpleMessage("Pick an image"),
         "pin": MessageLookupByLibrary.simpleMessage("Pin"),
         "pinCodeVerification":
@@ -986,6 +1068,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please follow the instructions on the website and tap on next."),
         "pleaseGiveAccess": MessageLookupByLibrary.simpleMessage(
             "Please give the app photo access to use this feature."),
+        "pleaseLetUsKnow": MessageLookupByLibrary.simpleMessage(
+            "Please let us know what went wrong..."),
+        "pleaseProvideErrorMsg": MessageLookupByLibrary.simpleMessage(
+            "Please provide an error message first."),
         "post": MessageLookupByLibrary.simpleMessage("POST"),
         "postContentError": MessageLookupByLibrary.simpleMessage(
             "Please add some content to your post"),
@@ -1010,9 +1096,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "privateKey": MessageLookupByLibrary.simpleMessage("Private Key"),
         "privateKeyLogin":
             MessageLookupByLibrary.simpleMessage("DID and Private Key Login"),
+        "product": MessageLookupByLibrary.simpleMessage("Product"),
         "properties": MessageLookupByLibrary.simpleMessage("Properties"),
         "propertiesDescription": MessageLookupByLibrary.simpleMessage(
             "Guardians of the Metaverse are a collection of 10,000 unique 3D hero-like avatars living as NFTs on the blockchain."),
+        "provider": MessageLookupByLibrary.simpleMessage("Provider:"),
         "publicRooms": MessageLookupByLibrary.simpleMessage("Public Rooms"),
         "publish": MessageLookupByLibrary.simpleMessage("Publish"),
         "purchaseBitcoin":
@@ -1032,6 +1120,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive": MessageLookupByLibrary.simpleMessage("Receive"),
         "receiveBitcoin":
             MessageLookupByLibrary.simpleMessage("Receive Bitcoin"),
+        "received": MessageLookupByLibrary.simpleMessage("Received"),
         "recentReplacements":
             MessageLookupByLibrary.simpleMessage("Recent replacements"),
         "recentTransactions":
@@ -1056,6 +1145,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Step 3: Wait 24 hours and then login"),
         "redactMessage": MessageLookupByLibrary.simpleMessage("Redact message"),
         "redactedAnEvent": m51,
+        "referencesLinks": MessageLookupByLibrary.simpleMessage(
+            "References and links: In the case of direct or indirect references \nto external websites that are outside the provider\'s area of responsibility, \na liability obligation would only come into effect in the event that the provider \nhas knowledge of the content and it is technically possible and reasonable to prevent \nthe use in the case of illegal content. The provider hereby expressly declares \nthat at the time the links were set, no illegal content was recognizable on the linked pages. \nThe provider has no influence on the current and future design, content, or authorship of \nthe linked/connected pages. Therefore, the provider hereby expressly distances himself from all contents \nof all linked/connected pages."),
         "register": MessageLookupByLibrary.simpleMessage("Create Account"),
         "reject": MessageLookupByLibrary.simpleMessage("Reject"),
         "rejectedTheInvitation": m52,
@@ -1083,12 +1174,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "replyHasBeenSent":
             MessageLookupByLibrary.simpleMessage("Reply has been sent"),
         "report": MessageLookupByLibrary.simpleMessage("report"),
+        "reportError": MessageLookupByLibrary.simpleMessage("Report error"),
         "reportErrorDescription": MessageLookupByLibrary.simpleMessage(
             "Oh no. Something went wrong. Please try again later. If you want, you can report the bug to the developers."),
+        "reportIssue": MessageLookupByLibrary.simpleMessage("Report Issue"),
         "reportMessage": MessageLookupByLibrary.simpleMessage("Report message"),
         "reportUser": MessageLookupByLibrary.simpleMessage("Report user"),
+        "reportWeb": MessageLookupByLibrary.simpleMessage("Report"),
         "requestPermission":
             MessageLookupByLibrary.simpleMessage("Request permission"),
+        "responsibleForContent": MessageLookupByLibrary.simpleMessage(
+            "Responsible for the content:"),
         "restoreAccount":
             MessageLookupByLibrary.simpleMessage("Restore Account"),
         "restoreOptions":
@@ -1115,6 +1211,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Step 3: Scan the QR-Code with this device"),
         "scanQrStepTwo":
             MessageLookupByLibrary.simpleMessage("Step 2: Open the QR-Code"),
+        "scope": MessageLookupByLibrary.simpleMessage("Scope:"),
         "screenSharingDetail": MessageLookupByLibrary.simpleMessage(
             "You are sharing your screen in FuffyChat"),
         "screenSharingTitle":
@@ -1138,6 +1235,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendAMessage": MessageLookupByLibrary.simpleMessage("Send a message"),
         "sendAsText": MessageLookupByLibrary.simpleMessage("Send as text"),
         "sendAudio": MessageLookupByLibrary.simpleMessage("Send audio"),
+        "sendBitcoin": MessageLookupByLibrary.simpleMessage(" Send Bitcoin"),
+        "sendBtc": MessageLookupByLibrary.simpleMessage("Send BTC"),
         "sendFile": MessageLookupByLibrary.simpleMessage("Send file"),
         "sendImage": MessageLookupByLibrary.simpleMessage("Send image"),
         "sendMessages": MessageLookupByLibrary.simpleMessage("Send messages"),
@@ -1147,6 +1246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sendSticker": MessageLookupByLibrary.simpleMessage("Send sticker"),
         "sendVideo": MessageLookupByLibrary.simpleMessage("Send video"),
         "sender": MessageLookupByLibrary.simpleMessage("Sender"),
+        "sent": MessageLookupByLibrary.simpleMessage("Sent"),
         "sentAFile": m57,
         "sentAPicture": m58,
         "sentASticker": m59,
@@ -1169,6 +1269,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Set permissions level"),
         "setStatus": MessageLookupByLibrary.simpleMessage("Set status"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "shapeTheFuture": MessageLookupByLibrary.simpleMessage(
+            "Shape the Future with us! We Want to Hear Your Brilliant Ideas!"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "shareLocation": MessageLookupByLibrary.simpleMessage("Share location"),
         "shareQrCode":
@@ -1186,6 +1288,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "skipAtOwnRisk":
             MessageLookupByLibrary.simpleMessage("Skip at own risk"),
+        "soHappy": MessageLookupByLibrary.simpleMessage(
+            "So happy to be part of the club 1 million! Lightning is the future."),
         "socialRecovery":
             MessageLookupByLibrary.simpleMessage("Social recovery"),
         "socialRecoveryInfo":
@@ -1225,12 +1329,20 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please note that people can see and contact each other in your story. Your stories will be visible for 24 hours but there is no guarantee that they will be deleted from all devices and servers."),
         "subTotal": MessageLookupByLibrary.simpleMessage("Subtotal"),
         "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+        "submitIdea": MessageLookupByLibrary.simpleMessage("Submit Idea"),
+        "submitReport": MessageLookupByLibrary.simpleMessage("Submit report!"),
         "supply": MessageLookupByLibrary.simpleMessage("Supply"),
         "supposedMxid": m66,
         "switchToAccount": m67,
         "synchronizingPleaseWait":
             MessageLookupByLibrary.simpleMessage("Synchronizing… Please wait."),
         "systemTheme": MessageLookupByLibrary.simpleMessage("System Theme"),
+        "termsAndConditions":
+            MessageLookupByLibrary.simpleMessage("Terms and Conditions"),
+        "termsAndConditionsDescription": MessageLookupByLibrary.simpleMessage(
+            "These terms and conditions govern the use of the Bitcoin Wallet App\n(hereinafter referred to as BitNet), which is provided by BitNet GmbH.\nBy using the app, you agree to these terms and conditions."),
+        "termsAndConditionsEntire": MessageLookupByLibrary.simpleMessage(
+            "These terms and conditions constitute the entire agreement between the user and NexusWallet.\nShould any provision be ineffective, the remaining provisions shall remain in force."),
         "theyDontMatch":
             MessageLookupByLibrary.simpleMessage("They Don\'t Match"),
         "theyMatch": MessageLookupByLibrary.simpleMessage("They Match"),
@@ -1304,9 +1416,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "user": MessageLookupByLibrary.simpleMessage("User"),
         "userAndOthersAreTyping": m70,
         "userAndUserAreTyping": m71,
+        "userCharged": MessageLookupByLibrary.simpleMessage(
+            " User-change in the last 7 days!"),
         "userIsTyping": m72,
         "userLeftTheChat": m73,
+        "userResponsibility":
+            MessageLookupByLibrary.simpleMessage("User Responsibility:"),
         "userSentUnknownEvent": m74,
+        "userSolelyResponsible": MessageLookupByLibrary.simpleMessage(
+            "The user is solely responsible for the security of their Bitcoins. The app offers security features such as password protection and two-factor authentication,\nbut it is the user\'s responsibility to use these features carefully.\nNexusWallet is not liable for losses due to negligence, loss of devices, or user access data."),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "usernameOrDID":
             MessageLookupByLibrary.simpleMessage("Username or DID"),
@@ -1337,6 +1455,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Visible for all participants"),
         "visibleForEveryone":
             MessageLookupByLibrary.simpleMessage("Visible for everyone"),
+        "vision": MessageLookupByLibrary.simpleMessage("Vision"),
         "voiceCall": MessageLookupByLibrary.simpleMessage("Voice call"),
         "voiceMessage": MessageLookupByLibrary.simpleMessage("Voice message"),
         "waitingPartnerAcceptRequest": MessageLookupByLibrary.simpleMessage(
@@ -1350,13 +1469,34 @@ class MessageLookup extends MessageLookupByLibrary {
         "wallpaper": MessageLookupByLibrary.simpleMessage("Wallpaper"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning!"),
         "wasDirectChatDisplayName": m76,
+        "weAreGrowingBitcoin": MessageLookupByLibrary.simpleMessage(
+            "We are growing a Bitcoin Network that is not only fair and equitable but also liberates us from a dystopian future."),
+        "weAreLight": MessageLookupByLibrary.simpleMessage(
+            "We are the light that helps others see Bitcoin."),
+        "weBelieve": MessageLookupByLibrary.simpleMessage(
+            "We believe in empowering our people and building true loyalty!"),
+        "weBuildBitcoin": MessageLookupByLibrary.simpleMessage(
+            "We build the Bitcoin Network!"),
+        "weBuildTransparent": MessageLookupByLibrary.simpleMessage(
+            "We build a transparent platform that uses verification - not trust."),
+        "weDigitizeAllSorts": MessageLookupByLibrary.simpleMessage(
+            "We digitize all sorts of assets on top of the Bitcoin Network."),
+        "weEmpowerTomorrow":
+            MessageLookupByLibrary.simpleMessage("We empower Our Tomorrow!"),
+        "weHaveBetaLiftOff": MessageLookupByLibrary.simpleMessage(
+            "We have Beta liftoff! Exclusive Early Access for Invited Users."),
+        "weOfferEasiest": MessageLookupByLibrary.simpleMessage(
+            "We offer the easiest, most secure, and most advanced web wallet."),
         "weSentYouAnEmail":
             MessageLookupByLibrary.simpleMessage("We sent you an email"),
+        "weUnlockAssets": MessageLookupByLibrary.simpleMessage(
+            "We unlock our future of digital assets!"),
         "welcomeBack": MessageLookupByLibrary.simpleMessage("Welcome back!"),
         "whaleBehavior":
             MessageLookupByLibrary.simpleMessage("Whale Behaviour"),
         "whatIsGoingOn":
             MessageLookupByLibrary.simpleMessage("What is going on?"),
+        "whitePaper": MessageLookupByLibrary.simpleMessage("Whitepaper"),
         "whoCanPerformWhichAction": MessageLookupByLibrary.simpleMessage(
             "Who can perform which action"),
         "whoCanSeeMyStories":
@@ -1385,6 +1525,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "With these addresses you can recover your password."),
         "witness": MessageLookupByLibrary.simpleMessage("Witness"),
         "wordRecovery": MessageLookupByLibrary.simpleMessage("Word recovery"),
+        "wowBitnet": MessageLookupByLibrary.simpleMessage(
+            "Wow! Bitnet is the part that I was always missing for bitcoin. Now we will only see more and more bitcoin adoption."),
         "writeAMessage":
             MessageLookupByLibrary.simpleMessage("Write a message…"),
         "yes": MessageLookupByLibrary.simpleMessage("Yes"),
@@ -1417,6 +1559,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "youUnbannedUser": m83,
         "yourChatBackupHasBeenSetUp": MessageLookupByLibrary.simpleMessage(
             "Your chat backup has been set up."),
+        "yourErrorReportForwarded": MessageLookupByLibrary.simpleMessage(
+            "Your error report has been forwarded."),
+        "yourIdeasGoesHere":
+            MessageLookupByLibrary.simpleMessage("Your idea goes here"),
+        "yourIssuesGoesHere":
+            MessageLookupByLibrary.simpleMessage("Your issue goes here"),
         "yourPassowrdBackup":
             MessageLookupByLibrary.simpleMessage("Your Password & Backup"),
         "yourPublicKey":

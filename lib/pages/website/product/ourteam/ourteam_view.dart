@@ -4,6 +4,7 @@ import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/items/teamprofilecard.dart';
 import 'package:bitnet/pages/website/product/ourteam/ourteam.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class OurTeamView extends StatelessWidget {
   final OurTeamController controller;
@@ -46,7 +47,7 @@ class OurTeamView extends StatelessWidget {
                 Container(
                   width: bigtextWidth,
                   child: Text(
-                    "We believe in empowering our people and building true loyalty!",
+                    L10n.of(context)!.weBelieve,
                     textAlign: TextAlign.center,
                     style: Theme
                         .of(context)
@@ -56,18 +57,7 @@ class OurTeamView extends StatelessWidget {
                 ),
                 SizedBox(
                   height: AppTheme.cardPadding * 4 * spacingMultiplier,
-                ),
-                // Container(
-                //   width: bigtextWidth,
-                //   child: Text(
-                //     "Our Team",
-                //     textAlign: TextAlign.center,
-                //     style: Theme
-                //         .of(context)
-                //         .textTheme
-                //         .headlineLarge,
-                //   ),
-                // ),
+                ), 
                 Container(
                   height: controller.teamMembers.length * 160.0,
                   width: MediaQuery.of(context).size.width - AppTheme.columnWidth * 2,

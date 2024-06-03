@@ -10,7 +10,6 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/intl/generated/l10n.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
@@ -20,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class SingleTransactionScreen extends StatelessWidget {
   SingleTransactionScreen({Key? key}) : super(key: key);
@@ -102,7 +102,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'This transaction has been replaced by:',
+                                              L10n.of(context)!.transactionReplaced,
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                 ));
                                                 Get.snackbar(
                                                     L10n.of(context)
-                                                        .copiedToClipboard,
+                                                       ! .copiedToClipboard,
                                                     controller.txID!);
                                               },
                                               child: Row(
@@ -177,7 +177,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text('Inputs\n',
+                                                        Text(L10n.of(context)!.inputTx,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -188,8 +188,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                             title: !controller
                                                                     .showDetail
                                                                     .value
-                                                                ? 'Show Details'
-                                                                : 'Hide Details',
+                                                                ? L10n.of(context)!.showDetails
+                                                                : L10n.of(context)!.hideDetails,
                                                             onTap: () {
                                                               controller
                                                                   .toggleExpansion();
@@ -199,7 +199,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     SearchFieldWidget(
                                                       // controller: searchCtrl,
                                                       hintText: L10n.of(context)
-                                                          .search,
+                                                          !.search,
                                                       handleSearch: (v) {
                                                         setState(() {
                                                           inputCtrl.text = v;
@@ -449,8 +449,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                                   child: Row(
                                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                                     children: [
-                                                                                      const Expanded(
-                                                                                        child: Text('Witness', style: TextStyle(color: Colors.black)),
+                                                                                        Expanded(
+                                                                                        child: Text(L10n.of(context)!.witness, style: TextStyle(color: Colors.black)),
                                                                                       ),
                                                                                       Expanded(
                                                                                         child: Column(
@@ -488,7 +488,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                                 Row(
                                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                   children: [
-                                                                                    const Text('Previous output script', style: TextStyle(color: Colors.black)),
+                                                                                      Text(L10n.of(context)!.previousOutputScripts, style: TextStyle(color: Colors.black)),
                                                                                     const SizedBox(
                                                                                       width: 10,
                                                                                     ),
@@ -562,7 +562,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text('Outputs\n',
+                                                        Text(L10n.of(context)!.outputTx,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -573,8 +573,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                             title: !controller
                                                                     .showDetail
                                                                     .value
-                                                                ? 'Show Details'
-                                                                : 'Hide Details',
+                                                                ? L10n.of(context)!.showDetails
+                                                                : L10n.of(context)!.hideDetails,
                                                             onTap: () {
                                                               controller
                                                                   .toggleExpansion();
@@ -584,7 +584,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     SearchFieldWidget(
                                                       // controller: searchCtrl,
                                                       hintText: L10n.of(context)
-                                                          .search,
+                                                         ! .search,
                                                       handleSearch: (v) {
                                                         setState(() {
                                                           outputCtrl.text = v;
@@ -859,7 +859,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                             crossAxisAlignment:
                                                                                 CrossAxisAlignment.start,
                                                                             children: [
-                                                                              const Text('Type', style: TextStyle(color: Colors.black)),
+                                                                                Text(L10n.of(context)!.typeBehavior, style: TextStyle(color: Colors.black)),
                                                                               const SizedBox(
                                                                                 width: 10,
                                                                               ),
@@ -951,7 +951,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                             text: controller.txID!,
                                           ));
                                           Get.snackbar(
-                                              L10n.of(context)
+                                              L10n.of(context)!
                                                   .copiedToClipboard,
                                               controller.txID!);
                                         },
@@ -966,7 +966,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                 child: MyDivider(),
                               ),
                               BitNetListTile(
-                                text: L10n.of(context).status,
+                                text: L10n.of(context)!.status,
                                 trailing: Container(
                                   height: AppTheme.cardPadding * 1.5,
                                   padding: const EdgeInsets.symmetric(
@@ -988,7 +988,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                     child: Text(
                                       controllerHome.isRbfTransaction.value ==
                                               true
-                                          ? 'Replaced'
+                                          ? L10n.of(context)!.replaced
                                           : '${controller.confirmations == 0 ? '' : controller.confirmations} ' +
                                               controller
                                                   .statusTransaction.value,
@@ -999,14 +999,14 @@ class SingleTransactionScreen extends StatelessWidget {
                                 ),
                               ),
                               BitNetListTile(
-                                  text: "Payment Network",
+                                  text:L10n.of(context)!.paymentNetwork,
                                   trailing: Image.asset(
                                     "assets/images/bitcoin.png",
                                     width: AppTheme.cardPadding * 1.5,
                                     height: AppTheme.cardPadding * 1.5,
                                   )),
                               BitNetListTile(
-                                  text:L10n.of(context).time,
+                                  text:L10n.of(context)!.time,
                                   trailing: controllerHome.txConfirmed.value
                                       ? Container(
                                           child: Column(
@@ -1017,7 +1017,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                    'Timestamp',
+                                                    L10n.of(context)!.timestamp,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .titleMedium,
@@ -1045,14 +1045,14 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Text('Confirmed',
+                                                  Text(L10n.of(context)!.confirmed,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyMedium),
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        'After ' +
+                                                        L10n.of(context)!.afterTx +
                                                             DateTime
                                                                 .fromMillisecondsSinceEpoch(
                                                               (controller
@@ -1064,7 +1064,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                           .txTime! *
                                                                       1000),
                                                             ).minute.toString() +
-                                                            ' minutes',
+                                                            L10n.of(context)!.minutesTx,
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyMedium,
@@ -1092,8 +1092,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                         children: [
                                           Text(
                                             controllerHome.txPosition.value >= 7
-                                                ? 'In Several hours (or more)'
-                                                : 'In ~ ${controllerHome.txPosition.value + 1 * 10} minutes',
+                                                ? L10n.of(context)!.inSeveralHours
+                                                : 'In ~ ${controllerHome.txPosition.value + 1 * 10}${L10n.of(context)!.minutesTx}',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge,
@@ -1110,7 +1110,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     BorderRadius.circular(5)),
                                             child: Center(
                                               child: Text(
-                                                'Accelerate',
+                                              L10n.of(context)!.accelerate,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyLarge,
@@ -1120,7 +1120,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                         ],
                                       )),
                               BitNetListTile(
-                                  text: 'Features',
+                                  text: L10n.of(context)!.features,
                                   trailing: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -1244,7 +1244,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                     ],
                                   )),
                               BitNetListTile(
-                                  text: 'Fee rate',
+                                  text: L10n.of(context)!.feeRate,
                                   trailing: Row(
                                     children: [
                                       Text(
@@ -1277,8 +1277,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                 child: Text(
                                                   controller.feeRating.value ==
                                                           1
-                                                      ? 'Optimal'
-                                                      : 'Overpaid ${controller.overpaidTimes ?? 1}x',
+                                                      ? L10n.of(context)!.optimal
+                                                      : '${L10n.of(context)!.overpaid} ${controller.overpaidTimes ?? 1}x',
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge,

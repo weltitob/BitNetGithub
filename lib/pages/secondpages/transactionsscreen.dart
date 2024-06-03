@@ -3,6 +3,8 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recentreplacements.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/recenttransactions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class LastTransactions extends StatefulWidget {
   const LastTransactions({super.key});
@@ -40,8 +42,8 @@ class _LastTransactionsState extends State<LastTransactions> with SingleTickerPr
             TabBar(
               controller: _tabController,
               tabs: [
-                Tab(text: 'Recent Transactions'),
-                Tab(text: 'Recent Replacements'),
+                Tab(text: L10n.of(context)!.recentTransactions),
+                Tab(text: L10n.of(context)!.recentReplacements),
               ],
             ),
             Expanded(

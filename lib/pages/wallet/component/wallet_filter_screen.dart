@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class WalletFilterScreen extends GetWidget<WalletFilterController> {
   const WalletFilterScreen({super.key});
@@ -21,7 +23,7 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
         context: context,
-        text: 'Filter',
+        text: L10n.of(context)!.filter,
       ),
       context: context,
       body: Padding(
@@ -36,7 +38,7 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                     height: AppTheme.cardPadding * 1.75,
                     child: TextButton(
                       child: Text(
-                        'Clear',
+                        L10n.of(context)!.clear,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       onPressed: () {
@@ -51,16 +53,16 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                     ))),
             SizedBox(height: AppTheme.cardPadding),
             BitNetFilterPillList(
-              headingText: 'Filter Options',
+              headingText: L10n.of(context)!.filterOptions,
               listDataText: [
-                PillLabelModal(labelText: "Lightning"),
-                PillLabelModal(labelText: "Onchain"),
-                PillLabelModal(labelText: "Sent"),
-                PillLabelModal(labelText: "Received"),
+                PillLabelModal(labelText: L10n.of(context)!.lightning),
+                PillLabelModal(labelText: L10n.of(context)!.onchain),
+                PillLabelModal(labelText: L10n.of(context)!.sent),
+                PillLabelModal(labelText: L10n.of(context)!.received),
               ],
             ),
             CommonHeading(
-              headingText: 'TimeFrame',
+              headingText: L10n.of(context)!.timeFrame,
               hasButton: false,
               collapseBtn: true,
               child: Container(
@@ -99,7 +101,7 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                     Container(
                       margin: EdgeInsets.only(left: 10.w, right: 11.w),
                       child: Text(
-                        'To',
+                        L10n.of(context)!.to,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
@@ -144,7 +146,7 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
             ),
             Spacer(),
             LongButtonWidget(
-                title: "Apply",
+                title: L10n.of(context)!.apply,
                 onTap: () {
                   controller.start =
                       controller.startDate.value.millisecondsSinceEpoch ~/ 1000;

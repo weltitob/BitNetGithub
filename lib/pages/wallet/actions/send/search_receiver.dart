@@ -7,6 +7,7 @@ import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dar
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class SearchReceiver extends GetWidget<SendsController> {
   const SearchReceiver({
@@ -18,7 +19,7 @@ class SearchReceiver extends GetWidget<SendsController> {
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
-        text: "Choose Recipient",
+        text: L10n.of(context)!.chooseReceipient,
         context: context,
         onTap: () {
           context.go('/feed');
@@ -36,7 +37,7 @@ class SearchReceiver extends GetWidget<SendsController> {
               height: AppTheme.cardPadding * 2.5,
             ),
             SearchFieldWidget(
-              hintText: "Search for recipients",
+              hintText: L10n.of(context)!.searchReceipient,
               isSearchEnabled: true,
               handleSearch: controller.handleSearch,
             ),
@@ -45,7 +46,6 @@ class SearchReceiver extends GetWidget<SendsController> {
                 reverse: true,
                 child: Column(
                   children: [
-                    // Ihre scrollbare Liste oder andere Widgets
                   ],
                 ),
               ),
@@ -65,7 +65,7 @@ class SearchReceiver extends GetWidget<SendsController> {
                         controller.processParameters(context,
                             (await context.push("/qrscanner")) as String?);
                       },
-                      title: 'Scan QR',
+                      title: L10n.of(context)!.scanQr,
                     ),
                   ),
                 ],

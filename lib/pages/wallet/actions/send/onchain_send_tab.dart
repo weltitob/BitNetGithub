@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
 
 class OnChainSendTab extends GetWidget<SendsController> {
   const OnChainSendTab({
@@ -65,7 +67,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
                 Padding(
                     padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
                     child: LongButtonWidget(
-                      title: "SEND NOW!",
+                      title: L10n.of(context)!.sendNow,
                       onTap: () async {
                         await controller.sendBTC(context);
                       },
@@ -144,7 +146,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
           leading: Avatar(),
           // The title displays the user's name.
           title: Text(
-            "Unknown",
+            L10n.of(context)!.unknown,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           // The subtitle displays a card number.
@@ -168,11 +170,11 @@ class OnChainSendTab extends GetWidget<SendsController> {
       onTap: () async {
         await Clipboard.setData(
             ClipboardData(text: controller.bitcoinReceiverAdress));
-        showOverlay(context, "Wallet address copied to clipboard");
+        showOverlay(context, L10n.of(context)!.walletAddressCopied);
       },
       child: Row(
         children: [
-          // Icon for copying the receiver address to clipboard
+          // Icon for copying the receiver address to 
           const Icon(Icons.copy_rounded, color: Colors.grey, size: 16),
           SizedBox(
             width: AppTheme.cardPadding * 8,

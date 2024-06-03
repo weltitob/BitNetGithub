@@ -7,6 +7,7 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class RecoverWithQRPage extends StatefulWidget {
   const RecoverWithQRPage({Key? key}) : super(key: key);
@@ -85,14 +86,13 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
                 children: [
                   Icon(FontAwesomeIcons.solidEyeSlash, size: AppTheme.elementSpacing,),
                   SizedBox(width: AppTheme.elementSpacing / 2,),
-                  Text("DON'T SHARE THIS QR CODE TO ANYONE!", style: Theme.of(context).textTheme.labelLarge,),
+                  Text(L10n.of(context)!.dontShareAnyone, style: Theme.of(context).textTheme.labelLarge,),
                 ],
               ),
             ],
           ),
         ),
       ),
-
     );
   }
 }

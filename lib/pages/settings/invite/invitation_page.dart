@@ -83,10 +83,7 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(AppTheme.cardPadding),
-                  child: Text(
-                    "Our service is currently in beta and "
-                    "limited to invited users. You can share these invitation "
-                    "keys with your friends and family!",
+                  child: Text( L10n.of(context)!.inviteDescription,
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),

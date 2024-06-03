@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
@@ -64,9 +65,9 @@ class LightningSendTab extends GetWidget<SendsController> {
                 Obx(
                   () => Text(
                     controller.amountWidgetOverBound.value
-                        ? "You are over the sending limit."
+                        ? L10n.of(context)!.youAreOverLimit
                         : controller.amountWidgetUnderBound.value
-                            ? "You are under the sending baseline."
+                            ? L10n.of(context)!.youAreUnderLimit
                             : "",
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
                     textAlign: TextAlign.center,
@@ -77,7 +78,7 @@ class LightningSendTab extends GetWidget<SendsController> {
                   padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
                   child: Obx(
                     () => LongButtonWidget(
-                      title: "SEND NOW!",
+                      title: L10n.of(context)!.sendNow,
                       buttonType: (!controller.amountWidgetOverBound.value &&
                               !controller.amountWidgetUnderBound.value)
                           ? ButtonType.solid
@@ -164,7 +165,7 @@ class LightningSendTab extends GetWidget<SendsController> {
           leading: Avatar(),
           // The title displays the user's name.
           title: Text(
-            "Unknown",
+            L10n.of(context)!.unknown,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           // The subtitle displays a card number.
@@ -189,7 +190,7 @@ class LightningSendTab extends GetWidget<SendsController> {
       onTap: () async {
         await Clipboard.setData(
             ClipboardData(text: controller.bitcoinReceiverAdress));
-        showOverlay(context, "Wallet address copied to clipboard");
+        showOverlay(context, L10n.of(context)!.walletAddressCopied);
       },
       child: Row(
         children: [

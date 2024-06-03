@@ -169,11 +169,6 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
               setState(() {
                 currentview = 4;
               });
-              // Navigator.of(context).push(_createSettingsRoute());
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => InvitationSettingsPage()));
             },
           ),
           BitNetListTile(
