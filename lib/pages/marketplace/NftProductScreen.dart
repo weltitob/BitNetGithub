@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
-import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
@@ -7,12 +6,10 @@ import 'package:bitnet/components/marketplace_widgets/BarChart.dart';
 import 'package:bitnet/components/marketplace_widgets/ChaunInfo.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
-import 'package:bitnet/components/marketplace_widgets/PropertieList.dart';
-import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class NftProductScreen extends StatefulWidget {
   const NftProductScreen({Key? key}) : super(key: key);
@@ -22,9 +19,7 @@ class NftProductScreen extends StatefulWidget {
 }
 
 class _NftProductScreenState extends State<NftProductScreen> {
-
   //check the nftid / assetid and get the data for it from the universe / federation server
-
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +33,6 @@ class _NftProductScreenState extends State<NftProductScreen> {
       context: context,
       body: Stack(
         children: [
-
           Container(
             width: size.width,
             height: size.height,
@@ -276,8 +270,8 @@ class _NftProductScreenState extends State<NftProductScreen> {
                   //   ),
                   // ),
 
-                  const CommonHeading(
-                    headingText: 'Chain Info',
+                  CommonHeading(
+                    headingText: L10n.of(context)!.chainInfo,
                     hasButton: false,
                   ),
                   Container(
@@ -319,5 +313,4 @@ class _NftProductScreenState extends State<NftProductScreen> {
       ),
     );
   }
-
 }

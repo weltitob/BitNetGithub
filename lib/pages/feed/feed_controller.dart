@@ -34,28 +34,28 @@ class FeedController extends GetxController
   final List<WalletCategory> walletcategorys = [
     WalletCategory(
       'assets/images/paper_wallet.png',
-      L10n.of(Get.context!)!.assets,
-      L10n.of(Get.context!)!.assets,
+      'Assets',
+      'Assets',
     ),
     WalletCategory(
       'assets/images/bitcoin.png',
-      L10n.of(Get.context!)!.bitcoin,
-      L10n.of(Get.context!)!.bitcoin,
+      'Bitcoin',
+      'Bitcoin',
     ),
     WalletCategory(
       'assets/images/friends.png',
-      L10n.of(Get.context!)!.people,
-      L10n.of(Get.context!)!.people,
+      'People',
+      'People',
     ),
     WalletCategory(
       'assets/images/new_chat.png',
-      L10n.of(Get.context!)!.group,
-      L10n.of(Get.context!)!.group,
+      'Groups',
+      'Groups',
     ),
     WalletCategory(
       'assets/marketplace/ActiveHeart.png',
-      L10n.of(Get.context!)!.liked,
-      L10n.of(Get.context!)!.liked,
+      'Liked',
+      'Liked',
     ),
   ];
 
