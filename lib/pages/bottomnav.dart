@@ -125,9 +125,7 @@ class _BottomNavState extends State<BottomNav>
 
   @override
   Widget build(BuildContext context) {
-    Get.put(
-      FeedController(),
-    );
+    Get.put(FeedController());
     Get.put(ProfileController());
     Get.put(WalletsController());
 
