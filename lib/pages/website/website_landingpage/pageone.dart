@@ -5,6 +5,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
@@ -90,10 +91,9 @@ class _PageOneState extends State<PageOne> {
                       height: AppTheme.cardPadding * 4 * spacingMultiplier,
                     ),
                     Container(
-                      width: bigtextWidth,
+                      width: bigtextWidth + AppTheme.cardPadding,
                       child: SeoText(
-                        L10n.of(context)!
-                            .weBuildBitcoin, //We bring Bitcoin to ordinary people! //We digitize the world with Bitcoin!
+                        "Don’t get fucked. Get ahead with BitNet.", //We bring Bitcoin to ordinary people! //We digitize the world with Bitcoin!
                         tagStyle: TextTagStyle.h1,
                         textAlign: TextAlign.center,
                         style: isSuperSmallScreen
@@ -105,7 +105,7 @@ class _PageOneState extends State<PageOne> {
                       height: AppTheme.cardPadding * 1 * spacingMultiplier,
                     ),
                     Container(
-                      width: subtitleWidth,
+                      width: subtitleWidth + AppTheme.cardPadding,
                       child: SeoText(
                         L10n.of(context)!.weAreGrowingBitcoin,
                         textAlign: TextAlign.center,

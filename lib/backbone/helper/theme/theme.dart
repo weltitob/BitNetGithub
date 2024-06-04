@@ -16,8 +16,8 @@ abstract class AppTheme {
 
   static dynamic targetConf = 4;
 
-  static Color? colorSchemeSeed = Color(0xFF5625BA);
-  static const Color primaryColor = Color(0xFF5625BA);
+  static Color? colorSchemeSeed = Color(0xffffffff);
+  static const Color primaryColor = Color(0xffffffff);
 
   static const Color colorBackground = Color(0xff130036);
 
@@ -457,8 +457,9 @@ abstract class AppTheme {
 
   static ThemeData customTheme(Brightness brightness, [Color? seed]) {
     //hier die genauen hexes angeben je nachdme wie es in der cloud steht
-    print("SEED: $seed");
-    if (seed == Color(0xffffffff) || seed == Color(0xff000000)) {
+    Color defaultSeed = seed ?? AppTheme.primaryColor;
+
+    if (defaultSeed == Color(0xffffffff) || defaultSeed == Color(0xff000000)) {
       ColorScheme colorScheme = ColorScheme(
         onPrimaryContainer: Colors.white,
         // onPrimaryFixed: AppTheme.white80,
@@ -488,7 +489,7 @@ abstract class AppTheme {
       return themeData;
 
     } else {
-      Color defaultSeed = seed ?? AppTheme.primaryColor;
+
       ColorScheme colorScheme = ColorScheme.fromSeed(
         seedColor: defaultSeed,
         brightness: brightness,

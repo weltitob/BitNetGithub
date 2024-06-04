@@ -206,11 +206,14 @@ class _PageTwoState extends State<PageTwo> {
                                       ),
                                       SizedBox(
                                           height: AppTheme.elementSpacing / 2),
-                                      Text(
-                                        "${userData.username}",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall,
+                                      Container(
+                                        child: Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          "${userData.username}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        ),
                                       ),
                                     ],
                                   ),
