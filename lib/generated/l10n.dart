@@ -4170,11 +4170,61 @@ class S {
     );
   }
 
+  /// `Failed to load certain data in this page, please try again later`
+  String get failedToLoadCertainData {
+    return Intl.message(
+      'Failed to load certain data in this page, please try again later',
+      name: 'failedToLoadCertainData',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `TimeFrame`
   String get timeFrame {
     return Intl.message(
       'TimeFrame',
       name: 'timeFrame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to load Onchain Transactions`
+  String get failedToLoadOnchain {
+    return Intl.message(
+      'Failed to load Onchain Transactions',
+      name: 'failedToLoadOnchain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to load Lightning Payments`
+  String get failedToLoadPayments {
+    return Intl.message(
+      'Failed to load Lightning Payments',
+      name: 'failedToLoadPayments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to load Lightning Invoices`
+  String get failedToLoadLightning {
+    return Intl.message(
+      'Failed to load Lightning Invoices',
+      name: 'failedToLoadLightning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to load Loop Operations`
+  String get failedToLoadOperations {
+    return Intl.message(
+      'Failed to load Loop Operations',
+      name: 'failedToLoadOperations',
       desc: '',
       args: [],
     );
