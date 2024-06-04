@@ -118,9 +118,9 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
               },
               text: L10n.of(context)!.invoice,
               trailing: Obx(() {
-                final qrCodeData = controller.qrCodeDataStringOnchain.value ?? '';
-                if (qrCodeData.isEmpty) {
-                  return Text('loading...');
+                final qrCodeData = controller.qrCodeDataStringOnchain.value;
+                if (qrCodeData.isEmpty || qrCodeData == '' || qrCodeData == 'null') {
+                  return Text('${L10n.of(context)!.loading}...');
                 } else {
                   final start = qrCodeData.length >= 8 ? qrCodeData.substring(0, 8) : qrCodeData;
                   final end = qrCodeData.length > 8 ? qrCodeData.substring(qrCodeData.length - 5) : '';

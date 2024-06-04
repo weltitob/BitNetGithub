@@ -114,8 +114,8 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
               text: L10n.of(context)!.invoice,
               trailing: Obx(() {
                 final qrCodeData =
-                    controller.qrCodeDataStringLightning.value ?? '';
-                if (qrCodeData.isEmpty) {
+                    controller.qrCodeDataStringLightning.value;
+                if (qrCodeData.isEmpty || qrCodeData == '' || qrCodeData == 'null') {
                   return Text('${L10n.of(context)!.loading}...');
                 } else {
                   final start = qrCodeData.length >= 8
