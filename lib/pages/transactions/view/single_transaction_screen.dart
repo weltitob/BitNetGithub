@@ -21,7 +21,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
- 
 
 class SingleTransactionScreen extends StatelessWidget {
   SingleTransactionScreen({Key? key}) : super(key: key);
@@ -945,9 +944,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                     style:
                                         Theme.of(context).textTheme.bodyLarge);
                               }),
-                              Text( controllerHome.txConfirmed.value.toString()),
-                              
-                              Padding(
+                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: AppTheme.cardPadding * 2),
                                 child: Row(
@@ -962,23 +959,24 @@ class SingleTransactionScreen extends StatelessWidget {
                                       ),
                                     ),
                                     IconButton(
-                                        onPressed: () async {
-                                          await Clipboard.setData(ClipboardData(
-                                            text: controller.txID!,
-                                          ));
-                                          Get.snackbar(
-                                              L10n.of(context)!
-                                                  .copiedToClipboard,
-                                              controller.txID!);
-                                        },
-                                        icon: const Icon(Icons.copy))
+                                      onPressed: () async {
+                                        await Clipboard.setData(ClipboardData(
+                                          text: controller.txID!,
+                                        ));
+                                        Get.snackbar(
+                                            L10n.of(context)!.copiedToClipboard,
+                                            controller.txID!);
+                                      },
+                                      icon: const Icon(Icons.copy),
+                                    )
                                   ],
                                 ),
                               ),
                               SizedBox(height: AppTheme.cardPadding * 1),
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: AppTheme.elementSpacing),
+                                  horizontal: AppTheme.elementSpacing,
+                                ),
                                 child: MyDivider(),
                               ),
                               BitNetListTile(
@@ -1047,8 +1045,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                           .textTheme
                                                           .bodyMedium,
                                                     ),
-                                                    // const SizedBox(width: 10),
-                                                    // Text(),
+                                                  
                                                   ],
                                                 ),
                                               ],

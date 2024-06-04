@@ -487,9 +487,7 @@ abstract class AppTheme {
             : fallbackTextTheme.merge(textThemeDarkMode),
       );
       return themeData;
-
     } else {
-
       ColorScheme colorScheme = ColorScheme.fromSeed(
         seedColor: defaultSeed,
         brightness: brightness,
@@ -503,7 +501,6 @@ abstract class AppTheme {
       return themeData;
     }
   }
-
 }
 
 extension on Brightness {
