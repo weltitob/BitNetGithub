@@ -35,7 +35,7 @@ class BitcoinTransaction {
       numConfirmations: json['num_confirmations'] ?? '',
       blockHash: json['block_hash'] ?? '',
       blockHeight: json['block_height'] ?? '',
-      timeStamp: int.parse(json['time_stamp']),
+      timeStamp: int.parse(json['time_stamp']??0),
       totalFees: json['total_fees'] ?? '',
       destAddresses: List<String>.from(json['dest_addresses'].map((x) => x as String)),
       outputDetails: List<OutputDetail>.from(json['output_details'].map((x) => OutputDetail.fromJson(x as Map<String, dynamic>))),

@@ -1233,7 +1233,7 @@
     "outputTx": "Outputs\n",
     "showDetails": "Show Details",
     "hideDetails": "Hide Details",
-    "inputTx": "'Inputs\n'",
+    "inputTx": "Inputs\n",
     "transactionReplaced": "This transaction has been replaced by:",
     "loading": "Loading",
     "replaced": "Replaced",

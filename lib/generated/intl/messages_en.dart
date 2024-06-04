@@ -785,7 +785,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "indexedDbErrorTitle":
             MessageLookupByLibrary.simpleMessage("Private mode issues"),
         "inoffensive": MessageLookupByLibrary.simpleMessage("Inoffensive"),
-        "inputTx": MessageLookupByLibrary.simpleMessage("\'Inputs\n\'"),
+        "inputTx": MessageLookupByLibrary.simpleMessage("Inputs\n"),
         "intrinsicValue":
             MessageLookupByLibrary.simpleMessage("Intrinsic Value:"),
         "invitationCode":

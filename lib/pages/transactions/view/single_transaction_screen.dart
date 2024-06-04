@@ -21,6 +21,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+ 
 
 class SingleTransactionScreen extends StatelessWidget {
   SingleTransactionScreen({Key? key}) : super(key: key);
@@ -48,7 +49,6 @@ class SingleTransactionScreen extends StatelessWidget {
           channel.sink.add('{"track-tx":"stop"}');
           channel.sink
               .add('{"action":"want","data":["blocks","mempool-blocks"]}');
-
           Navigator.pop(context);
           controller.homeController.isRbfTransaction.value = false;
         },
@@ -59,8 +59,9 @@ class SingleTransactionScreen extends StatelessWidget {
           controllerHome.timer.cancel();
           channel.sink.add('{"track-rbf-summary":true}');
           channel.sink.add('{"track-tx":"stop"}');
-          channel.sink
-              .add('{"action":"want","data":["blocks","mempool-blocks"]}');
+          channel.sink.add(
+            '{"action":"want","data":["blocks","mempool-blocks"]}',
+          );
           controller.homeController.isRbfTransaction.value = false;
         },
         child: Obx(() {
@@ -933,7 +934,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                             : SizedBox.shrink(),
                                       ],
                                     ),
-                              SizedBox(height: AppTheme.elementSpacing),
+                              SizedBox(
+                                height: AppTheme.elementSpacing,
+                              ),
                               Obx(() {
                                 return Text(
                                     controllerHome.txConfirmed.value
@@ -942,6 +945,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                     style:
                                         Theme.of(context).textTheme.bodyLarge);
                               }),
+                              Text( controllerHome.txConfirmed.value.toString()),
+                              
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: AppTheme.cardPadding * 2),
