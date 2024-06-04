@@ -28,7 +28,6 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-
 class WalletScreen extends GetWidget<WalletsController> {
   const WalletScreen({Key? key}) : super(key: key);
   @override
@@ -61,10 +60,11 @@ class WalletScreen extends GetWidget<WalletsController> {
     List<Container> cards = [
       Container(
         child: GestureDetector(
-            onTap: () {
-              context.go('/wallet/lightningcard');
-            },
-            child: BalanceCardLightning()),
+          onTap: () {
+            context.go('/wallet/lightningcard');
+          },
+          child: BalanceCardLightning(),
+        ),
       ),
       Container(
         child: GestureDetector(
@@ -338,6 +338,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                               customWidth: AppTheme.cardPadding * 2.5,
                               customHeight: AppTheme.cardPadding * 1.25,
                               onTap: () {
+                                print('ontap long button');
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

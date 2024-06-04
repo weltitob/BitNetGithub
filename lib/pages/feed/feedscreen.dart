@@ -11,7 +11,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class WalletCategory {
   final String imageURL;
   final String text;
@@ -40,6 +39,7 @@ class _FeedScreenState extends State<FeedScreen>
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
+    print(controller.searchResultsFuture);
     return bitnetScaffold(
       body: NestedScrollView(
         controller: controller.scrollController?.value,
@@ -78,23 +78,25 @@ class _FeedScreenState extends State<FeedScreen>
         },
         body:
             //HomeScreen(),
-            controller.searchResultsFuture == null
-                ? TabBarView(
-                    controller: controller.tabController,
-                    children: [
-                      HomeScreen(),
-                      Container(
-                        child: Center(
-                            child: Text(
-                          L10n.of(context)!.noUserFound,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        )),
-                      ),
-                    ],
-                  )
-                : SearchResultWidget(),
+            GetBuilder<FeedController>(builder: (controller) {
+          return controller.searchResultsFuture == null
+              ? TabBarView(
+                  controller: controller.tabController,
+                  children: [
+                    HomeScreen(),
+                    Container(
+                      child: Center(
+                          child: Text(
+                        L10n.of(context)!.noUserFound,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      )),
+                    ),
+                  ],
+                )
+              : SearchResultWidget();
+        }),
       ),
       context: context,
     );
   }
- }
+}

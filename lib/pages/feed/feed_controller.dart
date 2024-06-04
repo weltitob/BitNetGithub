@@ -6,19 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class FeedController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  Rx<Future<QuerySnapshot>?>? searchResultsFuture;
-
+  Rx<Future<QuerySnapshot>>? searchResultsFuture;
   handleSearch(String query) {
     try {
       Future<QuerySnapshot> users = usersCollection
           .where("username", isGreaterThanOrEqualTo: query)
           .get();
-
       searchResultsFuture!.value = users;
+      update();
     } catch (e) {
       searchResultsFuture = null;
       print("Error searching for user: $e");
