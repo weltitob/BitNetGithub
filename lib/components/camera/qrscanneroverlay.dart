@@ -236,7 +236,7 @@ class BorderPainterBlack extends CustomPainter {
     canvas.drawRRect(
       rrect,
       Paint()
-        ..color = AppTheme.black70
+        ..color = AppTheme.black60
         ..style = PaintingStyle.stroke
         ..strokeWidth = width,
     );

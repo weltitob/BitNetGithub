@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>NexusWallet</string>
+	<string>BitNet</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -65,7 +65,7 @@
 	        <!-- replace with actual IDENTIFIER -->
 	        <key>CFBundleURLSchemes</key>
 	        <array>
-	            <string>nexuswallet</string>
+	            <string>BitNet</string>
 	            <!-- replace with actual CFBUNFLESCHEME -->
 	        </array>
 	    </dict>

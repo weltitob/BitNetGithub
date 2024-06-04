@@ -4,6 +4,23 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/chart/chart.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/amountwidget.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/buildroundedbox.dart';
+import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
@@ -36,143 +53,152 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
           Navigator.of(context).pop();
         },
       ),
-      body: ListView(
-        scrollDirection: Axis.vertical,
-        controller: controller.controller,
+      body: Stack(
         children: [
-          SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: AppTheme.cardPadding * 2,
-                ),
-                ChartWidget(),
-                SizedBox(
-                  height: AppTheme.elementSpacing * 4,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    LongButtonWidget(
-                        customWidth: AppTheme.cardPadding * 7.w,
-                        customHeight: AppTheme.cardPadding * 2.5,
-                        title: L10n.of(context)!.buy,
-                        onTap: () {
-                          BitNetBottomSheet(
-                              context: context, child: PurchaseSheet());
-                        }),
-                    SizedBox(
-                      width: AppTheme.elementSpacing,
-                    ),
-                    LongButtonWidget(
-                        buttonType: ButtonType.transparent,
-                        customWidth: AppTheme.cardPadding * 7.w,
-                        customHeight: AppTheme.cardPadding * 2.5,
-                        title: L10n.of(context)!.sell,
-                        onTap: () {
-                          BitNetBottomSheet(
-                              context: context,
-                              child: Column(
-                                children: [
-                                  AmountWidget(
-                                      enabled: () => true,
-                                      satController: controller.satCtrlSell,
-                                      btcController: controller.btcCtrlSell,
-                                      currController: controller.currCtrlSell,
-                                      focusNode: controller.nodeSell,
-                                      autoConvert: true,
-                                      context: context),
-                                ],
-                              ));
-                        }),
-                  ],
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: AppTheme.cardPadding * 4,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  L10n.of(context)!.about,
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                SizedBox(
-                  height: AppTheme.elementSpacing * 1,
-                ),
-                Text(
-                    L10n.of(context)!.bitcoinDescription),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: AppTheme.cardPadding * 2,
-          ),
-          RoundedContainer(
-              child: Column(
+          ListView(
+            scrollDirection: Axis.vertical,
+            controller: controller.controller,
             children: [
-              Text(
-                L10n.of(context)!.quickLinks,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  BitNetImageWithTextContainer(
-                    L10n.of(context)!.bitcoin,
-                    () {
-                      context.push('/wallet/bitcoinscreen/mempool');
-                    },
-                    image: "assets/images/blockchain.png",
-                    fallbackIcon: FontAwesomeIcons.bitcoinSign,
-                    width: AppTheme.cardPadding * 4,
-                    height: AppTheme.cardPadding * 4,
-                  ),
-                  BitNetImageWithTextContainer(
-                    L10n.of(context)!.hashrateDifficulty,
-                    () {
-                      context.push('/wallet/bitcoinscreen/hashrate');
-                    },
-                    image: "assets/images/hashrate.png",
-                    fallbackIcon: FontAwesomeIcons.computer,
-                    width: AppTheme.cardPadding * 4,
-                    height: AppTheme.cardPadding * 4,
-                  ),
-                  BitNetImageWithTextContainer(
-                    L10n.of(context)!.fearAndGreed,
-                    () {
-                      context.push('/wallet/bitcoinscreen/fearandgreed');
-                    },
-                    fallbackIcon: Icons.speed_rounded,
-                    image: "assets/images/fagi.png",
-                    width: AppTheme.cardPadding * 4,
-                    height: AppTheme.cardPadding * 4,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding * 1,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [],
+              SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: AppTheme.cardPadding * 2,
+                    ),
+                    ChartWidget(),
+                    // SizedBox(
+                    //   height: AppTheme.elementSpacing * 4,
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   children: [
+                    //     LongButtonWidget(
+                    //         customWidth: AppTheme.cardPadding * 7.w,
+                    //         customHeight: AppTheme.cardPadding * 2.5,
+                    //         title: L10n.of(context)!.buy,
+                    //         onTap: () {
+                    //           BitNetBottomSheet(
+                    //               context: context, child: PurchaseSheet());
+                    //         }),
+                    //     SizedBox(
+                    //       width: AppTheme.elementSpacing,
+                    //     ),
+                    //     LongButtonWidget(
+                    //         buttonType: ButtonType.transparent,
+                    //         customWidth: AppTheme.cardPadding * 7.w,
+                    //         customHeight: AppTheme.cardPadding * 2.5,
+                    //         title: L10n.of(context)!.sell,
+                    //         onTap: () {
+                    //           BitNetBottomSheet(
+                    //               context: context,
+                    //               child: Column(
+                    //                 children: [
+                    //                   AmountWidget(
+                    //                       enabled: () => true,
+                    //                       satController: controller.satCtrlSell,
+                    //                       btcController: controller.btcCtrlSell,
+                    //                       currController: controller.currCtrlSell,
+                    //                       focusNode: controller.nodeSell,
+                    //                       autoConvert: true,
+                    //                       context: context),
+                    //                 ],
+                    //               ));
+                    //         }),
+                    //   ],
+                    // )
+                  ],
+                ),
               ),
               SizedBox(
                 height: AppTheme.cardPadding * 2,
               ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      L10n.of(context)!.about,
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                    SizedBox(
+                      height: AppTheme.elementSpacing * 1,
+                    ),
+                    Text(
+                        L10n.of(context)!.bitcoinDescription),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: AppTheme.cardPadding * 2,
+              ),
+              RoundedContainer(
+                  child: Column(
+                    children: [
+                      Text(
+                        L10n.of(context)!.quickLinks,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      SizedBox(
+                        height: AppTheme.cardPadding,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          BitNetImageWithTextContainer(
+                            L10n.of(context)!.bitcoin,
+                                () {
+                              context.push('/wallet/bitcoinscreen/mempool');
+                            },
+                            image: "assets/images/blockchain.png",
+                            fallbackIcon: FontAwesomeIcons.bitcoinSign,
+                            width: AppTheme.cardPadding * 4,
+                            height: AppTheme.cardPadding * 4,
+                          ),
+                          BitNetImageWithTextContainer(
+                            L10n.of(context)!.hashrateDifficulty,
+                                () {
+                              context.push('/wallet/bitcoinscreen/hashrate');
+                            },
+                            image: "assets/images/hashrate.png",
+                            fallbackIcon: FontAwesomeIcons.computer,
+                            width: AppTheme.cardPadding * 4,
+                            height: AppTheme.cardPadding * 4,
+                          ),
+                          BitNetImageWithTextContainer(
+                            L10n.of(context)!.fearAndGreed,
+                                () {
+                              context.push('/wallet/bitcoinscreen/fearandgreed');
+                            },
+                            fallbackIcon: Icons.speed_rounded,
+                            image: "assets/images/fagi.png",
+                            width: AppTheme.cardPadding * 4,
+                            height: AppTheme.cardPadding * 4,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: AppTheme.cardPadding * 1,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [],
+                      ),
+                      SizedBox(
+                        height: AppTheme.cardPadding * 2,
+                      ),
+                ],
+              )),
             ],
-          )),
+          ),
+          BottomButtons(
+              leftButtonTitle: L10n.of(context)!.buy,
+              rightButtonTitle: L10n.of(context)!.sell,
+              onLeftButtonTap: (){},
+              onRightButtonTap: (){},),
         ],
       ),
     );
@@ -348,22 +374,21 @@ class NewPaymentCardHorizontalWidget extends StatelessWidget {
           controller.animateTo(2);
         },
         child: Container(
-          height: 60,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.add),
-              SizedBox(width: AppTheme.elementSpacing),
-              Text(L10n.of(context)!.addNewCard,
-                  style: Theme.of(context).textTheme.titleSmall)
-            ],
-          ),
-        ),
+            height: 60,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add),
+                SizedBox(width: AppTheme.elementSpacing),
+                Text(L10n.of(context)!.addNewCard,
+                    style: Theme.of(context).textTheme.titleSmall)
+              ],
+            )),
       ),
     );
   }

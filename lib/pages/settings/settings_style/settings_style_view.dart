@@ -101,24 +101,27 @@ class SettingsStyleView extends StatelessWidget {
                                       ),
                                     ),
                                   )
-                                : Material(
-                                    color: color,
-                                    elevation: 6,
-                                    borderRadius:
-                                        BorderRadius.circular(colorPickerSize),
-                                    child: SizedBox(
-                                      width: colorPickerSize,
-                                      height: colorPickerSize,
-                                      child: controller.currentColor == color
-                                          ? const Center(
-                                              child: Icon(
-                                                Icons.check,
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          : null,
-                                    ),
-                                  ),
+                                : color == Colors.white
+                                    ? ColorCircle()
+                                    : Material(
+                                        color: color,
+                                        elevation: 6,
+                                        borderRadius: BorderRadius.circular(
+                                            colorPickerSize),
+                                        child: SizedBox(
+                                          width: colorPickerSize,
+                                          height: colorPickerSize,
+                                          child:
+                                              controller.currentColor == color
+                                                  ? const Center(
+                                                      child: Icon(
+                                                        Icons.check,
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                  : null,
+                                        ),
+                                      ),
                           ),
                         ),
                       )
@@ -187,4 +190,57 @@ class SettingsStyleView extends StatelessWidget {
       ),
     );
   }
+}
+
+class ColorCircle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    double colorPickerSize = 30.0;
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Material(
+          color: Colors.transparent,
+          elevation: 6,
+          borderRadius: BorderRadius.circular(colorPickerSize),
+          child: SizedBox(
+            width: colorPickerSize,
+            height: colorPickerSize,
+            child: CustomPaint(
+              painter: CirclePainter(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CirclePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double radius = size.width / 2;
+    final Offset center = Offset(radius, radius);
+
+    final Paint paint = Paint();
+
+    // Draw white slice
+    paint.color = Colors.white;
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 0,
+        2 * 3.14 / 3, true, paint);
+
+    // Draw black slice
+    paint.color = Colors.black;
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
+        2 * 3.14 / 3, 2 * 3.14 / 3, true, paint);
+
+    // Draw colorBitcoin slice
+    paint.color = AppTheme.colorBitcoin;
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
+        4 * 3.14 / 3, 2 * 3.14 / 3, true, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

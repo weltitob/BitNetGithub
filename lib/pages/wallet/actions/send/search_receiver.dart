@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
@@ -31,45 +32,36 @@ class SearchReceiver extends GetWidget<SendsController> {
         onPopInvoked: (v) {
           context.go('/feed');
         },
-        child: Column(
+        child: Stack(
           children: [
-            SizedBox(
-              height: AppTheme.cardPadding * 2.5,
-            ),
-            SearchFieldWidget(
-              hintText: L10n.of(context)!.searchReceipient,
-              isSearchEnabled: true,
-              handleSearch: controller.handleSearch,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                reverse: true,
-                child: Column(
-                  children: [
-                  ],
+            Column(
+              children: [
+                SizedBox(
+                  height: AppTheme.cardPadding * 2.5,
                 ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
-              height: 85,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(top: AppTheme.elementSpacing),
-                    child: LongButtonWidget(
-                      //customWidth: AppTheme.cardPadding * 7,
-                      onTap: () async {
-                        controller.processParameters(context,
-                            (await context.push("/qrscanner")) as String?);
-                      },
-                      title: L10n.of(context)!.scanQr,
+                SearchFieldWidget(
+                  hintText: L10n.of(context)!.searchReceipient,
+                  isSearchEnabled: true,
+                  handleSearch: controller.handleSearch,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    reverse: true,
+                    child: Column(
+                      children: [
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+            BottomCenterButton(
+              onButtonTap: () async {
+                controller.processParameters(context,
+                    (await context.push("/qrscanner")) as String?);
+              },
+              buttonTitle: L10n.of(context)!.scanQr,
+              buttonState: ButtonState.idle,
             )
           ],
         ),
@@ -77,3 +69,5 @@ class SearchReceiver extends GetWidget<SendsController> {
     );
   }
 }
+
+

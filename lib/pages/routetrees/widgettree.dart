@@ -53,8 +53,7 @@ class WidgetTree extends StatelessWidget {
                   debugShowCheckedModeBanner: false,
                   themeMode: themeMode,
                   theme: AppTheme.customTheme(Brightness.light, primaryColor),
-                  darkTheme:
-                      AppTheme.customTheme(Brightness.dark, primaryColor),
+                  darkTheme: AppTheme.customTheme(Brightness.dark, primaryColor),
                   scrollBehavior: CustomScrollBehavior(),
                   locale: provider.locale,
                   supportedLocales: L10n.supportedLocales,

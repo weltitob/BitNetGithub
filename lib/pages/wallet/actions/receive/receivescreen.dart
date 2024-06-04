@@ -85,8 +85,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
                   customHeight: AppTheme.cardPadding * 1.5,
                   customWidth: AppTheme.cardPadding * 4,
                   leadingIcon: controller.createdInvoice.value
-                      ? Icon(FontAwesomeIcons.cancel)
-                      : Icon(FontAwesomeIcons.refresh),
+                      ? Icon(FontAwesomeIcons.cancel, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80)
+                      : Icon(FontAwesomeIcons.refresh, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80),
                   title: "${controller.min.value}:${controller.sec.value}",
                   onTap: () {
                     controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");

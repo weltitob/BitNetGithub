@@ -1,10 +1,14 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
+import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/marketplace_widgets/BarChart.dart';
 import 'package:bitnet/components/marketplace_widgets/ChaunInfo.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
+import 'package:bitnet/components/marketplace_widgets/NftProductHorizontal.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -307,9 +311,183 @@ class _NftProductScreenState extends State<NftProductScreen> {
               ),
             ),
           ),
-          BottomBuyButtons(),
+          BottomButtons(
+            leftButtonTitle: L10n.of(context)!.buy,
+            rightButtonTitle: L10n.of(context)!.sell,
+            onLeftButtonTap: () {
+              _buildBuySlidingPanel();
+            },
+            onRightButtonTap: () {
+              context.go('/sell');
+            },
+          ),
           //const StatusBarBg(),
         ],
+      ),
+    );
+  }
+
+  _buildBuySlidingPanel() {
+    showGeneralDialog(
+        barrierDismissible: true,
+        barrierLabel: "buy_dialog",
+        context: context,
+        pageBuilder: (context, a1, a2) {
+          return AlertDialog(
+            insetPadding: EdgeInsets.zero,
+            backgroundColor: Colors.transparent,
+            content: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: AppTheme.colorBackground,
+                  border: Border.all(color: AppTheme.colorBitcoin, width: 2)),
+              height: 600,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Buy",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(color: Colors.white)),
+                    Divider(
+                      color: AppTheme.colorBitcoin,
+                      thickness: 2,
+                    ),
+                    _buildHorizontalProductWithId(),
+                    Spacer(),
+                    Container(
+                      width: AppTheme.cardPadding * 10,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Subtotal",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              ),
+                              Text(
+                                "0.024",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Network Fee",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              ),
+                              Text(
+                                "0.024",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Market Fee",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              ),
+                              Text(
+                                "0.024",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Total Price",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              ),
+                              Text(
+                                "0.024",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          LongButtonWidget(
+                            title: "Cancel",
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            buttonType: ButtonType.transparent,
+                            customWidth: 15 * 10,
+                            customHeight: 15 * 2.5,
+                          ),
+                          LongButtonWidget(
+                            title: "Buy Now",
+                            onTap: () {},
+                            customWidth: 15 * 10,
+                            customHeight: 15 * 2.5,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  _buildHorizontalProductWithId() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: NftProductHorizontal(
+        cryptoImage: gridListData[0].cryptoImage,
+        nftImage: gridListData[0].nftImage,
+        nftMainName: gridListData[0].nftMainName,
+        nftName: gridListData[0].nftName,
+        cryptoText: gridListData[0].cryptoText,
+        rank: gridListData[0].rank,
+        columnMargin: gridListData[0].columnMargin,
       ),
     );
   }

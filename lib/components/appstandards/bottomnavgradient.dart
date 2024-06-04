@@ -22,64 +22,64 @@ class BottomNavGradient extends StatelessWidget {
                 Theme.of(context)
                     .colorScheme
                     .primaryContainer,
-                40)
+                50)
                 .withOpacity(0.0001),
             lighten(
                 Theme.of(context)
                     .colorScheme
                     .primaryContainer,
-                40)
+                50)
                 .withOpacity(0.3),
             lighten(
                 Theme.of(context)
                     .colorScheme
                     .primaryContainer,
-                40)
+                50)
                 .withOpacity(0.6),
             lighten(
                 Theme.of(context)
                     .colorScheme
                     .primaryContainer,
-                40)
+                50)
                 .withOpacity(0.9),
             lighten(
                 Theme.of(context).colorScheme.primaryContainer,
-                40),
+                50),
             lighten(
                 Theme.of(context).colorScheme.primaryContainer,
-                40)
+                50)
           ]
               : [
             darken(
                 Theme.of(context)
                     .colorScheme
                     .primaryContainer,
-                70)
+                80)
                 .withOpacity(0.0001),
             darken(
                 Theme.of(context)
                     .colorScheme
                     .primaryContainer,
-                70)
+                80)
                 .withOpacity(0.3),
             darken(
                 Theme.of(context)
                     .colorScheme
                     .primaryContainer,
-                70)
+                80)
                 .withOpacity(0.6),
             darken(
                 Theme.of(context)
                     .colorScheme
                     .primaryContainer,
-                70)
+                80)
                 .withOpacity(0.9),
             darken(
                 Theme.of(context).colorScheme.primaryContainer,
-                70),
+                80),
             darken(
                 Theme.of(context).colorScheme.primaryContainer,
-                70)
+                80)
           ],
         ),
       ),

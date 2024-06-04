@@ -32,6 +32,7 @@ void showOverlay(BuildContext context, String? message, {Color color = AppTheme.
           elevation: 10.0,
           child: Container(
             height: 100, // Set the height to 200
+            padding: EdgeInsets.all(AppTheme.elementSpacing),
             decoration: BoxDecoration(
               color: color ?? AppTheme.successColor,
               borderRadius: BorderRadius.only(

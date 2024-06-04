@@ -128,13 +128,20 @@ class ThemeController extends State<ThemeBuilder> {
   }
 
   Future<void> setPrimaryColor(Color? newPrimaryColor) async {
+    if(newPrimaryColor == Colors.white || newPrimaryColor == Colors.black){
+      newPrimaryColor = AppTheme.colorSchemeSeed;
+      await settingsCollection
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
+    }
     // final preferences =
     //     _sharedPreferences ??= await SharedPreferences.getInstance();
     if (newPrimaryColor == null) {
       //await preferences.remove(widget.primaryColorSettingsKey);
       await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({widget.primaryColorSettingsKey: newPrimaryColor?.value});
+          .update({widget.primaryColorSettingsKey: newPrimaryColor?.value}
+      );
     } else {
       await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)

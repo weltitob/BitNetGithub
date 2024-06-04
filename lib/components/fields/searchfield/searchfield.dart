@@ -55,6 +55,9 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                 hintText: widget.hintText,
                 prefixIcon: Icon(
                   Icons.search,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? AppTheme.black60
+                      : AppTheme.white70,
                 ),
                 suffixIcon: widget.suffixIcon != null
                     ? widget.suffixIcon

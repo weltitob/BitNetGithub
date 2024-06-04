@@ -36,7 +36,8 @@ class SettingsController extends BaseController {
       ThemeController.of(context).primaryColor;
 
   final List<Color?> customColors = [
-    AppTheme.primaryColor,
+    Colors.white,
+    AppTheme.colorSchemeSeed,
     Colors.indigoAccent,
     AppTheme.colorBitcoin,
     Colors.pinkAccent,

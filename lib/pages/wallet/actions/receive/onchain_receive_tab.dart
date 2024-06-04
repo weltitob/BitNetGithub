@@ -56,7 +56,10 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                         children: [
                           // Custom border painted around the Qr code
                           CustomPaint(
-                            foregroundPainter: BorderPainter(),
+                            foregroundPainter:
+                            Theme.of(context).brightness == Brightness.light
+                                ? BorderPainterBlack()
+                                : BorderPainter(),
                             child: Container(
                               margin:
                                   const EdgeInsets.all(AppTheme.cardPadding),
