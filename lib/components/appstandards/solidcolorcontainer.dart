@@ -38,41 +38,42 @@ class SolidContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: normalPainter
-          ? GradientBorderPainter(
-          borderRadius: BorderRadius.circular(borderRadius),
-          borderWidth: borderWidth,
-          gradientColors: [
-            lighten(Theme.of(context).colorScheme.secondaryContainer, 60),
-            Theme.of(context).colorScheme.secondaryContainer,
-            Theme.of(context).colorScheme.secondaryContainer,
-            lighten(Theme.of(context).colorScheme.secondaryContainer, 60)
-          ]
-      ) // Modify to pass the correct colors
-          : null,
-      foregroundPainter: !normalPainter
-          ? GradientBorderPainter(
-          borderRadius: BorderRadius.circular(borderRadius),
-          borderWidth: borderWidth,
-          gradientColors: [
-            lighten(Theme.of(context).colorScheme.secondaryContainer, 60),
-            Theme.of(context).colorScheme.secondaryContainer,
-            Theme.of(context).colorScheme.secondaryContainer,
-            lighten(Theme.of(context).colorScheme.secondaryContainer, 60)
-          ]
-      ) // Modify to pass the correct colors
-          : null,
+      // painter: normalPainter
+      //     ? GradientBorderPainter(
+      //     borderRadius: BorderRadius.circular(borderRadius),
+      //     borderWidth: borderWidth,
+      //     // gradientColors: [
+      //     //   lighten(Theme.of(context).colorScheme.secondaryContainer, 60),
+      //     //   Theme.of(context).colorScheme.secondaryContainer,
+      //     //   Theme.of(context).colorScheme.secondaryContainer,
+      //     //   lighten(Theme.of(context).colorScheme.secondaryContainer, 60)
+      //     // ]
+      // ) // Modify to pass the correct colors
+      //     : null,
+      // foregroundPainter: !normalPainter
+      //     ? GradientBorderPainter(
+      //     borderRadius: BorderRadius.circular(borderRadius),
+      //     borderWidth: borderWidth,
+      //     // gradientColors: [
+      //     //   lighten(Theme.of(context).colorScheme.secondaryContainer, 60),
+      //     //   Theme.of(context).colorScheme.secondaryContainer,
+      //     //   Theme.of(context).colorScheme.secondaryContainer,
+      //     //   lighten(Theme.of(context).colorScheme.secondaryContainer, 60)
+      //     // ]
+      // ) // Modify to pass the correct colors
+      //     : null,
       child: Container(
         height: height,
         width: width,
         alignment: alignment,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
-          gradient: LinearGradient(
-            begin: gradientBegin,
-            end: gradientEnd,
-            colors: gradientColors,
-          ),
+          color: Theme.of(context).colorScheme.primary,
+          // gradient: LinearGradient(
+          //   begin: gradientBegin,
+          //   end: gradientEnd,
+          //   colors: gradientColors,
+          // ),
         ),
         child: child,
       ),

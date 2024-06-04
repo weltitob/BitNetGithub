@@ -52,15 +52,15 @@ class bitnetScaffold extends StatelessWidget {
                   colors: [
                     Theme.of(context).brightness == Brightness.light
                         ? lighten(
-                            Theme.of(context).colorScheme.primaryContainer, 40)
+                            Theme.of(context).colorScheme.primaryContainer, 50)
                         : darken(
-                            Theme.of(context).colorScheme.primaryContainer, 70),
+                            Theme.of(context).colorScheme.primaryContainer, 80),
                     Theme.of(context).brightness == Brightness.light
                         ? lighten(
-                            Theme.of(context).colorScheme.tertiaryContainer, 40)
+                            Theme.of(context).colorScheme.tertiaryContainer, 50)
                         : darken(
                             Theme.of(context).colorScheme.tertiaryContainer,
-                        70),
+                        80),
                   ],
                 ),
               ),
@@ -92,30 +92,30 @@ class bitnetScaffold extends StatelessWidget {
                                             Theme.of(context)
                                                 .colorScheme
                                                 .primaryContainer,
-                                            40),
+                                            50),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            40)
+                                            50)
                                             .withOpacity(0.9),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            40)
+                                            50)
                                             .withOpacity(0.7),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            40)
+                                            50)
                                             .withOpacity(0.4),
                                         lighten(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            40)
+                                            50)
                                             .withOpacity(0.0001),
                                       ]
                                     : [
@@ -123,30 +123,30 @@ class bitnetScaffold extends StatelessWidget {
                                             Theme.of(context)
                                                 .colorScheme
                                                 .primaryContainer,
-                                            70),
+                                            80),
                                         darken(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            70)
+                                            80)
                                             .withOpacity(0.9),
                                         darken(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            70)
+                                            80)
                                             .withOpacity(0.7),
                                         darken(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            70)
+                                            80)
                                             .withOpacity(0.4),
                                         darken(
                                                 Theme.of(context)
                                                     .colorScheme
                                                     .primaryContainer,
-                                            70)
+                                            80)
                                             .withOpacity(0.0001),
                                       ],
                           ),

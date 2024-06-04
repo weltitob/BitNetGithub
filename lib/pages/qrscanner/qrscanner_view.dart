@@ -2,8 +2,10 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -68,9 +70,11 @@ class QRScannerView extends StatelessWidget {
                 padding:
                     const EdgeInsets.only(bottom: AppTheme.cardPadding * 8),
                 child: GlassContainer(
-                  width: AppTheme.cardPadding * 6,
+                  width: AppTheme.cardPadding * 6.5.w,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.elementSpacing * 1.5,
+                        vertical: AppTheme.elementSpacing / 1.25),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -122,7 +126,10 @@ class QRScannerView extends StatelessWidget {
                                           code.rawValue!, context);
                                     }
                                   } else {
-                                    showOverlay(context, L10n.of(context)!.noCodeFoundOverlayError,
+                                    showOverlay(
+                                        context,
+                                        L10n.of(context)!
+                                            .noCodeFoundOverlayError,
                                         color: AppTheme.errorColor);
                                   }
                                 });
@@ -207,137 +214,141 @@ class _ImagePickerState extends State<ImagePicker> {
         setState(() {});
       });
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: AppTheme.cardPadding / 2,
-        ),
-        Center(
-          child: Text(L10n.of(context)!.selectImageQrCode,
-              style: Theme.of(context).textTheme.titleSmall),
-        ),
-        SizedBox(
-          height: AppTheme.cardPadding,
-        ),
-        if (albums == null || current_photos == null)
-          Center(child: CircularProgressIndicator()),
-        if (albums != null && current_photos != null) ...[
-          TextButton(
-            child: Row(
-              children: [
-                Text(current_album!.name,
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontSize: 18, decoration: TextDecoration.underline)),
-                Icon(
-                    selecting_photos
-                        ? Icons.arrow_drop_down_rounded
-                        : Icons.arrow_drop_up_rounded,
-                    color: Colors.white)
-              ],
-            ),
-            onPressed: () {
-              if (selecting_photos) {
-                loaded_thumbnails = false;
-                selecting_photos = false;
-              } else {
-                selecting_photos = true;
-              }
-              setState(() {});
-            },
-          ),
-          Divider(),
+    return bitnetScaffold(
+      context: context,
+      appBar: bitnetAppBar(
+        text: L10n.of(context)!.selectImageQrCode,
+        context: context,
+        hasBackButton: false,
+        onTap: () {
+          context.pop();
+        },
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           SizedBox(
             height: AppTheme.cardPadding / 2,
           ),
-          Container(
-            height: MediaQuery.sizeOf(context).height * 0.45,
-            child: (current_photos == null)
-                ? Center(child: CircularProgressIndicator())
-                : (selecting_photos)
-                    ? GridView.builder(
-                        itemCount: current_photos!.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3),
-                        itemBuilder: (ctx, i) {
-                          return Padding(
-                              padding: EdgeInsets.all(0),
-                              child: InkWell(
-                                onTap: () {
-                                  if (widget.onImageTap != null) {
-                                    widget.onImageTap!(
-                                        current_album!, current_photos![i]);
-                                  }
-                                },
-                                child: AssetEntityImage(
-                                  current_photos![i],
-                                  isOriginal: false,
-                                  thumbnailSize: ThumbnailSize.square(250),
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stacktrace) {
-                                    return const Center(
-                                        child: Icon(Icons.error,
-                                            color: Colors.red));
+          if (albums == null || current_photos == null)
+            Center(child: dotProgress(context)),
+          if (albums != null && current_photos != null) ...[
+            TextButton(
+              child: Row(
+                children: [
+                  Text(current_album!.name,
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          fontSize: 18, decoration: TextDecoration.underline)),
+                  Icon(
+                      selecting_photos
+                          ? Icons.arrow_drop_down_rounded
+                          : Icons.arrow_drop_up_rounded,
+                      color: Colors.white)
+                ],
+              ),
+              onPressed: () {
+                if (selecting_photos) {
+                  loaded_thumbnails = false;
+                  selecting_photos = false;
+                } else {
+                  selecting_photos = true;
+                }
+                setState(() {});
+              },
+            ),
+            Divider(),
+            SizedBox(
+              height: AppTheme.cardPadding / 2,
+            ),
+            Container(
+              height: MediaQuery.sizeOf(context).height * 0.45,
+              child: (current_photos == null)
+                  ? Center(child: dotProgress(context))
+                  : (selecting_photos)
+                      ? GridView.builder(
+                          itemCount: current_photos!.length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3),
+                          itemBuilder: (ctx, i) {
+                            return Padding(
+                                padding: EdgeInsets.all(0),
+                                child: InkWell(
+                                  onTap: () {
+                                    if (widget.onImageTap != null) {
+                                      widget.onImageTap!(
+                                          current_album!, current_photos![i]);
+                                    }
                                   },
-                                ),
-                              ));
-                        })
-                    : (loaded_thumbnails && album_thumbnails != null)
-                        ? GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: albums!.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2),
-                            itemBuilder: (ctx, i) {
-                              return Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child: InkWell(
-                                    onTap: () {
-                                      current_album = albums![i];
-                                      selecting_photos = true;
-                                      setState(() {});
+                                  child: AssetEntityImage(
+                                    current_photos![i],
+                                    isOriginal: false,
+                                    thumbnailSize: ThumbnailSize.square(250),
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stacktrace) {
+                                      return const Center(
+                                          child: Icon(Icons.error,
+                                              color: Colors.red));
                                     },
-                                    child: Flexible(
-                                      child: Container(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              width: 180,
-                                              height: 150,
-                                              child: ClipRRect(
-                                                clipBehavior: Clip.hardEdge,
-                                                borderRadius:
-                                                    BorderRadius.circular(16),
-                                                child: AssetEntityImage(
-                                                  album_thumbnails![i],
-                                                  isOriginal: false,
-                                                  fit: BoxFit.cover,
-                                                  thumbnailSize:
-                                                      ThumbnailSize.square(360),
+                                  ),
+                                ));
+                          })
+                      : (loaded_thumbnails && album_thumbnails != null)
+                          ? GridView.builder(
+                              shrinkWrap: true,
+                              itemCount: albums!.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2),
+                              itemBuilder: (ctx, i) {
+                                return Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: InkWell(
+                                      onTap: () {
+                                        current_album = albums![i];
+                                        selecting_photos = true;
+                                        setState(() {});
+                                      },
+                                      child: Flexible(
+                                        child: Container(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                width: 180,
+                                                height: 150,
+                                                child: ClipRRect(
+                                                  clipBehavior: Clip.hardEdge,
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  child: AssetEntityImage(
+                                                    album_thumbnails![i],
+                                                    isOriginal: false,
+                                                    fit: BoxFit.cover,
+                                                    thumbnailSize:
+                                                        ThumbnailSize.square(360),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Text(albums![i].name,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall)
-                                          ],
+                                              Text(albums![i].name,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall)
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ));
-                            },
-                          )
-                        : Center(
-                            child: CircularProgressIndicator(),
-                          ),
-          )
-        ]
-      ],
+                                    ));
+                              },
+                            )
+                          : Center(
+                              child: dotProgress(context),
+                            ),
+            )
+          ]
+        ],
+      ),
     );
   }
 }

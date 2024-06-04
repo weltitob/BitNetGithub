@@ -8933,10 +8933,10 @@ class S {
     );
   }
 
-  /// `These terms and conditions constitute the entire agreement between the user and NexusWallet.\nShould any provision be ineffective, the remaining provisions shall remain in force.`
+  /// `These terms and conditions constitute the entire agreement between the user and BitNet.\nShould any provision be ineffective, the remaining provisions shall remain in force.`
   String get termsAndConditionsEntire {
     return Intl.message(
-      'These terms and conditions constitute the entire agreement between the user and NexusWallet.\nShould any provision be ineffective, the remaining provisions shall remain in force.',
+      'These terms and conditions constitute the entire agreement between the user and BitNet.\nShould any provision be ineffective, the remaining provisions shall remain in force.',
       name: 'termsAndConditionsEntire',
       desc: '',
       args: [],
@@ -8953,21 +8953,21 @@ class S {
     );
   }
 
-  /// `NexusWallet reserves the right to change these terms and conditions at any time.\nThe user will be informed of such changes and must agree to them in order to continue using the app.`
-  String get nexusWalletReserves {
+  /// `BitNet reserves the right to change these terms and conditions at any time.\nThe user will be informed of such changes and must agree to them in order to continue using the app.`
+  String get walletReserves {
     return Intl.message(
-      'NexusWallet reserves the right to change these terms and conditions at any time.\nThe user will be informed of such changes and must agree to them in order to continue using the app.',
-      name: 'nexusWalletReserves',
+      'BitNet reserves the right to change these terms and conditions at any time.\nThe user will be informed of such changes and must agree to them in order to continue using the app.',
+      name: 'walletReserves',
       desc: '',
       args: [],
     );
   }
 
-  /// `NexusWallet is only liable for damages caused by intentional or grossly negligent actions by\nNexusWallet. The company is not liable for damages resulting from the use of the app or the loss of Bitcoins.`
-  String get nexusWalletLiable {
+  /// `BitNet is only liable for damages caused by intentional or grossly negligent actions by\nBitNet. The company is not liable for damages resulting from the use of the app or the loss of Bitcoins.`
+  String get walletLiable {
     return Intl.message(
-      'NexusWallet is only liable for damages caused by intentional or grossly negligent actions by\nNexusWallet. The company is not liable for damages resulting from the use of the app or the loss of Bitcoins.',
-      name: 'nexusWalletLiable',
+      'BitNet is only liable for damages caused by intentional or grossly negligent actions by\nBitNet. The company is not liable for damages resulting from the use of the app or the loss of Bitcoins.',
+      name: 'walletLiable',
       desc: '',
       args: [],
     );
@@ -8993,10 +8993,10 @@ class S {
     );
   }
 
-  /// `The user is solely responsible for the security of their Bitcoins. The app offers security features such as password protection and two-factor authentication,\nbut it is the user's responsibility to use these features carefully.\nNexusWallet is not liable for losses due to negligence, loss of devices, or user access data.`
+  /// `The user is solely responsible for the security of their Bitcoins. The app offers security features such as password protection and two-factor authentication,\nbut it is the user's responsibility to use these features carefully.\nBitNet is not liable for losses due to negligence, loss of devices, or user access data.`
   String get userSolelyResponsible {
     return Intl.message(
-      'The user is solely responsible for the security of their Bitcoins. The app offers security features such as password protection and two-factor authentication,\nbut it is the user\'s responsibility to use these features carefully.\nNexusWallet is not liable for losses due to negligence, loss of devices, or user access data.',
+      'The user is solely responsible for the security of their Bitcoins. The app offers security features such as password protection and two-factor authentication,\nbut it is the user\'s responsibility to use these features carefully.\nBitNet is not liable for losses due to negligence, loss of devices, or user access data.',
       name: 'userSolelyResponsible',
       desc: '',
       args: [],

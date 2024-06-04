@@ -109,8 +109,6 @@ class BalanceCardBtc extends GetWidget<WalletsController> {
 
   @override
   Widget build(BuildContext context) {
-    print('balance');
-    print(balance);
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
         double.parse(balance == null ? controller.onchainBalance.confirmedBalance : balance ?? '0'),
         balance == null ? BitcoinUnits.SAT : BitcoinUnits.BTC);

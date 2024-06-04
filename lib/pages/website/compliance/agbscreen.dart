@@ -131,7 +131,7 @@ class _AGBScreenState extends State<AGBScreen> {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               SizedBox(height: AppTheme.elementSpacing / 2),
-              Text(L10n.of(context)!.nexusWalletLiable, style: Theme.of(context).textTheme.bodySmall,
+              Text(L10n.of(context)!.walletLiable, style: Theme.of(context).textTheme.bodySmall,
               ),
               SizedBox(
                 height: AppTheme.cardPadding,
@@ -141,7 +141,7 @@ class _AGBScreenState extends State<AGBScreen> {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               SizedBox(height: AppTheme.elementSpacing / 2),
-              Text(L10n.of(context)!.nexusWalletReserves,  style: Theme.of(context).textTheme.bodySmall,
+              Text(L10n.of(context)!.walletReserves,  style: Theme.of(context).textTheme.bodySmall,
               ),
               SizedBox(
                 height: AppTheme.cardPadding,

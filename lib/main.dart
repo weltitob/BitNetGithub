@@ -53,10 +53,9 @@ import 'backbone/auth/auth.dart';
 //╚═════╝░╚═╝░░░╚═╝░░░╚═╝░░╚══╝╚══════╝░░░╚═╝░░░
 
 Future<void> main() async {
-  void onAppLink() {
-    print("APPLINK WAS TRIGGERED");
-  }
-
+  // void onAppLink() {
+  //   print("APPLINK WAS TRIGGERED");
+  // }
   // Ensure that Flutter binding is initialized
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -111,7 +110,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  GlobalKey _streamKey = GlobalKey(debugLabel: "");
+  // GlobalKey _streamKey = GlobalKey(debugLabel: "");
   static bool _isHiveInitialized = false;
   static Future<void> _initializeHive() async {
     if (!_isHiveInitialized) {

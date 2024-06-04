@@ -152,8 +152,8 @@ class _BottomNavState extends State<BottomNav>
         resizeToAvoidBottomInset: false, // Add this line
         bottomNavigationBar: Container(
             color: Theme.of(context).brightness == Brightness.light
-                ? lighten(Theme.of(context).colorScheme.primaryContainer, 40)
-                : darken(Theme.of(context).colorScheme.primaryContainer, 70),
+                ? lighten(Theme.of(context).colorScheme.primaryContainer, 50)
+                : darken(Theme.of(context).colorScheme.primaryContainer, 80),
             padding: const EdgeInsets.only(
                 top: 3,
                 left: AppTheme.cardPadding,

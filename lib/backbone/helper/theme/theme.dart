@@ -6,10 +6,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
-
 abstract class AppTheme {
-
   static IconData satoshiIcon = IconData(0x0021, fontFamily: 'SatoshiSymbol');
 
   static String baseUrlLightningTerminal = 'mybitnet.com:8443';
@@ -20,12 +17,13 @@ abstract class AppTheme {
   static dynamic targetConf = 4;
 
   static Color? colorSchemeSeed = Color(0xFF5625BA);
+  static const Color primaryColor = Color(0xFF5625BA);
+
   static const Color colorBackground = Color(0xff130036);
 
   static const bool allowOtherHomeservers = true;
   static const bool enableRegistration = true;
 
-  static const Color primaryColor = Color(0xFF5625BA);
   static const Color primaryColorLight = Color(0xFFCCBDEA);
   static const Color secondaryColor = Color(0xFF41a2bc);
 
@@ -36,11 +34,11 @@ abstract class AppTheme {
   // //bF2A900FFitcoincolors
   // static const Color orange = Color(0xFFFFBD69);
   // static const Color kAccentColor = Color(0xFFFFC107);
-  static const Color colorBitcoin = Color(0xfff2a900);
-  static const Color colorPrimaryGradient = Color(0xfff25d00);
 
   static const Color colorLink = Colors.blueAccent;
-  //
+  static const Color colorBitcoin = Color(0xfff7931a);
+  static const Color colorPrimaryGradient = Color(0xfff25d00);
+
   //green and red
   static const Color errorColor = Color(0xFFFF6363);
   static const Color errorColorGradient = Color(0xFFC54545);
@@ -51,7 +49,8 @@ abstract class AppTheme {
   //onTap: () => launchUrlString(AppTheme.supportUrl),
   //Marketing startegie ist EXTREME CONTENT STRATEGIE
 
-  static String stripeLiveKey = 'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
+  static String stripeLiveKey =
+      'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
 
   static String instagramUrl = 'https://www.instagram.com/bitnet.ai/';
   static String twitterUrl = 'https://twitter.com/bitnet_ai';
@@ -68,8 +67,8 @@ abstract class AppTheme {
   //for exchangerates:
   static String mykey = 'b16be475b04d4272b9a06fcb2b4c0bbd';
   static String baseUrl = 'https://openexchangerates.org/api/';
-  static String ratesUrl = '${baseUrl}latest.json?base=USD&app_id=$mykey'; //this only gives usd?
-
+  static String ratesUrl =
+      '${baseUrl}latest.json?base=USD&app_id=$mykey'; //this only gives usd?
 
   static String baseUrlCoinGecko = 'https://openexchangerates.org/api/';
   //NEXT 5 TO BE ADDED TO CONTENT MASCHINE
@@ -153,9 +152,7 @@ abstract class AppTheme {
         colorSchemeSeed = Color(json['chat_color']);
       } catch (e) {
         logger.i(
-          'Invalid color in config.json! Please make sure to define the color in this format: "0xffdd0000", error: $e'
-          
-        );
+            'Invalid color in config.json! Please make sure to define the color in this format: "0xffdd0000", error: $e');
       }
     }
     if (json['privacy_url'] is String) {
@@ -231,10 +228,10 @@ abstract class AppTheme {
     blurRadius: 5,
   );
   static BoxShadow boxShadowSuperSmall = BoxShadow(
-    color: Colors.black.withOpacity(0.05),  // Reduced opacity for less intensity
-    offset: const Offset(0, 4),             // Smaller offset to keep the shadow closer
-    blurRadius: 15,                         // Significantly reduced blur radius for a tighter shadow
-    spreadRadius: 0.5,                      // Smaller spread to limit the shadow's reach
+    color: Colors.black.withOpacity(0.05), // Reduced opacity for less intensity
+    offset: const Offset(0, 4), // Smaller offset to keep the shadow closer
+    blurRadius: 15, // Significantly reduced blur radius for a tighter shadow
+    spreadRadius: 0.5, // Smaller spread to limit the shadow's reach
   );
   static BoxShadow boxShadowSmall = BoxShadow(
     color: Colors.black.withOpacity(0.1),
@@ -449,124 +446,63 @@ abstract class AppTheme {
   );
 
   static bool getDisplayNavigationRail(BuildContext context) =>
-      GoRouter.of(context).routeInformationProvider.value.uri.path.startsWith('/settings');
+      GoRouter.of(context)
+          .routeInformationProvider
+          .value
+          .uri
+          .path
+          .startsWith('/settings');
 
   static const Curve animationCurve = Curves.easeInOut;
 
   static ThemeData customTheme(Brightness brightness, [Color? seed]) {
-    //based of seed make a dark and a light color palette scheme just like google does
-    Color defaultSeed = seed ??
-        AppTheme.primaryColor; // Default to blue if no seed provided
+    //hier die genauen hexes angeben je nachdme wie es in der cloud steht
+    print("SEED: $seed");
+    if (seed == Color(0xffffffff) || seed == Color(0xff000000)) {
+      ColorScheme colorScheme = ColorScheme(
+        onPrimaryContainer: Colors.white,
+        // onPrimaryFixed: AppTheme.white80,
+        // onPrimaryFixedVariant: AppTheme.white80,
+        primary: AppTheme.colorBitcoin,
+        secondary: AppTheme.secondaryColor,
+        secondaryContainer: Colors.black,
+        primaryContainer: Colors.black,
+        tertiary: Colors.black,
+        // tertiary: AppTheme.colorBackground,
+        tertiaryContainer: Colors.black,
+        brightness: Brightness.dark,
+        onPrimary: AppTheme.white80,
 
-    // Generate a ColorScheme based on the seed color and desired brightness
-    ColorScheme colorScheme = ColorScheme.fromSeed(
-      seedColor: defaultSeed,
-      brightness: brightness,
-    );
+        onSecondary: Colors.black,
+        error: AppTheme.errorColor,
+        onError: AppTheme.errorColor,
+        surface: Colors.black,
+        onSurface: Colors.black,
+      );
+      ThemeData themeData = ThemeData.from(
+        colorScheme: colorScheme,
+        textTheme: brightness == Brightness.light
+            ? fallbackTextTheme.merge(textTheme)
+            : fallbackTextTheme.merge(textThemeDarkMode),
+      );
+      return themeData;
 
-    // Create ThemeData from the ColorScheme
-    ThemeData themeData = ThemeData.from(
-      colorScheme: colorScheme,
-      textTheme:  brightness == Brightness.light
-          ? fallbackTextTheme.merge(textTheme)
-               : fallbackTextTheme.merge(textThemeDarkMode),
-    );
-
-    return themeData;
+    } else {
+      Color defaultSeed = seed ?? AppTheme.primaryColor;
+      ColorScheme colorScheme = ColorScheme.fromSeed(
+        seedColor: defaultSeed,
+        brightness: brightness,
+      );
+      ThemeData themeData = ThemeData.from(
+        colorScheme: colorScheme,
+        textTheme: brightness == Brightness.light
+            ? fallbackTextTheme.merge(textTheme)
+            : fallbackTextTheme.merge(textThemeDarkMode),
+      );
+      return themeData;
+    }
   }
-      //
-      //
-      // ThemeData(
-      //     visualDensity: VisualDensity.standard,
-      //     useMaterial3: true,
-      //     iconTheme: IconThemeData(
-      //       color: brightness == Brightness.light ? AppTheme.black80  : AppTheme.white80,
-      //     ),
-      //     scaffoldBackgroundColor: brightness == Brightness.light ? AppTheme.colorSchemeSeed : AppTheme.colorBackground,
-      //     //brightness: brightness,
-      //     //scaffoldBackgroundColor: brightness == Brightness.light ? AppTheme.colorSchemeSeed : AppTheme.colorBackground,
-      //     //colorSchemeSeed: seed ?? AppTheme.colorSchemeSeed,
-      //     colorScheme: ColorScheme(
-      //         //https://m3.material.io/styles/color/the-color-system/color-roles
-      //         brightness: brightness,
-      //         primary: AppTheme.colorSchemeSeed ?? Colors.black,
-      //         onPrimary: AppTheme.white90,
-      //         //------stays the same always...-------
-      //         secondary: AppTheme.colorSchemeSeed ?? Colors.black,
-      //         onSecondary: AppTheme.white90,
-      //         //------stays the same always...-------
-      //         tertiary: AppTheme.colorBitcoin,
-      //         onTertiary: AppTheme.colorPrimaryGradient,
-      //         //-------------------------------------
-      //         error: AppTheme.errorColor,
-      //         onError: AppTheme.errorColor,
-      //         //------stays the same always...-------
-      //         background: AppTheme.colorBackground ?? Colors.black,
-      //         onBackground: AppTheme.white90,
-      //         //-------------------------------------
-      //         surface: Colors.deepOrangeAccent,
-      //         onSurface: AppTheme.white90),
-      //     //textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme)
-      //     textTheme: brightness == Brightness.light
-      //         ? textTheme.merge(fallbackTextTheme)
-      //         : textThemeDarkMode.merge(fallbackTextTheme),
-      //     // snackBarTheme: const SnackBarThemeData(
-      //     //   behavior: SnackBarBehavior.floating,
-      //     // ),
-      //     dividerColor: brightness == Brightness.light
-      //         ? Colors.blueGrey.shade50
-      //         : Colors.blueGrey.shade900,
-      //     popupMenuTheme: PopupMenuThemeData(
-      //       shape: RoundedRectangleBorder(
-      //         borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-      //       ),
-      //     ),
-      //     // inputDecorationTheme: InputDecorationTheme(
-      //     //   border: UnderlineInputBorder(
-      //     //     borderSide: BorderSide.none,
-      //     //     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall / 2),
-      //     //   ),
-      //     //   filled: true,
-      //     // ),
-      //     // appBarTheme: AppBarTheme(
-      //     //   surfaceTintColor:
-      //     //   brightness == Brightness.light ? Colors.white : Colors.black,
-      //     //   shadowColor: Colors.black.withAlpha(64),
-      //     //   systemOverlayStyle: SystemUiOverlayStyle(
-      //     //     statusBarColor: Colors.transparent,
-      //     //     statusBarIconBrightness: brightness.reversed,
-      //     //     statusBarBrightness: brightness,
-      //     //   ),
-      //     // ),
-      //     // textButtonTheme: TextButtonThemeData(
-      //     //   style: TextButton.styleFrom(
-      //     //     shape: RoundedRectangleBorder(
-      //     //       borderRadius: BorderRadius.circular(cardPadding / 2),
-      //     //     ),
-      //     //   ),
-      //     // ),
-      //     // outlinedButtonTheme: OutlinedButtonThemeData(
-      //     //   style: OutlinedButton.styleFrom(
-      //     //     shape: RoundedRectangleBorder(
-      //     //       borderRadius: BorderRadius.circular(cardPadding / 2),
-      //     //     ),
-      //     //   ),
-      //     // ),
-      //     // dialogTheme: DialogTheme(
-      //     //   shape: RoundedRectangleBorder(
-      //     //     borderRadius: BorderRadius.circular(cardPadding / 2),
-      //     //   ),
-      //     // ),
-      //     // elevatedButtonTheme: ElevatedButtonThemeData(
-      //     //   style: ElevatedButton.styleFrom(
-      //     //     padding: const EdgeInsets.all(AppTheme.elementSpacing),
-      //     //     textStyle: const TextStyle(fontSize: 16),
-      //     //     shape: RoundedRectangleBorder(
-      //     //       borderRadius: AppTheme.cardRadiusMid,
-      //     //     ),
-      //     //   ),
-      //     // ),
-      //     );
+
 }
 
 extension on Brightness {

@@ -59,7 +59,7 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
             : BackgroundGradient(
                 borderRadius: borderRadius,
                 colorprimary: Theme.of(context).colorScheme.primary,
-                colorsecondary: Theme.of(context).colorScheme.secondary,
+                colorsecondary: Theme.of(context).colorScheme.primary,
                 child: Container(
                   alignment: Alignment.center,
                   child: AnimatedScale(

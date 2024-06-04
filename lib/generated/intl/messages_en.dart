@@ -912,10 +912,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("Next"),
         "nextAccount": MessageLookupByLibrary.simpleMessage("Next account"),
         "nextBlock": MessageLookupByLibrary.simpleMessage("Next Block"),
-        "nexusWalletLiable": MessageLookupByLibrary.simpleMessage(
-            "NexusWallet is only liable for damages caused by intentional or grossly negligent actions by\nNexusWallet. The company is not liable for damages resulting from the use of the app or the loss of Bitcoins."),
-        "nexusWalletReserves": MessageLookupByLibrary.simpleMessage(
-            "NexusWallet reserves the right to change these terms and conditions at any time.\nThe user will be informed of such changes and must agree to them in order to continue using the app."),
         "no": MessageLookupByLibrary.simpleMessage("No"),
         "noAccountYet": MessageLookupByLibrary.simpleMessage(
             "You don\'t have an account yet?"),
@@ -1341,7 +1337,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "termsAndConditionsDescription": MessageLookupByLibrary.simpleMessage(
             "These terms and conditions govern the use of the Bitcoin Wallet App\n(hereinafter referred to as BitNet), which is provided by BitNet GmbH.\nBy using the app, you agree to these terms and conditions."),
         "termsAndConditionsEntire": MessageLookupByLibrary.simpleMessage(
-            "These terms and conditions constitute the entire agreement between the user and NexusWallet.\nShould any provision be ineffective, the remaining provisions shall remain in force."),
+            "These terms and conditions constitute the entire agreement between the user and BitNet.\nShould any provision be ineffective, the remaining provisions shall remain in force."),
         "theyDontMatch":
             MessageLookupByLibrary.simpleMessage("They Don\'t Match"),
         "theyMatch": MessageLookupByLibrary.simpleMessage("They Match"),
@@ -1423,7 +1419,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("User Responsibility:"),
         "userSentUnknownEvent": m74,
         "userSolelyResponsible": MessageLookupByLibrary.simpleMessage(
-            "The user is solely responsible for the security of their Bitcoins. The app offers security features such as password protection and two-factor authentication,\nbut it is the user\'s responsibility to use these features carefully.\nNexusWallet is not liable for losses due to negligence, loss of devices, or user access data."),
+            "The user is solely responsible for the security of their Bitcoins. The app offers security features such as password protection and two-factor authentication,\nbut it is the user\'s responsibility to use these features carefully.\nBitNet is not liable for losses due to negligence, loss of devices, or user access data."),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "usernameOrDID":
             MessageLookupByLibrary.simpleMessage("Username or DID"),
@@ -1465,6 +1461,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Waiting for partner to accept the numbers…"),
         "walletAddressCopied": MessageLookupByLibrary.simpleMessage(
             "Wallet address copied to clipboard"),
+        "walletLiable": MessageLookupByLibrary.simpleMessage(
+            "BitNet is only liable for damages caused by intentional or grossly negligent actions by\nBitNet. The company is not liable for damages resulting from the use of the app or the loss of Bitcoins."),
+        "walletReserves": MessageLookupByLibrary.simpleMessage(
+            "BitNet reserves the right to change these terms and conditions at any time.\nThe user will be informed of such changes and must agree to them in order to continue using the app."),
         "wallpaper": MessageLookupByLibrary.simpleMessage("Wallpaper"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning!"),
         "wasDirectChatDisplayName": m76,

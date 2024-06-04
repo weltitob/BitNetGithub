@@ -169,20 +169,20 @@ class _TransactionsState extends State<Transactions>
         handlePageLoadErrors(errorCount, errorMessage, context);
       }
     });
-    getLoopOperations().then((value) {
-      futuresCompleted++;
-      if (!value) {
-        errorCount++;
-        errorMessage = "Failed to load Loop Operations";
-      }
-
-      if (futuresCompleted == 3) {
-        setState(() {
-          transactionsLoaded = true;
-        });
-        handlePageLoadErrors(errorCount, errorMessage, context);
-      }
-    });
+    // getLoopOperations().then((value) {
+    //   futuresCompleted++;
+    //   if (!value) {
+    //     errorCount++;
+    //     errorMessage = "Failed to load Loop Operations";
+    //   }
+    //
+    //   if (futuresCompleted == 3) {
+    //     setState(() {
+    //       transactionsLoaded = true;
+    //     });
+    //     handlePageLoadErrors(errorCount, errorMessage, context);
+    //   }
+    // });
   }
 
   void handlePageLoadErrors(
