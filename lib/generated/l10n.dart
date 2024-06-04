@@ -3020,10 +3020,10 @@ class S {
     );
   }
 
-  /// `'Inputs\n'`
+  /// `Inputs\n`
   String get inputTx {
     return Intl.message(
-      '\'Inputs\n\'',
+      'Inputs\n',
       name: 'inputTx',
       desc: '',
       args: [],

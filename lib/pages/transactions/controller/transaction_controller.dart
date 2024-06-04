@@ -7,6 +7,7 @@ import 'dart:math' as math;
 
 import 'package:bitnet/backbone/mempool_utils.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/models/mempool_models/address_component.dart';
 import 'package:bitnet/models/mempool_models/transactionRbfModel.dart';
 import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
@@ -78,13 +79,11 @@ class TransactionController extends BaseController {
     showDetail.value = !showDetail.value;
   }
 
-
-
   @override
   void onInit() {
     super.onInit();
     isLoading.value = true;
-  } 
+  }
 
   RxBool isShowBTC = true.obs;
   RxDouble input = 0.0.obs;
@@ -234,10 +233,10 @@ class TransactionController extends BaseController {
     localTime.value = formatLocalTime(
         transactionModel!.status!.blockTime?.toInt() ?? currentTime);
     // timerTime = Timer.periodic(const Duration(seconds: 1), (timer) async {
-      // print(txTime);
-      confirmationStatus.value = transactionModel!.status!.confirmed!;
-      // print('${confirmationStatus.value}' + 'status');
-      timeST.value = formatTimestamp(firstseen ?? currentTime);
+    // print(txTime);
+    confirmationStatus.value = transactionModel!.status!.confirmed!;
+    // print('${confirmationStatus.value}' + 'status');
+    timeST.value = formatTimestamp(firstseen ?? currentTime);
     // });
   }
 
@@ -323,18 +322,19 @@ class TransactionController extends BaseController {
     channel.sink.add('{"track-tx":"${txID!}"}');
   }
 
-  getTrans(String txID) async{
+  getTrans(String txID) async {
     // timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-      String url = '${baseUrl}tx/$txID';
-      await dioClient.get(url: url).then((value) async {
-        transactionModel = TransactionModel.fromJson(value.data);
-        height = transactionModel!.status!.blockHeight;
-        final homeController = Get.find<HomeController>();
-        chainTip = homeController.bitcoinData.first.height;
-        // replaced = true;
-        await calculateConfirmation();
-        await calculateStatus(transactionModel!.status!.confirmed!);
-      });
+    String url = '${baseUrl}tx/$txID';
+    await dioClient.get(url: url).then((value) async {
+      transactionModel = TransactionModel.fromJson(value.data);
+      height = transactionModel!.status!.blockHeight;
+      final homeController = Get.find<HomeController>();
+      chainTip = homeController.bitcoinData.first.height;
+      homeController.txConfirmed.value = transactionModel!.status!.confirmed!;
+      // replaced = true;
+      await calculateConfirmation();
+      await calculateStatus(transactionModel!.status!.confirmed!);
+    });
     // });
   }
 
@@ -376,30 +376,30 @@ class TransactionController extends BaseController {
     }
   }
 
-  getTransLatest(String txID) async{
+  getTransLatest(String txID) async {
     try {
       isLoading.value = true;
       // timerLatest = Timer.periodic(Duration(seconds: 5), (timer) async {
-        String url = '${baseUrl}tx/$txID';
+      String url = '${baseUrl}tx/$txID';
 
-        try {
-          await dioClient.get(url: url).then((value) async {
-            transactionModel = TransactionModel.fromJson(value.data);
-            height = transactionModel!.status!.blockHeight;
-            final homeController = Get.find<HomeController>();
-            chainTip = homeController.bitcoinData.first.height;
-            // print(height);
-            // print(chainTip);
-            await calculateConfirmation();
-            await calculateStatus(transactionModel!.status!.confirmed!);
-            isLoading.value = false;
-          });
-        } catch (e) {
+      try {
+        await dioClient.get(url: url).then((value) async {
+          transactionModel = TransactionModel.fromJson(value.data);
+          height = transactionModel!.status!.blockHeight;
+          final homeController = Get.find<HomeController>();
+          chainTip = homeController.bitcoinData.first.height;
+          // print(height);
+          // print(chainTip);
+          await calculateConfirmation();
+          await calculateStatus(transactionModel!.status!.confirmed!);
           isLoading.value = false;
+        });
+      } catch (e) {
+        isLoading.value = false;
 
-          // timerLatest!.cancel();
-          Get.snackbar('Transaction Not Found', '');
-        }
+        // timerLatest!.cancel();
+        Get.snackbar('Transaction Not Found', '');
+      }
       // });
     } catch (e) {
       isLoading.value = false;
@@ -596,24 +596,23 @@ class TransactionController extends BaseController {
           // the scriptSig and scriptWitness can all be replaced by a 66 witness WU with taproot
           replacementSize = 66;
         } else {
- final spendingPaths = script
-                .split(' ')
-                .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
-                .length +
-            1;
-        // now assume the script could have been split into ${spendingPaths} equal tapleaves
-        replacementSize = int.parse((script!.length ~/ 2 ~/ spendingPaths +
-                32 * math.log((spendingPaths - 1) + 1) +
-                33)
-            .toString());
-      
-        potentialTaprootGains +=
-            witnessSize(vin) + scriptSigSize(vin) * 4 - replacementSize;
+          final spendingPaths = script
+                  .split(' ')
+                  .where((op) => RegExp(r'^(OP_IF|OP_NOTIF)$').hasMatch(op))
+                  .length +
+              1;
+          // now assume the script could have been split into ${spendingPaths} equal tapleaves
+          replacementSize = int.parse((script!.length ~/ 2 ~/ spendingPaths +
+                  32 * math.log((spendingPaths - 1) + 1) +
+                  33)
+              .toString());
+
+          potentialTaprootGains +=
+              witnessSize(vin) + scriptSigSize(vin) * 4 - replacementSize;
         }
-         
-        }    
       }
-          return {
+    }
+    return {
       'realizedSegwitGains': realizedSegwitGains /
           (tx.weight! +
               realizedSegwitGains), // percent of the pre-segwit tx size
@@ -623,11 +622,7 @@ class TransactionController extends BaseController {
       'realizedTaprootGains':
           realizedTaprootGains / (tx.weight! + realizedTaprootGains),
     };
-    }
-
-
-  
-
+  }
 
   void calculateRatings(TransactionConfirmedDetail block) {
     num feePerByte = effectiveFeeRate.value == 0.0

@@ -48,7 +48,6 @@ class SingleTransactionScreen extends StatelessWidget {
           channel.sink.add('{"track-tx":"stop"}');
           channel.sink
               .add('{"action":"want","data":["blocks","mempool-blocks"]}');
-
           Navigator.pop(context);
           controller.homeController.isRbfTransaction.value = false;
         },
@@ -59,8 +58,9 @@ class SingleTransactionScreen extends StatelessWidget {
           controllerHome.timer.cancel();
           channel.sink.add('{"track-rbf-summary":true}');
           channel.sink.add('{"track-tx":"stop"}');
-          channel.sink
-              .add('{"action":"want","data":["blocks","mempool-blocks"]}');
+          channel.sink.add(
+            '{"action":"want","data":["blocks","mempool-blocks"]}',
+          );
           controller.homeController.isRbfTransaction.value = false;
         },
         child: Obx(() {
@@ -933,7 +933,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                             : SizedBox.shrink(),
                                       ],
                                     ),
-                              SizedBox(height: AppTheme.elementSpacing),
+                              SizedBox(
+                                height: AppTheme.elementSpacing,
+                              ),
                               Obx(() {
                                 return Text(
                                     controllerHome.txConfirmed.value
@@ -942,7 +944,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                     style:
                                         Theme.of(context).textTheme.bodyLarge);
                               }),
-                              Padding(
+                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: AppTheme.cardPadding * 2),
                                 child: Row(
@@ -957,23 +959,24 @@ class SingleTransactionScreen extends StatelessWidget {
                                       ),
                                     ),
                                     IconButton(
-                                        onPressed: () async {
-                                          await Clipboard.setData(ClipboardData(
-                                            text: controller.txID!,
-                                          ));
-                                          Get.snackbar(
-                                              L10n.of(context)!
-                                                  .copiedToClipboard,
-                                              controller.txID!);
-                                        },
-                                        icon: const Icon(Icons.copy))
+                                      onPressed: () async {
+                                        await Clipboard.setData(ClipboardData(
+                                          text: controller.txID!,
+                                        ));
+                                        Get.snackbar(
+                                            L10n.of(context)!.copiedToClipboard,
+                                            controller.txID!);
+                                      },
+                                      icon: const Icon(Icons.copy),
+                                    )
                                   ],
                                 ),
                               ),
                               SizedBox(height: AppTheme.cardPadding * 1),
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: AppTheme.elementSpacing),
+                                  horizontal: AppTheme.elementSpacing,
+                                ),
                                 child: MyDivider(),
                               ),
                               BitNetListTile(
@@ -1042,8 +1045,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                           .textTheme
                                                           .bodyMedium,
                                                     ),
-                                                    // const SizedBox(width: 10),
-                                                    // Text(),
+                                                  
                                                   ],
                                                 ),
                                               ],
