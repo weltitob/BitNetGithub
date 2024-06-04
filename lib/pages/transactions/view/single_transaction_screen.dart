@@ -16,6 +16,7 @@ import 'package:bitnet/pages/transactions/view/address_component.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -23,8 +24,9 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class SingleTransactionScreen extends StatelessWidget {
   SingleTransactionScreen({Key? key}) : super(key: key);
-  TextEditingController inputCtrl = TextEditingController();
-  TextEditingController outputCtrl = TextEditingController();
+  final TextEditingController inputCtrl = TextEditingController();
+  final TextEditingController outputCtrl = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TransactionController());
@@ -41,9 +43,7 @@ class SingleTransactionScreen extends StatelessWidget {
       appBar: bitnetAppBar(
         context: context,
         onTap: () {
-          controller.timer?.cancel();
-          controller.timerLatest?.cancel();
-          controller.timerTime?.cancel();
+          controllerHome.timer.cancel();
           channel.sink.add('{"track-rbf-summary":true}');
           channel.sink.add('{"track-tx":"stop"}');
           channel.sink
@@ -51,16 +51,12 @@ class SingleTransactionScreen extends StatelessWidget {
 
           Navigator.pop(context);
           controller.homeController.isRbfTransaction.value = false;
-          // controller.txID = '';
         },
       ),
       body: PopScope(
         canPop: true,
         onPopInvoked: (bool didPop) {
-          // if (didPop) {
-          controller.timer?.cancel();
-          controller.timerLatest?.cancel();
-          controller.timerTime?.cancel();
+          controllerHome.timer.cancel();
           channel.sink.add('{"track-rbf-summary":true}');
           channel.sink.add('{"track-tx":"stop"}');
           channel.sink
@@ -102,7 +98,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              L10n.of(context)!.transactionReplaced,
+                                              L10n.of(context)!
+                                                  .transactionReplaced,
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
@@ -116,8 +113,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                       .replacedTx.value,
                                                 ));
                                                 Get.snackbar(
-                                                    L10n.of(context)
-                                                       ! .copiedToClipboard,
+                                                    L10n.of(context)!
+                                                        .copiedToClipboard,
                                                     controller.txID!);
                                               },
                                               child: Row(
@@ -177,7 +174,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text(L10n.of(context)!.inputTx,
+                                                        Text(
+                                                            L10n.of(context)!
+                                                                .inputTx,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -188,8 +187,12 @@ class SingleTransactionScreen extends StatelessWidget {
                                                             title: !controller
                                                                     .showDetail
                                                                     .value
-                                                                ? L10n.of(context)!.showDetails
-                                                                : L10n.of(context)!.hideDetails,
+                                                                ? L10n.of(
+                                                                        context)!
+                                                                    .showDetails
+                                                                : L10n.of(
+                                                                        context)!
+                                                                    .hideDetails,
                                                             onTap: () {
                                                               controller
                                                                   .toggleExpansion();
@@ -198,8 +201,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     ),
                                                     SearchFieldWidget(
                                                       // controller: searchCtrl,
-                                                      hintText: L10n.of(context)
-                                                          !.search,
+                                                      hintText:
+                                                          L10n.of(context)!
+                                                              .search,
                                                       handleSearch: (v) {
                                                         setState(() {
                                                           inputCtrl.text = v;
@@ -449,7 +453,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                                   child: Row(
                                                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                                                     children: [
-                                                                                        Expanded(
+                                                                                      Expanded(
                                                                                         child: Text(L10n.of(context)!.witness, style: TextStyle(color: Colors.black)),
                                                                                       ),
                                                                                       Expanded(
@@ -488,7 +492,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                                 Row(
                                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                   children: [
-                                                                                      Text(L10n.of(context)!.previousOutputScripts, style: TextStyle(color: Colors.black)),
+                                                                                    Text(L10n.of(context)!.previousOutputScripts, style: TextStyle(color: Colors.black)),
                                                                                     const SizedBox(
                                                                                       width: 10,
                                                                                     ),
@@ -562,7 +566,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text(L10n.of(context)!.outputTx,
+                                                        Text(
+                                                            L10n.of(context)!
+                                                                .outputTx,
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -573,8 +579,12 @@ class SingleTransactionScreen extends StatelessWidget {
                                                             title: !controller
                                                                     .showDetail
                                                                     .value
-                                                                ? L10n.of(context)!.showDetails
-                                                                : L10n.of(context)!.hideDetails,
+                                                                ? L10n.of(
+                                                                        context)!
+                                                                    .showDetails
+                                                                : L10n.of(
+                                                                        context)!
+                                                                    .hideDetails,
                                                             onTap: () {
                                                               controller
                                                                   .toggleExpansion();
@@ -583,8 +593,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     ),
                                                     SearchFieldWidget(
                                                       // controller: searchCtrl,
-                                                      hintText: L10n.of(context)
-                                                         ! .search,
+                                                      hintText:
+                                                          L10n.of(context)!
+                                                              .search,
                                                       handleSearch: (v) {
                                                         setState(() {
                                                           outputCtrl.text = v;
@@ -859,7 +870,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                             crossAxisAlignment:
                                                                                 CrossAxisAlignment.start,
                                                                             children: [
-                                                                                Text(L10n.of(context)!.typeBehavior, style: TextStyle(color: Colors.black)),
+                                                                              Text(L10n.of(context)!.typeBehavior, style: TextStyle(color: Colors.black)),
                                                                               const SizedBox(
                                                                                 width: 10,
                                                                               ),
@@ -999,104 +1010,115 @@ class SingleTransactionScreen extends StatelessWidget {
                                 ),
                               ),
                               BitNetListTile(
-                                  text:L10n.of(context)!.paymentNetwork,
+                                  text: L10n.of(context)!.paymentNetwork,
                                   trailing: Image.asset(
                                     "assets/images/bitcoin.png",
                                     width: AppTheme.cardPadding * 1.5,
                                     height: AppTheme.cardPadding * 1.5,
                                   )),
                               BitNetListTile(
-                                  text:L10n.of(context)!.time,
-                                  trailing: controllerHome.txConfirmed.value
-                                      ? Container(
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    L10n.of(context)!.timestamp,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleMedium,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
-                                                        ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))})',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyMedium,
-                                                      ),
-                                                      // const SizedBox(width: 10),
-                                                      // Text(),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(L10n.of(context)!.confirmed,
+                                text: L10n.of(context)!.time,
+                                trailing: controllerHome.txConfirmed.value
+                                    ? Container(
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  L10n.of(context)!.timestamp,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleMedium,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
+                                                      ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))})',
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyMedium),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        L10n.of(context)!.afterTx +
-                                                            DateTime
-                                                                .fromMillisecondsSinceEpoch(
-                                                              (controller
-                                                                          .transactionModel!
-                                                                          .status!
-                                                                          .blockTime! *
-                                                                      1000) -
-                                                                  (controller
-                                                                          .txTime! *
-                                                                      1000),
-                                                            ).minute.toString() +
-                                                            L10n.of(context)!.minutesTx,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyMedium,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      : Obx(() {
+                                                          .bodyMedium,
+                                                    ),
+                                                    // const SizedBox(width: 10),
+                                                    // Text(),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    L10n.of(context)!.confirmed,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      L10n.of(context)!
+                                                              .afterTx +
+                                                          DateTime
+                                                              .fromMillisecondsSinceEpoch(
+                                                            (controller
+                                                                        .transactionModel!
+                                                                        .status!
+                                                                        .blockTime! *
+                                                                    1000) -
+                                                                (controller
+                                                                        .txTime! *
+                                                                    1000),
+                                                          ).minute.toString() +
+                                                          L10n.of(context)!
+                                                              .minutesTx,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    : Obx(
+                                        () {
                                           return Text(
                                             controller.timeST.value,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium,
                                           );
-                                        })),
+                                        },
+                                      ),
+                              ),
                               controllerHome.txConfirmed.value
                                   ? SizedBox()
                                   : BitNetListTile(
                                       text: 'ETA',
                                       trailing: Row(
                                         children: [
-                                          Text(
-                                            controllerHome.txPosition.value >= 7
-                                                ? L10n.of(context)!.inSeveralHours
-                                                : 'In ~ ${controllerHome.txPosition.value + 1 * 10}${L10n.of(context)!.minutesTx}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge,
+                                          SizedBox(
+                                            width: 170.w,
+                                            child: Text(
+                                              controllerHome.txPosition.value >=
+                                                      7
+                                                  ? L10n.of(context)!
+                                                      .inSeveralHours
+                                                  : 'In ~ ${controllerHome.txPosition.value + 1 * 10}${L10n.of(context)!.minutesTx}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge,
+                                            ),
                                           ),
                                           SizedBox(
                                             width: 5,
@@ -1110,7 +1132,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                     BorderRadius.circular(5)),
                                             child: Center(
                                               child: Text(
-                                              L10n.of(context)!.accelerate,
+                                                L10n.of(context)!.accelerate,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyLarge,
@@ -1277,7 +1299,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                 child: Text(
                                                   controller.feeRating.value ==
                                                           1
-                                                      ? L10n.of(context)!.optimal
+                                                      ? L10n.of(context)!
+                                                          .optimal
                                                       : '${L10n.of(context)!.overpaid} ${controller.overpaidTimes ?? 1}x',
                                                   style: Theme.of(context)
                                                       .textTheme

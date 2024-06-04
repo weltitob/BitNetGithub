@@ -144,6 +144,7 @@ class _TransactionsState extends State<Transactions>
         handlePageLoadErrors(errorCount, errorMessage, context);
       }
     });
+
     getLightningPayments().then((value) {
       futuresCompleted++;
       if (!value) {
@@ -158,6 +159,7 @@ class _TransactionsState extends State<Transactions>
         handlePageLoadErrors(errorCount, errorMessage, context);
       }
     });
+
     getLightningInvoices().then((value) {
       futuresCompleted++;
       if (!value) {
@@ -383,19 +385,16 @@ class _TransactionsState extends State<Transactions>
                           physics: ClampingScrollPhysics(),
                           itemCount: combinedTransactions.length,
                           itemBuilder: (context, index) {
-                            print(controller.selectedFilters.toJson());
                             if (combinedTransactions[index].data.timestamp >=
                                     controller.start &&
                                 combinedTransactions[index].data.timestamp <=
                                     controller.end) {
-                              if (controller.selectedFilters
-                                      .contains('Sent') &&
+                              if (controller.selectedFilters.contains('Sent') &&
                                   controller.selectedFilters
                                       .contains('Received')) {
                                 return combinedTransactions[index];
                               }
-                              if (controller.selectedFilters
-                                  .contains('Sent')) {
+                              if (controller.selectedFilters.contains('Sent')) {
                                 return combinedTransactions[index]
                                         .data
                                         .amount

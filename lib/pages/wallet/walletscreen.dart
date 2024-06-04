@@ -338,6 +338,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                               customWidth: AppTheme.cardPadding * 2.5,
                               customHeight: AppTheme.cardPadding * 1.25,
                               onTap: () {
+                                print('ontap long button');
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

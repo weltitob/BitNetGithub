@@ -84,24 +84,7 @@ class TransactionController extends BaseController {
   void onInit() {
     super.onInit();
     isLoading.value = true;
-
-    // getSingleTransactionCache(txID.value);
-    // getCpfp(txID.value);
-
-    //transactionTrack();
-    // getSubTransaction(txID.value);
-  }
-
-  // @override
-  // void onReady() {
-  //   super.onReady();
-  //    print('on init trnasaction controller called ${txID}');
-  //   // assert(false);
-  //   // txID.value = Get.arguments;
-  //   getSingleTransaction(txID!);
-
-  //   changeSocket();
-  // }
+  } 
 
   RxBool isShowBTC = true.obs;
   RxDouble input = 0.0.obs;
@@ -250,12 +233,12 @@ class TransactionController extends BaseController {
     txTime = firstseen;
     localTime.value = formatLocalTime(
         transactionModel!.status!.blockTime?.toInt() ?? currentTime);
-    timerTime = Timer.periodic(const Duration(seconds: 1), (timer) async {
+    // timerTime = Timer.periodic(const Duration(seconds: 1), (timer) async {
       // print(txTime);
       confirmationStatus.value = transactionModel!.status!.confirmed!;
       // print('${confirmationStatus.value}' + 'status');
       timeST.value = formatTimestamp(firstseen ?? currentTime);
-    });
+    // });
   }
 
   Future<int?> getTimeStamp(String txID) async {
@@ -328,9 +311,9 @@ class TransactionController extends BaseController {
     }
   }
 
-  Timer? timer;
-  Timer? timerLatest;
-  Timer? timerTime;
+  // Timer? timer;
+  // Timer? timerLatest;
+  // Timer? timerTime;
   txModel.TxPosition? txPosition;
   String? balance;
 
@@ -340,8 +323,8 @@ class TransactionController extends BaseController {
     channel.sink.add('{"track-tx":"${txID!}"}');
   }
 
-  getTrans(String txID) {
-    timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+  getTrans(String txID) async{
+    // timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
       String url = '${baseUrl}tx/$txID';
       await dioClient.get(url: url).then((value) async {
         transactionModel = TransactionModel.fromJson(value.data);
@@ -352,7 +335,7 @@ class TransactionController extends BaseController {
         await calculateConfirmation();
         await calculateStatus(transactionModel!.status!.confirmed!);
       });
-    });
+    // });
   }
 
   getCpfp(String txID) async {
@@ -393,10 +376,10 @@ class TransactionController extends BaseController {
     }
   }
 
-  getTransLatest(String txID) {
+  getTransLatest(String txID) async{
     try {
       isLoading.value = true;
-      timerLatest = Timer.periodic(Duration(seconds: 5), (timer) async {
+      // timerLatest = Timer.periodic(Duration(seconds: 5), (timer) async {
         String url = '${baseUrl}tx/$txID';
 
         try {
@@ -414,10 +397,10 @@ class TransactionController extends BaseController {
         } catch (e) {
           isLoading.value = false;
 
-          timerLatest!.cancel();
+          // timerLatest!.cancel();
           Get.snackbar('Transaction Not Found', '');
         }
-      });
+      // });
     } catch (e) {
       isLoading.value = false;
     }
