@@ -154,7 +154,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                       appBar: bitnetAppBar(
                         hasBackButton: false,
                         buttonType: ButtonType.transparent,
-                        text: "${L10n.of(context)!.changeLanguage}",
+                        text: "${L10n.of(context)!.changeAmount}",
                         context: context,
                       ),
                       body: SingleChildScrollView(child: CreateInvoice()),

@@ -57,7 +57,7 @@ class WalletsController extends BaseController {
 
   StreamSubscription<List<ReceivedInvoice>>? invoicesSubscription;
   StreamSubscription<List<BitcoinTransaction>>? transactionsSubscription;
-  Rx<ChartLine?> chartLines = ChartLine(time: 0, price: 0).obs;
+  Rx<ChartLine?> chartLines = Rx<ChartLine?>(null);
   RxString totalBalanceStr = "0".obs;
   RxDouble totalBalanceSAT = 0.0.obs;
   Rx<BitcoinUnitModel> totalBalance =

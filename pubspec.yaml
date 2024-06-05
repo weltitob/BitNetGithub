@@ -153,6 +153,7 @@ dependencies:
   fl_chart: ^0.55.2
   smooth_page_indicator: ^1.0.0+2
   cupertino_icons: ^1.0.2
+  flutter_colorpicker: ^1.1.0
   #flutter_colorpicker: ^1.0.3 needs replacement with this flex_color_picker: ^3.5.0
   flutter_toggle_tab: ^1.2.0
   switcher: ^1.0.0

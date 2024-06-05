@@ -229,12 +229,15 @@ class LightningSendTab extends GetWidget<SendsController> {
               init: (controller.sendType == SendType.LightningUrl ||
                       controller.sendType == SendType.Invoice)
                   ? () {
+                    //IZAK: bitcoin price might be null on init, potential fix would be not allowing user to Send when
+                    //btc price is unknown, currently temporary fix of letting currencyController text be "0.0"
                       controller.currencyController.text =
+                      bitcoinPrice != null ? 
                           CurrencyConverter.convertCurrency(
                               "SATS",
                               double.parse(controller.satController.text),
                               currency!,
-                              bitcoinPrice!);
+                              bitcoinPrice) : "0.0";
                     }
                   : null,
               enabled: () =>

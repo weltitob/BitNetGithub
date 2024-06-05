@@ -200,11 +200,11 @@ class OnChainSendTab extends GetWidget<SendsController> {
     final currencyEquivalent = bitcoinPrice != null
         ? (controller.feesDouble / 100000000 * bitcoinPrice).toStringAsFixed(2)
         : "0.00";
-    controller.currencyController.text = CurrencyConverter.convertCurrency(
+    controller.currencyController.text = bitcoinPrice != null ? CurrencyConverter.convertCurrency(
         "SATS",
         double.parse(controller.satController.text),
         currency,
-        bitcoinPrice!);
+        bitcoinPrice) : "0.0";
     return Obx(() {
       Get.find<WalletsController>().chartLines.value;
       return Padding(
