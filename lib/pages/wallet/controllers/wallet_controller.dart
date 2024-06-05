@@ -4,25 +4,20 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_bala
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
-import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
-import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
-import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
-import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -103,9 +98,11 @@ class WalletsController extends BaseController {
   // Method to update the first currency and its corresponding Firestore document
   void setCurrencyType(bool type, {bool updateDatabase = true}) {
     if (updateDatabase) {
-      settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
-        "showCoin": type,
-      });
+      settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).update(
+        {
+          "showCoin": type,
+        },
+      );
     }
 
     coin.value = type;
@@ -153,8 +150,6 @@ class WalletsController extends BaseController {
 
       print("Currency Value : ${selectedCurrency!.value}");
     });
-
-
 
     fetchOnchainWalletBalance().then((value) {
       loadedFutures++;

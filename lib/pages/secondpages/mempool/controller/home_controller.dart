@@ -8,6 +8,7 @@ import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
 import 'package:bitnet/models/mempool_models/txPaginationModel.dart';
 import 'package:bitnet/pages/transactions/model/transaction_model.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -58,7 +59,6 @@ class HomeController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    print('on init home controller called ');
     allData();
   }
 
@@ -157,9 +157,12 @@ class HomeController extends BaseController {
       final response = await dioClient.get(url: url);
       response.data.length;
       for (int i = 0; i < response.data.length; i++) {
-        bitcoinData.add(BlockData.fromJson(response.data[i]));
+        bitcoinData.add(
+          BlockData.fromJson(
+            response.data[i],
+          ),
+        );
       }
-      // isLoading.value = false;
       update();
     } on DioException {
       isLoading.value = false;
@@ -191,7 +194,7 @@ class HomeController extends BaseController {
         channel.sink.add('{"action":"ping"}');
       },
     );
-    subscription = channel.stream.listen((message) {
+    subscription = channel.stream.asBroadcastStream().listen((message) {
       Map<String, dynamic> data = jsonDecode(message);
       if (data['projected-block-transactions'] != null) {
         if (data['projected-block-transactions']['blockTransactions'] != null) {
@@ -228,7 +231,6 @@ class HomeController extends BaseController {
       if (memPool.rbfTransaction != null) {
         isRbfTransaction.value = true;
         replacedTx.value = memPool.rbfTransaction!.txid;
-        Get.forceAppUpdate();
       }
       if (memPool.conversions != null) {
         currentUSD.value = int.parse(memPool.conversions!.uSD.toString());
@@ -281,12 +283,15 @@ class HomeController extends BaseController {
   late Timer timer;
   callApiWithDelay() {
     print('callapi with delay called ');
-    timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+
+    timer =
+        Timer.periodic(Duration(seconds: kDebugMode ? 1000 : 5), (timer) async {
       try {
         String url = 'https://mempool.space/api/v1/blocks';
         final response = await dioClient.get(url: url);
         response.data.length;
         bitcoinData.clear();
+
         for (int i = 0; i < response.data.length; i++) {
           bitcoinData.add(
             BlockData.fromJson(
@@ -308,6 +313,24 @@ class HomeController extends BaseController {
     });
   }
 
+  Future<int?> getBlockHeight(String txId) async {
+    loadingDetail.value = true;
+    try {
+      String url = 'https://mempool.space/api/v1/block/$txId';
+      final response = await dioClient.get(url: url);
+      txDetailsConfirmed = TransactionConfirmedDetail.fromJson(
+        jsonDecode(
+          jsonEncode(response.data),
+        ),
+      );
+      print(txDetailsConfirmed!.height);
+      return txDetailsConfirmed!.height;
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   Future<void> txDetailsConfirmedF(String txId) async {
     loadingDetail.value = true;
     try {
@@ -323,8 +346,8 @@ class HomeController extends BaseController {
     } on DioException {
       isLoading.value = false;
       update();
-    } catch (e ) { 
-      isLoading.value = false;  
+    } catch (e) {
+      isLoading.value = false;
       update();
     }
     loadingDetail.value = false;

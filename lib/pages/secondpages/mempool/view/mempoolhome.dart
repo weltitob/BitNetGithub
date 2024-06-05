@@ -14,15 +14,13 @@ import 'package:bitnet/pages/secondpages/mempool/widget/data_widget.dart';
 import 'package:bitnet/pages/secondpages/transactionsscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-
 
 class MempoolHome extends StatefulWidget {
   const MempoolHome({Key? key}) : super(key: key);
@@ -52,7 +50,7 @@ class _MempoolHomeState extends State<MempoolHome> {
       controller.selectedIndexData = -1;
     });
 
-    Future.delayed(Duration(seconds: 7), () {
+    Future.delayed(Duration(seconds: 3), () {
       _controller.animateTo(
         1150.0,
         duration: Duration(milliseconds: 500),
@@ -67,8 +65,7 @@ class _MempoolHomeState extends State<MempoolHome> {
       canPop: false,
       onPopInvoked: (v) {
         controller.timer.cancel();
-        channel.sink.close();
-        context.pop();
+         context.pop();
       },
       child: SafeArea(
         child: bitnetScaffold(
@@ -78,7 +75,6 @@ class _MempoolHomeState extends State<MempoolHome> {
             text: L10n.of(context)!.blockChain,
             onTap: () {
               controller.timer.cancel();
-              channel.sink.close();
               context.pop();
             },
             actions: [
@@ -365,7 +361,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                 Text(
                                                   controller.selectedIndexData ==
                                                           0
-                                                      ? L10n.of(context)!.nextBlock
+                                                      ? L10n.of(context)!
+                                                          .nextBlock
                                                       : '${L10n.of(context)!.mempoolBlock}${controller.selectedIndexData + 1}',
                                                   textAlign: TextAlign.left,
                                                   style: Theme.of(context)
@@ -475,7 +472,8 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                       Row(
                                                         children: [
                                                           Text(
-                                                            L10n.of(context)!.block,
+                                                            L10n.of(context)!
+                                                                .block,
                                                             textAlign:
                                                                 TextAlign.left,
                                                             style: Theme.of(
@@ -621,8 +619,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   leading: Icon(
                                                                       Icons
                                                                           .timelapse),
-                                                                  text:
-                                                                      L10n.of(context)!.minedAt,
+                                                                  text: L10n.of(
+                                                                          context)!
+                                                                      .minedAt,
                                                                   trailing:
                                                                       Container(
                                                                     child:
@@ -643,7 +642,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   leading: Icon(
                                                                       FontAwesomeIcons
                                                                           .truckPickup),
-                                                                  text: L10n.of(context)!.mined,
+                                                                  text: L10n.of(
+                                                                          context)!
+                                                                      .mined,
                                                                   trailing:
                                                                       Container(
                                                                     child:
@@ -675,8 +676,9 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   leading: Icon(
                                                                       FontAwesomeIcons
                                                                           .bitcoin),
-                                                                  text:
-                                                                      L10n.of(context)!.minerRewardAndFees,
+                                                                  text: L10n.of(
+                                                                          context)!
+                                                                      .minerRewardAndFees,
                                                                   trailing:
                                                                       Container(
                                                                     child:
@@ -825,7 +827,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       ),
                                     ),
                                   ),
-                                  
                                   SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
@@ -869,7 +870,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                             .titleMedium,
                                       ),
                                     ),
-                                  ), 
+                                  ),
                                   SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
@@ -911,7 +912,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       ),
                                     ),
                                   ),
-                                  
                                   SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),

@@ -10,6 +10,7 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -30,8 +32,9 @@ class SingleTransactionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TransactionController());
-    final controllerHome = Get.put(HomeController());
     final controllerWallet = Get.put(WalletsController());
+    final controllerHome = Get.put(HomeController());
+
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
@@ -548,352 +551,360 @@ class SingleTransactionScreen extends StatelessWidget {
                                     size: AppTheme.cardPadding * 4.75,
                                     onTap: () {
                                       BitNetBottomSheet(
-                                          context: context,
-                                          child: StatefulBuilder(
-                                              builder: (context, setState) {
+                                        context: context,
+                                        child: StatefulBuilder(
+                                          builder: (context, setState) {
                                             return Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 12.0,
-                                                        vertical: 12.0),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                            L10n.of(context)!
-                                                                .outputTx,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .headlineMedium),
-                                                        LongButtonWidget(
-                                                            customWidth: 200,
-                                                            customHeight: 40,
-                                                            title: !controller
-                                                                    .showDetail
-                                                                    .value
-                                                                ? L10n.of(
-                                                                        context)!
-                                                                    .showDetails
-                                                                : L10n.of(
-                                                                        context)!
-                                                                    .hideDetails,
-                                                            onTap: () {
-                                                              controller
-                                                                  .toggleExpansion();
-                                                            })
-                                                      ],
-                                                    ),
-                                                    SearchFieldWidget(
-                                                      // controller: searchCtrl,
-                                                      hintText:
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12.0,
+                                                      vertical: 12.0),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
                                                           L10n.of(context)!
-                                                              .search,
-                                                      handleSearch: (v) {
-                                                        setState(() {
-                                                          outputCtrl.text = v;
-                                                        });
-                                                      },
-                                                      isSearchEnabled: true,
-                                                    ),
-                                                    !controller.showDetail.value
-                                                        ? Expanded(
-                                                            child: ListView
-                                                                .builder(
-                                                              physics:
-                                                                  const AlwaysScrollableScrollPhysics(),
-                                                              shrinkWrap: true,
-                                                              itemCount: controller
-                                                                  .transactionModel
-                                                                  ?.vout
-                                                                  ?.length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                double value = (controller
-                                                                        .transactionModel!
-                                                                        .vout![
-                                                                            index]
-                                                                        .value!) /
-                                                                    100000000;
+                                                              .outputTx,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .headlineMedium),
+                                                      LongButtonWidget(
+                                                          customWidth: 200,
+                                                          customHeight: 40,
+                                                          title: !controller
+                                                                  .showDetail
+                                                                  .value
+                                                              ? L10n.of(
+                                                                      context)!
+                                                                  .showDetails
+                                                              : L10n.of(
+                                                                      context)!
+                                                                  .hideDetails,
+                                                          onTap: () {
+                                                            controller
+                                                                .toggleExpansion();
+                                                          })
+                                                    ],
+                                                  ),
+                                                  SearchFieldWidget(
+                                                    // controller: searchCtrl,
+                                                    hintText: L10n.of(context)!
+                                                        .search,
+                                                    handleSearch: (v) {
+                                                      setState(() {
+                                                        outputCtrl.text = v;
+                                                      });
+                                                    },
+                                                    isSearchEnabled: true,
+                                                  ),
+                                                  !controller.showDetail.value
+                                                      ? Expanded(
+                                                          child:
+                                                              ListView.builder(
+                                                            physics:
+                                                                const AlwaysScrollableScrollPhysics(),
+                                                            shrinkWrap: true,
+                                                            itemCount: controller
+                                                                .transactionModel
+                                                                ?.vout
+                                                                ?.length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              double value = (controller
+                                                                      .transactionModel!
+                                                                      .vout![
+                                                                          index]
+                                                                      .value!) /
+                                                                  100000000;
 
-                                                                controller
-                                                                        .output
-                                                                        .value =
-                                                                    double
-                                                                        .parse(
-                                                                  value
-                                                                      .toStringAsFixed(
-                                                                          8),
-                                                                );
-                                                                String address =
-                                                                    '';
-                                                                if (controller
+                                                              controller.output
+                                                                      .value =
+                                                                  double.parse(
+                                                                value
+                                                                    .toStringAsFixed(
+                                                                        8),
+                                                              );
+                                                              String address =
+                                                                  '';
+                                                              if (controller
+                                                                      .transactionModel!
+                                                                      .vout?[
+                                                                          index]
+                                                                      .scriptpubkeyAddress !=
+                                                                  null)
+                                                                address = controller
                                                                         .transactionModel!
                                                                         .vout?[
                                                                             index]
-                                                                        .scriptpubkeyAddress !=
-                                                                    null)
-                                                                  address = controller
-                                                                          .transactionModel!
-                                                                          .vout?[
-                                                                              index]
-                                                                          .scriptpubkeyAddress ??
-                                                                      '';
-                                                                return address.contains(
-                                                                        outputCtrl
-                                                                            .text)
-                                                                    ? Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            vertical:
-                                                                                8.0),
+                                                                        .scriptpubkeyAddress ??
+                                                                    '';
+                                                              return address.contains(
+                                                                      outputCtrl
+                                                                          .text)
+                                                                  ? Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          vertical:
+                                                                              8.0),
+                                                                      child:
+                                                                          GlassContainer(
                                                                         child:
-                                                                            GlassContainer(
+                                                                            Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              8.0),
                                                                           child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.all(8.0),
+                                                                              Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Container(
+                                                                                height: 20,
+                                                                                width: 20,
+                                                                                decoration: BoxDecoration(
+                                                                                  color: controller.dataOutSpents1.data[0][index]['spent'] == false
+                                                                                      ? Colors.green
+                                                                                      : controller.dataOutSpents1.data[0][index]['spent'] == true
+                                                                                          ? Colors.red
+                                                                                          : Colors.grey.shade600,
+                                                                                  shape: BoxShape.circle,
+                                                                                ),
+                                                                                child: const Center(
+                                                                                  child: Icon(
+                                                                                    Icons.arrow_forward_outlined,
+                                                                                    size: 15,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  Flexible(
+                                                                                    flex: 2,
+                                                                                    child: GestureDetector(
+                                                                                      onTap: () {
+                                                                                        controller.getAddressComponent(controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString());
+                                                                                        controller.addressId = controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '';
+                                                                                        Navigator.push(
+                                                                                          context,
+                                                                                          MaterialPageRoute(
+                                                                                            builder: (context) => AddressComponent(),
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                      child: Text(
+                                                                                        controller.transactionModel!.vout?[index].scriptpubkeyAddress == null && controller.transactionModel!.vout?[index].scriptpubkeyType == "op_return" ? 'OP_RETURN (R)' : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '',
+                                                                                        style: Theme.of(context).textTheme.bodyMedium,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  Flexible(
+                                                                                    flex: 2,
+                                                                                    child: Container(
+                                                                                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                                                                      decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(3)),
+                                                                                      child: controller.isShowBTC.value ? Text('${controller.isShowBTC.value ? controller.outPutBTC(index) : controller.outPutDollar(index)} BTC', style: TextStyle(color: Colors.black)) : Text('\$ ${controller.outPutDollar(index)} ', style: TextStyle(color: Colors.black)),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  : SizedBox();
+                                                            },
+                                                          ),
+                                                        )
+                                                      : Expanded(
+                                                          child:
+                                                              ListView.builder(
+                                                            physics:
+                                                                const AlwaysScrollableScrollPhysics(),
+                                                            shrinkWrap: true,
+                                                            itemCount: controller
+                                                                .transactionModel
+                                                                ?.vout
+                                                                ?.length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              double value = (controller
+                                                                      .transactionModel!
+                                                                      .vout![
+                                                                          index]
+                                                                      .value!) /
+                                                                  100000000;
+                                                              controller.output
+                                                                      .value =
+                                                                  double.parse(value
+                                                                      .toStringAsFixed(
+                                                                          8));
+                                                              return Padding(
+                                                                padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                    vertical:
+                                                                        8.0),
+                                                                child:
+                                                                    GlassContainer(
+                                                                  child:
+                                                                      Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Container(
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              20,
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            color: controller.dataOutSpents1.data[0][index]['spent'] == false
+                                                                                ? Colors.green
+                                                                                : controller.dataOutSpents1.data[0][index]['spent'] == true
+                                                                                    ? Colors.red
+                                                                                    : Colors.grey.shade600,
+                                                                            shape:
+                                                                                BoxShape.circle,
+                                                                          ),
+                                                                          child:
+                                                                              const Center(
                                                                             child:
-                                                                                Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Container(
-                                                                                  height: 20,
-                                                                                  width: 20,
-                                                                                  decoration: BoxDecoration(
-                                                                                    color: controller.dataOutSpents1.data[0][index]['spent'] == false
-                                                                                        ? Colors.green
-                                                                                        : controller.dataOutSpents1.data[0][index]['spent'] == true
-                                                                                            ? Colors.red
-                                                                                            : Colors.grey.shade600,
-                                                                                    shape: BoxShape.circle,
-                                                                                  ),
-                                                                                  child: const Center(
-                                                                                    child: Icon(
-                                                                                      Icons.arrow_forward_outlined,
-                                                                                      size: 15,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                  children: [
-                                                                                    Flexible(
-                                                                                      flex: 2,
-                                                                                      child: GestureDetector(
-                                                                                        onTap: () {
-                                                                                          controller.getAddressComponent(controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString());
-                                                                                          controller.addressId = controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '';
-                                                                                          Navigator.push(
-                                                                                            context,
-                                                                                            MaterialPageRoute(
-                                                                                              builder: (context) => AddressComponent(),
-                                                                                            ),
-                                                                                          );
-                                                                                        },
-                                                                                        child: Text(
-                                                                                          controller.transactionModel!.vout?[index].scriptpubkeyAddress == null && controller.transactionModel!.vout?[index].scriptpubkeyType == "op_return" ? 'OP_RETURN (R)' : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '',
-                                                                                          style: Theme.of(context).textTheme.bodyMedium,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                    Flexible(
-                                                                                      flex: 2,
-                                                                                      child: Container(
-                                                                                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                                                                        decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(3)),
-                                                                                        child: controller.isShowBTC.value ? Text('${controller.isShowBTC.value ? controller.outPutBTC(index) : controller.outPutDollar(index)} BTC', style: TextStyle(color: Colors.black)) : Text('\$ ${controller.outPutDollar(index)} ', style: TextStyle(color: Colors.black)),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ],
+                                                                                Icon(
+                                                                              Icons.arrow_forward_outlined,
+                                                                              size: 15,
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                      )
-                                                                    : SizedBox();
-                                                              },
-                                                            ),
-                                                          )
-                                                        : Expanded(
-                                                            child: ListView
-                                                                .builder(
-                                                              physics:
-                                                                  const AlwaysScrollableScrollPhysics(),
-                                                              shrinkWrap: true,
-                                                              itemCount: controller
-                                                                  .transactionModel
-                                                                  ?.vout
-                                                                  ?.length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                double value = (controller
-                                                                        .transactionModel!
-                                                                        .vout![
-                                                                            index]
-                                                                        .value!) /
-                                                                    100000000;
-                                                                controller
-                                                                        .output
-                                                                        .value =
-                                                                    double.parse(
-                                                                        value.toStringAsFixed(
-                                                                            8));
-                                                                return Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      vertical:
-                                                                          8.0),
-                                                                  child:
-                                                                      GlassContainer(
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .all(
-                                                                          8.0),
-                                                                      child:
-                                                                          Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          Container(
-                                                                            height:
-                                                                                20,
-                                                                            width:
-                                                                                20,
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              color: controller.dataOutSpents1.data[0][index]['spent'] == false
-                                                                                  ? Colors.green
-                                                                                  : controller.dataOutSpents1.data[0][index]['spent'] == true
-                                                                                      ? Colors.red
-                                                                                      : Colors.grey.shade600,
-                                                                              shape: BoxShape.circle,
-                                                                            ),
-                                                                            child:
-                                                                                const Center(
-                                                                              child: Icon(
-                                                                                Icons.arrow_forward_outlined,
-                                                                                size: 15,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          const SizedBox(
-                                                                            height:
-                                                                                10,
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.center,
-                                                                            children: [
-                                                                              Flexible(
-                                                                                flex: 3,
-                                                                                child: GestureDetector(
-                                                                                  onTap: () {
-                                                                                    controller.getAddressComponent(controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString());
-                                                                                    controller.addressId = controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '';
-                                                                                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddressComponent()));
-                                                                                  },
-                                                                                  child: Text(
-                                                                                    controller.transactionModel!.vout?[index].scriptpubkeyAddress == null && controller.transactionModel!.vout?[index].scriptpubkeyType == "op_return" ? 'OP_RETURN (R)' : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '',
-                                                                                    style: const TextStyle(color: Colors.black, fontSize: 14),
-                                                                                  ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              10,
+                                                                        ),
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            Flexible(
+                                                                              flex: 3,
+                                                                              child: GestureDetector(
+                                                                                onTap: () {
+                                                                                  controller.getAddressComponent(controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString());
+                                                                                  controller.addressId = controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '';
+                                                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddressComponent()));
+                                                                                },
+                                                                                child: Text(
+                                                                                  controller.transactionModel!.vout?[index].scriptpubkeyAddress == null && controller.transactionModel!.vout?[index].scriptpubkeyType == "op_return" ? 'OP_RETURN (R)' : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '',
+                                                                                  style: const TextStyle(color: Colors.black, fontSize: 14),
                                                                                 ),
                                                                               ),
-                                                                              Flexible(
-                                                                                flex: 2,
-                                                                                child: Container(
-                                                                                  padding: EdgeInsets.all(4),
-                                                                                  decoration: BoxDecoration(
-                                                                                    borderRadius: BorderRadius.circular(5),
-                                                                                    color: Colors.grey,
-                                                                                  ),
-                                                                                  child: controller.isShowBTC.value ? Text('${controller.isShowBTC.value ? controller.outPutBTC(index) : controller.outPutDollar(index)} BTC', style: TextStyle(color: Colors.black)) : Text('\$ ${controller.outPutDollar(index)} ', style: TextStyle(color: Colors.black)),
+                                                                            ),
+                                                                            Flexible(
+                                                                              flex: 2,
+                                                                              child: Container(
+                                                                                padding: EdgeInsets.all(4),
+                                                                                decoration: BoxDecoration(
+                                                                                  borderRadius: BorderRadius.circular(5),
+                                                                                  color: Colors.grey,
                                                                                 ),
+                                                                                child: controller.isShowBTC.value ? Text('${controller.isShowBTC.value ? controller.outPutBTC(index) : controller.outPutDollar(index)} BTC', style: TextStyle(color: Colors.black)) : Text('\$ ${controller.outPutDollar(index)} ', style: TextStyle(color: Colors.black)),
                                                                               ),
-                                                                            ],
-                                                                          ),
-                                                                          const SizedBox(
-                                                                            height:
-                                                                                10,
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              const Text('ScriptPubKey (ASM)	', style: TextStyle(color: Colors.black)),
-                                                                              const SizedBox(
-                                                                                width: 10,
-                                                                              ),
-                                                                              Flexible(child: Text('${controller.transactionModel?.vout?[index].scriptpubkeyAsm}', style: TextStyle(color: Colors.black)))
-                                                                            ],
-                                                                          ),
-                                                                          const SizedBox(
-                                                                            height:
-                                                                                10,
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              const Text('ScriptPubKey (HEX)	', style: TextStyle(color: Colors.black)),
-                                                                              const SizedBox(
-                                                                                width: 10,
-                                                                              ),
-                                                                              Flexible(child: Text('${controller.transactionModel?.vout?[index].scriptpubkey}', style: TextStyle(color: Colors.black)))
-                                                                            ],
-                                                                          ),
-                                                                          const SizedBox(
-                                                                            height:
-                                                                                10,
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              Text(L10n.of(context)!.typeBehavior, style: TextStyle(color: Colors.black)),
-                                                                              const SizedBox(
-                                                                                width: 10,
-                                                                              ),
-                                                                              Flexible(child: Text('${controller.transactionModel?.vout?[index].scriptpubkeyType}', style: TextStyle(color: Colors.black)))
-                                                                            ],
-                                                                          ),
-                                                                          const Divider(
-                                                                            height:
-                                                                                10,
-                                                                            color:
-                                                                                Colors.black87,
-                                                                          )
-                                                                        ],
-                                                                      ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              10,
+                                                                        ),
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            const Text('ScriptPubKey (ASM)	',
+                                                                                style: TextStyle(color: Colors.black)),
+                                                                            const SizedBox(
+                                                                              width: 10,
+                                                                            ),
+                                                                            Flexible(child: Text('${controller.transactionModel?.vout?[index].scriptpubkeyAsm}', style: TextStyle(color: Colors.black)))
+                                                                          ],
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              10,
+                                                                        ),
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            const Text('ScriptPubKey (HEX)	',
+                                                                                style: TextStyle(color: Colors.black)),
+                                                                            const SizedBox(
+                                                                              width: 10,
+                                                                            ),
+                                                                            Flexible(child: Text('${controller.transactionModel?.vout?[index].scriptpubkey}', style: TextStyle(color: Colors.black)))
+                                                                          ],
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              10,
+                                                                        ),
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Text(L10n.of(context)!.typeBehavior,
+                                                                                style: TextStyle(color: Colors.black)),
+                                                                            const SizedBox(
+                                                                              width: 10,
+                                                                            ),
+                                                                            Flexible(child: Text('${controller.transactionModel?.vout?[index].scriptpubkeyType}', style: TextStyle(color: Colors.black)))
+                                                                          ],
+                                                                        ),
+                                                                        const Divider(
+                                                                          height:
+                                                                              10,
+                                                                          color:
+                                                                              Colors.black87,
+                                                                        )
+                                                                      ],
                                                                     ),
                                                                   ),
-                                                                );
-                                                              },
-                                                            ),
+                                                                ),
+                                                              );
+                                                            },
                                                           ),
-                                                  ],
-                                                ));
-                                          }));
+                                                        ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
                                     },
                                   ),
                                 ],
@@ -936,15 +947,13 @@ class SingleTransactionScreen extends StatelessWidget {
                               SizedBox(
                                 height: AppTheme.elementSpacing,
                               ),
-                              Obx(() {
-                                return Text(
-                                    controllerHome.txConfirmed.value
-                                        ? '${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
-                                        : '${controller.timeST.value}',
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge);
-                              }),
-                               Padding(
+                              Text(
+                                controller.transactionModel!.status!.confirmed!
+                                    ? '${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
+                                    : '${controller.timeST.value}',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: AppTheme.cardPadding * 2),
                                 child: Row(
@@ -972,13 +981,24 @@ class SingleTransactionScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: AppTheme.cardPadding * 1),
+                              SizedBox(
+                                height: AppTheme.cardPadding * 1,
+                              ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: AppTheme.elementSpacing,
                                 ),
                                 child: MyDivider(),
                               ),
+                              BitNetListTile(
+                                  onTap: () {
+                                if(controller.transactionModel!.status!.blockHeight!=null)    context
+                                        .push('/wallet/bitcoinscreen/mempool');
+                                  },
+                                  text: L10n.of(context)!.blockSize,
+                                  trailing: Text(
+                                    "${controller.transactionModel!.status!.blockHeight ?? "--"}",
+                                  )),
                               BitNetListTile(
                                 text: L10n.of(context)!.status,
                                 trailing: Container(
@@ -1021,7 +1041,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                   )),
                               BitNetListTile(
                                 text: L10n.of(context)!.time,
-                                trailing: controllerHome.txConfirmed.value
+                                trailing: controller
+                                        .transactionModel!.status!.confirmed!
                                     ? Container(
                                         child: Column(
                                           children: [
@@ -1031,7 +1052,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  L10n.of(context)!.timestamp,
+                                                  L10n.of(context)!.timestamp +
+                                                      " ",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .titleMedium,
@@ -1045,7 +1067,6 @@ class SingleTransactionScreen extends StatelessWidget {
                                                           .textTheme
                                                           .bodyMedium,
                                                     ),
-                                                  
                                                   ],
                                                 ),
                                               ],
@@ -1059,7 +1080,9 @@ class SingleTransactionScreen extends StatelessWidget {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                    L10n.of(context)!.confirmed,
+                                                    L10n.of(context)!
+                                                            .confirmed +
+                                                        " ",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyMedium),
@@ -1103,7 +1126,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                         },
                                       ),
                               ),
-                              controllerHome.txConfirmed.value
+                              controller.transactionModel!.status!.confirmed!
                                   ? SizedBox()
                                   : BitNetListTile(
                                       text: 'ETA',
@@ -1280,7 +1303,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                       SizedBox(
                                         width: 10,
                                       ),
-                                      controllerHome.txConfirmed.value
+                                      controller.transactionModel!.status!
+                                              .confirmed!
                                           ? Container(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 8, vertical: 4),
