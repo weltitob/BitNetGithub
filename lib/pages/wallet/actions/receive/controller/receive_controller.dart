@@ -18,6 +18,10 @@ enum ReceiveType {
 }
 
 class ReceiveController extends BaseController {
+  final BuildContext context;
+
+  ReceiveController(this.context);
+
   RxString qrCodeDataStringLightning = "".obs;
   RxString qrCodeDataStringOnchain = "".obs;
   Rx<BitcoinUnits> bitcoinUnit = BitcoinUnits.SAT.obs;
@@ -91,7 +95,20 @@ class ReceiveController extends BaseController {
     }
     // });
   }
-  //made conversion an internal feature of amountwidget
+
+  @override
+  void onInit() {
+    super.onInit();
+    //ONCHAIN
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+//made conversion an internal feature of amountwidget
   // void updateAmountDisplay() {
   //   print('update amount');
   //   String text = btcController.text;

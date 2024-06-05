@@ -16,21 +16,25 @@ class CenterWidgetIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
-    return Obx(
-     () {
-        return IconButton(
-          enableFeedback: false,
-          splashColor: Colors.transparent,
-          icon: Icon(iconData, size: AppTheme.iconSize,),
-          onPressed: onTap,
-          color: controller.currentview.value == index
-              ? Theme.of(context).colorScheme.onSecondaryContainer
-              : Theme.of(context)
-                  .colorScheme
-                  .onSecondaryContainer
-                  .withOpacity(0.3),
-        );
-      }
-    );
+    return Obx(() {
+      return IconButton(
+        enableFeedback: false,
+        splashColor: Colors.transparent,
+        icon: Icon(
+          iconData,
+          size: AppTheme.iconSize,
+          color: Theme.of(context).brightness == Brightness.light
+              ? AppTheme.black60
+              : AppTheme.white60,
+        ),
+        onPressed: onTap,
+        color: controller.currentview.value == index
+            ? Theme.of(context).colorScheme.onSecondaryContainer
+            : Theme.of(context)
+                .colorScheme
+                .onSecondaryContainer
+                .withOpacity(0.3),
+      );
+    });
   }
 }

@@ -3,7 +3,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -43,30 +42,20 @@ class ProfileView extends StatelessWidget {
                 ),
           floatingActionButton: Align(
             alignment: Alignment.bottomCenter,
-            child: GestureDetector(
+            child: LongButtonWidget(
+              buttonType: ButtonType.transparent,
+              customHeight: AppTheme.cardPadding * 2,
+              customWidth: AppTheme.cardPadding * 5,
+              leadingIcon: Icon(
+                Icons.add,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? AppTheme.black60
+                    : AppTheme.white60,
+              ),
+              title: 'Add',
               onTap: () {
                 context.go('/create');
-                //forward to post screen
               },
-              child: GlassContainer(
-                width: AppTheme.cardPadding * 4,
-                height: AppTheme.cardPadding * 2,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.add,
-                    ),
-                    SizedBox(
-                      width: AppTheme.elementSpacing / 2,
-                    ),
-                    Text(
-                      L10n.of(context)!.add,
-                    ),
-                  ],
-                ),
-              ),
             ),
           )),
     );

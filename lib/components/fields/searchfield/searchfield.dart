@@ -47,7 +47,12 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
             enabled: widget.isSearchEnabled,
             controller: _textFieldController,
             onFieldSubmitted: widget.handleSearch,
-            onChanged: widget.onChanged, // Use the onChanged callback
+            onChanged: (value) {
+              setState(() {
+                _textFieldController.text = value; // Update the controller text
+              });
+              widget.onChanged?.call(value); // Trigger the onChanged callback
+            },
             style: Theme.of(context).textTheme.bodyLarge,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(AppTheme.cardPadding / 100),
@@ -59,18 +64,26 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                       ? AppTheme.black60
                       : AppTheme.white70,
                 ),
-                suffixIcon: widget.suffixIcon != null
-                    ? widget.suffixIcon
-                    : _textFieldController.text.isEmpty
-                        ? Container(width: 0)
-                        : IconButton(
-                            icon: Icon(
-                              Icons.cancel,
-                            ),
-                            onPressed: () =>
-                                widget.onSuffixTap ??
-                                _textFieldController.clear(),
-                          ),
+                suffixIcon: _textFieldController.text.isEmpty || _textFieldController.text == ''
+                    ? widget.suffixIcon != null
+                        ? widget.suffixIcon
+                        : SizedBox.shrink()
+                    : IconButton(
+                        icon: Icon(
+                          Icons.cancel,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? AppTheme.black60
+                                  : AppTheme.white70,
+                        ),
+                        onPressed: () {
+                          if (widget.onSuffixTap != null) {
+                            widget.onSuffixTap!();
+                          } else {
+                            _textFieldController.clear();
+                          }
+                        },
+                      ),
                 border: OutlineInputBorder(
                     borderSide: BorderSide(width: 0, style: BorderStyle.none),
                     borderRadius: AppTheme.cardRadiusMid)),

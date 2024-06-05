@@ -9,6 +9,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
@@ -32,7 +33,7 @@ class WalletScreen extends GetWidget<WalletsController> {
   const WalletScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => ReceiveController(), fenix: true);
+    Get.lazyPut(() => ReceiveController(context), fenix: true);
     Get.lazyPut(() => SendsController(context: context), fenix: true);
     final ChartLine? chartLine = controller.chartLines.value;
     if (controller.queueErrorOvelay) {
@@ -193,7 +194,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                       ),
                     ),
                     SizedBox(
-                      height: AppTheme.cardPadding * 1.h,
+                      height: AppTheme.cardPadding.h,
                     ),
                     Container(
                       height: AppTheme.cardPadding * 7.75.h,
@@ -226,7 +227,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                     ),
                   ]);
             }),
-            const SizedBox(height: AppTheme.cardPadding * 1.5),
+            SizedBox(height: AppTheme.cardPadding.h * 1.75),
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -235,14 +236,14 @@ class WalletScreen extends GetWidget<WalletsController> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            const SizedBox(height: AppTheme.cardPadding),
+            SizedBox(height: AppTheme.cardPadding.h),
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  BitNetImageWithTextContainer(
+                  BitNetImageWithTextButton(
                     L10n.of(context)!.send,
                     () {
                       context.go('/wallet/send');
@@ -252,7 +253,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                     height: AppTheme.cardPadding * 3.75,
                     fallbackIcon: Icons.arrow_upward_rounded,
                   ),
-                  BitNetImageWithTextContainer(
+                  BitNetImageWithTextButton(
                     L10n.of(context)!.receive,
                     () {
                       context.go('/wallet/receive');
@@ -263,7 +264,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                     height: AppTheme.cardPadding * 3.75,
                     fallbackIcon: Icons.arrow_downward_rounded,
                   ),
-                  BitNetImageWithTextContainer(
+                  BitNetImageWithTextButton(
                     L10n.of(context)!.rebalance,
                     () {
                       Get.put(LoopsController());
@@ -277,8 +278,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: AppTheme.cardPadding * 1.5,
+            SizedBox(
+              height: AppTheme.cardPadding.h * 1.75,
             ),
             Padding(
               padding:
@@ -289,7 +290,7 @@ class WalletScreen extends GetWidget<WalletsController> {
               ),
             ),
             SizedBox(
-              height: AppTheme.cardPadding,
+              height: AppTheme.cardPadding.h,
             ),
             Padding(
               padding:
@@ -303,7 +304,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                 context: context,
               ),
             ),
-            const SizedBox(height: AppTheme.cardPadding * 1.5),
+            SizedBox(height: AppTheme.cardPadding.h * 1.75),
             StatefulBuilder(builder: (context, setState) {
               return Column(
                 children: [
@@ -317,46 +318,45 @@ class WalletScreen extends GetWidget<WalletsController> {
                           L10n.of(context)!.activity,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        Row(
-                          children: [
-                            RoundedButtonWidget(
-                                size: AppTheme.cardPadding * 1.25,
-                                buttonType: ButtonType.transparent,
-                                iconData: FontAwesomeIcons.filter,
-                                onTap: () async {
-                                  await BitNetBottomSheet(
-                                      context: context,
-                                      child: WalletFilterScreen());
-                                  setState(() {});
-                                }),
-                            SizedBox(
-                              width: AppTheme.elementSpacing,
-                            ),
-                            LongButtonWidget(
-                              title: L10n.of(context)!.all,
-                              buttonType: ButtonType.transparent,
-                              customWidth: AppTheme.cardPadding * 2.5,
-                              customHeight: AppTheme.cardPadding * 1.25,
-                              onTap: () {
-                                print('ontap long button');
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        Transactions(fullList: true),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   children: [
+                        //     RoundedButtonWidget(
+                        //         size: AppTheme.cardPadding * 1.25,
+                        //         buttonType: ButtonType.transparent,
+                        //         iconData: FontAwesomeIcons.filter,
+                        //         onTap: () async {
+                        //           await BitNetBottomSheet(
+                        //               context: context,
+                        //               child: WalletFilterScreen());
+                        //           setState(() {});
+                        //         }),
+                        //     SizedBox(
+                        //       width: AppTheme.elementSpacing,
+                        //     ),
+                        //     LongButtonWidget(
+                        //       title: L10n.of(context)!.all,
+                        //       buttonType: ButtonType.transparent,
+                        //       customWidth: AppTheme.cardPadding * 2.5,
+                        //       customHeight: AppTheme.cardPadding * 1.25,
+                        //       onTap: () {
+                        //         print('ontap long button');
+                        //         Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //             builder: (context) =>
+                        //                 Transactions(fullList: true),
+                        //           ),
+                        //         );
+                        //       },
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: AppTheme.elementSpacing,
+                  SizedBox(
+                    height: AppTheme.elementSpacing.h,
                   ),
-                  const SizedBox(height: AppTheme.elementSpacing),
                   Transactions(),
                 ],
               );

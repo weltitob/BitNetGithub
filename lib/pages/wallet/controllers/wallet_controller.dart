@@ -153,58 +153,9 @@ class WalletsController extends BaseController {
 
       print("Currency Value : ${selectedCurrency!.value}");
     });
-    subscribeInvoicesStream().listen((restResponse) {
-      logger.i("Received data from Invoice-stream: $restResponse");
-      ReceivedInvoice receivedInvoice =
-          ReceivedInvoice.fromJson(restResponse.data);
-      if (receivedInvoice.settled == true) {
-        showOverlayTransaction(
-          Get.context!,
-          "Lightning invoice settled",
-          TransactionItemData(
-            amount: receivedInvoice.amtPaidSat.toString(),
-            timestamp: receivedInvoice.settleDate,
-            type: TransactionType.lightning,
-            fee: 0,
-            status: TransactionStatus.confirmed,
-            direction: TransactionDirection.received,
-            receiver: receivedInvoice.paymentRequest!,
-            txHash: receivedInvoice.rHash!,
-          ),
-        );
-        //generate a new invoice for the user with 0 amount
-        logger.i("Generating new empty invoice for user");
-        ReceiveController().getInvoice(0, "Empty invoice");
-      } else {
-        logger.i(
-            "Invoice received but not settled yet: ${receivedInvoice.settled}");
-      }
-    }, onError: (error) {
-      logger.e("Received error for Invoice-stream: $error");
-    });
 
-    subscribeTransactionsStream().listen((restResponse) {
-      logger.e("nisidi subscribeTransactionsStream");
 
-      BitcoinTransaction bitcoinTransaction =
-          BitcoinTransaction.fromJson(restResponse.data);
-      showOverlayTransaction(
-          Get.context!,
-          "Onchain transaction settled",
-          TransactionItemData(
-            amount: bitcoinTransaction.amount.toString(),
-            timestamp: bitcoinTransaction.timeStamp,
-            type: TransactionType.onChain,
-            fee: 0,
-            status: TransactionStatus.confirmed,
-            direction: TransactionDirection.received,
-            receiver: bitcoinTransaction.destAddresses[0],
-            txHash: bitcoinTransaction.txHash ?? 'null',
-          ));
-      //});
-    }, onError: (error) {
-      logger.e("Received error for Transactions-stream: $error");
-    });
+
     fetchOnchainWalletBalance().then((value) {
       loadedFutures++;
       if (!value) {
@@ -296,7 +247,6 @@ class WalletsController extends BaseController {
 
   @override
   void dispose() {
-    invoicesSubscription?.cancel();
     transactionsSubscription?.cancel();
     super.dispose();
   }

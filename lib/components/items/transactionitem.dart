@@ -58,7 +58,9 @@ class _TransactionItemState extends State<TransactionItem> {
                 latestPrice['USD'])
             .toStringAsFixed(3);
       }
-      setState(() {});
+      if(mounted){
+        setState(() {});
+      }
     } else {
       throw Exception('Failed to load historical price');
     }

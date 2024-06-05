@@ -1,6 +1,7 @@
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BitNetImageWithTextContainer extends StatelessWidget {
   final String text;
@@ -84,6 +85,84 @@ class BitNetImageWithTextContainer extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+
+class BitNetImageWithTextButton extends StatelessWidget {
+  final String text;
+  final Function() action;
+  final IconData? fallbackIcon;
+  final String? image;
+  final double width;
+  final double height;
+  final bool isActive;
+
+  BitNetImageWithTextButton(
+      this.text,
+      this.action, {
+        this.fallbackIcon,
+        this.image,
+        this.width = AppTheme.cardPadding * 6,
+        this.height = AppTheme.cardPadding * 7,
+        this.isActive = true, // default value is true
+        Key? key,
+      }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    BorderRadius borderRadius = BorderRadius.circular(width / 3);
+
+    return InkWell(
+      onTap: action,
+      borderRadius: borderRadius,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GlassContainer(
+            width: width,
+            height: height,
+            borderRadius: borderRadius,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: width / 1.4,
+                  width: width / 1.4,
+                  decoration: BoxDecoration(
+                    borderRadius: borderRadius / 1.5,
+                    boxShadow: Theme.of(context).brightness == Brightness.light ? [] : [AppTheme.boxShadowSmall],
+                  ),
+                  child: image != null
+                      ? Image.asset(image!)
+                      : Icon(
+                    fallbackIcon ?? Icons.error,
+                    size: AppTheme.cardPadding * 1.75,
+                    color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: AppTheme.elementSpacing.h),
+          Container(
+            width: width / 1.25,
+            margin: EdgeInsets.only(
+              right: AppTheme.elementSpacing,
+              left: AppTheme.elementSpacing,
+            ),
+            child: Text(text,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+          ),
+        ],
       ),
     );
   }

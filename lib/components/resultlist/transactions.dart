@@ -20,6 +20,7 @@ import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -134,14 +135,17 @@ class _TransactionsState extends State<Transactions>
       futuresCompleted++;
       if (!value) {
         errorCount++;
-        errorMessage = L10n.of(context)!.failedToLoadOnchain;
+        errorMessage = "L10n.of(context)!.failedToLoadOnchain";
       }
 
       if (futuresCompleted == 3) {
-        setState(() {
-          transactionsLoaded = true;
-        });
-        handlePageLoadErrors(errorCount, errorMessage, context);
+        if(mounted){
+          setState(() {
+            transactionsLoaded = true;
+          });
+          handlePageLoadErrors(errorCount, errorMessage, context);
+        }
+
       }
     });
 
@@ -149,14 +153,17 @@ class _TransactionsState extends State<Transactions>
       futuresCompleted++;
       if (!value) {
         errorCount++;
-        errorMessage = L10n.of(context)!.failedToLoadPayments;
+        errorMessage = "L10n.of(context)!.failedToLoadPayments";
       }
 
       if (futuresCompleted == 3) {
-        setState(() {
-          transactionsLoaded = true;
-        });
-        handlePageLoadErrors(errorCount, errorMessage, context);
+        if(mounted){
+          setState(() {
+            transactionsLoaded = true;
+          });
+          handlePageLoadErrors(errorCount, errorMessage, context);
+        }
+
       }
     });
 
@@ -164,14 +171,16 @@ class _TransactionsState extends State<Transactions>
       futuresCompleted++;
       if (!value) {
         errorCount++;
-        errorMessage = L10n.of(context)!.failedToLoadLightning;
+        errorMessage = "L10n.of(context)!.failedToLoadLightning";
       }
 
       if (futuresCompleted == 3) {
-        setState(() {
-          transactionsLoaded = true;
-        });
-        handlePageLoadErrors(errorCount, errorMessage, context);
+        if(mounted){
+          setState(() {
+            transactionsLoaded = true;
+          });
+          handlePageLoadErrors(errorCount, errorMessage, context);
+        }
       }
     });
     // getLoopOperations().then((value) {
@@ -338,138 +347,80 @@ class _TransactionsState extends State<Transactions>
     }
     return transactionsLoaded
         ? widget.fullList
-            ? bitnetScaffold(
-                context: context,
-                extendBodyBehindAppBar: true,
-                appBar: bitnetAppBar(
-                  context: context,
-                  text: 'Activity',
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.only(
-                    top: AppTheme.cardPadding * 1.5,
+            ? Container()
+            : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing,
                   ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: AppTheme.elementSpacing,
-                            horizontal: AppTheme.elementSpacing),
-                        child: SearchFieldWidget(
-                          hintText: 'Search',
-                          handleSearch: (v) {
-                            setState(() {
-                              searchCtrl.text = v;
-                            });
-                          },
-                          suffixIcon: IconButton(
-                            icon: Icon(FontAwesomeIcons.filter),
-                            onPressed: () async {
-                              await BitNetBottomSheet(
-                                context: context,
-                                child: WalletFilterScreen(),
-                              );
-                              setState(() {});
-                            },
-                          ),
-                          isSearchEnabled: true,
-                        ),
+                  child: SearchFieldWidget(
+                    hintText: 'Search',
+                    handleSearch: (v) {
+                      setState(() {
+                        searchCtrl.text = v;
+                      });
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.filter,
+                        color: Theme.of(context).brightness ==
+                            Brightness.dark
+                            ? AppTheme.white60
+                            : AppTheme.black60,
+                        size: AppTheme.cardPadding * 0.75,
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: ClampingScrollPhysics(),
-                          itemCount: combinedTransactions.length,
-                          itemBuilder: (context, index) {
-                            if (combinedTransactions[index].data.timestamp >=
-                                    controller.start &&
-                                combinedTransactions[index].data.timestamp <=
-                                    controller.end) {
-                              if (controller.selectedFilters.contains('Sent') &&
-                                  controller.selectedFilters
-                                      .contains('Received')) {
-                                return combinedTransactions[index];
-                              }
-                              if (controller.selectedFilters.contains('Sent')) {
-                                return combinedTransactions[index]
-                                        .data
-                                        .amount
-                                        .contains('-')
-                                    ? combinedTransactions[index]
-                                    : SizedBox();
-                              }
-                              if (controller.selectedFilters
-                                  .contains('Received')) {
-                                return combinedTransactions[index]
-                                        .data
-                                        .amount
-                                        .contains('+')
-                                    ? combinedTransactions[index]
-                                    : SizedBox();
-                              }
-                              return combinedTransactions[index]
-                                      .data
-                                      .receiver
-                                      .contains(searchCtrl.text.toLowerCase())
-                                  ? combinedTransactions[index]
-                                  : SizedBox();
-                            }
-                          },
-                        ),
-                      )
-                    ],
+                      onPressed: () async {
+                        await BitNetBottomSheet(
+                          context: context,
+                          child: WalletFilterScreen(),
+                        );
+                        setState(() {});
+                      },
+                    ),
+                    isSearchEnabled: true,
                   ),
                 ),
-              )
-            : Container(
-                height: AppTheme.cardPadding * 18,
-                padding: EdgeInsets.only(bottom: 30),
-                child: ListView.builder(
-                  physics: ClampingScrollPhysics(),
-                  itemCount: combinedTransactions.length > 5
-                      ? 5
-                      : combinedTransactions.length,
-                  itemBuilder: (context, index) {
-                    if (combinedTransactions[index].data.timestamp >=
-                            controller.start &&
-                        combinedTransactions[index].data.timestamp <=
-                            controller.end) {
-                      if (controller.selectedFilters.contains('Sent') &&
-                          controller.selectedFilters.contains('Received')) {
-                        return combinedTransactions[index];
-                      }
-                      if (controller.selectedFilters.contains('Sent')) {
-                        return combinedTransactions[index]
-                                .data
-                                .amount
-                                .contains('-')
-                            ? combinedTransactions[index]
-                            : SizedBox();
-                      }
-                      if (controller.selectedFilters.contains('Received')) {
-                        return combinedTransactions[index]
-                                .data
-                                .amount
-                                .contains('+')
-                            ? combinedTransactions[index]
-                            : SizedBox();
-                      }
-                      return combinedTransactions[index]
-                              .data
-                              .receiver
-                              .contains(searchCtrl.text.toLowerCase())
-                          ? combinedTransactions[index]
-                          : SizedBox();
-                    }
-                  },
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true, // This is important
+                      itemCount: combinedTransactions.length,
+                      itemBuilder: (context, index) {
+                        if (combinedTransactions[index].data.timestamp >= controller.start &&
+                            combinedTransactions[index].data.timestamp <= controller.end) {
+                          if (controller.selectedFilters.contains('Sent') &&
+                              controller.selectedFilters.contains('Received')) {
+                            return combinedTransactions[index];
+                          }
+                          if (controller.selectedFilters.contains('Sent')) {
+                            return combinedTransactions[index].data.amount.contains('-')
+                                ? combinedTransactions[index]
+                                : SizedBox();
+                          }
+                          if (controller.selectedFilters.contains('Received')) {
+                            return combinedTransactions[index].data.amount.contains('+')
+                                ? combinedTransactions[index]
+                                : SizedBox();
+                          }
+                          return combinedTransactions[index].data.receiver.contains(searchCtrl.text.toLowerCase())
+                              ? combinedTransactions[index]
+                              : SizedBox();
+                        }
+                        return SizedBox(); // Return a SizedBox for other cases
+                      },
+                    ),
+                    SizedBox(height: AppTheme.cardPadding.h * 1,)
+                  ],
                 ),
-              )
+
+              ],
+            )
         : Container(
-            height: AppTheme.cardPadding * 18,
+            height: AppTheme.cardPadding * 10.h,
             child: dotProgress(context),
           );
   }

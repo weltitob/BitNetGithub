@@ -1,11 +1,19 @@
 import 'dart:async';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
+import 'package:bitnet/backbone/streams/lnd/subscribe_transactions.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
+import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
+import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/lightning_receive_tab.dart';
 import 'package:bitnet/pages/wallet/actions/receive/onchain_receive_tab.dart';
@@ -52,6 +60,63 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
     controller.getTaprootAddress();
     controller.duration = Duration(minutes: 20);
     controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+
+    LoggerService logger = Get.find();
+
+    subscribeTransactionsStream().listen((restResponse) {
+      logger.i("subscribeTransactionsStream got data: $restResponse");
+      BitcoinTransaction bitcoinTransaction = BitcoinTransaction.fromJson(restResponse.data);
+
+      showOverlayTransaction(
+          context,
+          "Onchain transaction settled",
+          TransactionItemData(
+            amount: bitcoinTransaction.amount.toString(),
+            timestamp: bitcoinTransaction.timeStamp,
+            type: TransactionType.onChain,
+            fee: 0,
+            status: TransactionStatus.confirmed,
+            direction: TransactionDirection.received,
+            receiver: bitcoinTransaction.destAddresses[0],
+            txHash: bitcoinTransaction.txHash ?? 'null',
+          ));
+      //});
+    }, onError: (error) {
+      logger.e("Received error for Transactions-stream: $error");
+    });
+    //LIGHTNING
+    subscribeInvoicesStream().listen((restResponse) {
+      logger.i("Received data from Invoice-stream: $restResponse");
+      final result = restResponse.data["result"];
+      logger.i("Result: $result");
+      ReceivedInvoice receivedInvoice =
+      ReceivedInvoice.fromJson(result);
+      if (receivedInvoice.settled == true) {
+        logger.i("showOverlay should be triggered now");
+        showOverlayTransaction(
+          context,
+          "Lightning invoice settled",
+          TransactionItemData(
+            amount: receivedInvoice.amtPaidSat.toString(),
+            timestamp: receivedInvoice.settleDate,
+            type: TransactionType.lightning,
+            fee: 0,
+            status: TransactionStatus.confirmed,
+            direction: TransactionDirection.received,
+            receiver: receivedInvoice.paymentRequest ?? "Yourself",
+            txHash: receivedInvoice.rHash ?? "forwarded trough lightning",
+          ),
+        );
+        //generate a new invoice for the user with 0 amount
+        logger.i("Generating new empty invoice for user");
+        ReceiveController(context).getInvoice(0, "Empty invoice");
+      } else {
+        logger.i(
+            "Invoice received but not settled yet: ${receivedInvoice.settled}");
+      }
+    }, onError: (error) {
+      logger.e("Received error for Invoice-stream: $error");
+    });
   }
 
   @override

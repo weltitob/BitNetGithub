@@ -4,22 +4,22 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:get/get.dart';
 
 class ReceivedInvoice {
-  final String? memo;
-  final String? rPreimage;
-  final String? rHash;
+  final String memo;
+  final String rPreimage;
+  final String rHash;
   final int value;
   final int valueMsat;
   final bool settled;
   final int creationDate;
   final int settleDate;
-  final String? paymentRequest;
-  final String? state;
+  final String paymentRequest;
+  final String state;
   final int amtPaid;
   final int amtPaidSat;
   final int amtPaidMsat;
 
   ReceivedInvoice({
-    this.memo,
+    required this.memo,
     required this.rPreimage,
     required this.rHash,
     required this.value,
@@ -34,34 +34,55 @@ class ReceivedInvoice {
     required this.amtPaidMsat,
   });
 
-  factory ReceivedInvoice.fromJson(Map<String, dynamic>? json) {
+  factory ReceivedInvoice.fromJson(Map<String, dynamic> json) {
     LoggerService logger = Get.find();
     if (json == null) {
       logger.e('JSON data must not be null');
       throw ArgumentError('JSON data must not be null');
     }
-    // Map<String, dynamic>? result = json['result'] as Map<String, dynamic>?;
-    // if (result == null) {
-    //   logger.e('Result key missing or null in the JSON data');
-    //   throw ArgumentError('Result key missing or null in the JSON data');
-    // }
+
+    String parseString(dynamic value, String fieldName) {
+      if (value == null) {
+        logger.e('$fieldName is missing or null');
+        throw ArgumentError('$fieldName is missing or null');
+      }
+      return value as String;
+    }
+
+    int parseInt(dynamic value, String fieldName) {
+      if (value == null) {
+        logger.e('$fieldName is missing or null');
+        throw ArgumentError('$fieldName is missing or null');
+      }
+      return int.tryParse(value.toString()) ?? 0;
+    }
+
+    bool parseBool(dynamic value, String fieldName) {
+      if (value == null) {
+        logger.e('$fieldName is missing or null');
+        throw ArgumentError('$fieldName is missing or null');
+      }
+      return value as bool;
+    }
+
     return ReceivedInvoice(
-      memo: json['memo'] as String?,
-      rPreimage: json['r_preimage'] as String?,
-      rHash: json['r_hash'] as String?,
-      value: int.tryParse(json['value'].toString()) ?? 0,
-      valueMsat: int.tryParse(json['value_msat'].toString()) ?? 0,
-      settled: json['settled'] as bool? ?? false,
-      creationDate: int.tryParse(json['creation_date'].toString()) ?? 0,
-      settleDate: int.tryParse(json['settle_date'].toString()) ?? 0,
-      paymentRequest: json['payment_request'] as String?,
-      state: json['state'] as String?,
-      amtPaid: int.tryParse(json['amt_paid'].toString()) ?? 0,
-      amtPaidSat: int.tryParse(json['amt_paid_sat'].toString()) ?? 0,
-      amtPaidMsat: int.tryParse(json['amt_paid_msat'].toString()) ?? 0,
+      memo: parseString(json['memo'], 'memo'),
+      rPreimage: parseString(json['r_preimage'], 'r_preimage'),
+      rHash: parseString(json['r_hash'], 'r_hash'),
+      value: parseInt(json['value'], 'value'),
+      valueMsat: parseInt(json['value_msat'], 'value_msat'),
+      settled: parseBool(json['settled'], 'settled'),
+      creationDate: parseInt(json['creation_date'], 'creation_date'),
+      settleDate: parseInt(json['settle_date'], 'settle_date'),
+      paymentRequest: parseString(json['payment_request'], 'payment_request'),
+      state: parseString(json['state'], 'state'),
+      amtPaid: parseInt(json['amt_paid'], 'amt_paid'),
+      amtPaidSat: parseInt(json['amt_paid_sat'], 'amt_paid_sat'),
+      amtPaidMsat: parseInt(json['amt_paid_msat'], 'amt_paid_msat'),
     );
   }
 }
+
 
 class ReceivedInvoicesList {
   final List<ReceivedInvoice> invoices;
@@ -75,7 +96,7 @@ class ReceivedInvoicesList {
     }
     return ReceivedInvoicesList(
       invoices: List<ReceivedInvoice>.from(
-          (json['invoices'] as List).map((x) => ReceivedInvoice.fromJson(x as Map<String, dynamic>?))
+          (json['invoices'] as List).map((x) => ReceivedInvoice.fromJson(x as Map<String, dynamic>))
       ),
     );
   }
