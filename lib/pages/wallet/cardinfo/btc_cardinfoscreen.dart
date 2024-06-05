@@ -20,7 +20,6 @@ import 'package:go_router/go_router.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class BitcoinCardInformationScreen extends StatefulWidget {
   BitcoinCardInformationScreen({super.key});
 
@@ -33,12 +32,12 @@ class _BitcoinCardInformationScreenState
     extends State<BitcoinCardInformationScreen> {
   bool isShowMore = false;
   final controller = Get.put(TransactionController());
+  final homeController = Get.put(HomeController());
 
   @override
   void initState() {
     controller.getAddressComponent(
         'bc1p5lfahjz2j3679ynqy4fu8tvteem92fuqfqfsax7vx97lyr3vhkwqlxjh5e');
-    // TODO: implement initState
     super.initState();
   }
 
@@ -49,6 +48,7 @@ class _BitcoinCardInformationScreenState
       appBar: bitnetAppBar(
         context: context,
         onTap: () {
+          homeController.timer.cancel();
           context.go("/feed");
         },
         text: L10n.of(context)!.bitcoinInfoCard,
@@ -57,6 +57,8 @@ class _BitcoinCardInformationScreenState
       body: PopScope(
         canPop: false,
         onPopInvoked: (v) {
+          homeController.timer.cancel();
+
           context.go("/feed");
         },
         child: Obx(
@@ -75,7 +77,8 @@ class _BitcoinCardInformationScreenState
                             child: BalanceCardBtc()),
                         BitNetListTile(
                           text: L10n.of(context)!.address,
-                          trailing: Text('bc1qkmlp...' + '30fltzunefdjln', style: Theme.of(context).textTheme.bodyMedium),
+                          trailing: Text('bc1qkmlp...' + '30fltzunefdjln',
+                              style: Theme.of(context).textTheme.bodyMedium),
                         ),
                         BitNetListTile(
                           text: L10n.of(context)!.scanQr,
@@ -101,7 +104,6 @@ class _BitcoinCardInformationScreenState
                         const SizedBox(
                           height: 10,
                         ),
-
                         BitNetListTile(
                           text: L10n.of(context)!.totalReceived,
                           trailing: Row(
@@ -113,11 +115,9 @@ class _BitcoinCardInformationScreenState
                             ],
                           ),
                         ),
-
                         const SizedBox(
                           height: 5,
                         ),
-
                         BitNetListTile(
                           text: L10n.of(context)!.totalSent,
                           trailing: Row(
@@ -129,7 +129,6 @@ class _BitcoinCardInformationScreenState
                             ],
                           ),
                         ),
-
                         const SizedBox(
                           height: 5,
                         ),
@@ -146,12 +145,14 @@ class _BitcoinCardInformationScreenState
                               ),
                               Text(
                                 '\$${((((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)) * controller.currentUSD.value).toStringAsFixed(2)}',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: Colors.green),
                               ),
                             ],
                           ),
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
@@ -225,7 +226,7 @@ class _BitcoinCardInformationScreenState
                                           int value = controller
                                               .calculateAddressValue(controller
                                                   .subTransactionModel[index]);
-                                           if (controller
+                                          if (controller
                                                   .subTransactionModel[index]
                                                   .status!
                                                   .blockTime !=
@@ -252,7 +253,7 @@ class _BitcoinCardInformationScreenState
                                                             index]
                                                         .txid!;
                                                     Get.to(
-                                                         SingleTransactionScreen(),
+                                                        SingleTransactionScreen(),
                                                         arguments: controller
                                                             .subTransactionModel[
                                                                 index]
@@ -268,25 +269,41 @@ class _BitcoinCardInformationScreenState
                                                       context: context,
                                                       data: TransactionItemData(
                                                         timestamp: controller
-                                                            .subTransactionModel[
-                                                        index].locktime ?? 0,
-                                                        type: TransactionType.onChain,
-                                                        direction: TransactionDirection.received,
+                                                                .subTransactionModel[
+                                                                    index]
+                                                                .locktime ??
+                                                            0,
+                                                        type: TransactionType
+                                                            .onChain,
+                                                        direction:
+                                                            TransactionDirection
+                                                                .received,
                                                         receiver: controller
                                                             .subTransactionModel[
-                                                        index].txid.toString(),
+                                                                index]
+                                                            .txid
+                                                            .toString(),
                                                         txHash: controller
-                                                          .subTransactionModel[
-                                                          index].hashCode.toString(),
+                                                            .subTransactionModel[
+                                                                index]
+                                                            .hashCode
+                                                            .toString(),
                                                         amount: '0',
                                                         fee: controller
-                                                            .subTransactionModel[
-                                                        index].fee ?? 0,
+                                                                .subTransactionModel[
+                                                                    index]
+                                                                .fee ??
+                                                            0,
                                                         status: controller
-                                                            .subTransactionModel[
-                                                        index].status?.confirmed ?? false
-                                                            ? TransactionStatus.confirmed
-                                                            : TransactionStatus.failed,
+                                                                    .subTransactionModel[
+                                                                        index]
+                                                                    .status
+                                                                    ?.confirmed ??
+                                                                false
+                                                            ? TransactionStatus
+                                                                .confirmed
+                                                            : TransactionStatus
+                                                                .failed,
 
                                                         // other properties
                                                       )),
@@ -297,11 +314,9 @@ class _BitcoinCardInformationScreenState
                             ],
                           );
                         }),
-
                         const SizedBox(
                           height: 20,
                         ),
-
                       ],
                     ),
                   ),

@@ -7,7 +7,7 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/lightning_transaction_details.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
-import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
+ import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:dio/dio.dart';
@@ -58,7 +58,7 @@ class _TransactionItemState extends State<TransactionItem> {
                 latestPrice['USD'])
             .toStringAsFixed(3);
       }
-      if(mounted){
+      if (mounted) {
         setState(() {});
       }
     } else {
@@ -68,9 +68,7 @@ class _TransactionItemState extends State<TransactionItem> {
 
   @override
   void initState() {
-    dollarRate();
-
-    // TODO: implement initState
+    dollarRate(); 
     super.initState();
   }
 
@@ -100,42 +98,45 @@ class _TransactionItemState extends State<TransactionItem> {
           right: AppTheme.cardPadding,
           bottom: AppTheme.elementSpacing,
         ),
-        child: GlassContainer(
-          height: AppTheme.cardPadding * 3.h,
-          borderThickness: 1,
-          borderRadius: AppTheme.cardRadiusBig,
-          child: ClipRRect(
+        child: GestureDetector(
+          onTap: () {
+            if (widget.data.type == TransactionType.lightning) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LightningTransactionDetails(
+                    data: widget.data,
+                  ),
+                ),
+              );
+            } else {
+              final controllerTransaction = Get.put(
+                TransactionController(
+                  txID: widget.data.txHash.toString(),
+                ),
+              );
+              controllerTransaction.txID = widget.data.txHash.toString();
+              controllerTransaction.getSingleTransaction(
+                  controllerTransaction.txID!,
+                  );
+              controllerTransaction.changeSocket();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SingleTransactionScreen(),
+                ),
+              );
+            }
+          },
+          child: GlassContainer(
+            height: AppTheme.cardPadding * 3.h,
+            borderThickness: 1,
             borderRadius: AppTheme.cardRadiusBig,
-            child: Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if (widget.data.type == TransactionType.lightning) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LightningTransactionDetails(
-                                    data: widget.data,
-                                  )));
-                    } else {
-                      print(widget.data.txHash);
-                      final controllerTransaction = Get.put(
-                        TransactionController(
-                          txID: widget.data.txHash.toString(),
-                        ),
-                      );
-                      controllerTransaction.txID =
-                          widget.data.txHash.toString();
-                      controllerTransaction
-                          .getSingleTransaction(controllerTransaction.txID!);
-                      controllerTransaction.changeSocket();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SingleTransactionScreen()));
-                    }
-                  },
-                  child: Padding(
+            child: ClipRRect(
+              borderRadius: AppTheme.cardRadiusBig,
+              child: Stack(
+                children: [
+                  Padding(
                     padding: const EdgeInsets.only(
                         left: AppTheme.elementSpacing * 0.75,
                         right: AppTheme.elementSpacing * 1,
@@ -284,8 +285,8 @@ class _TransactionItemState extends State<TransactionItem> {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
