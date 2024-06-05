@@ -184,7 +184,7 @@ class _BatchScreenState extends State<BatchScreen> {
                     ),
                     BitNetListTile(
                       text: L10n.of(context)!.bitnetUsageFee,
-                      trailing: Text((sat_per_vbyte * 0.5).toString() ,
+                      trailing: Text((sat_per_vbyte * 0.5).round().toString() ,
                           style: Theme.of(context).textTheme.titleMedium),
                     ),
                   ],
