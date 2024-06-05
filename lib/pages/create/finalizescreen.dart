@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/cancelpendingbatch.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/finalize.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/listbatches.dart';
@@ -29,11 +30,13 @@ class BatchScreen extends StatefulWidget {
 class _BatchScreenState extends State<BatchScreen> {
   bool isLoading = false;
   String batchKey = '';
+  double sat_per_vbyte = 0.0;
   List<AssetInBatchList> assets = [];
 
   @override
   void initState() {
     super.initState();
+    fetchFee();
     _decodeBatchKey();
   }
 
@@ -60,6 +63,15 @@ class _BatchScreenState extends State<BatchScreen> {
     } else {
       print('Batch key is null');
     }
+  }
+
+  fetchFee() async {
+    dynamic fundedPsbtResponse = await estimateFee(AppTheme.targetConf.toString());
+    final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
+    if(mounted)
+      setState(() {
+        sat_per_vbyte = double.parse(sat_per_kw);
+      });
   }
 
   void callListBatch(String batchKey) async {
@@ -167,12 +179,12 @@ class _BatchScreenState extends State<BatchScreen> {
                   children: [
                     BitNetListTile(
                       text: L10n.of(context)!.transactionFees,
-                      trailing: Text('0.25',
+                      trailing: Text(sat_per_vbyte.toString(),
                           style: Theme.of(context).textTheme.titleMedium),
                     ),
                     BitNetListTile(
                       text: L10n.of(context)!.bitnetUsageFee,
-                      trailing: Text('0.001',
+                      trailing: Text((sat_per_vbyte * 0.5).toString() ,
                           style: Theme.of(context).textTheme.titleMedium),
                     ),
                   ],
