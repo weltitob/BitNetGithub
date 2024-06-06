@@ -23,7 +23,8 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class MempoolHome extends StatefulWidget {
-  const MempoolHome({Key? key}) : super(key: key);
+  bool? isFromHome = false;
+  MempoolHome({this.isFromHome, Key? key}) : super(key: key);
 
   @override
   State<MempoolHome> createState() => _MempoolHomeState();
@@ -53,7 +54,9 @@ class _MempoolHomeState extends State<MempoolHome> {
     Future.delayed(Duration(seconds: 3), () {
       _controller.animateTo(
         1150.0,
-        duration: Duration(milliseconds: 500),
+        duration: Duration(
+          milliseconds: 500,
+        ),
         curve: Curves.easeInOut,
       );
     });
@@ -65,28 +68,33 @@ class _MempoolHomeState extends State<MempoolHome> {
       canPop: false,
       onPopInvoked: (v) {
         controller.timer.cancel();
-         context.pop();
+        context.pop();
       },
       child: SafeArea(
         child: bitnetScaffold(
           extendBodyBehindAppBar: true,
           context: context,
-          appBar: bitnetAppBar(
-            text: L10n.of(context)!.blockChain,
-            onTap: () {
-              controller.timer.cancel();
-              context.pop();
-            },
-            actions: [
-              IconButton(
-                onPressed: () {
-                  context.go('/wallet/transaction');
-                },
-                icon: const Icon(Icons.search),
-              ),
-            ],
-            context: context,
-          ),
+          appBar: widget.isFromHome == true
+              ? PreferredSize(
+                  preferredSize: Size(0, 0),
+                  child: SizedBox(),
+                )
+              : bitnetAppBar(
+                  text: L10n.of(context)!.blockChain,
+                  onTap: () {
+                    controller.timer.cancel();
+                    context.pop();
+                  },
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        context.go('/wallet/transaction');
+                      },
+                      icon: const Icon(Icons.search),
+                    ),
+                  ],
+                  context: context,
+                ),
           body: SingleChildScrollView(
               child: Obx(
             () => Column(

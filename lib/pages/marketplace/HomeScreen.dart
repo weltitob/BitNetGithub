@@ -583,7 +583,9 @@ class TopFiveMarketCapWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(
+                          width: 4,
+                        ),
                         Text(
                           'BTC',
                           style: AppTheme.textTheme.bodySmall,

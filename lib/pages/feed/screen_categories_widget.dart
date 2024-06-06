@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-
 class ScreenCategoryWidget extends StatelessWidget {
   final String image;
   final String text;
@@ -40,30 +39,23 @@ class ScreenCategoryWidget extends StatelessWidget {
         scale: index == controller.tabController?.index ? 1 : 0.9,
         child: GlassContainer(
           borderThickness: index == controller.tabController?.index ? 3 : 1.5,
-          child: InkWell(
-              borderRadius: AppTheme.cardRadiusMid,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 5),
-                    height: 35.h,
-                    width: 35.w,
-                    child: Image.asset(image),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 5),
-                    child: Text(text,
-                        style: Theme.of(context).textTheme.labelLarge),
-                  )
-                ],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 5),
+                height: 35.h,
+                width: 35.w,
+                child: Image.asset(image),
               ),
-              onTap: () {
-                () {
-                  controller.tabController?.animateTo(index);
-                };
-              }),
+              Container(
+                margin: EdgeInsets.only(top: 5),
+                child:
+                    Text(text, style: Theme.of(context).textTheme.labelLarge),
+              )
+            ],
+          ),
         ),
       ),
     );

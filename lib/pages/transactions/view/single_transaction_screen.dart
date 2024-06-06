@@ -9,20 +9,20 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class SingleTransactionScreen extends StatelessWidget {
   SingleTransactionScreen({Key? key}) : super(key: key);
@@ -115,10 +115,10 @@ class SingleTransactionScreen extends StatelessWidget {
                                                   text: controllerHome
                                                       .replacedTx.value,
                                                 ));
-                                                Get.snackbar(
+                                                showOverlay(
+                                                    context,
                                                     L10n.of(context)!
-                                                        .copiedToClipboard,
-                                                    controller.txID!);
+                                                        .copiedToClipboard);
                                               },
                                               child: Row(
                                                 children: [
@@ -972,9 +972,10 @@ class SingleTransactionScreen extends StatelessWidget {
                                         await Clipboard.setData(ClipboardData(
                                           text: controller.txID!,
                                         ));
-                                        Get.snackbar(
-                                            L10n.of(context)!.copiedToClipboard,
-                                            controller.txID!);
+                                        showOverlay(
+                                            context,
+                                            L10n.of(context)!
+                                                .copiedToClipboard);
                                       },
                                       icon: const Icon(Icons.copy),
                                     )
@@ -992,8 +993,11 @@ class SingleTransactionScreen extends StatelessWidget {
                               ),
                               BitNetListTile(
                                   onTap: () {
-                                if(controller.transactionModel!.status!.blockHeight!=null)    context
-                                        .push('/wallet/bitcoinscreen/mempool');
+                                    if (controller.transactionModel!.status!
+                                            .blockHeight !=
+                                        null)
+                                      context.push(
+                                          '/wallet/bitcoinscreen/mempool');
                                   },
                                   text: L10n.of(context)!.blockSize,
                                   trailing: Text(
