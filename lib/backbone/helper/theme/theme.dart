@@ -52,6 +52,8 @@ abstract class AppTheme {
   static String stripeLiveKey =
       'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
 
+  static String whatsappChannelUrl = 'https://www.whatsapp.com/bitnet.ai/';
+
   static String instagramUrl = 'https://www.instagram.com/bitnet.ai/';
   static String twitterUrl = 'https://twitter.com/bitnet_ai';
   static String facebookUrl = 'https://www.facebook.com/bitnet.ai';
@@ -491,6 +493,7 @@ abstract class AppTheme {
       } else{
         //lightmode
         ColorScheme colorScheme = ColorScheme(
+          brightness: Brightness.light,
           onPrimaryContainer: Colors.black ,
           // onPrimaryFixed: AppTheme.white80,
           // onPrimaryFixedVariant: AppTheme.white80,
@@ -501,7 +504,6 @@ abstract class AppTheme {
           tertiary: Color(0xfff2f2f2),
           // tertiary: AppTheme.colorBackground,
           tertiaryContainer: Color(0xfff2f2f2),
-          brightness: Brightness.dark,
           onPrimary: AppTheme.white80,
 
           onSecondary: Color(0xfff2f2f2),
@@ -512,9 +514,7 @@ abstract class AppTheme {
         );
         ThemeData themeData = ThemeData.from(
           colorScheme: colorScheme,
-          textTheme: brightness == Brightness.light
-              ? fallbackTextTheme.merge(textTheme)
-              : fallbackTextTheme.merge(textThemeDarkMode),
+          textTheme: fallbackTextTheme.merge(textTheme),
         );
         return themeData;
       }

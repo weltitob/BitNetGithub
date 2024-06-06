@@ -11,8 +11,6 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ProfileController>();
-    print(controller.profileReady);
-    return ProfileView(controller);
+    return ProfileView();
   }
 }

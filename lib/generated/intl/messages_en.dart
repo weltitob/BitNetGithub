@@ -1338,6 +1338,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "submitReport": MessageLookupByLibrary.simpleMessage("Submit report!"),
         "supply": MessageLookupByLibrary.simpleMessage("Supply"),
         "supposedMxid": m66,
+        "swap": MessageLookupByLibrary.simpleMessage("Swap"),
         "switchToAccount": m67,
         "synchronizingPleaseWait":
             MessageLookupByLibrary.simpleMessage("Synchronizing… Please wait."),

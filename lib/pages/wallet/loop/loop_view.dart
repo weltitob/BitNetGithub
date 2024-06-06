@@ -52,7 +52,8 @@ class _LoopScreenState extends State<LoopScreen> {
         context: context,
         resizeToAvoidBottomInset: true,
         appBar: bitnetAppBar(
-          text: L10n.of(context)!.loopScreen,
+          text: "Swap Screen",
+          //L10n.of(context)!.loopScreen,
           context: context,
           onTap: () {
             context.go('/feed');

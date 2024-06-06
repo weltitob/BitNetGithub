@@ -263,7 +263,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                     fallbackIcon: Icons.arrow_downward_rounded,
                   ),
                   BitNetImageWithTextButton(
-                    L10n.of(context)!.rebalance,
+                    "Swap",
+                    //L10n.of(context)!.rebalance,
                     () {
                       Get.put(LoopsController());
                       context.go("/wallet/loop_screen");
