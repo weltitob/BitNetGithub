@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -25,77 +26,88 @@ class LightningSendTab extends GetWidget<SendsController> {
     LoggerService logger = Get.find();
     return Form(
       key: controller.formKey,
-      child: ListView(
+      child: Stack(
         children: [
-          Container(
-            height:
-                MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
+          ListView(
+            children: [
+              Container(
+                height:
+                    MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    userTile(context),
-                    // A SizedBox widget with a height of AppTheme.cardPadding * 2
-                    const SizedBox(
-                      height: AppTheme.cardPadding * 6,
-                    ),
-                    // A Center widget with a child of bitcoinWidget()
-                    Center(child: bitcoinWidget(context)),
-                    const SizedBox(
-                      height: AppTheme.cardPadding * 5,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding),
-                      child: Obx(
-                        () => Text(
-                          controller.description.value.isEmpty
-                              ? ""
-                              : ',,${controller.description}"',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(),
-                          textAlign: TextAlign.center,
+                    Column(
+                      children: [
+                        userTile(context),
+                        // A SizedBox widget with a height of AppTheme.cardPadding * 2
+                        const SizedBox(
+                          height: AppTheme.cardPadding * 6,
                         ),
+                        // A Center widget with a child of bitcoinWidget()
+                        Center(child: bitcoinWidget(context)),
+                        const SizedBox(
+                          height: AppTheme.cardPadding * 5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding),
+                          child: Obx(
+                            () => Text(
+                              controller.description.value.isEmpty
+                                  ? ""
+                                  : ',,${controller.description}"',
+                              style:
+                                  Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Obx(
+                      () => Text(
+                        controller.amountWidgetOverBound.value
+                            ? L10n.of(context)!.youAreOverLimit
+                            : controller.amountWidgetUnderBound.value
+                                ? L10n.of(context)!.youAreUnderLimit
+                                : "",
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                        textAlign: TextAlign.center,
                       ),
                     ),
+                    // A Padding widget that contains a button widget
+                    // Padding(
+                    //   padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
+                    //   child: Obx(
+                    //     () => LongButtonWidget(
+                    //       title: L10n.of(context)!.sendNow,
+                    //       buttonType: (!controller.amountWidgetOverBound.value &&
+                    //               !controller.amountWidgetUnderBound.value)
+                    //           ? ButtonType.solid
+                    //           : ButtonType.transparent,
+                    //       onTap: (!controller.amountWidgetOverBound.value &&
+                    //               !controller.amountWidgetUnderBound.value)
+                    //           ? () async {
+                    //               logger.i("lightning SendBTC getting called");
+                    //               await controller.sendBTC(context);
+                    //             }
+                    //           : null,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
-                Obx(
-                  () => Text(
-                    controller.amountWidgetOverBound.value
-                        ? L10n.of(context)!.youAreOverLimit
-                        : controller.amountWidgetUnderBound.value
-                            ? L10n.of(context)!.youAreUnderLimit
-                            : "",
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                // A Padding widget that contains a button widget
-                Padding(
-                  padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
-                  child: Obx(
-                    () => LongButtonWidget(
-                      title: L10n.of(context)!.sendNow,
-                      buttonType: (!controller.amountWidgetOverBound.value &&
-                              !controller.amountWidgetUnderBound.value)
-                          ? ButtonType.solid
-                          : ButtonType.transparent,
-                      onTap: (!controller.amountWidgetOverBound.value &&
-                              !controller.amountWidgetUnderBound.value)
-                          ? () async {
-                              logger.i("lightning SendBTC getting called");
-                              await controller.sendBTC(context);
-                            }
-                          : null,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
+          BottomCenterButton(
+            buttonTitle: L10n.of(context)!.sendNow,
+            buttonState: ButtonState.idle,
+            onButtonTap: () async {
+              await controller.sendBTC(context);
+            },
+          )
         ],
       ),
     );

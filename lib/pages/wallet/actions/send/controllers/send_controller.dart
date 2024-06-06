@@ -333,6 +333,9 @@ class SendsController extends BaseController {
           payLnUrl(lnCallback!, int.parse(satController.text), context);
         } 
         else if (sendType == SendType.Invoice) {
+
+          logger.i("Sending invoice: $bitcoinReceiverAdress");
+
           List<String> invoiceStrings = [
             bitcoinReceiverAdress
           ]; // Assuming you want to send a list containing a single invoice for now
@@ -344,10 +347,13 @@ class SendsController extends BaseController {
                 true; // Assuming you might want to update UI on each response
             if (response.statusCode == "success") {
               // Handle success
+              logger.i("Payment successful!");
               showOverlay(context, "Payment successful!");
               GoRouter.of(context).go("/feed");
+
             } else {
               // Handle error
+              logger.i("Payment failed!");
               showOverlay(context, "Payment failed: ${response.message}");
               isFinished.value =
                   false; // Keep the user on the same page to possibly retry or show error
@@ -360,6 +366,7 @@ class SendsController extends BaseController {
           }, cancelOnError: true // Cancel the subscription upon first error
               );
         } else if (sendType == SendType.OnChain) {
+          logger.i("Sending Onchain Payment to: $bitcoinReceiverAdress");
           final amountInSat = int.parse(satController.text);
 
           dynamic restResponseListUnspent = await listUnspent();

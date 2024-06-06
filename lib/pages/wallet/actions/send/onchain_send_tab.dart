@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/amountwidget.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -15,7 +16,6 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class OnChainSendTab extends GetWidget<SendsController> {
   const OnChainSendTab({
     super.key,
@@ -26,55 +26,58 @@ class OnChainSendTab extends GetWidget<SendsController> {
     LoggerService logger = Get.find();
     return Form(
       key: controller.formKey,
-      child: ListView(
+      child: Stack(
         children: [
-          Container(
-            height:
-                MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: <Widget>[
-                    userTile(context),
-                    // A SizedBox widget with a height of AppTheme.cardPadding * 2
-                    const SizedBox(
-                      height: AppTheme.cardPadding * 6,
-                    ),
-                    // A Center widget with a child of bitcoinWidget()
-                    Center(child: bitcoinWidget(context)),
-                    const SizedBox(
-                      height: AppTheme.cardPadding * 5,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding),
-                      child: Obx(
-                        () => Text(
-                          controller.description.value.isEmpty
-                              ? ""
-                              : ',,${controller.description}"',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(),
-                          textAlign: TextAlign.center,
+          ListView(
+            children: [
+              Container(
+                height:
+                    MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: <Widget>[
+                        userTile(context),
+                        // A SizedBox widget with a height of AppTheme.cardPadding * 2
+                        const SizedBox(
+                          height: AppTheme.cardPadding * 6,
                         ),
-                      ),
+                        // A Center widget with a child of bitcoinWidget()
+                        Center(child: bitcoinWidget(context)),
+                        const SizedBox(
+                          height: AppTheme.cardPadding * 5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding),
+                          child: Obx(
+                            () => Text(
+                              controller.description.value.isEmpty
+                                  ? ""
+                                  : ',,${controller.description}"',
+                              style:
+                                  Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    // A Padding widget that contains a button widget
                   ],
                 ),
-                // A Padding widget that contains a button widget
-                Padding(
-                    padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
-                    child: LongButtonWidget(
-                      title: L10n.of(context)!.sendNow,
-                      onTap: () async {
-                        await controller.sendBTC(context);
-                      },
-                    )),
-              ],
-            ),
+              ),
+            ],
           ),
+          BottomCenterButton(
+            buttonTitle: L10n.of(context)!.sendNow,
+            buttonState: ButtonState.idle,
+            onButtonTap: () async {
+              await controller.sendBTC(context);
+            },
+          )
         ],
       ),
     );
@@ -174,7 +177,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
       },
       child: Row(
         children: [
-          // Icon for copying the receiver address to 
+          // Icon for copying the receiver address to
           const Icon(Icons.copy_rounded, color: Colors.grey, size: 16),
           SizedBox(
             width: AppTheme.cardPadding * 8,

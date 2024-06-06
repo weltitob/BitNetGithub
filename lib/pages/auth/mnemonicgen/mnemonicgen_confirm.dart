@@ -87,7 +87,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
                 ),
               ),
             ),
-            SizedBox(height: 30.h)
+            SizedBox(height: AppTheme.cardPadding.h)
           ]),
         ),
       );
