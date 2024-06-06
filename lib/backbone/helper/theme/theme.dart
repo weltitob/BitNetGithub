@@ -460,33 +460,65 @@ abstract class AppTheme {
     Color defaultSeed = seed ?? AppTheme.primaryColor;
 
     if (defaultSeed == Color(0xffffffff) || defaultSeed == Color(0xff000000)) {
-      ColorScheme colorScheme = ColorScheme(
-        onPrimaryContainer: Colors.white,
-        // onPrimaryFixed: AppTheme.white80,
-        // onPrimaryFixedVariant: AppTheme.white80,
-        primary: AppTheme.colorBitcoin,
-        secondary: AppTheme.secondaryColor,
-        secondaryContainer: Colors.black,
-        primaryContainer: Colors.black,
-        tertiary: Colors.black,
-        // tertiary: AppTheme.colorBackground,
-        tertiaryContainer: Colors.black,
-        brightness: Brightness.dark,
-        onPrimary: AppTheme.white80,
+      if(brightness == Brightness.dark){
+        ColorScheme colorScheme = ColorScheme(
+          onPrimaryContainer: Colors.white ,
+          // onPrimaryFixed: AppTheme.white80,
+          // onPrimaryFixedVariant: AppTheme.white80,
+          primary: AppTheme.colorBitcoin,
+          secondary: AppTheme.secondaryColor,
+          secondaryContainer: Colors.black,
+          primaryContainer: Colors.black,
+          tertiary: Colors.black,
+          // tertiary: AppTheme.colorBackground,
+          tertiaryContainer: Colors.black,
+          brightness: Brightness.dark,
+          onPrimary: AppTheme.white80,
 
-        onSecondary: Colors.black,
-        error: AppTheme.errorColor,
-        onError: AppTheme.errorColor,
-        surface: Colors.black,
-        onSurface: Colors.black,
-      );
-      ThemeData themeData = ThemeData.from(
-        colorScheme: colorScheme,
-        textTheme: brightness == Brightness.light
-            ? fallbackTextTheme.merge(textTheme)
-            : fallbackTextTheme.merge(textThemeDarkMode),
-      );
-      return themeData;
+          onSecondary: Colors.black,
+          error: AppTheme.errorColor,
+          onError: AppTheme.errorColor,
+          surface: Colors.black,
+          onSurface: Colors.black,
+        );
+        ThemeData themeData = ThemeData.from(
+          colorScheme: colorScheme,
+          textTheme: brightness == Brightness.light
+              ? fallbackTextTheme.merge(textTheme)
+              : fallbackTextTheme.merge(textThemeDarkMode),
+        );
+        return themeData;
+      } else{
+        //lightmode
+        ColorScheme colorScheme = ColorScheme(
+          onPrimaryContainer: Colors.black ,
+          // onPrimaryFixed: AppTheme.white80,
+          // onPrimaryFixedVariant: AppTheme.white80,
+          primary: AppTheme.colorBitcoin,
+          secondary: AppTheme.secondaryColor,
+          secondaryContainer: Colors.grey,
+          primaryContainer: Colors.grey,
+          tertiary: Colors.grey,
+          // tertiary: AppTheme.colorBackground,
+          tertiaryContainer: Colors.grey,
+          brightness: Brightness.dark,
+          onPrimary: AppTheme.white80,
+
+          onSecondary: Colors.grey,
+          error: AppTheme.errorColor,
+          onError: AppTheme.errorColor,
+          surface: Colors.grey,
+          onSurface: Colors.grey,
+        );
+        ThemeData themeData = ThemeData.from(
+          colorScheme: colorScheme,
+          textTheme: brightness == Brightness.light
+              ? fallbackTextTheme.merge(textTheme)
+              : fallbackTextTheme.merge(textThemeDarkMode),
+        );
+        return themeData;
+      }
+
     } else {
       ColorScheme colorScheme = ColorScheme.fromSeed(
         seedColor: defaultSeed,

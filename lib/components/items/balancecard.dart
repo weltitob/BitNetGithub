@@ -124,17 +124,29 @@ class BalanceCardBtc extends GetWidget<WalletsController> {
             walletAddress: "safdadasdas",
             cardname: 'On-Chain Balance',
           ),
-          Positioned(
-            top: 70.h,
-            child: BalanceTextWidget(
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: UnconfirmedTextWidget(
               balanceStr: controller.onchainBalance.unconfirmedBalance,
               iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
               iconData: FontAwesomeIcons.piggyBank,
               balanceSAT: controller.onchainBalance.unconfirmedBalance,
               walletAddress: "safdadasdas",
-              cardname: 'UnConfirmed Balance',
+              cardname: 'incoming Balance',
             ),
           ),
+          // Positioned(
+          //   top: 70.h,
+          //
+          //   child: BalanceTextWidget(
+          //     balanceStr: controller.onchainBalance.unconfirmedBalance,
+          //     iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+          //     iconData: FontAwesomeIcons.piggyBank,
+          //     balanceSAT: controller.onchainBalance.unconfirmedBalance,
+          //     walletAddress: "safdadasdas",
+          //     cardname: 'incoming Balance',
+          //   ),
+          // ),
           PaymentNetworkPicture(imageUrl: 'assets/images/bitcoin.png'),
         ],
       ),
@@ -351,6 +363,73 @@ class PaymentNetworkPicture extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+
+class UnconfirmedTextWidget extends GetWidget<WalletsController> {
+  final String balanceSAT;
+  final String balanceStr;
+  final String cardname;
+  final String walletAddress;
+  final IconData iconData;
+  final IconData iconDataUnit;
+
+  const UnconfirmedTextWidget({
+    Key? key,
+    required this.balanceSAT,
+    required this.balanceStr,
+    required this.walletAddress,
+    required this.iconData,
+    required this.iconDataUnit,
+    required this.cardname,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final chartLine = Get.find<WalletsController>().chartLines.value;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
+    currency = currency ?? "USD";
+
+    final bitcoinPrice = chartLine?.price;
+    final currencyEquivalent = bitcoinPrice != null
+        ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice)
+        .toStringAsFixed(2)
+        : "0.00";
+
+    return Obx(() {
+      Get.find<WalletsController>().chartLines.value;
+      return Container(
+          margin: const EdgeInsets.all(
+            AppTheme.cardPadding * 1.25,
+          ),
+          child: coin.coin == true ? Row(
+            children: [
+              Text("incoming:"),
+              SizedBox(width: AppTheme.elementSpacing / 2,),
+              Text(balanceStr),
+              Icon(
+                iconDataUnit,
+                size: AppTheme.elementSpacing * 1.25,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? AppTheme.black60
+                    : AppTheme.white60,
+              ),
+            ],
+          ) : Row(
+            children: [
+              Text("incoming:"),
+              SizedBox(width: AppTheme.elementSpacing / 2,),
+              Text("$currencyEquivalent${getCurrency(currency!)}"),
+              // Icon(
+              //   iconDataUnit,
+              // ),
+            ],
+          )
+      );
+    });
   }
 }
 
