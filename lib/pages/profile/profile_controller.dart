@@ -80,14 +80,16 @@ class ProfileController extends BaseController {
       List<Asset> fetchedAssets = await listTaprootAssets();
       List<Asset> reversedAssets = fetchedAssets.reversed.toList();
       assets.value = reversedAssets;
-      assetsLazyLoading.value = assets.take(20).toList();
-      fetchNext20Metas(0, 20); // Load metadata for the first 20 assets
+      assetsLazyLoading.value = assets.take(10).toList();
+      fetchNext20Metas(0, 10); // Load metadata for the first 20 assets
     } catch (e) {
       print('Error: $e');
     }
+
   }
 
   fetchNext20Metas(int startIndex, int count) async {
+
     Map<String, AssetMetaResponse> metas = {};
     for (int i = startIndex; i < startIndex + count && i < assets.length; i++) {
       String assetId = assets[i].assetGenesis?.assetId ?? '';
@@ -97,17 +99,17 @@ class ProfileController extends BaseController {
       }
     }
     assetMetaMap.addAll(metas);
+    isLoading.value = false;
   }
 
-
-
   loadMoreAssets() async {
+    isLoading.value = true;
     if (assetsLazyLoading.length < assets.length) {
       int nextIndex = assetsLazyLoading.length;
-      int endIndex = nextIndex + 20;
+      int endIndex = nextIndex + 10;
       List<dynamic> nextAssets = assets.sublist(nextIndex, endIndex > assets.length ? assets.length : endIndex);
       assetsLazyLoading.addAll(nextAssets);
-      await fetchNext20Metas(nextIndex, 20); // Load metadata for the next 20 assets
+      await fetchNext20Metas(nextIndex, 10); // Load metadata for the next 20 assets
     }
   }
 

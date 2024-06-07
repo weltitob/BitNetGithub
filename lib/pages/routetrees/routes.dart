@@ -124,9 +124,13 @@ class AppRoutes {
                       ),
                   routes: [
                     GoRoute(
-                        path: kNftProductScreenRoute + "/:nft_id",
-                        name: '$kCollectionScreenRoute$kNftProductScreenRoute',
-                        builder: (ctx, state) => NftProductScreen()),
+                      path: '$kNftProductScreenRoute/:nft_id',
+                      builder: (ctx, state) {
+                        final batchKey = state.pathParameters['nft_id'];
+                        print('Batch key in route: $batchKey');
+                        return NftProductScreen(routerState: state);
+                      },
+                    ),
                   ]),
             ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
 

@@ -39,37 +39,43 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
             ],
           ),
         )
-            : ListView.builder(
-          controller: ScrollController(),
-          itemCount: controller.assetsLazyLoading.length + (controller.assetsLoading ? 1 : 0),
-          itemBuilder: (context, index) {
-            if (index < controller.assetsLazyLoading.length) {
-              final asset = controller.assetsLazyLoading[index];
-              final assetId = asset.assetGenesis?.assetId ?? '';
-              final meta = controller.assetMetaMap[assetId];
-              return GestureDetector(
-                onTap: () {
-                  context.pushNamed(kNftProductScreenRoute, pathParameters: {'nft_id': assetId});
-                },
-                child: Post(
-                  postId: assetId,
-                  ownerId: "Tobias Welti" ?? '',
-                  username: "username" ?? '',
-                  postName: asset.assetGenesis?.name ?? '',
-                  rockets: {},
-                  medias: meta != null ? meta.toMedias() : [],
-                  timestamp: DateTime.fromMillisecondsSinceEpoch(asset.lockTime! * 1000),
-                ),
-              );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: dotProgress(context),
-                ),
-              );
-            }
-          },
+            : Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: controller.assetsLazyLoading.length + (controller.assetsLoading ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index < controller.assetsLazyLoading.length) {
+                  final asset = controller.assetsLazyLoading[index];
+                  final assetId = asset.assetGenesis?.assetId ?? '';
+                  final meta = controller.assetMetaMap[assetId];
+                  return GestureDetector(
+                    onTap: () {
+                      context.pushNamed(kNftProductScreenRoute, pathParameters: {'nft_id': assetId});
+                    },
+                    child: Post(
+                      postId: assetId,
+                      ownerId: "Tobias Welti" ?? '',
+                      username: "username" ?? '',
+                      postName: asset.assetGenesis?.name ?? '',
+                      rockets: {},
+                      medias: meta != null ? meta.toMedias() : [],
+                      timestamp: DateTime.fromMillisecondsSinceEpoch(asset.lockTime! * 1000),
+                    ),
+                  );
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: dotProgress(context),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
         );
       },
     );

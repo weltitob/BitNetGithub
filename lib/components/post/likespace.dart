@@ -32,7 +32,7 @@ class buildLikeSpace extends StatefulWidget {
     required this.rockets,
   });
 
-  int getRocketCount() {
+  int getLikeCount() {
     //if no rockets, return 0
     if (rockets == null) {
       return 0;
@@ -53,7 +53,7 @@ class buildLikeSpace extends StatefulWidget {
         targetId: this.targetId,
         ownerId: this.ownerId,
         rocketsmap: this.rockets,
-        rocketcount: getRocketCount(),
+        rocketcount: getLikeCount(),
       );
 }
 
