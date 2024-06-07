@@ -13,6 +13,7 @@ import 'package:bitnet/components/marketplace_widgets/ChaunInfo.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductHorizontal.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
+import 'package:bitnet/models/postmodels/post.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -30,7 +31,7 @@ class NftProductScreen extends StatefulWidget {
 class _NftProductScreenState extends State<NftProductScreen> {
   late AssetMetaResponse? meta;
   late dynamic assetStats;
-  late final bool loading;
+  bool loading = true;
   late String? nft_id;
 
   @override initState(){
@@ -42,11 +43,8 @@ class _NftProductScreenState extends State<NftProductScreen> {
   getAssetData() async {
     nft_id = await widget.routerState?.pathParameters['nft_id'];
     print("nft_id: $nft_id");
-    setState(() {
-      loading = true;
-    });
-    meta = await fetchAssetMeta(nft_id ?? '');
-    assetStats = await queryAssetStats(nft_id ?? '');
+    meta = await fetchAssetMeta(nft_id!);
+    assetStats = await queryAssetStats(nft_id!);
     print("assetStats: $assetStats");
     print("meta: $meta");
 
@@ -81,16 +79,20 @@ class _NftProductScreenState extends State<NftProductScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Post(
-                        //   postId: nft_id!,
-                        //   ownerId: "Tobias Welti" ?? '',
-                        //   username: "username" ?? '',
-                        //   postName: asset.assetGenesis?.name ?? '',
-                        //   rockets: {},
-                        //   medias: meta!.toMedias(),
-                        //   timestamp: DateTime.fromMillisecondsSinceEpoch(
-                        //       asset.lockTime! * 1000),
-                        // ),
+                        SizedBox(height: AppTheme.cardPadding.h * 2,),
+                        // Text("assetStats: $assetStats"),
+                        // Text("meta: ${meta!.data}"),
+
+                        Post(
+                          postId: nft_id!,
+                          ownerId: "Tobias Welti" ?? '',
+                          username: "username" ?? '',
+                          postName:' assetStats.assetGenesis.name ?? ''',
+                          rockets: {},
+                          medias: meta!.toMedias(),
+                          timestamp: DateTime.fromMillisecondsSinceEpoch(
+                              10 * 1000),
+                        ),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
                           margin: EdgeInsets.only(bottom: 20.h),

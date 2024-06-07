@@ -462,10 +462,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             onTap: handleProductClick,
                             onLongTap: () {
                               context.goNamed(
-                                  '$kCollectionScreenRoute/$kNftProductScreenRoute',
+                                  '/asset_screen',
                                   pathParameters: {
                                     'nft_id': sortedGridList[index].nftName
-                                  });
+                                  }
+                                  );
                             },
                             onTapBuy: () {
                               setState(() {

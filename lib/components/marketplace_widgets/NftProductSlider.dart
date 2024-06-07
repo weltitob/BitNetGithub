@@ -52,8 +52,7 @@ class _NftProductSliderState extends State<NftProductSlider> {
       margin: EdgeInsets.symmetric(horizontal: 5.w * widget.scale),
       child: GestureDetector(
         onTap: () {
-          context.pushNamed(kNftProductScreenRoute,
-              pathParameters: {'nft_id': widget.nftName ?? ''});
+          context.go("asset_screen/:${widget.nftName}");
         },
         child: GlassContainer(
           width: 214.w * widget.scale,

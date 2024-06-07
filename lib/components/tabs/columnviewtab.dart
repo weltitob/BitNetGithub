@@ -22,9 +22,7 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
   Widget build(BuildContext context) {
     return Obx(
           () {
-        return controller.isLoading.value
-            ? Center(child: dotProgress(context))
-            : !controller.isLoading.value && controller.assets.isEmpty
+        return !controller.isLoading.value && controller.assets.isEmpty
             ? Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
@@ -51,9 +49,13 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
                   final asset = controller.assetsLazyLoading[index];
                   final assetId = asset.assetGenesis?.assetId ?? '';
                   final meta = controller.assetMetaMap[assetId];
+                  print("Asset ID: $assetId");
                   return GestureDetector(
                     onTap: () {
-                      context.pushNamed(kNftProductScreenRoute, pathParameters: {'nft_id': assetId});
+                      context.go("/asset_screen/$assetId",);
+                      // context.goNamed('asset_screen', pathParameters: {
+                      //   'nft_id': assetId,
+                      // });
                     },
                     child: Post(
                       postId: assetId,
@@ -66,6 +68,7 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
                     ),
                   );
                 } else {
+                  // Show loader at the end
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Center(

@@ -38,8 +38,6 @@ class QRScannerController extends State<QrScanner> {
   bool isLoading = false;
 
 
- 
-
   QRTyped determineQRType(dynamic encodedString) {
     LoggerService logger = Get.find();
     final isLightningMailValid = isLightningAdressAsMail(encodedString);
