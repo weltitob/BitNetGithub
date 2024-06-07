@@ -8,6 +8,7 @@ import 'package:bitnet/pages/profile/widgets/qr_button.dart';
 import 'package:bitnet/pages/profile/widgets/setting_button.dart';
 import 'package:bitnet/pages/profile/widgets/user_information.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -38,7 +39,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: AppTheme.cardPadding * 3),
+                    SizedBox(height: AppTheme.cardPadding.h * 2),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -102,8 +103,8 @@ class ProfileHeader extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 40,
+              SizedBox(
+                height: AppTheme.cardPadding.h * 1,
               ),
             ],
           ),
