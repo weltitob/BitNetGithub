@@ -85,9 +85,11 @@ class ProfileController extends BaseController {
     } catch (e) {
       print('Error: $e');
     }
+
   }
 
   fetchNext20Metas(int startIndex, int count) async {
+
     Map<String, AssetMetaResponse> metas = {};
     for (int i = startIndex; i < startIndex + count && i < assets.length; i++) {
       String assetId = assets[i].assetGenesis?.assetId ?? '';
@@ -97,11 +99,11 @@ class ProfileController extends BaseController {
       }
     }
     assetMetaMap.addAll(metas);
+    isLoading.value = false;
   }
 
-
-
   loadMoreAssets() async {
+    isLoading.value = true;
     if (assetsLazyLoading.length < assets.length) {
       int nextIndex = assetsLazyLoading.length;
       int endIndex = nextIndex + 20;

@@ -495,22 +495,19 @@ abstract class AppTheme {
         ColorScheme colorScheme = ColorScheme(
           brightness: Brightness.light,
           onPrimaryContainer: Colors.black ,
-          // onPrimaryFixed: AppTheme.white80,
-          // onPrimaryFixedVariant: AppTheme.white80,
+          onPrimary: Colors.black,
+          onSecondaryContainer: Colors.black,
+          onSecondary: Colors.black,
           primary: AppTheme.colorBitcoin,
+          onSurface: Colors.black,
           secondary: AppTheme.secondaryColor,
           secondaryContainer: Color(0xfff2f2f2),
           primaryContainer: Color(0xfff2f2f2),
           tertiary: Color(0xfff2f2f2),
-          // tertiary: AppTheme.colorBackground,
           tertiaryContainer: Color(0xfff2f2f2),
-          onPrimary: AppTheme.white80,
-
-          onSecondary: Color(0xfff2f2f2),
           error: AppTheme.errorColor,
           onError: AppTheme.errorColor,
           surface: Color(0xfff2f2f2),
-          onSurface: Color(0xfff2f2f2),
         );
         ThemeData themeData = ThemeData.from(
           colorScheme: colorScheme,
