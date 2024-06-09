@@ -148,7 +148,7 @@ class _BottomNavState extends State<BottomNav>
 
     return Scaffold(
         resizeToAvoidBottomInset: false, // Add this line
-        bottomNavigationBar: Container(
+        bottomNavigationBar: !(MediaQuery.of(context).viewInsets.bottom == 0) ? Container(height: 0, width: 0): Container(
             color: Theme.of(context).brightness == Brightness.light
                 ? lighten(Theme.of(context).colorScheme.primaryContainer, 50)
                 : darken(Theme.of(context).colorScheme.primaryContainer, 80),

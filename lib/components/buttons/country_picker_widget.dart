@@ -39,9 +39,10 @@ class _PopUpCountryickerWidgetState extends State<PopUpCountryPickerWidget> {
     super.initState();
   }
  void setupAsyncData() async {
- determinePosition().then((v) {
-      print("InitialCountry is being set to: ${v.name!}");
-      initialCountry = countryProvider.Country(currency: "", name: v.name!, isoCode: v.isoCountryCode!, phoneCode: "", flag: isoToFlag(v.isoCountryCode!), latitude: '', longitude: '', );
+ determinePosition().then((v) async {
+      print("InitialCountry is being set to: ${v.country!}");
+            initialCountry = await countryProvider.getCountryFromCode(v.isoCountryCode!);
+
       setState((){});
     },
     onError: (a,b)async  {
@@ -134,7 +135,7 @@ String flag = iso.toUpperCase().replaceAllMapped(RegExp(r'[A-Z]'),
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text((initialCountry?.flag ?? isoToFlag("US")), style: Theme.of(context).textTheme.displaySmall),
                     ),
-                    Text((initialCountry?.name ?? "USA" ), style: Theme.of(context).textTheme.bodyLarge),
+                    Text((initialCountry?.name ?? "United States" ), style: Theme.of(context).textTheme.bodyLarge),
                     Spacer(),
                     Icon(sheetOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down)
                    

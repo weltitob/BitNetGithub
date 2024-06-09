@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vibration/vibration.dart';
 
 //camera, image_png, image_jpeg, gif, webp, audio_wav, audio_mp3, text, description, document, pdf, extenal_url, link, sticker, location, wallet
 enum MediaType {
@@ -174,6 +175,14 @@ String convertIntoDateFormat(int time){
 // Format a double value as a percentage string
 String toPercent(double value) => NumberFormat('+#.##%; -#.##%').format(value);
 
+void scrollToSearchFunc(ScrollController ctrl, FocusNode node) {
+    if(ctrl.position.pixels <= -100 && !node.hasFocus) {
+      ctrl.jumpTo(0);
+      node.requestFocus();
+      Vibration.vibrate();
+    }
+  }
+  
 // Format the input value within a specified numerical range, and display a snackbar if the value exceeds the maximum
 // This class formats a numerical input value within a specified range, and displays a snackbar if the value exceeds the maximum
 // It extends the TextInputFormatter class, which is used to modify the text being entered into a text field
@@ -245,6 +254,7 @@ class DotFormatter extends TextInputFormatter {
       return newValue;
     }
   }
+
 }
 
 class MyBehavior extends ScrollBehavior {

@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
@@ -30,12 +31,28 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen>
     with SingleTickerProviderStateMixin {
+  late FocusNode searchNode;
+  late ScrollController homeScrollController;
   @override
   void initState() {
+    
     super.initState();
+    homeScrollController = ScrollController();
+    homeScrollController.addListener((){
+      scrollToSearchFunc(homeScrollController, searchNode);
+    });
+       searchNode = FocusNode();
     Get.put(FeedController()).initNFC(context);
   }
 
+   
+
+@override
+void dispose() {
+  homeScrollController.dispose();
+  searchNode.dispose();
+  super.dispose();
+}
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
@@ -51,7 +68,7 @@ class _FeedScreenState extends State<FeedScreen>
                   SearchFieldWithNotificationsWidget(
                     isSearchEnabled: true,
                     hintText: "${L10n.of(context)!.search}...",
-                    handleSearch: controller.handleSearch,
+                    handleSearch: controller.handleSearch, focus: searchNode,
                   ),
                   HorizontalFadeListView(
                     child: Container(
@@ -83,7 +100,7 @@ class _FeedScreenState extends State<FeedScreen>
               ? TabBarView(
                   controller: controller.tabController,
                   children: [
-                    HomeScreen(),
+                    HomeScreen(ctrler: homeScrollController),
                     Container(
                       child: Center(
                           child: Text(

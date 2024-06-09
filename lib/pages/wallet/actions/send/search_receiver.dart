@@ -43,13 +43,23 @@ class SearchReceiver extends GetWidget<SendsController> {
                   hintText: L10n.of(context)!.searchReceipient,
                   isSearchEnabled: true,
                   handleSearch: controller.handleSearch,
+                  node: controller.myFocusNodeAdressSearch,
+                  
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    reverse: true,
-                    child: Column(
-                      children: [
-                      ],
+                    physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                    controller: controller.sendScrollerController,
+                    
+                    reverse: false,
+                    child: Container(
+                                height: MediaQuery.of(context).size.height * 1.5,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(height: 1)
+                        ],
+                      ),
                     ),
                   ),
                 ),

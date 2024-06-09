@@ -6,12 +6,14 @@ import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/components/tabs/columnviewtab.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
 import 'package:bitnet/components/tabs/rowviewtab.dart';
+import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:bitnet/backbone/cloudfunctions/getblocktimestamp.dart';
 
 class ProfileController extends BaseController {
   String profileId = "GUsuvr19SPrGELGZtrAq";
@@ -56,7 +58,7 @@ class ProfileController extends BaseController {
 
   RxList<dynamic> assets = [].obs;
   Map<String, AssetMetaResponse> assetMetaMap = {};
-  
+  DateTime originalBlockDate = DateTime.now();
   bool get profileReady =>
       gotIsFollowing.value == true &&
       gotFollowerCount.value == true &&
@@ -298,7 +300,7 @@ class ProfileController extends BaseController {
       List<Asset> fetchedAssets = await listTaprootAssets();
       List<Asset> reversedAssets = fetchedAssets.reversed.toList();
       Map<String, AssetMetaResponse> metas = {};
-
+      originalBlockDate = await getBlockTimeStamp(fetchedAssets[0]);
       for (int i = 0; i < reversedAssets.length && i < 20; i++) {
         String assetId = reversedAssets[i].assetGenesis!.assetId ?? '';
         AssetMetaResponse? meta = await fetchAssetMeta(assetId);
@@ -312,6 +314,51 @@ class ProfileController extends BaseController {
     } catch (e) {
       print('Error: $e');
       isLoading.value = false;
+    }
+  }
+ Future<void> fetchTaprootAssetsAsync() async {
+      isLoading.value = true;
+    try {
+      List<Asset> fetchedAssets = await listTaprootAssets();
+      List<Asset> reversedAssets = fetchedAssets.reversed.toList();
+      originalBlockDate = await getBlockTimeStamp(fetchedAssets[0]);
+        assets.value = reversedAssets;
+      isLoading.value = false;
+    } catch (e) {
+      print('Error: $e');
+      isLoading.value = false;
+    }
+  }
+  Future<void> loadMoreMetaAssets(int amt) async {
+    try {
+            Map<String, AssetMetaResponse> metas = {};
+       for (int i = assetMetaMap.length, a = 0; i < assets.value.length && a < amt; i++) {
+        String assetId = assets.value[i].assetGenesis!.assetId ?? '';
+        AssetMetaResponse? meta = await fetchAssetMeta(assetId);
+        if (meta != null) {
+          metas[assetId] = meta;
+          a++;
+        }
+      }
+      assetMetaMap.addAll(metas);
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+    Future<AssetMetaResponse?> loadMetaAsset(String assetId) async {
+    try {
+     
+        AssetMetaResponse? meta = await fetchAssetMeta(assetId);
+        if (meta != null) {
+          assetMetaMap[assetId] = meta;
+          return meta;
+        } else {
+          return null;
+        }
+     
+    } catch (e) {
+      print('Error: $e');
     }
   }
 }

@@ -17,7 +17,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final ScrollController? ctrler;
+  const HomeScreen({Key? key, this.ctrler}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +27,9 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
+            controller: ctrler,
+                    physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
