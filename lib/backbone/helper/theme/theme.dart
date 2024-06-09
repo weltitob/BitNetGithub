@@ -52,6 +52,8 @@ abstract class AppTheme {
   static String stripeLiveKey =
       'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
 
+  static String whatsappChannelUrl = 'https://www.whatsapp.com/bitnet.ai/';
+
   static String instagramUrl = 'https://www.instagram.com/bitnet.ai/';
   static String twitterUrl = 'https://twitter.com/bitnet_ai';
   static String facebookUrl = 'https://www.facebook.com/bitnet.ai';
@@ -460,33 +462,60 @@ abstract class AppTheme {
     Color defaultSeed = seed ?? AppTheme.primaryColor;
 
     if (defaultSeed == Color(0xffffffff) || defaultSeed == Color(0xff000000)) {
-      ColorScheme colorScheme = ColorScheme(
-        onPrimaryContainer: Colors.white,
-        // onPrimaryFixed: AppTheme.white80,
-        // onPrimaryFixedVariant: AppTheme.white80,
-        primary: AppTheme.colorBitcoin,
-        secondary: AppTheme.secondaryColor,
-        secondaryContainer: Colors.black,
-        primaryContainer: Colors.black,
-        tertiary: Colors.black,
-        // tertiary: AppTheme.colorBackground,
-        tertiaryContainer: Colors.black,
-        brightness: Brightness.dark,
-        onPrimary: AppTheme.white80,
+      if(brightness == Brightness.dark){
+        ColorScheme colorScheme = ColorScheme(
+          onPrimaryContainer: Colors.white ,
+          // onPrimaryFixed: AppTheme.white80,
+          // onPrimaryFixedVariant: AppTheme.white80,
+          primary: AppTheme.colorBitcoin,
+          secondary: AppTheme.secondaryColor,
+          secondaryContainer: Colors.black,
+          primaryContainer: Colors.black,
+          tertiary: Colors.black,
+          // tertiary: AppTheme.colorBackground,
+          tertiaryContainer: Colors.black,
+          brightness: Brightness.dark,
+          onPrimary: AppTheme.white80,
 
-        onSecondary: Colors.black,
-        error: AppTheme.errorColor,
-        onError: AppTheme.errorColor,
-        surface: Colors.black,
-        onSurface: Colors.black,
-      );
-      ThemeData themeData = ThemeData.from(
-        colorScheme: colorScheme,
-        textTheme: brightness == Brightness.light
-            ? fallbackTextTheme.merge(textTheme)
-            : fallbackTextTheme.merge(textThemeDarkMode),
-      );
-      return themeData;
+          onSecondary: Colors.black,
+          error: AppTheme.errorColor,
+          onError: AppTheme.errorColor,
+          surface: Colors.black,
+          onSurface: Colors.black,
+        );
+        ThemeData themeData = ThemeData.from(
+          colorScheme: colorScheme,
+          textTheme: brightness == Brightness.light
+              ? fallbackTextTheme.merge(textTheme)
+              : fallbackTextTheme.merge(textThemeDarkMode),
+        );
+        return themeData;
+      } else{
+        //lightmode
+        ColorScheme colorScheme = ColorScheme(
+          brightness: Brightness.light,
+          onPrimaryContainer: Colors.black ,
+          onPrimary: Colors.black,
+          onSecondaryContainer: Colors.black,
+          onSecondary: Colors.black,
+          primary: AppTheme.colorBitcoin,
+          onSurface: Colors.black,
+          secondary: AppTheme.secondaryColor,
+          secondaryContainer: Color(0xfff2f2f2),
+          primaryContainer: Color(0xfff2f2f2),
+          tertiary: Color(0xfff2f2f2),
+          tertiaryContainer: Color(0xfff2f2f2),
+          error: AppTheme.errorColor,
+          onError: AppTheme.errorColor,
+          surface: Color(0xfff2f2f2),
+        );
+        ThemeData themeData = ThemeData.from(
+          colorScheme: colorScheme,
+          textTheme: fallbackTextTheme.merge(textTheme),
+        );
+        return themeData;
+      }
+
     } else {
       ColorScheme colorScheme = ColorScheme.fromSeed(
         seedColor: defaultSeed,

@@ -8,8 +8,6 @@ import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
@@ -17,7 +15,6 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
-import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
 import 'package:flutter/material.dart';
@@ -82,9 +79,10 @@ class WalletScreen extends GetWidget<WalletsController> {
         context: context,
         body: ListView(
           children: [
-            Obx(() {
-              controller.chartLines.value;
-              return Column(
+            Obx(
+              () {
+                controller.chartLines.value;
+                return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -203,8 +201,6 @@ class WalletScreen extends GetWidget<WalletsController> {
                           CardSwiper(
                             backCardOffset:
                                 const Offset(0, -AppTheme.cardPadding),
-                            // maxAngle: 0.0,
-                            // threshold: 10,
                             padding: const EdgeInsets.only(
                                 left: AppTheme.cardPadding,
                                 right: AppTheme.cardPadding,
@@ -225,8 +221,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                         ],
                       ),
                     ),
-                  ]);
-            }),
+                  ],
+                );
+              },
+            ),
             SizedBox(height: AppTheme.cardPadding.h * 1.75),
             Padding(
               padding:
@@ -265,7 +263,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                     fallbackIcon: Icons.arrow_downward_rounded,
                   ),
                   BitNetImageWithTextButton(
-                    L10n.of(context)!.rebalance,
+                    "Swap",
+                    //L10n.of(context)!.rebalance,
                     () {
                       Get.put(LoopsController());
                       context.go("/wallet/loop_screen");

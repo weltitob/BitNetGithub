@@ -63,7 +63,6 @@ class BottomRightGradient extends StatelessWidget {
   }
 }
 
-
 class BalanceCardLightning extends GetWidget<WalletsController> {
   const BalanceCardLightning({
     super.key,
@@ -76,11 +75,9 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
     final balanceStr = unitModel.amount.toString();
 
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          AppTheme.boxShadowBig,
-        ]
-      ),
+      decoration: BoxDecoration(boxShadow: [
+        AppTheme.boxShadowBig,
+      ]),
       child: Stack(
         children: [
           const CardBackgroundLightning(),
@@ -92,7 +89,7 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
             cardname: 'Lightning Balance',
             iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
           ),
-          PaymentNetworkPicture(imageUrl:  "assets/images/lightning.png"),
+          PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
         ],
       ),
     );
@@ -100,27 +97,22 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
 }
 
 class BalanceCardBtc extends GetWidget<WalletsController> {
-  // final WalletController controller;
-  String? balance;
-   BalanceCardBtc({
-    Key? key,
-    this.balance
-  }) : super(key: key);
+  final String? balance;
+  BalanceCardBtc({Key? key, this.balance}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
-        double.parse(balance == null ? controller.onchainBalance.confirmedBalance : balance ?? '0'),
+        double.parse(balance == null
+            ? controller.onchainBalance.confirmedBalance
+            : balance ?? '0'),
         balance == null ? BitcoinUnits.SAT : BitcoinUnits.BTC);
     final balanceStr = unitModel.amount.toString();
-    print(balanceStr);
 
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          AppTheme.boxShadowBig,
-        ]
-      ),
+      decoration: BoxDecoration(boxShadow: [
+        AppTheme.boxShadowBig,
+      ]),
       child: Stack(
         children: [
           const CardBackgroundOnchain(),
@@ -132,15 +124,30 @@ class BalanceCardBtc extends GetWidget<WalletsController> {
             walletAddress: "safdadasdas",
             cardname: 'On-Chain Balance',
           ),
-          PaymentNetworkPicture(imageUrl: 'assets/images/bitcoin.png'),
           Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.cardPadding * 1.25,),
-                //unconfirmed balance if there is one display here
-                child: Text("Incoming: 32.21 (BItcoinsymbol/USD)",
-                style: Theme.of(context).textTheme.bodySmall,),
-              )),
+            alignment: Alignment.bottomLeft,
+            child: UnconfirmedTextWidget(
+              balanceStr: controller.onchainBalance.unconfirmedBalance,
+              iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+              iconData: FontAwesomeIcons.piggyBank,
+              balanceSAT: controller.onchainBalance.unconfirmedBalance,
+              walletAddress: "safdadasdas",
+              cardname: 'incoming Balance',
+            ),
+          ),
+          // Positioned(
+          //   top: 70.h,
+          //
+          //   child: BalanceTextWidget(
+          //     balanceStr: controller.onchainBalance.unconfirmedBalance,
+          //     iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+          //     iconData: FontAwesomeIcons.piggyBank,
+          //     balanceSAT: controller.onchainBalance.unconfirmedBalance,
+          //     walletAddress: "safdadasdas",
+          //     cardname: 'incoming Balance',
+          //   ),
+          // ),
+          PaymentNetworkPicture(imageUrl: 'assets/images/bitcoin.png'),
         ],
       ),
     );
@@ -177,8 +184,13 @@ class CardBackgroundLightning extends StatelessWidget {
               end: Alignment.topRight,
               stops: [0, 0.75],
               colors: [
-                Theme.of(context).brightness == Brightness.light ? darken(Theme.of(context).colorScheme.primaryContainer, 10) : Theme.of(context).colorScheme.primaryContainer,
-                Theme.of(context).brightness == Brightness.light ? darken(Theme.of(context).colorScheme.tertiaryContainer, 10) : Theme.of(context).colorScheme.tertiaryContainer,
+                Theme.of(context).brightness == Brightness.light
+                    ? darken(Theme.of(context).colorScheme.primaryContainer, 10)
+                    : Theme.of(context).colorScheme.primaryContainer,
+                Theme.of(context).brightness == Brightness.light
+                    ? darken(
+                        Theme.of(context).colorScheme.tertiaryContainer, 10)
+                    : Theme.of(context).colorScheme.tertiaryContainer,
               ],
             ),
           ),
@@ -278,7 +290,6 @@ class WavyGleamPainter extends CustomPainter {
 class CardBackgroundOnchain extends StatelessWidget {
   const CardBackgroundOnchain({Key? key}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -356,6 +367,72 @@ class PaymentNetworkPicture extends StatelessWidget {
 }
 
 
+class UnconfirmedTextWidget extends GetWidget<WalletsController> {
+  final String balanceSAT;
+  final String balanceStr;
+  final String cardname;
+  final String walletAddress;
+  final IconData iconData;
+  final IconData iconDataUnit;
+
+  const UnconfirmedTextWidget({
+    Key? key,
+    required this.balanceSAT,
+    required this.balanceStr,
+    required this.walletAddress,
+    required this.iconData,
+    required this.iconDataUnit,
+    required this.cardname,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final chartLine = Get.find<WalletsController>().chartLines.value;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
+    currency = currency ?? "USD";
+
+    final bitcoinPrice = chartLine?.price;
+    final currencyEquivalent = bitcoinPrice != null
+        ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice)
+        .toStringAsFixed(2)
+        : "0.00";
+
+    return Obx(() {
+      Get.find<WalletsController>().chartLines.value;
+      return Container(
+          margin: const EdgeInsets.all(
+            AppTheme.cardPadding * 1.25,
+          ),
+          child: coin.coin == true ? Row(
+            children: [
+              Text("incoming:"),
+              SizedBox(width: AppTheme.elementSpacing / 2,),
+              Text(balanceStr),
+              Icon(
+                iconDataUnit,
+                size: AppTheme.elementSpacing * 1.25,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? AppTheme.black60
+                    : AppTheme.white60,
+              ),
+            ],
+          ) : Row(
+            children: [
+              Text("incoming:"),
+              SizedBox(width: AppTheme.elementSpacing / 2,),
+              Text("$currencyEquivalent${getCurrency(currency!)}"),
+              // Icon(
+              //   iconDataUnit,
+              // ),
+            ],
+          )
+      );
+    });
+  }
+}
+
 class BalanceTextWidget extends GetWidget<WalletsController> {
   final String balanceSAT;
   final String balanceStr;
@@ -385,74 +462,82 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
         ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice)
-        .toStringAsFixed(2)
+            .toStringAsFixed(2)
         : "0.00";
 
-    return Obx((){
+    return Obx(() {
       Get.find<WalletsController>().chartLines.value;
       return Padding(
-      padding: const EdgeInsets.all(
-        AppTheme.cardPadding * 1.25,
-      ),
-      child: Obx(
-            () => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  cardname,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: AppTheme.elementSpacing * 0.5,
-            ),
-            if (coin.coin ?? true) ...[
-              controller.hideBalance.value
-                  ? Text('*****', style: Theme.of(context).textTheme.headlineLarge,)
-                  : GestureDetector(
-                onTap: () => coin.setCurrencyType(
-                    coin.coin != null ? !coin.coin! : false),
-                child: Container(
-                  width: 180.w,
-                  child: Row(
-                    children: [
-                      Text(
-                        balanceStr,
-                        style: Theme.of(context).textTheme.headlineLarge,
-                      ),
-                      // const SizedBox(
-                      //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
-                      // ),
-                      Icon(
-                        iconDataUnit,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ] else ...[
-              controller.hideBalance.value
-                  ? Text('*****', style: Theme.of(context).textTheme.headlineLarge,)
-                  : GestureDetector(
-                onTap: () => coin.setCurrencyType(
-                    coin.coin != null ? !coin.coin! : false),
-                child: Container(
-                  width:
-                  160, // Replace with your AppTheme.cardPadding * 10 if needed
-                  child: Text(
-                    "$currencyEquivalent${getCurrency(currency!)}",
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                ),
-              ),
-            ]
-          ],
+        padding: const EdgeInsets.all(
+          AppTheme.cardPadding * 1.25,
         ),
-      ),
-    );});
+        child: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    cardname,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: AppTheme.elementSpacing * 0.5,
+              ),
+              if (coin.coin ?? true) ...[
+                controller.hideBalance.value
+                    ? Text(
+                        '*****',
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      )
+                    : GestureDetector(
+                        onTap: () => coin.setCurrencyType(
+                            coin.coin != null ? !coin.coin! : false),
+                        child: Container(
+                          width: 180.w,
+                          child: Row(
+                            children: [
+                              Text(
+                                balanceStr,
+                                style:
+                                    Theme.of(context).textTheme.headlineLarge,
+                              ),
+                              // const SizedBox(
+                              //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
+                              // ),
+                              Icon(
+                                iconDataUnit,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+              ] else ...[
+                controller.hideBalance.value
+                    ? Text(
+                        '*****',
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      )
+                    : GestureDetector(
+                        onTap: () => coin.setCurrencyType(
+                            coin.coin != null ? !coin.coin! : false),
+                        child: Container(
+                          width:
+                              160, // Replace with your AppTheme.cardPadding * 10 if needed
+                          child: Text(
+                            "$currencyEquivalent${getCurrency(currency!)}",
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.headlineLarge,
+                          ),
+                        ),
+                      ),
+              ]
+            ],
+          ),
+        ),
+      );
+    });
   }
 }

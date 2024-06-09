@@ -23,6 +23,8 @@ class ProfileController extends BaseController {
   RxBool isUserLoading = true.obs;
   RxBool isLoading = true.obs;
 
+  bool assetsLoading = false;
+
   late UserData userData;
 
   RxBool? isPrivate;
@@ -30,16 +32,12 @@ class ProfileController extends BaseController {
   RxString? _profileImage;
   RxString? _backgroundImage;
 
-  //for validation when profile edited
   RxBool usernameValid = true.obs;
   RxBool displayNameValid = true.obs;
   RxBool bioValid = true.obs;
 
-  //check if currentuser follows the displayed person
-
   RxBool? isFollowing;
   RxBool gotIsFollowing = false.obs;
-  //followers
   RxInt? followerCount;
   RxInt? followingCount;
   RxBool gotFollowerCount = false.obs;
@@ -56,24 +54,65 @@ class ProfileController extends BaseController {
   final focusNodeUsername = FocusNode();
   final focusNodeBio = FocusNode();
 
-  RxList<dynamic> assets = [].obs;
+  RxList<dynamic> assets = <Asset>[].obs;
+  RxList<dynamic> assetsLazyLoading = <Asset>[].obs;
   Map<String, AssetMetaResponse> assetMetaMap = {};
   DateTime originalBlockDate = DateTime.now();
   bool get profileReady =>
       gotIsFollowing.value == true &&
-      gotFollowerCount.value == true &&
-      gotFollowingCount.value == true &&
-      isUserLoading.value == false;
+          gotFollowerCount.value == true &&
+          gotFollowingCount.value == true &&
+          isUserLoading.value == false;
 
   @override
   void onInit() {
     super.onInit();
     loadData();
-     pages = [
+    pages = [
       ColumnViewTab(),
       RowViewTab(),
       EditProfileTab(),
     ];
+    fetchTaprootAssets();
+  }
+
+  void fetchTaprootAssets() async {
+    isLoading.value = true;
+    try {
+      List<Asset> fetchedAssets = await listTaprootAssets();
+      List<Asset> reversedAssets = fetchedAssets.reversed.toList();
+      assets.value = reversedAssets;
+      assetsLazyLoading.value = assets.take(10).toList();
+      fetchNext20Metas(0, 10); // Load metadata for the first 20 assets
+    } catch (e) {
+      print('Error: $e');
+    }
+
+  }
+
+  fetchNext20Metas(int startIndex, int count) async {
+
+    Map<String, AssetMetaResponse> metas = {};
+    for (int i = startIndex; i < startIndex + count && i < assets.length; i++) {
+      String assetId = assets[i].assetGenesis?.assetId ?? '';
+      AssetMetaResponse? meta = await fetchAssetMeta(assetId);
+      if (meta != null) {
+        metas[assetId] = meta;
+      }
+    }
+    assetMetaMap.addAll(metas);
+    isLoading.value = false;
+  }
+
+  loadMoreAssets() async {
+    isLoading.value = true;
+    if (assetsLazyLoading.length < assets.length) {
+      int nextIndex = assetsLazyLoading.length;
+      int endIndex = nextIndex + 10;
+      List<dynamic> nextAssets = assets.sublist(nextIndex, endIndex > assets.length ? assets.length : endIndex);
+      assetsLazyLoading.addAll(nextAssets);
+      await fetchNext20Metas(nextIndex, 10); // Load metadata for the next 20 assets
+    }
   }
 
   loadData() async {
@@ -86,68 +125,44 @@ class ProfileController extends BaseController {
     addFocusNodeListenerAndUpdate(focusNodeBio, updateBio);
   }
 
-  addFocusNodeListenerAndUpdate(
-    FocusNode focusNode,
-    Function() func,
-  ) {
+  addFocusNodeListenerAndUpdate(FocusNode focusNode, Function() func) {
     focusNode.addListener(() {
-      print("$focusNode has focus: ${focusNode.hasFocus}");
-      if (focusNode.hasFocus == false) {
-        print("lost focus"); 
+      if (!focusNode.hasFocus) {
         func();
       }
     });
   }
 
-
   getUser() async {
     try {
-      print('get user ');
-
       isUserLoading.value = true;
-
       DocumentSnapshot? doc = await usersCollection.doc(profileId).get();
       userData = UserData.fromDocument(doc);
 
-      //displayName
       displayNameController.text = userData.displayName;
       validDisplayName?.value = userData.displayName;
-
-      //username
       userNameController.text = userData.username;
       validUserName?.value = userData.username;
-
-      //lol später zu bio ändern
       bioController.text = userData.bio;
       validBio?.value = userData.bio;
-
-      //should show followers
       showFollwers?.value = userData.showFollowers;
-
-      //isprivateprofile?
-
-      //should always be valid otherweise will throw error before and not get uploaded
       _backgroundImage?.value = userData.backgroundImageUrl;
       _profileImage?.value = userData.profileImageUrl;
 
       isUserLoading.value = false;
-      print('get user ended');
     } catch (e, tr) {
       print(e);
       print(tr);
     }
   }
 
-  GlobalKey globalKeyQR = new GlobalKey();
+  GlobalKey globalKeyQR = GlobalKey();
 
   void updateProfilepic() {
-    if (true == true) {
-      usersCollection.doc(profileId).update({
-        'profileImageUrl': _profileImage,
-      });
-    }
+    usersCollection.doc(profileId).update({
+      'profileImageUrl': _profileImage,
+    });
   }
-
 
   void updateUsername() {
     usersCollection.doc(profileId).update({
@@ -156,10 +171,7 @@ class ProfileController extends BaseController {
   }
 
   void updateDisplayName() {
-    displayNameController.text.trim().length < 3 ||
-            displayNameController.text.isEmpty
-        ? displayNameValid.value = false
-        : displayNameValid.value = true;
+    displayNameValid.value = displayNameController.text.trim().length >= 3;
     if (displayNameValid.value) {
       usersCollection.doc(profileId).update({
         'displayName': displayNameController.text,
@@ -168,18 +180,13 @@ class ProfileController extends BaseController {
   }
 
   void updateBackgroundpic() {
-    if (true == true) {
-      usersCollection.doc(profileId).update({
-        'backgroundImageUrl': _backgroundImage,
-      });
-    }
+    usersCollection.doc(profileId).update({
+      'backgroundImageUrl': _backgroundImage,
+    });
   }
 
   void updateBio() {
-    //on unselectbio
-    bioController.text.trim().length > 40
-        ? bioValid.value = false
-        : bioValid.value = true;
+    bioValid.value = bioController.text.trim().length <= 40;
     if (bioValid.value) {
       usersCollection.doc(profileId).update({
         'bio': bioController.text,
@@ -188,60 +195,32 @@ class ProfileController extends BaseController {
   }
 
   void updateShowFollowers(bool showFollowers) {
-    if (true == true) {
-      usersCollection.doc(profileId).update({
-        'showFollowers': showFollowers,
-      });
-    }
+    usersCollection.doc(profileId).update({
+      'showFollowers': showFollowers,
+    });
   }
 
   void handleFollowUser() {
     final myuser = Auth().currentUser!.uid;
-    //hier die daten des aktuell users kriegen....
-
-    //UNSICHER OB RICHTIG SO
     isFollowing!.value = true;
-    //Make auth user follower ofg another user and update their followers collection
     followersRef.doc(profileId).collection('userFollowers').doc(myuser).set({});
-    //PUT THAT USER ON YOUR FOLLOWING COLLECTION (update your followung collection)
     followingRef.doc(myuser).collection('userFollowing').doc(profileId).set({});
-    //add activityfeed ITEM for that user to notify about new user
- 
   }
 
   void handleUnfollowUser() {
     final myuser = Auth().currentUser!.uid;
-    //UNSICHER OB RICHTIG SO
     isFollowing!.value = false;
-    //remove
-    followersRef
-        .doc(profileId)
-        .collection('userFollowers')
-        .doc(myuser)
-        .get()
-        .then((doc) {
+    followersRef.doc(profileId).collection('userFollowers').doc(myuser).get().then((doc) {
       if (doc.exists) {
         doc.reference.delete();
       }
     });
-    //PUT THAT USER ON YOUR FOLLOWING COLLECTION (update your followung collection)
-    followingRef
-        .doc(myuser)
-        .collection('userFollowing')
-        .doc(profileId)
-        .get()
-        .then((doc) {
+    followingRef.doc(myuser).collection('userFollowing').doc(profileId).get().then((doc) {
       if (doc.exists) {
         doc.reference.delete();
       }
     });
-    //delete activityfeed ITEM for that user to notify about new user
-    activityFeedRef
-        .doc(profileId)
-        .collection('feedItems')
-        .doc(myuser)
-        .get()
-        .then((doc) {
+    activityFeedRef.doc(profileId).collection('feedItems').doc(myuser).get().then((doc) {
       if (doc.exists) {
         doc.reference.delete();
       }
@@ -250,12 +229,9 @@ class ProfileController extends BaseController {
 
   void getFollowers() async {
     try {
-      QuerySnapshot snapshot =
-          await followersRef.doc(profileId).collection('userFollowers').get();
+      QuerySnapshot snapshot = await followersRef.doc(profileId).collection('userFollowers').get();
       followerCount?.value = snapshot.docs.length;
       gotFollowerCount.value = true;
-      print(gotFollowerCount.value);
-      print('getfollowers ended');
     } catch (e, tr) {
       print(e);
       print(tr);
@@ -264,11 +240,9 @@ class ProfileController extends BaseController {
 
   void getFollowing() async {
     try {
-      QuerySnapshot snapshot =
-          await followingRef.doc(profileId).collection('userFollowing').get();
+      QuerySnapshot snapshot = await followingRef.doc(profileId).collection('userFollowing').get();
       followingCount?.value = snapshot.docs.length;
       gotFollowingCount.value = true;
-      print(gotFollowingCount.value);
     } catch (e, tr) {
       print(e);
       print(tr);
@@ -278,15 +252,9 @@ class ProfileController extends BaseController {
   void checkIfFollowing() async {
     try {
       final myuser = Auth().currentUser!.uid;
-
-      DocumentSnapshot doc = await followersRef
-          .doc(profileId)
-          .collection('userFollowers')
-          .doc(myuser)
-          .get();
+      DocumentSnapshot doc = await followersRef.doc(profileId).collection('userFollowers').doc(myuser).get();
       isFollowing?.value = doc.exists;
       gotIsFollowing.value = true;
-      print(gotIsFollowing.value);
     } catch (e, tr) {
       print(e);
       print(tr);
@@ -294,28 +262,7 @@ class ProfileController extends BaseController {
   }
 
 
-  void fetchTaprootAssets() async {
-      isLoading.value = true;
-    try {
-      List<Asset> fetchedAssets = await listTaprootAssets();
-      List<Asset> reversedAssets = fetchedAssets.reversed.toList();
-      Map<String, AssetMetaResponse> metas = {};
-      originalBlockDate = await getBlockTimeStamp(fetchedAssets[0]);
-      for (int i = 0; i < reversedAssets.length && i < 20; i++) {
-        String assetId = reversedAssets[i].assetGenesis!.assetId ?? '';
-        AssetMetaResponse? meta = await fetchAssetMeta(assetId);
-        if (meta != null) {
-          metas[assetId] = meta;
-        }
-      }
-        assets.value = reversedAssets;
-        assetMetaMap = metas;
-      isLoading.value = false;
-    } catch (e) {
-      print('Error: $e');
-      isLoading.value = false;
-    }
-  }
+ 
  Future<void> fetchTaprootAssetsAsync() async {
       isLoading.value = true;
     try {
@@ -360,5 +307,6 @@ class ProfileController extends BaseController {
     } catch (e) {
       print('Error: $e');
     }
+    return null;
   }
 }

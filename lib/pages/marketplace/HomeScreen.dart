@@ -301,7 +301,7 @@ class HomeScreen extends StatelessWidget {
                 //   ),
                 // ),
                 //
-                 CommonHeading(
+                CommonHeading(
                   hasButton: false,
                   headingText: '',
                   onPress: route.kListScreenRoute,
@@ -553,10 +553,13 @@ class TopFiveMarketCapWidget extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                    height: AppTheme.cardPadding * 1.75,
-                    width: AppTheme.cardPadding * 1.75,
-                    child: Image.asset("assets/images/bitcoin.png")),
-                SizedBox(width: AppTheme.elementSpacing.w / 1.5),
+                  height: AppTheme.cardPadding * 1.75,
+                  width: AppTheme.cardPadding * 1.75,
+                  child: Image.asset("assets/images/bitcoin.png"),
+                ),
+                SizedBox(
+                  width: AppTheme.elementSpacing.w / 1.5,
+                ),
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -649,9 +652,11 @@ class TopFiveMarketCapWidget extends StatelessWidget {
                     Text(
                       '\$332.32',
                       style: AppTheme.textTheme.titleMedium,
-                    ),Text(
+                    ),
+                    Text(
                       '+5.2%',
-                      style: AppTheme.textTheme.titleSmall!.copyWith(color: Colors.green),
+                      style: AppTheme.textTheme.titleSmall!
+                          .copyWith(color: Colors.green),
                     ),
                   ],
                 )

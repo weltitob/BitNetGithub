@@ -650,6 +650,16 @@ class S {
     );
   }
 
+  /// `Swap`
+  String get swap {
+    return Intl.message(
+      'Swap',
+      name: 'swap',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `auto long`
   String get autoLong {
     return Intl.message(

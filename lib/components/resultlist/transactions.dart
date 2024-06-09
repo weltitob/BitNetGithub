@@ -26,7 +26,7 @@ import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class Transactions extends StatefulWidget {
-  bool fullList;
+  final bool fullList;
   Transactions({Key? key, this.fullList = false}) : super(key: key);
 
   @override
@@ -135,7 +135,7 @@ class _TransactionsState extends State<Transactions>
       futuresCompleted++;
       if (!value) {
         errorCount++;
-        errorMessage = "L10n.of(context)!.failedToLoadOnchain";
+        errorMessage = "${L10n.of(context)!.failedToLoadOnchain}";
       }
 
       if (futuresCompleted == 3) {
@@ -153,7 +153,7 @@ class _TransactionsState extends State<Transactions>
       futuresCompleted++;
       if (!value) {
         errorCount++;
-        errorMessage = "L10n.of(context)!.failedToLoadPayments";
+        errorMessage = "${L10n.of(context)!.failedToLoadPayments}";
       }
 
       if (futuresCompleted == 3) {
@@ -171,7 +171,7 @@ class _TransactionsState extends State<Transactions>
       futuresCompleted++;
       if (!value) {
         errorCount++;
-        errorMessage = "L10n.of(context)!.failedToLoadLightning";
+        errorMessage = "${L10n.of(context)!.failedToLoadLightning}";
       }
 
       if (futuresCompleted == 3) {
@@ -216,6 +216,7 @@ class _TransactionsState extends State<Transactions>
             ...lightningInvoices.map(
               (transaction) => TransactionItem(
                 context: context,
+                
                 data: TransactionItemData(
                   timestamp: transaction.settleDate,
                   type: TransactionType.lightning,

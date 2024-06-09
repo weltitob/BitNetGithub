@@ -99,16 +99,18 @@ class AppRoutes {
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),
-
+        GoRoute(
+          path: '/asset_screen/:nft_id',
+          builder: (ctx, state) {
+            final batchKey = state.pathParameters['nft_id'];
+            print('Batch key in route: $batchKey');
+            return NftProductScreen(routerState: state);
+          },
+        ),
         GoRoute(
             path: '/feed',
             builder: (ctx, state) => BottomNav(routerState: state),
             routes: [
-
-              GoRoute(
-                  path: kNftProductScreenRoute + "/:nft_id",
-                  name: kNftProductScreenRoute,
-                  builder: (ctx, state) => NftProductScreen()),
               GoRoute(
                   path: kListScreenRoute,
                   name: kListScreenRoute,
@@ -117,17 +119,12 @@ class AppRoutes {
                   path: kNotificationScreenRoute,
                   builder: (ctx, state) => NotificationScreen()),
               GoRoute(
-                  path: kCollectionScreenRoute + "/:collection_id",
-                  name: kCollectionScreenRoute,
-                  builder: (ctx, state) => CollectionScreen(
-                        routerState: state,
-                      ),
-                  routes: [
-                    GoRoute(
-                        path: kNftProductScreenRoute + "/:nft_id",
-                        name: '$kCollectionScreenRoute$kNftProductScreenRoute',
-                        builder: (ctx, state) => NftProductScreen()),
-                  ]),
+                path: kCollectionScreenRoute + "/:collection_id",
+                name: kCollectionScreenRoute,
+                builder: (ctx, state) => CollectionScreen(
+                  routerState: state,
+                ),
+              ),
             ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
 
         GoRoute(
@@ -357,12 +354,12 @@ class AppRoutes {
         GoRoute(
           path: '/single_transaction',
           builder: _dynamicTransition == null
-              ? (ctx, state) =>  SingleTransactionScreen()
+              ? (ctx, state) => SingleTransactionScreen()
               : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) => CustomTransitionPage(
                   key: state.pageKey,
-                  child:  SingleTransactionScreen(),
+                  child: SingleTransactionScreen(),
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),

@@ -675,13 +675,13 @@ class TransactionController extends BaseController {
     }
   }
 
-  getSingleTransaction(String txID) async {
+  RxInt? blockHeight;
+  getSingleTransaction(String txID ) async {
     try {
       print('get single transaction called ');
       // isLoading.value = true;
       String url = '${baseUrl}tx/$txID';
-      print(url);
-      await dioClient
+       await dioClient
           .get(url: url)
           .then((value) async {
             transactionModel = TransactionModel.fromJson(value.data);

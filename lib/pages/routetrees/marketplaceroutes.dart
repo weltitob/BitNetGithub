@@ -21,7 +21,6 @@ Map<String, WidgetBuilder> allRoutes = {
       const CategoriesDetailScreen(),
   kListScreenRoute: (BuildContext context) => const ListScreen(),
   kFilterScreenRoute: (BuildContext context) => const FilterScreen(),
-  kNftProductScreenRoute: (BuildContext context) => const NftProductScreen(),
   kOwnerScreenRoute: (BuildContext context) => const CollectionScreen(routerState: null),
   kSearchScreenRoute: (BuildContext context) => const SearchScreen(),
   kOwnerDetailScreenRoute: (BuildContext context) => const OwnerDetailScreen(),
@@ -44,7 +43,7 @@ const kNotificationScreenRoute = 'notification_screen_route';
 const kCategoriesDetailScreenRoute = 'categories_detail_screen_route';
 const kListScreenRoute = 'list_screen_route';
 const kFilterScreenRoute = 'filter_screen_route';
-const kNftProductScreenRoute = 'nft_product_screen_route';
+
 const kOwnerScreenRoute = 'owner_screen_route';
 const kSearchScreenRoute = 'search_screen_route';
 const kOwnerDetailScreenRoute = 'owner_detail_screen_route';

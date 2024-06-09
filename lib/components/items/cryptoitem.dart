@@ -118,7 +118,8 @@ class _CryptoItemState extends State<CryptoItem> {
                                     height: AppTheme.elementSpacing * 0.75,
                                     width: AppTheme.elementSpacing * 0.75,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(500.0),
+                                      borderRadius:
+                                          BorderRadius.circular(500.0),
                                       color: Colors.grey,
                                     ),
                                   ),
@@ -129,8 +130,10 @@ class _CryptoItemState extends State<CryptoItem> {
                                         builder: (context, child) {
                                           return Container(
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(500.0),
-                                              color: controllerCrypto.animation.value,
+                                              borderRadius:
+                                                  BorderRadius.circular(500.0),
+                                              color: controllerCrypto
+                                                  .animation.value,
                                             ),
                                           );
                                         },
@@ -145,8 +148,42 @@ class _CryptoItemState extends State<CryptoItem> {
                         ],
                       ),
                       SizedBox(width: AppTheme.elementSpacing.w / 1.75),
-                      chart(controllerCrypto.onedaychart),
-                      Flexible(child: Column(
+                      Container(
+                        margin: EdgeInsets.only(right: AppTheme.elementSpacing),
+                        width: AppTheme.cardPadding * 3.5.w,
+                        color: Colors.transparent,
+                        child: SfCartesianChart(
+                            enableAxisAnimation: true,
+                            plotAreaBorderWidth: 0,
+                            primaryXAxis: CategoryAxis(
+                                labelPlacement: LabelPlacement.onTicks,
+                                edgeLabelPlacement: EdgeLabelPlacement.none,
+                                isVisible: false,
+                                majorGridLines: const MajorGridLines(width: 0),
+                                majorTickLines: const MajorTickLines(width: 0)),
+                            primaryYAxis: NumericAxis(
+                                plotOffset: 0,
+                                edgeLabelPlacement: EdgeLabelPlacement.none,
+                                isVisible: false,
+                                majorGridLines: const MajorGridLines(width: 0),
+                                majorTickLines: const MajorTickLines(width: 0)),
+                            series: <ChartSeries>[
+                              // Renders line chart
+                              LineSeries<ChartLine, double>(
+                                dataSource: controllerCrypto.onedaychart,
+                                animationDuration: 0,
+                                xValueMapper: (ChartLine crypto, _) =>
+                                    crypto.time,
+                                yValueMapper: (ChartLine crypto, _) =>
+                                    crypto.price,
+                                color: controllerCrypto.priceChange >= 0
+                                    ? AppTheme.successColor
+                                    : AppTheme.errorColor,
+                              )
+                            ]),
+                      ),
+                      Flexible(
+                          child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -161,24 +198,27 @@ class _CryptoItemState extends State<CryptoItem> {
                                     ? AppTheme.successColor
                                     : AppTheme.errorColor,
                               ),
-                              const SizedBox(width: AppTheme.elementSpacing / 4),
+                              const SizedBox(
+                                  width: AppTheme.elementSpacing / 4),
                               Container(
                                 child: Text(
                                   controllerCrypto.priceChangeString.value,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize: controllerCrypto.priceChangeString.value.length > 6
+                                    fontSize: controllerCrypto.priceChangeString
+                                                .value.length >
+                                            6
                                         ? 12
                                         : 16,
-                                    color: controllerCrypto.priceChange.value >= 0
-                                        ? AppTheme.successColor
-                                        : AppTheme.errorColor,
+                                    color:
+                                        controllerCrypto.priceChange.value >= 0
+                                            ? AppTheme.successColor
+                                            : AppTheme.errorColor,
                                   ),
                                 ),
                               ),
                             ],
                           ),
-
                         ],
                       )),
                     ],
@@ -194,7 +234,6 @@ class _CryptoItemState extends State<CryptoItem> {
             ),
           ));
   }
-
 
   Widget price() {
     //final ChartLine? bitcoinPrice = Provider.of<ChartLine?>(context, listen: true);
@@ -223,40 +262,5 @@ class _CryptoItemState extends State<CryptoItem> {
         ],
       );
     });
-  }
-
-  Widget chart(onedaychart) {
-    return Container(
-      margin: EdgeInsets.only(right: AppTheme.elementSpacing),
-      width: AppTheme.cardPadding * 3.5.w,
-      color: Colors.transparent,
-      child: SfCartesianChart(
-          enableAxisAnimation: true,
-          plotAreaBorderWidth: 0,
-          primaryXAxis: CategoryAxis(
-              labelPlacement: LabelPlacement.onTicks,
-              edgeLabelPlacement: EdgeLabelPlacement.none,
-              isVisible: false,
-              majorGridLines: const MajorGridLines(width: 0),
-              majorTickLines: const MajorTickLines(width: 0)),
-          primaryYAxis: NumericAxis(
-              plotOffset: 0,
-              edgeLabelPlacement: EdgeLabelPlacement.none,
-              isVisible: false,
-              majorGridLines: const MajorGridLines(width: 0),
-              majorTickLines: const MajorTickLines(width: 0)),
-          series: <ChartSeries>[
-            // Renders line chart
-            LineSeries<ChartLine, double>(
-              dataSource: onedaychart,
-              animationDuration: 0,
-              xValueMapper: (ChartLine crypto, _) => crypto.time,
-              yValueMapper: (ChartLine crypto, _) => crypto.price,
-              color: controllerCrypto.priceChange >= 0
-                  ? AppTheme.successColor
-                  : AppTheme.errorColor,
-            )
-          ]),
-    );
   }
 }

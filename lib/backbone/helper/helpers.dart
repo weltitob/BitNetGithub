@@ -42,6 +42,7 @@ Color getRandomColor() {
 final datetime = DateTime.now();
 Timestamp timestamp = Timestamp.fromDate(datetime); //To TimeStamp
 
+
 bool isStringaDID(String input) {
   RegExp didPattern = RegExp(r'^did:[a-zA-Z0-9]+:[A-Za-z0-9._-]{22,}$', caseSensitive: false);
   return didPattern.hasMatch(input);

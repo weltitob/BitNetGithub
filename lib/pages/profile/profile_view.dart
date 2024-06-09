@@ -13,51 +13,87 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
-class ProfileView extends StatelessWidget {
-  final ProfileController controller;
+class ProfileView extends StatefulWidget {
 
-  const ProfileView(this.controller, {Key? key}) : super(key: key);
+  const ProfileView({Key? key}) : super(key: key);
+
+  @override
+  _ProfileViewState createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  final ScrollController _scrollController = ScrollController();
+  final controller = Get.put(ProfileController());
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !controller.assetsLoading) {
+      _loadMoreData();
+    }
+  }
+
+  Future<void> _loadMoreData() async {
+    if (controller.assetsLoading == false) {
+      setState(() {
+        controller.assetsLoading = true;
+      });
+
+      // Call controller method to load more assets
+      await controller.loadMoreAssets();
+
+      setState(() {
+        controller.assetsLoading  = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final myuser = Auth().currentUser!.uid;
-    print('myuser: $myuser');
-
     return Obx(
-      () => bitnetScaffold(
-          context: context,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          body: controller.isUserLoading.value
-              ? Center(
-                  child: dotProgress(context),
-                )
-              : ListView(
-                  children: [
-                    ProfileHeader(),
-                    Obx(() {
-                      return controller.pages[controller.currentview.value];
-                    }),
-                    // ProfilePosts(userId: currentUserId),
-                  ],
-                ),
-          floatingActionButton: Align(
-            alignment: Alignment.bottomCenter,
-            child: LongButtonWidget(
-              buttonType: ButtonType.transparent,
-              customHeight: AppTheme.cardPadding * 2,
-              customWidth: AppTheme.cardPadding * 5,
-              leadingIcon: Icon(
-                Icons.add,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? AppTheme.black60
-                    : AppTheme.white60,
-              ),
-              title: 'Add',
-              onTap: () {
-                context.go('/create');
-              },
+          () => bitnetScaffold(
+        context: context,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: controller.isUserLoading.value
+            ? Center(child: dotProgress(context))
+            : ListView(
+          controller: _scrollController,
+          children: [
+            ProfileHeader(),
+            Obx(() {
+              return controller.pages[controller.currentview.value];
+            }),
+          ],
+        ),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomCenter,
+          child: LongButtonWidget(
+            buttonType: ButtonType.transparent,
+            customHeight: AppTheme.cardPadding * 2,
+            customWidth: AppTheme.cardPadding * 5,
+            leadingIcon: Icon(
+              Icons.add,
+              color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,
             ),
-          )),
+            title: 'Add',
+            onTap: () {
+              context.go('/create');
+            },
+          ),
+        ),
+      ),
     );
   }
 
@@ -79,14 +115,10 @@ class ProfileView extends StatelessWidget {
             key: controller.globalKeyQR,
             child: Column(
               children: [
-                SizedBox(
-                  height: AppTheme.cardPadding * 4,
-                ),
+                SizedBox(height: AppTheme.cardPadding * 4),
                 Container(
                   margin: EdgeInsets.all(AppTheme.cardPadding),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: AppTheme.cardRadiusSmall),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusSmall),
                   child: Padding(
                     padding: const EdgeInsets.all(AppTheme.elementSpacing),
                     child: PrettyQr(
