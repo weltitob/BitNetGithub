@@ -13,8 +13,8 @@ class DataWidget extends StatefulWidget {
 
   // For accepted blocks
   final BlockData? blockData;
-  var size;
-  var time;
+  final size;
+  final time;
 
   // For not accepted yet
   final MempoolBlocks? mempoolBlocks;

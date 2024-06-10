@@ -25,7 +25,8 @@ enum MediaType {
   external_url,
   attributes,
   document,
-  wallet_address}
+  wallet_address
+}
 
 Color getRandomColor() {
   final random = Random();
@@ -37,26 +38,45 @@ Color getRandomColor() {
   );
 }
 
-
 final datetime = DateTime.now();
 Timestamp timestamp = Timestamp.fromDate(datetime); //To TimeStamp
 
-
 bool isStringaDID(String input) {
-  RegExp didPattern = RegExp(r'^did:[a-zA-Z0-9]+:[A-Za-z0-9._-]{22,}$', caseSensitive: false);
+  RegExp didPattern =
+      RegExp(r'^did:[a-zA-Z0-9]+:[A-Za-z0-9._-]{22,}$', caseSensitive: false);
   return didPattern.hasMatch(input);
 }
 
+bool isValidBitcoinTransactionID(String input) {
+  RegExp txidPattern = RegExp(r'^[a-zA-Z0-9]{64}$');
+  return txidPattern.hasMatch(input);
+}
+
+bool isValidBitcoinAddressHash(String input) {
+  RegExp blockHashPattern = RegExp(
+    r'^[a-zA-Z0-9]{62}$',
+    caseSensitive: false,
+  );
+  return blockHashPattern.hasMatch(input);
+}
+
+bool containsSixIntegers(String input) {
+  RegExp sixIntegersPattern = RegExp(r'^\d{6}$');
+  return sixIntegersPattern.hasMatch(input);
+}
+
 bool isStringALNInvoice(String input) {
-  RegExp lnInvoicePattern = RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$', caseSensitive: false);
+  RegExp lnInvoicePattern =
+      RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$', caseSensitive: false);
   return lnInvoicePattern.hasMatch(input);
 }
 
 bool isLightningAdressAsMail(String input) {
-  RegExp lightningAddressPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', caseSensitive: false);
+  RegExp lightningAddressPattern = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+      caseSensitive: false);
   return lightningAddressPattern.hasMatch(input);
 }
-
 
 String getRandomString(int length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -125,6 +145,7 @@ String displayTimeAgoFromTimestamp(String publishedAt,
     return 'Gerade eben';
   }
 }
+
 String displayTimeAgoFromInt(int time, {bool numericDates = true}) {
   // Convert the string timestamp to an integer and then to milliseconds
   DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
@@ -163,7 +184,7 @@ String displayTimeAgoFromInt(int time, {bool numericDates = true}) {
   }
 }
 
-String convertIntoDateFormat(int time){
+String convertIntoDateFormat(int time) {
   // Convert the timestamp to DateTime
   DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
   // Format the DateTime object to a readable string

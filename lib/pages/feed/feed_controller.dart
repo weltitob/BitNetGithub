@@ -1,9 +1,12 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
+import 'package:bitnet/pages/transactions/view/address_component.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,15 +24,17 @@ class FeedController extends GetxController
     try {
       QuerySnapshot users = await usersCollection.get();
       searchResultsFuture = users;
-      searchResultsFuture!.docs.forEach((doc) {
-        UserData user = UserData.fromDocument(doc);
-        searchResult = UserSearchResult(
-          onTap: () async {},
-          userData: user,
-        );
-        searchresults.add(searchResult!);
-        searchresultsMain = searchresults;
-      });
+      searchResultsFuture!.docs.forEach(
+        (doc) {
+          UserData user = UserData.fromDocument(doc);
+          searchResult = UserSearchResult(
+            onTap: () async {},
+            userData: user,
+          );
+          searchresults.add(searchResult!);
+          searchresultsMain = searchresults;
+        },
+      );
       update();
     } catch (e) {
       searchResultsFuture = null;
@@ -40,14 +45,39 @@ class FeedController extends GetxController
 
   handleSearch(String query, BuildContext context) {
     try {
-      if (query.isNotEmpty && tabController!.index == 0) {
-        final controllerTransaction = Get.find<TransactionController>();
+      print(query.isNotEmpty &&
+          tabController!.index == 0 &&
+          isValidBitcoinAddressHash(query));
+      final controllerTransaction = Get.find<TransactionController>();
+
+      if (query.isNotEmpty &&
+          tabController!.index == 0 &&
+          isValidBitcoinTransactionID(query)) {
         controllerTransaction.txID = query.toString();
         controllerTransaction.getSingleTransaction(
           query,
         );
         controllerTransaction.changeSocket();
         context.push('/single_transaction');
+      }
+      if (query.isNotEmpty &&
+          tabController!.index == 0 &&
+          containsSixIntegers(query)) {
+        final homeController = Get.find<HomeController>();
+        homeController.blockHeight = int.parse(query);
+        context.push('/wallet/bitcoinscreen/mempool');
+      }
+      if (query.isNotEmpty &&
+          tabController!.index == 0 &&
+          isValidBitcoinAddressHash(query)) {
+        controllerTransaction.getAddressComponent(query);
+        controllerTransaction.addressId = query;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddressComponent(),
+          ),
+        );
       }
       if (tabController!.index == 2) {
         searchresults = searchresultsMain;

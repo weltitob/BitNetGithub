@@ -56,17 +56,19 @@ class _SearchFieldWithNotificationsWidgetState
                   controller: _textFieldController,
                   focusNode: _focus,
                   onFieldSubmitted: (c) {
+                    _focus.unfocus();
                     controller.handleSearch(_textFieldController.text, context);
                     _textFieldController.clear();
+                    
                   },
                   onChanged: widget.onChanged, // Use the onChanged callback
                   style: Theme.of(context).textTheme.bodyLarge,
-                  decoration: InputDecoration(
+                  decoration: InputDecoration( 
                       contentPadding: EdgeInsets.all(
                         AppTheme.cardPadding / 100,
                       ),
                       hintStyle:
-                          Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                          Theme.of(context).textTheme.bodySmall!.copyWith(),
                       hintText: widget.hintText,
                       prefixIcon: Icon(
                         Icons.search,
