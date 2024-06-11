@@ -45,11 +45,11 @@ class FeedController extends GetxController
 
   handleSearch(String query, BuildContext context) {
     try {
-      print(query.isNotEmpty &&
-          tabController!.index == 0 &&
-          isValidBitcoinAddressHash(query));
-      final controllerTransaction = Get.find<TransactionController>();
+      FocusManager.instance.primaryFocus?.unfocus();
 
+      final controllerTransaction = Get.find<TransactionController>();
+      final homeController = Get.find<HomeController>();
+      homeController.bitcoinDataHeight.clear();
       if (query.isNotEmpty &&
           tabController!.index == 0 &&
           isValidBitcoinTransactionID(query)) {
@@ -63,7 +63,6 @@ class FeedController extends GetxController
       if (query.isNotEmpty &&
           tabController!.index == 0 &&
           containsSixIntegers(query)) {
-        final homeController = Get.find<HomeController>();
         homeController.blockHeight = int.parse(query);
         context.push('/wallet/bitcoinscreen/mempool');
       }

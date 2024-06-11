@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:blockchain_utils/hex/hex.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,7 +19,9 @@ Future<dynamic> finalizeMint() async {
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
-  String url = 'https://$restHost/v1/taproot-assets/assets/mint/finalize';
+  String url = kDebugMode
+      ? ''
+      : 'https://$restHost/v1/taproot-assets/assets/mint/finalize';
 
   // Prepare the headers
   Map<String, String> headers = {
@@ -47,12 +50,14 @@ Future<dynamic> finalizeMint() async {
       Map<String, dynamic> responseData = json.decode(response.body);
 
       // Log the response data
-      logger.i("Finalized minting batch response: ${json.encode(responseData, toEncodable: (e) => e.toString())}");
+      logger.i(
+          "Finalized minting batch response: ${json.encode(responseData, toEncodable: (e) => e.toString())}");
 
       // Return the response data
       return responseData;
     } else {
-      logger.e("Failed to finalize minting batch. Status code: ${response.statusCode}, ${response.body}");
+      logger.e(
+          "Failed to finalize minting batch. Status code: ${response.statusCode}, ${response.body}");
       return null;
     }
   } catch (e) {

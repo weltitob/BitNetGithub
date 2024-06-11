@@ -4,6 +4,7 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
@@ -20,7 +21,9 @@ Stream<RestResponse> mintAssetStream(bool shortResponse) async* {
     'Grpc-Metadata-macaroon': macaroon,
   };
 
-  String url = 'https://$restHost/v1/taproot-assets/events/asset-mint';
+  String url = kDebugMode
+      ? ''
+      : 'https://$restHost/v1/taproot-assets/events/asset-mint';
 
   Map<String, dynamic> data = {
     'short_response': shortResponse,

@@ -24,6 +24,7 @@ var subscription;
 class HomeController extends BaseController {
   RxBool loadingDetail = false.obs;
   int? blockHeight;
+  RxBool isLoadingPage = false.obs;
   RxBool isLoading = false.obs;
   RxBool isLoadingTx = false.obs;
   RxBool socketLoading = false.obs;
@@ -53,6 +54,7 @@ class HomeController extends BaseController {
   Fees? fees;
   Da? da;
   String? days, time;
+  bool isLoadingPrevious = false;
 
   RxString highPriority = ''.obs;
   String baseUrl = 'https://mempool.space/api/';
@@ -170,14 +172,34 @@ class HomeController extends BaseController {
     try {
       String url = '${baseUrl}v1/blocks/$height';
       final response = await dioClient.get(url: url);
-      response.data.length;
-      for (int i = 0; i < response.data.length; i++) {
-        bitcoinDataHeight.add(
-          BlockData.fromJson(
-            response.data[i],
+      print(response.data);
+      // isLoadingPrevious == false
+      //     ?
+      // bitcoinDataHeight.addAll(
+      //   blockDataFromJson(
+      //     jsonEncode(response.data),
+      //   ),
+      // );
+      print(bitcoinDataHeight.length);
+      //
+      //    :
+      if (isLoadingPrevious) {
+        bitcoinDataHeight.insertAll(
+          0,
+          blockDataFromJson(
+            jsonEncode(response.data),
           ),
         );
+      } else {
+        for (int i = 0; i < response.data.length; i++) {
+          bitcoinDataHeight.add(
+            BlockData.fromJson(
+              response.data[i],
+            ),
+          );
+        }
       }
+
       txDetailsConfirmedF(bitcoinDataHeight.first.id!);
       isLoading.value = false;
 
@@ -197,7 +219,6 @@ class HomeController extends BaseController {
     try {
       String url = '${baseUrl}v1/blocks';
       final response = await dioClient.get(url: url);
-      response.data.length;
       for (int i = 0; i < response.data.length; i++) {
         bitcoinData.add(
           BlockData.fromJson(

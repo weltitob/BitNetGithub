@@ -96,14 +96,14 @@ Future<void> main() async {
         ? AppLock(
             builder: (args) =>
                 //matrix_chat_app.dart apply later
-                const MyApp(),
+                  MyApp(),
             lockScreen: const LockScreen(),
             enabled: false,
           )
         : const MyApp(),
   );
 }
-
+ 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 

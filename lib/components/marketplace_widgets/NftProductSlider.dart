@@ -7,7 +7,6 @@ import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
 import 'package:bitnet/components/post/components/textbuilder.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

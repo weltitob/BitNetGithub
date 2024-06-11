@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +20,9 @@ universeFederation(Map<String, dynamic> universeFederationServer) async {
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
-  String url = 'https://$restHost/v1/taproot-assets/universe/federation';
+  String url = kDebugMode
+      ? ''
+      : 'https://$restHost/v1/taproot-assets/universe/federation';
 
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,
