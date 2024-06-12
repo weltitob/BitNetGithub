@@ -10,29 +10,11 @@ import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/amountwidget.dart';
-import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/buildroundedbox.dart';
-import 'package:bitnet/components/appstandards/optioncontainer.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
-import 'package:bitnet/components/chart/chart.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
-import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 
 class BitcoinScreen extends GetWidget<BitcoinScreenController> {

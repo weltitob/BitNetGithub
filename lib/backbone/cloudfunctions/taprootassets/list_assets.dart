@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/tapd/asset.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 Future<List<Asset>> listTaprootAssets() async {
@@ -23,7 +24,7 @@ Future<List<Asset>> listTaprootAssets() async {
   };
 
   // Make the GET request
-  String url = 'https://$restHost/v1/taproot-assets/assets';
+  String url = kDebugMode ? '' : 'https://$restHost/v1/taproot-assets/assets';
   try {
     final DioClient dioClient = Get.find<DioClient>();
     var response = await dioClient.get(url: url, headers: headers);
@@ -31,11 +32,11 @@ Future<List<Asset>> listTaprootAssets() async {
     logger.i("Raw Response: ${response}");
 
     if (response.statusCode == 200) {
-
       List<dynamic> data = response.data['assets'];
       return data.map((item) => Asset.fromJson(item)).toList();
     } else {
-      logger.e('Failed to load Taproot asset data: ${response.statusCode}, ${response}');
+      logger.e(
+          'Failed to load Taproot asset data: ${response.statusCode}, ${response}');
       return [];
     }
   } catch (e) {

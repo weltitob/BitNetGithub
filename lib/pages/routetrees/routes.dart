@@ -151,7 +151,7 @@ class AppRoutes {
                   GoRoute(
                     path: 'mempool',
                     builder: _dynamicTransition == null
-                        ? (ctx, state) => const MempoolHome()
+                        ? (ctx, state) =>   MempoolHome()
                         : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(

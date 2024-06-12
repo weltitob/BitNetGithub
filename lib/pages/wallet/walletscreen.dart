@@ -53,7 +53,7 @@ class WalletScreen extends GetWidget<WalletsController> {
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     final currency = Provider.of<CurrencyChangeProvider>(context, listen: true);
     controller.coin.value = coin.coin ?? controller.coin.value;
-    controller.selectedCurrency!.value =
+    controller.selectedCurrency?.value =
         currency.selectedCurrency ?? controller.selectedCurrency!.value;
     List<Container> cards = [
       Container(

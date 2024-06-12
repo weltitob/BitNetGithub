@@ -23,6 +23,8 @@ var subscription;
 
 class HomeController extends BaseController {
   RxBool loadingDetail = false.obs;
+  int? blockHeight;
+  RxBool isLoadingPage = false.obs;
   RxBool isLoading = false.obs;
   RxBool isLoadingTx = false.obs;
   RxBool socketLoading = false.obs;
@@ -36,6 +38,7 @@ class HomeController extends BaseController {
   int selectedIndexData = -1;
   RxBool daLoading = false.obs;
   List<BlockData> bitcoinData = [];
+  List<BlockData> bitcoinDataHeight = [];
   List<TransactionDetailsModel> txDetails = [];
   List<TransactionDetailsModel> txDetailsFound = [];
   List<TransactionDetailsModel> txDetailsReset = [];
@@ -51,6 +54,7 @@ class HomeController extends BaseController {
   Fees? fees;
   Da? da;
   String? days, time;
+  bool isLoadingPrevious = false;
 
   RxString highPriority = ''.obs;
   String baseUrl = 'https://mempool.space/api/';
@@ -149,13 +153,72 @@ class HomeController extends BaseController {
     return dollarPerRate.value;
   }
 
+  List<BlockData> removeElementsBefore<BlockData>(
+      List<BlockData> list, BlockData element) {
+    int index = list.indexWhere((e) => e == element);
+
+    // If the element is found, remove elements before it
+    if (index != -1) {
+      return list.sublist(index);
+    } else {
+      // If the element is not found, return the original list
+      return list;
+    }
+  }
+
+  getDataForHeight(int height) async {
+    isLoading.value = true;
+    update();
+    try {
+      String url = '${baseUrl}v1/blocks/$height';
+      final response = await dioClient.get(url: url);
+      print(response.data);
+      // isLoadingPrevious == false
+      //     ?
+      // bitcoinDataHeight.addAll(
+      //   blockDataFromJson(
+      //     jsonEncode(response.data),
+      //   ),
+      // );
+      print(bitcoinDataHeight.length);
+      //
+      //    :
+      if (isLoadingPrevious) {
+        bitcoinDataHeight.insertAll(
+          0,
+          blockDataFromJson(
+            jsonEncode(response.data),
+          ),
+        );
+      } else {
+        for (int i = 0; i < response.data.length; i++) {
+          bitcoinDataHeight.add(
+            BlockData.fromJson(
+              response.data[i],
+            ),
+          );
+        }
+      }
+
+      txDetailsConfirmedF(bitcoinDataHeight.first.id!);
+      isLoading.value = false;
+
+      update();
+    } on DioException {
+      isLoading.value = false;
+      update();
+    } catch (e) {
+      isLoading.value = false;
+      update();
+    }
+  }
+
   getData() async {
     isLoading.value = true;
     update();
     try {
       String url = '${baseUrl}v1/blocks';
       final response = await dioClient.get(url: url);
-      response.data.length;
       for (int i = 0; i < response.data.length; i++) {
         bitcoinData.add(
           BlockData.fromJson(
@@ -163,6 +226,8 @@ class HomeController extends BaseController {
           ),
         );
       }
+      isLoading.value = false;
+
       update();
     } on DioException {
       isLoading.value = false;
@@ -341,7 +406,7 @@ class HomeController extends BaseController {
           jsonEncode(response.data),
         ),
       );
-      // isLoading.value = false;
+      isLoading.value = false;
       update();
     } on DioException {
       isLoading.value = false;
