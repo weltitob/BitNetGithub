@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +19,9 @@ queryAssetStats(String assetIdStr) async {
   String restHost = AppTheme.baseUrlLightningTerminal;
 
   //String url = 'https://$restHost/v1/taproot-assets/universe/roots/asset-id/$assetIdStr';
-  String url = 'https://$restHost/v1/taproot-assets/universe/stats/assets';
+  String url = kDebugMode
+      ? ''
+      :  'https://$restHost/v1/taproot-assets/universe/stats/assets';
 
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

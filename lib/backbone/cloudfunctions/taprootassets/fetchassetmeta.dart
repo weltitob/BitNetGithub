@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 Future<AssetMetaResponse?> fetchAssetMeta(String asset_id) async {
@@ -24,11 +25,14 @@ Future<AssetMetaResponse?> fetchAssetMeta(String asset_id) async {
   };
 
   List<int> decodedBytes = base64Decode(asset_id);
-  String hexStr = decodedBytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
+  String hexStr =
+      decodedBytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
   print("Hex string: $hexStr");
 
   // Make the GET request
-  String url = 'https://$restHost/v1/taproot-assets/assets/meta/asset-id/$hexStr';
+  String url = kDebugMode
+      ? ''
+      : 'https://$restHost/v1/taproot-assets/assets/meta/asset-id/$hexStr';
   try {
     final DioClient dioClient = Get.find<DioClient>();
     var response = await dioClient.get(url: url, headers: headers);
@@ -44,7 +48,8 @@ Future<AssetMetaResponse?> fetchAssetMeta(String asset_id) async {
         return null;
       }
     } else {
-      logger.e('Failed to fetch asset meta data: ${response.statusCode}, ${response}');
+      logger.e(
+          'Failed to fetch asset meta data: ${response.statusCode}, ${response}');
       return null;
     }
   } catch (e) {

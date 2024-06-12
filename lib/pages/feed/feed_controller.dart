@@ -1,22 +1,87 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/components/items/usersearchresult.dart';
+import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
+import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
+import 'package:bitnet/pages/transactions/view/address_component.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FeedController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  Rx<Future<QuerySnapshot>>? searchResultsFuture;
-  handleSearch(String query) {
+  QuerySnapshot? searchResultsFuture;
+  List<UserSearchResult> searchresults = [];
+  List<UserSearchResult> searchresultsMain = [];
+  UserSearchResult? searchResult;
+  handleSearchPeople(String query) async {
     try {
-      Future<QuerySnapshot> users = usersCollection
-          .where("username", isGreaterThanOrEqualTo: query)
-          .get();
-      searchResultsFuture!.value = users;
+      QuerySnapshot users = await usersCollection.get();
+      searchResultsFuture = users;
+      searchResultsFuture!.docs.forEach(
+        (doc) {
+          UserData user = UserData.fromDocument(doc);
+          searchResult = UserSearchResult(
+            onTap: () async {},
+            userData: user,
+          );
+          searchresults.add(searchResult!);
+          searchresultsMain = searchresults;
+        },
+      );
       update();
+    } catch (e) {
+      searchResultsFuture = null;
+      update();
+      print("Error searching for user: $e");
+    }
+  }
+
+  handleSearch(String query, BuildContext context) {
+    try {
+      FocusManager.instance.primaryFocus?.unfocus();
+
+      final controllerTransaction = Get.find<TransactionController>();
+      final homeController = Get.find<HomeController>();
+      homeController.bitcoinDataHeight.clear();
+      if (query.isNotEmpty &&
+          tabController!.index == 0 &&
+          isValidBitcoinTransactionID(query)) {
+        controllerTransaction.txID = query.toString();
+        controllerTransaction.getSingleTransaction(
+          query,
+        );
+        controllerTransaction.changeSocket();
+        context.push('/single_transaction');
+      }
+      if (query.isNotEmpty &&
+          tabController!.index == 0 &&
+          containsSixIntegers(query)) {
+        homeController.blockHeight = int.parse(query);
+        context.push('/wallet/bitcoinscreen/mempool');
+      }
+      if (query.isNotEmpty &&
+          tabController!.index == 0 &&
+          isValidBitcoinAddressHash(query)) {
+        controllerTransaction.getAddressComponent(query);
+        controllerTransaction.addressId = query;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddressComponent(),
+          ),
+        );
+      }
+      if (tabController!.index == 2) {
+        searchresults = searchresultsMain;
+        update();
+      }
     } catch (e) {
       searchResultsFuture = null;
       print("Error searching for user: $e");
@@ -65,11 +130,12 @@ class FeedController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    tabController = TabController(length: 2, vsync: this);
+    handleSearchPeople('');
+    tabController = TabController(length: 5, vsync: this);
     scrollControllerColumn = ScrollController();
     scrollController?.value = ScrollController();
     scrollController?.value.addListener(scrollListener);
-    tabController!.addListener(smoothScrollToTop);
+    tabController?.addListener(smoothScrollToTop);
     getData();
   }
 
@@ -77,7 +143,7 @@ class FeedController extends GetxController
   void dispose() {
     super.dispose();
     scrollControllerColumn.dispose();
-    tabController!.dispose();
+    tabController?.dispose();
     scrollController?.value.dispose();
   }
 
@@ -93,8 +159,7 @@ class FeedController extends GetxController
       duration: Duration(microseconds: 300),
       curve: Curves.ease,
     );
-
-    fixedScroll.value = tabController!.index == 0;
+    fixedScroll.value = tabController?.index == 0;
   }
 
   Future<void> initNFC(BuildContext context) async {

@@ -13,6 +13,7 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
 import 'package:bitnet/pages/secondpages/lock_screen.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
+import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -88,8 +89,9 @@ Future<void> main() async {
   );
 
   Get.put(LoggerService(), permanent: true);
-  Get.put(DioClient(), permanent: true);
+  Get.put(DioClient(), permanent:    true);
   Get.put(SettingsController());
+  Get.put(TransactionController());
 
   // Run the app
   runApp(
@@ -97,14 +99,14 @@ Future<void> main() async {
         ? AppLock(
             builder: (args) =>
                 //matrix_chat_app.dart apply later
-                const MyApp(),
+                  MyApp(),
             lockScreen: const LockScreen(),
             enabled: false,
           )
         : const MyApp(),
   );
 }
-
+ 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 

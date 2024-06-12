@@ -676,12 +676,12 @@ class TransactionController extends BaseController {
   }
 
   RxInt? blockHeight;
-  getSingleTransaction(String txID ) async {
+  getSingleTransaction(String txID) async {
     try {
       print('get single transaction called ');
       // isLoading.value = true;
       String url = '${baseUrl}tx/$txID';
-       await dioClient
+      await dioClient
           .get(url: url)
           .then((value) async {
             transactionModel = TransactionModel.fromJson(value.data);
@@ -783,10 +783,8 @@ class TransactionController extends BaseController {
 
   Future<void> totalBTC() async {
     double total = 0.0;
-    log('total.value${transactionModel!.vout!.length}');
     for (int i = 0; i <= transactionModel!.vout!.length; i++) {
-      total = (transactionModel!.vout![i].value!) / 100000000 + total;
-      log('total.value${total.toStringAsFixed(8)}');
+      total = (transactionModel!.vout?[i].value!)! / 100000000 + total;
       totalOutPutBTC.value = total;
     }
   }

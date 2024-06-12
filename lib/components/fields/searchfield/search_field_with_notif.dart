@@ -1,20 +1,22 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-
 
 class SearchFieldWithNotificationsWidget extends StatefulWidget {
   final String hintText;
   final bool isSearchEnabled;
-  final dynamic handleSearch;
+  // final dynamic handleSearch;
   final dynamic onChanged; // Add an onChanged callback
   final FocusNode focus;
   const SearchFieldWithNotificationsWidget({
     Key? key,
     required this.hintText,
     required this.isSearchEnabled,
-    required this.handleSearch,
+    // required this.handleSearch,
     this.onChanged, required this.focus, // Initialize it in the constructor
   }) : super(key: key);
 
@@ -29,6 +31,8 @@ class _SearchFieldWithNotificationsWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<FeedController>();
+
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: AppTheme.elementSpacing,
@@ -51,14 +55,20 @@ class _SearchFieldWithNotificationsWidgetState
                   enabled: widget.isSearchEnabled,
                   focusNode: widget.focus,
                   controller: _textFieldController,
-                  onFieldSubmitted: widget.handleSearch,
+                  onFieldSubmitted: (c) {
+                    widget.focus.unfocus();
+                    controller.handleSearch(_textFieldController.text, context);
+                    _textFieldController.clear();
+                    
+                  },
                   onChanged: widget.onChanged, // Use the onChanged callback
                   style: Theme.of(context).textTheme.bodyLarge,
-                  decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.all(AppTheme.cardPadding / 100),
+                  decoration: InputDecoration( 
+                      contentPadding: EdgeInsets.all(
+                        AppTheme.cardPadding / 100,
+                      ),
                       hintStyle:
-                          Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                          Theme.of(context).textTheme.bodySmall!.copyWith(),
                       hintText: widget.hintText,
                       prefixIcon: Icon(
                         Icons.search,
@@ -67,13 +77,25 @@ class _SearchFieldWithNotificationsWidgetState
                             : AppTheme.white70,
                       ),
                       suffixIcon: _textFieldController.text.isEmpty
-                          ? null
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.paste_outlined,
+                              ),
+                              onPressed: () async {
+                                ClipboardData? clipboardData =
+                                    await Clipboard.getData(
+                                        Clipboard.kTextPlain);
+                                if (clipboardData != null) {
+                                  _textFieldController.text =
+                                      clipboardData.text!;
+                                }
+                              },
+                            )
                           : IconButton(
                               icon: Icon(
                                 Icons.cancel,
                               ),
-                              onPressed: () => _textFieldController.clear(),
-                            ),
+                              onPressed: () => _textFieldController.clear()),
                       border: OutlineInputBorder(
                           borderSide:
                               BorderSide(width: 0, style: BorderStyle.none),

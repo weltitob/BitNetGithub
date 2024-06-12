@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/tapd/minassetresponse.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -49,7 +50,9 @@ Future<MintAssetResponse?> mintAsset(String assetName, String assetDataBase64, b
     'short_response': false,
   };
 
-  String url = 'https://$restHost/v1/taproot-assets/assets';
+  String url =kDebugMode
+      ? ''
+      :  'https://$restHost/v1/taproot-assets/assets';
 
   try {
     var response = await http.post(

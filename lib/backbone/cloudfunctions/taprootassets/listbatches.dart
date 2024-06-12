@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/tapd/batch.dart';
 import 'package:bitnet/models/tapd/fetchbatchresponse.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,7 +20,9 @@ Future<Batch?> fetchMintBatch(String batchKey) async {
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
-  String url = 'https://$restHost/v1/taproot-assets/assets/mint/batches/$batchKey';
+  String url = kDebugMode
+      ? ''
+      : 'https://$restHost/v1/taproot-assets/assets/mint/batches/$batchKey';
 
   // Prepare the headers
   Map<String, String> headers = {
@@ -39,17 +42,19 @@ Future<Batch?> fetchMintBatch(String batchKey) async {
       logger.i("Raw Response: ${response.body}");
 
       // Parse the response data into FetchBatchResponse
-      FetchBatchResponse fetchBatchResponse = FetchBatchResponse.fromJson(responseData);
+      FetchBatchResponse fetchBatchResponse =
+          FetchBatchResponse.fromJson(responseData);
 
       // Find the batch with the specified batchKey
       Batch? batch = fetchBatchResponse.batches.firstWhere(
-            (b) => b.batchKey == batchKey,
+        (b) => b.batchKey == batchKey,
       );
 
       // Return the parsed Batch object
       return batch;
     } else {
-      logger.e("Failed to fetch data. Status code: ${response.statusCode} ${response.body}");
+      logger.e(
+          "Failed to fetch data. Status code: ${response.statusCode} ${response.body}");
       return null;
     }
   } catch (e) {

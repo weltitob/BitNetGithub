@@ -64,9 +64,8 @@ class ThemeController extends State<ThemeBuilder> {
       var data = await settingsCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .get();
-          var dataBucket = data.data();
-      print(data.data());
-      final rawThemeMode = data.data()?['theme_mode'];
+          // var dataBucket = data.data();
+       final rawThemeMode = data.data()?['theme_mode'];
       final rawColor = data.data()?['primary_color'];
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
       Provider.of<LocalProvider>(context, listen: false)
