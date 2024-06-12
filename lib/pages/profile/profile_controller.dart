@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/fetchassetmeta.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/components/tabs/columnviewtab.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
@@ -11,9 +16,11 @@ import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/cloudfunctions/getblocktimestamp.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class ProfileController extends BaseController {
   String profileId = "GUsuvr19SPrGELGZtrAq";
@@ -25,7 +32,7 @@ class ProfileController extends BaseController {
 
   bool assetsLoading = false;
 
-  late UserData userData;
+  late Rx<UserData> userData;
 
   RxBool? isPrivate;
   RxBool? showFollwers;
@@ -45,6 +52,8 @@ class ProfileController extends BaseController {
   TextEditingController displayNameController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
+
+  late final ScrollController scrollController;
 
   RxString? validDisplayName;
   RxString? validUserName;
@@ -67,6 +76,7 @@ class ProfileController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+    scrollController = ScrollController();
     loadData();
     pages = [
       ColumnViewTab(),
@@ -137,17 +147,17 @@ class ProfileController extends BaseController {
     try {
       isUserLoading.value = true;
       DocumentSnapshot? doc = await usersCollection.doc(profileId).get();
-      userData = UserData.fromDocument(doc);
+      userData = UserData.fromDocument(doc).obs;
 
-      displayNameController.text = userData.displayName;
-      validDisplayName?.value = userData.displayName;
-      userNameController.text = userData.username;
-      validUserName?.value = userData.username;
-      bioController.text = userData.bio;
-      validBio?.value = userData.bio;
-      showFollwers?.value = userData.showFollowers;
-      _backgroundImage?.value = userData.backgroundImageUrl;
-      _profileImage?.value = userData.profileImageUrl;
+      displayNameController.text = userData.value.displayName;
+      validDisplayName?.value = userData.value.displayName;
+      userNameController.text = userData.value.username;
+      validUserName?.value = userData.value.username;
+      bioController.text = userData.value.bio;
+      validBio?.value = userData.value.bio;
+      showFollwers?.value = userData.value.showFollowers;
+      _backgroundImage?.value = userData.value.backgroundImageUrl;
+      _profileImage?.value = userData.value.profileImageUrl;
 
       isUserLoading.value = false;
     } catch (e, tr) {
@@ -308,5 +318,75 @@ class ProfileController extends BaseController {
       print('Error: $e');
     }
     return null;
+  }
+
+
+    Future<void> handleProfileImageSelected(AssetEntity image) async {
+    File? file =await image.file;
+    if(file == null)
+      return;
+    TaskSnapshot task = await storageRef.child('users/${profileId}/profile.jpg').putFile(file);
+   userData.value =userData.value.copyWith(
+      profileImageUrl: await task.ref.getDownloadURL(),
+      nft_profile_id: ''
+    );
+       await usersCollection.doc(profileId).update({
+        'profileImageUrl': userData.value.profileImageUrl,
+        'nft_profile_id': ''
+      });
+  }
+  
+  Future<void> handleProfileNftSelected(MediaDatePair pair) async {
+      if(pair.media == null)
+        return;
+            final base64String = pair.media!.data.split(',').last;
+    Uint8List imageBytes = base64Decode(base64String);
+
+      TaskSnapshot task = await storageRef.child('users/${profileId}/profile.jpg').putData(imageBytes);
+           userData.value = userData.value.copyWith(
+      profileImageUrl: await task.ref.getDownloadURL(),
+      nft_profile_id: pair.assetId
+    );
+      await usersCollection.doc(profileId).update({
+        'profileImageUrl': userData.value.profileImageUrl,
+        'nft_profile_id': '${pair.assetId}'
+      });
+     
+
+  }
+
+
+    Future<void> handleBackgroundImageSelected(AssetEntity image) async {
+    File? file =await image.file;
+    if(file == null)
+      return;
+    TaskSnapshot task = await storageRef.child('users/${profileId}/background.jpg').putFile(file);
+   userData.value =userData.value.copyWith(
+      backgroundImageUrl: await task.ref.getDownloadURL(),
+      nft_background_id: ''
+    );
+       await usersCollection.doc(profileId).update({
+        'backgroundImageUrl': userData.value.backgroundImageUrl,
+        'nft_background_id': ''
+      });
+  }
+  
+  Future<void> handleBackgroundNftSelected(MediaDatePair pair) async {
+      if(pair.media == null)
+        return;
+            final base64String = pair.media!.data.split(',').last;
+    Uint8List imageBytes = base64Decode(base64String);
+
+      TaskSnapshot task = await storageRef.child('users/${profileId}/profile.jpg').putData(imageBytes);
+           userData.value = userData.value.copyWith(
+      profileImageUrl: await task.ref.getDownloadURL(),
+      nft_profile_id: pair.assetId
+    );
+      await usersCollection.doc(profileId).update({
+        'backgroundImageUrl': userData.value.backgroundImageUrl,
+        'nft_profile_id': '${pair.assetId}'
+      });
+     
+
   }
 }

@@ -23,6 +23,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    print("current width is :" + size.width.toString());
     return bitnetScaffold(
       body: Stack(
         children: [

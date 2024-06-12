@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -100,9 +101,9 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       bool isSuperSmallScreen =
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
-        margin: isSuperSmallScreen
-            ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
+        margin: 
+            EdgeInsets.symmetric(horizontal: 0)
+            ,
         extendBodyBehindAppBar: true,
         context: context,
         gradientColor: Colors.black,
@@ -120,8 +121,8 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
           key: _form,
           child: ListView(
             padding: EdgeInsets.only(
-                left: AppTheme.cardPadding * 2.w,
-                right: AppTheme.cardPadding * 2.w,
+                left: AppTheme.cardPadding * 2.ws,
+                right: AppTheme.cardPadding * 2.ws,
                 top: AppTheme.cardPadding * 6.h),
             physics: BouncingScrollPhysics(),
             children: [
@@ -142,7 +143,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                   ),
                   Container(
                     margin:
-                        EdgeInsets.only(left: AppTheme.elementSpacing / 2.w),
+                        EdgeInsets.only(left: AppTheme.elementSpacing / 2.ws),
                     height: AppTheme.cardPadding * 1.5.h,
                     child: Image.asset("assets/images/ion.png"),
                   ),
@@ -195,7 +196,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     ),
                   ),
                   LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 14.w,
+                    customWidth: AppTheme.cardPadding * 14.ws,
                     title: L10n.of(context)!.restoreAccount,
                     onTap: () {
                       if (_form.currentState!.validate()) {
@@ -238,7 +239,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     ),
                     child: SizedBox(
                       height: 0,
-                      width: 65.w,
+                      width: 65.ws,
                     ),
                   ),
                   Container(

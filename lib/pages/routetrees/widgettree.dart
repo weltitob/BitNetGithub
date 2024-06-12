@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:bitnet/backbone/helper/matrix_helpers/other/custom_scroll_behaviour.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';

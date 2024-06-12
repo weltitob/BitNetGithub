@@ -170,11 +170,10 @@ class _ImagePickerState extends State<ImagePicker> {
                                 padding: EdgeInsets.all(0),
                                 child: InkWell(
                                   onTap: () {
-                                    Get.find<LoggerService>().i("current amount of duplicates: ${current_photos!.where((test) => test.id==current_photos![i].id).length}");
-                                    // if (widget.onImageTap != null) {
-                                    //   widget.onImageTap!(
-                                    //       current_album!, current_photos![i]);
-                                    // }
+                                    if (widget.onImageTap != null) {
+                                      widget.onImageTap!(
+                                          current_album!, current_photos![i]);
+                                    }
                                   },
                                   child: AssetEntityImage(
                                     current_photos![i],

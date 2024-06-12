@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -38,9 +39,9 @@ class _CreateAccountViewState extends State<CreateAccountView>
         bool isSuperSmallScreen =
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
         return bitnetScaffold(
-          margin: isSuperSmallScreen
-              ? EdgeInsets.symmetric(horizontal: 0)
-              : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
+          margin: 
+              EdgeInsets.symmetric(horizontal: 0)
+             ,
           extendBodyBehindAppBar: true,
           context: context,
           gradientColor: Colors.black,
@@ -57,8 +58,8 @@ class _CreateAccountViewState extends State<CreateAccountView>
             key: widget.controller.form,
             child: ListView(
               padding: EdgeInsets.only(
-                  left: AppTheme.cardPadding * 2.w,
-                  right: AppTheme.cardPadding * 2.w,
+                  left: AppTheme.cardPadding * 2.ws,
+                  right: AppTheme.cardPadding * 2.ws,
                   top: AppTheme.cardPadding * 5.h),
               physics: BouncingScrollPhysics(),
               children: [
@@ -82,7 +83,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   children: [
                     PopUpCountryPickerWidget(),
                     FormTextField(
-                      width: AppTheme.cardPadding * 14.w,
+                      width: AppTheme.cardPadding * 14.ws,
                       hintText: L10n.of(context)!.username,
                       validator: (val) => val!.isEmpty
                           ? L10n.of(context)!.pleaseEnterValidUsername
@@ -99,7 +100,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                       height: AppTheme.cardPadding.h,
                     ),
                     LongButtonWidget(
-                      customWidth: AppTheme.cardPadding * 14.w,
+                      customWidth: AppTheme.cardPadding * 14.ws,
                       title: L10n.of(context)!.register,
                       onTap: () {
                         //no sso removed sso (single-sign-on) buttons because we have own system
@@ -146,7 +147,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                       ),
                       child: SizedBox(
                         height: 0,
-                        width: 65.w,
+                        width: 65.ws,
                       ),
                     ),
                     Container(

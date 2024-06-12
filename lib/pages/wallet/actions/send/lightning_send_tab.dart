@@ -260,7 +260,7 @@ class LightningSendTab extends GetWidget<SendsController> {
               currController: controller.currencyController,
               focusNode: controller.myFocusNodeMoney,
               context: context,
-              swapped: true,
+                swapped: Get.find<WalletsController>().reversed.value,
               lowerBound: controller.lowerBound,
               upperBound: controller.upperBound,
               boundType: controller.boundType,

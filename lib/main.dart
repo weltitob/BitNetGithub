@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/backbone/streams/bitcoinpricestream.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
@@ -65,6 +66,7 @@ Future<void> main() async {
     Stripe.publishableKey = AppTheme.stripeLiveKey;
     await Stripe.instance.applySettings();
   }
+  await LocalStorage.instance.initStorage();
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
@@ -73,6 +75,7 @@ Future<void> main() async {
       appId: '466393582939',
       messagingSenderId: '01',
       projectId: 'bitnet-cb34f',
+      storageBucket: 'bitnet-cb34f.appspot.com'
       // ... other options
     ),
   );
@@ -163,6 +166,32 @@ class _MyAppState extends State<MyApp> {
                 // ChangeNotifierProvider<BalanceHideProvider>(
                 //   create: (context) => BalanceHideProvider(),
                 // ),
+                              ChangeNotifierProvider<CurrencyTypeProvider>(
+                  create: (context) => CurrencyTypeProvider()),
+ ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
+                update: (context, currencyChangeProvider, bitcoinPriceStream) {
+                  if (bitcoinPriceStream == null ||
+                      bitcoinPriceStream.localCurrency !=
+                          currencyChangeProvider.selectedCurrency) {
+                    bitcoinPriceStream?.dispose();
+                    final newStream = BitcoinPriceStream();
+                    newStream.updateCurrency(
+                        currencyChangeProvider.selectedCurrency ?? 'usd');
+                    newStream.priceStream.asBroadcastStream().listen((data) {
+                      Get.find<WalletsController>().chartLines.value = data;
+                    });
+                    return newStream;
+                  }
+                  bitcoinPriceStream.priceStream
+                      .asBroadcastStream()
+                      .listen((data) {
+                    Get.find<WalletsController>().chartLines.value = data;
+                  });
+                  return bitcoinPriceStream;
+                },
+                dispose: (context, bitcoinPriceStream) =>
+                    bitcoinPriceStream.dispose(),
+              ),
               ],
               child: bTree.WidgetTree(),
             ),
@@ -227,3 +256,4 @@ class _MyAppState extends State<MyApp> {
           );
   }
 }
+

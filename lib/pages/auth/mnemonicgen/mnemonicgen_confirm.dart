@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -36,11 +37,11 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
         context: context,
-        margin: isSuperSmallScreen
-            ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
+        margin: 
+             EdgeInsets.symmetric(horizontal: 0)
+          ,
         extendBodyBehindAppBar: true,
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: bitnetAppBar(
           text: L10n.of(context)!.confirmMnemonic,
           context: context,
@@ -69,7 +70,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
               ),
               child: SizedBox(
                 height: 0,
-                width: 65.w,
+                width: 65.ws,
               ),
             ),
             Container(

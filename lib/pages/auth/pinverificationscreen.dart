@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -120,9 +121,9 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
 
       return bitnetScaffold(
-        margin: isSuperSmallScreen
-            ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
+        margin: 
+            EdgeInsets.symmetric(horizontal: 0)
+           ,
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
@@ -145,7 +146,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     Center(
                         child: Container(
                       margin: EdgeInsets.symmetric(
-                          horizontal: AppTheme.cardPadding * 2.w),
+                          horizontal: AppTheme.cardPadding * 2.ws),
                       child: AnimatedTextKit(
                         animatedTexts: [
                           TypewriterAnimatedText(
@@ -209,7 +210,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
           ),
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: AppTheme.cardPadding * 2.w,
+              horizontal: AppTheme.cardPadding * 2.ws,
               vertical: AppTheme.elementSpacing.h,
             ),
             decoration: BoxDecoration(

@@ -160,377 +160,379 @@ class SingleTransactionScreen extends StatelessWidget {
                                     onTap: () {
                                       BitNetBottomSheet(
                                           context: context,
-                                          child: StatefulBuilder(
-                                              builder: (context, setState) {
-                                            return Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 16.0,
-                                                        vertical: 12.0),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
+                                          height: MediaQuery.of(context).size.height * 0.6,
+                                          child: bitnetScaffold(
+                                            context: context,
+                                            appBar: bitnetAppBar(
+                                              context: context,
+                                              hasBackButton: false,
+                                              text: L10n.of(context)!.inputTx,),
+                                            body: StatefulBuilder(
+                                                builder: (context, setState) {
+                                              return Padding(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 16.0,
+                                                          vertical: 12.0),
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          
+                                                          LongButtonWidget(
+                                                              customWidth: 200,
+                                                              customHeight: 40,
+                                                              title: !controller
+                                                                      .showDetail
+                                                                      .value
+                                                                  ? L10n.of(
+                                                                          context)!
+                                                                      .showDetails
+                                                                  : L10n.of(
+                                                                          context)!
+                                                                      .hideDetails,
+                                                              onTap: () {
+                                                                controller
+                                                                    .toggleExpansion();
+                                                              })
+                                                        ],
+                                                      ),
+                                                      SearchFieldWidget(
+                                                        // controller: searchCtrl,
+                                                        hintText:
                                                             L10n.of(context)!
-                                                                .inputTx,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .headlineMedium),
-                                                        LongButtonWidget(
-                                                            customWidth: 200,
-                                                            customHeight: 40,
-                                                            title: !controller
-                                                                    .showDetail
-                                                                    .value
-                                                                ? L10n.of(
-                                                                        context)!
-                                                                    .showDetails
-                                                                : L10n.of(
-                                                                        context)!
-                                                                    .hideDetails,
-                                                            onTap: () {
-                                                              controller
-                                                                  .toggleExpansion();
-                                                            })
-                                                      ],
-                                                    ),
-                                                    SearchFieldWidget(
-                                                      // controller: searchCtrl,
-                                                      hintText:
-                                                          L10n.of(context)!
-                                                              .search,
-                                                      handleSearch: (v) {
-                                                        setState(() {
-                                                          inputCtrl.text = v;
-                                                        });
-                                                      },
-                                                      isSearchEnabled: true,
-                                                    ),
-                                                    !controller.showDetail.value
-                                                        ? Expanded(
-                                                            child: ListView
-                                                                .builder(
-                                                              physics:
-                                                                  const AlwaysScrollableScrollPhysics(),
-                                                              shrinkWrap: true,
-                                                              itemCount: controller
-                                                                  .transactionModel
-                                                                  ?.vin
-                                                                  ?.length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                double value = (controller
-                                                                        .transactionModel!
-                                                                        .vin![
-                                                                            index]
-                                                                        .prevout!
-                                                                        .value!) /
-                                                                    100000000;
-                                                                controller.input
-                                                                        .value =
-                                                                    double.parse(
-                                                                        value.toStringAsFixed(
-                                                                            8));
-                                                                String address =
-                                                                    '';
-                                                                if (controller
-                                                                        .transactionModel!
-                                                                        .vin?[
-                                                                            index]
-                                                                        .prevout!
-                                                                        .scriptpubkeyAddress !=
-                                                                    null)
-                                                                  address = controller
+                                                                .search,
+                                                        handleSearch: (v) {
+                                                          setState(() {
+                                                            inputCtrl.text = v;
+                                                          });
+                                                        },
+                                                        isSearchEnabled: true,
+                                                      ),
+                                                      !controller.showDetail.value
+                                                          ? Expanded(
+                                                              child: ListView
+                                                                  .builder(
+                                                                physics:
+                                                                    const AlwaysScrollableScrollPhysics(),
+                                                                shrinkWrap: true,
+                                                                itemCount: controller
+                                                                    .transactionModel
+                                                                    ?.vin
+                                                                    ?.length,
+                                                                itemBuilder:
+                                                                    (context,
+                                                                        index) {
+                                                                  double value = (controller
+                                                                          .transactionModel!
+                                                                          .vin![
+                                                                              index]
+                                                                          .prevout!
+                                                                          .value!) /
+                                                                      100000000;
+                                                                  controller.input
+                                                                          .value =
+                                                                      double.parse(
+                                                                          value.toStringAsFixed(
+                                                                              8));
+                                                                  String address =
+                                                                      '';
+                                                                  if (controller
                                                                           .transactionModel!
                                                                           .vin?[
                                                                               index]
                                                                           .prevout!
-                                                                          .scriptpubkeyAddress ??
-                                                                      '';
-                                                                return address.contains(
-                                                                        inputCtrl
-                                                                            .text)
-                                                                    ? Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            vertical:
-                                                                                8.0),
-                                                                        child:
-                                                                            GlassContainer(
+                                                                          .scriptpubkeyAddress !=
+                                                                      null)
+                                                                    address = controller
+                                                                            .transactionModel!
+                                                                            .vin?[
+                                                                                index]
+                                                                            .prevout!
+                                                                            .scriptpubkeyAddress ??
+                                                                        '';
+                                                                  return address.contains(
+                                                                          inputCtrl
+                                                                              .text)
+                                                                      ? Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              vertical:
+                                                                                  8.0),
                                                                           child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.all(8.0),
+                                                                              GlassContainer(
                                                                             child:
-                                                                                Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Container(
-                                                                                  height: 20,
-                                                                                  width: 20,
-                                                                                  decoration: BoxDecoration(
-                                                                                    color: Colors.red,
-                                                                                    shape: BoxShape.circle,
+                                                                                Padding(
+                                                                              padding:
+                                                                                  const EdgeInsets.all(8.0),
+                                                                              child:
+                                                                                  Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Container(
+                                                                                    height: 20,
+                                                                                    width: 20,
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: Colors.red,
+                                                                                      shape: BoxShape.circle,
+                                                                                    ),
+                                                                                    child: const Center(
+                                                                                        child: Icon(
+                                                                                      Icons.arrow_forward_outlined,
+                                                                                      size: 15,
+                                                                                    )),
                                                                                   ),
-                                                                                  child: const Center(
-                                                                                      child: Icon(
-                                                                                    Icons.arrow_forward_outlined,
-                                                                                    size: 15,
-                                                                                  )),
-                                                                                ),
-                                                                                Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                  children: [
-                                                                                    Flexible(
-                                                                                      flex: 2,
-                                                                                      child: GestureDetector(
-                                                                                        onTap: () {
-                                                                                          controller.getAddressComponent(controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress);
-                                                                                          controller.addressId = controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
-                                                                                          Navigator.push(context, MaterialPageRoute(builder: (context) => AddressComponent()));
-
-                                                                                          // Get.to(() =>
-                                                                                          //     AddressComponent());
-                                                                                        },
-                                                                                        child: Text(
-                                                                                          controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null && controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType == "op_return"
-                                                                                              ? 'OP_RETURN (R)'
-                                                                                              : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
-                                                                                                  '... '
-                                                                                                  '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
-                                                                                          style: const TextStyle(
-                                                                                            fontSize: 14,
-                                                                                            color: Colors.blue,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                    controller.isShowBTC.value
-                                                                                        ? Text(
-                                                                                            '${controller.inPutBTC(index)} BTC',
-                                                                                            style: TextStyle(color: Colors.black),
-                                                                                          )
-                                                                                        : Text('\$ ${controller.inPutDollar(index)} ', style: TextStyle(color: Colors.black))
-                                                                                  ],
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      )
-                                                                    : SizedBox();
-                                                              },
-                                                            ),
-                                                          )
-                                                        : Expanded(
-                                                            child: ListView
-                                                                .builder(
-                                                              physics:
-                                                                  const AlwaysScrollableScrollPhysics(),
-                                                              shrinkWrap: true,
-                                                              itemCount: controller
-                                                                  .transactionModel
-                                                                  ?.vin
-                                                                  ?.length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
-                                                                double value = (controller
-                                                                        .transactionModel!
-                                                                        .vin![
-                                                                            index]
-                                                                        .prevout!
-                                                                        .value!) /
-                                                                    100000000;
-                                                                controller.input
-                                                                        .value =
-                                                                    double.parse(
-                                                                        value.toStringAsFixed(
-                                                                            8));
-                                                                String address =
-                                                                    '';
-                                                                if (controller
-                                                                        .transactionModel!
-                                                                        .vin?[
-                                                                            index]
-                                                                        .prevout!
-                                                                        .scriptpubkeyAddress !=
-                                                                    null)
-                                                                  address = controller
-                                                                          .transactionModel!
-                                                                          .vin?[
-                                                                              index]
-                                                                          .prevout!
-                                                                          .scriptpubkeyAddress ??
-                                                                      '';
-                                                                return address.contains(
-                                                                        inputCtrl
-                                                                            .text)
-                                                                    ? Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            vertical:
-                                                                                8.0),
-                                                                        child:
-                                                                            GlassContainer(
-                                                                          child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.all(10.0),
-                                                                            child:
-                                                                                Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Container(
-                                                                                  height: 20,
-                                                                                  width: 20,
-                                                                                  decoration: BoxDecoration(
-                                                                                    color: Colors.red,
-                                                                                    shape: BoxShape.circle,
-                                                                                  ),
-                                                                                  child: const Center(
-                                                                                      child: Icon(
-                                                                                    Icons.arrow_forward_outlined,
-                                                                                    size: 15,
-                                                                                  )),
-                                                                                ),
-                                                                                Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                  children: [
-                                                                                    Flexible(
-                                                                                      flex: 3,
-                                                                                      child: GestureDetector(
-                                                                                        onTap: () {
-                                                                                          controller.getAddressComponent(controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress);
-                                                                                          controller.addressId = controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
-                                                                                          Navigator.push(
-                                                                                            context,
-                                                                                            MaterialPageRoute(
-                                                                                              builder: (context) => AddressComponent(),
-                                                                                            ),
-                                                                                          );
-                                                                                        },
-                                                                                        child: Text(
-                                                                                          controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null && controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType == "op_return"
-                                                                                              ? 'OP_RETURN (R)'
-                                                                                              : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
-                                                                                                  '... '
-                                                                                                  '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
-                                                                                          style: const TextStyle(
-                                                                                            fontSize: 14,
-                                                                                            color: Colors.blue,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                    Flexible(
-                                                                                      flex: 2,
-                                                                                      child: Container(
-                                                                                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                                                                                        decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(5)),
-                                                                                        child: controller.isShowBTC.value
-                                                                                            ? Text(
-                                                                                                '${controller.isShowBTC.value ? controller.inPutBTC(index) : controller.inPutDollar(index)} BTC',
-                                                                                                style: TextStyle(color: Colors.black),
-                                                                                              )
-                                                                                            : Text('\$ ${controller.inPutDollar(index)} ', style: TextStyle(color: Colors.black)),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                                const SizedBox(
-                                                                                  height: 10,
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  child: Row(
-                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                                                     children: [
-                                                                                      Expanded(
-                                                                                        child: Text(L10n.of(context)!.witness, style: TextStyle(color: Colors.black)),
-                                                                                      ),
-                                                                                      Expanded(
-                                                                                        child: Column(
-                                                                                          children: [
-                                                                                            ListView.builder(
-                                                                                              physics: const NeverScrollableScrollPhysics(),
-                                                                                              shrinkWrap: true,
-                                                                                              itemCount: controller.transactionModel!.vin?[index].witness?.length,
-                                                                                              itemBuilder: (context, ind) {
-                                                                                                return Padding(
-                                                                                                  padding: const EdgeInsets.only(bottom: 10),
-                                                                                                  child: Text(controller.transactionModel?.vin != null ? '${controller.transactionModel?.vin?[index].witness?[ind]}' : '', style: TextStyle(color: Colors.black)),
-                                                                                                );
-                                                                                              },
-                                                                                            )
-                                                                                          ],
+                                                                                      Flexible(
+                                                                                        flex: 2,
+                                                                                        child: GestureDetector(
+                                                                                          onTap: () {
+                                                                                            controller.getAddressComponent(controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress);
+                                                                                            controller.addressId = controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
+                                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => AddressComponent()));
+                                            
+                                                                                            // Get.to(() =>
+                                                                                            //     AddressComponent());
+                                                                                          },
+                                                                                          child: Text(
+                                                                                            controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null && controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType == "op_return"
+                                                                                                ? 'OP_RETURN (R)'
+                                                                                                : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
+                                                                                                    '... '
+                                                                                                    '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
+                                                                                            style: const TextStyle(
+                                                                                              fontSize: 14,
+                                                                                              color: Colors.blue,
+                                                                                            ),
+                                                                                          ),
                                                                                         ),
-                                                                                      )
+                                                                                      ),
+                                                                                      controller.isShowBTC.value
+                                                                                          ? Text(
+                                                                                              '${controller.inPutBTC(index)} BTC',
+                                                                                              style: TextStyle(color: Colors.black),
+                                                                                            )
+                                                                                          : Text('\$ ${controller.inPutDollar(index)} ', style: TextStyle(color: Colors.black))
                                                                                     ],
                                                                                   ),
-                                                                                ),
-                                                                                const SizedBox(
-                                                                                  height: 10,
-                                                                                ),
-                                                                                Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                  children: [
-                                                                                    const Text('nSequence', style: TextStyle(color: Colors.black)),
-                                                                                    Text('0x${controller.transactionModel?.vin?[index].sequence?.toRadixString(16)}', style: TextStyle(color: Colors.black))
-                                                                                  ],
-                                                                                ),
-                                                                                const SizedBox(
-                                                                                  height: 10,
-                                                                                ),
-                                                                                Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                  children: [
-                                                                                    Text(L10n.of(context)!.previousOutputScripts, style: TextStyle(color: Colors.black)),
-                                                                                    const SizedBox(
-                                                                                      width: 10,
-                                                                                    ),
-                                                                                    Flexible(child: Text('${controller.transactionModel?.vin?[index].prevout?.scriptpubkeyAsm}', style: TextStyle(color: Colors.black)))
-                                                                                  ],
-                                                                                ),
-                                                                                const SizedBox(
-                                                                                  height: 10,
-                                                                                ),
-                                                                                Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                  children: [
-                                                                                    const Text('Previous output type', style: TextStyle(color: Colors.black)),
-                                                                                    const SizedBox(
-                                                                                      width: 10,
-                                                                                    ),
-                                                                                    Flexible(child: Text('${controller.transactionModel?.vin?[index].prevout?.scriptpubkeyType}', style: TextStyle(color: Colors.black)))
-                                                                                  ],
-                                                                                ),
-                                                                                const Divider(
-                                                                                  height: 10,
-                                                                                  color: Colors.black87,
-                                                                                )
-                                                                              ],
+                                                                                ],
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      )
-                                                                    : SizedBox();
-                                                              },
+                                                                        )
+                                                                      : SizedBox();
+                                                                },
+                                                              ),
+                                                            )
+                                                          : Expanded(
+                                                              child: ListView
+                                                                  .builder(
+                                                                physics:
+                                                                    const AlwaysScrollableScrollPhysics(),
+                                                                shrinkWrap: true,
+                                                                itemCount: controller
+                                                                    .transactionModel
+                                                                    ?.vin
+                                                                    ?.length,
+                                                                itemBuilder:
+                                                                    (context,
+                                                                        index) {
+                                                                  double value = (controller
+                                                                          .transactionModel!
+                                                                          .vin![
+                                                                              index]
+                                                                          .prevout!
+                                                                          .value!) /
+                                                                      100000000;
+                                                                  controller.input
+                                                                          .value =
+                                                                      double.parse(
+                                                                          value.toStringAsFixed(
+                                                                              8));
+                                                                  String address =
+                                                                      '';
+                                                                  if (controller
+                                                                          .transactionModel!
+                                                                          .vin?[
+                                                                              index]
+                                                                          .prevout!
+                                                                          .scriptpubkeyAddress !=
+                                                                      null)
+                                                                    address = controller
+                                                                            .transactionModel!
+                                                                            .vin?[
+                                                                                index]
+                                                                            .prevout!
+                                                                            .scriptpubkeyAddress ??
+                                                                        '';
+                                                                  return address.contains(
+                                                                          inputCtrl
+                                                                              .text)
+                                                                      ? Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              vertical:
+                                                                                  8.0),
+                                                                          child:
+                                                                              GlassContainer(
+                                                                            child:
+                                                                                Padding(
+                                                                              padding:
+                                                                                  const EdgeInsets.all(10.0),
+                                                                              child:
+                                                                                  Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Container(
+                                                                                    height: 20,
+                                                                                    width: 20,
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: Colors.red,
+                                                                                      shape: BoxShape.circle,
+                                                                                    ),
+                                                                                    child: const Center(
+                                                                                        child: Icon(
+                                                                                      Icons.arrow_forward_outlined,
+                                                                                      size: 15,
+                                                                                    )),
+                                                                                  ),
+                                                                                  Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                    children: [
+                                                                                      Flexible(
+                                                                                        flex: 3,
+                                                                                        child: GestureDetector(
+                                                                                          onTap: () {
+                                                                                            controller.getAddressComponent(controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress);
+                                                                                            controller.addressId = controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
+                                                                                            Navigator.push(
+                                                                                              context,
+                                                                                              MaterialPageRoute(
+                                                                                                builder: (context) => AddressComponent(),
+                                                                                              ),
+                                                                                            );
+                                                                                          },
+                                                                                          child: Text(
+                                                                                            controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null && controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType == "op_return"
+                                                                                                ? 'OP_RETURN (R)'
+                                                                                                : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
+                                                                                                    '... '
+                                                                                                    '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
+                                                                                            style: const TextStyle(
+                                                                                              fontSize: 14,
+                                                                                              color: Colors.blue,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                      Flexible(
+                                                                                        flex: 2,
+                                                                                        child: Container(
+                                                                                          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                                                                          decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(5)),
+                                                                                          child: controller.isShowBTC.value
+                                                                                              ? Text(
+                                                                                                  '${controller.isShowBTC.value ? controller.inPutBTC(index) : controller.inPutDollar(index)} BTC',
+                                                                                                  style: TextStyle(color: Colors.black),
+                                                                                                )
+                                                                                              : Text('\$ ${controller.inPutDollar(index)} ', style: TextStyle(color: Colors.black)),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    child: Row(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        Expanded(
+                                                                                          child: Text(L10n.of(context)!.witness, style: TextStyle(color: Colors.black)),
+                                                                                        ),
+                                                                                        Expanded(
+                                                                                          child: Column(
+                                                                                            children: [
+                                                                                              ListView.builder(
+                                                                                                physics: const NeverScrollableScrollPhysics(),
+                                                                                                shrinkWrap: true,
+                                                                                                itemCount: controller.transactionModel!.vin?[index].witness?.length,
+                                                                                                itemBuilder: (context, ind) {
+                                                                                                  return Padding(
+                                                                                                    padding: const EdgeInsets.only(bottom: 10),
+                                                                                                    child: Text(controller.transactionModel?.vin != null ? '${controller.transactionModel?.vin?[index].witness?[ind]}' : '', style: TextStyle(color: Colors.black)),
+                                                                                                  );
+                                                                                                },
+                                                                                              )
+                                                                                            ],
+                                                                                          ),
+                                                                                        )
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                    children: [
+                                                                                      const Text('nSequence', style: TextStyle(color: Colors.black)),
+                                                                                      Text('0x${controller.transactionModel?.vin?[index].sequence?.toRadixString(16)}', style: TextStyle(color: Colors.black))
+                                                                                    ],
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                    children: [
+                                                                                      Text(L10n.of(context)!.previousOutputScripts, style: TextStyle(color: Colors.black)),
+                                                                                      const SizedBox(
+                                                                                        width: 10,
+                                                                                      ),
+                                                                                      Flexible(child: Text('${controller.transactionModel?.vin?[index].prevout?.scriptpubkeyAsm}', style: TextStyle(color: Colors.black)))
+                                                                                    ],
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                    children: [
+                                                                                      const Text('Previous output type', style: TextStyle(color: Colors.black)),
+                                                                                      const SizedBox(
+                                                                                        width: 10,
+                                                                                      ),
+                                                                                      Flexible(child: Text('${controller.transactionModel?.vin?[index].prevout?.scriptpubkeyType}', style: TextStyle(color: Colors.black)))
+                                                                                    ],
+                                                                                  ),
+                                                                                  const Divider(
+                                                                                    height: 10,
+                                                                                    color: Colors.black87,
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      : SizedBox();
+                                                                },
+                                                              ),
                                                             ),
-                                                          ),
-                                                  ],
-                                                ));
-                                          }));
+                                                    ],
+                                                  ));
+                                            }),
+                                          ));
                                     },
                                   ),
                                   SizedBox(
@@ -551,8 +553,15 @@ class SingleTransactionScreen extends StatelessWidget {
                                     size: AppTheme.cardPadding * 4.75,
                                     onTap: () {
                                       BitNetBottomSheet(
-                                        context: context,
-                                        child: StatefulBuilder(
+                                       context: context,
+                                          height: MediaQuery.of(context).size.height * 0.6,
+                                          child: bitnetScaffold(
+                                            context: context,
+                                            appBar: bitnetAppBar(
+                                              context: context,
+                                              hasBackButton: false,
+                                              text: L10n.of(context)!.outputTx,),
+                                            body: StatefulBuilder(
                                           builder: (context, setState) {
                                             return Padding(
                                               padding:
@@ -903,7 +912,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                               ),
                                             );
                                           },
-                                        ),
+                                        ),)
                                       );
                                     },
                                   ),

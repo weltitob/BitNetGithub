@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -47,9 +48,9 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
       bool isSuperSmallScreen =
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
-        margin: isSuperSmallScreen
-            ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
+        margin: 
+             EdgeInsets.symmetric(horizontal: 0)
+           ,
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
@@ -61,7 +62,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
             actions: [PopUpLangPickerWidget()]),
         body: Padding(
           padding:
-              EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5.w),
+              EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5.ws),
           child: ListView(
             children: [
               SizedBox(
@@ -85,7 +86,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                   ),
                   Container(
                     height: AppTheme.cardPadding * 7.h,
-                    width: AppTheme.cardPadding * 7.w,
+                    width: AppTheme.cardPadding * 7.ws,
                     color: Colors.transparent,
                     child: Container(
                       decoration: BoxDecoration(
@@ -113,11 +114,11 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                 children: [
                   Container(
                       height: AppTheme.cardPadding * 6.h,
-                      width: AppTheme.cardPadding * 6.w,
+                      width: AppTheme.cardPadding * 6.ws,
                       color: Colors.transparent,
                       child: buildFutureLottie(verify_user_composition, true)),
                   SizedBox(
-                    width: AppTheme.cardPadding.w,
+                    width: AppTheme.cardPadding.ws,
                   ),
                   Expanded(
                     child: Text(
@@ -153,7 +154,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                   ),
                   Container(
                       height: AppTheme.cardPadding * 7.h,
-                      width: AppTheme.cardPadding * 7.w,
+                      width: AppTheme.cardPadding * 7.ws,
                       color: Colors.transparent,
                       child: buildFutureLottie(scan_qr_composition, true)),
                 ],
@@ -161,7 +162,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
               SizedBox(height: AppTheme.cardPadding.h),
               Center(
                 child: LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 14.w,
+                    customWidth: AppTheme.cardPadding * 14.ws,
                     title: L10n.of(context)!.scanQr,
                     onTap: () {
                       Navigator.of(context).push(

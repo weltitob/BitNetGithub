@@ -78,6 +78,7 @@ class WalletScreen extends GetWidget<WalletsController> {
     return bitnetScaffold(
         context: context,
         body: ListView(
+          controller: controller.scrollController,
           children: [
             Obx(
               () {
@@ -206,12 +207,11 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 right: AppTheme.cardPadding,
                                 top: AppTheme.cardPadding),
                             scale: 1.0,
-                            initialIndex: cards == 'lightning' ? 0 : 1,
+                            initialIndex: controller.selectedCard.value == 'onchain' ? 0 : 1,
                             cardsCount: cards.length,
                             onSwipe: (int index, int? previousIndex,
                                 CardSwiperDirection direction) {
-                              controller.setCardInDatabase(
-                                  cards == 'onChain' ? 'lightning' : 'onChain');
+                                controller.setSelectedCard(controller.selectedCard.value == 'onchain' ? 'lightning' : 'onchain');
                               return true;
                             },
                             cardBuilder: (context, index, percentThresholdX,

@@ -117,9 +117,14 @@ class _BottomNavState extends State<BottomNav>
 
   static List<Widget> navItems = <Widget>[FeedScreen(), Wallet(), Profile()];
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index, ScrollController controller) {
     setState(() {
+      if(index == _selectedIndex) {
+        controller.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+      } else {
       _selectedIndex = index;
+
+      }
     });
   }
 
@@ -197,7 +202,16 @@ class _BottomNavState extends State<BottomNav>
                       .withOpacity(0.5),
                   showSelectedLabels: false,
                   showUnselectedLabels: false,
-                  onTap: _onItemTapped,
+                  onTap: (i) {
+                    switch(i){
+                      case 0: 
+                        _onItemTapped(i, Get.find<FeedController>().scrollControllerColumn);
+                      case 1:
+                        _onItemTapped(i, Get.find<WalletsController>().scrollController);
+                      case 2:
+                        _onItemTapped(i, Get.find<ProfileController>().scrollController);
+                    }
+                  },
                   elevation: 0, // Box-Shadow entfernen
                 ),
               ),

@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
@@ -172,7 +173,7 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding * 2.w),
+                    horizontal: AppTheme.cardPadding * 2.ws),
                 child: LongButtonWidget(
                   title: onLastPage
                       ? L10n.of(context)!.confirmKey
@@ -304,15 +305,15 @@ class _MnemonicPageState extends State<MnemonicPage>
     super.build(context);
     return Padding(
       padding: EdgeInsets.only(
-        left: AppTheme.cardPadding * 2.w,
-        right: AppTheme.cardPadding * 2.w,
+        left: AppTheme.cardPadding * 2.ws,
+        right: AppTheme.cardPadding * 2.ws,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FormTextField(
-            width: AppTheme.cardPadding * 14.w,
+            width: AppTheme.cardPadding * 14.ws,
             hintText: widget.text1,
             controller: widget.textController1,
             focusNode: widget.focusNode1,
@@ -322,7 +323,7 @@ class _MnemonicPageState extends State<MnemonicPage>
             changefocustonext: widget.moveToNext,
           ),
           FormTextField(
-            width: AppTheme.cardPadding * 14.w,
+            width: AppTheme.cardPadding * 14.ws,
             hintText: widget.text2,
             controller: widget.textController2,
             focusNode: widget.focusNode2,
@@ -332,7 +333,7 @@ class _MnemonicPageState extends State<MnemonicPage>
             changefocustonext: widget.moveToNext,
           ),
           FormTextField(
-            width: AppTheme.cardPadding * 14.w,
+            width: AppTheme.cardPadding * 14.ws,
             hintText: widget.text3,
             controller: widget.textController3,
             focusNode: widget.focusNode3,
@@ -342,7 +343,7 @@ class _MnemonicPageState extends State<MnemonicPage>
             changefocustonext: widget.moveToNext,
           ),
           FormTextField(
-            width: AppTheme.cardPadding * 14.w,
+            width: AppTheme.cardPadding * 14.ws,
             hintText: widget.text4,
             controller: widget.textController4,
             focusNode: widget.focusNode4,

@@ -248,7 +248,11 @@ dependency_overrides:
       url: https://github.com/chandrabezzo/wakelock.git
       ref: main
       path: wakelock_windows
-
+  flutter_screenutil:
+    git: 
+      url: https://github.com/izako666/flutter_screenutil
+      ref: master
+      
 flutter_intl:
   enabled: true
   arb_dir: lib/intl  # Updated to reflect the renamed directory

@@ -108,6 +108,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                   IconButton(
                       onPressed: () {
                         this.swapped = !this.swapped;
+                        Get.find<WalletsController>().setAmtWidgetReversed(this.swapped);
                         if(this.swapped) {
                     
                            final chartLine =Get.find<WalletsController>().chartLines.value;

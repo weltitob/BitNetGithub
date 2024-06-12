@@ -88,7 +88,7 @@ Future<bool?> showDialogueMultipleOptions({
   List<String?> texts = const [],
   List<String?> images = const [],
   List<bool> isActives = const [],
-  List<VoidCallback?> actions = const [],
+  List<Function(BuildContext)?> actions = const [],
 }) {
   return showDialog(
     context: context,
@@ -107,7 +107,7 @@ Future<bool?> showDialogueMultipleOptions({
               height: AppTheme.cardPadding * 4.5,
               width: AppTheme.cardPadding * 4.5,
               texts[index]!,
-              actions[index]!,
+            (){actions[index]!(context);},
               image: images[index]!,
             );
           } else {

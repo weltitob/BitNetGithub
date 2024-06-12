@@ -9,6 +9,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/controller/loop_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
 import 'package:flutter/material.dart';
@@ -127,6 +128,8 @@ class _LoopScreenState extends State<LoopScreen> {
                       onAmountChange: (type, currency) {   },
                       context: context,
                       autoConvert: true,
+                                      swapped: Get.find<WalletsController>().reversed.value,
+
                     ),
                   ),
                   SizedBox(

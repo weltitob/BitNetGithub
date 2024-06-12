@@ -33,23 +33,26 @@ class _FeedScreenState extends State<FeedScreen>
     with SingleTickerProviderStateMixin {
   late FocusNode searchNode;
   late ScrollController homeScrollController;
+  late Function() scrollListener;
   @override
   void initState() {
     
     super.initState();
-    homeScrollController = ScrollController();
-    homeScrollController.addListener((){
-      scrollToSearchFunc(homeScrollController, searchNode);
-    });
-       searchNode = FocusNode();
+  
     Get.put(FeedController()).initNFC(context);
+     homeScrollController = Get.find<FeedController>().scrollControllerColumn;
+     scrollListener = (){
+      scrollToSearchFunc(homeScrollController, searchNode);
+    };
+    homeScrollController.addListener(scrollListener);
+       searchNode = FocusNode();
   }
 
    
 
 @override
 void dispose() {
-  homeScrollController.dispose();
+  homeScrollController.removeListener(scrollListener);
   searchNode.dispose();
   super.dispose();
 }

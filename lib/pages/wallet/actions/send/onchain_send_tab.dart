@@ -224,7 +224,9 @@ class OnChainSendTab extends GetWidget<SendsController> {
                 currController: controller.currencyController,
                 focusNode: controller.myFocusNodeMoney,
                 context: context,
-                autoConvert: true),
+                autoConvert: true,
+                                swapped: Get.find<WalletsController>().reversed.value,
+),
           ],
         ),
       );

@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -29,6 +30,7 @@ class WalletsController extends BaseController {
   RxBool showInfo = false.obs;
   late final Future<LottieComposition> compositionSend;
   late final Future<LottieComposition> compositionReceive;
+  late final ScrollController scrollController;
   late OnchainBalance onchainBalance = OnchainBalance(
     totalBalance: '0',
     confirmedBalance: '0',
@@ -61,6 +63,13 @@ class WalletsController extends BaseController {
   int errorCount = 0;
   int loadedFutures = 0;
   bool queueErrorOvelay = false;
+
+  //for amount widget
+  RxBool reversed = false.obs;
+  //for onchain/lightning card, false is onchain
+  RxString selectedCard = 'onchain'.obs;
+  final String reversedConstant = 'amount_widget_reversed';
+  final String cardTopConstant = 'lightning_on_top';
   void setHideBalance({bool? hide}) {
     print(hide);
     if (hide != null) {
@@ -74,22 +83,30 @@ class WalletsController extends BaseController {
 
   final arguments = Get.arguments;
 
-  RxString? selectedCard;
+  void setSelectedCard(String card) {
+    selectedCard.value = card;
+    LocalStorage.instance.setString(card, cardTopConstant);
+  }
+
+  void setAmtWidgetReversed(bool val) {
+    reversed.value = val;
+    LocalStorage.instance.setBool(val, reversedConstant);
+  }
 
   // Getters for currencies
 
   // Method to update the first currency and its corresponding Firestore document
-  void setCardInDatabase(String selectedCard) {
-    settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).update({
-      "selected_card": selectedCard,
-    });
-    selectedCard = selectedCard;
-  }
+  // void setCardInDatabase(String selectedCard) {
+  //   settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).update({
+  //     "selected_card": selectedCard,
+  //   });
+  //   selectedCard = selectedCard;
+  // }
 
-  // Clear method adjusted to reset currency values
-  void clearCard() {
-    selectedCard = null;
-  }
+  // // Clear method adjusted to reset currency values
+  // void clearCard() {
+  //   selectedCard = null;
+  // }
 
   RxBool coin = false.obs;
 
@@ -137,6 +154,9 @@ class WalletsController extends BaseController {
     Get.put(WalletFilterController());
     Get.put(BitcoinScreenController());
     Get.put(PurchaseSheetController());
+    scrollController = ScrollController();
+    reversed.value = LocalStorage.instance.getBool(reversedConstant);
+    selectedCard.value = LocalStorage.instance.getString(cardTopConstant) ?? 'onchain';
     settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then(
         (value) {
       coin.value = value.data()?["showCoin"] ?? false;
@@ -243,6 +263,7 @@ class WalletsController extends BaseController {
   @override
   void dispose() {
     transactionsSubscription?.cancel();
+    scrollController.dispose();
     super.dispose();
   }
 
