@@ -53,9 +53,11 @@ class _FeedScreenState extends State<FeedScreen>
                       builder: (controller) {
                         return SearchFieldWithNotificationsWidget(
                           isSearchEnabled: true,
-                          hintText: "Paste walletaddress, transactionid or blockid...",
+                          hintText:
+                              "Paste walletaddress, transactionid or blockid...",
                           // hintText: "${L10n.of(context)!.search}...",
                           onChanged: (v) {
+                            setState(() {}); 
                             if (controller.tabController!.index == 2) {
                               controller.searchresults = controller
                                   .searchresults
@@ -64,7 +66,6 @@ class _FeedScreenState extends State<FeedScreen>
                                       .contains(v))
                                   .toList();
                             }
-                            setState(() {});
                           },
                         );
                       },

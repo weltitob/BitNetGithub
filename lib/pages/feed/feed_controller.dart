@@ -1,6 +1,5 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
-import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
@@ -46,12 +45,11 @@ class FeedController extends GetxController
 
   handleSearch(String query, BuildContext context) async {
     try {
- 
       final controllerTransaction = Get.find<TransactionController>();
       final homeController = Get.find<HomeController>();
-      // homeController.bitcoinDataHeight.clear();
       if (query.isNotEmpty &&
           tabController!.index == 0 &&
+          !query.startsWith('00') &&
           isValidBitcoinTransactionID(query)) {
         controllerTransaction.txID = query.toString();
         controllerTransaction.getSingleTransaction(
@@ -59,6 +57,12 @@ class FeedController extends GetxController
         );
         controllerTransaction.changeSocket();
         context.push('/single_transaction');
+      }
+      if (query.isNotEmpty && query.startsWith('00')) {
+        print(query);
+        homeController.blockHeight =
+            await homeController.getDataHeightHash(query);
+        context.push('/wallet/bitcoinscreen/mempool');
       }
       if (query.isNotEmpty &&
           tabController!.index == 0 &&

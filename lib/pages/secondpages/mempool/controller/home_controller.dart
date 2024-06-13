@@ -203,6 +203,20 @@ class HomeController extends BaseController {
   //   }
   // }
 
+  Future<int?> getDataHeightHash(String height) async {
+    try {
+      String url = '${baseUrl}v1/block/$height';
+      final response = await dioClient.get(url: url);
+      return blockHeight = response.data['height'];
+    } on DioException {
+      isLoading.value = false;
+      update();
+    } catch (e) {
+      isLoading.value = false;
+      update();
+    }
+  }
+
   getDataHeight(int height) async {
     update();
     try {
@@ -239,7 +253,6 @@ class HomeController extends BaseController {
       await getDataHeight(height! - 15);
       await getDataHeight(height! - 30);
       isLoading.value = false;
-
       update();
     } on DioException {
       isLoading.value = false;
