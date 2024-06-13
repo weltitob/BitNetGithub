@@ -22,24 +22,22 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  final ScrollController _scrollController = ScrollController();
   final controller = Get.put(ProfileController());
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
+    controller.scrollController.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_scrollListener);
-    _scrollController.dispose();
+    controller.scrollController.removeListener(_scrollListener);
     super.dispose();
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !controller.assetsLoading) {
+    if (controller.scrollController.position.pixels == controller.scrollController.position.maxScrollExtent && !controller.assetsLoading) {
       _loadMoreData();
     }
   }
@@ -69,7 +67,7 @@ class _ProfileViewState extends State<ProfileView> {
         body: controller.isUserLoading.value
             ? Center(child: dotProgress(context))
             : ListView(
-          controller: _scrollController,
+          controller: controller.scrollController,
           children: [
             ProfileHeader(),
             Obx(() {
@@ -124,7 +122,7 @@ class _ProfileViewState extends State<ProfileView> {
                     child: PrettyQr(
                       typeNumber: 5,
                       size: AppTheme.cardPadding * 10,
-                      data: 'did: ${controller.userData.did}',
+                      data: 'did: ${controller.userData.value.did}',
                       errorCorrectLevel: QrErrorCorrectLevel.M,
                       roundEdges: true,
                     ),

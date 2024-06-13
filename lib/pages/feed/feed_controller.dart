@@ -128,6 +128,7 @@ class FeedController extends GetxController
 
   TabController? tabController;
   Rx<ScrollController>? scrollController;
+  late final ScrollController scrollControllerColumn;
   RxBool fixedScroll = false.obs;
 
   @override
@@ -135,6 +136,7 @@ class FeedController extends GetxController
     super.onInit();
     handleSearchPeople('');
     tabController = TabController(length: 5, vsync: this);
+    scrollControllerColumn = ScrollController();
     scrollController?.value = ScrollController();
     scrollController?.value.addListener(scrollListener);
     tabController?.addListener(smoothScrollToTop);
@@ -144,6 +146,7 @@ class FeedController extends GetxController
   @override
   void dispose() {
     super.dispose();
+    scrollControllerColumn.dispose();
     tabController?.dispose();
     scrollController?.value.dispose();
   }

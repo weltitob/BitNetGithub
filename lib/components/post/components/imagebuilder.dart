@@ -39,10 +39,10 @@ class ImageBuilderLocal extends StatelessWidget {
 //USED FOR POSTS IN FEED ETC. IMAGE IS FETCHED FROM DATABASE
 class ImageBuilder extends StatelessWidget {
   final String encodedData;
-
+  final BorderRadius? radius;
   const ImageBuilder({
     Key? key,
-    required this.encodedData,
+    required this.encodedData,  this.radius,
   }) : super(key: key);
 
   @override
@@ -54,8 +54,12 @@ class ImageBuilder extends StatelessWidget {
     Uint8List imageBytes = base64Decode(base64String);
 
     return ImageBox(
+      radius: radius,
       child: Image.memory(
         imageBytes,
+        cacheWidth: 50, 
+        cacheHeight: 50,
+        filterQuality: FilterQuality.low,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => Container(
           height: AppTheme.cardPadding * 4,
@@ -71,9 +75,9 @@ class ImageBuilder extends StatelessWidget {
 
 class ImageBox extends StatelessWidget {
   final Widget child;
-
+  final BorderRadius? radius;
   const ImageBox({
-    required this.child
+    required this.child, this.radius,
   });
 
   @override
@@ -84,7 +88,7 @@ class ImageBox extends StatelessWidget {
         Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: AppTheme.cardRadiusMid.r,
+              borderRadius: radius ?? AppTheme.cardRadiusMid.r,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -94,7 +98,7 @@ class ImageBox extends StatelessWidget {
               ],
             ),
             child: ClipRRect(
-                borderRadius: AppTheme.cardRadiusMid.r,
+                borderRadius: radius ?? AppTheme.cardRadiusMid.r,
                 child: child)),
       ],
     );

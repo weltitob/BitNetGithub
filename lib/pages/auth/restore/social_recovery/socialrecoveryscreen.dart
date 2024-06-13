@@ -90,7 +90,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                         createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                         updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                         isActive: true,
-                        dob: 10,
+                        dob: 10, nft_profile_id: '', nft_background_id: '',
                       ),
                     ),
                     Container(
@@ -130,7 +130,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                           createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                           updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                           isActive: true,
-                          dob: 10,
+                          dob: 10, nft_profile_id: '', nft_background_id: '',
                         ),
                       ),
                     ),
@@ -154,7 +154,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                         createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                         updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                         isActive: true,
-                        dob: 10,
+                        dob: 10, nft_profile_id: '', nft_background_id: '',
                       ),
                     ),
                     Container(
@@ -178,7 +178,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                         createdAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                         updatedAt: Timestamp.fromMicrosecondsSinceEpoch(20),
                         isActive: true,
-                        dob: 10,
+                        dob: 10, nft_profile_id: '', nft_background_id: '',
                       ),
                     ),
                     Container(

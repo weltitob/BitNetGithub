@@ -481,7 +481,7 @@ abstract class AppTheme {
           error: AppTheme.errorColor,
           onError: AppTheme.errorColor,
           surface: Colors.black,
-          onSurface: Colors.black,
+          onSurface: Colors.white,
         );
         ThemeData themeData = ThemeData.from(
           colorScheme: colorScheme,

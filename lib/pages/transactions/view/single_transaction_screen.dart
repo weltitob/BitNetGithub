@@ -549,8 +549,15 @@ class SingleTransactionScreen extends StatelessWidget {
                                     size: AppTheme.cardPadding * 4.75,
                                     onTap: () {
                                       BitNetBottomSheet(
-                                        context: context,
-                                        child: StatefulBuilder(
+                                       context: context,
+                                          height: MediaQuery.of(context).size.height * 0.6,
+                                          child: bitnetScaffold(
+                                            context: context,
+                                            appBar: bitnetAppBar(
+                                              context: context,
+                                              hasBackButton: false,
+                                              text: L10n.of(context)!.outputTx,),
+                                            body: StatefulBuilder(
                                           builder: (context, setState) {
                                             return Padding(
                                               padding:
@@ -925,7 +932,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                               ),
                                             );
                                           },
-                                        ),
+                                        ),)
                                       );
                                     },
                                   ),

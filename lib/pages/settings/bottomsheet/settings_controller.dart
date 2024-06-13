@@ -9,7 +9,8 @@ import 'package:get/get.dart';
 
 class SettingsController extends BaseController {
   RxString currentTab = 'main'.obs;
-
+  //dummy val for state triggers.
+  Rx<ThemeMode> selectedTheme = ThemeMode.system.obs;
   void switchTab(String newTab) {
     currentTab.value = newTab;
   }

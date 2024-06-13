@@ -21,6 +21,7 @@ class QrButton extends StatelessWidget {
         context: context,
         child: bitnetScaffold(
           context: context,
+          extendBodyBehindAppBar: true,
           appBar: bitnetAppBar(
             context: context,
             text: L10n.of(context)!.qrCode,
@@ -40,7 +41,7 @@ class QrButton extends StatelessWidget {
                       child: PrettyQr(
                         typeNumber: 5,
                         size: AppTheme.cardPadding * 10,
-                        data: 'did: ${controller.userData.did}',
+                        data: 'did: ${controller.userData.value.did}',
                         errorCorrectLevel: QrErrorCorrectLevel.M,
                         roundEdges: true,
                       ),

@@ -1,10 +1,13 @@
 import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductHorizontal.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSliderClickable.dart';
@@ -24,7 +27,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class CollectionScreen extends StatefulWidget {
   final GoRouterState? routerState;
-  const CollectionScreen({Key? key, required this.routerState})
+  final BuildContext context;
+  const CollectionScreen({Key? key, required this.routerState, required this.context})
       : super(key: key);
   @override
   State<CollectionScreen> createState() => _CollectionScreenState();
@@ -33,14 +37,17 @@ class CollectionScreen extends StatefulWidget {
 class _CollectionScreenState extends State<CollectionScreen> {
   final inscriptions = [2424242, 3434343];
   var search_filter = 1;
-  var sorting_filter = L10n.of(Get.context!)!.recentlyListed;
+  late var sorting_filter;
   var sortedGridList = gridListData;
   var selected_products = [];
   var showCartBottomSheet = false;
   var item_buy = -1;
+  PersistentBottomSheetController? sheetCtrler;
+  Widget? bottomSheet;
   late PanelController buyPanelController;
   @override
   initState() {
+    sorting_filter = L10n.of(widget.context)!.recentlyListed;
     sortList(search_filter, sorting_filter);
     buyPanelController = PanelController();
     super.initState();
@@ -459,7 +466,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             cryptoText: sortedGridList[index].cryptoText,
                             columnMargin: sortedGridList[index].columnMargin,
                             rank: sortedGridList[index].rank,
-                            onTap: handleProductClick,
+                            onTap:(i){
+                              handleProductClick(i, context);
+                            } ,
                             onLongTap: () {
                               context.goNamed(
                                   '/asset_screen',
@@ -471,7 +480,10 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             onTapBuy: () {
                               setState(() {
                                 this.item_buy = sortedGridList[index].id;
-                                _buildBuySlidingPanel();
+                                _buildBuySlidingPanel(context).whenComplete((){
+                                  this.item_buy = -1;
+                                  setState((){});
+                                });
                               });
                             },
                             selected: selected_products
@@ -486,100 +498,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
           //const FilterBtn(),
           //const StatusBarBg(),
 
-          if (showCartBottomSheet && item_buy == -1)
-            SlidingUpPanel(
-                color: Colors.transparent,
-                minHeight: 60,
-                maxHeight: 600,
-                panel: Container(
-                  decoration: BoxDecoration(
-                      color: AppTheme.colorBackground,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8)),
-                      border:
-                          Border.all(color: AppTheme.colorBitcoin, width: 2)),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              children: [
-                                Icon(Icons.shopping_cart_outlined),
-                                Text("${L10n.of(context)!.cart}(${selected_products.length})",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineMedium),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: TextButton(
-                              child: Text(L10n.of(context)!.clearAll,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(color: Colors.white)),
-                              onPressed: () {
-                                setState(() {
-                                  selected_products.clear();
-                                  showCartBottomSheet = false;
-                                });
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                      Divider(color: AppTheme.colorBitcoin, thickness: 2),
-                      Container(
-                        height: 250.w,
-                        child: ListView.builder(
-                            itemCount: selected_products.length,
-                            itemBuilder: _buildHorizontalProduct),
-                      ),
-                      Spacer(),
-                      Container(
-                        width: AppTheme.cardPadding * 10,
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text(L10n.of(context)!.subTotal), Text("0.024")],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text(L10n.of(context)!.networkFee), Text("0.024")],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text(L10n.of(context)!.marketFee), Text("0.024")],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [Text(L10n.of(context)!.totalPrice), Text("0.024")],
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: LongButtonWidget(title: L10n.of(context)!.buyNow, onTap: () {}),
-                      )
-                    ],
-                  ),
-                ))
+          if (showCartBottomSheet && item_buy == -1 && bottomSheet != null)
+            bottomSheet!
+           
         ],
       ),
     );
@@ -657,7 +578,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
     sortedGridList = newList;
   }
 
-  handleProductClick(id) {
+  handleProductClick(int id, BuildContext ctx) {
     setState(() {
       if (selected_products.contains(id)) {
         selected_products.remove(id);
@@ -666,8 +587,49 @@ class _CollectionScreenState extends State<CollectionScreen> {
       }
       if (selected_products.isEmpty) {
         showCartBottomSheet = false;
+        if(sheetCtrler != null) {
+          sheetCtrler!.close();
+        }
+        bottomSheet=null;
+        setState((){});
       } else {
         showCartBottomSheet = true;
+
+        bottomSheet = 
+        SlidingUpPanel(
+          color: Colors.transparent,
+          boxShadow: [],
+          maxHeight: 600,
+          minHeight: 100,
+          // initialChildSize: 0.2,
+          // snapSizes: [0.2, 0.6],
+          // shouldCloseOnMinExtent:  false,
+          panel:Padding(
+            padding:EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width - AppTheme.columnWidth * 1.5)/2),
+            child: CartSheet(
+              selected_products: selected_products,
+              sortedGridList: sortedGridList,
+              onClear: (){
+            
+                                        setState(() {
+                                          selected_products.clear();
+                                          showCartBottomSheet = false;
+                                        });
+                                   
+              },
+              onDeleteItem: (i) {
+                setState(() {
+                Get.find<LoggerService>().i("about to delete item with id: ${sortedGridList[i].id}");
+                selected_products.remove(i);
+                if (selected_products.isEmpty) {
+                  showCartBottomSheet = false;
+                }
+              });
+              }
+            ),
+          )
+        );
+        setState((){});
       }
     });
   }
@@ -675,7 +637,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   Widget _buildHorizontalProductWithId(int id) {
     var gridIndex = sortedGridList.indexWhere((element) => element.id == id);
     var product = Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 0),
       child: NftProductHorizontal(
         cryptoImage: sortedGridList[gridIndex].cryptoImage,
         nftImage: sortedGridList[gridIndex].nftImage,
@@ -689,184 +651,241 @@ class _CollectionScreenState extends State<CollectionScreen> {
     return product;
   }
 
-  Widget? _buildHorizontalProduct(BuildContext context, int index) {
-    var id = selected_products[index];
-    var gridIndex = sortedGridList.indexWhere((element) => element.id == id);
-    var product = Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: NftProductHorizontal(
-        cryptoImage: sortedGridList[gridIndex].cryptoImage,
-        nftImage: sortedGridList[gridIndex].nftImage,
-        nftMainName: sortedGridList[gridIndex].nftMainName,
-        nftName: sortedGridList[gridIndex].nftName,
-        cryptoText: sortedGridList[gridIndex].cryptoText,
-        rank: sortedGridList[gridIndex].rank,
-        columnMargin: sortedGridList[gridIndex].columnMargin,
-        onDelete: () {
-          setState(() {
-            selected_products.remove(id);
-            if (selected_products.isEmpty) {
-              showCartBottomSheet = false;
-            }
-          });
-        },
-      ),
-    );
-    return product;
-  }
+  
 
-  _buildBuySlidingPanel() {
-    showGeneralDialog(
-        barrierDismissible: true,
-        barrierLabel: "buy_dialog",
-        context: context,
-        pageBuilder: (context, a1, a2) {
-          return AlertDialog(
-            insetPadding: EdgeInsets.zero,
-            backgroundColor: Colors.transparent,
-            content: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: AppTheme.colorBackground,
-                  border: Border.all(color: AppTheme.colorBitcoin, width: 2)),
-              height: 600,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("Buy",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(color: Colors.white)),
-                    Divider(
-                      color: AppTheme.colorBitcoin,
-                      thickness: 2,
+ Future<T?> _buildBuySlidingPanel<T>(BuildContext ctx) {
+        return BitNetBottomSheet(
+      context: ctx,
+      child: bitnetScaffold(
+        extendBodyBehindAppBar: true,
+        context: ctx,
+        appBar: bitnetAppBar(
+          context: ctx,
+          text: "Purchase NFT",
+          hasBackButton: false,
+        ),
+        body: Container(
+          child: Padding(
+            padding: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                   margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: AppTheme.elementSpacing/2,
+                        ),
+                        _buildHorizontalProductWithId(item_buy),
+                         SizedBox(
+                          height: AppTheme.elementSpacing/2,
+                        ),
+                        BitNetListTile(
+                          text: 'Subtotal',
+                          trailing: Text('0.5'),
+                        ),
+                        BitNetListTile(
+                          text: 'Network Fee',
+                          trailing: Text('0.5'),
+                        ),
+                        BitNetListTile(
+                          text: 'Market Fee',
+                          trailing: Text('0.5'),
+                        ),
+                          BitNetListTile(
+                          text: 'Total Price',
+                          trailing: Text('0.5'),
+                        ),
+                      ],
                     ),
-                    _buildHorizontalProductWithId(item_buy),
-                    Spacer(),
-                    Container(
-                      width: AppTheme.cardPadding * 10,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Subtotal",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Network Fee",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Market Fee",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Total Price",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "0.024",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                        ],
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: AppTheme.cardPadding),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                       SizedBox(height: AppTheme.cardPadding,),
+                        LongButtonWidget(
+                          title: "Purchase",
+                          onTap: () {
+                        
+                          },
+              
+                        ),
+                        SizedBox(height: AppTheme.elementSpacing,),
+                        LongButtonWidget(
+                          title: "Cancel",
+                          onTap: () {
+                            Navigator.pop(context);
+                            
+                          },
+                          buttonType: ButtonType.transparent,
+              
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          LongButtonWidget(
-                            title: "Cancel",
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            buttonType: ButtonType.transparent,
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                          LongButtonWidget(
-                            title: "Buy Now",
-                            onTap: () {},
-                            customWidth: 15 * 10,
-                            customHeight: 15 * 2.5,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
-          );
-        }).whenComplete(() {
-      setState(() {
-        item_buy = -1;
-      });
-    });
+          ),
+        ),
+      ),
+    );
+    // showGeneralDialog(
+    //     barrierDismissible: true,
+    //     barrierLabel: "buy_dialog",
+    //     context: context,
+    //     pageBuilder: (context, a1, a2) {
+    //       return AlertDialog(
+    //         insetPadding: EdgeInsets.zero,
+    //         backgroundColor: Colors.transparent,
+    //         content: Container(
+    //           decoration: BoxDecoration(
+    //               borderRadius: BorderRadius.circular(8),
+    //               color: AppTheme.colorBackground,
+    //               border: Border.all(color: AppTheme.colorBitcoin, width: 2)),
+    //           height: 600,
+    //           child: Padding(
+    //             padding: const EdgeInsets.all(8.0),
+    //             child: Column(
+    //               mainAxisSize: MainAxisSize.min,
+    //               crossAxisAlignment: CrossAxisAlignment.center,
+    //               children: [
+    //                 Text("Buy",
+    //                     style: Theme.of(context)
+    //                         .textTheme
+    //                         .headlineMedium!
+    //                         .copyWith(color: Colors.white)),
+    //                 Divider(
+    //                   color: AppTheme.colorBitcoin,
+    //                   thickness: 2,
+    //                 ),
+    //                 _buildHorizontalProductWithId(item_buy),
+    //                 Spacer(),
+    //                 Container(
+    //                   width: AppTheme.cardPadding * 10,
+    //                   child: Column(
+    //                     children: [
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Text(
+    //                             "Subtotal",
+    //                             style: Theme.of(context)
+    //                                 .textTheme
+    //                                 .bodyMedium!
+    //                                 .copyWith(color: Colors.white),
+    //                           ),
+    //                           Text(
+    //                             "0.024",
+    //                             style: Theme.of(context)
+    //                                 .textTheme
+    //                                 .bodyMedium!
+    //                                 .copyWith(color: Colors.white),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       SizedBox(height: 10),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Text(
+    //                             "Network Fee",
+    //                             style: Theme.of(context)
+    //                                 .textTheme
+    //                                 .bodyMedium!
+    //                                 .copyWith(color: Colors.white),
+    //                           ),
+    //                           Text(
+    //                             "0.024",
+    //                             style: Theme.of(context)
+    //                                 .textTheme
+    //                                 .bodyMedium!
+    //                                 .copyWith(color: Colors.white),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       SizedBox(height: 10),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Text(
+    //                             "Market Fee",
+    //                             style: Theme.of(context)
+    //                                 .textTheme
+    //                                 .bodyMedium!
+    //                                 .copyWith(color: Colors.white),
+    //                           ),
+    //                           Text(
+    //                             "0.024",
+    //                             style: Theme.of(context)
+    //                                 .textTheme
+    //                                 .bodyMedium!
+    //                                 .copyWith(color: Colors.white),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       SizedBox(height: 10),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Text(
+    //                             "Total Price",
+    //                             style: Theme.of(context)
+    //                                 .textTheme
+    //                                 .bodyMedium!
+    //                                 .copyWith(color: Colors.white),
+    //                           ),
+    //                           Text(
+    //                             "0.024",
+    //                             style: Theme.of(context)
+    //                                 .textTheme
+    //                                 .bodyMedium!
+    //                                 .copyWith(color: Colors.white),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       SizedBox(height: 10),
+    //                     ],
+    //                   ),
+    //                 ),
+    //                 Padding(
+    //                   padding: const EdgeInsets.symmetric(vertical: 16.0),
+    //                   child: Row(
+    //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                     children: [
+    //                       LongButtonWidget(
+    //                         title: "Cancel",
+    //                         onTap: () {
+    //                           Navigator.pop(context);
+    //                         },
+    //                         buttonType: ButtonType.transparent,
+    //                         customWidth: 15 * 10,
+    //                         customHeight: 15 * 2.5,
+    //                       ),
+    //                       LongButtonWidget(
+    //                         title: "Buy Now",
+    //                         onTap: () {},
+    //                         customWidth: 15 * 10,
+    //                         customHeight: 15 * 2.5,
+    //                       ),
+    //                     ],
+    //                   ),
+    //                 )
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //       );
+    //     }).whenComplete(() {
+    //   setState(() {
+    //     item_buy = -1;
+    //   });
+    // });
   }
 }
 
@@ -1010,6 +1029,164 @@ class SortingCategoryPopup extends StatelessWidget {
               )),
         )
       ],
+    );
+  }
+}
+
+class CartSheet extends StatefulWidget {
+  const CartSheet({super.key, this.onClear, this.onDeleteItem, required this.selected_products, required this.sortedGridList});
+  final Function()? onClear;
+  final Function(int)? onDeleteItem;
+  final List<dynamic> selected_products;
+  final List<GridListModal> sortedGridList;
+  @override
+  State<CartSheet> createState() => _CartSheetState();
+}
+
+class _CartSheetState extends State<CartSheet> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: AppTheme.elementSpacing),
+        Container(
+          height: AppTheme.elementSpacing / 1.5,
+          width: AppTheme.cardPadding * 2.25,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSurface,
+            borderRadius:
+                BorderRadius.circular(AppTheme.borderRadiusCircular),
+          ),
+        ),
+        SizedBox(height: AppTheme.elementSpacing * 0.75),
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+            child: Container(
+              height: 600,
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: bitnetScaffoldUnsafe(
+                              context: context,
+                              extendBodyBehindAppBar: true,
+                                appBar: bitnetAppBar(context: context, text: "${L10n.of(context)!.cart}(${widget.selected_products.length})", actions: [
+                                  TextButton(
+                                              child: Text(L10n.of(context)!.clearAll,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium!
+                                                      .copyWith(color: Colors.white)),
+                                              onPressed: widget.onClear,
+                                              
+                                           
+                                            ),],
+                                            hasBackButton: false,),
+                                body: Container(
+                                  // decoration: BoxDecoration(
+                                  //     color: AppTheme.colorBackground,
+                                  //     borderRadius: BorderRadius.only(
+                                  //         topLeft: Radius.circular(8),
+                                  //         topRight: Radius.circular(8)),
+                                  //     border:
+                                  //         Border.all(color: AppTheme.colorBitcoin, width: 2)),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 200.w,
+                                        child: ListView.builder(
+                                            itemCount: widget.selected_products.length,
+                                            itemBuilder: (ctx, i){
+                                              return Padding(
+
+                                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                                child: HorizontalProduct(item: widget.sortedGridList.firstWhere((test) => test.id == widget.selected_products[i]),onDelete: (){
+                                                  if(widget.onDeleteItem != null) {                                                  
+                                                    widget.onDeleteItem!(widget.selected_products[i]);
+                                                    setState((){});
+                                                  }
+                                                                                    
+                                                                                    
+                                                }),
+                                              );
+                                            }),
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                        width: AppTheme.cardPadding * 10,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [Text(L10n.of(context)!.subTotal), Text("0.024")],
+                                            ),
+                                            SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [Text(L10n.of(context)!.networkFee), Text("0.024")],
+                                            ),
+                                            SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [Text(L10n.of(context)!.marketFee), Text("0.024")],
+                                            ),
+                                            SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [Text(L10n.of(context)!.totalPrice), Text("0.024")],
+                                            ),
+                                            SizedBox(height: 10),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                        child: LongButtonWidget(title: L10n.of(context)!.buyNow, onTap: () {}),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+
+  class HorizontalProduct extends StatelessWidget {
+  const HorizontalProduct({super.key, required this.item, this.onDelete});
+  final GridListModal item;
+  final Function()? onDelete;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: NftProductHorizontal(
+        cryptoImage: item.cryptoImage,
+        nftImage: item.nftImage,
+        nftMainName: item.nftMainName,
+        nftName: item.nftName,
+        cryptoText: item.cryptoText,
+        rank: item.rank,
+        columnMargin: item.columnMargin,
+        onDelete: onDelete
+        // () {
+          
+          // setState(() {
+          //   selected_products.remove(id);
+          //   if (selected_products.isEmpty) {
+          //     showCartBottomSheet = false;
+          //   }
+          // });
+        // },
+      ),
     );
   }
 }

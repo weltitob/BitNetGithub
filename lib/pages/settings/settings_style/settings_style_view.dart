@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
@@ -9,14 +10,15 @@ import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
-class SettingsStyleView extends StatelessWidget {
+class SettingsStyleView extends GetWidget<SettingsController> {
   const SettingsStyleView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<SettingsController>();
     const colorPickerSize = AppTheme.cardPadding * 1.5;
+    
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
@@ -25,7 +27,6 @@ class SettingsStyleView extends StatelessWidget {
         buttonType: ButtonType.transparent,
         context: context,
         onTap: () {
-          final controller = Get.find<SettingsController>();
           controller.switchTab('main');
         },
       ),
@@ -139,51 +140,60 @@ class SettingsStyleView extends StatelessWidget {
               SizedBox(
                 height: AppTheme.elementSpacing,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  BitNetImageWithTextContainer(
-                    L10n.of(context)!.systemTheme,
-                    () {
-                      controller.switchTheme(ThemeMode.system, context);
-                    },
-                    isActive:
-                        controller.currentTheme(context) == ThemeMode.system,
-                    image: "assets/images/system_theme.png",
-                    height: AppTheme.cardPadding * 5.5,
-                    width: AppTheme.cardPadding * 4,
+                Obx(()=>
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      
+                      AnimatedBitNetImageWithTextContainer(
+                        L10n.of(context)!.systemTheme,
+                        () {
+                          controller.switchTheme(ThemeMode.system, context);
+                          controller.selectedTheme.value = ThemeMode.system;
+                        },
+                        isActive:
+                            controller.selectedTheme.value == ThemeMode.system,
+                        image: "assets/images/system_theme.png",
+                        height: AppTheme.cardPadding * 5.5,
+                        width: AppTheme.cardPadding * 4,
+                      ),
+                      SizedBox(
+                        width: AppTheme.cardPadding,
+                      ),
+                      AnimatedBitNetImageWithTextContainer(
+                        L10n.of(context)!.lightTheme,
+                        () {
+                          controller.switchTheme(ThemeMode.light, context);
+                                                  controller.selectedTheme.value = ThemeMode.light;
+                  
+                        },
+                        image: "assets/images/sun_theme.png",
+                        height: AppTheme.cardPadding * 5.5,
+                        isActive:
+                            controller.selectedTheme.value == ThemeMode.light,
+                        width: AppTheme.cardPadding * 4,
+                      ),
+                      SizedBox(
+                        width: AppTheme.cardPadding,
+                      ),
+                      AnimatedBitNetImageWithTextContainer(
+                        L10n.of(context)!.darkTheme,
+                        () {
+                          controller.switchTheme(ThemeMode.dark, context);
+                                                  controller.selectedTheme.value = ThemeMode.dark;
+                  
+                        },
+                        image: "assets/images/moon_theme.png",
+                        height: AppTheme.cardPadding * 5.5,
+                        isActive:
+                            controller.selectedTheme.value == ThemeMode.dark,
+                        width: AppTheme.cardPadding * 4,
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    width: AppTheme.cardPadding,
-                  ),
-                  BitNetImageWithTextContainer(
-                    L10n.of(context)!.lightTheme,
-                    () {
-                      controller.switchTheme(ThemeMode.light, context);
-                    },
-                    image: "assets/images/sun_theme.png",
-                    height: AppTheme.cardPadding * 5.5,
-                    isActive:
-                        controller.currentTheme(context) == ThemeMode.light,
-                    width: AppTheme.cardPadding * 4,
-                  ),
-                  SizedBox(
-                    width: AppTheme.cardPadding,
-                  ),
-                  BitNetImageWithTextContainer(
-                    L10n.of(context)!.darkTheme,
-                    () {
-                      controller.switchTheme(ThemeMode.dark, context);
-                    },
-                    image: "assets/images/moon_theme.png",
-                    height: AppTheme.cardPadding * 5.5,
-                    isActive:
-                        controller.currentTheme(context) == ThemeMode.dark,
-                    width: AppTheme.cardPadding * 4,
-                  ),
-                ],
-              ),
+                ),
+              
             ],
           ),
         ),

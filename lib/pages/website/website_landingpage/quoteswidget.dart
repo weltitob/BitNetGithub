@@ -261,6 +261,9 @@ class _QuotesState extends State<Quotes> {
                                           dotWidth: AppTheme.elementSpacing,
                                           pageController: _pageController,
                                           count: 3,
+                                          onClickIndicator: (i) {
+                                            _pageController.animateToPage(i, duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+                                          },
                                         )),
                                   ),
                           ],

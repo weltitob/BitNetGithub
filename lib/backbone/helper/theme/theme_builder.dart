@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -81,6 +82,7 @@ class ThemeController extends State<ThemeBuilder> {
       setState(() {
         _themeMode = ThemeMode.values
             .singleWhereOrNull((value) => value.name == rawThemeMode);
+        Get.find<SettingsController>().selectedTheme.value = _themeMode ?? ThemeMode.system;
         _primaryColor =
             rawColor == null ? AppTheme.colorSchemeSeed : Color(rawColor);
       });
@@ -121,8 +123,9 @@ class ThemeController extends State<ThemeBuilder> {
     await settingsCollection
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .update({widget.themeModeSettingsKey: newThemeMode.name});
+              _themeMode = newThemeMode;
+    Get.find<SettingsController>().selectedTheme.value = newThemeMode;
     setState(() {
-      _themeMode = newThemeMode;
     });
   }
 

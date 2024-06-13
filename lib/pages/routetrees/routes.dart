@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/loaders/loading_view.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 import 'package:bitnet/pages/auth/getstartedscreen.dart';
@@ -53,6 +54,7 @@ import 'package:bitnet/pages/website/contact/submitidea/submitidea.dart';
 import 'package:bitnet/pages/website/product/aboutus/aboutus.dart';
 import 'package:bitnet/pages/website/product/ourteam/ourteam.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -123,6 +125,7 @@ class AppRoutes {
                 name: kCollectionScreenRoute,
                 builder: (ctx, state) => CollectionScreen(
                   routerState: state,
+                  context: ctx,
                 ),
               ),
             ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
@@ -560,6 +563,7 @@ class AppRoutes {
   ) =>
       FadeTransition(opacity: animation1, child: child);
 }
+
 
 /**
  *

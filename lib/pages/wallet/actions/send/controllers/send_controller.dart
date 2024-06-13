@@ -43,6 +43,7 @@ class SendsController extends BaseController {
 
   late FocusNode myFocusNodeAdressSearch;
   late TextEditingController bitcoinReceiverAdressController;
+  late ScrollController sendScrollerController;
 
   void handleSearch(String value) {
     onQRCodeScanned(value, context);
@@ -196,6 +197,11 @@ class SendsController extends BaseController {
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
     bitcoinReceiverAdressController = TextEditingController();
+    sendScrollerController = ScrollController();
+    sendScrollerController.addListener((){
+      scrollToSearchFunc(sendScrollerController, myFocusNodeAdressSearch);
+    });
+    myFocusNodeAdressSearch = FocusNode();
     getClipboardData();
   }
 

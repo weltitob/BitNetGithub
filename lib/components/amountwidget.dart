@@ -108,6 +108,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                   IconButton(
                       onPressed: () {
                         this.swapped = !this.swapped;
+                        Get.find<WalletsController>().setAmtWidgetReversed(this.swapped);
                         if(this.swapped) {
                     
                            final chartLine =Get.find<WalletsController>().chartLines.value;
@@ -400,7 +401,7 @@ class _AmountWidgetState extends State<AmountWidget> {
             bitcoinPrice)
         : "0.00";
     widget.btcController.text = double.parse(currencyEquivalent).toString();
-    widget.satController.text = double.parse(currencyEquivalentSats).toString();
+    widget.satController.text = double.parse(currencyEquivalentSats).round().toString();
      if(widget.autoConvert) {
           final unitEquivalent = CurrencyConverter.convertToBitcoinUnit(currentUnit == BitcoinUnits.BTC ? double.parse((!widget.btcController.text.isEmpty ? widget.btcController.text : "0.0")) : double.parse(!widget.satController.text.isEmpty ? widget.satController.text : "0"), currentUnit);
 
@@ -414,7 +415,7 @@ class _AmountWidgetState extends State<AmountWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            "≈ ${currentUnit == BitcoinUnits.BTC ? double.parse(widget.btcController.text).toStringAsFixed(2) :widget.satController.text }", // show the converted value of Bitcoin to Euro with 2 decimal places
+            "≈ ${currentUnit == BitcoinUnits.BTC ? widget.btcController.text :widget.satController.text }", // show the converted value of Bitcoin to Euro with 2 decimal places
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                 color: Theme.of(context).brightness == Brightness.light
                     ? AppTheme.black70

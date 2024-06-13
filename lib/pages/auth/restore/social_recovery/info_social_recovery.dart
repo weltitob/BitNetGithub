@@ -1,4 +1,5 @@
 import "package:bitnet/backbone/helper/helpers.dart";
+import "package:bitnet/backbone/helper/size_extension.dart";
 import "package:bitnet/backbone/helper/theme/theme.dart";
 import "package:bitnet/components/appstandards/BitNetAppBar.dart";
 import "package:bitnet/components/appstandards/BitNetScaffold.dart";
@@ -45,9 +46,8 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
       bool isSuperSmallScreen =
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
-        margin: isSuperSmallScreen
-            ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
+        margin: EdgeInsets.symmetric(horizontal: 0)
+            ,
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
@@ -62,7 +62,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
         ),
         body: Padding(
           padding:
-              EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5.w),
+              EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5.ws),
           child: ListView(
             children: [
               SizedBox(
@@ -89,7 +89,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                   ),
                   Container(
                       height: AppTheme.cardPadding * 5.h,
-                      width: AppTheme.cardPadding * 5.w,
+                      width: AppTheme.cardPadding * 5.ws,
                       color: Colors.transparent,
                       child: Container(
                           decoration: BoxDecoration(
@@ -115,11 +115,11 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 children: [
                   Container(
                       height: AppTheme.cardPadding * 6.h,
-                      width: AppTheme.cardPadding * 6.w,
+                      width: AppTheme.cardPadding * 6.ws,
                       color: Colors.transparent,
                       child: buildFutureLottie(friends_composition, true)),
                   SizedBox(
-                    width: AppTheme.cardPadding.w,
+                    width: AppTheme.cardPadding.ws,
                   ),
                   Expanded(
                     child: Text(
@@ -156,7 +156,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                   Container(
                       alignment: Alignment.center,
                       height: AppTheme.cardPadding * 6.h,
-                      width: AppTheme.cardPadding * 6.w,
+                      width: AppTheme.cardPadding * 6.ws,
                       color: Colors.transparent,
                       child: buildFutureLottie(time_composition, true)),
                 ],

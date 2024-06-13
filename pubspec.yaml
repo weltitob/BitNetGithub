@@ -153,6 +153,7 @@ dependencies:
   fl_chart: ^0.55.2
   smooth_page_indicator: ^1.0.0+2
   cupertino_icons: ^1.0.2
+  flutter_colorpicker: ^1.1.0
   #flutter_colorpicker: ^1.0.3 needs replacement with this flex_color_picker: ^3.5.0
   flutter_toggle_tab: ^1.2.0
   switcher: ^1.0.0
@@ -193,6 +194,7 @@ dependencies:
   geolocator: ^7.7.1
   geocoding: ^3.0.0
   carousel_slider: ^4.2.1
+  scrollable_positioned_list: ^0.3.8
 
 dev_dependencies:
   flutter_test:
@@ -247,7 +249,11 @@ dependency_overrides:
       url: https://github.com/chandrabezzo/wakelock.git
       ref: main
       path: wakelock_windows
-
+  flutter_screenutil:
+    git: 
+      url: https://github.com/izako666/flutter_screenutil
+      ref: master
+      
 flutter_intl:
   enabled: true
   arb_dir: lib/intl  # Updated to reflect the renamed directory

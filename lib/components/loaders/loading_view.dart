@@ -47,7 +47,7 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
         } else if (snapshot.data != null) {
           // User is authenticated and user data is loaded
           Future.delayed(Duration.zero, () {
-            if(kIsWeb){
+            if(kIsWeb && Auth().currentUser == null){
               context.go('/website');
             } else{
               context.go(

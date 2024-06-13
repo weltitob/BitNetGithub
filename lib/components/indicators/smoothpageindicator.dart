@@ -14,7 +14,7 @@ class CustomIndicator extends StatelessWidget {
   final double strokeWidth;
   final PaintingStyle paintStyle;
   final Color activeDotColor;
-
+  final Function(int)? onClickIndicator;
   const CustomIndicator({
     Key? key,
     required this.pageController,
@@ -27,7 +27,7 @@ class CustomIndicator extends StatelessWidget {
     this.radius = 16.0,
     this.strokeWidth = 1.0,
     this.paintStyle = PaintingStyle.fill,
-    this.activeDotColor = AppTheme.colorBitcoin, // Define this in your app theme
+    this.activeDotColor = AppTheme.colorBitcoin, this.onClickIndicator, // Define this in your app theme
   }) : super(key: key);
 
   @override
@@ -49,6 +49,7 @@ class CustomIndicator extends StatelessWidget {
             ? AppTheme.white60
             : AppTheme.glassMorphColorLight, // Define these colors in your app theme
       ),
+      onDotClicked: onClickIndicator,
     );
   }
 }
