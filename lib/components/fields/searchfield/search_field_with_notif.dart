@@ -66,7 +66,7 @@ class _SearchFieldWithNotificationsWidgetState
                         AppTheme.cardPadding / 100,
                       ),
                       hintStyle:
-                          Theme.of(context).textTheme.bodySmall!.copyWith(),
+                          Theme.of(context).textTheme.bodySmall,
                       hintText: widget.hintText,
                       prefixIcon: Icon(
                         Icons.search,
