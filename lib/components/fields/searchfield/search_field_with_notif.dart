@@ -54,16 +54,14 @@ class _SearchFieldWithNotificationsWidgetState
                 child: TextFormField(
                   enabled: widget.isSearchEnabled,
                   controller: _textFieldController,
-                  focusNode: _focus,
                   onFieldSubmitted: (c) {
-                    _focus.unfocus();
+                    FocusScope.of(context).unfocus();
                     controller.handleSearch(_textFieldController.text, context);
                     _textFieldController.clear();
-                    
                   },
                   onChanged: widget.onChanged, // Use the onChanged callback
                   style: Theme.of(context).textTheme.bodyLarge,
-                  decoration: InputDecoration( 
+                  decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(
                         AppTheme.cardPadding / 100,
                       ),

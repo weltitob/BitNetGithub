@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/feed/feedscreen.dart';
@@ -43,13 +44,12 @@ class FeedController extends GetxController
     }
   }
 
-  handleSearch(String query, BuildContext context) {
+  handleSearch(String query, BuildContext context) async {
     try {
-      FocusManager.instance.primaryFocus?.unfocus();
-
+ 
       final controllerTransaction = Get.find<TransactionController>();
       final homeController = Get.find<HomeController>();
-      homeController.bitcoinDataHeight.clear();
+      // homeController.bitcoinDataHeight.clear();
       if (query.isNotEmpty &&
           tabController!.index == 0 &&
           isValidBitcoinTransactionID(query)) {
