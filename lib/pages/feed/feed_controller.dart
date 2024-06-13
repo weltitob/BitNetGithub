@@ -43,15 +43,13 @@ class FeedController extends GetxController
     }
   }
 
-  handleSearch(String query, BuildContext context) {
+  handleSearch(String query, BuildContext context) async {
     try {
-      FocusManager.instance.primaryFocus?.unfocus();
-
       final controllerTransaction = Get.find<TransactionController>();
       final homeController = Get.find<HomeController>();
-      homeController.bitcoinDataHeight.clear();
       if (query.isNotEmpty &&
           tabController!.index == 0 &&
+          !query.startsWith('00') &&
           isValidBitcoinTransactionID(query)) {
         controllerTransaction.txID = query.toString();
         controllerTransaction.getSingleTransaction(
@@ -59,6 +57,12 @@ class FeedController extends GetxController
         );
         controllerTransaction.changeSocket();
         context.push('/single_transaction');
+      }
+      if (query.isNotEmpty && query.startsWith('00')) {
+        print(query);
+        homeController.blockHeight =
+            await homeController.getDataHeightHash(query);
+        context.push('/wallet/bitcoinscreen/mempool');
       }
       if (query.isNotEmpty &&
           tabController!.index == 0 &&

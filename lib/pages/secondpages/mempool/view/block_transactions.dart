@@ -51,19 +51,19 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                 controller.isLoadingTx.value = false;
               },
               hintText:
-                  '${controller.bitcoinData[controller.indexBlock.value].txCount} transactions',
+                  '${controller.bitcoinData[controller.indexBlock!.value].txCount} transactions',
               handleSearch: handleSearch,
               isSearchEnabled: true,
             ),
             NumberPaginator(
               numberPages: controller
-                      .bitcoinData[controller.indexBlock.value].txCount! ~/
+                      .bitcoinData[controller.indexBlock!.value].txCount! ~/
                   25,
               onPageChange: (int index) {
                 setState(() {
                   _currentPage = index;
                   controller.txDetailsF(
-                      controller.bitcoinData[controller.indexBlock.value].id!,
+                      controller.bitcoinData[controller.indexBlock!.value].id!,
                       index * 25);
                 });
               },
@@ -546,13 +546,13 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                         }),
             NumberPaginator(
               numberPages: controller
-                      .bitcoinData[controller.indexBlock.value].txCount! ~/
+                      .bitcoinData[controller.indexBlock!.value].txCount! ~/
                   25,
               onPageChange: (int index) {
                 setState(() {
                   _currentPage = index;
                   controller.txDetailsF(
-                      controller.bitcoinData[controller.indexBlock.value].id!,
+                      controller.bitcoinData[controller.indexBlock!.value].id!,
                       index * 25);
                 });
               },

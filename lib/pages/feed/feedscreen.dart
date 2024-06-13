@@ -77,6 +77,7 @@ void dispose() {
                           focus: searchNode,
                           // hintText: "${L10n.of(context)!.search}...",
                           onChanged: (v) {
+                            setState(() {}); 
                             if (controller.tabController!.index == 2) {
                               controller.searchresults = controller
                                   .searchresults
@@ -85,7 +86,6 @@ void dispose() {
                                       .contains(v))
                                   .toList();
                             }
-                            setState(() {});
                           },
                         );
                       },

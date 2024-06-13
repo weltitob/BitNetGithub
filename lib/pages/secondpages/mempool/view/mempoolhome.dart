@@ -45,6 +45,34 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   final key1 = GlobalKey();
 
+  getDataBlockHeightSearch() async {
+    if (controller.blockHeight != null) {
+      print('inside block height not is null ');
+      controller.isLoading.value = true;
+      controller.bitcoinData.clear();
+      await controller.getDataHeight(controller.blockHeight! + 15);
+      await controller.getDataHeight(controller.blockHeight!);
+      await controller.getDataHeight(controller.blockHeight! - 15);
+      controller.indexBlock.value = controller.bitcoinData
+          .indexWhere((e) => e.height == controller.blockHeight);
+      controller.selectedIndex = controller.bitcoinData
+          .indexWhere((e) => e.height == controller.blockHeight);
+      controller.txDetailsConfirmedF(
+          controller.bitcoinData[controller.indexBlock.value].id!);
+      controller.txDetailsF(
+          controller.bitcoinData[controller.indexBlock.value].id!, 0);
+      controller.isLoading.value = false;
+      _controller.animateTo(
+        controller.scrollValue.value.w +
+            (140.w * controller.indexBlock.value).w,
+        duration: Duration(
+          milliseconds: 500,
+        ),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -57,25 +85,23 @@ class _MempoolHomeState extends State<MempoolHome> {
         controller.selectedIndexData = -1;
       },
     );
+    getDataBlockHeightSearch();
+    if (controller.blockHeight == null)
+      Future.delayed(
+        Duration(seconds: 3),
+        () {
+          // Scrollable.ensureVisible(key1.currentContext!,
+          //     curve: AppTheme.animationCurve, );
 
-    Future.delayed(
-      Duration(seconds: 3),
-      () {
-        // Scrollable.ensureVisible(key1.currentContext!,
-        //     curve: AppTheme.animationCurve, );
-
-        _controller.animateTo(
-          1250.0.w,
-          duration: Duration(
-            milliseconds: 500,
-          ),
-          curve: Curves.easeInOut,
-        );
-      },
-    );
-    controller.blockHeight != null
-        ? controller.getDataForHeight(controller.blockHeight!)
-        : null;
+          _controller.animateTo(
+            controller.scrollValue.value.w,
+            duration: Duration(
+              milliseconds: 500,
+            ),
+            curve: Curves.easeInOut,
+          );
+        },
+      );
   }
 
   @override
@@ -112,783 +138,781 @@ class _MempoolHomeState extends State<MempoolHome> {
                   context: context,
                 ),
           body: SingleChildScrollView(
-              child: Obx(
-            () => Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                controller.socketLoading.isTrue
-                    ? Padding(
-                        padding: EdgeInsets.only(
-                          top: AppTheme.cardPadding * 15,
-                        ),
-                        child: Center(
-                          child: dotProgress(context),
-                        ),
-                      )
-                    : Column(
-                        children: [
-                          SizedBox(
-                            height: AppTheme.cardPadding * 3,
+            child: Obx(
+              () => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  controller.socketLoading.isTrue
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                            top: AppTheme.cardPadding * 15,
                           ),
-                          Container(
-                            margin: EdgeInsets.only(
-                                top: AppTheme.cardPadding,
-                                left: AppTheme.cardPadding),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  L10n.of(context)!.blockChain,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'av. block time:',
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall,
-                                    ),
-                                    SizedBox(
-                                      width: AppTheme.elementSpacing,
-                                    ),
-                                    Text(
-                                      '~  ${(controller.da == null ? 10 : controller.da!.timeAvg! / 60000).toStringAsFixed(1)} minutes',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    ),
-                                    SizedBox(
-                                      width: AppTheme.elementSpacing,
-                                    ),
-                                  ],
-                                ),
-                              ],
+                          child: Center(
+                            child: dotProgress(context),
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            SizedBox(
+                              height: AppTheme.cardPadding * 3,
                             ),
-                          ),
-                          SizedBox(
-                            height: AppTheme.cardPadding.h,
-                          ),
-                          SingleChildScrollView(
-                            primary: false,
-                            controller: _controller,
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            child: Row(
+                            Container(
+                              margin: EdgeInsets.only(
+                                  top: AppTheme.cardPadding,
+                                  left: AppTheme.cardPadding),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    L10n.of(context)!.blockChain,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'av. block time:',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
+                                      ),
+                                      SizedBox(
+                                        width: AppTheme.elementSpacing,
+                                      ),
+                                      Text(
+                                        '~  ${(controller.da == null ? 10 : controller.da!.timeAvg! / 60000).toStringAsFixed(1)} minutes',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                      SizedBox(
+                                        width: AppTheme.elementSpacing,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: AppTheme.cardPadding.h,
+                            ),
+                            Stack(
+                              alignment: Alignment.centerLeft,
                               children: [
-                                Obx(
-                                  () {
-                                    return controller.isLoading.isTrue
-                                        ? dotProgress(context)
-                                        : controller.mempoolBlocks.isEmpty
-                                            ? const Text(
-                                                'Something went wrong!',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 22),
-                                              )
-                                            : SizedBox(
-                                                height: 255.h,
-                                                child: ListView.builder(
-                                                  primary: false,
-                                                  shrinkWrap: true,
-                                                  reverse: true,
-                                                  physics:
-                                                      const NeverScrollableScrollPhysics(),
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  itemCount: controller
-                                                      .mempoolBlocks.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    var min = (index + 1) *
-                                                        (controller
-                                                                .da!.timeAvg! /
-                                                            60000);
-                                                    return GestureDetector(
-                                                      onTap: () {
-                                                        channel.sink.add(
-                                                            '{"track-mempool-block":$index}');
-                                                        setState(
-                                                          () {
-                                                            controller
-                                                                .showNextBlock
-                                                                .value = true;
-                                                            controller.showBlock
-                                                                .value = false;
-                                                            controller
-                                                                .indexShowBlock
-                                                                .value = index;
-                                                            controller
-                                                                    .selectedIndexData =
-                                                                index;
-                                                            controller
-                                                                .selectedIndex = -1;
-                                                          },
-                                                        );
-                                                        // controller.getWebSocketData();
-                                                      },
-                                                      child: Flash(
-                                                        infinite: true,
-                                                        delay: const Duration(
-                                                            seconds: 10),
-                                                        duration:
-                                                            const Duration(
-                                                                seconds: 5),
-                                                        child: DataWidget
-                                                            .notAccepted(
-                                                          key: index == 0
-                                                              ? controller
-                                                                  .containerKey
-                                                              : GlobalKey(),
-                                                          mempoolBlocks: controller
-                                                                  .mempoolBlocks[
-                                                              index],
-                                                          mins: min
-                                                              .toStringAsFixed(
-                                                                  0),
-                                                          index: controller
-                                                                      .selectedIndexData ==
-                                                                  index
-                                                              ? 1
-                                                              : 0,
-                                                          singleTx: false,
-                                                        ),
+                                SingleChildScrollView(
+                                  primary: false,
+                                  controller: _controller,
+                                  scrollDirection: Axis.horizontal,
+                                  physics: const BouncingScrollPhysics(),
+                                  child: Row(
+                                    children: [
+                                      Obx(
+                                        () {
+                                          return controller.isLoading.isTrue
+                                              ? dotProgress(context)
+                                              : controller.mempoolBlocks.isEmpty
+                                                  ? const Text(
+                                                      'Something went wrong!',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        fontSize: 22,
+                                                      ),
+                                                    )
+                                                  : SizedBox(
+                                                      height: 255.h,
+                                                      child: ListView.builder(
+                                                        primary: false,
+                                                        shrinkWrap: true,
+                                                        reverse: true,
+                                                        physics:
+                                                            const NeverScrollableScrollPhysics(),
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        itemCount: controller
+                                                            .mempoolBlocks
+                                                            .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          var min = (index +
+                                                                  1) *
+                                                              (controller.da!
+                                                                      .timeAvg! /
+                                                                  60000);
+                                                          return GestureDetector(
+                                                            onTap: () {
+                                                              channel.sink.add(
+                                                                  '{"track-mempool-block":$index}');
+                                                              setState(
+                                                                () {
+                                                                  controller
+                                                                      .showNextBlock
+                                                                      .value = true;
+                                                                  controller
+                                                                      .showBlock
+                                                                      .value = false;
+                                                                  controller
+                                                                      .indexShowBlock
+                                                                      .value = index;
+                                                                  controller
+                                                                          .selectedIndexData =
+                                                                      index;
+                                                                  controller
+                                                                      .selectedIndex = -1;
+                                                                },
+                                                              );
+                                                              // controller.getWebSocketData();
+                                                            },
+                                                            child: Flash(
+                                                              infinite: true,
+                                                              delay:
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          10),
+                                                              duration:
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          5),
+                                                              child: DataWidget
+                                                                  .notAccepted(
+                                                                key: index == 0
+                                                                    ? controller
+                                                                        .containerKey
+                                                                    : GlobalKey(),
+                                                                mempoolBlocks:
+                                                                    controller
+                                                                            .mempoolBlocks[
+                                                                        index],
+                                                                mins: min
+                                                                    .toStringAsFixed(
+                                                                        0),
+                                                                index: controller
+                                                                            .selectedIndexData ==
+                                                                        index
+                                                                    ? 1
+                                                                    : 0,
+                                                                singleTx: false,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
                                                       ),
                                                     );
-                                                  },
-                                                ),
-                                              );
-                                  },
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: AppTheme.elementSpacing,
+                                        },
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                          horizontal: AppTheme.elementSpacing,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              AppTheme.cardRadiusCircular,
+                                          color: Colors.grey,
+                                        ),
+                                        height: AppTheme.cardPadding * 6,
+                                        width: AppTheme.elementSpacing / 3,
+                                      ),
+                                      Obx(
+                                        () {
+                                          return controller.isLoading.isTrue
+                                              ? dotProgress(context)
+                                              : controller.bitcoinData.isEmpty
+                                                  ? const Text(
+                                                      'Something went wrong!',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        fontSize: 22,
+                                                      ),
+                                                    )
+                                                  : GetBuilder<HomeController>(
+                                                      builder: (controller) {
+                                                      return SizedBox(
+                                                        key: key1,
+                                                        height: 255,
+                                                        child: ListView.builder(
+                                                          shrinkWrap: true,
+                                                          // itemScrollController:
+                                                          //     itemScrollController,
+                                                          scrollDirection:
+                                                              Axis.horizontal,
+                                                          physics:
+                                                              BouncingScrollPhysics(),
+                                                          itemCount: controller
+                                                              .bitcoinData
+                                                              .length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            double size = controller
+                                                                    .bitcoinData[
+                                                                        index]
+                                                                    .size! /
+                                                                1000000;
+                                                            controller
+                                                                    .isLoadingPage
+                                                                    .isTrue
+                                                                ? dotProgress(
+                                                                    context)
+                                                                : null;
+
+                                                            return GestureDetector(
+                                                              onTap: () {
+                                                                setState(
+                                                                  () {
+                                                                    controller
+                                                                        .showBlock
+                                                                        .value = true;
+                                                                    controller
+                                                                        .showNextBlock
+                                                                        .value = false;
+                                                                    controller
+                                                                        .indexBlock!
+                                                                        .value = index;
+                                                                    controller
+                                                                            .selectedIndex =
+                                                                        index;
+                                                                    controller
+                                                                        .selectedIndexData = -1;
+                                                                    controller.txDetailsConfirmedF(controller
+                                                                        .bitcoinData[
+                                                                            index]
+                                                                        .id!);
+                                                                    controller.txDetailsF(
+                                                                        controller
+                                                                            .bitcoinData[index]
+                                                                            .id!,
+                                                                        0);
+                                                                  },
+                                                                );
+                                                              },
+                                                              child: DataWidget
+                                                                  .accepted(
+                                                                blockData:
+                                                                    controller
+                                                                            .bitcoinData[
+                                                                        index],
+                                                                txId: controller
+                                                                    .bitcoinData[
+                                                                        index]
+                                                                    .id,
+                                                                size: size,
+                                                                time: controller
+                                                                    .formatTimeAgo(
+                                                                  DateTime
+                                                                      .fromMillisecondsSinceEpoch(
+                                                                    (controller
+                                                                            .bitcoinData[index]
+                                                                            .timestamp! *
+                                                                        1000),
+                                                                  ),
+                                                                ),
+                                                                index: controller
+                                                                            .selectedIndex ==
+                                                                        index
+                                                                    ? 1
+                                                                    : 0,
+                                                                singleTx: false,
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      );
+                                                    });
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: AppTheme.cardRadiusCircular,
-                                    color: Colors.grey,
-                                  ),
-                                  height: AppTheme.cardPadding * 6,
-                                  width: AppTheme.elementSpacing / 3,
                                 ),
                                 controller.blockHeight != null
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          controller.isLoadingPrevious = true;
-                                          controller.getDataForHeight(
-                                              controller.blockHeight! + 15);
-                                        },
-                                        child: Opacity(
-                                          opacity: 0.5,
-                                          child: Container(
-                                            padding: EdgeInsets.all(4.w),
-                                            decoration: BoxDecoration(
-                                              color: AppTheme.white60,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Icon(
-                                              Icons.arrow_back,
-                                              color: AppTheme.colorBackground,
+                                    ? Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            controller.bitcoinData.clear();
+                                            await controller.getData();
+                                            setState(
+                                              () {
+                                                controller.showBlock.value =
+                                                    true;
+                                                controller.showNextBlock.value =
+                                                    false;
+                                                controller.indexBlock.value = 0;
+                                                controller.selectedIndex = 0;
+                                                controller.selectedIndexData =
+                                                    -1;
+                                              },
+                                            );
+                                            await controller
+                                                .txDetailsConfirmedF(controller
+                                                    .bitcoinData.first.id!);
+                                            await controller.txDetailsF(
+                                                controller
+                                                    .bitcoinData.first.id!,
+                                                0);
+                                            _controller.animateTo(
+                                                controller.scrollValue.value.w,
+                                                duration: Duration(seconds: 2),
+                                                curve: Curves.easeInOut);
+                                            controller.blockHeight == null;
+                                          },
+                                          child: Opacity(
+                                            opacity: 0.75,
+                                            child: Container(
+                                              padding: EdgeInsets.all(4.w),
+                                              decoration: BoxDecoration(
+                                                color: AppTheme.white60,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Icon(
+                                                Icons.arrow_back,
+                                                color: AppTheme.colorBackground,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       )
                                     : SizedBox(),
-                                Obx(
-                                  () {
-                                    return controller.isLoading.isTrue
-                                        ? dotProgress(context)
-                                        : controller.bitcoinData.isEmpty
-                                            ? const Text(
-                                                'Something went wrong!',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 22,
+                              ],
+                            ),
+                            Obx(
+                              () => controller.loadingDetail.value
+                                  ? Center(
+                                      child: dotProgress(context),
+                                    )
+                                  : Column(
+                                      children: [
+                                        Obx(
+                                          () => Visibility(
+                                            visible:
+                                                controller.showNextBlock.value,
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                  left: AppTheme.cardPadding,
+                                                  bottom:
+                                                      AppTheme.elementSpacing,
                                                 ),
-                                              )
-                                            : GetBuilder<HomeController>(
-                                                builder: (controller) {
-                                                return SizedBox(
-                                                  key: key1,
-                                                  height: 255,
-                                                  child:
-                                                      ScrollablePositionedList
-                                                          .builder(
-                                                    shrinkWrap: true,
-                                                    itemScrollController:
-                                                        itemScrollController,
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    physics:
-                                                        BouncingScrollPhysics(),
-                                                    itemCount:
-                                                        controller.blockHeight !=
-                                                                null
-                                                            ? controller
-                                                                .bitcoinDataHeight
-                                                                .length
-                                                            : controller
-                                                                .bitcoinData
-                                                                .length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      double size = controller
-                                                                  .blockHeight !=
-                                                              null
-                                                          ? controller
-                                                                  .bitcoinDataHeight[
-                                                                      index]
-                                                                  .size! /
-                                                              1000000
-                                                          : controller
-                                                                  .bitcoinData[
-                                                                      index]
-                                                                  .size! /
-                                                              1000000;
-                                                      controller.isLoadingPage
-                                                              .isTrue
-                                                          ? dotProgress(context)
-                                                          : null;
-
-                                                      return GestureDetector(
-                                                        onTap: () {
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      controller.selectedIndexData ==
+                                                              0
+                                                          ? L10n.of(context)!
+                                                              .nextBlock
+                                                          : '${L10n.of(context)!.mempoolBlock}${controller.selectedIndexData + 1}',
+                                                      textAlign: TextAlign.left,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .titleLarge,
+                                                    ),
+                                                    const Spacer(),
+                                                    IconButton(
+                                                        onPressed: () {
                                                           setState(
                                                             () {
-                                                              controller
-                                                                  .showBlock
-                                                                  .value = true;
                                                               controller
                                                                   .showNextBlock
                                                                   .value = false;
                                                               controller
-                                                                  .indexBlock
-                                                                  .value = index;
-                                                              controller
-                                                                      .selectedIndex =
-                                                                  index;
+                                                                  .selectedIndex = -1;
                                                               controller
                                                                   .selectedIndexData = -1;
-                                                              controller.txDetailsConfirmedF(controller
-                                                                          .blockHeight !=
-                                                                      null
-                                                                  ? controller
-                                                                      .bitcoinDataHeight[
-                                                                          index]
-                                                                      .id!
-                                                                  : controller
-                                                                      .bitcoinData[
-                                                                          index]
-                                                                      .id!);
-                                                              controller.txDetailsF(
-                                                                  controller.blockHeight !=
-                                                                          null
-                                                                      ? controller
-                                                                          .bitcoinDataHeight[
-                                                                              index]
-                                                                          .id!
-                                                                      : controller
-                                                                          .bitcoinData[
-                                                                              index]
-                                                                          .id!,
-                                                                  0);
                                                             },
                                                           );
                                                         },
-                                                        child:
-                                                            DataWidget.accepted(
-                                                          blockData: controller
-                                                                      .blockHeight !=
-                                                                  null
-                                                              ? controller
-                                                                      .bitcoinDataHeight[
-                                                                  index]
-                                                              : controller
-                                                                      .bitcoinData[
-                                                                  index],
-                                                          txId: controller
-                                                                      .blockHeight !=
-                                                                  null
-                                                              ? controller
-                                                                  .bitcoinDataHeight[
-                                                                      index]
-                                                                  .id
-                                                              : controller
-                                                                  .bitcoinData[
-                                                                      index]
-                                                                  .id,
-                                                          size: size,
-                                                          time: controller
-                                                              .formatTimeAgo(
-                                                            DateTime
-                                                                .fromMillisecondsSinceEpoch(
-                                                              (controller
-                                                                          .blockHeight !=
-                                                                      null
-                                                                  ? controller
-                                                                          .bitcoinDataHeight[
-                                                                              index]
-                                                                          .timestamp! *
-                                                                      1000
-                                                                  : controller
-                                                                          .bitcoinData[
-                                                                              index]
-                                                                          .timestamp! *
-                                                                      1000),
-                                                            ),
-                                                          ),
-                                                          index: controller
-                                                                      .selectedIndex ==
-                                                                  index
-                                                              ? 1
-                                                              : 0,
-                                                          singleTx: false,
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                );
-                                              });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          Obx(
-                            () => controller.loadingDetail.value
-                                ? Center(
-                                    child: dotProgress(context),
-                                  )
-                                : Column(
-                                    children: [
-                                      Obx(
-                                        () => Visibility(
-                                          visible:
-                                              controller.showNextBlock.value,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: AppTheme.cardPadding,
-                                                bottom: AppTheme.elementSpacing,
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    controller.selectedIndexData ==
-                                                            0
-                                                        ? L10n.of(context)!
-                                                            .nextBlock
-                                                        : '${L10n.of(context)!.mempoolBlock}${controller.selectedIndexData + 1}',
-                                                    textAlign: TextAlign.left,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleLarge,
-                                                  ),
-                                                  const Spacer(),
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        setState(
-                                                          () {
-                                                            controller
-                                                                .showNextBlock
-                                                                .value = false;
-                                                            controller
-                                                                .selectedIndex = -1;
-                                                            controller
-                                                                .selectedIndexData = -1;
-                                                          },
-                                                        );
-                                                      },
-                                                      icon: const Icon(
-                                                          Icons.cancel))
-                                                ],
+                                                        icon: const Icon(
+                                                            Icons.cancel))
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
 
-                                      //----------------------UNACCEPTED BLOCKS--------------
+                                        //----------------------UNACCEPTED BLOCKS--------------
 
-                                      Obx(
-                                        () => Visibility(
-                                          visible:
-                                              controller.showNextBlock.value,
-                                          child: Container(
-                                            child: Column(children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  context.go(
-                                                      "/wallet/unaccepted_block_transactions");
-                                                  //${controller.txDetailsConfirmed!.id}
-                                                },
-                                                //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
-                                                child: SearchFieldWidget(
-                                                  isSearchEnabled: false,
-                                                  hintText:
-                                                      '${controller.blockTransactions.length} transactions',
-                                                  handleSearch: handleSearch,
+                                        Obx(
+                                          () => Visibility(
+                                            visible:
+                                                controller.showNextBlock.value,
+                                            child: Container(
+                                              child: Column(children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    context.go(
+                                                        "/wallet/unaccepted_block_transactions");
+                                                    //${controller.txDetailsConfirmed!.id}
+                                                  },
+                                                  //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
+                                                  child: SearchFieldWidget(
+                                                    isSearchEnabled: false,
+                                                    hintText:
+                                                        '${controller.blockTransactions.length} transactions',
+                                                    handleSearch: handleSearch,
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                height: AppTheme.elementSpacing,
-                                              ),
-                                              feeDistributionUnaccepted(),
-                                              SizedBox(
-                                                height: AppTheme.elementSpacing,
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: AppTheme
-                                                            .elementSpacing),
-                                                child: MyDivider(),
-                                              ),
-                                              SizedBox(
-                                                height: AppTheme.elementSpacing,
-                                              ),
-                                              Container(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal:
-                                                        AppTheme.cardPadding),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceAround,
-                                                  children: [
-                                                    controller.txDetailsConfirmed ==
-                                                            null
-                                                        ? SizedBox()
-                                                        : blockSizeUnaccepted()
-                                                  ],
+                                                SizedBox(
+                                                  height:
+                                                      AppTheme.elementSpacing,
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                height:
-                                                    AppTheme.cardPadding * 3,
-                                              ),
-                                            ]),
+                                                feeDistributionUnaccepted(),
+                                                SizedBox(
+                                                  height:
+                                                      AppTheme.elementSpacing,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: AppTheme
+                                                          .elementSpacing),
+                                                  child: MyDivider(),
+                                                ),
+                                                SizedBox(
+                                                  height:
+                                                      AppTheme.elementSpacing,
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          AppTheme.cardPadding),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      controller.txDetailsConfirmed ==
+                                                              null
+                                                          ? SizedBox()
+                                                          : blockSizeUnaccepted()
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height:
+                                                      AppTheme.cardPadding * 3,
+                                                ),
+                                              ]),
+                                            ),
                                           ),
                                         ),
-                                      ),
 
-                                      //-----------------ACCEPTED BLOCKS-----------------
+                                        //-----------------ACCEPTED BLOCKS-----------------
 
-                                      Obx(
-                                        () => Visibility(
-                                          visible: controller.showBlock.value,
-                                          child:
-                                              controller.bitcoinData.isNotEmpty
-                                                  ? Align(
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                      child: Padding(
-                                                        padding: const EdgeInsets
-                                                            .only(
-                                                            left: AppTheme
-                                                                .cardPadding,
-                                                            bottom: AppTheme
-                                                                .elementSpacing),
-                                                        child: Row(
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  L10n.of(context)!
-                                                                      .block,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .left,
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .titleLarge,
-                                                                ),
-                                                                Text(
-                                                                    ' ${controller.blockHeight != null ? controller.bitcoinDataHeight.isNotEmpty ? controller.bitcoinDataHeight[controller.indexBlock.value].height : 0 : controller.bitcoinData[controller.indexBlock.value].height}',
+                                        Obx(
+                                          () => Visibility(
+                                            visible: controller.showBlock.value,
+                                            child:
+                                                controller
+                                                        .bitcoinData.isNotEmpty
+                                                    ? Align(
+                                                        alignment:
+                                                            Alignment.topLeft,
+                                                        child: Padding(
+                                                          padding: const EdgeInsets
+                                                              .only(
+                                                              left: AppTheme
+                                                                  .cardPadding,
+                                                              bottom: AppTheme
+                                                                  .elementSpacing),
+                                                          child: Row(
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                    L10n.of(context)!
+                                                                        .block,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left,
                                                                     style: Theme.of(
                                                                             context)
                                                                         .textTheme
-                                                                        .titleLarge!
-                                                                        .copyWith(
-                                                                          color:
-                                                                              AppTheme.colorBitcoin,
-                                                                        ))
-                                                              ],
-                                                            ),
-                                                            const Spacer(),
-                                                            Row(
-                                                              children: [
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    Clipboard.setData(ClipboardData(
-                                                                        text: controller
-                                                                            .txDetailsConfirmed!
-                                                                            .id));
-                                                                    showOverlay(
-                                                                        context,
-                                                                        L10n.of(context)!
-                                                                            .copiedToClipboard);
-                                                                  },
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Icon(
-                                                                        Icons
-                                                                            .copy,
-                                                                        color: Theme.of(context).brightness ==
-                                                                                Brightness.light
-                                                                            ? AppTheme.black60
-                                                                            : AppTheme.white60,
-                                                                        size: AppTheme.elementSpacing *
-                                                                            1.5,
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            AppTheme.elementSpacing /
-                                                                                2,
-                                                                      ),
-                                                                      Text(
-                                                                        controller.txDetailsConfirmed ==
-                                                                                null
-                                                                            ? ''
-                                                                            : '${controller.txDetailsConfirmed?.id.toString().substring(0, 5)}...${controller.txDetailsConfirmed?.id.toString().substring(controller.txDetailsConfirmed!.id.length - 5)}',
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .labelMedium,
-                                                                      ),
-                                                                    ],
+                                                                        .titleLarge,
                                                                   ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: AppTheme
-                                                                          .elementSpacing /
-                                                                      2,
-                                                                ),
-                                                                IconButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      setState(
-                                                                          () {
-                                                                        controller
-                                                                            .showBlock
-                                                                            .value = false;
-                                                                        controller.selectedIndex =
-                                                                            -1;
-                                                                        controller.selectedIndexData =
-                                                                            -1;
-                                                                      });
-                                                                    },
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .cancel)),
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : const SizedBox(),
-                                        ),
-                                      ),
-
-                                      Obx(
-                                        () => Visibility(
-                                            visible: controller.showBlock.value,
-                                            child: controller
-                                                    .mempoolBlocks.isNotEmpty
-                                                ? controller.txDetailsConfirmed ==
-                                                        null
-                                                    ? const Center(
-                                                        child:
-                                                            CircularProgressIndicator
-                                                                .adaptive(),
-                                                      )
-                                                    : Column(
-                                                        children: [
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              context.go(
-                                                                  "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
-                                                            },
-                                                            //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
-                                                            child:
-                                                                SearchFieldWidget(
-                                                              isSearchEnabled:
-                                                                  false,
-                                                              hintText:
-                                                                  '${controller.blockHeight != null ? controller.bitcoinDataHeight.isNotEmpty ? controller.bitcoinDataHeight[controller.indexBlock.value].txCount : 0 : controller.bitcoinData[controller.indexBlock.value].txCount} transactions',
-                                                              handleSearch:
-                                                                  handleSearch,
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            child: Column(
+                                                                  Text(
+                                                                      ' ${controller.bitcoinData[controller.indexBlock.value].height}',
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .titleLarge!
+                                                                          .copyWith(
+                                                                            color:
+                                                                                AppTheme.colorBitcoin,
+                                                                          ))
+                                                                ],
+                                                              ),
+                                                              const Spacer(),
+                                                              Row(
                                                                 children: [
-                                                                  SizedBox(
-                                                                    height: AppTheme
-                                                                        .cardPadding
-                                                                        .h,
-                                                                  ),
-                                                                  BitNetListTile(
-                                                                    leading: Icon(
-                                                                        Icons
-                                                                            .timelapse),
-                                                                    text: L10n.of(
-                                                                            context)!
-                                                                        .minedAt,
-                                                                    trailing:
-                                                                        Container(
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Text(
-                                                                              DateFormat('yyyy-MM-dd hh:mm').format(
-                                                                                (DateTime.fromMillisecondsSinceEpoch(controller.txDetailsConfirmed!.timestamp * 1000)),
-                                                                              ),
-                                                                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
-                                                                          Text(
-                                                                              "${L10n.of(context)!.timeAgo}"),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  BitNetListTile(
-                                                                    leading: Icon(
-                                                                        FontAwesomeIcons
-                                                                            .truckPickup),
-                                                                    text: L10n.of(
-                                                                            context)!
-                                                                        .mined,
-                                                                    trailing:
-                                                                        Container(
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Container(
-                                                                            padding:
-                                                                                const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2, vertical: AppTheme.elementSpacing / 3),
-                                                                            decoration:
-                                                                                BoxDecoration(borderRadius: AppTheme.cardRadiusSmall, color: AppTheme.colorBitcoin),
-                                                                            child:
-                                                                                Text(
-                                                                              (' ${controller.txDetailsConfirmed!.extras.pool.name} '),
-                                                                              style: const TextStyle(
-                                                                                color: Colors.white,
-                                                                                fontWeight: FontWeight.bold,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  BitNetListTile(
-                                                                    leading: Icon(
-                                                                        FontAwesomeIcons
-                                                                            .bitcoin),
-                                                                    text: L10n.of(
-                                                                            context)!
-                                                                        .minerRewardAndFees,
-                                                                    trailing:
-                                                                        Container(
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Row(
-                                                                            children: [
-                                                                              Text((controller.txDetailsConfirmed!.extras.reward / 100000000).toStringAsFixed(3), style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
-                                                                              Transform.translate(
-                                                                                offset: const Offset(0, 2),
-                                                                                child: Text(
-                                                                                  ' BTC  ',
-                                                                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor),
-                                                                                ),
-                                                                              ),
-                                                                              Text(
-                                                                                '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
-                                                                                style: const TextStyle(
-                                                                                  color: AppTheme.successColor,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: AppTheme
-                                                                        .elementSpacing,
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal:
-                                                                            AppTheme.elementSpacing),
-                                                                    child:
-                                                                        MyDivider(),
-                                                                  ),
-                                                                  feeDistributionAccepted(),
-                                                                  SizedBox(
-                                                                    height: AppTheme
-                                                                        .elementSpacing,
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal:
-                                                                            AppTheme.elementSpacing),
-                                                                    child:
-                                                                        MyDivider(),
-                                                                  ),
-                                                                  SizedBox(
-                                                                      height: AppTheme
-                                                                          .elementSpacing),
-                                                                  Container(
-                                                                    margin: EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            AppTheme.cardPadding),
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      Clipboard.setData(ClipboardData(
+                                                                          text: controller
+                                                                              .txDetailsConfirmed!
+                                                                              .id));
+                                                                      showOverlay(
+                                                                          context,
+                                                                          L10n.of(context)!
+                                                                              .copiedToClipboard);
+                                                                    },
                                                                     child: Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceAround,
                                                                       children: [
-                                                                        blockSizeAccepted(),
-                                                                        blockHealth(),
+                                                                        Icon(
+                                                                          Icons
+                                                                              .copy,
+                                                                          color: Theme.of(context).brightness == Brightness.light
+                                                                              ? AppTheme.black60
+                                                                              : AppTheme.white60,
+                                                                          size: AppTheme.elementSpacing *
+                                                                              1.5,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              AppTheme.elementSpacing / 2,
+                                                                        ),
+                                                                        Text(
+                                                                          controller.txDetailsConfirmed == null
+                                                                              ? ''
+                                                                              : '${controller.txDetailsConfirmed?.id.toString().substring(0, 5)}...${controller.txDetailsConfirmed?.id.toString().substring(controller.txDetailsConfirmed!.id.length - 5)}',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style: Theme.of(context)
+                                                                              .textTheme
+                                                                              .labelMedium,
+                                                                        ),
                                                                       ],
                                                                     ),
                                                                   ),
-                                                                ]),
+                                                                  SizedBox(
+                                                                    width: AppTheme
+                                                                            .elementSpacing /
+                                                                        2,
+                                                                  ),
+                                                                  IconButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      setState(
+                                                                        () {
+                                                                          controller
+                                                                              .showBlock
+                                                                              .value = false;
+                                                                          controller.selectedIndex =
+                                                                              -1;
+                                                                          controller.selectedIndexData =
+                                                                              -1;
+                                                                        },
+                                                                      );
+                                                                    },
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .cancel),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
                                                           ),
-                                                          Container(
-                                                            height: AppTheme
-                                                                    .cardPadding *
-                                                                3,
-                                                          )
-                                                        ],
+                                                        ),
                                                       )
-                                                : const Text('')),
-                                      ),
-                                    ],
-                                  ),
-                          ),
-                          transactionfees(),
-                        ],
-                      )
-              ],
+                                                    : const SizedBox(),
+                                          ),
+                                        ),
+                                        Obx(
+                                          () => Visibility(
+                                              visible:
+                                                  controller.showBlock.value,
+                                              child: controller
+                                                      .mempoolBlocks.isNotEmpty
+                                                  ? controller.txDetailsConfirmed ==
+                                                          null
+                                                      ? const Center(
+                                                          child:
+                                                              CircularProgressIndicator
+                                                                  .adaptive(),
+                                                        )
+                                                      : Column(
+                                                          children: [
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                context.go(
+                                                                    "/wallet/block_transactions"); //${controller.txDetailsConfirmed!.id}
+                                                              },
+                                                              //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
+                                                              child:
+                                                                  SearchFieldWidget(
+                                                                isSearchEnabled:
+                                                                    false,
+                                                                hintText:
+                                                                    '${controller.bitcoinData.isNotEmpty ? controller.bitcoinData[controller.indexBlock.value].txCount : 0} transactions',
+                                                                handleSearch:
+                                                                    handleSearch,
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              child: Column(
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      height: AppTheme
+                                                                          .cardPadding
+                                                                          .h,
+                                                                    ),
+                                                                    BitNetListTile(
+                                                                      leading: Icon(
+                                                                          Icons
+                                                                              .timelapse),
+                                                                      text: L10n.of(
+                                                                              context)!
+                                                                          .minedAt,
+                                                                      trailing:
+                                                                          Container(
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            Text(
+                                                                                DateFormat('yyyy-MM-dd hh:mm').format(
+                                                                                  (DateTime.fromMillisecondsSinceEpoch(controller.txDetailsConfirmed!.timestamp * 1000)),
+                                                                                ),
+                                                                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
+                                                                            Text("${L10n.of(context)!.timeAgo}"),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    BitNetListTile(
+                                                                      leading: Icon(
+                                                                          FontAwesomeIcons
+                                                                              .truckPickup),
+                                                                      text: L10n.of(
+                                                                              context)!
+                                                                          .mined,
+                                                                      trailing:
+                                                                          Container(
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            Container(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2, vertical: AppTheme.elementSpacing / 3),
+                                                                              decoration: BoxDecoration(borderRadius: AppTheme.cardRadiusSmall, color: AppTheme.colorBitcoin),
+                                                                              child: Text(
+                                                                                (' ${controller.txDetailsConfirmed!.extras.pool.name} '),
+                                                                                style: const TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    BitNetListTile(
+                                                                      leading: Icon(
+                                                                          FontAwesomeIcons
+                                                                              .bitcoin),
+                                                                      text: L10n.of(
+                                                                              context)!
+                                                                          .minerRewardAndFees,
+                                                                      trailing:
+                                                                          Container(
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            Row(
+                                                                              children: [
+                                                                                Text((controller.txDetailsConfirmed!.extras.reward / 100000000).toStringAsFixed(3), style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
+                                                                                Transform.translate(
+                                                                                  offset: const Offset(0, 2),
+                                                                                  child: Text(
+                                                                                    ' BTC  ',
+                                                                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor),
+                                                                                  ),
+                                                                                ),
+                                                                                Text(
+                                                                                  '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
+                                                                                  style: const TextStyle(
+                                                                                    color: AppTheme.successColor,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height: AppTheme
+                                                                          .elementSpacing,
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              AppTheme.elementSpacing),
+                                                                      child:
+                                                                          MyDivider(),
+                                                                    ),
+                                                                    feeDistributionAccepted(),
+                                                                    SizedBox(
+                                                                      height: AppTheme
+                                                                          .elementSpacing,
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              AppTheme.elementSpacing),
+                                                                      child:
+                                                                          MyDivider(),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        height:
+                                                                            AppTheme.elementSpacing),
+                                                                    Container(
+                                                                      margin: EdgeInsets.symmetric(
+                                                                          horizontal:
+                                                                              AppTheme.cardPadding),
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceAround,
+                                                                        children: [
+                                                                          blockSizeAccepted(),
+                                                                          blockHealth(),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ]),
+                                                            ),
+                                                            Container(
+                                                              height: AppTheme
+                                                                      .cardPadding *
+                                                                  3,
+                                                            )
+                                                          ],
+                                                        )
+                                                  : const Text('')),
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                            transactionfees(),
+                          ],
+                        )
+                ],
+              ),
             ),
-          )),
+          ),
         ),
       ),
     );
