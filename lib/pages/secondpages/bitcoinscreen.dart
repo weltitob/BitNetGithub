@@ -16,7 +16,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-
 class BitcoinScreen extends GetWidget<BitcoinScreenController> {
   const BitcoinScreen({
     Key? key,
@@ -109,8 +108,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                     SizedBox(
                       height: AppTheme.elementSpacing * 1,
                     ),
-                    Text(
-                        L10n.of(context)!.bitcoinDescription),
+                    Text(L10n.of(context)!.bitcoinDescription),
                   ],
                 ),
               ),
@@ -119,68 +117,75 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
               ),
               RoundedContainer(
                   child: Column(
+                children: [
+                  Text(
+                    L10n.of(context)!.quickLinks,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(
-                        L10n.of(context)!.quickLinks,
-                        style: Theme.of(context).textTheme.titleLarge,
+                      BitNetImageWithTextContainer(
+                        L10n.of(context)!.bitcoin,
+                        () {
+                          context.push('/wallet/bitcoinscreen/mempool');
+                        },
+                        image: "assets/images/blockchain.png",
+                        fallbackIcon: FontAwesomeIcons.bitcoinSign,
+                        width: AppTheme.cardPadding * 4,
+                        height: AppTheme.cardPadding * 4,
                       ),
-                      SizedBox(
-                        height: AppTheme.cardPadding,
+                      BitNetImageWithTextContainer(
+                        L10n.of(context)!.hashrateDifficulty,
+                        () {
+                          context.push('/wallet/bitcoinscreen/hashrate');
+                        },
+                        image: "assets/images/hashrate.png",
+                        fallbackIcon: FontAwesomeIcons.computer,
+                        width: AppTheme.cardPadding * 4,
+                        height: AppTheme.cardPadding * 4,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          BitNetImageWithTextContainer(
-                            L10n.of(context)!.bitcoin,
-                                () {
-                              context.push('/wallet/bitcoinscreen/mempool');
-                            },
-                            image: "assets/images/blockchain.png",
-                            fallbackIcon: FontAwesomeIcons.bitcoinSign,
-                            width: AppTheme.cardPadding * 4,
-                            height: AppTheme.cardPadding * 4,
-                          ),
-                          BitNetImageWithTextContainer(
-                            L10n.of(context)!.hashrateDifficulty,
-                                () {
-                              context.push('/wallet/bitcoinscreen/hashrate');
-                            },
-                            image: "assets/images/hashrate.png",
-                            fallbackIcon: FontAwesomeIcons.computer,
-                            width: AppTheme.cardPadding * 4,
-                            height: AppTheme.cardPadding * 4,
-                          ),
-                          BitNetImageWithTextContainer(
-                            L10n.of(context)!.fearAndGreed,
-                                () {
-                              context.push('/wallet/bitcoinscreen/fearandgreed');
-                            },
-                            fallbackIcon: Icons.speed_rounded,
-                            image: "assets/images/fagi.png",
-                            width: AppTheme.cardPadding * 4,
-                            height: AppTheme.cardPadding * 4,
-                          ),
-                        ],
+                      BitNetImageWithTextContainer(
+                        L10n.of(context)!.fearAndGreed,
+                        () {
+                          context.push('/wallet/bitcoinscreen/fearandgreed');
+                        },
+                        fallbackIcon: Icons.speed_rounded,
+                        image: "assets/images/fagi.png",
+                        width: AppTheme.cardPadding * 4,
+                        height: AppTheme.cardPadding * 4,
                       ),
-                      SizedBox(
-                        height: AppTheme.cardPadding * 1,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [],
-                      ),
-                      SizedBox(
-                        height: AppTheme.cardPadding * 2,
-                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 1,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [],
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 2,
+                  ),
                 ],
               )),
+              SizedBox(
+                height: AppTheme.cardPadding * 2,
+              ),
             ],
           ),
+          SizedBox(
+            height: AppTheme.cardPadding * 1,
+          ),
           BottomButtons(
-              leftButtonTitle: L10n.of(context)!.buy,
-              rightButtonTitle: L10n.of(context)!.sell,
-              onLeftButtonTap: (){},
-              onRightButtonTap: (){},),
+            leftButtonTitle: L10n.of(context)!.buy,
+            rightButtonTitle: L10n.of(context)!.sell,
+            onLeftButtonTap: () {},
+            onRightButtonTap: () {},
+          ),
         ],
       ),
     );
@@ -333,7 +338,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: LongButtonWidget(
-                  title:  L10n.of(context)!.saveCard,
+                  title: L10n.of(context)!.saveCard,
                   onTap: () {},
                   customWidth: double.infinity,
                 ),
