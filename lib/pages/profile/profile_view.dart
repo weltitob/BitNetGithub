@@ -59,7 +59,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    final myuser = Auth().currentUser!.uid;
+    // final myuser = Auth().currentUser!.uid;
     return Obx(
           () => bitnetScaffold(
         context: context,
@@ -78,9 +78,9 @@ class _ProfileViewState extends State<ProfileView> {
         floatingActionButton: Align(
           alignment: Alignment.bottomCenter,
           child: LongButtonWidget(
-            buttonType: ButtonType.transparent,
+            buttonType: ButtonType.solid,
             customHeight: AppTheme.cardPadding * 2,
-            customWidth: AppTheme.cardPadding * 5,
+            customWidth: AppTheme.cardPadding * 4,
             leadingIcon: Icon(
               Icons.add,
               color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,

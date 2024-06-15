@@ -111,7 +111,7 @@ class ProfileHeader extends StatelessWidget {
                                       ()=> Avatar(
                                         mxContent: Uri.parse(
                                             controller.userData.value.profileImageUrl),
-                                        size: AppTheme.cardPadding * 5.75,
+                                        size: AppTheme.cardPadding * 5.25.h,
                                         type: profilePictureType.lightning,
                                       ),
                                     ),
@@ -127,9 +127,8 @@ class ProfileHeader extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: AppTheme.elementSpacing / 2),
                       UserInformation(),
-                      const SizedBox(height: AppTheme.cardPadding * 2),
+                      SizedBox(height: AppTheme.cardPadding * 2.h),
                     ],
                   ),
                 ),

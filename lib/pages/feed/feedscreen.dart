@@ -6,6 +6,7 @@ import 'package:bitnet/components/fields/searchfield/search_field_with_notif.dar
 import 'package:bitnet/pages/feed/build_search_result_widget.dart';
 import 'package:bitnet/pages/feed/feed_controller.dart';
 import 'package:bitnet/pages/feed/screen_categories_widget.dart';
+import 'package:bitnet/pages/feed/tokenstab.dart';
 import 'package:bitnet/pages/marketplace/HomeScreen.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:flutter/material.dart';
@@ -130,6 +131,7 @@ void dispose() {
             controller: controller.tabController,
             children: [
               HomeScreen(ctrler: homeScrollController),
+              TokensTab(),
               MempoolHome(
                 isFromHome: true,
               ),

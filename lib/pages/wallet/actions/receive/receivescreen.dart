@@ -63,6 +63,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
 
     LoggerService logger = Get.find();
 
+    //Onchain checking for transactions
     subscribeTransactionsStream().listen((restResponse) {
       logger.i("subscribeTransactionsStream got data: $restResponse");
       BitcoinTransaction bitcoinTransaction = BitcoinTransaction.fromJson(restResponse.data);
@@ -85,6 +86,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       logger.e("Received error for Transactions-stream: $error");
     });
     //LIGHTNING
+    //Lightning payments
     subscribeInvoicesStream().listen((restResponse) {
       logger.i("Received data from Invoice-stream: $restResponse");
       final result = restResponse.data["result"];

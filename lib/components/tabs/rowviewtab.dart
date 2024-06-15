@@ -111,11 +111,10 @@ class _RowViewTabState extends State<RowViewTab>
                         physics: NeverScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         padding: EdgeInsets.symmetric(
-                            horizontal: AppTheme.elementSpacing.w),
+                            horizontal: AppTheme.elementSpacing.w / 2),
                         gridDelegate:
                         SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2, // 2 items per row
-                          crossAxisSpacing: AppTheme.elementSpacing.w,
                           mainAxisSpacing: AppTheme.elementSpacing.h,
                           childAspectRatio: (size.width / 2) / 230.w, // Adjust according to your design
                         ),

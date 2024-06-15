@@ -76,6 +76,7 @@ class ProfileController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+    fetchTaprootAssets();
     scrollController = ScrollController();
     loadData();
     pages = [
@@ -83,7 +84,7 @@ class ProfileController extends BaseController {
       RowViewTab(),
       EditProfileTab(),
     ];
-    fetchTaprootAssets();
+
   }
 
   void fetchTaprootAssets() async {
