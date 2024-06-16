@@ -57,8 +57,8 @@ class CryptoItemController extends GetxController
       days: "1",
     );
     try {
-      await chartClassDay.getChartData();
       await chartClassDayMin.getChartData();
+      await chartClassDay.getChartData();
 
       onedaychart = chartClassDay.chartLine;
 

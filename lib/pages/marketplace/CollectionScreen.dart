@@ -467,15 +467,22 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             columnMargin: sortedGridList[index].columnMargin,
                             rank: sortedGridList[index].rank,
                             onTap:(i){
+                              if(!selected_products.isEmpty) {
                               handleProductClick(i, context);
-                            } ,
-                            onLongTap: () {
-                              context.goNamed(
+                              } else {
+
+                                 context.goNamed(
                                   '/asset_screen',
                                   pathParameters: {
                                     'nft_id': sortedGridList[index].nftName
                                   }
                                   );
+                              }
+                            } ,
+                            onLongTap: () {
+                              handleProductClick(sortedGridList[index].id, context);
+                              
+                             
                             },
                             onTapBuy: () {
                               setState(() {
