@@ -7,6 +7,7 @@ import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/center_widget.dart';
 import 'package:bitnet/pages/profile/widgets/profile_button.dart';
@@ -68,7 +69,13 @@ class ProfileHeader extends StatelessWidget {
                                             true,
                                           ],
                                           actions: [
-                                            (ctx) { Navigator.pop(ctx);
+                                            (ctx)async { Navigator.pop(ctx);
+                                              final PermissionState ps =
+                                  await PhotoManager.requestPermissionExtend();
+                              if (!ps.isAuth && !ps.hasAccess) {
+                                showOverlay(context, 'please give the app photo access to continue.', color: AppTheme.errorColor);
+                                return;
+                              }
                                               ImagePickerNftMixedBottomSheet(context, onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
                                                 if(image != null) {
                                                  await controller.handleProfileImageSelected(image);
@@ -79,8 +86,14 @@ class ProfileHeader extends StatelessWidget {
                 
                                                 });
                                             },
-                                            (ctx) {
+                                            (ctx) async{
                                                 Navigator.pop(ctx);
+                                                     final PermissionState ps =
+                                  await PhotoManager.requestPermissionExtend();
+                              if (!ps.isAuth && !ps.hasAccess) {
+                                showOverlay(context, 'please give the app photo access to continue.', color: AppTheme.errorColor);
+                                return;
+                              }
                                                ImagePickerNftMixedBottomSheet(context, onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
                                                 if(image != null) {
                                                  await controller.handleBackgroundImageSelected(image);
