@@ -9,6 +9,7 @@ import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -20,101 +21,111 @@ class SearchReceiver extends GetWidget<SendsController> {
 
   @override
   Widget build(BuildContext context) {
-    return bitnetScaffold(
-      extendBodyBehindAppBar: true,
-      appBar: bitnetAppBar(
-        text: L10n.of(context)!.chooseReceipient,
+    return KeyboardSizeProvider(
+      child: bitnetScaffold(
+        extendBodyBehindAppBar: true,
+        appBar: bitnetAppBar(
+          text: L10n.of(context)!.chooseReceipient,
+          context: context,
+          onTap: () {
+            context.go('/feed');
+          },
+        ),
         context: context,
-        onTap: () {
-          context.go('/feed');
-        },
-      ),
-      context: context,
-      body: PopScope(
-        canPop: false,
-        onPopInvoked: (v) {
-          context.go('/feed');
-        },
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                SizedBox(
-                  height: AppTheme.cardPadding * 2.5,
-                ),
-                SearchFieldWidget(
-                  hintText: L10n.of(context)!.searchReceipient,
-                  isSearchEnabled: true,
-                  handleSearch: controller.handleSearch,
-                  node: controller.myFocusNodeAdressSearch,
-                  
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  width: 500,
-                  child: ListView(
-                    controller: controller.sendScrollerController,
-                    physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                    children:[
-                    Text("Support Bitcoin Devs", style: Theme.of(context).textTheme.titleLarge),
-                    SizedBox(height: AppTheme.cardPadding /2,),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 125,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: fakeUsers.length,
-                        itemBuilder: (context, i) {
-                          return UserSendWidget(user: fakeUsers[i]); 
-                        }),
-                    ),
-                    //space
-                                      SizedBox(height: AppTheme.cardPadding * 4),
-                  
-                    //tab2
-                    Text("Send Again", style: Theme.of(context).textTheme.titleLarge),
-                    SizedBox(height: AppTheme.cardPadding /2,),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 125,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: fakeUsers.length,
-                        itemBuilder: (context, i) {
-                          return UserSendWidget(user: fakeUsers[9-i],); 
-                        }),
-                    ),
-                    ]
+        body: PopScope(
+          canPop: false,
+          onPopInvoked: (v) {
+            context.go('/feed');
+          },
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  SizedBox(
+                    height: AppTheme.cardPadding * 2.5,
                   ),
-                )
-                // Expanded(
-                //   child: SingleChildScrollView(
-                //     physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                //     controller: controller.sendScrollerController,
+                  Consumer<ScreenHeight>(
+                    builder:( ctx, res, child) {
+                      if(!res.isOpen) {
+                        controller.myFocusNodeAdressSearch.unfocus();
+                      }
+                      return child!;
+                    },
+                    child: SearchFieldWidget(
+                      hintText: L10n.of(context)!.searchReceipient,
+                      isSearchEnabled: true,
+                      handleSearch: controller.handleSearch,
+                      node: controller.myFocusNodeAdressSearch,
+                      
+                    ),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    width: 500,
+                    child: ListView(
+                      controller: controller.sendScrollerController,
+                      physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                      children:[
+                      Text("Support Bitcoin Devs", style: Theme.of(context).textTheme.titleLarge),
+                      SizedBox(height: AppTheme.cardPadding /2,),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 125,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: fakeUsers.length,
+                          itemBuilder: (context, i) {
+                            return UserSendWidget(user: fakeUsers[i]); 
+                          }),
+                      ),
+                      //space
+                                        SizedBox(height: AppTheme.cardPadding * 4),
                     
-                //     reverse: false,
-                //     child: Container(
-                //                 height: MediaQuery.of(context).size.height * 1.5,
-                //       child: Column(
-                //         mainAxisSize: MainAxisSize.max,
-                //         children: [
-                //           Container(height: 1)
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
-            BottomCenterButton(
-              onButtonTap: () async {
-                controller.processParameters(context,
-                    (await context.push("/qrscanner")) as String?);
-              },
-              buttonTitle: L10n.of(context)!.scanQr,
-              buttonState: ButtonState.idle,
-            )
-          ],
+                      //tab2
+                      Text("Send Again", style: Theme.of(context).textTheme.titleLarge),
+                      SizedBox(height: AppTheme.cardPadding /2,),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 125,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: fakeUsers.length,
+                          itemBuilder: (context, i) {
+                            return UserSendWidget(user: fakeUsers[9-i],); 
+                          }),
+                      ),
+                      ]
+                    ),
+                  )
+                  // Expanded(
+                  //   child: SingleChildScrollView(
+                  //     physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                  //     controller: controller.sendScrollerController,
+                      
+                  //     reverse: false,
+                  //     child: Container(
+                  //                 height: MediaQuery.of(context).size.height * 1.5,
+                  //       child: Column(
+                  //         mainAxisSize: MainAxisSize.max,
+                  //         children: [
+                  //           Container(height: 1)
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+              BottomCenterButton(
+                onButtonTap: () async {
+                  controller.processParameters(context,
+                      (await context.push("/qrscanner")) as String?);
+                },
+                buttonTitle: L10n.of(context)!.scanQr,
+                buttonState: ButtonState.idle,
+              )
+            ],
+          ),
         ),
       ),
     );

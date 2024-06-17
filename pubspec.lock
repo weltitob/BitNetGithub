@@ -1150,6 +1150,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.8.0"
+  flutter_keyboard_size:
+    dependency: "direct main"
+    description:
+      name: flutter_keyboard_size
+      sha256: "90b6a45ca79a0c756ae38bc5ed90ccaeae4d917c6141a646208c5a98e4285453"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
