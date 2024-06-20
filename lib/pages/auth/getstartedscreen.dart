@@ -1,5 +1,6 @@
 //import 'package:bitnet/l10n/l10n.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -34,9 +35,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
     LoggerService logger = Get.find();
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
-      bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-
+      bool isSmallScreen = 375.w < AppTheme.isSmallScreen;
+      bool isMidScreen = 375.w < AppTheme.isMidScreen;
+   
       double spacingMultiplier = isMidScreen
           ? isSmallScreen
               ? 0.5
@@ -48,12 +49,13 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
           PopUpLangPickerWidget(),
         ]),
         context: context,
-        backgroundColor: Theme.of(context).colorScheme.background,
-        margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        margin:  EdgeInsets.symmetric(horizontal: AppTheme.cardPadding)
+                ,
         body: Container(
           margin: EdgeInsets.only(
-            top: AppTheme.cardPadding * 5.h,
-            bottom: AppTheme.cardPadding * 2.h,
+            top: AppTheme.cardPadding * 5.hs,
+            bottom: AppTheme.cardPadding * 2.hs,
             left: AppTheme.cardPadding,
             right: AppTheme.cardPadding,
           ),
@@ -64,7 +66,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             children: [
               Container(
                 color: Colors.transparent,
-                width: AppTheme.cardPadding * 20 * spacingMultiplier.w,
+                width: (AppTheme.cardPadding * 20 * spacingMultiplier.ws),
                 child: FutureBuilder(
                   future: _compostionBitcoin,
                   builder: (context, snapshot) {
@@ -100,12 +102,12 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               // creating the signup button
               SizedBox(height: AppTheme.cardPadding),
               LongButtonWidget(
-                  customWidth: AppTheme.cardPadding * 14,
+                  customWidth: AppTheme.cardPadding * 14.h,
                   title: L10n.of(context)!.register,
                   onTap: () async {
                     context.go('/authhome/pinverification');
                   }),
-              SizedBox(height: AppTheme.cardPadding * 3.h),
+              SizedBox(height: AppTheme.cardPadding * 2.h),
               Container(
                 margin: EdgeInsets.only(
                     top: AppTheme.cardPadding, bottom: AppTheme.cardPadding),

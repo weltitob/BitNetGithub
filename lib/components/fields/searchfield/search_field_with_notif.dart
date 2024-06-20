@@ -11,13 +11,13 @@ class SearchFieldWithNotificationsWidget extends StatefulWidget {
   final bool isSearchEnabled;
   // final dynamic handleSearch;
   final dynamic onChanged; // Add an onChanged callback
-
+  final FocusNode focus;
   const SearchFieldWithNotificationsWidget({
     Key? key,
     required this.hintText,
     required this.isSearchEnabled,
     // required this.handleSearch,
-    this.onChanged, // Initialize it in the constructor
+    this.onChanged, required this.focus, // Initialize it in the constructor
   }) : super(key: key);
 
   @override
@@ -33,7 +33,6 @@ class _SearchFieldWithNotificationsWidgetState
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
 
-    FocusNode _focus = FocusNode();
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: AppTheme.elementSpacing,
@@ -52,10 +51,12 @@ class _SearchFieldWithNotificationsWidgetState
             children: [
               Expanded(
                 child: TextFormField(
+
                   enabled: widget.isSearchEnabled,
+                  focusNode: widget.focus,
                   controller: _textFieldController,
                   onFieldSubmitted: (c) {
-                    FocusScope.of(context).unfocus();
+                    widget.focus.unfocus();
                     controller.handleSearch(_textFieldController.text, context);
                     _textFieldController.clear();
                   },

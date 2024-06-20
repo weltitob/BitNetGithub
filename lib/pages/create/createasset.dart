@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/mintasset.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/file_picker_service.dart';
@@ -195,10 +196,17 @@ class _CreateAssetState extends State<CreateAsset> {
   //imagecopression
   _pickImageFiles(MediaType mediaType) async {
     print(mediaType);
-    dynamic file = await FilePickerService(mediaType).pickFile();
-    if (file == null) return;
+    // dynamic file = await FilePickerService(mediaType).pickFile();
+    // if (file == null) return;
     //removed compression only add when the file size is bigger then 1mb
     // file = compressImage(file, postId); //this is jpg now then lol
+   
+    File? file = await ImagePickerBottomSheet(context, onImageTap: (album, image) async {
+      File? file =  await image.file;
+      context.pop(file);
+    });
+    if(file == null)
+      return;
     postFiles.add(PostFile(mediaType, file: file));
     if (mounted) {
       setState(() {

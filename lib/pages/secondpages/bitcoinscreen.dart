@@ -9,6 +9,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -216,6 +217,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                 ),
               ),
               AmountWidget(
+                swapped: Get.find<WalletsController>().reversed.value,
                   enabled: () => true,
                   satController: controller.satCtrlBuy,
                   btcController: controller.btcCtrlBuy,

@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -52,7 +53,7 @@ class MnemonicGenScreen extends StatelessWidget {
               height: AppTheme.cardPadding.h,
             ),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.w),
+              margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding.ws),
               child: Text(
                 L10n.of(context)!.saveYourmnemonicSecurelyDescription,
                 textAlign: TextAlign.center,
@@ -63,7 +64,7 @@ class MnemonicGenScreen extends StatelessWidget {
               height: AppTheme.cardPadding,
             ),
             Container(
-              width: AppTheme.cardPadding * 14.w,
+              width: AppTheme.cardPadding * 14.ws,
               child: FormTextField(
                 readOnly: true, // This makes the text field read-only
                 isMultiline: true,
@@ -77,7 +78,7 @@ class MnemonicGenScreen extends StatelessWidget {
               height: AppTheme.cardPadding * 1.h,
             ),
             LongButtonWidget(
-                customWidth: AppTheme.cardPadding * 14.w,
+                customWidth: AppTheme.cardPadding * 14.ws,
                 title: L10n.of(context)!.continues,
                 onTap: () {
                   mnemonicController.changeWrittenDown();

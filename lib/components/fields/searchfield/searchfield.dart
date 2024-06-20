@@ -9,6 +9,7 @@ class SearchFieldWidget extends StatefulWidget {
   final dynamic onChanged; // Add an onChanged callback
   final dynamic suffixIcon;
   final dynamic onSuffixTap;
+  final FocusNode? node;
 
   const SearchFieldWidget({
     Key? key,
@@ -17,7 +18,7 @@ class SearchFieldWidget extends StatefulWidget {
     required this.handleSearch,
     this.suffixIcon,
     this.onSuffixTap,
-    this.onChanged, // Initialize it in the constructor
+    this.onChanged, this.node, // Initialize it in the constructor
   }) : super(key: key);
 
   @override
@@ -47,6 +48,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
             enabled: widget.isSearchEnabled,
             controller: _textFieldController,
             onFieldSubmitted: widget.handleSearch,
+            focusNode: widget.node,
             onChanged: (value) {
               setState(() {
                 _textFieldController.text = value; // Update the controller text

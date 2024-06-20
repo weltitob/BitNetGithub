@@ -10,7 +10,7 @@
     <uses-feature android:name="android.hardware.nfc" android:required="true"
         tools:targetApi="eclair" />
     <application
-        android:label="bitnet"
+        android:label="BitNet"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">

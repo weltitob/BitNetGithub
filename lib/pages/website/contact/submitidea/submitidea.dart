@@ -1,8 +1,11 @@
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/add_content_bottom_sheet/add_content.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/user/ideasubmitters.dart';
 import 'package:bitnet/pages/website/contact/submitidea/submitidea_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class SubmitIdea extends StatefulWidget {
   const SubmitIdea({super.key});
@@ -35,8 +38,20 @@ class SubmitIdeaController extends State<SubmitIdea> {
 
   onAddButtonTap(){
     BitNetBottomSheet(
-          context: context,
-         child: AddContentWidget(controller: this));
+          height: MediaQuery.of(context).size.height * 0.6,
+                            context: context,
+                            child: bitnetScaffold(
+                              context: context,
+                              extendBodyBehindAppBar: true,
+                              appBar: bitnetAppBar(
+                                hasBackButton: false,
+                                text: L10n.of(context)!.addContent,
+                                context: context,
+                              ),
+                              body: AddContentWidget(
+                                controller: this,
+                              ),
+                            ),);
     print("Add Button tapped");
   }
 

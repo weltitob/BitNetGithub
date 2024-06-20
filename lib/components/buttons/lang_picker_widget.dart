@@ -36,16 +36,16 @@ class _PopUpLangPickerWidgetState extends State<PopUpLangPickerWidget> {
                   decoration: BoxDecoration(
                     color: Theme.of(context)
                         .canvasColor, // Add a background color here
-                    borderRadius: new BorderRadius.only(
-                      topLeft: AppTheme.cornerRadiusBig.w,
-                      topRight: AppTheme.cornerRadiusBig.w,
-                    ),
+                    // borderRadius: new BorderRadius.only(
+                    //   topLeft: AppTheme.cornerRadiusBig.w,
+                    //   topRight: AppTheme.cornerRadiusBig.w,
+                    // ),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: AppTheme.cornerRadiusBig.w,
-                      topRight: AppTheme.cornerRadiusBig.w,
-                    ),
+                    // borderRadius: BorderRadius.only(
+                    //   topLeft: AppTheme.cornerRadiusBig.w,
+                    //   topRight: AppTheme.cornerRadiusBig.w,
+                    // ),
                   
                     child: ChangeLanguage(),
                   ),

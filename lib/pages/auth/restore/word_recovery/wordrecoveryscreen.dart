@@ -94,7 +94,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
         context: context,
         margin: isSuperSmallScreen
             ? EdgeInsets.symmetric(horizontal: 0)
-            : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250.w),
+            : EdgeInsets.symmetric(horizontal: (screenWidth / 2 - 250.w) < 0 ? 0 :screenWidth / 2 - 250.w),
         extendBodyBehindAppBar: true,
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: bitnetAppBar(

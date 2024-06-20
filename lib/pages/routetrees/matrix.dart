@@ -4,13 +4,16 @@ import 'dart:convert';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/pages/routetrees/routes.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +47,9 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    (widget.child as Router).routeInformationProvider!.addListener((){
+      setState((){});
+    });
     initMatrix();
     initLoadingDialog();
   }
@@ -103,9 +109,78 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    bool shouldBeBuilder = kIsWeb && !(widget.child as Router).routeInformationProvider!.value.uri.toString().contains('website');
     return Provider(
       create: (_) => this,
-      child: widget.child,
+      child:(kIsWeb && !(widget.child as Router).routeInformationProvider!.value.uri.toString().contains('website')) ? WebBuilder(widget: widget): widget.child,
     );
   }
 }
+
+class WebBuilder extends StatelessWidget {
+  const WebBuilder({
+    super.key,
+    required this.widget,
+  });
+
+  final Matrix widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery(
+      data: cloneMediaQueryWithSize(MediaQueryData.fromView(View.of(context)),Size(375, 812) 
+      ),
+      child: Container(
+          width: double.infinity,
+        height: double.infinity, 
+        decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Theme.of(context).brightness == Brightness.light
+                          ? lighten(
+                              Theme.of(context).colorScheme.primaryContainer, 50)
+                          : darken(
+                              Theme.of(context).colorScheme.primaryContainer, 80),
+                      Theme.of(context).brightness == Brightness.light
+                          ? lighten(
+                              Theme.of(context).colorScheme.tertiaryContainer, 50)
+                          : darken(
+                              Theme.of(context).colorScheme.tertiaryContainer,
+                          80),
+                    ],
+                  ),
+                ),
+        
+        
+        child: ClipRRect(child: Center(child: SizedBox(width: 375, child: widget.child)))),
+    );
+  }
+
+  MediaQueryData cloneMediaQueryWithSize(MediaQueryData data, Size size) {
+    return MediaQueryData(
+      size:size,
+      devicePixelRatio: data.devicePixelRatio,
+      textScaler: data.textScaler ,
+      platformBrightness:data.platformBrightness ,
+      padding: data.padding ,
+      viewInsets: data.viewInsets,
+      systemGestureInsets: data.systemGestureInsets,
+      viewPadding: data.viewPadding,
+      alwaysUse24HourFormat: data.alwaysUse24HourFormat,
+      accessibleNavigation: data.accessibleNavigation,
+      invertColors: data.invertColors,
+      highContrast: data.highContrast,
+      onOffSwitchLabels: data.onOffSwitchLabels,
+      disableAnimations: data.disableAnimations,
+      boldText: data.boldText,
+      navigationMode: data.navigationMode,
+      gestureSettings:data.gestureSettings ,
+      displayFeatures:data.displayFeatures ,
+    );
+  }
+
+  
+}
+

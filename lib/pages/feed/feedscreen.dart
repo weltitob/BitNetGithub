@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
@@ -31,12 +32,31 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen>
     with SingleTickerProviderStateMixin {
+  late FocusNode searchNode;
+  late ScrollController homeScrollController;
+  late Function() scrollListener;
   @override
   void initState() {
+    
     super.initState();
+  
     Get.put(FeedController()).initNFC(context);
+     homeScrollController = Get.find<FeedController>().scrollControllerColumn;
+     scrollListener = (){
+      scrollToSearchFunc(homeScrollController, searchNode);
+    };
+    homeScrollController.addListener(scrollListener);
+       searchNode = FocusNode();
   }
 
+   
+
+@override
+void dispose() {
+  homeScrollController.removeListener(scrollListener);
+  searchNode.dispose();
+  super.dispose();
+}
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
@@ -53,8 +73,8 @@ class _FeedScreenState extends State<FeedScreen>
                       builder: (controller) {
                         return SearchFieldWithNotificationsWidget(
                           isSearchEnabled: true,
-                          hintText:
-                              "Paste walletaddress, transactionid or blockid...",
+                          hintText: "Paste walletaddress, transactionid or blockid...",
+                          focus: searchNode,
                           // hintText: "${L10n.of(context)!.search}...",
                           onChanged: (v) {
                             setState(() {}); 
@@ -109,7 +129,7 @@ class _FeedScreenState extends State<FeedScreen>
             physics: NeverScrollableScrollPhysics(),
             controller: controller.tabController,
             children: [
-              HomeScreen(),
+              HomeScreen(ctrler: homeScrollController),
               MempoolHome(
                 isFromHome: true,
               ),

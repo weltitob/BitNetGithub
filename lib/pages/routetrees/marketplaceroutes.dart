@@ -21,7 +21,7 @@ Map<String, WidgetBuilder> allRoutes = {
       const CategoriesDetailScreen(),
   kListScreenRoute: (BuildContext context) => const ListScreen(),
   kFilterScreenRoute: (BuildContext context) => const FilterScreen(),
-  kOwnerScreenRoute: (BuildContext context) => const CollectionScreen(routerState: null),
+  kOwnerScreenRoute: (BuildContext context) =>  CollectionScreen(routerState: null, context: context,),
   kSearchScreenRoute: (BuildContext context) => const SearchScreen(),
   kOwnerDetailScreenRoute: (BuildContext context) => const OwnerDetailScreen(),
   kActivityScreenRoute: (BuildContext context) => const ActivityScreen(),

@@ -115,7 +115,7 @@ class MnemonicController extends State<MnemonicGen> {
         createdAt: timestamp,
         updatedAt: timestamp,
         isActive: true,
-        dob: 0,
+        dob: 0, nft_profile_id: '', nft_background_id: '',
       );
 
       VerificationCode verificationCode = VerificationCode(

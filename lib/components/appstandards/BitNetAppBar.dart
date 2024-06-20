@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/animations/animatedtext.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -51,7 +52,7 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
     bool isMidScreen = width < AppTheme.isMidScreen;
     bool isIntermediateScreen = width < AppTheme.isIntermediateScreen;
 
-    double centerSpacing = isMidScreen
+    double centerSpacing = kIsWeb ? AppTheme.columnWidth * 0.075 : isMidScreen
         ? isIntermediateScreen
             ? isSmallScreen
                 ? isSuperSmallScreen

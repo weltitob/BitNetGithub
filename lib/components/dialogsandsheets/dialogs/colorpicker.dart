@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 // import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 Future<bool?> showColorPickerDialouge({
@@ -21,28 +22,28 @@ Future<bool?> showColorPickerDialouge({
               bottomLeft: Radius.circular(24)
           ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             //deprecated replace with new color
-            // HueRingPicker(
-            //   enableAlpha: false,
-            //   displayThumbColor: true,
-            //   hueRingStrokeWidth: AppTheme.cardPadding,
-            //   colorPickerHeight: AppTheme.iconSize * 8.5,
-            //   portraitOnly: false,
-            //   pickerColor: pickerColor,
-            //   onColorChanged: onColorChanged,
-            // ),
+            HueRingPicker(
+              enableAlpha: false,
+              displayThumbColor: true,
+              hueRingStrokeWidth: AppTheme.cardPadding,
+              colorPickerHeight: AppTheme.iconSize * 8.5,
+              portraitOnly: false,
+              pickerColor: pickerColor,
+              onColorChanged: onColorChanged,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   onPressed: actionleft,
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(AppTheme.errorColor),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    backgroundColor: WidgetStateProperty.all(AppTheme.errorColor),
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
                   ),
                   child: Icon(Icons.stop_rounded),
@@ -50,8 +51,8 @@ Future<bool?> showColorPickerDialouge({
                 ElevatedButton(
                   onPressed: actionright,
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(AppTheme.successColor),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    backgroundColor: WidgetStateProperty.all(AppTheme.successColor),
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
                   ),
                   child: Icon(Icons.done_rounded),

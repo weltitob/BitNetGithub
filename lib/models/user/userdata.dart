@@ -23,6 +23,8 @@ class UserData extends Equatable {
   final Timestamp updatedAt;
   final bool isActive;
   final int dob;
+  final String nft_profile_id;
+  final String nft_background_id;
 
   const UserData({
     required this.backgroundImageUrl,
@@ -39,6 +41,8 @@ class UserData extends Equatable {
     required this.updatedAt,
     required this.isActive,
     required this.dob,
+    this.nft_profile_id ='',
+    this.nft_background_id='', 
   });
 
   @override
@@ -58,6 +62,8 @@ class UserData extends Equatable {
       updatedAt,
       isActive,
       dob,
+      nft_profile_id,
+      nft_background_id
     ];
   }
 
@@ -76,6 +82,8 @@ class UserData extends Equatable {
     bool? isPrivate,
     bool? showFollowers,
     int? dob,
+    String? nft_profile_id,
+    String? nft_background_id
   }) {
     return UserData(
       did: did ?? this.did,
@@ -91,7 +99,9 @@ class UserData extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
-      dob: dob ?? this.dob,
+      dob: dob ?? this.dob, 
+      nft_profile_id: nft_profile_id ?? this.nft_profile_id, 
+      nft_background_id: nft_background_id ?? this.nft_background_id,
     );
   }
 
@@ -111,6 +121,8 @@ class UserData extends Equatable {
       'updatedAt': updatedAt,
       'isActive': isActive,
       'dob': dob,
+      'nft_profile_id': nft_profile_id,
+      'nft_background_id': nft_background_id
     };
   }
 
@@ -129,7 +141,9 @@ class UserData extends Equatable {
       isActive: map['isActive'] ?? false,
       showFollowers: map['showFollowers'] ?? false,
       isPrivate: map['isPrivate'] ?? false,
-      dob: map['dob']?.toInt() ?? 0,
+      dob: map['dob']?.toInt() ?? 0, 
+      nft_profile_id: map['nft_profile_id'] ?? '', 
+      nft_background_id: map['nft_background_id'] ?? '',
       // mainWallet: UserWallet.fromMap(map['mainWallet'] ?? {}),
       // wallets: List<UserWallet>.from(
       //     map['wallets']?.map((x) => UserWallet.fromMap(x))),
@@ -151,7 +165,9 @@ class UserData extends Equatable {
       isActive: doc['isActive'],
       showFollowers: doc['showFollowers'],
       isPrivate: doc['isPrivate'],
-      dob: doc['dob'],
+      dob: doc['dob'], 
+      nft_profile_id: (doc.data() as Map<String,dynamic>).containsKey('nft_profile_id') ? doc['nft_profile_id'] : '',
+       nft_background_id: (doc.data() as Map<String,dynamic>).containsKey('nft_background_id') ? doc['nft_background_id'] : '',
       // mainWallet: UserWallet.fromMap(doc['mainWallet'] ?? {}),
       // wallets: List<UserWallet>.from(
       //     doc['wallets'].map((x) => UserWallet.fromMap(x))),
