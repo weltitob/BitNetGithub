@@ -7,9 +7,11 @@ import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
 import 'package:bitnet/components/post/components/textbuilder.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class NftProductSlider extends StatefulWidget {
@@ -19,18 +21,22 @@ class NftProductSlider extends StatefulWidget {
   final nftName;
   final cryptoText;
   final nftMainName;
+  final String? postId;
 
   final String? rank;
   final bool hasLikeButton;
   final bool hasPrice;
+  bool hasLiked;
 
-  const NftProductSlider(
+  NftProductSlider(
       {Key? key,
       this.medias,
       required this.nftName,
       required this.cryptoText,
       required this.nftMainName,
       this.encodedData,
+      this.postId,
+      this.hasLiked = false,
       this.rank,
       this.hasLikeButton = false,
       this.scale = 1,
@@ -43,6 +49,7 @@ class NftProductSlider extends StatefulWidget {
 
 class _NftProductSliderState extends State<NftProductSlider> {
   @override
+  final controller = Get.find<HomeController>();
   Widget build(BuildContext context) {
     dynamic firstMediaData =
         widget.medias?.isNotEmpty ?? false ? widget.medias?.first : null;
@@ -131,16 +138,25 @@ class _NftProductSliderState extends State<NftProductSlider> {
                             )
                           : Container(),
                       widget.hasLikeButton
-                          ? GestureDetector(
-                              onTap: () {
-                                setState(() {});
+                          ? RoundedButtonWidget(
+                              iconData: Icons.favorite,
+                              buttonType: ButtonType.transparent,
+                              size: 30.w,
+                              iconColor: widget.hasLiked
+                                  ? Colors.red
+                                  : Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? AppTheme.black70
+                                      : AppTheme.white90,
+                              onTap: () async {
+                                widget.hasLiked = !widget.hasLiked;
+                                setState(() {}); 
+                                controller.updateHasLiked(
+                                    widget.postId!, widget.hasLiked);
+                                controller.postsDataList =
+                                    await controller.fetchPosts();
                               },
-                              child: RoundedButtonWidget(
-                                iconData: Icons.favorite,
-                                buttonType: ButtonType.transparent,
-                                size: 30.w,
-                                onTap: () {},
-                              ))
+                            )
                           : Container(),
                     ],
                   ),
