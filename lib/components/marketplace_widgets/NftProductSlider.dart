@@ -35,7 +35,7 @@ class NftProductSlider extends StatefulWidget {
       required this.cryptoText,
       required this.nftMainName,
       this.encodedData,
-      this.postId,
+      this.postId = '',
       this.hasLiked = false,
       this.rank,
       this.hasLikeButton = false,
@@ -48,8 +48,10 @@ class NftProductSlider extends StatefulWidget {
 }
 
 class _NftProductSliderState extends State<NftProductSlider> {
-  @override
   final controller = Get.find<HomeController>();
+ 
+ 
+
   Widget build(BuildContext context) {
     dynamic firstMediaData =
         widget.medias?.isNotEmpty ?? false ? widget.medias?.first : null;
@@ -58,6 +60,7 @@ class _NftProductSliderState extends State<NftProductSlider> {
       margin: EdgeInsets.symmetric(horizontal: 5.w * widget.scale),
       child: GestureDetector(
         onTap: () {
+          controller.createClicks(widget.postId!);
           context.go("asset_screen/:${widget.nftName}");
         },
         child: GlassContainer(
@@ -150,11 +153,15 @@ class _NftProductSliderState extends State<NftProductSlider> {
                                       : AppTheme.white90,
                               onTap: () async {
                                 widget.hasLiked = !widget.hasLiked;
-                                setState(() {}); 
+                                setState(() {});
                                 controller.updateHasLiked(
                                     widget.postId!, widget.hasLiked);
                                 controller.postsDataList =
                                     await controller.fetchPosts();
+                                widget.hasLiked
+                                    ? controller.createLikes(widget.postId!)
+                                    : controller
+                                        .deleteLikeByPostId(widget.postId!);
                               },
                             )
                           : Container(),

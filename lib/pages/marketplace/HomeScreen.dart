@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -324,20 +325,29 @@ class HomeScreen extends StatelessWidget {
                       itemBuilder: (context, index, index2) {
                         return controller.postsDataList == null
                             ? dotProgress(context)
-                            : NftProductSlider(
-                              postId:  controller.postsDataList![index].postId,
-                              hasLiked: controller.postsDataList![index].hasLiked,
-                                hasLikeButton: controller
-                                    .postsDataList![index].hasLikeButton,
-                                hasPrice:
-                                    controller.postsDataList![index].hasPrice,
-                                nftName:
-                                    controller.postsDataList![index].nftName,
-                                nftMainName: controller
-                                    .postsDataList![index].nftMainName,
-                                cryptoText:
-                                    controller.postsDataList![index].cryptoText,
-                              );
+                            : FutureBuilder(
+                                future: controller.fetchHasLiked(
+                                    controller.postsDataList![index].postId,
+                                    Auth().currentUser!.uid),
+                                builder: (context, snapshot) {
+                                  return NftProductSlider(
+                                    postId:
+                                        controller.postsDataList![index].postId,
+                                    hasLiked: snapshot.data == null
+                                        ? false
+                                        : snapshot.data!,
+                                    hasLikeButton: controller
+                                        .postsDataList![index].hasLikeButton,
+                                    hasPrice: controller
+                                        .postsDataList![index].hasPrice,
+                                    nftName: controller
+                                        .postsDataList![index].nftName,
+                                    nftMainName: controller
+                                        .postsDataList![index].nftMainName,
+                                    cryptoText: controller
+                                        .postsDataList![index].cryptoText,
+                                  );
+                                });
                       },
                     ),
                   ),
