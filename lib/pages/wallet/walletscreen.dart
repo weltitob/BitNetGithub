@@ -247,8 +247,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                       context.go('/wallet/send');
                     },
                     image: "assets/images/send_image.png",
-                    width: AppTheme.cardPadding * 3.75,
-                    height: AppTheme.cardPadding * 3.75,
+                    width: AppTheme.cardPadding * 3.5.w,
+                    height: AppTheme.cardPadding * 3.5.w,
                     fallbackIcon: Icons.arrow_upward_rounded,
                   ),
                   BitNetImageWithTextButton(
@@ -258,8 +258,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                     },
                     image: "assets/images/receive_image.png",
                     //image: "assets/images/key_removed_bck.png",
-                    width: AppTheme.cardPadding * 3.75,
-                    height: AppTheme.cardPadding * 3.75,
+                    width: AppTheme.cardPadding * 3.5.w,
+                    height: AppTheme.cardPadding * 3.5.w,
                     fallbackIcon: Icons.arrow_downward_rounded,
                   ),
                   BitNetImageWithTextButton(
@@ -270,8 +270,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                       context.go("/wallet/loop_screen");
                     },
                     image: "assets/images/rebalance_image.png",
-                    width: AppTheme.cardPadding * 3.75,
-                    height: AppTheme.cardPadding * 3.75,
+                    width: AppTheme.cardPadding * 3.5.w,
+                    height: AppTheme.cardPadding * 3.5.w,
                     fallbackIcon: Icons.sync_rounded,
                   ),
                 ],

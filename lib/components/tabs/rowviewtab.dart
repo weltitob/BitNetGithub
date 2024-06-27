@@ -116,6 +116,7 @@ class _RowViewTabState extends State<RowViewTab>
                         SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2, // 2 items per row
                           mainAxisSpacing: AppTheme.elementSpacing.h,
+                          crossAxisSpacing: AppTheme.elementSpacing.w / 2,
                           childAspectRatio: (size.width / 2) / 230.w, // Adjust according to your design
                         ),
                         itemCount: groupAssets.length,

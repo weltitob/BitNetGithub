@@ -15,6 +15,7 @@ class UserInformation extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
         child: Column(
           children: [
+            SizedBox(height: AppTheme.elementSpacing /2,),
             TextField(
               focusNode: controller.focusNodeUsername,
               readOnly: controller.currentview.value == 2 ? false : true,
