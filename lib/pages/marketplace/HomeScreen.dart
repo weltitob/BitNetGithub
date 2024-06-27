@@ -1,18 +1,22 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/MostView.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -23,13 +27,14 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     print("current width is :" + size.width.toString());
+    final controller = Get.find<HomeController>();
     return bitnetScaffold(
       body: Stack(
         children: [
           SingleChildScrollView(
             controller: ctrler,
-                    physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-
+            physics:
+                BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -49,16 +54,33 @@ class HomeScreen extends StatelessWidget {
                           viewportFraction: 0.6,
                           enlargeCenterPage: true,
                           height: 244.w),
-                      itemCount: nftHotProductSliderData.length,
+                      itemCount: controller.postsDataList?.length,
                       itemBuilder: (context, index, index2) {
-                        return NftProductSlider(
-                          hasLikeButton: true,
-                          hasPrice: true,
-                          nftName: nftHotProductSliderData[index].nftName,
-                          nftMainName:
-                              nftHotProductSliderData[index].nftMainName,
-                          cryptoText: nftHotProductSliderData[index].cryptoText,
-                        );
+                        return controller.postsDataList == null
+                            ? dotProgress(context)
+                            : FutureBuilder(
+                                future: controller.fetchHasLiked(
+                                    controller.postsDataList![index].postId,
+                                    Auth().currentUser!.uid),
+                                builder: (context, snapshot) {
+                                  return NftProductSlider(
+                                    postId:
+                                        controller.postsDataList![index].postId,
+                                    hasLiked: snapshot.data == null
+                                        ? false
+                                        : snapshot.data!,
+                                    hasLikeButton: controller
+                                        .postsDataList![index].hasLikeButton,
+                                    hasPrice: controller
+                                        .postsDataList![index].hasPrice,
+                                    nftName: controller
+                                        .postsDataList![index].nftName,
+                                    nftMainName: controller
+                                        .postsDataList![index].nftMainName,
+                                    cryptoText: controller
+                                        .postsDataList![index].cryptoText,
+                                  );
+                                });
                       },
                     ),
                   ),

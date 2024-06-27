@@ -59,7 +59,6 @@ class FeedController extends GetxController
         context.push('/single_transaction');
       }
       if (query.isNotEmpty && query.startsWith('00')) {
-        print(query);
         homeController.blockHeight =
             await homeController.getDataHeightHash(query);
         context.push('/wallet/bitcoinscreen/mempool');

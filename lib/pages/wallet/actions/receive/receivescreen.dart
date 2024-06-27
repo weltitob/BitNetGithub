@@ -24,7 +24,6 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class ReceiveScreen extends StatefulWidget {
   ReceiveScreen({Key? key}) : super(key: key);
 
@@ -32,7 +31,8 @@ class ReceiveScreen extends StatefulWidget {
   State<ReceiveScreen> createState() => _ReceiveScreenState();
 }
 
-class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProviderStateMixin {
+class _ReceiveScreenState extends State<ReceiveScreen>
+    with SingleTickerProviderStateMixin {
   final controller = Get.find<ReceiveController>();
   late TabController _tabController;
 
@@ -53,20 +53,22 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
     controller.btcController = TextEditingController();
     controller.btcController.text = "0.00001";
     controller.satController = TextEditingController();
-        controller.satController.text = "0";
+    controller.satController.text = "0";
 
     controller.currController = TextEditingController();
     controller.getInvoice(0, "");
     controller.getTaprootAddress();
     controller.duration = Duration(minutes: 20);
-    controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+    controller.timer =
+        Timer.periodic(Duration(seconds: 1), controller.updateTimer);
 
     LoggerService logger = Get.find();
 
     //Onchain checking for transactions
     subscribeTransactionsStream().listen((restResponse) {
       logger.i("subscribeTransactionsStream got data: $restResponse");
-      BitcoinTransaction bitcoinTransaction = BitcoinTransaction.fromJson(restResponse.data);
+      BitcoinTransaction bitcoinTransaction =
+          BitcoinTransaction.fromJson(restResponse.data);
 
       showOverlayTransaction(
           context,
@@ -91,8 +93,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       logger.i("Received data from Invoice-stream: $restResponse");
       final result = restResponse.data["result"];
       logger.i("Result: $result");
-      ReceivedInvoice receivedInvoice =
-      ReceivedInvoice.fromJson(result);
+      ReceivedInvoice receivedInvoice = ReceivedInvoice.fromJson(result);
       if (receivedInvoice.settled == true) {
         logger.i("showOverlay should be triggered now");
         showOverlayTransaction(
@@ -133,7 +134,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    double glassContainerLeftPosition = _tabController.animation!.value * (MediaQuery.of(context).size.width / 2 - AppTheme.cardPadding * 0.75);
+    double glassContainerLeftPosition = _tabController.animation!.value *
+        (MediaQuery.of(context).size.width / 2.5 - AppTheme.cardPadding * .5);
 
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
@@ -147,28 +149,41 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
           Obx(() {
             return controller.receiveType == ReceiveType.Lightning
                 ? Obx(() {
-              return LongButtonWidget(
-                  buttonType: ButtonType.transparent,
-                  customHeight: AppTheme.cardPadding * 1.5,
-                  customWidth: AppTheme.cardPadding * 4,
-                  leadingIcon: controller.createdInvoice.value
-                      ? Icon(FontAwesomeIcons.cancel, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80)
-                      : Icon(FontAwesomeIcons.refresh, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80),
-                  title: "${controller.min.value}:${controller.sec.value}",
-                  onTap: () {
-                    controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
-                    controller.timer.cancel();
-                    controller.duration = Duration(minutes: 20);
-                    controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
-                  });
-            })
+                    return LongButtonWidget(
+                        buttonType: ButtonType.transparent,
+                        customHeight: AppTheme.cardPadding * 1.5,
+                        customWidth: AppTheme.cardPadding * 4,
+                        leadingIcon: controller.createdInvoice.value
+                            ? Icon(FontAwesomeIcons.cancel,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? AppTheme.black60
+                                    : AppTheme.white80)
+                            : Icon(FontAwesomeIcons.refresh,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? AppTheme.black60
+                                    : AppTheme.white80),
+                        title:
+                            "${controller.min.value}:${controller.sec.value}",
+                        onTap: () {
+                          controller.getInvoice(
+                              (double.parse(controller.satController.text))
+                                  .toInt(),
+                              "");
+                          controller.timer.cancel();
+                          controller.duration = Duration(minutes: 20);
+                          controller.timer = Timer.periodic(
+                              Duration(seconds: 1), controller.updateTimer);
+                        });
+                  })
                 : RoundedButtonWidget(
-                size: AppTheme.cardPadding * 1.5,
-                buttonType: ButtonType.transparent,
-                iconData: FontAwesomeIcons.refresh,
-                onTap: () {
-                  controller.getTaprootAddress();
-                });
+                    size: AppTheme.cardPadding * 1.5,
+                    buttonType: ButtonType.transparent,
+                    iconData: FontAwesomeIcons.refresh,
+                    onTap: () {
+                      controller.getTaprootAddress();
+                    });
           }),
           SizedBox(
             width: AppTheme.elementSpacing,
@@ -189,20 +204,30 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
                 height: AppTheme.cardPadding.h * 4,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     AnimatedPositioned(
-                      duration: const Duration(milliseconds: 0),
-                      left: glassContainerLeftPosition + AppTheme.elementSpacing,
+                      curve: Curves.fastLinearToSlowEaseIn,
+                      duration: const Duration(milliseconds: 100),
+                      left: glassContainerLeftPosition +
+                          AppTheme.elementSpacing * 5,
                       child: GlassContainer(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: AppTheme.elementSpacing * 0.75, horizontal: AppTheme.elementSpacing * 2.5),
+                            vertical: AppTheme.elementSpacing * 0.75,
+                            horizontal: AppTheme.elementSpacing * 2.5,
+                          ),
                           child: Text(
-                                ReceiveType.Lightning.name,
-                            style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.transparent),
+                            ReceiveType.Lightning.name,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall!
+                                .copyWith(
+                                  color: Colors.transparent,
+                                ),
                           ),
                         ),
                       ),
@@ -219,15 +244,20 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
                             child: Row(
                               children: [
                                 Icon(FontAwesomeIcons.bolt),
-                                SizedBox(width: AppTheme.cardPadding * 0.25,),
+                                SizedBox(
+                                  width: AppTheme.cardPadding * 0.25,
+                                ),
                                 Text(
                                   ReceiveType.Lightning.name,
-                                  style: Theme.of(context).textTheme.headlineSmall,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(width: AppTheme.cardPadding * 2,),
+                          SizedBox(
+                            width: AppTheme.cardPadding * 2,
+                          ),
                           InkWell(
                             onTap: () {
                               _tabController.animateTo(1);
@@ -235,10 +265,13 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
                             child: Row(
                               children: [
                                 Icon(FontAwesomeIcons.bitcoin),
-                                SizedBox(width: AppTheme.cardPadding * 0.25,),
+                                SizedBox(
+                                  width: AppTheme.cardPadding * 0.25,
+                                ),
                                 Text(
                                   ReceiveType.OnChain.name,
-                                  style: Theme.of(context).textTheme.headlineSmall,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
                                 ),
                               ],
                             ),

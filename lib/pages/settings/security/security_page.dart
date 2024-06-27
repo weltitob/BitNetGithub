@@ -44,43 +44,43 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         widget: buildSettings(),
         goBack: false,
         iconData: Icons.settings,
-        title: L10n.of(context)!.plainKeyDID,
+        title: "Plain Key and DID",
       ),
       SettingsPageModel(
         widget: RecoverWithQRPage(),
         goBack: true,
         iconData: Icons.verified_user,
-        title: L10n.of(context)!.recoverQrCode,
+        title: "Recover with QR Code"
       ),
       SettingsPageModel(
         widget: Container(),
         goBack: true,
         iconData: Icons.color_lens_rounded,
-        title: L10n.of(context)!.recoveryPhrases,
+        title: "Recovery phrases",
       ),
       SettingsPageModel(
         widget: Container(),
         goBack: true,
         iconData: Icons.live_help_rounded,
-        title: L10n.of(context)!.socialRecovery,
+        title: "Social Recovery",
       ),
       SettingsPageModel(
         widget: Container(),
         goBack: true,
         iconData: Icons.key_rounded,
-        title: L10n.of(context)!.humanIdentity,
+        title: "Human Identity",
       ),
       SettingsPageModel(
         widget: Container(),
         goBack: true,
         iconData: Icons.color_lens_rounded,
-        title: L10n.of(context)!.recoveryPhrases,
+        title: "Recovery phrases",
       ),
       SettingsPageModel(
         widget: Container(), //context.go('/settings/security'),
         goBack: true,
         iconData: Icons.security,
-        title: L10n.of(context)!.extendedSec,
+        title: "Extended Sec",
       ),
     ];
     super.initState();
@@ -112,7 +112,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
                       SizedBox(
                         height: AppTheme.elementSpacing,
                       ),
-                      Text(L10n.of(context)!.verifyYourIdentity),
+                      Text("Verify your identity"),
                     ],
                   ),
                 ),
@@ -120,7 +120,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             ),
       context: context,
       appBar: bitnetAppBar(
-          text: L10n.of(context)!.security,
+          text: "Security",
           context: context,
           buttonType: ButtonType.transparent,
           onTap: () {
@@ -138,7 +138,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         children: <Widget>[
           BitNetListTile(
             leading: Icon(FontAwesomeIcons.buildingLock),
-            text: L10n.of(context)!.diDprivateKey,
+            text: "DID and private key",
             onTap: () {
               setState(() {
                 currentview = 2;
@@ -147,7 +147,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
           BitNetListTile(
             leading: Icon(FontAwesomeIcons.book),
-            text: L10n.of(context)!.wordRecovery,
+            text:"Word recovery",
             onTap: () {
               setState(() {
                 currentview = 3;
@@ -156,7 +156,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
           BitNetListTile(
               leading: Icon(FontAwesomeIcons.qrcode),
-              text: L10n.of(context)!.recoverQrCode,
+              text: "Recover with QR Code",
               onTap: () {
                 setState(() {
                   currentview = 1;
@@ -164,7 +164,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
               }),
           BitNetListTile(
             leading: Icon(FontAwesomeIcons.person),
-            text: L10n.of(context)!.socialRecovery,
+            text: "Social recovery",
             onTap: () {
               setState(() {
                 currentview = 4;
@@ -173,7 +173,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
           BitNetListTile(
             leading: Icon(Icons.shield_outlined),
-            text: L10n.of(context)!.extendedSec, //L10n.of(context)!.security
+            text: "Extended Sec", //L10n.of(context)!.security
             trailing: Icon(
               Icons.arrow_forward_ios_rounded,
               size: AppTheme.iconSize * 0.75,
@@ -186,7 +186,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           ),
           BitNetListTile(
             leading: Icon(FontAwesomeIcons.trash),
-            text: L10n.of(context)!.deleteAccount,
+            text: "Delete account",
             trailing: Icon(
               Icons.arrow_forward_ios_rounded,
               size: AppTheme.iconSize * 0.75,

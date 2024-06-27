@@ -32,12 +32,10 @@ class Settings extends StatelessWidget {
             Expanded(
               child: SecuritySettingsPage(),
             ),
-        
           if (controller.currentTab.value == 'invite')
             Expanded(
               child: InvitationSettingsPage(),
             ),
-       
           if (controller.currentTab.value == 'currency')
             Expanded(
               child: ChangeCurrency(),
@@ -47,9 +45,13 @@ class Settings extends StatelessWidget {
               child: ChangeLanguage(),
             ),
           if (controller.currentTab.value == "agbs")
-            Expanded(child: AgbsAndImpressumScreen(onBackButton: () {
-              controller.switchTab("main");
-            },),)
+            Expanded(
+              child: AgbsAndImpressumScreen(
+                onBackButton: () {
+                  controller.switchTab("main");
+                },
+              ),
+            )
         ],
       ),
     );
