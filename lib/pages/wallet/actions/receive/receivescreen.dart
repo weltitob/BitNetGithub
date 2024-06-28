@@ -204,80 +204,49 @@ class _ReceiveScreenState extends State<ReceiveScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.elementSpacing),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    AnimatedPositioned(
-                      curve: Curves.fastLinearToSlowEaseIn,
-                      duration: const Duration(milliseconds: 100),
-                      left: glassContainerLeftPosition +
-                          AppTheme.elementSpacing * 5,
-                      child: GlassContainer(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppTheme.elementSpacing * 0.75,
-                            horizontal: AppTheme.elementSpacing * 2.5,
-                          ),
-                          child: Text(
-                            ReceiveType.Lightning.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall!
-                                .copyWith(
-                                  color: Colors.transparent,
-                                ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: AppTheme.cardPadding * 2,
-                      child: Row(
+                child: Container(
+                  height: AppTheme.cardPadding * 2,
+                  child: TabBar(
+                    dividerColor: Colors.transparent,
+                    indicatorColor: Colors.transparent,
+                    controller: _tabController,
+                    tabs: [
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              _tabController.animateTo(0);
-                            },
-                            child: Row(
-                              children: [
-                                Icon(FontAwesomeIcons.bolt),
-                                SizedBox(
-                                  width: AppTheme.cardPadding * 0.25,
-                                ),
-                                Text(
-                                  ReceiveType.Lightning.name,
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                ),
-                              ],
-                            ),
-                          ),
+                          Icon(FontAwesomeIcons.bolt),
                           SizedBox(
-                            width: AppTheme.cardPadding * 2,
+                            width: AppTheme.cardPadding * 0.25,
                           ),
-                          InkWell(
-                            onTap: () {
-                              _tabController.animateTo(1);
-                            },
-                            child: Row(
-                              children: [
-                                Icon(FontAwesomeIcons.bitcoin),
-                                SizedBox(
-                                  width: AppTheme.cardPadding * 0.25,
-                                ),
-                                Text(
-                                  ReceiveType.OnChain.name,
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                ),
-                              ],
-                            ),
+                          Text(
+                            ReceiveType.Lightning.name,
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ],
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(FontAwesomeIcons.bitcoin),
+                          SizedBox(
+                            width: AppTheme.cardPadding * 0.25,
+                          ),
+                          Text(
+                            ReceiveType.OnChain.name,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                        ],
+                      ),
+                    ],
+                    labelStyle: Theme.of(context).textTheme.headlineSmall,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                          50), // Adjust the radius as needed
+                      color: Colors.white.withOpacity(
+                          0.1), // Adjust the color and opacity as needed
                     ),
-                  ],
+                    unselectedLabelColor: Colors.white,
+                  ),
                 ),
               ),
               Expanded(
