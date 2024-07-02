@@ -586,35 +586,35 @@ class HomeController extends BaseController {
     }
   }
 
+  Future<bool?> fetchHasLiked(String postId, String userId) async {
+    try {
+      QuerySnapshot collectionSnapshot =
+          await firestore.collection('postsLike').limit(1).get();
+      if (collectionSnapshot.docs.isEmpty) {
+        print('The postLikes collection does not exist.');
+        return false;
+      }
 
+      QuerySnapshot querySnapshot = await firestore
+          .collection('postsLike')
+          .where('postId', isEqualTo: postId)
+          .where('userId', isEqualTo: userId)
+          .get();
 
-Future<bool?> fetchHasLiked(String postId, String userId) async {
-
-  try { 
-     QuerySnapshot collectionSnapshot = await firestore.collection('postsLike').limit(1).get();
-    if (collectionSnapshot.docs.isEmpty) {
-      print('The postLikes collection does not exist.');
-      return false;
+      if (querySnapshot.docs.isNotEmpty) {
+        return true;
+      } else {
+        print('No matching document found.');
+        return false;
+      }
+    } catch (e) {
+      print('Error fetching hasLiked value: $e');
+      return false; // Handle the error as needed and return false
     }
-
-     QuerySnapshot querySnapshot = await firestore.collection('postsLike')
-      .where('postId', isEqualTo: postId)
-      .where('userId', isEqualTo: userId)
-      .get();
-
-    if (querySnapshot.docs.isNotEmpty) { 
-      return true;
-    } else {
-      print('No matching document found.');
-      return false;
-    }
-  } catch (e) {
-    print('Error fetching hasLiked value: $e');
-    return false; // Handle the error as needed and return false
   }
-}
 
   Future<void> createClicks(String postId) async {
+    //
     try {
       DocumentReference documentReference =
           firestore.collection('postsClick').doc();
@@ -626,7 +626,10 @@ Future<bool?> fetchHasLiked(String postId, String userId) async {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        print('A post with this postId already exists.');
+        DocumentReference existingDocRef = querySnapshot.docs.first.reference;
+        await existingDocRef.update({
+          'createdAt': DateTime.now().millisecondsSinceEpoch,
+        });
         return;
       } else {
         await documentReference.set({
@@ -635,7 +638,6 @@ Future<bool?> fetchHasLiked(String postId, String userId) async {
           'postId': postId,
           'createdAt': DateTime.now().millisecondsSinceEpoch,
         });
-        print('clicks added successfully!');
       }
     } catch (e) {
       print('Error adding post: $e');

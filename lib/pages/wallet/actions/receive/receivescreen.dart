@@ -8,7 +8,6 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
@@ -18,11 +17,11 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:bitnet/pages/wallet/actions/receive/lightning_receive_tab.dart';
 import 'package:bitnet/pages/wallet/actions/receive/onchain_receive_tab.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class ReceiveScreen extends StatefulWidget {
   ReceiveScreen({Key? key}) : super(key: key);
@@ -240,10 +239,8 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                     ],
                     labelStyle: Theme.of(context).textTheme.headlineSmall,
                     indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          50), // Adjust the radius as needed
-                      color: Colors.white.withOpacity(
-                          0.1), // Adjust the color and opacity as needed
+                      borderRadius: BorderRadius.circular(50),
+                      color: Colors.white.withOpacity(0.1),
                     ),
                     unselectedLabelColor: Colors.white,
                   ),

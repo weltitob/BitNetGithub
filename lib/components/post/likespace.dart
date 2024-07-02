@@ -8,9 +8,11 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/post/comments.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 //UNCOMMENT
 //import 'package:like_button/like_button.dart';
@@ -111,8 +113,6 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
   //   }
   // }
 
-
-
   handleLikePost() {
     //Provider of is broken after new auth need to use something else rewatch the
     //social media stuff after new auth
@@ -157,26 +157,28 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
 
   void handleSharePost() {
     //auto redirect to web to the post if not logged in with create account at the bottom
-    print('Share Post cliked make a share function of the post here / gorouter will instantly route to the correct thing');
+    print(
+        'Share Post cliked make a share function of the post here / gorouter will instantly route to the correct thing');
     //if app is given auto redirect user into the app when link clicked
   }
 
   void onCommentButtonPressed() {
     BitNetBottomSheet(
-        context: context,
-        height: MediaQuery.of(context).size.height * 0.75,
-        child: bitnetScaffold(
-          extendBodyBehindAppBar: true,
-          appBar: bitnetAppBar(
-            context: context,
-            text: 'Comments',
-          ),
+      context: context,
+      height: MediaQuery.of(context).size.height * 0.75,
+      child: bitnetScaffold(
+        extendBodyBehindAppBar: true,
+        appBar: bitnetAppBar(
           context: context,
-          body: Comments(
-            postId: targetId,
-            postOwnerId: ownerId,
-          ),
-        ));
+          text: 'Comments',
+        ),
+        context: context,
+        body: Comments(
+          postId: targetId,
+          postOwnerId: ownerId,
+        ),
+      ),
+    );
   }
 
   //looks similar to the "UPLOAD" Button on the create_post_screen
@@ -208,48 +210,63 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
                 likeBuilder: (bool isLiked) {
                   return Icon(
                     isLiked ? Icons.favorite : Icons.favorite_border,
-                    color: isLiked ? AppTheme.colorBitcoin : AppTheme.colorBitcoin,
+                    color:
+                        isLiked ? AppTheme.colorBitcoin : AppTheme.colorBitcoin,
                     size: 24,
                   );
                 },
-                countBuilder: (rocketcount, isLiked, text){
+                countBuilder: (rocketcount, isLiked, text) {
                   final color = Colors.grey;
                   return Text(
                     rocketcount.toString(),
-                    style: TextStyle(color: color,
+                    style: TextStyle(
+                        color: color,
                         fontSize: 16,
                         fontWeight: FontWeight.bold),
                   );
                 },
                 onTap: (isLiked) async {
-                  final currentUser = Provider.of<UserData>(context, listen: false);
+                  final homeController = Get.find<HomeController>();
+                  final currentUser =
+                      Provider.of<UserData>(context, listen: false);
+                  print(currentUser.did);
+                  print(currentUser.displayName);
                   final String currentUserId = currentUser.did;
-
                   bool _isLiked = rocketsmap[currentUserId] == true;
+                  setState(() {
+                    rocketcount -= 1;
+                    this.isLiked = false;
+                    rocketsmap[currentUserId] = false;
+                  });
 
-                  if(_isLiked) {
-                    postsCollection.doc(ownerId).
-                    collection('userPosts').doc(targetId).
-                    update({'likes.$currentUserId': false});
+                  if (_isLiked) {
+                    await homeController.deleteLikeByPostId(targetId);
+
+                    postsCollection
+                        .doc(ownerId)
+                        .collection('userPosts')
+                        .doc(targetId)
+                        .update(
+                      {'likes.$currentUserId': false},
+                    );
                     // removeLikeToAcitivityFeed();
-                    setState(() {
-                      rocketcount -= 1;
-                      this.isLiked = false;
-                      rocketsmap[currentUserId] = false;
-                    });
-                  }
-                  else if (!_isLiked) {
-                    postsCollection.doc(ownerId).collection('userPosts').
-                    doc(targetId).update({'likes.$currentUserId': true});
-                    // addLikeToAcitivityFeed();
+                  } else if (!_isLiked) {
                     setState(() {
                       rocketcount += 1;
                       this.isLiked = true;
                       rocketsmap[currentUserId] = true;
                       showheart = true;
                     });
+                    await homeController.createLikes(targetId);
 
-                    Timer(Duration(milliseconds: 500), (){
+                    postsCollection
+                        .doc(ownerId)
+                        .collection('userPosts')
+                        .doc(targetId)
+                        .update({'likes.$currentUserId': true});
+                    // addLikeToAcitivityFeed();
+
+                    Timer(Duration(milliseconds: 500), () {
                       setState(() {
                         showheart = false;
                       });

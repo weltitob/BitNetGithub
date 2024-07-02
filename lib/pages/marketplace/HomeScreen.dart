@@ -327,7 +327,7 @@ class HomeScreen extends StatelessWidget {
                             ? dotProgress(context)
                             : FutureBuilder(
                                 future: controller.fetchHasLiked(
-                                    controller.postsDataList![index].postId,
+                               controller.postsDataList![index].postId,
                                     Auth().currentUser!.uid),
                                 builder: (context, snapshot) {
                                   return NftProductSlider(
