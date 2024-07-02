@@ -30,9 +30,10 @@ Future<AssetMetaResponse?> fetchAssetMeta(String asset_id) async {
   print("Hex string: $hexStr");
 
   // Make the GET request
-  String url = kDebugMode
-      ? ''
-      : 'https://$restHost/v1/taproot-assets/assets/meta/asset-id/$hexStr';
+  String url = 'https://$restHost/v1/taproot-assets/assets/meta/asset-id/$hexStr';
+  // String url = kDebugMode
+  //     ? ''
+  //     : 'https://$restHost/v1/taproot-assets/assets/meta/asset-id/$hexStr';
   try {
     final DioClient dioClient = Get.find<DioClient>();
     var response = await dioClient.get(url: url, headers: headers);

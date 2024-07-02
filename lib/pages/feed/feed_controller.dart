@@ -104,6 +104,11 @@ class FeedController extends GetxController
       'Assets',
     ),
     WalletCategory(
+      'assets/images/paper_wallet.png',
+      'Tokens',
+      'Tokens',
+    ),
+    WalletCategory(
       'assets/images/bitcoin.png',
       'Bitcoin',
       'Bitcoin',
@@ -112,11 +117,6 @@ class FeedController extends GetxController
       'assets/images/friends.png',
       'People',
       'People',
-    ),
-    WalletCategory(
-      'assets/images/new_chat.png',
-      'Groups',
-      'Groups',
     ),
     WalletCategory(
       'assets/marketplace/ActiveHeart.png',

@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class CenterWidgetIcon extends StatelessWidget {
@@ -17,23 +18,24 @@ class CenterWidgetIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
     return Obx(() {
-      return IconButton(
-        enableFeedback: false,
-        splashColor: Colors.transparent,
-        icon: Icon(
-          iconData,
-          size: AppTheme.iconSize,
-          color: Theme.of(context).brightness == Brightness.light
-              ? AppTheme.black60
-              : AppTheme.white60,
-        ),
-        onPressed: onTap,
-        color: controller.currentview.value == index
-            ? Theme.of(context).colorScheme.onSecondaryContainer
-            : Theme.of(context)
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: AppTheme.cardPadding * 3.5.w,
+          height: AppTheme.cardPadding * 1.75.h,
+          child: Icon(
+            iconData,
+            size: AppTheme.iconSize,
+            color: controller.currentview.value == index
+                ? Theme.of(context).colorScheme.onSecondaryContainer
+                : Theme.of(context)
                 .colorScheme
                 .onSecondaryContainer
                 .withOpacity(0.3),
+          ),
+        ),
+
+
       );
     });
   }
