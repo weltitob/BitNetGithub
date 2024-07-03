@@ -57,12 +57,12 @@ class _CommonHeadingState extends State<CommonHeading> {
               ),
               widget.hasButton
                   ? RoundedButtonWidget(
-                    size: AppTheme.cardPadding * 1.25,
-                          buttonType: ButtonType.transparent,
-                    onTap:() =>                         context.pushNamed(widget.onPress)
-,
-iconData: widget.customButtonIcon,
-                  )
+                      size: AppTheme.cardPadding * 1.25,
+                      buttonType: ButtonType.transparent,
+                      iconColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                      onTap: () => context.pushNamed(widget.onPress),
+                      iconData: widget.customButtonIcon,
+                    )
                   : Container(),
               widget.collapseBtn
                   ? GestureDetector(
