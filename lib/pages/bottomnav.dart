@@ -80,7 +80,6 @@ class _BottomNavState extends State<BottomNav>
       var data = await settingsCollection
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .get();
-      print(data.data());
       ThemeController.of(context).setThemeMode(ThemeMode.values
               .singleWhereOrNull(
                   (value) => value.name == data.data()?['theme_mode']) ??
@@ -154,9 +153,9 @@ class _BottomNavState extends State<BottomNav>
     return Scaffold(
         resizeToAvoidBottomInset: false, // Add this line
         bottomNavigationBar: !(MediaQuery.of(context).viewInsets.bottom == 0) ? Container(height: 0, width: 0): Container(
-            color: Theme.of(context).brightness == Brightness.light
-                ? lighten(Theme.of(context).colorScheme.primaryContainer, 50)
-                : darken(Theme.of(context).colorScheme.primaryContainer, 80),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? lighten(Theme.of(context).colorScheme.primaryContainer, 50)
+                  : darken(Theme.of(context).colorScheme.primaryContainer, 80),
             padding: const EdgeInsets.only(
                 top: 3,
                 left: AppTheme.cardPadding,

@@ -26,6 +26,9 @@ Future<List<Asset>> listTaprootAssets() async {
   // Make the GET request
   // String url = kDebugMode ? '' : 'https://$restHost/v1/taproot-assets/assets';
   String url = 'https://$restHost/v1/taproot-assets/assets';
+  // String url = 
+  // // kDebugMode ? '' : 
+  // 'https://$restHost/v1/taproot-assets/assets';
   try {
     final DioClient dioClient = Get.find<DioClient>();
     var response = await dioClient.get(url: url, headers: headers);

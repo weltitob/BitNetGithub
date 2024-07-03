@@ -1,92 +1,88 @@
-import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/burnasset.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 
 class PostHeader extends StatelessWidget {
   final String ownerId;
   final String postId;
 
-  const PostHeader({required this.ownerId, required this.postId})
-      : super();
+  const PostHeader({required this.ownerId, required this.postId}) : super();
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.all(0.0),
-      leading: Avatar(
-        profileId: ownerId,
-        mxContent: Uri.parse(''),
-        size: AppTheme.cardPadding * 2,
-        fontSize: 18,
-        onTap: () {},
-      ),
-      title: GestureDetector(
-        onTap: () {},
-        child: Container(
-          width: AppTheme.elementSpacing * 8.w,
-          child: Text(
-            '@${ownerId}',
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleLarge,
+        contentPadding: EdgeInsets.all(0.0),
+        leading: Avatar(
+          profileId: ownerId,
+          mxContent: Uri.parse(''),
+          size: AppTheme.cardPadding * 2,
+          fontSize: 18,
+          onTap: () {},
+        ),
+        title: GestureDetector(
+          onTap: () {},
+          child: Container(
+            width: AppTheme.elementSpacing * 8.w,
+            child: Text(
+              '@${ownerId}',
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
         ),
-      ),
-      subtitle: Container(
-        width: AppTheme.elementSpacing * 6.w,
-        child: Text(
-          postId  ,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.bodySmall,
+        subtitle: Container(
+          width: AppTheme.elementSpacing * 6.w,
+          child: Text(
+            postId,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ),
-      ),
-      trailing: IconButton(
-        onPressed: () {
-          BitNetBottomSheet(
+        trailing: IconButton(
+          onPressed: () {
+            BitNetBottomSheet(
               context: context,
               child: bitnetScaffold(
                   extendBodyBehindAppBar: true,
                   appBar: bitnetAppBar(
-                    text: "Do you want to delte this post?",
+                    text: "Do you want to delete this post?",
                     context: context,
                   ),
                   body: Container(
                     child: Column(
                       children: [
-                        SizedBox(height: AppTheme.cardPadding*4.h),
+                        SizedBox(height: AppTheme.cardPadding * 4.h),
                         LongButtonWidget(
                             title: "Yes, delete this asset permanently.",
-                            onTap: (){
+                            onTap: () {
                               deletePost(ownerId, postId);
                               Navigator.pop(context);
                             }),
-                        SizedBox(height: AppTheme.cardPadding.h,),
+                        SizedBox(
+                          height: AppTheme.cardPadding.h,
+                        ),
                         LongButtonWidget(
                             title: "No, keep this asset.",
-                            onTap: (){
+                            onTap: () {
                               Navigator.pop(context);
                             }),
                       ],
                     ),
-                  ), context: context),
-          );
-        },
-        icon: Icon(
-          Icons.more_vert,
-          color: Colors.white,
-        ),));
+                  ),
+                  context: context),
+            );
+          },
+          icon: Icon(
+            Icons.more_vert,
+            color: Colors.white,
+          ),
+        ));
   }
 }
 //
@@ -224,7 +220,6 @@ deletePost(ownerId, postId) async {
 
   print("Response from burnAsset: $responseAssetBurn");
   // //delete the Post itself
-
 
   // //delte the Post itself
   // postsCollection

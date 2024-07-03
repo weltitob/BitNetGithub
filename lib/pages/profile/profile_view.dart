@@ -14,7 +14,6 @@ import 'package:go_router/go_router.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class ProfileView extends StatefulWidget {
-
   const ProfileView({Key? key}) : super(key: key);
 
   @override
@@ -37,7 +36,9 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void _scrollListener() {
-    if (controller.scrollController.position.pixels == controller.scrollController.position.maxScrollExtent && !controller.assetsLoading) {
+    if (controller.scrollController.position.pixels ==
+            controller.scrollController.position.maxScrollExtent &&
+        !controller.assetsLoading) {
       _loadMoreData();
     }
   }
@@ -52,7 +53,7 @@ class _ProfileViewState extends State<ProfileView> {
       await controller.loadMoreAssets();
 
       setState(() {
-        controller.assetsLoading  = false;
+        controller.assetsLoading = false;
       });
     }
   }
@@ -61,20 +62,20 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     // final myuser = Auth().currentUser!.uid;
     return Obx(
-          () => bitnetScaffold(
+      () => bitnetScaffold(
         context: context,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: controller.isUserLoading.value
             ? Center(child: dotProgress(context))
             : ListView(
-          controller: controller.scrollController,
-          children: [
-            ProfileHeader(),
-            Obx(() {
-              return controller.pages[controller.currentview.value];
-            }),
-          ],
-        ),
+                controller: controller.scrollController,
+                children: [
+                  ProfileHeader(),
+                  Obx(() {
+                    return controller.pages[controller.currentview.value];
+                  }),
+                ],
+              ),
         floatingActionButton: Align(
           alignment: Alignment.bottomCenter,
           child: LongButtonWidget(
@@ -83,7 +84,9 @@ class _ProfileViewState extends State<ProfileView> {
             customWidth: AppTheme.cardPadding * 4,
             leadingIcon: Icon(
               Icons.add,
-              color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? AppTheme.black60
+                  : AppTheme.white60,
             ),
             title: 'Add',
             onTap: () {
@@ -116,7 +119,9 @@ class _ProfileViewState extends State<ProfileView> {
                 SizedBox(height: AppTheme.cardPadding * 4),
                 Container(
                   margin: EdgeInsets.all(AppTheme.cardPadding),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusSmall),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: AppTheme.cardRadiusSmall),
                   child: Padding(
                     padding: const EdgeInsets.all(AppTheme.elementSpacing),
                     child: PrettyQr(
