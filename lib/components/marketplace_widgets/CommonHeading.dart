@@ -59,7 +59,8 @@ class _CommonHeadingState extends State<CommonHeading> {
                   ? RoundedButtonWidget(
                       size: AppTheme.cardPadding * 1.25,
                       buttonType: ButtonType.transparent,
-                      iconColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                      iconColor:
+                          Theme.of(context).colorScheme.onPrimaryContainer,
                       onTap: () => context.pushNamed(widget.onPress),
                       iconData: widget.customButtonIcon,
                     )
