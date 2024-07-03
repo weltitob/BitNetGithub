@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -51,8 +52,20 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     });
     initMatrix();
     initLoadingDialog();
-    InternetPopup().initialize(context: context);
-   }
+    InternetPopup().initializeCustomWidget(
+      context: context,
+      widget: FutureBuilder(
+          future: Future.delayed(Duration(milliseconds: 100)),
+          builder: (context, snapshot) {
+            print(snapshot.data);
+             showOverlayInternet(context, 'No Internet Connection',
+                color: AppTheme.errorColor);
+            
+
+            return SizedBox();
+          }),
+    );
+  }
 
   void initMatrix() {
     // Display the app lock
@@ -126,7 +139,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
                   .toString()
                   .contains('website'))
           ? WebBuilder(widget: widget)
-          :   widget.child,
+          : widget.child,
     );
   }
 }
