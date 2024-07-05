@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/center_widget_icon.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class CenterWidget extends StatelessWidget {
       bottom: AppTheme.cardPadding,
       child: Container(
         height: AppTheme.cardPadding * 1.75,
-        width: AppTheme.cardPadding * 10,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusBigger,
           boxShadow: [AppTheme.boxShadowProfile],
@@ -24,32 +25,38 @@ class CenterWidget extends StatelessWidget {
           borderThickness: 1.5, // remove border if not active
           blur: 50,
           opacity: 0.1,
-          borderRadius: AppTheme.cardRadiusBigger,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              CenterWidgetIcon(
-                iconData: Icons.table_rows_rounded,
-                index: 0,
-                onTap: () {
-                  controller.currentview.value = 0;
-                },
-              ),
-              CenterWidgetIcon(
-                iconData: Icons.view_column_rounded,
-                index: 1,
-                onTap: () {
-                  controller.currentview.value = 1;
-                },
-              ), 
-              CenterWidgetIcon(
-                iconData: Icons.edit,
-                index: 2,
-                onTap: () {
-                  controller.currentview.value = 2;
-                },
-              ),
-            ],
+          borderRadius: BorderRadius.only(
+            bottomLeft: AppTheme.cornerRadiusMid,
+            bottomRight: AppTheme.cornerRadiusMid,
+          ),
+          child: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CenterWidgetIcon(
+                  iconData: Icons.table_rows_rounded,
+                  index: 0,
+                  onTap: () {
+                    controller.currentview.value = 0;
+                  },
+                ),
+                CenterWidgetIcon(
+                  iconData: Icons.view_column_rounded,
+                  index: 1,
+                  onTap: () {
+                    controller.currentview.value = 1;
+                  },
+                ),
+                CenterWidgetIcon(
+                  iconData: Icons.edit,
+                  index: 2,
+                  onTap: () {
+                    controller.currentview.value = 2;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

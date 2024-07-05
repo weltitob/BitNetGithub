@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
@@ -63,6 +65,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();
+
   if (!kIsWeb) {
     Stripe.publishableKey = AppTheme.stripeLiveKey;
     await Stripe.instance.applySettings();
@@ -70,15 +73,15 @@ Future<void> main() async {
   await LocalStorage.instance.initStorage();
   await Firebase.initializeApp(
     options: FirebaseOptions(
-      apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
-      //authDomain: '...',
-      //appId von firebase ist iwie für ios und android unterschiedlich
-      appId: '466393582939',
-      messagingSenderId: '01',
-      projectId: 'bitnet-cb34f',
-      storageBucket: 'bitnet-cb34f.appspot.com'
-      // ... other options
-    ),
+        apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
+        //authDomain: '...',
+        //appId von firebase ist iwie für ios und android unterschiedlich
+        appId: '466393582939',
+        messagingSenderId: '01',
+        projectId: 'bitnet-cb34f',
+        storageBucket: 'bitnet-cb34f.appspot.com'
+        // ... other options
+        ),
   );
 
   await FirebaseAppCheck.instance.activate(
@@ -89,24 +92,23 @@ Future<void> main() async {
   );
 
   Get.put(LoggerService(), permanent: true);
-  Get.put(DioClient(), permanent:    true);
+  Get.put(DioClient(), permanent: true);
   Get.put(SettingsController());
   Get.put(TransactionController());
-
   // Run the app
   runApp(
     PlatformInfos.isMobile
         ? AppLock(
             builder: (args) =>
                 //matrix_chat_app.dart apply later
-                  MyApp(),
+                MyApp(),
             lockScreen: const LockScreen(),
             enabled: false,
           )
         : const MyApp(),
   );
 }
- 
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -114,9 +116,10 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  // GlobalKey _streamKey = GlobalKey(debugLabel: "");
+class _MyAppState extends State<MyApp> { 
   static bool _isHiveInitialized = false;
+ 
+
   static Future<void> _initializeHive() async {
     if (!_isHiveInitialized) {
       if (PlatformInfos.isLinux) {
@@ -132,11 +135,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     PhotoManager.clearFileCache();
-    super.initState();
-    // _initializeHive();
+    super.initState(); 
   }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -168,38 +170,39 @@ class _MyAppState extends State<MyApp> {
                 // ChangeNotifierProvider<BalanceHideProvider>(
                 //   create: (context) => BalanceHideProvider(),
                 // ),
-                              ChangeNotifierProvider<CurrencyTypeProvider>(
-                  create: (context) => CurrencyTypeProvider()),
- ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
-                update: (context, currencyChangeProvider, bitcoinPriceStream) {
-                  if (bitcoinPriceStream == null ||
-                      bitcoinPriceStream.localCurrency !=
-                          currencyChangeProvider.selectedCurrency) {
-                    bitcoinPriceStream?.dispose();
-                    final newStream = BitcoinPriceStream();
-                    newStream.updateCurrency(
-                        currencyChangeProvider.selectedCurrency ?? 'usd');
-                    newStream.priceStream.asBroadcastStream().listen((data) {
+                ChangeNotifierProvider<CurrencyTypeProvider>(
+                    create: (context) => CurrencyTypeProvider()),
+                ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
+                  update:
+                      (context, currencyChangeProvider, bitcoinPriceStream) {
+                    if (bitcoinPriceStream == null ||
+                        bitcoinPriceStream.localCurrency !=
+                            currencyChangeProvider.selectedCurrency) {
+                      bitcoinPriceStream?.dispose();
+                      final newStream = BitcoinPriceStream();
+                      newStream.updateCurrency(
+                          currencyChangeProvider.selectedCurrency ?? 'usd');
+                      newStream.priceStream.asBroadcastStream().listen((data) {
+                        Get.find<WalletsController>().chartLines.value = data;
+                      });
+                      return newStream;
+                    }
+                    bitcoinPriceStream.priceStream
+                        .asBroadcastStream()
+                        .listen((data) {
                       Get.find<WalletsController>().chartLines.value = data;
                     });
-                    return newStream;
-                  }
-                  bitcoinPriceStream.priceStream
-                      .asBroadcastStream()
-                      .listen((data) {
-                    Get.find<WalletsController>().chartLines.value = data;
-                  });
-                  return bitcoinPriceStream;
-                },
-                dispose: (context, bitcoinPriceStream) =>
-                    bitcoinPriceStream.dispose(),
-              ),
+                    return bitcoinPriceStream;
+                  },
+                  dispose: (context, bitcoinPriceStream) =>
+                      bitcoinPriceStream.dispose(),
+                ),
               ],
               child: bTree.WidgetTree(),
             ),
           )
         : MultiProvider(
-            providers: [
+            providers: [ 
               ChangeNotifierProvider<CardChangeProvider>(
                   create: (context) => CardChangeProvider()),
               ChangeNotifierProvider<CurrencyTypeProvider>(
@@ -258,4 +261,4 @@ class _MyAppState extends State<MyApp> {
           );
   }
 }
-
+ 

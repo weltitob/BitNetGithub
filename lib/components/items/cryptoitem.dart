@@ -155,7 +155,7 @@ class _CryptoItemState extends State<CryptoItem> {
                       ),
                       SizedBox(width: AppTheme.elementSpacing.w / 1.75),
                       Container(
-                        margin: EdgeInsets.only(right: AppTheme.elementSpacing),
+                        margin: EdgeInsets.only(right: AppTheme.elementSpacing / 2),
                         width: AppTheme.cardPadding * 3.5.w,
                         color: Colors.transparent,
                         child: SfCartesianChart(

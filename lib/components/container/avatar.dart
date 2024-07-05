@@ -2,8 +2,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
-
 import 'package:bitnet/pages/matrix/widgets/mxc_image.dart';
 
 enum profilePictureType { none, lightning, onchain }
@@ -45,55 +43,58 @@ class Avatar extends StatelessWidget {
         mxContent.toString() == 'null';
 
     final textWidget = Center(
-      child:
-        Icon(Icons.person_2_rounded, size: size / 2, color: Colors.white,),
+      child: Icon(
+        Icons.person_2_rounded,
+        size: size / 2,
+        color: Colors.white,
+      ),
     );
+
     final borderRadius = BorderRadius.circular(size / 2.5);
 
     // Apply the orange gradient when profilePictureType is either onchain or lightning
     final isSpecialType = type == profilePictureType.onchain || type == profilePictureType.lightning;
-    //final containerColor = isSpecialType ? Colors.orange : (noPic ? name?.lightColorAvatar : Theme.of(context).secondaryHeaderColor);
-    final borderPadding =  isSpecialType ?  size / 30 : 0.0;
+    final borderPadding = isSpecialType ? size / 30 : 0.0;
 
-    final container = ClipRRect(
-      borderRadius: borderRadius,
-      child: Material(
+    final container = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
         borderRadius: borderRadius,
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-           gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                isSpecialType ? AppTheme.colorBitcoin : Theme.of(context).primaryColor,
-                isSpecialType ? AppTheme.colorPrimaryGradient : Theme.of(context).primaryColor,
-              ],
-            ),
-          ),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            isSpecialType ? AppTheme.colorBitcoin : Theme.of(context).primaryColor,
+            isSpecialType ? AppTheme.colorPrimaryGradient : Theme.of(context).primaryColor,
+          ],
+        ),
+      ),
+      child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular((size - borderPadding * 2) / 2.5),
           child: Container(
-            margin: EdgeInsets.all(borderPadding),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular((size - borderPadding * 2) / 2.5,)),
-              color: Theme.of(context).primaryColor,
-            ),
+            width: size - borderPadding * 1.5,
+            height: size - borderPadding * 1.5,
+            color: Theme.of(context).primaryColor, // Default color behind image
             child: noPic
                 ? textWidget
                 : MxcImage(
-                    key: Key(mxContent.toString()),
-                    uri: mxContent,
-                    fit: BoxFit.cover,
-                    width: size,
-                    height: size,
-                    placeholder: (_) => textWidget,
-                    cacheKey: mxContent.toString(),
-                  ),
+              key: Key(mxContent.toString()),
+              uri: mxContent,
+              fit: BoxFit.cover,
+              width: size,
+              height: size,
+              placeholder: (_) => textWidget,
+              cacheKey: mxContent.toString(),
+            ),
           ),
         ),
       ),
     );
+
     if (onTap == null) return container;
+
     return InkWell(
       onTap: onTap ?? () => context.go("/showprofile/:$profileId"),
       borderRadius: borderRadius,

@@ -1,4 +1,3 @@
-import 'package:animator/animator.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -15,9 +14,11 @@ import 'package:bitnet/components/post/components/textbuilder.dart';
 import 'package:bitnet/components/post/components/youtubemusicbuilder.dart';
 import 'package:bitnet/components/post/likespace.dart';
 import 'package:bitnet/components/post/post_header.dart';
+import 'package:bitnet/models/postmodels/media_model.dart';
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/models/postmodels/media_model.dart';
+import 'package:get/get.dart';
 
 class Post extends StatefulWidget {
   final String postId;
@@ -124,103 +125,110 @@ class _PostState extends State<Post> {
     isLiked = (rockets[currentUserId] == true);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
-      child: GlassContainer(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: AppTheme.elementSpacing,
-            right: AppTheme.elementSpacing,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              PostHeader(
-                ownerId: ownerId,
-                postId: postId,
-              ),
-              Text(
-                postName,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(height: AppTheme.elementSpacing * 1.5),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: medias.map((e) {
-                  final type = e.type;
-                  if (type == "text") {
+      child: GestureDetector(
+        onTap: () {
+          print('object');
+          final homeController = Get.find<HomeController>();
+          homeController.createClicks(postId);
+        },
+        child: GlassContainer(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: AppTheme.elementSpacing,
+              right: AppTheme.elementSpacing,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                PostHeader(
+                  ownerId: ownerId,
+                  postId: postId,
+                ),
+                Text(
+                  postName,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                SizedBox(height: AppTheme.elementSpacing * 1.5),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: medias.map((e) {
+                    final type = e.type;
+                    if (type == "text") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: TextBuilderNetwork(url: e.data));
+                    }
+                    if (type == "collection") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: CollectionBuilder(data: e.data));
+                    }
+                    if (type == "description") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: DescriptionBuilder(descirption: e.data));
+                    }
+                    if (type == "attributes") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: AttributesBuilder(attributes: e.data));
+                    }
+                    if (type == "spotify_url") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: SpotifyBuilder(spotifyUrl: e.data));
+                    }
+                    if (type == "youtubemusic_url") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: YoutubeMusicBuilder(youtubeUrl: e.data));
+                    }
+                    if (type == "deezer_url") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: DeezerBuilder(deezerUrl: e.data));
+                    }
+                    if (type == "applemusic_url") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: AppleMusicBuilder(applemusicUrl: e.data));
+                    }
+                    if (type == "external_link") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: LinkBuilder(url: 'haha'));
+                    }
+                    if (type == "image" || type == "camera") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: ImageBuilder(encodedData: e.data));
+                    }
+                    if (type == "image_data" || type == "camera") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: ImageBuilder(encodedData: e.data));
+                    }
+                    if (type == "audio") {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: AudioBuilderNetwork(url: e.data));
+                    }
+
                     return Container(
                         margin: EdgeInsets.only(bottom: 10.0),
                         child: TextBuilderNetwork(url: e.data));
-                  }
-                  if (type == "collection") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: CollectionBuilder(data: e.data));
-                  }
-                  if (type == "description") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: DescriptionBuilder(descirption: e.data));
-                  }
-                  if (type == "attributes") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: AttributesBuilder(attributes: e.data));
-                  }
-                  if (type == "spotify_url") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: SpotifyBuilder(spotifyUrl: e.data));
-                  }
-                  if (type == "youtubemusic_url") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: YoutubeMusicBuilder(youtubeUrl: e.data));
-                  }
-                  if (type == "deezer_url") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: DeezerBuilder(deezerUrl: e.data));
-                  }
-                  if (type == "applemusic_url") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: AppleMusicBuilder(applemusicUrl: e.data));
-                  }
-                  if (type == "external_link") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: LinkBuilder(url: 'haha'));
-                  }
-                  if (type == "image" || type == "camera") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: ImageBuilder(encodedData: e.data));
-                  }
-                  if (type == "image_data" || type == "camera") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: ImageBuilder(encodedData: e.data));
-                  }
-                  if (type == "audio") {
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: AudioBuilderNetwork(url: e.data));
-                  }
-
-                  return Container(
-                      margin: EdgeInsets.only(bottom: 10.0),
-                      child: TextBuilderNetwork(url: e.data));
-                }).toList(),
-              ),
-              SizedBox(height: AppTheme.elementSpacing),
-              buildLikeSpace(
-                  type: likeSpaceType.Post,
-                  targetId: postId,
-                  ownerId: ownerId,
-                  rockets: rockets),
-              SizedBox(height: AppTheme.elementSpacing),
-            ],
+                  }).toList(),
+                ),
+                SizedBox(height: AppTheme.elementSpacing),
+                buildLikeSpace(
+                    type: likeSpaceType.Post,
+                    targetId: postId,
+                    ownerId: ownerId,
+                    rockets: rockets),
+                SizedBox(height: AppTheme.elementSpacing),
+              ],
+            ),
           ),
         ),
       ),

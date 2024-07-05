@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:bitnet/models/firebase/postsDataModel.dart';
 import 'package:bitnet/models/mempool_models/bitcoin_data.dart';
 import 'package:bitnet/models/mempool_models/mempool_model.dart';
 import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
 import 'package:bitnet/models/mempool_models/txPaginationModel.dart';
 import 'package:bitnet/pages/transactions/model/transaction_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +63,7 @@ class HomeController extends BaseController {
   RxString highPriority = ''.obs;
   String baseUrl = 'https://mempool.space/api/';
   final GlobalKey containerKey = GlobalKey();
+  List<PostsDataModel>? postsDataList = [];
 
   @override
   void onInit() {
@@ -68,6 +72,12 @@ class HomeController extends BaseController {
   }
 
   allData() async {
+    // for (int i = 0; i < 3; i++) {
+    //   createPost(
+    //       true, true, true, 'nftName$i', 'nftMainName$i', 'cryptoText$i');
+    // }
+    postsDataList = await fetchPosts();
+
     socketLoading.value = true;
     await getWebSocketData();
     await getData();
@@ -482,6 +492,156 @@ class HomeController extends BaseController {
         DateTime.fromMicrosecondsSinceEpoch(millisecondsString);
     Duration difference = targetDate.difference(medianDate);
     return formatTimeAgo(targetDate);
+  }
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  Future<void> createPost(bool hasLiked, bool hasPrice, bool hasLikeButton,
+      String nftName, String nftMainName, String cryptoText) async {
+    try {
+      DocumentReference documentReference =
+          firestore.collection('postsNew').doc();
+      String postId = documentReference.id;
+      await documentReference.set({
+        'postId': postId,
+        'hasLiked': hasLiked,
+        'hasPrice': hasPrice,
+        'hasLikeButton': hasLikeButton,
+        'nftName': nftName,
+        'nftMainName': nftMainName,
+        'cryptoText': cryptoText,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+      });
+      print('Post added successfully!');
+    } catch (e) {
+      print('Error adding post: $e');
+    }
+  }
+
+  Future<List<PostsDataModel>?> fetchPosts() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await firestore.collection('postsNew').get();
+
+      return querySnapshot.docs
+          .map((doc) =>
+              PostsDataModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (e, tr) {
+      print(e);
+      print(tr);
+      return null;
+    }
+  }
+
+  Future<void> updateHasLiked(String docId, bool hasLiked) async {
+    try {
+      await firestore.collection('postsNew').doc(docId).update({
+        'hasLiked': hasLiked,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+      });
+      print('hasLiked updated successfully!');
+    } catch (e, tr) {
+      print('Error updating hasLiked: $e$tr');
+    }
+  }
+
+  Future<void> createLikes(String postId) async {
+    try {
+      DocumentReference documentReference =
+          firestore.collection('postsLike').doc();
+      String likeId = documentReference.id;
+      await documentReference.set({
+        'likeId': likeId,
+        'userId': Auth().currentUser!.uid,
+        'postId': postId,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+      });
+      print('likes added successfully!');
+    } catch (e) {
+      print('Error adding post: $e');
+    }
+  }
+
+  Future<void> deleteLikeByPostId(String postId) async {
+    try {
+      CollectionReference postsCollection = firestore.collection('postsLike');
+      QuerySnapshot postsSnapshot = await postsCollection.limit(1).get();
+      if (postsSnapshot.docs.isEmpty) {
+        print('The posts collection does not exist.');
+        return;
+      }
+      QuerySnapshot querySnapshot =
+          await postsCollection.where('postId', isEqualTo: postId).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentReference docRef = querySnapshot.docs.first.reference;
+        await docRef.delete();
+        print('likes deleted successfully!');
+      } else {
+        print('No likes found with the given postId.');
+      }
+    } catch (e) {
+      print('Error deleting post: $e');
+    }
+  }
+
+  Future<bool?> fetchHasLiked(String postId, String userId) async {
+    try {
+      QuerySnapshot collectionSnapshot =
+          await firestore.collection('postsLike').limit(1).get();
+      if (collectionSnapshot.docs.isEmpty) {
+        print('The postLikes collection does not exist.');
+        return false;
+      }
+
+      QuerySnapshot querySnapshot = await firestore
+          .collection('postsLike')
+          .where('postId', isEqualTo: postId)
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return true;
+      } else {
+        print('No matching document found.');
+        return false;
+      }
+    } catch (e) {
+      print('Error fetching hasLiked value: $e');
+      return false; // Handle the error as needed and return false
+    }
+  }
+
+  Future<void> createClicks(String postId) async {
+    //
+    try {
+      DocumentReference documentReference =
+          firestore.collection('postsClick').doc();
+      String clickId = documentReference.id;
+
+      QuerySnapshot querySnapshot = await firestore
+          .collection('postsClick')
+          .where('postId', isEqualTo: postId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentReference existingDocRef = querySnapshot.docs.first.reference;
+        await existingDocRef.update({
+          'createdAt': DateTime.now().millisecondsSinceEpoch,
+        });
+        return;
+      } else {
+        await documentReference.set({
+          'clickId': clickId,
+          'userId': Auth().currentUser!.uid,
+          'postId': postId,
+          'createdAt': DateTime.now().millisecondsSinceEpoch,
+        });
+      }
+    } catch (e) {
+      print('Error adding post: $e');
+    }
   }
 }
 

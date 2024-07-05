@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -60,7 +61,8 @@ class SearchReceiver extends GetWidget<SendsController> {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.6,
+                    margin: EdgeInsets.only(left: AppTheme.cardPadding),
+                  height: MediaQuery.of(context).size.height * 1,
                     width: 500,
                     child: ListView(
                       controller: controller.sendScrollerController,
@@ -71,13 +73,15 @@ class SearchReceiver extends GetWidget<SendsController> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
                         height: 125,
+                        child: HorizontalFadeListView(
                         child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: fakeUsers.length,
-                          itemBuilder: (context, i) {
-                            return UserSendWidget(user: fakeUsers[i]); 
-                          }),
-                      ),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: fakeUsers.length,
+                            itemBuilder: (context, i) {
+                              return UserSendWidget(user: fakeUsers[i]); 
+                            }),
+                        ),
+                    ),
                       //space
                                         SizedBox(height: AppTheme.cardPadding * 4),
                     
@@ -87,13 +91,15 @@ class SearchReceiver extends GetWidget<SendsController> {
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: 125,
+                        child: HorizontalFadeListView(
                         child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: fakeUsers.length,
-                          itemBuilder: (context, i) {
-                            return UserSendWidget(user: fakeUsers[9-i],); 
-                          }),
-                      ),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: fakeUsers.length,
+                            itemBuilder: (context, i) {
+                              return UserSendWidget(user: fakeUsers[9-i],); 
+                            }),
+                        ),
+                    ),
                       ]
                     ),
                   )

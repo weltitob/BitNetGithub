@@ -1,18 +1,22 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/MostView.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
+import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -23,284 +27,18 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     print("current width is :" + size.width.toString());
+    final controller = Get.find<HomeController>();
     return bitnetScaffold(
       body: Stack(
         children: [
           SingleChildScrollView(
             controller: ctrler,
-                    physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-
+            physics:
+                BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // SizedBox(
-                //   height: AppTheme.cardPadding * 0.1,
-                // ),
-                // CommonHeading(
-                //   hasButton: false,
-                //   headingText: 'Trending',
-                //   isNormalChild: true,
-                //   isChild: SizedBox(
-                //     height: 150.h,
-                //     child: ListView.builder(
-                //         scrollDirection: Axis.horizontal,
-                //         itemCount: 3,
-                //         itemBuilder: (context, index) {
-                //           return Padding(
-                //             padding: EdgeInsets.symmetric(horizontal: 10.w),
-                //             child: GlassContainer(
-                //               width: size.width - 200.w,
-                //               child: Padding(
-                //                 padding: EdgeInsets.symmetric(
-                //                   horizontal: 20.w,
-                //                   vertical: 10.h,
-                //                 ),
-                //                 child: Column(
-                //                   crossAxisAlignment: CrossAxisAlignment.start,
-                //                   children: [
-                //                     Row(
-                //                       crossAxisAlignment:
-                //                           CrossAxisAlignment.center,
-                //                       children: [
-                //                         Container(
-                //                           margin: EdgeInsets.only(top: 5),
-                //                           height: 30.h,
-                //                           width: 30.w,
-                //                           child: Image.asset(
-                //                               'assets/images/bitcoin.png'),
-                //                         ),
-                //                         SizedBox(
-                //                           width: 8.w,
-                //                         ),
-                //                         Text(
-                //                           L10n.of(context)!.bitcoin,
-                //                           style: AppTheme.textTheme.titleLarge,
-                //                         )
-                //                       ],
-                //                     ),
-                //                     SizedBox(
-                //                       height: 50.h,
-                //                       child: Container(
-                //                         margin: EdgeInsets.only(
-                //                             right: AppTheme.elementSpacing),
-                //                         width: AppTheme.cardPadding * 3.75.w,
-                //                         color: Colors.transparent,
-                //                         child: SfCartesianChart(
-                //                           enableAxisAnimation: true,
-                //                           plotAreaBorderWidth: 0,
-                //                           primaryXAxis: CategoryAxis(
-                //                               labelPlacement:
-                //                                   LabelPlacement.onTicks,
-                //                               edgeLabelPlacement:
-                //                                   EdgeLabelPlacement.none,
-                //                               isVisible: false,
-                //                               majorGridLines:
-                //                                   const MajorGridLines(
-                //                                       width: 0),
-                //                               majorTickLines:
-                //                                   const MajorTickLines(
-                //                                       width: 0)),
-                //                           primaryYAxis: NumericAxis(
-                //                             plotOffset: 0,
-                //                             edgeLabelPlacement:
-                //                                 EdgeLabelPlacement.none,
-                //                             isVisible: false,
-                //                             majorGridLines:
-                //                                 const MajorGridLines(width: 0),
-                //                             majorTickLines:
-                //                                 const MajorTickLines(width: 0),
-                //                           ),
-                //                           series: <ChartSeries>[
-                //                             LineSeries<ChartLine, double>(
-                //                               dataSource: [
-                //                                 ChartLine(time: 2, price: 3),
-                //                                 ChartLine(time: 3, price: 24),
-                //                                 ChartLine(time: 4, price: 5),
-                //                                 ChartLine(time: 3, price: 34),
-                //                                 ChartLine(time: 1, price: 4),
-                //                                 ChartLine(time: 1, price: 14),
-                //                                 ChartLine(time: 23, price: 23),
-                //                                 ChartLine(time: 5, price: 40),
-                //                                 ChartLine(time: 12, price: 13),
-                //                                 ChartLine(time: 42, price: 14),
-                //                                 ChartLine(time: 12, price: 34),
-                //                                 ChartLine(time: 12, price: 23),
-                //                               ],
-                //                               animationDuration: 0,
-                //                               xValueMapper:
-                //                                   (ChartLine crypto, _) =>
-                //                                       crypto.time,
-                //                               yValueMapper:
-                //                                   (ChartLine crypto, _) =>
-                //                                       crypto.price,
-                //                               color: AppTheme.errorColor,
-                //                             )
-                //                           ],
-                //                         ),
-                //                       ),
-                //                     ),
-                //                     Row(
-                //                       mainAxisAlignment:
-                //                           MainAxisAlignment.start,
-                //                       children: [
-                //                         Icon(
-                //                           Icons.arrow_upward,
-                //                           color: Colors.green,
-                //                           size: 20,
-                //                         ),
-                //                         SizedBox(
-                //                           width: 5.w,
-                //                         ),
-                //                         Text(
-                //                           '5.2%',
-                //                           style: AppTheme.textTheme.titleMedium,
-                //                         )
-                //                       ],
-                //                     ),
-                //                     Text(
-                //                       '2.224232',
-                //                       style: AppTheme.textTheme.titleLarge,
-                //                     )
-                //                   ],
-                //                 ),
-                //               ),
-                //             ),
-                //           );
-                //         }),
-                //   ),
-                // ),
-                // SizedBox(height: 10.h,),
-                // CommonHeading(
-                //   hasButton: false,
-                //   headingText: 'Top 5 by Market Cap',
-                //   isNormalChild: true,
-                //   isChild: Column(
-                //     children: [
-                //       TopFiveMarketCapWidget(),
-                //       TopFiveMarketCapWidget(),
-                //       TopFiveMarketCapWidget(),
-                //       TopFiveMarketCapWidget(),
-                //     ],
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 10.h,
-                // ),
-                //  CommonHeading(
-                //   hasButton: false,
-                //   headingText: 'Total Market Cap Today',
-                //   isNormalChild: true,
-                //   isChild: SizedBox(
-                //     height: 120.h,
-                //     child: ListView.builder(
-                //         scrollDirection: Axis.horizontal,
-                //         itemCount: 3,
-                //         itemBuilder: (context, index) {
-                //           return Padding(
-                //             padding: EdgeInsets.symmetric(horizontal: 10.w),
-                //             child: GlassContainer(
-                //               width: size.width - 230.w,
-                //               child: Padding(
-                //                 padding: EdgeInsets.symmetric(
-                //                   horizontal: 20.w,
-                //                   vertical: 10.h,
-                //                 ),
-                //                 child: Column(
-                //                   crossAxisAlignment: CrossAxisAlignment.start,
-                //                   children: [
-                //                      Text(
-                //                        '5.22334%',
-                //                        style: AppTheme.textTheme.displaySmall,
-                //                      ),
-                //                     SizedBox(
-                //                       height: 50.h,
-                //                       child: Container(
-                //                         margin: EdgeInsets.only(
-                //                             right: AppTheme.elementSpacing),
-                //                         width: AppTheme.cardPadding * 3.75.w,
-                //                         color: Colors.transparent,
-                //                         child: SfCartesianChart(
-                //                           enableAxisAnimation: true,
-                //                           plotAreaBorderWidth: 0,
-                //                           primaryXAxis: CategoryAxis(
-                //                               labelPlacement:
-                //                                   LabelPlacement.onTicks,
-                //                               edgeLabelPlacement:
-                //                                   EdgeLabelPlacement.none,
-                //                               isVisible: false,
-                //                               majorGridLines:
-                //                                   const MajorGridLines(
-                //                                       width: 0),
-                //                               majorTickLines:
-                //                                   const MajorTickLines(
-                //                                       width: 0)),
-                //                           primaryYAxis: NumericAxis(
-                //                             plotOffset: 0,
-                //                             edgeLabelPlacement:
-                //                                 EdgeLabelPlacement.none,
-                //                             isVisible: false,
-                //                             majorGridLines:
-                //                                 const MajorGridLines(width: 0),
-                //                             majorTickLines:
-                //                                 const MajorTickLines(width: 0),
-                //                           ),
-                //                           series: <ChartSeries>[
-                //                             LineSeries<ChartLine, double>(
-                //                               dataSource: [
-                //                                 ChartLine(time: 2, price: 3),
-                //                                 ChartLine(time: 3, price: 24),
-                //                                 ChartLine(time: 4, price: 5),
-                //                                 ChartLine(time: 3, price: 34),
-                //                                 ChartLine(time: 1, price: 4),
-                //                                 ChartLine(time: 1, price: 14),
-                //                                 ChartLine(time: 23, price: 23),
-                //                                 ChartLine(time: 5, price: 40),
-                //                                 ChartLine(time: 12, price: 13),
-                //                                 ChartLine(time: 42, price: 14),
-                //                                 ChartLine(time: 12, price: 34),
-                //                                 ChartLine(time: 12, price: 23),
-                //                               ],
-                //                               animationDuration: 0,
-                //                               xValueMapper:
-                //                                   (ChartLine crypto, _) =>
-                //                                       crypto.time,
-                //                               yValueMapper:
-                //                                   (ChartLine crypto, _) =>
-                //                                       crypto.price,
-                //                               color: AppTheme.errorColor,
-                //                             )
-                //                           ],
-                //                         ),
-                //                       ),
-                //                     ),
-                //
-                //                      Row(
-                //                       mainAxisAlignment:
-                //                           MainAxisAlignment.start,
-                //                       children: [
-                //                         Icon(
-                //                           Icons.arrow_upward,
-                //                           color: Colors.green,
-                //                           size: 20,
-                //                         ),
-                //                         SizedBox(
-                //                           width: 5.w,
-                //                         ),
-                //                         Text(
-                //                           '5.2%',
-                //                           style: AppTheme.textTheme.titleMedium,
-                //                         )
-                //                       ],
-                //                     ),
-                //                   ],
-                //                 ),
-                //               ),
-                //             ),
-                //           );
-                //         }),
-                //   ),
-                // ),
-                //
+
                 CommonHeading(
                   hasButton: false,
                   headingText: '',
@@ -316,16 +54,33 @@ class HomeScreen extends StatelessWidget {
                           viewportFraction: 0.6,
                           enlargeCenterPage: true,
                           height: 244.w),
-                      itemCount: nftHotProductSliderData.length,
+                      itemCount: controller.postsDataList?.length,
                       itemBuilder: (context, index, index2) {
-                        return NftProductSlider(
-                          hasLikeButton: true,
-                          hasPrice: true,
-                          nftName: nftHotProductSliderData[index].nftName,
-                          nftMainName:
-                              nftHotProductSliderData[index].nftMainName,
-                          cryptoText: nftHotProductSliderData[index].cryptoText,
-                        );
+                        return controller.postsDataList == null
+                            ? dotProgress(context)
+                            : FutureBuilder(
+                                future: controller.fetchHasLiked(
+                               controller.postsDataList![index].postId,
+                                    Auth().currentUser!.uid),
+                                builder: (context, snapshot) {
+                                  return NftProductSlider(
+                                    postId:
+                                        controller.postsDataList![index].postId,
+                                    hasLiked: snapshot.data == null
+                                        ? false
+                                        : snapshot.data!,
+                                    hasLikeButton: controller
+                                        .postsDataList![index].hasLikeButton,
+                                    hasPrice: controller
+                                        .postsDataList![index].hasPrice,
+                                    nftName: controller
+                                        .postsDataList![index].nftName,
+                                    nftMainName: controller
+                                        .postsDataList![index].nftMainName,
+                                    cryptoText: controller
+                                        .postsDataList![index].cryptoText,
+                                  );
+                                });
                       },
                     ),
                   ),

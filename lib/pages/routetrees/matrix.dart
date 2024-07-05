@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/pages/routetrees/routes.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:internet_popup/internet_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -47,11 +47,24 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    (widget.child as Router).routeInformationProvider!.addListener((){
-      setState((){});
+    (widget.child as Router).routeInformationProvider!.addListener(() {
+      setState(() {});
     });
     initMatrix();
     initLoadingDialog();
+    InternetPopup().initializeCustomWidget(
+      context: context,
+      widget: FutureBuilder(
+          future: Future.delayed(Duration(milliseconds: 100)),
+          builder: (context, snapshot) {
+            print(snapshot.data);
+             showOverlayInternet(context, 'No Internet Connection',
+                color: AppTheme.errorColor);
+            
+
+            return SizedBox();
+          }),
+    );
   }
 
   void initMatrix() {
@@ -109,10 +122,24 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    bool shouldBeBuilder = kIsWeb && !(widget.child as Router).routeInformationProvider!.value.uri.toString().contains('website');
+    bool shouldBeBuilder = kIsWeb &&
+        !(widget.child as Router)
+            .routeInformationProvider!
+            .value
+            .uri
+            .toString()
+            .contains('website');
     return Provider(
       create: (_) => this,
-      child:(kIsWeb && !(widget.child as Router).routeInformationProvider!.value.uri.toString().contains('website')) ? WebBuilder(widget: widget): widget.child,
+      child: (kIsWeb &&
+              !(widget.child as Router)
+                  .routeInformationProvider!
+                  .value
+                  .uri
+                  .toString()
+                  .contains('website'))
+          ? WebBuilder(widget: widget)
+          : widget.child,
     );
   }
 }
@@ -128,43 +155,41 @@ class WebBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: cloneMediaQueryWithSize(MediaQueryData.fromView(View.of(context)),Size(375, 812) 
-      ),
+      data: cloneMediaQueryWithSize(
+          MediaQueryData.fromView(View.of(context)), Size(375, 812)),
       child: Container(
           width: double.infinity,
-        height: double.infinity, 
-        decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Theme.of(context).brightness == Brightness.light
-                          ? lighten(
-                              Theme.of(context).colorScheme.primaryContainer, 50)
-                          : darken(
-                              Theme.of(context).colorScheme.primaryContainer, 80),
-                      Theme.of(context).brightness == Brightness.light
-                          ? lighten(
-                              Theme.of(context).colorScheme.tertiaryContainer, 50)
-                          : darken(
-                              Theme.of(context).colorScheme.tertiaryContainer,
-                          80),
-                    ],
-                  ),
-                ),
-        
-        
-        child: ClipRRect(child: Center(child: SizedBox(width: 375, child: widget.child)))),
+          height: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Theme.of(context).brightness == Brightness.light
+                    ? lighten(
+                        Theme.of(context).colorScheme.primaryContainer, 50)
+                    : darken(
+                        Theme.of(context).colorScheme.primaryContainer, 80),
+                Theme.of(context).brightness == Brightness.light
+                    ? lighten(
+                        Theme.of(context).colorScheme.tertiaryContainer, 50)
+                    : darken(
+                        Theme.of(context).colorScheme.tertiaryContainer, 80),
+              ],
+            ),
+          ),
+          child: ClipRRect(
+              child: Center(child: SizedBox(width: 375, child: widget.child)))),
     );
   }
 
   MediaQueryData cloneMediaQueryWithSize(MediaQueryData data, Size size) {
     return MediaQueryData(
-      size:size,
+      size: size,
       devicePixelRatio: data.devicePixelRatio,
-      textScaler: data.textScaler ,
-      platformBrightness:data.platformBrightness ,
-      padding: data.padding ,
+      textScaler: data.textScaler,
+      platformBrightness: data.platformBrightness,
+      padding: data.padding,
       viewInsets: data.viewInsets,
       systemGestureInsets: data.systemGestureInsets,
       viewPadding: data.viewPadding,
@@ -176,11 +201,8 @@ class WebBuilder extends StatelessWidget {
       disableAnimations: data.disableAnimations,
       boldText: data.boldText,
       navigationMode: data.navigationMode,
-      gestureSettings:data.gestureSettings ,
-      displayFeatures:data.displayFeatures ,
+      gestureSettings: data.gestureSettings,
+      displayFeatures: data.displayFeatures,
     );
   }
-
-  
 }
-

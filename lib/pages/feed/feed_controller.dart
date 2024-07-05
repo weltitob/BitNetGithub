@@ -59,7 +59,6 @@ class FeedController extends GetxController
         context.push('/single_transaction');
       }
       if (query.isNotEmpty && query.startsWith('00')) {
-        print(query);
         homeController.blockHeight =
             await homeController.getDataHeightHash(query);
         context.push('/wallet/bitcoinscreen/mempool');
@@ -105,6 +104,11 @@ class FeedController extends GetxController
       'Assets',
     ),
     WalletCategory(
+      'assets/images/paper_wallet.png',
+      'Tokens',
+      'Tokens',
+    ),
+    WalletCategory(
       'assets/images/bitcoin.png',
       'Bitcoin',
       'Bitcoin',
@@ -113,11 +117,6 @@ class FeedController extends GetxController
       'assets/images/friends.png',
       'People',
       'People',
-    ),
-    WalletCategory(
-      'assets/images/new_chat.png',
-      'Groups',
-      'Groups',
     ),
     WalletCategory(
       'assets/marketplace/ActiveHeart.png',
