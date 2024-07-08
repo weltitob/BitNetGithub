@@ -118,11 +118,11 @@ class _BottomNavState extends State<BottomNav>
 
   void _onItemTapped(int index, ScrollController controller) {
     setState(() {
-      if(index == _selectedIndex) {
-        controller.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+      if (index == _selectedIndex) {
+        controller.animateTo(0,
+            duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
       } else {
-      _selectedIndex = index;
-
+        _selectedIndex = index;
       }
     });
   }
@@ -152,69 +152,78 @@ class _BottomNavState extends State<BottomNav>
 
     return Scaffold(
         resizeToAvoidBottomInset: false, // Add this line
-        bottomNavigationBar: !(MediaQuery.of(context).viewInsets.bottom == 0) ? Container(height: 0, width: 0): Container(
-              color: Theme.of(context).brightness == Brightness.light
-                  ? lighten(Theme.of(context).colorScheme.primaryContainer, 50)
-                  : darken(Theme.of(context).colorScheme.primaryContainer, 80),
-            padding: const EdgeInsets.only(
-                top: 3,
-                left: AppTheme.cardPadding,
-                right: AppTheme.cardPadding,
-                bottom: AppTheme.elementSpacing),
-            child: GlassContainer(
-              child: Theme(
-                data: Theme.of(context).copyWith(
-                  shadowColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                ),
-                child: BottomNavigationBar(
-                  enableFeedback: false,
-                  selectedIconTheme: IconThemeData(
-                    size: 25.sp,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+        bottomNavigationBar: !(MediaQuery.of(context).viewInsets.bottom == 0)
+            ? Container(height: 0, width: 0)
+            : Container(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? lighten(
+                        Theme.of(context).colorScheme.primaryContainer, 50)
+                    : darken(
+                        Theme.of(context).colorScheme.primaryContainer, 80),
+                padding: const EdgeInsets.only(
+                    top: 3,
+                    left: AppTheme.cardPadding,
+                    right: AppTheme.cardPadding,
+                    bottom: AppTheme.elementSpacing),
+                child: GlassContainer(
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      shadowColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                    ),
+                    child: BottomNavigationBar(
+                      enableFeedback: false,
+                      selectedIconTheme: IconThemeData(
+                        size: 25.sp,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                      //fixedColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.green,
+                      useLegacyColorScheme: false,
+                      items: const <BottomNavigationBarItem>[
+                        BottomNavigationBarItem(
+                          icon: Icon(FontAwesomeIcons.fire),
+                          label: '',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(FontAwesomeIcons.wallet),
+                          label: '',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(FontAwesomeIcons.userAstronaut),
+                          label: '',
+                        ),
+                      ],
+                      type: BottomNavigationBarType.fixed,
+                      backgroundColor: Colors.transparent,
+                      currentIndex: _selectedIndex,
+                      selectedItemColor:
+                          Theme.of(context).colorScheme.onPrimaryContainer,
+                      unselectedItemColor: Theme.of(context)
+                          .colorScheme
+                          .onPrimaryContainer
+                          .withOpacity(0.5),
+                      showSelectedLabels: false,
+                      showUnselectedLabels: false,
+                      onTap: (i) {
+                        switch (i) {
+                          case 0:
+                            _onItemTapped(
+                                i,
+                                Get.find<FeedController>()
+                                    .scrollControllerColumn);
+                          case 1:
+                            _onItemTapped(i,
+                                Get.find<WalletsController>().scrollController);
+                          case 2:
+                            _onItemTapped(i,
+                                Get.find<ProfileController>().scrollController);
+                        }
+                      },
+                      elevation: 0, // Box-Shadow entfernen
+                    ),
                   ),
-                  //fixedColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.green,
-                  useLegacyColorScheme: false,
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(FontAwesomeIcons.fire),
-                      label: '',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(FontAwesomeIcons.wallet),
-                      label: '',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(FontAwesomeIcons.userAstronaut),
-                      label: '',
-                    ),
-                  ],
-                  type: BottomNavigationBarType.fixed,
-                  backgroundColor: Colors.transparent,
-                  currentIndex: _selectedIndex,
-                  selectedItemColor:
-                      Theme.of(context).colorScheme.onPrimaryContainer,
-                  unselectedItemColor: Theme.of(context)
-                      .colorScheme
-                      .onPrimaryContainer
-                      .withOpacity(0.5),
-                  showSelectedLabels: false,
-                  showUnselectedLabels: false,
-                  onTap: (i) {
-                    switch(i){
-                      case 0: 
-                        _onItemTapped(i, Get.find<FeedController>().scrollControllerColumn);
-                      case 1:
-                        _onItemTapped(i, Get.find<WalletsController>().scrollController);
-                      case 2:
-                        _onItemTapped(i, Get.find<ProfileController>().scrollController);
-                    }
-                  },
-                  elevation: 0, // Box-Shadow entfernen
-                ),
-              ),
-            )),
+                )),
         body: Stack(
           children: [
             Center(
