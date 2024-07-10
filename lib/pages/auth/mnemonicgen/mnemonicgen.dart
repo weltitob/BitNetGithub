@@ -163,6 +163,7 @@ class MnemonicController extends State<MnemonicGen> {
       logger.i("Creating firebase user now...");
 
       final UserData currentuserwallet = await Auth().createUserFake(
+        mnemonic: mnemonicString,
         user: userData,
         code: code,
       );

@@ -34,18 +34,18 @@ class PropertieList extends StatelessWidget {
                ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(bottom: 6.h),
-            child: Text(
-              subHeading,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-               ),
-            ),
-          ),
+          // Container(
+          //   margin: EdgeInsets.only(bottom: 6.h),
+          //   child: Text(
+          //     subHeading,
+          //     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          //       fontSize: 12.sp,
+          //       fontWeight: FontWeight.w400,
+          //      ),
+          //   ),
+          // ),
           Text(
-            peragraph,
+            subHeading,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               fontSize: 12.sp,
               fontWeight: FontWeight.w400,

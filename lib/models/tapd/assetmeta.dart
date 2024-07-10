@@ -51,14 +51,24 @@ class AssetMetaResponse {
   }
 
   List<Media> toMedias() {
+
     String decodedData = decodeData();
+    print("Decoding data: $decodedData");
     Map<String, dynamic> jsonMap;
     List<Media> medias = [];
     try {
       jsonMap = jsonDecode(decodedData);
 
       jsonMap.forEach((key, value) {
-        medias.add(Media(type: key, data: value.toString()));
+        if (key == "attributes" && value is List) {
+          medias.add(Media(
+            type: key,
+            data: jsonEncode(value), // Keep the attributes as JSON string
+          ));
+        } else {
+
+          medias.add(Media(type: key, data: value.toString()));
+        }
       });
     } catch (e) {
       medias = [

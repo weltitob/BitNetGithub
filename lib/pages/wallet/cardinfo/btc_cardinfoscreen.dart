@@ -154,7 +154,7 @@ class _BitcoinCardInformationScreenState
                           ),
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: AppTheme.elementSpacing,
                         ),
                         StatefulBuilder(builder: (context, setState) {
                           return Column(
@@ -181,8 +181,6 @@ class _BitcoinCardInformationScreenState
                                     ? const Text('Loading')
                                     : ListView.builder(
                                         shrinkWrap: true,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 12.0),
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         itemCount: controller

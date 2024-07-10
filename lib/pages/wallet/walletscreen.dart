@@ -298,7 +298,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                 currency: Currency(
                   code: 'BTC',
                   name: 'Bitcoin',
-                  icon: Image.asset('assets/images/bitcoin.png'),
+                  icon: Image.asset("assets/images/bitcoin.png"),
                 ),
                 context: context,
               ),

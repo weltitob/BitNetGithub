@@ -1,14 +1,16 @@
+import 'dart:convert';
+import 'package:bitnet/backbone/helper/correctencodingerrors.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DescriptionBuilder extends StatelessWidget {
-  final String descirption;
+  final String description;
+
   const DescriptionBuilder({
     Key? key,
-    required this.descirption,
+    required this.description,
   }) : super(key: key);
 
   @override
@@ -18,13 +20,14 @@ class DescriptionBuilder extends StatelessWidget {
       hasButton: false,
       collapseBtn: true,
       child: Container(
-        margin: EdgeInsets.only(bottom: AppTheme.cardPadding.h),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.only(bottom: AppTheme.elementSpacing.h),
               child: Text(
-                descirption,
+                correctEncoding(description),
+                textAlign: TextAlign.start,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
@@ -37,4 +40,3 @@ class DescriptionBuilder extends StatelessWidget {
     );
   }
 }
-
