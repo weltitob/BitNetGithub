@@ -61,7 +61,8 @@ bool isValidBitcoinAddressHash(String input) {
   return blockHashPattern.hasMatch(input);
 }
 
-bool containsSixIntegers(String input) {
+bool 
+containsSixIntegers(String input) {
   RegExp sixIntegersPattern = RegExp(r'^\d{6}$');
   return sixIntegersPattern.hasMatch(input);
 }

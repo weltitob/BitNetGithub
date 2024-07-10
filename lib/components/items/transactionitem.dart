@@ -7,7 +7,7 @@ import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/lightning_transaction_details.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
- import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
+import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:dio/dio.dart';
@@ -68,7 +68,7 @@ class _TransactionItemState extends State<TransactionItem> {
 
   @override
   void initState() {
-    dollarRate(); 
+    dollarRate();
     super.initState();
   }
 
@@ -117,8 +117,8 @@ class _TransactionItemState extends State<TransactionItem> {
               );
               controllerTransaction.txID = widget.data.txHash.toString();
               controllerTransaction.getSingleTransaction(
-                  controllerTransaction.txID!,
-                  );
+                controllerTransaction.txID!,
+              );
               controllerTransaction.changeSocket();
               Navigator.push(
                 context,
@@ -152,19 +152,28 @@ class _TransactionItemState extends State<TransactionItem> {
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                widget.data.type == TransactionType.onChain
+                                    ? 'On chain ↔ Lightning'
+                                    : 'Lightning ↔ On chain',
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(widget.context)
+                                    .textTheme
+                                    .bodySmall,
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    width: AppTheme.cardPadding * 5,
-                                    child: Text(
-                                      widget.data.receiver.toString(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(widget.context)
-                                          .textTheme
-                                          .titleSmall,
-                                    ),
-                                  ),
+                                  // Container(
+                                  //   width: AppTheme.cardPadding * 5,
+                                  //   child: Text(
+                                  //     widget.data.receiver.toString(),
+                                  //     overflow: TextOverflow.ellipsis,
+                                  //     style: Theme.of(widget.context)
+                                  //         .textTheme
+                                  //         .titleSmall,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                               SizedBox(
@@ -271,6 +280,16 @@ class _TransactionItemState extends State<TransactionItem> {
                                                 TransactionType.onChain
                                             ? "assets/images/bitcoin.png"
                                             : "assets/images/lightning.png",
+                                        width: AppTheme.cardPadding * 0.75,
+                                        height: AppTheme.cardPadding * 0.75,
+                                        fit: BoxFit.contain,
+                                      ),
+                                      Text(' ↔ '),
+                                      Image.asset(
+                                        widget.data.type ==
+                                                TransactionType.onChain
+                                            ? "assets/images/lightning.png"
+                                            : "assets/images/bitcoin.png",
                                         width: AppTheme.cardPadding * 0.75,
                                         height: AppTheme.cardPadding * 0.75,
                                         fit: BoxFit.contain,

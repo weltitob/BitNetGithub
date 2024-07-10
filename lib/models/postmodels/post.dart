@@ -127,7 +127,6 @@ class _PostState extends State<Post> {
       padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
       child: GestureDetector(
         onTap: () {
-          print('object');
           final homeController = Get.find<HomeController>();
           homeController.createClicks(postId);
         },
@@ -152,78 +151,84 @@ class _PostState extends State<Post> {
                 SizedBox(height: AppTheme.elementSpacing * 1.5),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: medias.map((e) {
-                    final type = e.type;
-                    if (type == "text") {
+                  children: medias.map(
+                    (e) {
+                      final type = e.type;
+                      if (type == "text") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: TextBuilderNetwork(url: e.data));
+                      }
+                      if (type == "collection") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: CollectionBuilder(data: e.data));
+                      }
+                      if (type == "description") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: DescriptionBuilder(descirption: e.data));
+                      }
+                      if (type == "attributes") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: AttributesBuilder(attributes: e.data));
+                      }
+                      if (type == "spotify_url") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: SpotifyBuilder(spotifyUrl: e.data));
+                      }
+                      if (type == "youtubemusic_url") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: YoutubeMusicBuilder(youtubeUrl: e.data));
+                      }
+                      if (type == "deezer_url") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: DeezerBuilder(deezerUrl: e.data));
+                      }
+                      if (type == "applemusic_url") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: AppleMusicBuilder(applemusicUrl: e.data));
+                      }
+                      if (type == "external_link") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: LinkBuilder(url: 'haha'));
+                      }
+                      if (type == "image" || type == "camera") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: ImageBuilder(encodedData: e.data));
+                      }
+                      if (type == "image_data" || type == "camera") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: ImageBuilder(encodedData: e.data));
+                      }
+                      if (type == "audio") {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10.0),
+                            child: AudioBuilderNetwork(url: e.data));
+                      }
+
                       return Container(
                           margin: EdgeInsets.only(bottom: 10.0),
                           child: TextBuilderNetwork(url: e.data));
-                    }
-                    if (type == "collection") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: CollectionBuilder(data: e.data));
-                    }
-                    if (type == "description") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: DescriptionBuilder(descirption: e.data));
-                    }
-                    if (type == "attributes") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: AttributesBuilder(attributes: e.data));
-                    }
-                    if (type == "spotify_url") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: SpotifyBuilder(spotifyUrl: e.data));
-                    }
-                    if (type == "youtubemusic_url") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: YoutubeMusicBuilder(youtubeUrl: e.data));
-                    }
-                    if (type == "deezer_url") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: DeezerBuilder(deezerUrl: e.data));
-                    }
-                    if (type == "applemusic_url") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: AppleMusicBuilder(applemusicUrl: e.data));
-                    }
-                    if (type == "external_link") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: LinkBuilder(url: 'haha'));
-                    }
-                    if (type == "image" || type == "camera") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: ImageBuilder(encodedData: e.data));
-                    }
-                    if (type == "image_data" || type == "camera") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: ImageBuilder(encodedData: e.data));
-                    }
-                    if (type == "audio") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: AudioBuilderNetwork(url: e.data));
-                    }
-
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: TextBuilderNetwork(url: e.data));
-                  }).toList(),
+                    },
+                  ).toList(),
                 ),
-                SizedBox(height: AppTheme.elementSpacing),
+                SizedBox(
+                  height: AppTheme.elementSpacing,
+                ),
                 buildLikeSpace(
                     type: likeSpaceType.Post,
                     targetId: postId,
+                    postName: postName,
+                    username: username,
                     ownerId: ownerId,
                     rockets: rockets),
                 SizedBox(height: AppTheme.elementSpacing),

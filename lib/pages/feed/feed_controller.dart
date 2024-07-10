@@ -134,7 +134,7 @@ class FeedController extends GetxController
   void onInit() {
     super.onInit();
     handleSearchPeople('');
-    tabController = TabController(length: 5, vsync: this);
+    tabController = TabController(length: 6, vsync: this);
     scrollControllerColumn = ScrollController();
     scrollController?.value = ScrollController();
     scrollController?.value.addListener(scrollListener);

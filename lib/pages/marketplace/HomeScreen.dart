@@ -9,9 +9,11 @@ import 'package:bitnet/components/marketplace_widgets/MostView.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
+import 'package:bitnet/models/firebase/postsDataModel.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -26,6 +28,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final oneWeekAgo =
+        DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
+
     print("current width is :" + size.width.toString());
     final controller = Get.find<HomeController>();
     return bitnetScaffold(
@@ -38,53 +43,90 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                controller.postsDataList!.isEmpty
+                    ? SizedBox(
+                        height: 244.h,
+                        child: Center(
+                            child: Text(
+                          'No posts',
+                          textAlign: TextAlign.center,
+                        )))
+                    : StreamBuilder<List<PostsDataModel>>(
+                        stream: controller.getPostsDataStream(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
 
-                CommonHeading(
-                  hasButton: false,
-                  headingText: '',
-                  onPress: route.kListScreenRoute,
-                  isNormalChild: true,
-                  isChild: Container(
-                    width: size.width,
-                    height: 244.w,
-                    margin: EdgeInsets.only(bottom: AppTheme.cardPadding),
-                    child: CarouselSlider.builder(
-                      options: CarouselOptions(
-                          autoPlay: kDebugMode ? false : true,
-                          viewportFraction: 0.6,
-                          enlargeCenterPage: true,
-                          height: 244.w),
-                      itemCount: controller.postsDataList?.length,
-                      itemBuilder: (context, index, index2) {
-                        return controller.postsDataList == null
-                            ? dotProgress(context)
-                            : FutureBuilder(
-                                future: controller.fetchHasLiked(
-                               controller.postsDataList![index].postId,
-                                    Auth().currentUser!.uid),
-                                builder: (context, snapshot) {
-                                  return NftProductSlider(
-                                    postId:
-                                        controller.postsDataList![index].postId,
-                                    hasLiked: snapshot.data == null
-                                        ? false
-                                        : snapshot.data!,
-                                    hasLikeButton: controller
-                                        .postsDataList![index].hasLikeButton,
-                                    hasPrice: controller
-                                        .postsDataList![index].hasPrice,
-                                    nftName: controller
-                                        .postsDataList![index].nftName,
-                                    nftMainName: controller
-                                        .postsDataList![index].nftMainName,
-                                    cryptoText: controller
-                                        .postsDataList![index].cryptoText,
-                                  );
-                                });
-                      },
-                    ),
-                  ),
-                ),
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: dotProgress(context));
+                          }
+
+                          if (snapshot.hasData) {
+                            final postsDataList = snapshot.data;
+                            print(postsDataList!.length);
+                            print('above is post data list lenght');
+
+                            return CommonHeading(
+                              hasButton: false,
+                              headingText: '',
+                              onPress: route.kListScreenRoute,
+                              isNormalChild: true,
+                              isChild: Container(
+                                width: size.width,
+                                height: 244.w,
+                                margin: EdgeInsets.only(
+                                    bottom: AppTheme.cardPadding),
+                                child: CarouselSlider.builder(
+                                  options: CarouselOptions(
+                                    autoPlay: kDebugMode ? false : true,
+                                    viewportFraction: 0.6,
+                                    enlargeCenterPage: true,
+                                    height: 244.w,
+                                  ),
+                                  itemCount: postsDataList.length,
+                                  itemBuilder: (context, index, index2) {
+                                    return postsDataList.isEmpty
+                                        ? Center(
+                                          child: Text(
+                                            'No Posts'
+                                          ),
+                                        )
+                                        : FutureBuilder<bool?>(
+                                            future: controller.fetchHasLiked(
+                                              postsDataList[index].postId,
+                                              Auth().currentUser!.uid,
+                                            ),
+                                            builder: (context, snapshot) {
+                                              return NftProductSlider(
+                                                postId:
+                                                    postsDataList[index].postId,
+                                                hasLiked:
+                                                    snapshot.data ?? false,
+                                                hasLikeButton:
+                                                    postsDataList[index]
+                                                        .hasLikeButton,
+                                                hasPrice: postsDataList[index]
+                                                    .hasPrice,
+                                                nftName: postsDataList[index]
+                                                    .nftName,
+                                                nftMainName:
+                                                    postsDataList[index]
+                                                        .nftMainName,
+                                                cryptoText: postsDataList[index]
+                                                    .cryptoText,
+                                              );
+                                            },
+                                          );
+                                  },
+                                ),
+                              ),
+                            );
+                          }
+
+                          return Center(child: CircularProgressIndicator());
+                        }),
                 CommonHeading(
                   hasButton: true,
                   headingText: L10n.of(context)!.mostViewed,

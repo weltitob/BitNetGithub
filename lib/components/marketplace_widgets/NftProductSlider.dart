@@ -159,7 +159,7 @@ class _NftProductSliderState extends State<NftProductSlider> {
                                 controller.postsDataList =
                                     await controller.fetchPosts();
                                 widget.hasLiked
-                                    ? controller.createLikes(widget.postId!)
+                                    ? controller.toggleLike(widget.postId!)
                                     : controller
                                         .deleteLikeByPostId(widget.postId!);
                               },
