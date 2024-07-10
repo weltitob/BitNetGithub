@@ -222,14 +222,14 @@ class TransactionController extends BaseController {
     return format.format(int.parse(price));
   }
 
-  int? txTime;
+  int txTime = 0;
 
   void startUpdatingTimestamp() async {
     int currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     // timeST.value = formatTimestamp(
     //     transactionModel!.status!.blockTime?.toInt() ?? currentTime);
     final firstseen = await getTimeStamp(txID!);
-    txTime = firstseen;
+    txTime = firstseen!;
     localTime.value = formatLocalTime(
         transactionModel!.status!.blockTime?.toInt() ?? currentTime);
     // timerTime = Timer.periodic(const Duration(seconds: 1), (timer) async {

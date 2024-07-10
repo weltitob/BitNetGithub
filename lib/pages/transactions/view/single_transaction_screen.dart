@@ -1069,11 +1069,19 @@ class SingleTransactionScreen extends StatelessWidget {
                               ),
                               BitNetListTile(
                                   text: L10n.of(context)!.paymentNetwork,
-                                  trailing: Image.asset(
-                                    "assets/images/bitcoin.png",
-                                    width: AppTheme.cardPadding * 1.5,
-                                    height: AppTheme.cardPadding * 1.5,
-                                  )),
+                                  trailing: Row(
+                          children: [
+                            Image.asset("assets/images/bitcoin.png",
+                                width: AppTheme.cardPadding * 1,
+                                height: AppTheme.cardPadding * 1),
+                            Text('  ↔  '),
+                            Image.asset(
+                              "assets/images/lightning.png",
+                              width: AppTheme.cardPadding * 1,
+                              height: AppTheme.cardPadding * 1,
+                            )
+                          ],
+                        ),),
                               BitNetListTile(
                                 text: L10n.of(context)!.time,
                                 trailing: controller
@@ -1133,8 +1141,7 @@ class SingleTransactionScreen extends StatelessWidget {
                                                                         .status!
                                                                         .blockTime! *
                                                                     1000) -
-                                                                (controller
-                                                                        .txTime! *
+                                                                (controller.txTime *
                                                                     1000),
                                                           ).minute.toString() +
                                                           L10n.of(context)!

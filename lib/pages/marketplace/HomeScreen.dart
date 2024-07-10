@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/MostView.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
@@ -50,13 +51,8 @@ class HomeScreen extends StatelessWidget {
                           'No posts',
                           textAlign: TextAlign.center,
                         )))
-                    : StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('postsNew')
-                            .where('createdAt',
-                                isGreaterThanOrEqualTo: oneWeekAgo)
-                            .orderBy('createdAt', descending: true)
-                            .snapshots(),
+                    : StreamBuilder<List<PostsDataModel>>(
+                        stream: controller.getPostsDataStream(),
                         builder: (context, snapshot) {
                           if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
@@ -64,15 +60,13 @@ class HomeScreen extends StatelessWidget {
 
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
+                            return Center(child: dotProgress(context));
                           }
 
                           if (snapshot.hasData) {
-                            final postsDataList =
-                                snapshot.data!.docs.map((doc) {
-                              return PostsDataModel.fromJson(
-                                  doc.data() as Map<String, dynamic>);
-                            }).toList();
+                            final postsDataList = snapshot.data;
+                            print(postsDataList!.length);
+                            print('above is post data list lenght');
 
                             return CommonHeading(
                               hasButton: false,
@@ -93,27 +87,38 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   itemCount: postsDataList.length,
                                   itemBuilder: (context, index, index2) {
-                                    return FutureBuilder<bool?>(
-                                      future: controller.fetchHasLiked(
-                                        postsDataList[index].postId,
-                                        Auth().currentUser!.uid,
-                                      ),
-                                      builder: (context, snapshot) {
-                                        return NftProductSlider(
-                                          postId: postsDataList[index].postId,
-                                          hasLiked: snapshot.data ?? false,
-                                          hasLikeButton: postsDataList[index]
-                                              .hasLikeButton,
-                                          hasPrice:
-                                              postsDataList[index].hasPrice,
-                                          nftName: postsDataList[index].nftName,
-                                          nftMainName:
-                                              postsDataList[index].nftMainName,
-                                          cryptoText:
-                                              postsDataList[index].cryptoText,
-                                        );
-                                      },
-                                    );
+                                    return postsDataList.isEmpty
+                                        ? Center(
+                                          child: Text(
+                                            'No Posts'
+                                          ),
+                                        )
+                                        : FutureBuilder<bool?>(
+                                            future: controller.fetchHasLiked(
+                                              postsDataList[index].postId,
+                                              Auth().currentUser!.uid,
+                                            ),
+                                            builder: (context, snapshot) {
+                                              return NftProductSlider(
+                                                postId:
+                                                    postsDataList[index].postId,
+                                                hasLiked:
+                                                    snapshot.data ?? false,
+                                                hasLikeButton:
+                                                    postsDataList[index]
+                                                        .hasLikeButton,
+                                                hasPrice: postsDataList[index]
+                                                    .hasPrice,
+                                                nftName: postsDataList[index]
+                                                    .nftName,
+                                                nftMainName:
+                                                    postsDataList[index]
+                                                        .nftMainName,
+                                                cryptoText: postsDataList[index]
+                                                    .cryptoText,
+                                              );
+                                            },
+                                          );
                                   },
                                 ),
                               ),

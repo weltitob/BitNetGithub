@@ -101,19 +101,30 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                               coin.setCurrencyType(
                                   coin.coin != null ? !coin.coin! : false);
                             },
-                            child: Text(
-                              coin.coin ?? true
-                                  ? data.amount
-                                  : "$currencyEquivalent${getCurrency(currency!)}",
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displayLarge!
-                                  .copyWith(
-                                      color: data.direction ==
-                                              TransactionDirection.received
-                                          ? AppTheme.successColor
-                                          : AppTheme.errorColor),
+                            child: Row(
+                              children: [
+                                Text(
+                                  coin.coin ?? true
+                                      ? data.amount
+                                      : "$currencyEquivalent",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayLarge!
+                                      .copyWith(
+                                          color: data.direction ==
+                                                  TransactionDirection.received
+                                              ? AppTheme.successColor
+                                              : AppTheme.errorColor),
+                                ),
+                                Text(
+                                  '${getCurrency(currency!)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayLarge!
+                                      .copyWith(color: Colors.grey),
+                                )
+                              ],
                             ),
                           ),
                           coin.coin ?? true
@@ -258,10 +269,18 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                           width: AppTheme.cardPadding * 1.5,
                           height: AppTheme.cardPadding * 1.5,
                         )
-                      : Image.asset(
-                          "assets/images/lightning.png",
-                          width: AppTheme.cardPadding * 1.5,
-                          height: AppTheme.cardPadding * 1.5,
+                      : Row(
+                          children: [
+                            Image.asset("assets/images/lightning.png",
+                                width: AppTheme.cardPadding * 1,
+                                height: AppTheme.cardPadding * 1),
+                            Text('  ↔  '),
+                            Image.asset(
+                              "assets/images/bitcoin.png",
+                              width: AppTheme.cardPadding * 1,
+                              height: AppTheme.cardPadding * 1,
+                            )
+                          ],
                         ),
                 ),
                 BitNetListTile(

@@ -2,9 +2,8 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transact
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/listswaps.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
@@ -19,11 +18,10 @@ import 'package:bitnet/models/loop/swaps.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class Transactions extends StatefulWidget {
   final bool fullList;
@@ -43,7 +41,7 @@ class _TransactionsState extends State<Transactions>
   List<LightningPayment> lightningPayments = [];
   List<ReceivedInvoice> lightningInvoices = [];
   List<BitcoinTransaction> onchainTransactions = [];
-  List<dynamic> loopOperations = [];
+  List<Swap> loopOperations = [];
   final searchCtrl = TextEditingController();
 
   Future<bool> getOnchainTransactions() async {
@@ -139,13 +137,12 @@ class _TransactionsState extends State<Transactions>
       }
 
       if (futuresCompleted == 3) {
-        if(mounted){
+        if (mounted) {
           setState(() {
             transactionsLoaded = true;
           });
           handlePageLoadErrors(errorCount, errorMessage, context);
         }
-
       }
     });
 
@@ -157,13 +154,12 @@ class _TransactionsState extends State<Transactions>
       }
 
       if (futuresCompleted == 3) {
-        if(mounted){
+        if (mounted) {
           setState(() {
             transactionsLoaded = true;
           });
           handlePageLoadErrors(errorCount, errorMessage, context);
         }
-
       }
     });
 
@@ -175,7 +171,7 @@ class _TransactionsState extends State<Transactions>
       }
 
       if (futuresCompleted == 3) {
-        if(mounted){
+        if (mounted) {
           setState(() {
             transactionsLoaded = true;
           });
@@ -183,20 +179,20 @@ class _TransactionsState extends State<Transactions>
         }
       }
     });
-    // getLoopOperations().then((value) {
-    //   futuresCompleted++;
-    //   if (!value) {
-    //     errorCount++;
-    //     errorMessage = L10n.of(context)!.failedToLoadOperations;
-    //   }
-    //
-    //   if (futuresCompleted == 3) {
-    //     setState(() {
-    //       transactionsLoaded = true;
-    //     });
-    //     handlePageLoadErrors(errorCount, errorMessage, context);
-    //   }
-    // });
+    getLoopOperations().then((value) {
+      futuresCompleted++;
+      if (!value) {
+        errorCount++;
+        errorMessage = L10n.of(context)!.failedToLoadOperations;
+      }
+    
+      if (futuresCompleted == 3) {
+        setState(() {
+          transactionsLoaded = true;
+        });
+        handlePageLoadErrors(errorCount, errorMessage, context);
+      }
+    });
   }
 
   void handlePageLoadErrors(
@@ -216,7 +212,6 @@ class _TransactionsState extends State<Transactions>
             ...lightningInvoices.map(
               (transaction) => TransactionItem(
                 context: context,
-                
                 data: TransactionItemData(
                   timestamp: transaction.settleDate,
                   type: TransactionType.lightning,
@@ -350,76 +345,89 @@ class _TransactionsState extends State<Transactions>
         ? widget.fullList
             ? Container()
             : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing,
-                  ),
-                  child: SearchFieldWidget(
-                    hintText: 'Search',
-                    handleSearch: (v) {
-                      setState(() {
-                        searchCtrl.text = v;
-                      });
-                    },
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.filter,
-                        color: Theme.of(context).brightness ==
-                            Brightness.dark
-                            ? AppTheme.white60
-                            : AppTheme.black60,
-                        size: AppTheme.cardPadding * 0.75,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: AppTheme.elementSpacing,
+                    ),
+                    child: SearchFieldWidget(
+                      hintText: 'Search',
+                      handleSearch: (v) {
+                        setState(() {
+                          searchCtrl.text = v;
+                        });
+                      },
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          FontAwesomeIcons.filter,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.white60
+                              : AppTheme.black60,
+                          size: AppTheme.cardPadding * 0.75,
+                        ),
+                        onPressed: () async {
+                          await BitNetBottomSheet(
+                            context: context,
+                            child: WalletFilterScreen(),
+                          );
+                          setState(() {});
+                        },
                       ),
-                      onPressed: () async {
-                        await BitNetBottomSheet(
-                          context: context,
-                          child: WalletFilterScreen(),
-                        );
-                        setState(() {});
-                      },
+                      isSearchEnabled: true,
                     ),
-                    isSearchEnabled: true,
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true, // This is important
-                      itemCount: combinedTransactions.length,
-                      itemBuilder: (context, index) {
-                        if (combinedTransactions[index].data.timestamp >= controller.start &&
-                            combinedTransactions[index].data.timestamp <= controller.end) {
-                          if (controller.selectedFilters.contains('Sent') &&
-                              controller.selectedFilters.contains('Received')) {
-                            return combinedTransactions[index];
-                          }
-                          if (controller.selectedFilters.contains('Sent')) {
-                            return combinedTransactions[index].data.amount.contains('-')
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true, // This is important
+                        itemCount: combinedTransactions.length,
+                        itemBuilder: (context, index) {
+                          if (combinedTransactions[index].data.timestamp >=
+                                  controller.start &&
+                              combinedTransactions[index].data.timestamp <=
+                                  controller.end) {
+                            if (controller.selectedFilters.contains('Sent') &&
+                                controller.selectedFilters
+                                    .contains('Received')) {
+                              return combinedTransactions[index];
+                            }
+                            if (controller.selectedFilters.contains('Sent')) {
+                              return combinedTransactions[index]
+                                      .data
+                                      .amount
+                                      .contains('-')
+                                  ? combinedTransactions[index]
+                                  : SizedBox();
+                            }
+                            if (controller.selectedFilters
+                                .contains('Received')) {
+                              return combinedTransactions[index]
+                                      .data
+                                      .amount
+                                      .contains('+')
+                                  ? combinedTransactions[index]
+                                  : SizedBox();
+                            }
+                            return combinedTransactions[index]
+                                    .data
+                                    .receiver
+                                    .contains(searchCtrl.text.toLowerCase())
                                 ? combinedTransactions[index]
                                 : SizedBox();
                           }
-                          if (controller.selectedFilters.contains('Received')) {
-                            return combinedTransactions[index].data.amount.contains('+')
-                                ? combinedTransactions[index]
-                                : SizedBox();
-                          }
-                          return combinedTransactions[index].data.receiver.contains(searchCtrl.text.toLowerCase())
-                              ? combinedTransactions[index]
-                              : SizedBox();
-                        }
-                        return SizedBox(); // Return a SizedBox for other cases
-                      },
-                    ),
-                    SizedBox(height: AppTheme.cardPadding.h * 1,)
-                  ],
-                ),
-
-              ],
-            )
+                          return SizedBox(); // Return a SizedBox for other cases
+                        },
+                      ),
+                      SizedBox(
+                        height: AppTheme.cardPadding.h * 1,
+                      )
+                    ],
+                  ),
+                ],
+              )
         : Container(
             height: AppTheme.cardPadding * 10.h,
             child: dotProgress(context),
