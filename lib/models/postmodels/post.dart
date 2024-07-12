@@ -120,7 +120,7 @@ class _PostState extends State<Post> {
 
   @override
   Widget build(BuildContext context) {
-    final String? currentUserId = Auth().currentUser!.uid;
+    final String? currentUserId = Auth().currentUser?.uid;
 
     isLiked = (rockets[currentUserId] == true);
     return Padding(
@@ -211,8 +211,9 @@ class _PostState extends State<Post> {
                       }
                       if (type == "audio") {
                         return Container(
-                            margin: EdgeInsets.only(bottom: 10.0),
-                            child: AudioBuilderNetwork(url: e.data));
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: AudioBuilderNetwork(url: e.data),
+                        );
                       }
 
                       return Container(

@@ -1,6 +1,5 @@
 import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
@@ -10,7 +9,6 @@ import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 
 class SettingsStyleView extends GetWidget<SettingsController> {
   const SettingsStyleView({Key? key}) : super(key: key);

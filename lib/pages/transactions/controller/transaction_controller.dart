@@ -888,7 +888,6 @@ class TransactionController extends BaseController {
       isLoading.value = true;
       String url =
           '${baseUrl}address/$addressId/txs?after_txid=${subTransactionModel[10].txid}';
-      log(url);
       // Timer.periodic(Duration(seconds: 5), (timer) async {
       await dioClient
           .get(url: url)

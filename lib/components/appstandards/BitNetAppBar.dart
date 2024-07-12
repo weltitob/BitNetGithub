@@ -52,15 +52,17 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
     bool isMidScreen = width < AppTheme.isMidScreen;
     bool isIntermediateScreen = width < AppTheme.isIntermediateScreen;
 
-    double centerSpacing = kIsWeb ? AppTheme.columnWidth * 0.075 : isMidScreen
-        ? isIntermediateScreen
-            ? isSmallScreen
-                ? isSuperSmallScreen
-                    ? AppTheme.columnWidth * 0.075
-                    : AppTheme.columnWidth * 0.15
-                : AppTheme.columnWidth * 0.35
-            : AppTheme.columnWidth * 0.65
-        : AppTheme.columnWidth;
+    double centerSpacing = kIsWeb
+        ? AppTheme.columnWidth * 0.075
+        : isMidScreen
+            ? isIntermediateScreen
+                ? isSmallScreen
+                    ? isSuperSmallScreen
+                        ? AppTheme.columnWidth * 0.075
+                        : AppTheme.columnWidth * 0.15
+                    : AppTheme.columnWidth * 0.35
+                : AppTheme.columnWidth * 0.65
+            : AppTheme.columnWidth;
 
     return AppBar(
       automaticallyImplyLeading: false,
@@ -104,6 +106,10 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
                     child: RoundedButtonWidget(
                         buttonType: widget.buttonType ?? ButtonType.solid,
                         iconData: widget.customIcon ?? Icons.arrow_back,
+                        iconColor:
+                            Theme.of(context).brightness == Brightness.light
+                                ? AppTheme.black60
+                                : AppTheme.white60,
                         onTap: widget.onTap),
                   ),
                 ),
