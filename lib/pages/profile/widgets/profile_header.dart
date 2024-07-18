@@ -24,22 +24,28 @@ class ProfileHeader extends StatelessWidget {
         Stack(alignment: Alignment.center, children: <Widget>[
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+            children: [
               Obx(
                 () => Container(
                   decoration: BoxDecoration(
                     color: Colors.black,
-                    boxShadow: [AppTheme.boxShadowProfile],
+                    boxShadow: [
+                      AppTheme.boxShadowProfile,
+                    ],
                     image: DecorationImage(
                       image: NetworkImage(
-                          controller.userData.value.backgroundImageUrl),
+                        controller.userData.value.backgroundImageUrl,
+                      ),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
-                          Colors.black.withOpacity(0.25), BlendMode.dstATop),
+                        Colors.black.withOpacity(0.25),
+                        BlendMode.dstATop,
+                      ),
                     ),
                     borderRadius: BorderRadius.only(
-                        bottomLeft: AppTheme.cornerRadiusBig,
-                        bottomRight: AppTheme.cornerRadiusBig),
+                      bottomLeft: AppTheme.cornerRadiusBig,
+                      bottomRight: AppTheme.cornerRadiusBig,
+                    ),
                   ),
                   child: Column(
                     children: [

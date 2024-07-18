@@ -85,8 +85,8 @@ class _ProfileViewState extends State<ProfileView> {
             leadingIcon: Icon(
               Icons.add,
               color: Theme.of(context).brightness == Brightness.light
-                  ? AppTheme.black60
-                  : AppTheme.white60,
+                  ? AppTheme.white100
+                  : AppTheme.black90,
             ),
             title: 'Add',
             onTap: () {

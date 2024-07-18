@@ -63,10 +63,7 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
                     : AppTheme.columnWidth * 0.35
                 : AppTheme.columnWidth * 0.65
             : AppTheme.columnWidth;
-
     return AppBar(
-      automaticallyImplyLeading: false,
-      scrolledUnderElevation: 0,
       shadowColor: Colors.transparent,
       bottomOpacity: 0,
       elevation: 0,

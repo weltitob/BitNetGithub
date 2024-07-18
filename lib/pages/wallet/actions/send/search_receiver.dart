@@ -48,7 +48,6 @@ class SearchReceiver extends GetWidget<SendsController> {
                   isSearchEnabled: true,
                   handleSearch: controller.handleSearch,
                   node: controller.myFocusNodeAdressSearch,
-                  
                 ),
                 Container(
                   margin: EdgeInsets.only(left: AppTheme.cardPadding),
