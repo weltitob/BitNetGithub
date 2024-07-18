@@ -26,7 +26,7 @@ class CryptoItemController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    getChartLine("USD");
+    getChartLine("BTC", "USD",);
     controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 2000),
@@ -44,38 +44,41 @@ class CryptoItemController extends GetxController
       });
   }
 
-  getChartLine(String currency) async {
-    LoggerService logger = Get.find();
-    CryptoChartLine chartClassDay = CryptoChartLine(
-      crypto: "bitcoin",
-      currency: currency,
-      days: "1",
-    );
-    CryptoChartLine chartClassDayMin = CryptoChartLine(
-      crypto: "bitcoin",
-      currency: currency,
-      days: "1",
-    );
-    try {
-      await chartClassDay.getChartData();
-      await chartClassDayMin.getChartData();
-
-      onedaychart = chartClassDay.chartLine;
-
-      currentPrice.value = chartClassDayMin.chartLine.last.price;
-      currentPriceString.value = currentPrice.toStringAsFixed(2);
-      priceOneTimestampAgo.value =
-          double.parse(currentPrice.toStringAsFixed(2));
-      firstPrice.value = chartClassDayMin.chartLine.first.price;
-
-      priceChange.value = (currentPrice - firstPrice.value) / firstPrice.value;
-      priceChangeString.value = toPercent(priceChange.value);
-
+  getChartLine(String crypto, String currency) async {
+    if (crypto == "BTC") {
+      LoggerService logger = Get.find();
+      CryptoChartLine chartClassDay = CryptoChartLine(
+        crypto: "bitcoin",
+        currency: currency,
+        days: "1",
+      );
+      CryptoChartLine chartClassDayMin = CryptoChartLine(
+        crypto: "bitcoin",
+        currency: currency,
+        days: "1",
+      );
+      try {
+        await chartClassDay.getChartData();
+        await chartClassDayMin.getChartData();
+        onedaychart = chartClassDay.chartLine;
+        currentPrice.value = chartClassDayMin.chartLine.last.price;
+        currentPriceString.value = currentPrice.toStringAsFixed(2);
+        priceOneTimestampAgo.value =
+            double.parse(currentPrice.toStringAsFixed(2));
+        firstPrice.value = chartClassDayMin.chartLine.first.price;
+        priceChange.value = (currentPrice - firstPrice.value) / firstPrice.value;
+        priceChangeString.value = toPercent(priceChange.value);
+        loading.value = false;
+      } catch (e) {
+        logger.e("Charts could not be created for cryptoitem resulting in error" +
+            e.toString());
+        //loading.value = false;
+      }
+    } else{
+      //get the price from firebase get the chart from firebase and show this then
       loading.value = false;
-    } catch (e) {
-      logger.e("Charts could not be created for cryptoitem resulting in error" +
-          e.toString());
     }
+
   }
 
   void colorUpdater() {

@@ -7,24 +7,18 @@ import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
-import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/IONdata.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
-import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-
-
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
@@ -102,23 +96,23 @@ class Auth {
   Future<UserData> createUserFake({
     required UserData user,
     required VerificationCode code,
+    required String mnemonic,
   }) async {
     LoggerService logger = Get.find();
     logger.i("Calling Cloudfunction with Microsoft ION now...");
     logger.i("Generating challenge...");
-    //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
     final String challange = generateChallenge(user.username);
     final String randomstring = generateRandomString(20); // length 20
     final String customToken = await fakeLoginION(
       randomstring,
     );
     final IONData iondata = IONData(
-        did: "did",
+        did: user.did,
         username: user.username,
         customToken: customToken,
         publicIONKey: "publicIONKey",
         privateIONKey: "privateIONKey",
-        mnemonic: "mnemonic");
+        mnemonic: mnemonic);
 
     final PrivateData privateData = PrivateData(
         did: iondata.did,
@@ -344,8 +338,6 @@ extension on String {
   static final RegExp _phoneRegex =
       RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
   static final RegExp _emailRegex = RegExp(r'(.+)@(.+)\.(.+)');
-
   bool get isEmail => _emailRegex.hasMatch(this);
-
   bool get isPhoneNumber => _phoneRegex.hasMatch(this);
 }
