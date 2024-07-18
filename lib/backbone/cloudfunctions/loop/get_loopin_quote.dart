@@ -23,13 +23,12 @@ Future<RestResponse> getLoopinQuote(String price) async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-      final DioClient dioClient = Get.find<DioClient>();
+    final DioClient dioClient = Get.find<DioClient>();
 
     var response = await dioClient.get(url: url, headers: headers);
     print('Raw Response: ${response.data}');
 
     if (response.statusCode == 200) {
-      print(response.data);
       return RestResponse(
           statusCode: "${response.statusCode}",
           message: "Successfully retrieved Loop In Quote",
@@ -48,4 +47,3 @@ Future<RestResponse> getLoopinQuote(String price) async {
         data: {});
   }
 }
-

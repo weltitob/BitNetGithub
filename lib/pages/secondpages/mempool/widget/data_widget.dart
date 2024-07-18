@@ -158,13 +158,15 @@ class _DataWidgetState extends State<DataWidget> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                SizedBox(height: AppTheme.elementSpacing * 0.4.h),
+                SizedBox(height: AppTheme.elementSpacing * 0.3.h),
                 widget.isAccepted
-                    ? Text(
-                        '${widget.time}',
-                        maxLines: 1,
-                        style: TextStyle(fontSize: 14.sp, color: Colors.white),
-                      )
+                    ? FittedBox(
+                      child: Text(
+                          '${widget.time}',
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                        ),
+                    )
                     : FittedBox(
                         child: Text(
                           'In ~${widget.mins} ${L10n.of(context)!.minutesTx}',

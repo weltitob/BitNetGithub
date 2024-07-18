@@ -1,13 +1,16 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -105,7 +108,18 @@ class SettingsView extends StatelessWidget {
                   size: AppTheme.iconSize * 0.75,
                 ),
                 onTap: () async {
+                  await settingsCollection.doc(Auth().currentUser!.uid).update({
+                    'theme_mode': 'system',
+                    'primary_color': Colors.white.value,
+                  });
+
+                  // Clear shared preferences if used
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs.remove('theme_mode');
+                  await prefs.remove('primary_color');
                   await Auth().signOut();
+
                   context.pop();
                   context.go('/authhome');
                 },

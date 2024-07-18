@@ -109,7 +109,7 @@ class _MempoolHomeState extends State<MempoolHome> {
     return PopScope(
       canPop: false,
       onPopInvoked: (v) {
-        controller.timer.cancel();
+        // controller.timer.cancel()
         context.pop(context);
       },
       child: SafeArea(
@@ -124,7 +124,7 @@ class _MempoolHomeState extends State<MempoolHome> {
               : bitnetAppBar(
                   text: L10n.of(context)!.blockChain,
                   onTap: () {
-                    controller.timer.cancel();
+                    // controller.timer.cancel();
                     context.pop(context);
                   },
                   actions: [

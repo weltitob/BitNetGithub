@@ -382,11 +382,11 @@ class HomeController extends BaseController {
   }
 
   late Timer timer;
-  callApiWithDelay() {
+  callApiWithDelay()async {
     print('callapi with delay called ');
 
-    timer =
-        Timer.periodic(Duration(seconds: kDebugMode ? 1000 : 5), (timer) async {
+    // timer =
+    //     Timer.periodic(Duration(seconds: kDebugMode ? 1000 : 5), (timer) async {
       try {
         String url = 'https://mempool.space/api/v1/blocks';
         final response = await dioClient.get(url: url);
@@ -411,7 +411,7 @@ class HomeController extends BaseController {
         isLoading.value = false;
         update();
       }
-    });
+    // });
   }
 
   Future<int?> getBlockHeight(String txId) async {
@@ -686,101 +686,100 @@ class HomeController extends BaseController {
       print('Error adding post: $e');
     }
   }
+ Future<Map<String, int>> getMostLikedPostIds() async {
+  final oneWeekAgo = DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
 
-  Future<Map<String, int>> getMostLikedPostIds() async {
-    final oneWeekAgo =
-        DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
+  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection('postsLike')
+      .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
+      .get();
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('postsLike')
-        .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
+  Map<String, int> likeCountMap = {};
+
+  for (var doc in querySnapshot.docs) {
+    String postId = doc['postId'];
+    if (postId.isNotEmpty) {
+      likeCountMap[postId] = (likeCountMap[postId] ?? 0) + 1;
+    }
+  }
+
+  return likeCountMap;
+}
+
+Future<Map<String, int>> getMostClickedPostIds() async {
+  final oneWeekAgo = DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
+
+  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection('postsClick')
+      .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
+      .get();
+
+  Map<String, int> clickCountMap = {};
+
+  for (var doc in querySnapshot.docs) {
+    String postId = doc['postId'];
+    if (postId.isNotEmpty ) {
+      clickCountMap[postId] = (clickCountMap[postId] ?? 0) + 1;
+    }
+  }
+
+  return clickCountMap;
+}
+
+Stream<List<PostsDataModel>> getPostsDataStream() async* {
+  final likeCountMap = await getMostLikedPostIds();
+  final clickCountMap = await getMostClickedPostIds();
+  print(likeCountMap);
+  print(clickCountMap);
+
+  // Combine and count total interactions
+  final totalCountMap = <String, int>{};
+
+  for (var entry in likeCountMap.entries) {
+    totalCountMap[entry.key] = (totalCountMap[entry.key] ?? 0) + entry.value;
+  }
+
+  for (var entry in clickCountMap.entries) {
+    totalCountMap[entry.key] = (totalCountMap[entry.key] ?? 0) + entry.value;
+  }
+
+  // Sort by total interactions
+  final sortedPostIds = totalCountMap.entries.toList()
+    ..sort((a, b) => b.value.compareTo(a.value));
+
+  final sortedRelevantPostIds = sortedPostIds.map((entry) => entry.key).toList();
+  print(sortedRelevantPostIds);
+
+  if (sortedRelevantPostIds.isEmpty) {
+    yield [];
+    return;
+  }
+
+  final chunkSize = 10; // Firestore's limit for whereIn queries
+  List<PostsDataModel> allPosts = [];
+
+  for (var i = 0; i < sortedRelevantPostIds.length; i += chunkSize) {
+    var chunk = sortedRelevantPostIds.sublist(
+      i,
+      i + chunkSize > sortedRelevantPostIds.length
+          ? sortedRelevantPostIds.length
+          : i + chunkSize,
+    );
+    print(chunk);
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('postsNew')
+        .where('postId', whereIn: chunk)
         .get();
-
-    Map<String, int> likeCountMap = {};
-
-    for (var doc in querySnapshot.docs) {
-      String postId = doc['postId'];
-
-      if (postId.isNotEmpty && !postId.contains('/')) {
-        likeCountMap[postId] = (likeCountMap[postId] ?? 0) + 1;
-      }
-    }
-
-    return likeCountMap;
+    allPosts.addAll(snapshot.docs
+        .map((doc) => PostsDataModel.fromJson(doc.data() as Map<String, dynamic>))
+        .toList());
+    print(allPosts);
   }
 
-  Future<Map<String, int>> getMostClickedPostIds() async {
-    final oneWeekAgo =
-        DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
+  yield allPosts;
+}
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('postsClick')
-        .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
-        .get();
-
-    Map<String, int> clickCountMap = {};
-
-    for (var doc in querySnapshot.docs) {
-      String postId = doc['postId'];
-      if (postId.isNotEmpty && !postId.contains('/')) {
-        clickCountMap[postId] = (clickCountMap[postId] ?? 0) + 1;
-      }
-    }
-
-    return clickCountMap;
-  }
-
-  Stream<List<PostsDataModel>> getPostsDataStream() async* {
-    final likeCountMap = await getMostLikedPostIds();
-    final clickCountMap = await getMostClickedPostIds();
-
-    // Combine and count total interactions
-    final totalCountMap = <String, int>{};
-
-    for (var entry in likeCountMap.entries) {
-      totalCountMap[entry.key] = (totalCountMap[entry.key] ?? 0) + entry.value;
-    }
-
-    for (var entry in clickCountMap.entries) {
-      totalCountMap[entry.key] = (totalCountMap[entry.key] ?? 0) + entry.value;
-    }
-
-    // Sort by total interactions
-    final sortedPostIds = totalCountMap.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-
-    final sortedRelevantPostIds =
-        sortedPostIds.map((entry) => entry.key).toList();
-    print(sortedRelevantPostIds);
-    if (sortedRelevantPostIds.isEmpty) {
-      yield [];
-      return;
-    }
-
-    final chunkSize = 10; // Firestore's limit for whereIn queries
-    List<PostsDataModel> allPosts = [];
-
-    for (var i = 0; i < sortedRelevantPostIds.length; i += chunkSize) {
-      var chunk = sortedRelevantPostIds.sublist(
-          i,
-          i + chunkSize > sortedRelevantPostIds.length
-              ? sortedRelevantPostIds.length
-              : i + chunkSize);
-      print(chunk);
-
-      final snapshot = await FirebaseFirestore.instance
-          .collection('postsNew')
-          .where('postId', whereIn: chunk)
-          .get();
-      allPosts.addAll(snapshot.docs
-          .map((doc) =>
-              PostsDataModel.fromJson(doc.data() as Map<String, dynamic>))
-          .toList());
-      print(allPosts);
-    }
-
-    yield allPosts;
-  }
 }
 
 String formatPrice(price) {

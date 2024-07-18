@@ -160,7 +160,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                                                 ],
                                                               )
                                                             : Text(
-                                                                "${currencyEquivalent}${getCurrency(controller.selectedCurrency!.value)}",
+                                                                "${currencyEquivalent}${getCurrency(controller.selectedCurrency == null ? '' : controller.selectedCurrency!.value)}",
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -207,11 +207,17 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 right: AppTheme.cardPadding,
                                 top: AppTheme.cardPadding),
                             scale: 1.0,
-                            initialIndex: controller.selectedCard.value == 'onchain' ? 0 : 1,
+                            initialIndex:
+                                controller.selectedCard.value == 'onchain'
+                                    ? 0
+                                    : 1,
                             cardsCount: cards.length,
                             onSwipe: (int index, int? previousIndex,
                                 CardSwiperDirection direction) {
-                                controller.setSelectedCard(controller.selectedCard.value == 'onchain' ? 'lightning' : 'onchain');
+                              controller.setSelectedCard(
+                                  controller.selectedCard.value == 'onchain'
+                                      ? 'lightning'
+                                      : 'onchain');
                               return true;
                             },
                             cardBuilder: (context, index, percentThresholdX,

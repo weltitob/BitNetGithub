@@ -12,7 +12,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/lnd/sendpayment_v2.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/bitcoin/walletkit/finalizepsbtresponse.dart';
@@ -25,7 +24,6 @@ import 'package:bitnet/models/bitcoin/walletkit/utxorequest.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
-import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:dart_lnurl/dart_lnurl.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +31,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/utils/bitcoin_validator/bitcoin_validator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 class SendsController extends BaseController {
   late BuildContext context;
