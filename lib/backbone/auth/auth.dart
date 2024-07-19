@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
@@ -7,6 +8,7 @@ import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/IONdata.dart';
@@ -15,7 +17,6 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';

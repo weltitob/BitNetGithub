@@ -382,35 +382,35 @@ class HomeController extends BaseController {
   }
 
   late Timer timer;
-  callApiWithDelay()async {
+  callApiWithDelay() async {
     print('callapi with delay called ');
 
     // timer =
     //     Timer.periodic(Duration(seconds: kDebugMode ? 1000 : 5), (timer) async {
-      try {
-        String url = 'https://mempool.space/api/v1/blocks';
-        final response = await dioClient.get(url: url);
-        response.data.length;
-        bitcoinData.clear();
+    try {
+      String url = 'https://mempool.space/api/v1/blocks';
+      final response = await dioClient.get(url: url);
+      response.data.length;
+      bitcoinData.clear();
 
-        for (int i = 0; i < response.data.length; i++) {
-          bitcoinData.add(
-            BlockData.fromJson(
-              response.data[i],
-            ),
-          );
-        }
-        dollarRate();
-        isLoading.value = false;
-        Get.forceAppUpdate();
-        update();
-      } on DioException {
-        isLoading.value = false;
-        update();
-      } catch (e) {
-        isLoading.value = false;
-        update();
+      for (int i = 0; i < response.data.length; i++) {
+        bitcoinData.add(
+          BlockData.fromJson(
+            response.data[i],
+          ),
+        );
       }
+      dollarRate();
+      isLoading.value = false;
+      Get.forceAppUpdate();
+      update();
+    } on DioException {
+      isLoading.value = false;
+      update();
+    } catch (e) {
+      isLoading.value = false;
+      update();
+    }
     // });
   }
 
@@ -496,45 +496,53 @@ class HomeController extends BaseController {
   }
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+ 
 
-  Future<void> createPost(
-      String postId,
-      bool hasLiked,
-      bool hasPrice,
-      bool hasLikeButton,
-      String nftName,
-      String nftMainName,
-      String cryptoText) async {
-    try {
-      // Check if a post with the given postId already exists
-      QuerySnapshot existingPost = await firestore
-          .collection('postsNew')
-          .where('postId', isEqualTo: postId)
-          .limit(1)
-          .get();
+ Future<void> createPost(
+    String postId,
+    bool hasLiked,
+    bool hasPrice,
+    bool hasLikeButton,
+    String nftName,
+    String nftMainName,
+    String cryptoText) async {
+  try {
+    // Check if a post with the given postId already exists
+    QuerySnapshot existingPost = await firestore
+        .collection('postsNew')
+        .where('postId', isEqualTo: postId)
+        .limit(1)
+        .get();
 
-      if (existingPost.docs.isEmpty) {
-        // If no document exists, create a new post
-        DocumentReference documentReference =
-            firestore.collection('postsNew').doc();
-        await documentReference.set({
-          'postId': postId,
-          'hasLiked': hasLiked,
-          'hasPrice': hasPrice,
-          'hasLikeButton': hasLikeButton,
-          'nftName': nftName,
-          'nftMainName': nftMainName,
-          'cryptoText': cryptoText,
-          'createdAt': DateTime.now().millisecondsSinceEpoch,
-        });
-        print('Post added successfully!');
-      } else {
-        print('A post with this postId already exists.');
-      }
-    } catch (e) {
-      print('Error adding post: $e');
+    DocumentReference documentReference;
+
+    if (existingPost.docs.isEmpty) {
+      // If no document exists, create a new document reference
+      documentReference = firestore.collection('postsNew').doc();
+      print('Post added successfully!');
+    } else {
+      // If the document exists, get the existing document reference
+      documentReference = existingPost.docs.first.reference;
+      print('Post updated successfully!');
     }
+
+    // Set or update the post with the current time as createdAt
+    await documentReference.set({
+      'postId': postId,
+      'hasLiked': hasLiked,
+      'hasPrice': hasPrice,
+      'hasLikeButton': hasLikeButton,
+      'nftName': nftName,
+      'nftMainName': nftMainName,
+      'cryptoText': cryptoText,
+      'createdAt': DateTime.now().millisecondsSinceEpoch,
+    }, SetOptions(merge: true));  // Using SetOptions to merge the data instead of overwriting
+  } catch (e) {
+    print('Error adding post: $e');
   }
+}
+
+
 
   Future<List<PostsDataModel>?> fetchPosts() async {
     try {
@@ -686,100 +694,107 @@ class HomeController extends BaseController {
       print('Error adding post: $e');
     }
   }
- Future<Map<String, int>> getMostLikedPostIds() async {
-  final oneWeekAgo = DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
 
-  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-      .collection('postsLike')
-      .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
-      .get();
+  Future<Map<String, int>> getMostLikedPostIds() async {
+    final oneWeekAgo =
+        DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
 
-  Map<String, int> likeCountMap = {};
-
-  for (var doc in querySnapshot.docs) {
-    String postId = doc['postId'];
-    if (postId.isNotEmpty) {
-      likeCountMap[postId] = (likeCountMap[postId] ?? 0) + 1;
-    }
-  }
-
-  return likeCountMap;
-}
-
-Future<Map<String, int>> getMostClickedPostIds() async {
-  final oneWeekAgo = DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
-
-  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-      .collection('postsClick')
-      .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
-      .get();
-
-  Map<String, int> clickCountMap = {};
-
-  for (var doc in querySnapshot.docs) {
-    String postId = doc['postId'];
-    if (postId.isNotEmpty ) {
-      clickCountMap[postId] = (clickCountMap[postId] ?? 0) + 1;
-    }
-  }
-
-  return clickCountMap;
-}
-
-Stream<List<PostsDataModel>> getPostsDataStream() async* {
-  final likeCountMap = await getMostLikedPostIds();
-  final clickCountMap = await getMostClickedPostIds();
-  print(likeCountMap);
-  print(clickCountMap);
-
-  // Combine and count total interactions
-  final totalCountMap = <String, int>{};
-
-  for (var entry in likeCountMap.entries) {
-    totalCountMap[entry.key] = (totalCountMap[entry.key] ?? 0) + entry.value;
-  }
-
-  for (var entry in clickCountMap.entries) {
-    totalCountMap[entry.key] = (totalCountMap[entry.key] ?? 0) + entry.value;
-  }
-
-  // Sort by total interactions
-  final sortedPostIds = totalCountMap.entries.toList()
-    ..sort((a, b) => b.value.compareTo(a.value));
-
-  final sortedRelevantPostIds = sortedPostIds.map((entry) => entry.key).toList();
-  print(sortedRelevantPostIds);
-
-  if (sortedRelevantPostIds.isEmpty) {
-    yield [];
-    return;
-  }
-
-  final chunkSize = 10; // Firestore's limit for whereIn queries
-  List<PostsDataModel> allPosts = [];
-
-  for (var i = 0; i < sortedRelevantPostIds.length; i += chunkSize) {
-    var chunk = sortedRelevantPostIds.sublist(
-      i,
-      i + chunkSize > sortedRelevantPostIds.length
-          ? sortedRelevantPostIds.length
-          : i + chunkSize,
-    );
-    print(chunk);
-
-    final snapshot = await FirebaseFirestore.instance
-        .collection('postsNew')
-        .where('postId', whereIn: chunk)
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('postsLike')
+        .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
         .get();
-    allPosts.addAll(snapshot.docs
-        .map((doc) => PostsDataModel.fromJson(doc.data() as Map<String, dynamic>))
-        .toList());
-    print(allPosts);
+
+    Map<String, int> likeCountMap = {};
+
+    for (var doc in querySnapshot.docs) {
+      String postId = doc['postId'];
+      if (postId.isNotEmpty) {
+        likeCountMap[postId] = (likeCountMap[postId] ?? 0) + 1;
+      }
+    }
+
+    return likeCountMap;
   }
 
-  yield allPosts;
-}
+  Future<Map<String, int>> getMostClickedPostIds() async {
+    final oneWeekAgo =
+        DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
 
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('postsClick')
+        .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
+        .get();
+
+    Map<String, int> clickCountMap = {};
+
+    for (var doc in querySnapshot.docs) {
+      String postId = doc['postId'];
+      if (postId.isNotEmpty) {
+        clickCountMap[postId] = (clickCountMap[postId] ?? 0) + 1;
+      }
+    }
+
+    return clickCountMap;
+  }
+
+  Stream<List<PostsDataModel>> getPostsDataStream() async* {
+    print('below is like and click data');
+
+    final likeCountMap = await getMostLikedPostIds();
+    final clickCountMap = await getMostClickedPostIds();
+    print(likeCountMap);
+    print(clickCountMap);
+    print('above is like and click data');
+
+    // Combine and count total interactions
+    final totalCountMap = <String, int>{};
+
+    for (var entry in likeCountMap.entries) {
+      totalCountMap[entry.key] = (totalCountMap[entry.key] ?? 0) + entry.value;
+    }
+
+    for (var entry in clickCountMap.entries) {
+      totalCountMap[entry.key] = (totalCountMap[entry.key] ?? 0) + entry.value;
+    }
+
+    // Sort by total interactions
+    final sortedPostIds = totalCountMap.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    final sortedRelevantPostIds =
+        sortedPostIds.map((entry) => entry.key).toList();
+    print(sortedRelevantPostIds);
+
+    if (sortedRelevantPostIds.isEmpty) {
+      yield [];
+      return;
+    }
+
+    final chunkSize = 10; // Firestore's limit for whereIn queries
+    List<PostsDataModel> allPosts = [];
+
+    for (var i = 0; i < sortedRelevantPostIds.length; i += chunkSize) {
+      var chunk = sortedRelevantPostIds.sublist(
+        i,
+        i + chunkSize > sortedRelevantPostIds.length
+            ? sortedRelevantPostIds.length
+            : i + chunkSize,
+      );
+      print(chunk);
+
+      final snapshot = await FirebaseFirestore.instance
+          .collection('postsNew')
+          .where('postId', whereIn: chunk)
+          .get();
+      allPosts.addAll(snapshot.docs
+          .map((doc) =>
+              PostsDataModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList());
+      print(allPosts);
+    }
+
+    yield allPosts;
+  }
 }
 
 String formatPrice(price) {

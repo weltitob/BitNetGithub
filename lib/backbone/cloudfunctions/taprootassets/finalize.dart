@@ -19,9 +19,11 @@ Future<dynamic> finalizeMint() async {
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
-  String url = kDebugMode
-      ? ''
-      : 'https://$restHost/v1/taproot-assets/assets/mint/finalize';
+  String url =
+  //  kDebugMode
+  //     ? ''
+  //     : 
+      'https://$restHost/v1/taproot-assets/assets/mint/finalize';
 
   // Prepare the headers
   Map<String, String> headers = {

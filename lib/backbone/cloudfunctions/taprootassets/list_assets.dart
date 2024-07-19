@@ -1,11 +1,11 @@
 import 'dart:io';
+
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/tapd/asset.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 Future<List<Asset>> listTaprootAssets() async {
@@ -17,6 +17,9 @@ Future<List<Asset>> listTaprootAssets() async {
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
+  // print(macaroon);
+  // print('above is the macaroon ');
+  // assert(false);
 
   // Prepare the headers
   Map<String, String> headers = {
@@ -24,16 +27,16 @@ Future<List<Asset>> listTaprootAssets() async {
   };
 
   // Make the GET request
-  // String url = kDebugMode ? '' : 'https://$restHost/v1/taproot-assets/assets';
+  // String url = kDebugMode ? '' : 'https://$restHost/v1/taproot-assets/assets';/
   String url = 'https://$restHost/v1/taproot-assets/assets';
-  // String url = 
-  // // kDebugMode ? '' : 
+  // String url =
+  // // kDebugMode ? '' :
   // 'https://$restHost/v1/taproot-assets/assets';
   try {
     final DioClient dioClient = Get.find<DioClient>();
     var response = await dioClient.get(url: url, headers: headers);
 
-    logger.i("Raw Response: ${response}");
+    logger.i("Raw Response taproot assets : ");
 
     if (response.statusCode == 200) {
       List<dynamic> data = response.data['assets'];
