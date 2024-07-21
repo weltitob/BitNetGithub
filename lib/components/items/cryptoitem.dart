@@ -169,13 +169,12 @@ class _CryptoItemState extends State<CryptoItem> {
                       ],
                     ),
                     //CustomIcon(icon: currency.icon),
-                    Row(
-                      children: [
-                        Container(
-                          margin:
-                              EdgeInsets.only(right: AppTheme.elementSpacing / 2),
-                          width: AppTheme.cardPadding * 3.75.w,
-                          color: Colors.transparent,
+                    SizedBox(width: AppTheme.elementSpacing.w / 2),
+                    Expanded(
+                      child: Container(
+                        color: Colors.transparent,
+                        //width: 70.w,
+                        child: Container(
                           child: SfCartesianChart(
                               enableAxisAnimation: true,
                               plotAreaBorderWidth: 0,
@@ -197,49 +196,49 @@ class _CryptoItemState extends State<CryptoItem> {
                                   dataSource: controllerCrypto.onedaychart,
                                   animationDuration: 0,
                                   xValueMapper: (ChartLine crypto, _) =>
-                                      crypto.time,
+                                  crypto.time,
                                   yValueMapper: (ChartLine crypto, _) =>
-                                      crypto.price,
+                                  crypto.price,
                                   color: controllerCrypto.priceChange >= 0
                                       ? AppTheme.successColor
                                       : AppTheme.errorColor,
                                 )
                               ]),
                         ),
-                        SizedBox(width: AppTheme.elementSpacing / 2,),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    ),
+                    SizedBox(width: AppTheme.elementSpacing.w / 2),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  controllerCrypto.priceChange.value >= 0
-                                      ? FontAwesomeIcons.caretUp
-                                      : FontAwesomeIcons.caretDown,
-                                  size: 16,
+                            Icon(
+                              controllerCrypto.priceChange.value >= 0
+                                  ? FontAwesomeIcons.caretUp
+                                  : FontAwesomeIcons.caretDown,
+                              size: 16,
+                              color: controllerCrypto.priceChange.value >= 0
+                                  ? AppTheme.successColor
+                                  : AppTheme.errorColor,
+                            ),
+                            const SizedBox(width: AppTheme.elementSpacing / 4),
+                            Container(
+                              child: Text(
+                                controllerCrypto.priceChangeString.value,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: controllerCrypto
+                                      .priceChangeString.value.length >
+                                      6
+                                      ? 12
+                                      : 16,
                                   color: controllerCrypto.priceChange.value >= 0
                                       ? AppTheme.successColor
                                       : AppTheme.errorColor,
                                 ),
-                                const SizedBox(width: AppTheme.elementSpacing / 4),
-                                Container(
-                                  child: Text(
-                                    controllerCrypto.priceChangeString.value,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: controllerCrypto
-                                          .priceChangeString.value.length >
-                                          6
-                                          ? 12
-                                          : 16,
-                                      color: controllerCrypto.priceChange.value >= 0
-                                          ? AppTheme.successColor
-                                          : AppTheme.errorColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
