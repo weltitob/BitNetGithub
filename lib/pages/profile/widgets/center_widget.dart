@@ -13,10 +13,10 @@ class CenterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
     return Positioned(
-      bottom: AppTheme.cardPadding,
+      bottom: 0,
       child: Container(
-        height: AppTheme.cardPadding * 1.75,
-        width: MediaQuery.of(context).size.width,
+        height: AppTheme.cardPadding * 2,
+        width: AppTheme.cardPadding * 10,
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusBigger,
           boxShadow: [AppTheme.boxShadowProfile],
@@ -28,6 +28,8 @@ class CenterWidget extends StatelessWidget {
           borderRadius: BorderRadius.only(
             bottomLeft: AppTheme.cornerRadiusMid,
             bottomRight: AppTheme.cornerRadiusMid,
+            topLeft: AppTheme.cornerRadiusMid,
+            topRight: AppTheme.cornerRadiusMid,
           ),
           child: Container(
             child: Row(
