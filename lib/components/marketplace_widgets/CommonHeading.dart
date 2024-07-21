@@ -33,7 +33,7 @@ class CommonHeading extends StatefulWidget {
 }
 
 class _CommonHeadingState extends State<CommonHeading> {
-  bool openCloseCollapse = true;
+  bool openCloseCollapse = false;
   @override
   Widget build(BuildContext context) {
     return Column(

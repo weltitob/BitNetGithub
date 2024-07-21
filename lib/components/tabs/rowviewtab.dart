@@ -84,7 +84,6 @@ class _RowViewTabState extends State<RowViewTab>
                       Padding(
                         padding: const EdgeInsets.only(
                             left: AppTheme.elementSpacing,
-                            top: AppTheme.cardPadding,
                             bottom: AppTheme.elementSpacing * 1.5),
                         child: Row(
                           children: [
