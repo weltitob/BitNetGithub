@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/appbaractions.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/items/userresult.dart';
@@ -188,21 +189,27 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                 ),
               ),
             ),
-            Positioned(
-                bottom: AppTheme.cardPadding * 2.h,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppTheme.cardPadding),
-                  child: Container(
-                      alignment: Alignment.center,
-                      height: AppTheme.cardPadding * 2.5.h,
-                      width: screenWidth - AppTheme.cardPadding * 2.w,
-                      child: LongButtonWidget(
-                        customWidth: AppTheme.cardPadding * 14.w,
-                        title: L10n.of(context)!.recoverAccount,
-                        onTap: () {},
-                      )),
-                )),
+            // Positioned(
+            //     bottom: AppTheme.cardPadding * 2.h,
+            //     child: Padding(
+            //       padding: const EdgeInsets.symmetric(
+            //           horizontal: AppTheme.cardPadding),
+            //       child: Container(
+            //           alignment: Alignment.center,
+            //           height: AppTheme.cardPadding * 2.5.h,
+            //           width: screenWidth - AppTheme.cardPadding * 2.w,
+            //           child: LongButtonWidget(
+            //             customWidth: AppTheme.cardPadding * 14.w,
+            //             title: L10n.of(context)!.recoverAccount,
+            //             onTap: () {},
+            //           )),
+            //     )),
+            BottomCenterButton(
+              buttonTitle: L10n.of(context)!.recoverAccount,
+              onButtonTap: () {
+              },
+              buttonState: ButtonState.idle,
+            ),
           ]),
           context: context);
     });
