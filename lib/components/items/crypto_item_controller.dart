@@ -6,9 +6,7 @@ import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
-class CryptoItemController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class CryptoItemController extends GetxController with GetSingleTickerProviderStateMixin {
   late List<ChartLine> onedaychart = <ChartLine>[].obs;
   RxBool loading = true.obs;
   Color animationColor = Colors.transparent;
@@ -26,19 +24,20 @@ class CryptoItemController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    getChartLine("BTC", "USD",);
+    getChartLine(
+      "BTC",
+      "USD",
+    );
     controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 2000),
     );
-    animation = ColorTween(begin: animationColor, end: Colors.transparent)
-        .animate(controller)
+    animation = ColorTween(begin: animationColor, end: Colors.transparent).animate(controller)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           isBlinking.value = false;
           controller.reverse();
-          animation = ColorTween(begin: animationColor, end: Colors.transparent)
-              .animate(controller);
+          animation = ColorTween(begin: animationColor, end: Colors.transparent).animate(controller);
           controller.reset();
         }
       });
@@ -63,22 +62,19 @@ class CryptoItemController extends GetxController
         onedaychart = chartClassDay.chartLine;
         currentPrice.value = chartClassDayMin.chartLine.last.price;
         currentPriceString.value = currentPrice.toStringAsFixed(2);
-        priceOneTimestampAgo.value =
-            double.parse(currentPrice.toStringAsFixed(2));
+        priceOneTimestampAgo.value = double.parse(currentPrice.toStringAsFixed(2));
         firstPrice.value = chartClassDayMin.chartLine.first.price;
         priceChange.value = (currentPrice - firstPrice.value) / firstPrice.value;
         priceChangeString.value = toPercent(priceChange.value);
         loading.value = false;
       } catch (e) {
-        logger.e("Charts could not be created for cryptoitem resulting in error" +
-            e.toString());
+        logger.e("Charts could not be created for cryptoitem resulting in error" + e.toString());
         //loading.value = false;
       }
-    } else{
+    } else {
       //get the price from firebase get the chart from firebase and show this then
       loading.value = false;
     }
-
   }
 
   void colorUpdater() {

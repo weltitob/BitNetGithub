@@ -196,7 +196,8 @@ dependencies:
   geocoding: ^3.0.0
   carousel_slider: ^4.2.1
   scrollable_positioned_list: ^0.3.8
-  internet_popup: ^1.0.8+5
+  flutter_keyboard_size: ^1.0.1
+  #internet_popup: ^1.0.8+5
 
 dev_dependencies:
   flutter_test:

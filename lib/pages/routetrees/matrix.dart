@@ -14,7 +14,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:internet_popup/internet_popup.dart';
+// import 'package:internet_popup/internet_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -52,19 +52,19 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     });
     initMatrix();
     initLoadingDialog();
-    InternetPopup().initializeCustomWidget(
-      context: context,
-      widget: FutureBuilder(
-          future: Future.delayed(Duration(milliseconds: 100)),
-          builder: (context, snapshot) {
-            print(snapshot.data);
-             showOverlayInternet(context, 'No Internet Connection',
-                color: AppTheme.errorColor);
+    // InternetPopup().initializeCustomWidget(
+    //   context: context,
+    //   widget: FutureBuilder(
+    //       future: Future.delayed(Duration(milliseconds: 100)),
+    //       builder: (context, snapshot) {
+    //         print(snapshot.data);
+    //          showOverlayInternet(context, 'No Internet Connection',
+    //             color: AppTheme.errorColor);
             
 
-            return SizedBox();
-          }),
-    );
+    //         return SizedBox();
+    //       }),
+    // );
   }
 
   void initMatrix() {

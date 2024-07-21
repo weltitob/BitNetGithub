@@ -130,7 +130,7 @@ class BitcoinPriceStream {
 
   Future<void> _fetchAndUpdate() async {
     LoggerService logger = Get.find();
-    //logger.d("Fetching bitcoin price in $localCurrency...");
+    logger.d("Fetching bitcoin price in $localCurrency...");
     try {
       final Map<String, String> params = {
         'ids': 'bitcoin',
@@ -149,15 +149,15 @@ class BitcoinPriceStream {
         // TODO: the command is not returning the time, only the price.
         final double time =
             double.tryParse(data['bitcoin']['last_updated_at'].toString()) ?? 0;
-        //logger.d("Price of bitcoin in $localCurrency: $price");
+        logger.d("Price of bitcoin in $localCurrency: $price");
         final ChartLine latestChartLine = ChartLine(time: time, price: price);
         _priceController.add(latestChartLine);
       } else {
-        // logger.e(
-        //     "Error fetching Bitcoin price stream data: ${response.statusCode} ${response.data}");
+         logger.e(
+             "Error fetching Bitcoin price stream data: ${response.statusCode} ${response.data}");
       }
     } catch (e) {
-      // logger.e("Error fetching Bitcoin price: $e");
+       logger.e("Error fetching Bitcoin price: $e");
     }
   }
 

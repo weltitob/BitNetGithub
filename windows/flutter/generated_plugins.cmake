@@ -4,7 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   cloud_firestore
-  connectivity_plus_windows
+  connectivity_plus
   desktop_drop
   desktop_lifecycle
   dynamic_color

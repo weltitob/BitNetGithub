@@ -35,6 +35,7 @@ import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mime/mime.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -200,7 +201,12 @@ class _CreateAssetState extends State<CreateAsset> {
     // if (file == null) return;
     //removed compression only add when the file size is bigger then 1mb
     // file = compressImage(file, postId); //this is jpg now then lol
-   
+        final PermissionState ps =
+                                  await PhotoManager.requestPermissionExtend();
+                              if (!ps.isAuth && !ps.hasAccess) {
+                                showOverlay(context, 'please give the app photo access to continue.', color: AppTheme.errorColor);
+                                return;
+                              }
     File? file = await ImagePickerBottomSheet(context, onImageTap: (album, image) async {
       File? file =  await image.file;
       context.pop(file);

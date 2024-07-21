@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/lnd/subscribe_invoices.dart';
@@ -30,8 +32,7 @@ class ReceiveScreen extends StatefulWidget {
   State<ReceiveScreen> createState() => _ReceiveScreenState();
 }
 
-class _ReceiveScreenState extends State<ReceiveScreen>
-    with SingleTickerProviderStateMixin {
+class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProviderStateMixin {
   final controller = Get.find<ReceiveController>();
   late TabController _tabController;
 
@@ -58,16 +59,15 @@ class _ReceiveScreenState extends State<ReceiveScreen>
     controller.getInvoice(0, "");
     controller.getTaprootAddress();
     controller.duration = Duration(minutes: 20);
-    controller.timer =
-        Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+    controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
 
     LoggerService logger = Get.find();
 
     //Onchain checking for transactions
     subscribeTransactionsStream().listen((restResponse) {
       logger.i("subscribeTransactionsStream got data: $restResponse");
-      BitcoinTransaction bitcoinTransaction =
-          BitcoinTransaction.fromJson(restResponse.data);
+      BitcoinTransaction bitcoinTransaction = BitcoinTransaction.fromJson(restResponse.data);
+      sendPaymentDataOnchainReceived(restResponse.data);
 
       showOverlayTransaction(
           context,
@@ -112,9 +112,9 @@ class _ReceiveScreenState extends State<ReceiveScreen>
         //generate a new invoice for the user with 0 amount
         logger.i("Generating new empty invoice for user");
         ReceiveController(context).getInvoice(0, "Empty invoice");
+        sendPaymentDataInvoiceReceived(restResponse.data);
       } else {
-        logger.i(
-            "Invoice received but not settled yet: ${receivedInvoice.settled}");
+        logger.i("Invoice received but not settled yet: ${receivedInvoice.settled}");
       }
     }, onError: (error) {
       logger.e("Received error for Invoice-stream: $error");
@@ -133,8 +133,8 @@ class _ReceiveScreenState extends State<ReceiveScreen>
 
   @override
   Widget build(BuildContext context) {
-    double glassContainerLeftPosition = _tabController.animation!.value *
-        (MediaQuery.of(context).size.width / 2.5 - AppTheme.cardPadding * .5);
+    double glassContainerLeftPosition =
+        _tabController.animation!.value * (MediaQuery.of(context).size.width / 2.5 - AppTheme.cardPadding * .5);
 
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
@@ -154,26 +154,15 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                         customWidth: AppTheme.cardPadding * 4,
                         leadingIcon: controller.createdInvoice.value
                             ? Icon(FontAwesomeIcons.cancel,
-                                color: Theme.of(context).brightness ==
-                                        Brightness.light
-                                    ? AppTheme.black60
-                                    : AppTheme.white80)
+                                color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80)
                             : Icon(FontAwesomeIcons.refresh,
-                                color: Theme.of(context).brightness ==
-                                        Brightness.light
-                                    ? AppTheme.black60
-                                    : AppTheme.white80),
-                        title:
-                            "${controller.min.value}:${controller.sec.value}",
+                                color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80),
+                        title: "${controller.min.value}:${controller.sec.value}",
                         onTap: () {
-                          controller.getInvoice(
-                              (double.parse(controller.satController.text))
-                                  .toInt(),
-                              "");
+                          controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
                           controller.timer.cancel();
                           controller.duration = Duration(minutes: 20);
-                          controller.timer = Timer.periodic(
-                              Duration(seconds: 1), controller.updateTimer);
+                          controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
                         });
                   })
                 : RoundedButtonWidget(
@@ -203,8 +192,7 @@ class _ReceiveScreenState extends State<ReceiveScreen>
                 height: AppTheme.cardPadding.h * 4,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing),
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                 child: Container(
                   height: AppTheme.cardPadding * 2,
                   child: TabBar(
@@ -263,5 +251,13 @@ class _ReceiveScreenState extends State<ReceiveScreen>
       ),
       context: context,
     );
+  }
+
+  void sendPaymentDataInvoiceReceived(Map<String, dynamic> data) {
+    btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').add(data);
+  }
+
+  void sendPaymentDataOnchainReceived(Map<String, dynamic> data) {
+    btcReceiveRef.doc(Auth().currentUser!.uid).collection('onchain').add(data);
   }
 }

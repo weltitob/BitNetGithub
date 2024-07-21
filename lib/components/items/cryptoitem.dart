@@ -49,9 +49,20 @@ class _CryptoItemState extends State<CryptoItem> {
 
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final chartLine = Get.find<WalletsController>().chartLines.value;
-    final currency =
-        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    updateChart();
+    Get.find<WalletsController>().chartLines.listen((a){
+      logger.i("updated chart");
+      updateChart(); 
+      if(mounted) {
+      setState((){});
+
+      }
+      });
+  }
+
+  
+  void updateChart() {
+      final chartLine = Get.find<WalletsController>().chartLines.value;
     if (chartLine != null) {
       controllerCrypto.priceOneTimestampAgo = controllerCrypto.currentPrice;
       controllerCrypto.currentPrice.value = chartLine.price;
