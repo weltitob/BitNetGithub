@@ -65,7 +65,7 @@ class _RowViewTabState extends State<RowViewTab>
                   // Check if all loaded assets in this group have the same "collection" value
                   String displayName = groupName;
                   final loadedAssetsMeta = groupAssets
-                      .take(20)
+                      .take(10)
                       .map((asset) => controller.assetMetaMap[asset.assetGenesis!.assetId ?? ''])
                       .where((meta) => meta != null)
                       .toList();
@@ -122,7 +122,7 @@ class _RowViewTabState extends State<RowViewTab>
                           crossAxisSpacing: AppTheme.elementSpacing.w / 2,
                           childAspectRatio: (size.width / 2) / 240.w, // Adjust according to your design
                         ),
-                        itemCount: groupAssets.length > 20 ? 20 : groupAssets.length,
+                        itemCount: groupAssets.length > 10 ? 10 : groupAssets.length,
                         itemBuilder: (context, index) {
                           final asset = groupAssets[index];
                           final meta = controller.assetMetaMap[
@@ -144,7 +144,7 @@ class _RowViewTabState extends State<RowViewTab>
                           );
                         },
                       ),
-                      if (groupAssets.length > 20)
+                      if (groupAssets.length > 10)
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Center(
