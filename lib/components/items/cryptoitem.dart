@@ -51,7 +51,12 @@ class _CryptoItemState extends State<CryptoItem> {
     updateChart();
     Get.find<WalletsController>().chartLines.listen((a){
       logger.i("updated chart");
-      updateChart(); setState((){});});
+      updateChart(); 
+      if(mounted) {
+      setState((){});
+
+      }
+      });
   }
 
   

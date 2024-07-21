@@ -60,10 +60,12 @@ class SendBTCScreen extends GetWidget<SendsController> {
         },
         child: Column(
           children: [
-            Expanded(
-              child: (controller.sendType == SendType.Invoice || controller.sendType == SendType.LightningUrl)
-                  ? LightningSendTab()
-                  : OnChainSendTab(),
+            Obx(
+              ()=> Expanded(
+                child: controller.initializedValues.value ? (controller.sendType == SendType.Invoice || controller.sendType == SendType.LightningUrl)
+                    ? LightningSendTab()
+                    : OnChainSendTab() : CircularProgressIndicator(),
+              ),
             ),
           ],
         ),

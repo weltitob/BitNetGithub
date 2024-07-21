@@ -1,4 +1,3 @@
-
 class BitcoinTransaction {
   String? txHash;
   String? amount;
@@ -35,14 +34,32 @@ class BitcoinTransaction {
       numConfirmations: json['num_confirmations'] ?? '',
       blockHash: json['block_hash'] ?? '',
       blockHeight: json['block_height'] ?? '',
-      timeStamp: int.parse(json['time_stamp']??0),
+      timeStamp: json['time_stamp'] is int ? json['time_stamp'] : int.parse(json['time_stamp'] ?? 0),
       totalFees: json['total_fees'] ?? '',
       destAddresses: List<String>.from(json['dest_addresses'].map((x) => x as String)),
       outputDetails: List<OutputDetail>.from(json['output_details'].map((x) => OutputDetail.fromJson(x as Map<String, dynamic>))),
       rawTxHex: json['raw_tx_hex'] as String?,
       label: json['label'] as String?,
-      previousOutpoints: List<PreviousOutpoint>.from(json['previous_outpoints'].map((x) => PreviousOutpoint.fromJson(x as Map<String, dynamic>))),
+      previousOutpoints:
+          List<PreviousOutpoint>.from(json['previous_outpoints'].map((x) => PreviousOutpoint.fromJson(x as Map<String, dynamic>))),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'tx_hash': txHash ?? '',
+      'amount': amount ?? '',
+      'num_confirmations': numConfirmations ?? '',
+      'block_hash': blockHash,
+      'block_height': blockHeight ?? '',
+      'time_stamp': timeStamp ?? 0,
+      'total_fees': totalFees ?? '',
+      'dest_addresses': destAddresses,
+      'output_details': outputDetails.map((x) => x.toJson()),
+      'raw_tx_hex': rawTxHex ?? '',
+      'label': label ?? '',
+      'previous_outpoints': previousOutpoints.map((x) => x.toJson())
+    };
   }
 }
 
@@ -68,10 +85,21 @@ class OutputDetail {
       outputType: json['output_type']!,
       address: json['address']!,
       pkScript: json['pk_script']!,
-      outputIndex: int.parse(json['output_index']),
+      outputIndex: json['output_index'] is int ? json['output_index'] : int.parse(json['output_index']),
       amount: json['amount']!,
       isOurAddress: json['is_our_address'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'output_type': outputType,
+      'address': address,
+      'pk_script': pkScript,
+      'output_index': outputIndex,
+      'amount': amount,
+      'is_our_address': isOurAddress
+    };
   }
 }
 
@@ -90,6 +118,10 @@ class PreviousOutpoint {
       isOurOutput: json['is_our_output'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {'outpoint': outpoint, 'is_our_output': isOurOutput};
+  }
 }
 
 class BitcoinTransactionsList {
@@ -102,6 +134,11 @@ class BitcoinTransactionsList {
   factory BitcoinTransactionsList.fromJson(Map<String, dynamic> json) {
     return BitcoinTransactionsList(
       transactions: List<BitcoinTransaction>.from(json['transactions'].map((x) => BitcoinTransaction.fromJson(x as Map<String, dynamic>))),
+    );
+  }
+  factory BitcoinTransactionsList.fromList(List<Map<String, dynamic>> json) {
+    return BitcoinTransactionsList(
+      transactions: List<BitcoinTransaction>.from(json.map((x) => BitcoinTransaction.fromJson(x))),
     );
   }
 }

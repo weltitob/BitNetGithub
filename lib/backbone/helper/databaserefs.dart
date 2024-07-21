@@ -11,7 +11,8 @@ final followingRef = FirebaseFirestore.instance.collection("following");
 final activityFeedRef = FirebaseFirestore.instance.collection("activityFeed");
 final postsCollection = FirebaseFirestore.instance.collection("posts");
 final usersCountRef = FirebaseFirestore.instance.collection("usersCount");
-
+final btcSendsRef = FirebaseFirestore.instance.collection("send_receipts");
+final btcReceiveRef = FirebaseFirestore.instance.collection("receive_receipts");
 //after bitnetold posts has been added
 final storageRef = FirebaseStorage.instance.ref();
 final commentsRef = FirebaseFirestore.instance.collection('comments');
