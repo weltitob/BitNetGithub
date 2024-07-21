@@ -89,6 +89,7 @@ class SendsController extends BaseController {
   String lnUrlname = '';
   String lnUrlLogo = '';
   RxList<ReSendUser> resendUsers = RxList<ReSendUser>();
+  List<ReSendUser> lastLnUrlResends = List<ReSendUser>.empty(growable: true);
   void processParameters(BuildContext context, String? address) {
     LoggerService logger = Get.find();
     print('Process parameters for');
@@ -461,6 +462,12 @@ class SendsController extends BaseController {
         .where((user) => user != null)
         .cast<ReSendUser>());
     resendUsers.addAll([...users]);
+    //compile different lists to preview
+
+    lastLnUrlResends = resendUsers.where((test) => test.type == 'lnurl').toList();
+    if (lastLnUrlResends.isEmpty) {
+      lastLnUrlResends = resendUsers.toList();
+    }
   }
 
   void sendPaymentDataInvoice(Map<String, dynamic> data) {

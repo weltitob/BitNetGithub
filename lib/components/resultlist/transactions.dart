@@ -43,7 +43,7 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
   List<LightningPayment> lightningPayments = [];
   List<ReceivedInvoice> lightningInvoices = [];
   List<BitcoinTransaction> onchainTransactions = [];
-  List<dynamic> loopOperations = [];
+  List<Swap> loopOperations = [];
   final searchCtrl = TextEditingController();
 
   Future<bool> getOnchainTransactions() async {
@@ -184,20 +184,20 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
         }
       }
     });
-    // getLoopOperations().then((value) {
-    //   futuresCompleted++;
-    //   if (!value) {
-    //     errorCount++;
-    //     errorMessage = L10n.of(context)!.failedToLoadOperations;
-    //   }
-    //
-    //   if (futuresCompleted == 3) {
-    //     setState(() {
-    //       transactionsLoaded = true;
-    //     });
-    //     handlePageLoadErrors(errorCount, errorMessage, context);
-    //   }
-    // });
+    getLoopOperations().then((value) {
+      futuresCompleted++;
+      if (!value) {
+        errorCount++;
+        errorMessage = L10n.of(context)!.failedToLoadOperations;
+      }
+
+      if (futuresCompleted == 3) {
+        setState(() {
+          transactionsLoaded = true;
+        });
+        handlePageLoadErrors(errorCount, errorMessage, context);
+      }
+    });
   }
 
   void handlePageLoadErrors(int errorCount, String errorMessage, BuildContext context) {

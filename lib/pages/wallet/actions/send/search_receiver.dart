@@ -5,11 +5,13 @@ import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,13 +61,46 @@ class SearchReceiver extends GetWidget<SendsController> {
                   ),
                   Container(
                     margin: EdgeInsets.only(left: AppTheme.cardPadding),
-                    height: MediaQuery.of(context).size.height * 1,
+                    height: MediaQuery.of(context).size.height * 0.7,
                     width: 500,
                     child: ListView(
                         controller: controller.sendScrollerController,
+                        shrinkWrap: true,
                         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                         children: [
-                          Text("Support Bitcoin Devs", style: Theme.of(context).textTheme.titleLarge),
+                          Container(
+                            margin: EdgeInsets.only(
+                              right: AppTheme.cardPadding,
+                              left: AppTheme.cardPadding,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Featured",
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(
+                                  height: AppTheme.cardPadding,
+                                ),
+                                GlassContainer(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: AppTheme.cardPadding * 8.h,
+                                  child: Container(
+                                    margin: EdgeInsets.all(AppTheme.elementSpacing),
+                                    child: MostPopularWidget(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: AppTheme.cardPadding * 4),
+
+                          Padding(
+                              padding: EdgeInsets.only(left: AppTheme.cardPadding),
+                              child: Text("Support Bitcoin Devs", style: Theme.of(context).textTheme.titleLarge)),
                           SizedBox(
                             height: AppTheme.cardPadding / 2,
                           ),
@@ -85,28 +120,34 @@ class SearchReceiver extends GetWidget<SendsController> {
                             ),
                           ),
                           //space
-                          SizedBox(height: AppTheme.cardPadding * 4),
+                          SizedBox(height: AppTheme.cardPadding * 2),
 
                           //tab2
-                          Text("Send Again", style: Theme.of(context).textTheme.titleLarge),
-                          SizedBox(
-                            height: AppTheme.cardPadding / 2,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 125,
-                            child: HorizontalFadeListView(
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: controller.resendUsers.length,
-                                  itemBuilder: (context, i) {
-                                    return UserSendWidget(
-                                      user: controller.resendUsers[i],
-                                      controller: controller,
-                                    );
-                                  }),
+
+                          if (controller.lastLnUrlResends.isNotEmpty) ...[
+                            Padding(
+                                padding: EdgeInsets.only(left: AppTheme.cardPadding),
+                                child: Text("Send Again", style: Theme.of(context).textTheme.titleLarge)),
+                            SizedBox(
+                              height: AppTheme.cardPadding / 2,
                             ),
-                          ),
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 125,
+                              child: HorizontalFadeListView(
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: controller.lastLnUrlResends.length,
+                                    itemBuilder: (context, i) {
+                                      return UserSendWidget(
+                                        user: controller.lastLnUrlResends[i],
+                                        controller: controller,
+                                      );
+                                    }),
+                              ),
+                            ),
+                          ],
+                          Container(height: 50)
                         ]),
                   )
                   // Expanded(
@@ -143,6 +184,160 @@ class SearchReceiver extends GetWidget<SendsController> {
   }
 }
 
+class MostPopularWidget extends StatefulWidget {
+  @override
+  State<MostPopularWidget> createState() => _MostPopularWidgetState();
+}
+
+class _MostPopularWidgetState extends State<MostPopularWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [
+                Text(
+                  "Tor",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                SizedBox(
+                  height: AppTheme.elementSpacing,
+                ),
+                Avatar(
+                  size: AppTheme.cardPadding * 2.75,
+                  name: "Tor (bc...)",
+                  mxContent: Uri.parse("https://kinsta.com/wp-content/uploads/2023/03/tor-browser-logo.png"),
+                ),
+                SizedBox(
+                  height: AppTheme.elementSpacing / 2,
+                ),
+                Container(
+                  width: AppTheme.cardPadding * 3,
+                  child: Text(
+                    "bc1qtt04zfgjxg7lpqhk9vk8hnmnwf88ucwww5arsd",
+                    style: Theme.of(context).textTheme.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ],
+            ),
+            Column(
+              children: [
+                Text(
+                  "Wikileaks",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                SizedBox(
+                  height: AppTheme.elementSpacing,
+                ),
+                Avatar(
+                  size: AppTheme.cardPadding * 2.75,
+                  name: "Wikileaks (bc...)",
+                  mxContent: Uri.parse("https://miro.medium.com/v2/resize:fit:720/format:webp/0*TMH4r49yraVirAiH.png"),
+                ),
+                SizedBox(
+                  height: AppTheme.elementSpacing / 2,
+                ),
+                SizedBox(
+                  width: AppTheme.cardPadding * 3,
+                  child: Text(
+                    "bc1qcme5u6v8a4ss855jsvgae59z20f05sky494qpa",
+                    style: Theme.of(context).textTheme.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ],
+            ),
+            Column(
+              children: [
+                Text(
+                  "BitNet",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                SizedBox(
+                  height: AppTheme.elementSpacing,
+                ),
+                Avatar(
+                  size: AppTheme.cardPadding * 2.75,
+                  name: "BitNet",
+                  mxContent: Uri.parse("https://bitnet.cash"),
+                ),
+                SizedBox(
+                  height: AppTheme.elementSpacing / 2,
+                ),
+                Container(
+                  width: AppTheme.cardPadding * 3,
+                  child: Text(
+                    "bitnet@bitnet.ai",
+                    style: Theme.of(context).textTheme.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+        // SizedBox(height: AppTheme.cardPadding,),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //   children: [
+        //     Column(
+        //       children: [
+        //         Avatar(
+        //           size: AppTheme.cardPadding * 2.75,
+        //           name: "@dasihdasd",
+        //         ),
+        //         SizedBox(
+        //           height: AppTheme.elementSpacing / 2,
+        //         ),
+        //         Text(
+        //           "@jdjkdakjldsjk",
+        //           style: Theme.of(context).textTheme.bodySmall,
+        //         )
+        //       ],
+        //     ),
+        //     Column(
+        //       children: [
+        //         Avatar(
+        //           size: AppTheme.cardPadding * 2.75,
+        //           name: "@dasihdasd",
+        //         ),
+        //         SizedBox(
+        //           height: AppTheme.elementSpacing / 2,
+        //         ),
+        //         Text(
+        //           "@jdjkdakjldsjk",
+        //           style: Theme.of(context).textTheme.bodySmall,
+        //         )
+        //       ],
+        //     ),
+        //     Column(
+        //       children: [
+        //         Avatar(
+        //           size: AppTheme.cardPadding * 2.75,
+        //           name: "@dasihdasd",
+        //         ),
+        //         SizedBox(
+        //           height: AppTheme.elementSpacing / 2,
+        //         ),
+        //         Text(
+        //           "@jdjkdakjldsjk",
+        //           style: Theme.of(context).textTheme.bodySmall,
+        //         )
+        //       ],
+        //     ),
+        //   ],
+        // ),
+      ],
+    );
+  }
+}
+
 class UserSendWidget extends StatelessWidget {
   const UserSendWidget({
     super.key,
@@ -161,7 +356,7 @@ class UserSendWidget extends StatelessWidget {
         },
         child: Column(
           children: [
-            Avatar(mxContent: Uri.parse(user.profileUrl), size: AppTheme.cardPadding * 4),
+            Avatar(mxContent: Uri.parse(user.profileUrl), size: AppTheme.cardPadding * 3),
             SizedBox(
                 width: 160,
                 child: Text(
@@ -177,16 +372,18 @@ class UserSendWidget extends StatelessWidget {
 }
 
 class ReSendUser {
-  const ReSendUser({required this.profileUrl, required this.userName, required this.address});
+  const ReSendUser({required this.profileUrl, required this.userName, required this.address, required this.type});
   final String profileUrl;
   final String userName;
   final String address;
+  final String type;
 
   factory ReSendUser.fromJson(Map<String, dynamic> data) {
     return ReSendUser(
         profileUrl: data['address_logo'] ?? 'https://walletofsatoshi.com/assets/images/icon.png',
         userName: data['user_name'] ?? data['address'],
-        address: data['lnurl'] ?? data['address']);
+        address: data['lnurl'] ?? data['address'],
+        type: data['lnurl'] != null ? 'lnurl' : 'onchain');
   }
 }
 

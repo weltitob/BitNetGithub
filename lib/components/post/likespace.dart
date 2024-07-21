@@ -1,6 +1,7 @@
 import 'dart:async';
+
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -26,11 +27,15 @@ class buildLikeSpace extends StatefulWidget {
   final String targetId;
   final String ownerId;
   final dynamic rockets;
+  final String username;
+  final String postName;
 
   buildLikeSpace({
     required this.type,
     required this.targetId,
     required this.ownerId,
+    required this.username,
+    required this.postName,
     required this.rockets,
   });
 
@@ -67,7 +72,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
   int rocketcount;
   Map rocketsmap;
   bool showheart = false;
-  bool isLiked = false;
+  RxBool isLiked = false.obs;
   bool isFollowed = false;
 
   _buildLikeSpaceState({
@@ -112,6 +117,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
   //     });
   //   }
   // }
+  final homeController = Get.find<HomeController>();
 
   handleLikePost() {
     //Provider of is broken after new auth need to use something else rewatch the
@@ -130,7 +136,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
       // removeLikeToAcitivityFeed();
       setState(() {
         rocketcount -= 1;
-        isLiked = false;
+        isLiked.value = false;
         rocketsmap[currentUserId] = false;
       });
     } else if (!_isLiked) {
@@ -143,7 +149,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
       // addLikeToAcitivityFeed;
       setState(() {
         rocketcount += 1;
-        isLiked = true;
+        isLiked.value = true;
         rocketsmap[currentUserId] = true;
         showheart = true;
       });
@@ -181,6 +187,17 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    getLikes();
+  }
+
+  getLikes() async {
+    isLiked.value = (await homeController.fetchHasLiked(
+        targetId, Auth().currentUser!.uid))!;
+  }
+
   //looks similar to the "UPLOAD" Button on the create_post_screen
   @override
   Widget build(BuildContext context) {
@@ -200,80 +217,82 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
                   color: Colors.grey,
                 ),
               ),
-              LikeButton(
-                isLiked: isLiked,
-                // likeCount: rocketcount,
-                bubblesColor: BubblesColor(
-                  dotPrimaryColor: AppTheme.colorBitcoin,
-                  dotSecondaryColor: AppTheme.colorBitcoin,
-                ),
-                likeBuilder: (bool isLiked) {
-                  return Icon(
-                    isLiked ? Icons.favorite : Icons.favorite_border,
-                    color:
-                        isLiked ? AppTheme.colorBitcoin : AppTheme.colorBitcoin,
-                    size: 24,
-                  );
-                },
-                countBuilder: (rocketcount, isLiked, text) {
-                  final color = Colors.grey;
-                  return Text(
-                    rocketcount.toString(),
-                    style: TextStyle(
-                        color: color,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  );
-                },
-                onTap: (isLiked) async {
-                  final homeController = Get.find<HomeController>();
-                  final currentUser =
-                      Provider.of<UserData>(context, listen: false);
-                  print(currentUser.did);
-                  print(currentUser.displayName);
-                  final String currentUserId = currentUser.did;
-                  bool _isLiked = rocketsmap[currentUserId] == true;
-                  setState(() {
-                    rocketcount -= 1;
-                    this.isLiked = false;
-                    rocketsmap[currentUserId] = false;
-                  });
-
-                  if (_isLiked) {
-                    await homeController.deleteLikeByPostId(targetId);
-
-                    postsCollection
-                        .doc(ownerId)
-                        .collection('userPosts')
-                        .doc(targetId)
-                        .update(
-                      {'likes.$currentUserId': false},
+              Obx(
+                () => LikeButton(
+                  isLiked: isLiked.value,
+                  // likeCount: rocketcount,
+                  bubblesColor: BubblesColor(
+                    dotPrimaryColor: AppTheme.colorBitcoin,
+                    dotSecondaryColor: AppTheme.colorBitcoin,
+                  ),
+                  likeBuilder: (bool isLiked) {
+                    return Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border,
+                      color: isLiked
+                          ? AppTheme.colorBitcoin
+                          : AppTheme.colorBitcoin,
+                      size: 24,
                     );
-                    // removeLikeToAcitivityFeed();
-                  } else if (!_isLiked) {
+                  },
+                  countBuilder: (rocketcount, isLiked, text) {
+                    final color = Colors.grey;
+                    return Text(
+                      rocketcount.toString(),
+                      style: TextStyle(
+                          color: color,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    );
+                  },
+                  onTap: (isLiked) async {
+                    // final currentUser =
+                    //     await Provider.of<UserData>(context, listen: false);
+                    // final String currentUserId = currentUser!.did;
+                    bool _isLiked = rocketsmap['did'] == true;
+                    this.isLiked.value = !this.isLiked.value;
+
+                    await homeController.toggleLike(targetId);
+                    await homeController.createPost(targetId, true, true, true,
+                        widget.username, widget.postName, '');
                     setState(() {
-                      rocketcount += 1;
-                      this.isLiked = true;
-                      rocketsmap[currentUserId] = true;
-                      showheart = true;
+                      rocketcount -= 1;
+                      // this.isLiked.value = false;
+                      rocketsmap['did'] = false;
                     });
-                    await homeController.createLikes(targetId);
 
-                    postsCollection
-                        .doc(ownerId)
-                        .collection('userPosts')
-                        .doc(targetId)
-                        .update({'likes.$currentUserId': true});
-                    // addLikeToAcitivityFeed();
-
-                    Timer(Duration(milliseconds: 500), () {
+                    if (_isLiked) {
+                      postsCollection
+                          .doc(ownerId)
+                          .collection('userPosts')
+                          .doc(targetId)
+                          .update(
+                        {'likes.did': false},
+                      );
+                      // removeLikeToAcitivityFeed();
+                    } else if (!_isLiked) {
                       setState(() {
-                        showheart = false;
+                        rocketcount += 1;
+                        // this.isLiked.value = true;
+                        rocketsmap['did'] = true;
+                        showheart = true;
                       });
-                    });
-                  }
-                  return !isLiked;
-                },
+                      postsCollection
+                          .doc(ownerId)
+                          .collection('userPosts')
+                          .doc(targetId)
+                          .update({'likes.did': true});
+                      // addLikeToAcitivityFeed();
+
+                      Timer(Duration(milliseconds: 500), () {
+                        setState(() {
+                          showheart = false;
+                          print('showheart false ');
+                        });
+                      });
+                    }
+                    return !isLiked;
+                  },
+                ),
               ),
               GestureDetector(
                 onTap: handleSharePost,

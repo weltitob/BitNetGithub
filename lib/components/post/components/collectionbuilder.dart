@@ -12,21 +12,21 @@ class CollectionBuilder extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
       child: GlassContainer(
+        borderRadius: BorderRadius.circular(AppTheme.elementSpacing * 1.5),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2, vertical: AppTheme.elementSpacing / 2),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Avatar(),
-              SizedBox(width: AppTheme.elementSpacing / 2),
+              Text("Collection",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  overflow: TextOverflow.ellipsis),
               Container(
-                  width: AppTheme.cardPadding * 11,
-                  child: Center(
-                    child: Text("$data",
-                        style: Theme.of(context).textTheme.titleMedium,
-                        overflow: TextOverflow.ellipsis),
-                  )),
+                  child: Text("$data",
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.ellipsis)),
             ],
           ),
         ),

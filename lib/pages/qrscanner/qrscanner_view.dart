@@ -1,24 +1,20 @@
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/camera/qrscanneroverlay.dart';
+import 'package:bitnet/components/camera/textscanneroverlay.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 
 import '../../components/appstandards/BitNetAppBar.dart';
 import '../../components/appstandards/BitNetScaffold.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-
-import 'package:flutter/services.dart';
-import 'package:bitnet/components/camera/qrscanneroverlay.dart';
-import 'package:bitnet/components/camera/textscanneroverlay.dart';
 
 class QRScannerView extends StatelessWidget {
   final QRScannerController controller;
@@ -113,7 +109,6 @@ class QRScannerView extends StatelessWidget {
                                       .parent
                                       .uri
                                       .toFilePath();
-                                  print(fileUrl);
                                   BarcodeCapture? capture = await controller
                                       .cameraController
                                       .analyzeImage(fileUrl!);

@@ -26,6 +26,9 @@ class SettingsButton extends StatelessWidget {
             child: RoundedButtonWidget(
               buttonType: ButtonType.transparent,
               iconData: Icons.brightness_low_rounded,
+              iconColor: Theme.of(context).brightness == Brightness.light
+                  ? AppTheme.black70
+                  : AppTheme.white90,
               onTap: () {
                 BitNetBottomSheet(
                   width: double.infinity,

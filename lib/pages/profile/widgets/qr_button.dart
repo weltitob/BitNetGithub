@@ -7,15 +7,16 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class QrButton extends StatelessWidget {
-  const QrButton({super.key});
+  QrButton({super.key});
+  final controller = Get.find<ProfileController>();
 
   void onQRButtonPressed(BuildContext context) {
-    final controller = Get.find<ProfileController>();
     BitNetBottomSheet(
         width: double.infinity,
         context: context,
@@ -23,6 +24,9 @@ class QrButton extends StatelessWidget {
           context: context,
           extendBodyBehindAppBar: true,
           appBar: bitnetAppBar(
+            onTap: () {
+              context.pop(context);
+            },
             context: context,
             text: L10n.of(context)!.qrCode,
           ),
@@ -32,18 +36,25 @@ class QrButton extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.all(AppTheme.cardPadding),
+                    margin: EdgeInsets.all(AppTheme.cardPadding * 3),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: AppTheme.cardRadiusSmall),
                     child: Padding(
                       padding: const EdgeInsets.all(AppTheme.elementSpacing),
-                      child: PrettyQr(
-                        typeNumber: 5,
-                        size: AppTheme.cardPadding * 10,
+                      child: PrettyQrView.data(
+                        decoration: const PrettyQrDecoration(
+                          shape: PrettyQrSmoothSymbol(),
+                          image: PrettyQrDecorationImage(
+                            image: AssetImage('assets/logo.png'),
+                            position: PrettyQrDecorationImagePosition.embedded,
+                          ),
+                        ),
+                        // typeNumber: 5,
+                        // size: AppTheme.cardPadding * 10,
                         data: 'did: ${controller.userData.value.did}',
                         errorCorrectLevel: QrErrorCorrectLevel.M,
-                        roundEdges: true,
+                        // roundEdges: true,
                       ),
                     ),
                   ),
@@ -62,9 +73,14 @@ class QrButton extends StatelessWidget {
       child: Align(
         child: Padding(
           padding: const EdgeInsets.only(
-              left: AppTheme.cardPadding, top: AppTheme.cardPadding),
+            left: AppTheme.cardPadding,
+            top: AppTheme.cardPadding,
+          ),
           child: RoundedButtonWidget(
             iconData: Icons.qr_code_rounded,
+            iconColor: Theme.of(context).brightness == Brightness.light
+                ? AppTheme.black70
+                : AppTheme.white90,
             onTap: () {
               onQRButtonPressed(context);
             },

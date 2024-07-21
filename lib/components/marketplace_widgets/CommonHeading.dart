@@ -59,7 +59,8 @@ class _CommonHeadingState extends State<CommonHeading> {
                   ? RoundedButtonWidget(
                       size: AppTheme.cardPadding * 1.25,
                       buttonType: ButtonType.transparent,
-                      iconColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                      iconColor:
+                          Theme.of(context).colorScheme.onPrimaryContainer,
                       onTap: () => context.pushNamed(widget.onPress),
                       iconData: widget.customButtonIcon,
                     )
@@ -75,6 +76,11 @@ class _CommonHeadingState extends State<CommonHeading> {
                         width: 24.w,
                         height: 24.w,
                         decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? AppTheme.black60
+                                  : AppTheme.white60),
                           borderRadius: BorderRadius.circular(100.r),
                           color: const Color.fromRGBO(255, 255, 255, 0.1),
                         ),
@@ -87,6 +93,10 @@ class _CommonHeadingState extends State<CommonHeading> {
                           width: openCloseCollapse ? 5.w : 10.w,
                           height: openCloseCollapse ? 10.h : 5.h,
                           fit: BoxFit.contain,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? AppTheme.black60
+                                  : AppTheme.white60,
                         ),
                       ),
                     )

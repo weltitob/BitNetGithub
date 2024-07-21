@@ -18,10 +18,12 @@ class AttributesBuilder extends StatelessWidget {
     List<Map<String, String>> propertyList = [];
 
     try {
+      // Ensuring the JSON string is properly formatted
       final List<dynamic> jsonData = json.decode(attributes);
-      final propertyList = jsonData.map((item) => {
-        'trait_type': item['trait_type'],
-        'value': item['value']
+      print(jsonData);
+      propertyList = jsonData.map((item) => {
+        'trait_type': item['trait_type'] as String,
+        'value': item['value'] as String
       }).toList();
     } catch (e) {
       return Container(
@@ -31,7 +33,6 @@ class AttributesBuilder extends StatelessWidget {
           hasButton: false,
           collapseBtn: true,
           child: Container(
-            margin: EdgeInsets.only(bottom: 30.w),
             child: Text('Error parsing attributes: $e $attributes'),
           ),
         ),
@@ -39,16 +40,14 @@ class AttributesBuilder extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: CommonHeading(
         headingText: 'Properties',
         hasButton: false,
         collapseBtn: true,
         child: Container(
-          margin: EdgeInsets.only(bottom: 30.w),
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 1.7, // 9.1 / 4.5
+              childAspectRatio: 2, // 9.1 / 4.5
               crossAxisSpacing: 15,
               mainAxisSpacing: 15,
               crossAxisCount: 2,

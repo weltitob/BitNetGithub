@@ -13,7 +13,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 enum QRTyped {
   LightningMail,
   LightningUrl,
@@ -32,11 +31,9 @@ class QrScanner extends StatefulWidget {
 }
 
 class QRScannerController extends State<QrScanner> {
-
   MobileScannerController cameraController = MobileScannerController();
   bool isQRScanner = true;
   bool isLoading = false;
-
 
   QRTyped determineQRType(dynamic encodedString) {
     LoggerService logger = Get.find();
@@ -46,28 +43,23 @@ class QRScannerController extends State<QrScanner> {
     print("isStringInvoice: $isStringInvoice");
     final isBitcoinValid = isBitcoinWalletValid(encodedString);
     print("isBitcoinValid: $isBitcoinValid");
-   
+
     late QRTyped qrTyped;
 
     logger.i("Determining the QR type...");
     // Logic to determine the QR type based on the encoded string
     // Return the appropriate QRTyped enum value
-    if(isLightningMailValid){
+    if (isLightningMailValid) {
       qrTyped = QRTyped.LightningMail;
-    }
-    
-    else if (isStringInvoice){
+    } else if (isStringInvoice) {
       qrTyped = QRTyped.Invoice;
-    }
-    else if (isBitcoinValid){
+    } else if (isBitcoinValid) {
       qrTyped = QRTyped.OnChain;
-    }
-    else{
+    } else {
       qrTyped = QRTyped.Unknown;
     }
     return qrTyped;
   }
-
 
   void onQRCodeScanned(dynamic encodedString, BuildContext cxt) {
     LoggerService logger = Get.find();
@@ -76,24 +68,22 @@ class QRScannerController extends State<QrScanner> {
 
     switch (type) {
       case QRTyped.LightningMail:
-      // Handle LightningMail QR code
+        // Handle LightningMail QR code
         break;
       case QRTyped.OnChain:
-       // Navigator.push(cxt, MaterialPageRoute(builder: (context)=>Send()));
+        // Navigator.push(cxt, MaterialPageRoute(builder: (context)=>Send()));
         //cxt.go("/wallet/send?walletAdress=$encodedString");
         context.pop(encodedString);
         break;
-      case QRTyped.Invoice: 
+      case QRTyped.Invoice:
         context.pop(encodedString);
-      
 
-        try { 
-        } catch (e) {
+        try {} catch (e) {
           logger.e("Failed forwarding with error: $e");
         }
         break;
       case QRTyped.Profile:
-      // Handle Profile QR code
+        // Handle Profile QR code
         break;
       case QRTyped.RestoreLogin:
         onScannedForSignIn(encodedString);
@@ -106,44 +96,36 @@ class QRScannerController extends State<QrScanner> {
     }
   }
 
-
   void onScannedForSignIn(dynamic encodedString) async {
-    try{
+    try {
       final privateData = PrivateData.fromJson(encodedString);
 
-      final signedMessage = await Auth().signMessageAuth(
-          privateData.did,
-          privateData.privateKey
-      );
+      final signedMessage =
+          await Auth().signMessageAuth(privateData.did, privateData.privateKey);
       await storePrivateData(privateData);
 
-      await Auth().signIn(
-          privateData.did,
-          signedMessage,
-          context
-      );
+      await Auth().signIn(privateData.did, signedMessage, context);
 
       setState(() {});
-    } catch(e){
+    } catch (e) {
       print("onScannedForSignIn: $e");
     }
   }
 
   void onScannedForSendingBitcoin(dynamic encodedString) async {
-
     final currentqr = QR_BitcoinAddress.fromJson(encodedString);
 
     /// a simple check if its a BTC wallet or not, regardless of its type
     final bool isValid = isBitcoinWalletValid(currentqr.bitcoinAddress);
-    print(isValid);
+    // print(isValid);
 
-    final walletType = getBitcoinWalletType(currentqr.bitcoinAddress);
-    print(walletType);
+    // final walletType = getBitcoinWalletType(currentqr.bitcoinAddress);
+    // print(walletType);
 
-    final walletdetails = getBitcoinWalletDetails(currentqr.bitcoinAddress);
-    print(walletdetails);
+    // final walletdetails = getBitcoinWalletDetails(currentqr.bitcoinAddress);
+    // print(walletdetails);
 
-    if(isValid){
+    if (isValid) {
       context.go("/wallet/send");
     } else {
       showOverlay(context, L10n.of(context)!.qrCodeFormatInvalid);

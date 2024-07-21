@@ -1,8 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/avatar.dart';
@@ -14,7 +9,6 @@ import 'package:bitnet/pages/profile/widgets/profile_button.dart';
 import 'package:bitnet/pages/profile/widgets/qr_button.dart';
 import 'package:bitnet/pages/profile/widgets/setting_button.dart';
 import 'package:bitnet/pages/profile/widgets/user_information.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -31,21 +25,28 @@ class ProfileHeader extends StatelessWidget {
         Stack(alignment: Alignment.center, children: <Widget>[
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+            children: [
               Obx(
-                ()=> Container(
+                () => Container(
                   decoration: BoxDecoration(
                     color: Colors.black,
-                    boxShadow: [AppTheme.boxShadowProfile],
+                    boxShadow: [
+                      AppTheme.boxShadowProfile,
+                    ],
                     image: DecorationImage(
-                      image: NetworkImage(controller.userData.value.backgroundImageUrl),
+                      image: NetworkImage(
+                        controller.userData.value.backgroundImageUrl,
+                      ),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
-                          Colors.black.withOpacity(0.25), BlendMode.dstATop),
+                        Colors.black.withOpacity(0.25),
+                        BlendMode.dstATop,
+                      ),
                     ),
                     borderRadius: BorderRadius.only(
-                        bottomLeft: AppTheme.cornerRadiusBig,
-                        bottomRight: AppTheme.cornerRadiusBig),
+                      bottomLeft: AppTheme.cornerRadiusBig,
+                      bottomRight: AppTheme.cornerRadiusBig,
+                    ),
                   ),
                   child: Column(
                     children: [
@@ -55,7 +56,7 @@ class ProfileHeader extends StatelessWidget {
                         children: [
                           Center(
                             child: Obx(
-                              ()=> GestureDetector(
+                              () => GestureDetector(
                                 onTap: controller.currentview.value != 2
                                     ? () {
                                         print('follow dagelassen lol');
@@ -69,42 +70,42 @@ class ProfileHeader extends StatelessWidget {
                                             true,
                                           ],
                                           actions: [
-                                            (ctx)async { Navigator.pop(ctx);
-                                              final PermissionState ps =
-                                  await PhotoManager.requestPermissionExtend();
-                              if (!ps.isAuth && !ps.hasAccess) {
-                                showOverlay(context, 'please give the app photo access to continue.', color: AppTheme.errorColor);
-                                return;
-                              }
-                                              ImagePickerNftMixedBottomSheet(context, onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
-                                                if(image != null) {
-                                                 await controller.handleProfileImageSelected(image);
-                                                } else if(pair != null) {
-                                                 await controller.handleProfileNftSelected(pair);
-                                                }
-                                                                                               Navigator.pop(context);
-                
-                                                });
-                                            },
-                                            (ctx) async{
-                                                Navigator.pop(ctx);
-                                                     final PermissionState ps =
-                                  await PhotoManager.requestPermissionExtend();
-                              if (!ps.isAuth && !ps.hasAccess) {
-                                showOverlay(context, 'please give the app photo access to continue.', color: AppTheme.errorColor);
-                                return;
-                              }
-                                               ImagePickerNftMixedBottomSheet(context, onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
-                                                if(image != null) {
-                                                 await controller.handleBackgroundImageSelected(image);
-                                                } else if(pair != null) {
-                                                 await controller.handleBackgroundNftSelected(pair);
+                                            (ctx) async {
+                                              Navigator.pop(ctx);
+                                              final PermissionState ps = await PhotoManager.requestPermissionExtend();
+                                              if (!ps.isAuth && !ps.hasAccess) {
+                                                showOverlay(context, 'please give the app photo access to continue.',
+                                                    color: AppTheme.errorColor);
+                                                return;
+                                              }
+                                              ImagePickerNftMixedBottomSheet(context,
+                                                  onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
+                                                if (image != null) {
+                                                  await controller.handleProfileImageSelected(image);
+                                                } else if (pair != null) {
+                                                  await controller.handleProfileNftSelected(pair);
                                                 }
                                                 Navigator.pop(context);
-                                               
-                                                });
+                                              });
                                             },
-                                     
+                                            (ctx) async {
+                                              Navigator.pop(ctx);
+                                              final PermissionState ps = await PhotoManager.requestPermissionExtend();
+                                              if (!ps.isAuth && !ps.hasAccess) {
+                                                showOverlay(context, 'please give the app photo access to continue.',
+                                                    color: AppTheme.errorColor);
+                                                return;
+                                              }
+                                              ImagePickerNftMixedBottomSheet(context,
+                                                  onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
+                                                if (image != null) {
+                                                  await controller.handleBackgroundImageSelected(image);
+                                                } else if (pair != null) {
+                                                  await controller.handleBackgroundNftSelected(pair);
+                                                }
+                                                Navigator.pop(context);
+                                              });
+                                            },
                                           ],
                                           images: [
                                             'assets/images/bitcoin.png',
@@ -113,7 +114,6 @@ class ProfileHeader extends StatelessWidget {
                                           texts: [
                                             'Profile Picture',
                                             'Background',
-                              
                                           ],
                                           context: context,
                                         );
@@ -121,9 +121,8 @@ class ProfileHeader extends StatelessWidget {
                                 child: Stack(
                                   children: [
                                     Obx(
-                                      ()=> Avatar(
-                                        mxContent: Uri.parse(
-                                            controller.userData.value.profileImageUrl),
+                                      () => Avatar(
+                                        mxContent: Uri.parse(controller.userData.value.profileImageUrl),
                                         size: AppTheme.cardPadding * 5.25.h,
                                         type: profilePictureType.lightning,
                                       ),
@@ -157,7 +156,5 @@ class ProfileHeader extends StatelessWidget {
         ]),
       ],
     );
-    
   }
-  
 }

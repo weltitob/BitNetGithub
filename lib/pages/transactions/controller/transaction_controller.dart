@@ -222,14 +222,14 @@ class TransactionController extends BaseController {
     return format.format(int.parse(price));
   }
 
-  int? txTime;
+  int txTime = 0;
 
   void startUpdatingTimestamp() async {
     int currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     // timeST.value = formatTimestamp(
     //     transactionModel!.status!.blockTime?.toInt() ?? currentTime);
     final firstseen = await getTimeStamp(txID!);
-    txTime = firstseen;
+    txTime = firstseen!;
     localTime.value = formatLocalTime(
         transactionModel!.status!.blockTime?.toInt() ?? currentTime);
     // timerTime = Timer.periodic(const Duration(seconds: 1), (timer) async {
@@ -888,7 +888,6 @@ class TransactionController extends BaseController {
       isLoading.value = true;
       String url =
           '${baseUrl}address/$addressId/txs?after_txid=${subTransactionModel[10].txid}';
-      log(url);
       // Timer.periodic(Duration(seconds: 5), (timer) async {
       await dioClient
           .get(url: url)

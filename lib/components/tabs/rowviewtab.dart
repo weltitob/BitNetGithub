@@ -62,15 +62,18 @@ class _RowViewTabState extends State<RowViewTab>
                   final groupName = entry.key;
                   final groupAssets = entry.value;
 
-                  // Check if all assets in this group have the same "collection" value
+                  // Check if all loaded assets in this group have the same "collection" value
                   String displayName = groupName;
-                  final firstAssetMeta = controller.assetMetaMap[groupAssets[0].assetGenesis!.assetId ?? ''];
-                  if (firstAssetMeta != null) {
-                    String? firstCollectionValue = findCollectionValue(firstAssetMeta);
-                    if (firstCollectionValue != null && groupAssets.every((asset) {
-                      final meta = controller.assetMetaMap[asset.assetGenesis!.assetId ?? ''];
-                      return meta != null && findCollectionValue(meta) == firstCollectionValue;
-                    })) {
+                  final loadedAssetsMeta = groupAssets
+                      .take(20)
+                      .map((asset) => controller.assetMetaMap[asset.assetGenesis!.assetId ?? ''])
+                      .where((meta) => meta != null)
+                      .toList();
+
+                  if (loadedAssetsMeta.isNotEmpty) {
+                    String? firstCollectionValue = findCollectionValue(loadedAssetsMeta.first!);
+                    if (firstCollectionValue != null &&
+                        loadedAssetsMeta.every((meta) => findCollectionValue(meta!) == firstCollectionValue)) {
                       displayName = firstCollectionValue;
                     }
                   }
@@ -117,25 +120,23 @@ class _RowViewTabState extends State<RowViewTab>
                           crossAxisCount: 2, // 2 items per row
                           mainAxisSpacing: AppTheme.elementSpacing.h,
                           crossAxisSpacing: AppTheme.elementSpacing.w / 2,
-                          childAspectRatio: (size.width / 2) / 230.w, // Adjust according to your design
+                          childAspectRatio: (size.width / 2) / 240.w, // Adjust according to your design
                         ),
-                        itemCount: groupAssets.length,
+                        itemCount: groupAssets.length > 20 ? 20 : groupAssets.length,
                         itemBuilder: (context, index) {
                           final asset = groupAssets[index];
                           final meta = controller.assetMetaMap[
                           asset.assetGenesis!.assetId ?? ''];
 
                           return Container(
-                            constraints: BoxConstraints(
-                              minHeight:
-                              230.w, // Set minimum height to match childAspectRatio
-                            ),
                             child: NftProductSlider(
                               scale: 0.75,
                               medias: meta?.toMedias() ?? [],
                               nftName: meta?.data ?? 'metahash',
                               nftMainName:
                               asset.assetGenesis!.name ?? 'assetID',
+                              hasListForSale: true,
+                              isOwner: true,
                               cryptoText: asset.lockTime != null
                                   ? asset.lockTime.toString()
                                   : 'price',
@@ -143,6 +144,19 @@ class _RowViewTabState extends State<RowViewTab>
                           );
                         },
                       ),
+                      if (groupAssets.length > 20)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              'Show more',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   );
                 }).toList(),
