@@ -212,6 +212,10 @@ class SendsController extends BaseController {
   }
 
   void giveValuesToOnchainSend(String onchainAdress) async {
+    resetValues();
+    btcController.text = "0.0";
+    satController.text = "0";
+
     {
       sendType = SendType.OnChain;
       hasReceiver.value = true;

@@ -6,13 +6,14 @@ import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -31,8 +32,7 @@ class LightningSendTab extends GetWidget<SendsController> {
           ListView(
             children: [
               Container(
-                height:
-                    MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
+                height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,15 +50,11 @@ class LightningSendTab extends GetWidget<SendsController> {
                           height: AppTheme.cardPadding * 5,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.cardPadding),
+                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                           child: Obx(
                             () => Text(
-                              controller.description.value.isEmpty
-                                  ? ""
-                                  : ',,${controller.description}"',
-                              style:
-                                  Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                              controller.description.value.isEmpty ? "" : ',,${controller.description}"',
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -167,12 +163,12 @@ class LightningSendTab extends GetWidget<SendsController> {
           );
   }
 
-   Widget userTile(BuildContext context) {
+  Widget userTile(BuildContext context) {
     LoggerService logger = Get.find();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         ListTile(
+        ListTile(
           // The leading widget is a circle avatar that displays an image.
           leading: Avatar(),
           // The title displays the user's name.
@@ -184,8 +180,7 @@ class LightningSendTab extends GetWidget<SendsController> {
           subtitle: cardWithNumber(context),
           // The trailing widget is an icon button that is used to edit the user's information.
           trailing: GestureDetector(
-              child: const Icon(Icons.edit_rounded,
-                  color: Colors.grey, size: AppTheme.cardPadding),
+              child: const Icon(Icons.edit_rounded, color: Colors.grey, size: AppTheme.cardPadding),
               onTap: () {
                 logger.i("Edit button pressed");
                 controller.resetValues();
@@ -200,8 +195,7 @@ class LightningSendTab extends GetWidget<SendsController> {
     return GestureDetector(
       // On tap, copies the receiver address to the clipboard and displays a snackbar
       onTap: () async {
-        await Clipboard.setData(
-            ClipboardData(text: controller.bitcoinReceiverAdress));
+        await Clipboard.setData(ClipboardData(text: controller.bitcoinReceiverAdress));
         showOverlay(context, L10n.of(context)!.walletAddressCopied);
       },
       child: Row(
@@ -223,8 +217,7 @@ class LightningSendTab extends GetWidget<SendsController> {
   }
 
   Widget bitcoinWidget(BuildContext context) {
-    String? currency =
-        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
     final chartLine = Get.find<WalletsController>().chartLines.value;
 
@@ -238,29 +231,27 @@ class LightningSendTab extends GetWidget<SendsController> {
           AmountWidget(
               ctrler: controller,
               bitcoinUnit: controller.bitcoinUnit,
-              init: (controller.sendType == SendType.LightningUrl ||
-                      controller.sendType == SendType.Invoice)
+              init: (controller.sendType == SendType.LightningUrl || controller.sendType == SendType.Invoice)
                   ? () {
-                    //IZAK: bitcoin price might be null on init, potential fix would be not allowing user to Send when
-                    //btc price is unknown, currently temporary fix of letting currencyController text be "0.0"
-                      controller.currencyController.text =
-                      bitcoinPrice != null ? 
-                          CurrencyConverter.convertCurrency(
-                              "SATS",
-                              double.parse(controller.satController.text),
-                              currency!,
-                              bitcoinPrice) : "0.0";
+                      //IZAK: bitcoin price might be null on init, potential fix would be not allowing user to Send when
+                      //btc price is unknown, currently temporary fix of letting currencyController text be "0.0"
+                      controller.currencyController.text = bitcoinPrice != null
+                          ? CurrencyConverter.convertCurrency("SATS", double.parse(controller.satController.text), currency!, bitcoinPrice)
+                          : "0.0";
+
+                      if (controller.bitcoinUnit == BitcoinUnits.BTC) {
+                        controller.btcController.text =
+                            CurrencyConverter.convertSatoshiToBTC(double.parse(controller.satController.text)).toString();
+                      }
                     }
                   : null,
-              enabled: () =>
-                  double.parse(controller.currencyController.text) == 0 ||
-                  controller.sendType == SendType.LightningUrl,
+              enabled: () => double.parse(controller.currencyController.text) == 0 || controller.sendType == SendType.LightningUrl,
               btcController: controller.btcController,
               satController: controller.satController,
               currController: controller.currencyController,
               focusNode: controller.myFocusNodeMoney,
               context: context,
-                swapped: Get.find<WalletsController>().reversed.value,
+              swapped: Get.find<WalletsController>().reversed.value,
               lowerBound: controller.lowerBound,
               upperBound: controller.upperBound,
               boundType: controller.boundType,
