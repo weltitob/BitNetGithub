@@ -244,7 +244,22 @@ class SendsController extends BaseController {
       lnUrlLogo = (await extractLogoUrl(logoUrl)) ?? '';
     } else {
       lnResult = await getParams(finalLnUrl);
-      lnUrlname = finalLnUrl.split('lnurlp/').length > 1 ? finalLnUrl.split('lnurlp/')[1] : '';
+      if (lnResult.payParams != null) {
+        String url = lnResult.payParams!.metadata;
+        List<dynamic> metadata = jsonDecode(url);
+        String? identifierString = metadata.where((t) => t is List && t.contains('text/identifier')).firstOrNull?[1];
+        if (identifierString != null) {
+          List<String> lnUrlParts = identifierString.split('@');
+
+          lnUrlname = lnUrlParts[0];
+          dynamic logoUrl = 'https://${lnUrlParts[1]}';
+          try {
+            lnUrlLogo = (await extractLogoUrl(logoUrl)) ?? '';
+          } catch (e) {
+            lnUrlLogo = '';
+          }
+        }
+      }
     }
     if (lnResult.payParams != null) {
       hasReceiver.value = true;
