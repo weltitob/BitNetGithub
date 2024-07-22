@@ -200,9 +200,9 @@ class OnChainSendTab extends GetWidget<SendsController> {
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
-    final currencyEquivalent = bitcoinPrice != null
-        ? (controller.feesDouble / 100000000 * bitcoinPrice).toStringAsFixed(2)
-        : "0.00";
+    // final currencyEquivalent = bitcoinPrice != null
+    //     ? (controller.feesDouble / 100000000 * bitcoinPrice).toStringAsFixed(2)
+    //     : "0.00";
     controller.currencyController.text = bitcoinPrice != null ? CurrencyConverter.convertCurrency(
         "SATS",
         double.parse(controller.satController.text),

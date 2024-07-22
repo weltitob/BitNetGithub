@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/profile_header.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
@@ -71,6 +71,7 @@ class _ProfileViewState extends State<ProfileView> {
                 controller: controller.scrollController,
                 children: [
                   ProfileHeader(),
+                  SizedBox(height: AppTheme.cardPadding * 0.75,),
                   Obx(() {
                     return controller.pages[controller.currentview.value];
                   }),
@@ -83,10 +84,10 @@ class _ProfileViewState extends State<ProfileView> {
             customHeight: AppTheme.cardPadding * 2,
             customWidth: AppTheme.cardPadding * 4,
             leadingIcon: Icon(
-              Icons.add,
+              FontAwesomeIcons.add,
               color: Theme.of(context).brightness == Brightness.light
-                  ? AppTheme.white100
-                  : AppTheme.black90,
+                  ? AppTheme.black80
+                  : AppTheme.white80,
             ),
             title: 'Add',
             onTap: () {

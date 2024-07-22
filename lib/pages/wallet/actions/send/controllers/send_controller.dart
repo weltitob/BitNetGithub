@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/finalizepsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/fundpsbt.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/listunspent.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/publishtransaction.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/security/biometrics/biometric_check.dart';
@@ -24,7 +26,9 @@ import 'package:bitnet/models/bitcoin/walletkit/utxorequest.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
+import 'package:bitnet/pages/wallet/actions/send/search_receiver.dart';
 import 'package:bolt11_decoder/bolt11_decoder.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_lnurl/dart_lnurl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,9 +49,6 @@ class SendsController extends BaseController {
     onQRCodeScanned(value, context);
   }
 
-
-
-
   Future<void> getClipboardData() async {
     LoggerService logger = Get.find();
     ClipboardData? data = await Clipboard.getData('text/plain');
@@ -55,8 +56,8 @@ class SendsController extends BaseController {
     handleSearch(data?.text ?? '');
   }
 
-
   BitcoinUnits bitcoinUnit = BitcoinUnits.BTC;
+  RxBool initializedValues = false.obs;
   RxBool isLoadingExchangeRt = true.obs;
   RxBool isLoadingFees = false.obs;
   RxBool hasReceiver = false.obs;
@@ -73,36 +74,37 @@ class SendsController extends BaseController {
   RxString description = "".obs;
   late double feesDouble;
   TextEditingController satController = TextEditingController();
-  TextEditingController btcController =
-      TextEditingController(); // the controller for the amount text field
+  TextEditingController btcController = TextEditingController(); // the controller for the amount text field
   TextEditingController currencyController = TextEditingController();
-  RxBool isFinished =
-      false.obs; // a flag indicating whether the send process is finished
+  RxBool isFinished = false.obs; // a flag indicating whether the send process is finished
   dynamic moneyineur = ''; // the amount in Euro, stored as dynamic type
   double bitcoinprice = 0.0;
-  final GlobalKey<FormState> formKey =
-      GlobalKey<FormState>(); // a key for the form widget
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>(); // a key for the form widget
   String bitcoinReceiverAdress = ""; // the Bitcoin receiver address
   int? lowerBound;
   int? upperBound;
   BitcoinUnits? boundType;
   String? lnCallback;
+  //for storing lnUrl user Data
+  String lnUrlname = '';
+  String lnUrlLogo = '';
+  RxList<ReSendUser> resendUsers = RxList<ReSendUser>();
+  List<ReSendUser> lastLnUrlResends = List<ReSendUser>.empty(growable: true);
   void processParameters(BuildContext context, String? address) {
     LoggerService logger = Get.find();
     print('Process parameters for');
     logger.i("Process parameters for sendscreen called");
 
-    Map<String, String> queryParams =
-        GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
+    Map<String, String> queryParams = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
     String? invoice = queryParams['invoice'];
     String? walletAdress = queryParams['walletAdress'];
-    if(address != null) {
+    if (address != null) {
       walletAdress = address;
     }
     if (invoice != null) {
       logger.i("Invoice: $invoice");
       giveValuesToInvoice(invoice);
-      
+
       bitcoinUnit = BitcoinUnits.SAT;
     } else if (walletAdress != null) {
       onQRCodeScanned(walletAdress, context);
@@ -130,15 +132,13 @@ class SendsController extends BaseController {
     // Logic to determine the QR type based on the encoded string
     // Return the appropriate QRTyped enum value
     if (isLightningMailValid) {
-      
       qrTyped = QRTyped.LightningMail;
-    }else if (isLnUrl) {
+    } else if (isLnUrl) {
       qrTyped = QRTyped.LightningUrl;
-     }  else if (isStringInvoice) {
+    } else if (isStringInvoice) {
       qrTyped = QRTyped.Invoice;
     } else if (isBitcoinValid) {
       qrTyped = QRTyped.OnChain;
-      
     } else {
       qrTyped = QRTyped.Unknown;
     }
@@ -152,7 +152,7 @@ class SendsController extends BaseController {
 
     switch (type) {
       case QRTyped.LightningUrl:
-      giveValuesToLnUrl(encodedString);
+        giveValuesToLnUrl(encodedString);
         break;
       case QRTyped.LightningMail:
         // Handle LightningMail QR code
@@ -164,8 +164,7 @@ class SendsController extends BaseController {
         giveValuesToOnchainSend(encodedString);
         break;
       case QRTyped.Invoice:
-        logger.i(
-            "Invoice was detected will forward to Send screen with invoice: $encodedString");
+        logger.i("Invoice was detected will forward to Send screen with invoice: $encodedString");
         showOverlay(context, encodedString);
         giveValuesToInvoice(encodedString);
         //cxt.go("/wallet/send?walletAdress=$encodedString");
@@ -177,28 +176,30 @@ class SendsController extends BaseController {
       //  onScannedForSignIn(encodedString);
       case QRTyped.Unknown:
 
-      //send to unknown qr code page which shows raw data
+        //send to unknown qr code page which shows raw data
         //context.go("/error");
         break;
       default:
       // Handle unknown QR code
     }
+    initializedValues.value = true;
   }
 
   @override
   void onInit() {
     super.onInit();
-    btcController.text = "0.00001";// set the initial amount to 0.00001
-    satController.text = "1000"; 
+    btcController.text = "0.00001"; // set the initial amount to 0.00001
+    satController.text = "1000";
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
     bitcoinReceiverAdressController = TextEditingController();
     sendScrollerController = ScrollController();
-    sendScrollerController.addListener((){
+    sendScrollerController.addListener(() {
       scrollToSearchFunc(sendScrollerController, myFocusNodeAdressSearch);
     });
     myFocusNodeAdressSearch = FocusNode();
     getClipboardData();
+    getSendUsers();
   }
 
   void resetValues() {
@@ -218,8 +219,7 @@ class SendsController extends BaseController {
       bitcoinReceiverAdress = onchainAdress;
       moneyTextFieldIsEnabled.value = true;
     }
-    dynamic fundedPsbtResponse =
-        await estimateFee(AppTheme.targetConf.toString());
+    dynamic fundedPsbtResponse = await estimateFee(AppTheme.targetConf.toString());
     final sat_per_kw = fundedPsbtResponse.data["sat_per_kw"];
     double sat_per_vbyte = double.parse(sat_per_kw); // / 4
     feesDouble = sat_per_vbyte;
@@ -227,74 +227,73 @@ class SendsController extends BaseController {
 
     print("Estimated fees: $feesDouble");
   }
+
   void giveValuesToLnUrl(String lnUrl, {bool asAddress = false}) async {
     String finalLnUrl = lnUrl;
     LNURLParseResult? lnResult = null;
-    if(asAddress) {
+    if (asAddress) {
       List<String> lnUrlParts = lnUrl.split('@');
       finalLnUrl = 'https://${lnUrlParts[1]}/.well-known/lnurlp/${lnUrlParts[0]}';
-          dynamic httpResult = await http.get(Uri.parse(finalLnUrl));
-          if(httpResult.statusCode != 200) {
-            return;
-          }
-          lnResult = LNURLParseResult(payParams: LNURLPayParams.fromJson(jsonDecode(httpResult.body)));
+      dynamic httpResult = await http.get(Uri.parse(finalLnUrl));
+      if (httpResult.statusCode != 200) {
+        return;
+      }
+      lnResult = LNURLParseResult(payParams: LNURLPayParams.fromJson(jsonDecode(httpResult.body)));
+      lnUrlname = lnUrlParts[0];
+      //for logo
+      dynamic logoUrl = 'https://${lnUrlParts[1]}';
+      lnUrlLogo = (await extractLogoUrl(logoUrl)) ?? '';
     } else {
-           lnResult = await getParams(finalLnUrl);
-
+      lnResult = await getParams(finalLnUrl);
+      lnUrlname = finalLnUrl.split('lnurlp/').length > 1 ? finalLnUrl.split('lnurlp/')[1] : '';
     }
-    if( lnResult.payParams != null ) {
+    if (lnResult.payParams != null) {
       hasReceiver.value = true;
       sendType = SendType.LightningUrl;
       bitcoinReceiverAdress = lnUrl;
       satController.text = lnResult.payParams!.minSendable.toString();
-       
+
       bitcoinUnit = BitcoinUnits.SAT;
       moneyTextFieldIsEnabled.value = false;
       lowerBound = lnResult.payParams!.minSendable;
       upperBound = lnResult.payParams!.maxSendable;
       boundType = BitcoinUnits.SAT;
       lnCallback = lnResult.payParams!.callback;
-
     }
-
   }
+
   void payLnUrl(String url, int amount, BuildContext context) async {
-    
     Uri finalUrl = Uri.parse(url + "?amount=${amount * 1000}");
 
-   dynamic response = await http.get(finalUrl);
-   dynamic body = jsonDecode(response.body);
-   String invoicePr = body["pr"];
-    List<String> invoiceStrings = [
-            invoicePr
-          ];
+    dynamic response = await http.get(finalUrl);
+    dynamic body = jsonDecode(response.body);
+    String invoicePr = body["pr"];
+    String lnUrl = bitcoinReceiverAdress;
+    List<String> invoiceStrings = [invoicePr];
 
-          Stream<RestResponse> paymentStream =
-              sendPaymentV2Stream(invoiceStrings);
-              StreamSubscription? sub;
-          sub = paymentStream.listen((RestResponse response) {
-            isFinished.value =
-                true; 
-            if (response.statusCode == "success") {
-              GoRouter.of(context).go("/feed");
-                            showOverlay(context, "Payment successful!");
-            sub!.cancel();
-            } else {
-              showOverlay(context, "Payment failed: ${response.message}");
-              isFinished.value =
-                  false; 
-                              sub!.cancel();
+    Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings);
+    StreamSubscription? sub;
+    sub = paymentStream.listen((RestResponse response) {
+      isFinished.value = true;
+      if (response.statusCode == "success") {
+        sendPaymentDataLnUrl(response.data['result'], lnUrl, lnUrlname);
+        sub!.cancel();
 
-            }
-          }, onError: (error) {
-            isFinished.value = false;
-            showOverlay(context, "An error occurred: $error");
-          }, onDone: () {
-          }, cancelOnError: true 
-              );
+        GoRouter.of(context).go("/feed");
+        showOverlay(context, "Payment successful!");
+      } else {
+        showOverlay(context, "Payment failed: ${response.message}");
+        isFinished.value = false;
+        sub!.cancel();
+      }
+    }, onError: (error) {
+      isFinished.value = false;
+      showOverlay(context, "An error occurred: $error");
+    }, onDone: () {}, cancelOnError: true);
     print(response.body);
     resetValues();
   }
+
   void giveValuesToInvoice(String invoiceString) {
     LoggerService logger = Get.find();
     logger.i("Invoice that is about to be paid for: $invoiceString");
@@ -306,7 +305,6 @@ class SendsController extends BaseController {
     satController.text = CurrencyConverter.convertBitcoinToSats(req.amount.toDouble()).toString();
     moneyTextFieldIsEnabled.value = false;
     description.value = req.tags[1].data;
-
   }
 
   changeFees(String fees) {
@@ -331,34 +329,29 @@ class SendsController extends BaseController {
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
-        if(sendType == SendType.LightningUrl) {
+        if (sendType == SendType.LightningUrl) {
           payLnUrl(lnCallback!, int.parse(satController.text), context);
-        } 
-        else if (sendType == SendType.Invoice) {
-
+        } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
 
-          List<String> invoiceStrings = [
-            bitcoinReceiverAdress
-          ]; // Assuming you want to send a list containing a single invoice for now
+          List<String> invoiceStrings = [bitcoinReceiverAdress]; // Assuming you want to send a list containing a single invoice for now
 
-          Stream<RestResponse> paymentStream =
-              sendPaymentV2Stream(invoiceStrings);
+          Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings);
           paymentStream.listen((RestResponse response) {
-            isFinished.value =
-                true; // Assuming you might want to update UI on each response
+            isFinished.value = true; // Assuming you might want to update UI on each response
             if (response.statusCode == "success") {
               // Handle success
+              if (response.data['result']['status'] != "FAILED") {
+                sendPaymentDataInvoice(response.data['result']);
+              }
               logger.i("Payment successful!");
               showOverlay(context, "Payment successful!");
               GoRouter.of(context).go("/feed");
-
             } else {
               // Handle error
               logger.i("Payment failed!");
               showOverlay(context, "Payment failed: ${response.message}");
-              isFinished.value =
-                  false; // Keep the user on the same page to possibly retry or show error
+              isFinished.value = false; // Keep the user on the same page to possibly retry or show error
             }
           }, onError: (error) {
             isFinished.value = false;
@@ -372,8 +365,7 @@ class SendsController extends BaseController {
           final amountInSat = int.parse(satController.text);
 
           dynamic restResponseListUnspent = await listUnspent();
-          UtxoRequestList utxos =
-              UtxoRequestList.fromJson(restResponseListUnspent.data);
+          UtxoRequestList utxos = UtxoRequestList.fromJson(restResponseListUnspent.data);
 
           TransactionData transactiondata = TransactionData(
               raw: RawTransactionData(
@@ -384,32 +376,26 @@ class SendsController extends BaseController {
                           outputIndex: i.outpoint.outputIndex,
                         ))
                     .toList(),
-                outputs: Outputs(
-                    outputs: {bitcoinReceiverAdress: amountInSat.toInt()}),
+                outputs: Outputs(outputs: {bitcoinReceiverAdress: amountInSat.toInt()}),
               ),
-              targetConf: AppTheme
-                  .targetConf, //The number of blocks to aim for when confirming the transaction.
+              targetConf: AppTheme.targetConf, //The number of blocks to aim for when confirming the transaction.
               account: "",
-              minConfs:
-                  4, //going for safety and not speed because for speed oyu would use the lightning network
-              spendUnconfirmed:
-                  false, //Whether unconfirmed outputs should be used as inputs for the transaction.
+              minConfs: 4, //going for safety and not speed because for speed oyu would use the lightning network
+              spendUnconfirmed: false, //Whether unconfirmed outputs should be used as inputs for the transaction.
               changeType: 0 //CHANGE_ADDRESS_TYPE_UNSPECIFIED
               );
 
           dynamic fundPsbtrestResponse = await fundPsbt(transactiondata);
-          FundedPsbtResponse fundedPsbtResponse =
-              FundedPsbtResponse.fromJson(fundPsbtrestResponse.data);
-          dynamic finalizedPsbtRestResponse =
-              await finalizePsbt(fundedPsbtResponse.fundedPsbt);
-          FinalizePsbtResponse finalizedPsbtResponse =
-              FinalizePsbtResponse.fromJson(finalizedPsbtRestResponse.data);
+          FundedPsbtResponse fundedPsbtResponse = FundedPsbtResponse.fromJson(fundPsbtrestResponse.data);
+          dynamic finalizedPsbtRestResponse = await finalizePsbt(fundedPsbtResponse.fundedPsbt);
+          FinalizePsbtResponse finalizedPsbtResponse = FinalizePsbtResponse.fromJson(finalizedPsbtRestResponse.data);
 
-          dynamic publishTransactionRestResponse = await publishTransaction(
-              finalizedPsbtResponse.rawFinalTx, ""); //txhex and label
+          RestResponse publishTransactionRestResponse = await publishTransaction(finalizedPsbtResponse.rawFinalTx, ""); //txhex and label
 
           isFinished.value = true;
-          if (publishTransactionRestResponse.statusCode == "success") {
+          if (publishTransactionRestResponse.statusCode == "200") {
+            sendPaymentDataOnchain(
+                {...finalizedPsbtRestResponse.data, ...fundPsbtrestResponse.data, 'min_confs': 4, 'address': bitcoinReceiverAdress});
             context.go("/feed");
             // Display a success message and navigate to the bottom navigation bar
           } else {
@@ -439,6 +425,57 @@ class SendsController extends BaseController {
     satController.dispose();
     currencyController.dispose();
     super.dispose();
+  }
+
+  void sendPaymentDataLnUrl(Map<String, dynamic> data, String lnUrl, String name) {
+    btcSendsRef
+        .doc(Auth().currentUser!.uid)
+        .collection('lnurl')
+        .add({...data, 'lnurl': lnUrl, 'user_name': name, 'address_logo': lnUrlLogo});
+    lnUrlname = '';
+    lnUrlLogo = '';
+  }
+
+  Future<void> getSendUsers() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcSendsRef.doc(Auth().currentUser!.uid).collection('lnurl').get();
+    QuerySnapshot<Map<String, dynamic>> snapshotChain = await btcSendsRef.doc(Auth().currentUser!.uid).collection('onchain').get();
+
+    List<ReSendUser> users = snapshot.docs
+        .map((doc) {
+          try {
+            return ReSendUser.fromJson(doc.data());
+          } catch (e) {
+            return null;
+          }
+        })
+        .where((user) => user != null)
+        .cast<ReSendUser>()
+        .toList();
+    users.addAll(snapshotChain.docs
+        .map((doc) {
+          try {
+            return ReSendUser.fromJson(doc.data());
+          } catch (e) {
+            return null;
+          }
+        })
+        .where((user) => user != null)
+        .cast<ReSendUser>());
+    resendUsers.addAll([...users]);
+    //compile different lists to preview
+
+    lastLnUrlResends = resendUsers.where((test) => test.type == 'lnurl').toList();
+    if (lastLnUrlResends.isEmpty) {
+      lastLnUrlResends = resendUsers.toList();
+    }
+  }
+
+  void sendPaymentDataInvoice(Map<String, dynamic> data) {
+    btcSendsRef.doc(Auth().currentUser!.uid).collection('lnbc').add(data);
+  }
+
+  void sendPaymentDataOnchain(Map<String, dynamic> data) {
+    btcSendsRef.doc(Auth().currentUser!.uid).collection('onchain').add(data);
   }
 }
 

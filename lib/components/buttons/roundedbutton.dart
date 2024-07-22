@@ -9,13 +9,13 @@ class RoundedButtonWidget extends StatefulWidget {
   final Function()? onTap;
   final ButtonType buttonType;
   final double size;
-  final Color iconColor;
+  final Color? iconColor;
 
   const RoundedButtonWidget({
     super.key,
     required this.iconData,
     required this.onTap,
-    this.iconColor = Colors.white,
+    this.iconColor,
     this.buttonType = ButtonType.solid,
     this.size = AppTheme.cardPadding * 2,
   });
@@ -77,7 +77,7 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
   Widget icon(BuildContext context, ButtonType buttonType) {
     return Icon(
       widget.iconData,
-      color: widget.iconColor,
+      color: widget.buttonType == ButtonType.transparent ? AppTheme.white70 : widget.iconColor ?? AppTheme.white60,
       size: widget.size * 0.6,
     );
   }

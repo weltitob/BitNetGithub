@@ -1,4 +1,3 @@
-
 class LightningPayment {
   String paymentHash;
   int value;
@@ -141,8 +140,8 @@ class Hop {
 
   factory Hop.fromJson(Map<String, dynamic> json) {
     return Hop(
-        chanId: json['chan_id'],
-        chanCapacity: json['chan_capacity'],
+      chanId: json['chan_id'],
+      chanCapacity: json['chan_capacity'],
       amtToForward: int.parse(json['amt_to_forward'].toString()),
       fee: int.parse(json['fee'].toString()),
       expiry: int.parse(json['expiry'].toString()),
@@ -175,5 +174,13 @@ class LightningPaymentsList {
       totalNumPayments: int.parse(json['total_num_payments'].toString()),
     );
   }
-}
 
+  factory LightningPaymentsList.fromList(List<Map<String, dynamic>> json) {
+    return LightningPaymentsList(
+      payments: List<LightningPayment>.from(json.map((x) => LightningPayment.fromJson(x))),
+      firstIndexOffset: -1,
+      lastIndexOffset: -1,
+      totalNumPayments: -1,
+    );
+  }
+}

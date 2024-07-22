@@ -9,7 +9,7 @@ import appkit_ui_element_colors
 import audio_session
 import cloud_firestore
 import cloud_functions
-import connectivity_plus_macos
+import connectivity_plus
 import desktop_drop
 import desktop_lifecycle
 import device_info_plus

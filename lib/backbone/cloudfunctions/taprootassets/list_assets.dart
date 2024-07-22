@@ -35,8 +35,7 @@ Future<List<Asset>> listTaprootAssets() async {
   try {
     final DioClient dioClient = Get.find<DioClient>();
     var response = await dioClient.get(url: url, headers: headers);
-
-    logger.i("Raw Response taproot assets : ");
+    logger.i("Raw Response: ${response}");
 
     if (response.statusCode == 200) {
       List<dynamic> data = response.data['assets'];

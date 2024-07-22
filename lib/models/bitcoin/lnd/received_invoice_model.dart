@@ -1,5 +1,3 @@
-
-
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:get/get.dart';
 
@@ -36,10 +34,6 @@ class ReceivedInvoice {
 
   factory ReceivedInvoice.fromJson(Map<String, dynamic> json) {
     LoggerService logger = Get.find();
-    if (json == null) {
-      logger.e('JSON data must not be null');
-      throw ArgumentError('JSON data must not be null');
-    }
 
     String parseString(dynamic value, String fieldName) {
       if (value == null) {
@@ -81,8 +75,25 @@ class ReceivedInvoice {
       amtPaidMsat: parseInt(json['amt_paid_msat'], 'amt_paid_msat'),
     );
   }
-}
 
+  Map<String, dynamic> toJson() {
+    return {
+      'memo': memo,
+      'r_preimage': rPreimage,
+      'r_hash': rHash,
+      'value': value,
+      'value_msat': valueMsat,
+      'settled': settled,
+      'creation_date': creationDate,
+      'settle_date': settleDate,
+      'payment_request': paymentRequest,
+      'state': state,
+      'amt_paid': amtPaid,
+      'amt_paid_sat': amtPaidSat,
+      'amt_paid_msat': amtPaidMsat
+    };
+  }
+}
 
 class ReceivedInvoicesList {
   final List<ReceivedInvoice> invoices;
@@ -95,9 +106,13 @@ class ReceivedInvoicesList {
       throw ArgumentError('JSON data or "invoices" key is missing or null');
     }
     return ReceivedInvoicesList(
-      invoices: List<ReceivedInvoice>.from(
-          (json['invoices'] as List).map((x) => ReceivedInvoice.fromJson(x as Map<String, dynamic>))
-      ),
+      invoices: List<ReceivedInvoice>.from((json['invoices'] as List).map((x) => ReceivedInvoice.fromJson(x as Map<String, dynamic>))),
+    );
+  }
+
+  factory ReceivedInvoicesList.fromList(List<Map<String, dynamic>> json) {
+    return ReceivedInvoicesList(
+      invoices: List<ReceivedInvoice>.from(json.map((x) => ReceivedInvoice.fromJson(x))),
     );
   }
 }

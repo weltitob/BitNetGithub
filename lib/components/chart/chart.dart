@@ -4,8 +4,10 @@ import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -84,11 +86,17 @@ class _ChartWidgetState extends State<ChartWidget> {
       days: "max",
     );
     await chartClassDay.getChartData();
-    await chartClassWeek.getChartData();
+   await chartClassWeek.getChartData();
     await chartClassMonth.getChartData();
     await chartClassYear.getChartData();
     await chartClassMax.getChartData();
+    if(chartClassDay.chartLine.isNotEmpty) {
+      Get.find<CryptoItemController>().firstPrice.value = chartClassDay.chartLine.first.price;
 
+      Get.find<WalletsController>().chartLines.value = chartClassDay.chartLine.last;
+
+    
+    }
     final maxchartunfinished = chartClassMax.chartLine.toSet().toList();
     final oneyearchartunfinished = chartClassYear.chartLine.toSet().toList();
     final onemonthchartunfinished = chartClassMonth.chartLine.toSet().toList();
@@ -125,9 +133,10 @@ class _ChartWidgetState extends State<ChartWidget> {
     trackBallValueDate = date.toString();
     //percent
     double priceChange =
-        (double.parse(_lastpriceinit.toStringAsFixed(2)) - _firstpriceinit) /
-            _firstpriceinit;
+        (currentline.last.price - currentline.first.price) /
+            currentline.first.price;
     trackBallValuePricechange = toPercent(priceChange);
+
 
     setState(() {
       _loading = false;
@@ -231,6 +240,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                   (double.parse(trackBallValuePrice) - _firstpriceexact) /
                       _firstpriceexact;
               trackBallValuePricechange = toPercent(priceChange);
+
               key.currentState!.refresh();
             }
           },

@@ -2,6 +2,7 @@ import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/center_widget.dart';
 import 'package:bitnet/pages/profile/widgets/profile_button.dart';
@@ -69,42 +70,38 @@ class ProfileHeader extends StatelessWidget {
                                             true,
                                           ],
                                           actions: [
-                                            (ctx) {
+                                            (ctx) async {
                                               Navigator.pop(ctx);
-                                              ImagePickerNftMixedBottomSheet(
-                                                  context, onImageTap:
-                                                      (AssetPathEntity? album,
-                                                          AssetEntity? image,
-                                                          MediaDatePair?
-                                                              pair) async {
+                                              final PermissionState ps = await PhotoManager.requestPermissionExtend();
+                                              if (!ps.isAuth && !ps.hasAccess) {
+                                                showOverlay(context, 'please give the app photo access to continue.',
+                                                    color: AppTheme.errorColor);
+                                                return;
+                                              }
+                                              ImagePickerNftMixedBottomSheet(context,
+                                                  onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
                                                 if (image != null) {
-                                                  await controller
-                                                      .handleProfileImageSelected(
-                                                          image);
+                                                  await controller.handleProfileImageSelected(image);
                                                 } else if (pair != null) {
-                                                  await controller
-                                                      .handleProfileNftSelected(
-                                                          pair);
+                                                  await controller.handleProfileNftSelected(pair);
                                                 }
                                                 Navigator.pop(context);
                                               });
                                             },
-                                            (ctx) {
+                                            (ctx) async {
                                               Navigator.pop(ctx);
-                                              ImagePickerNftMixedBottomSheet(
-                                                  context, onImageTap:
-                                                      (AssetPathEntity? album,
-                                                          AssetEntity? image,
-                                                          MediaDatePair?
-                                                              pair) async {
+                                              final PermissionState ps = await PhotoManager.requestPermissionExtend();
+                                              if (!ps.isAuth && !ps.hasAccess) {
+                                                showOverlay(context, 'please give the app photo access to continue.',
+                                                    color: AppTheme.errorColor);
+                                                return;
+                                              }
+                                              ImagePickerNftMixedBottomSheet(context,
+                                                  onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
                                                 if (image != null) {
-                                                  await controller
-                                                      .handleBackgroundImageSelected(
-                                                          image);
+                                                  await controller.handleBackgroundImageSelected(image);
                                                 } else if (pair != null) {
-                                                  await controller
-                                                      .handleBackgroundNftSelected(
-                                                          pair);
+                                                  await controller.handleBackgroundNftSelected(pair);
                                                 }
                                                 Navigator.pop(context);
                                               });
@@ -125,8 +122,7 @@ class ProfileHeader extends StatelessWidget {
                                   children: [
                                     Obx(
                                       () => Avatar(
-                                        mxContent: Uri.parse(controller
-                                            .userData.value.profileImageUrl),
+                                        mxContent: Uri.parse(controller.userData.value.profileImageUrl),
                                         size: AppTheme.cardPadding * 5.25.h,
                                         type: profilePictureType.lightning,
                                       ),
@@ -144,7 +140,7 @@ class ProfileHeader extends StatelessWidget {
                         ],
                       ),
                       UserInformation(),
-                      SizedBox(height: AppTheme.cardPadding * 2.h),
+                      SizedBox(height: AppTheme.cardPadding * 1.5.h),
                     ],
                   ),
                 ),

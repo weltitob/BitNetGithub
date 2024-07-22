@@ -7,7 +7,7 @@
 #include "generated_plugin_registrant.h"
 
 #include <cloud_firestore/cloud_firestore_plugin_c_api.h>
-#include <connectivity_plus_windows/connectivity_plus_windows_plugin.h>
+#include <connectivity_plus/connectivity_plus_windows_plugin.h>
 #include <desktop_drop/desktop_drop_plugin.h>
 #include <desktop_lifecycle/desktop_lifecycle_plugin.h>
 #include <dynamic_color/dynamic_color_plugin_c_api.h>

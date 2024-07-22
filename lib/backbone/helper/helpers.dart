@@ -4,6 +4,8 @@ import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:html/parser.dart' as parser;
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uuid/uuid.dart';
@@ -43,8 +45,7 @@ final datetime = DateTime.now();
 Timestamp timestamp = Timestamp.fromDate(datetime); //To TimeStamp
 
 bool isStringaDID(String input) {
-  RegExp didPattern =
-      RegExp(r'^did:[a-zA-Z0-9]+:[A-Za-z0-9._-]{22,}$', caseSensitive: false);
+  RegExp didPattern = RegExp(r'^did:[a-zA-Z0-9]+:[A-Za-z0-9._-]{22,}$', caseSensitive: false);
   return didPattern.hasMatch(input);
 }
 
@@ -68,22 +69,18 @@ containsSixIntegers(String input) {
 }
 
 bool isStringALNInvoice(String input) {
-  RegExp lnInvoicePattern =
-      RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$', caseSensitive: false);
+  RegExp lnInvoicePattern = RegExp(r'^ln[a-zA-Z0-9]+[0-9]{1,}[a-zA-Z0-9]*$', caseSensitive: false);
   return lnInvoicePattern.hasMatch(input);
 }
 
 bool isLightningAdressAsMail(String input) {
-  RegExp lightningAddressPattern = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-      caseSensitive: false);
+  RegExp lightningAddressPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', caseSensitive: false);
   return lightningAddressPattern.hasMatch(input);
 }
 
 String getRandomString(int length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return String.fromCharCodes(Iterable.generate(
-      length, (_) => characters.codeUnitAt(random.nextInt(characters.length))));
+  return String.fromCharCodes(Iterable.generate(length, (_) => characters.codeUnitAt(random.nextInt(characters.length))));
 //if already exists dont know if would actually be an problem
 
 //new generated codes need to be added to pesons own profile and als with used and unused
@@ -106,13 +103,11 @@ int timeNow() {
 
 // Get the average price of a list of items
 getaverage(dynamic currentline) {
-  return currentline.map((m) => m.price).reduce((a, b) => a + b) /
-      currentline.length;
+  return currentline.map((m) => m.price).reduce((a, b) => a + b) / currentline.length;
 }
 
 // Display the time ago from a timestamp
-String displayTimeAgoFromTimestamp(String publishedAt,
-    {bool numericDates = true}) {
+String displayTimeAgoFromTimestamp(String publishedAt, {bool numericDates = true}) {
   DateTime date = DateTime.parse(publishedAt);
   final date2 = DateTime.now();
   final difference = date2.difference(date);
@@ -199,21 +194,48 @@ String convertIntoDateFormat(int time) {
 String toPercent(double value) => NumberFormat('+#.##%; -#.##%').format(value);
 
 void scrollToSearchFunc(ScrollController ctrl, FocusNode node) {
-    if(ctrl.position.pixels <= -100 && !node.hasFocus) {
-      ctrl.jumpTo(0);
-      node.requestFocus();
-      Vibration.vibrate();
-    }
+  if (ctrl.position.pixels <= -100 && !node.hasFocus) {
+    ctrl.jumpTo(0);
+    node.requestFocus();
+    Vibration.vibrate();
   }
-  
+}
+
+Future<String?> extractLogoUrl(String baseUrl) async {
+  final response = await http.get(Uri.parse(baseUrl));
+  dynamic htmlContent;
+  if (response.statusCode == 200) {
+    htmlContent = response.body;
+  } else {
+    return null;
+  }
+  final document = parser.parse(htmlContent);
+
+  // Try to find <link rel="icon"> or <link rel="shortcut icon"> tags
+  var iconLink = document.querySelector('link[rel="icon"]')?.attributes['href'] ??
+      document.querySelector('link[rel="shortcut icon"]')?.attributes['href'] ??
+      document.querySelector('link[rel="apple-touch-icon"]')?.attributes['href'];
+
+  if (iconLink != null) {
+    return Uri.parse(baseUrl).resolve(iconLink).toString();
+  }
+
+  // If no icon link is found, try to find <meta property="og:image"> tag
+  var ogImage = document.querySelector('meta[property="og:image"]')?.attributes['content'];
+  if (ogImage != null) {
+    return Uri.parse(baseUrl).resolve(ogImage).toString();
+  }
+
+  return null;
+}
+
 // Format the input value within a specified numerical range, and display a snackbar if the value exceeds the maximum
 // This class formats a numerical input value within a specified range, and displays a snackbar if the value exceeds the maximum
 // It extends the TextInputFormatter class, which is used to modify the text being entered into a text field
 class NumericalRangeFormatter extends TextInputFormatter {
   final double min; // The minimum value allowed
   final double max; // The maximum value allowed
-  final BuildContext
-      context; // The context of the widget where the formatter is being used
+  final BuildContext context; // The context of the widget where the formatter is being used
 
   NumericalRangeFormatter({
     required this.min,
@@ -248,8 +270,7 @@ class NumericalRangeFormatter extends TextInputFormatter {
 // This class formats a numerical input value to allow only one decimal point
 class DotFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     int numDots = RegExp(r"\.").allMatches(oldValue.toString()).length;
     print("The string '$oldValue' contains $numDots dots.");
 
@@ -277,13 +298,11 @@ class DotFormatter extends TextInputFormatter {
       return newValue;
     }
   }
-
 }
 
 class MyBehavior extends ScrollBehavior {
   @override
-  Widget buildOverscrollIndicator(
-      BuildContext context, Widget child, ScrollableDetails details) {
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
 }
