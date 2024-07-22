@@ -37,9 +37,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
         context: context,
-        margin: 
-             EdgeInsets.symmetric(horizontal: 0)
-          ,
+        margin: EdgeInsets.symmetric(horizontal: 0),
         extendBodyBehindAppBar: true,
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: bitnetAppBar(
@@ -54,6 +52,9 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
           physics: NeverScrollableScrollPhysics(),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            SizedBox(
+              height: AppTheme.cardPadding * 2.5.h,
+            ),
             MnemonicFieldWidget(
                 mnemonicController: widget.mnemonicController,
                 triggerMnemonicCheck: triggerMnemonicCheck),

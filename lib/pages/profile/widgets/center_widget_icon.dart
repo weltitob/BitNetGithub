@@ -21,16 +21,16 @@ class CenterWidgetIcon extends StatelessWidget {
       return GestureDetector(
         onTap: onTap,
         child: Container(
-          width: AppTheme.cardPadding * 3.5.w,
+          width: AppTheme.cardPadding * 2.5.w,
           height: AppTheme.cardPadding * 1.75.h,
           child: Icon(
             iconData,
             size: AppTheme.iconSize,
             color: controller.currentview.value == index
-                ? Theme.of(context).colorScheme.onSecondaryContainer
+                ? Theme.of(context).colorScheme.onPrimaryContainer
                 : Theme.of(context)
                 .colorScheme
-                .onSecondaryContainer
+                .onPrimaryContainer
                 .withOpacity(0.3),
           ),
         ),

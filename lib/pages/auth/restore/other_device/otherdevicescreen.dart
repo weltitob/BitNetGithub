@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/futurelottie.dart';
@@ -45,12 +46,8 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       final screenWidth = MediaQuery.of(context).size.width;
-      bool isSuperSmallScreen =
-          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
-        margin: 
-             EdgeInsets.symmetric(horizontal: 0)
-           ,
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
@@ -60,125 +57,127 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
               Navigator.of(context).pop();
             },
             actions: [PopUpLangPickerWidget()]),
-        body: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5.ws),
-          child: ListView(
-            children: [
-              SizedBox(
-                height: AppTheme.cardPadding * 1.5.h,
-              ),
-              Text(
-                L10n.of(context)!.scanQrStepOne,
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+        body: Stack(
+          children: [
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5.ws),
+              child: ListView(
                 children: [
-                  Expanded(
-                    child: Text(
-                      L10n.of(context)!.launchBitnetApp,
-                      textAlign: TextAlign.left,
-                      maxLines: 50,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                  Container(
-                    height: AppTheme.cardPadding * 7.h,
-                    width: AppTheme.cardPadding * 7.ws,
-                    color: Colors.transparent,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: AppTheme.cardRadiusMid,
-                        color: Colors.orange.withAlpha(2),
-                      ),
-                      child: buildFutureLottie(device_morph_composition, true),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding * 1.h,
-              ),
-              Text(
-                L10n.of(context)!.scanQrStepTwo,
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                      height: AppTheme.cardPadding * 6.h,
-                      width: AppTheme.cardPadding * 6.ws,
-                      color: Colors.transparent,
-                      child: buildFutureLottie(verify_user_composition, true)),
                   SizedBox(
-                    width: AppTheme.cardPadding.ws,
+                    height: AppTheme.cardPadding * 1.5.h,
                   ),
-                  Expanded(
-                    child: Text(
-                      L10n.of(context)!.navQrRecovery,
-                      textAlign: TextAlign.left,
-                      maxLines: 50,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                  Text(
+                    L10n.of(context)!.scanQrStepOne,
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ],
-              ),
-              SizedBox(
-                height: AppTheme.cardPadding * 2.25.h,
-              ),
-              Text(
-                L10n.of(context)!.scanQrStepThree,
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(
-                height: AppTheme.elementSpacing,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Text(
-                      L10n.of(context)!.pressBtnScanQr,
-                      textAlign: TextAlign.left,
-                      maxLines: 50,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                  Container(
-                      height: AppTheme.cardPadding * 7.h,
-                      width: AppTheme.cardPadding * 7.ws,
-                      color: Colors.transparent,
-                      child: buildFutureLottie(scan_qr_composition, true)),
-                ],
-              ),
-              SizedBox(height: AppTheme.cardPadding.h),
-              Center(
-                child: LongButtonWidget(
-                    customWidth: AppTheme.cardPadding * 14.ws,
-                    title: L10n.of(context)!.scanQr,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const QrScanner(
-                              //isBottomButtonVisible: true,
-                              ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          L10n.of(context)!.launchBitnetApp,
+                          textAlign: TextAlign.left,
+                          maxLines: 50,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
-                      );
-                    }),
+                      ),
+                      Container(
+                        height: AppTheme.cardPadding * 7.h,
+                        width: AppTheme.cardPadding * 7.ws,
+                        color: Colors.transparent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: AppTheme.cardRadiusMid,
+                            color: Colors.orange.withAlpha(2),
+                          ),
+                          child: buildFutureLottie(device_morph_composition, true),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 1.h,
+                  ),
+                  Text(
+                    L10n.of(context)!.scanQrStepTwo,
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                          height: AppTheme.cardPadding * 6.h,
+                          width: AppTheme.cardPadding * 6.ws,
+                          color: Colors.transparent,
+                          child: buildFutureLottie(verify_user_composition, true)),
+                      SizedBox(
+                        width: AppTheme.cardPadding.ws,
+                      ),
+                      Expanded(
+                        child: Text(
+                          L10n.of(context)!.navQrRecovery,
+                          textAlign: TextAlign.left,
+                          maxLines: 50,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 2.25.h,
+                  ),
+                  Text(
+                    L10n.of(context)!.scanQrStepThree,
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(
+                    height: AppTheme.elementSpacing,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          L10n.of(context)!.pressBtnScanQr,
+                          textAlign: TextAlign.left,
+                          maxLines: 50,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                      Container(
+                          height: AppTheme.cardPadding * 7.h,
+                          width: AppTheme.cardPadding * 7.ws,
+                          color: Colors.transparent,
+                          child: buildFutureLottie(scan_qr_composition, true)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 3.h,
+                  )
+                ],
               ),
-              SizedBox(
-                height: AppTheme.cardPadding * 3.h,
-              )
-            ],
-          ),
+            ),
+            BottomCenterButton(
+              buttonTitle: L10n.of(context)!.scanQr,
+              onButtonTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const QrScanner(
+                      //isBottomButtonVisible: true,
+                    ),
+                  ),
+                );
+              },
+              buttonState: ButtonState.idle,
+            ),
+          ],
         ),
       );
     });

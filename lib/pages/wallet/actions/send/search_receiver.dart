@@ -43,7 +43,7 @@ class SearchReceiver extends GetWidget<SendsController> {
               Column(
                 children: [
                   SizedBox(
-                    height: AppTheme.cardPadding * 2.5,
+                    height: AppTheme.cardPadding * 2,
                   ),
                   Consumer<ScreenHeight>(
                     builder: (ctx, res, child) {
@@ -60,7 +60,6 @@ class SearchReceiver extends GetWidget<SendsController> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: AppTheme.cardPadding),
                     height: MediaQuery.of(context).size.height * 0.7,
                     width: 500,
                     child: ListView(

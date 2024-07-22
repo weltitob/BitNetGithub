@@ -140,7 +140,7 @@ class ProfileHeader extends StatelessWidget {
                         ],
                       ),
                       UserInformation(),
-                      SizedBox(height: AppTheme.cardPadding * 2.h),
+                      SizedBox(height: AppTheme.cardPadding * 1.5.h),
                     ],
                   ),
                 ),
