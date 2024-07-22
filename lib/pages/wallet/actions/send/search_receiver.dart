@@ -124,7 +124,7 @@ class SearchReceiver extends GetWidget<SendsController> {
 
                           //tab2
 
-                          if (controller.lastLnUrlResends.isNotEmpty) ...[
+                          if (controller.resendUsers.isNotEmpty) ...[
                             Padding(
                                 padding: EdgeInsets.only(left: AppTheme.cardPadding),
                                 child: Text("Send Again", style: Theme.of(context).textTheme.titleLarge)),
@@ -137,10 +137,10 @@ class SearchReceiver extends GetWidget<SendsController> {
                               child: HorizontalFadeListView(
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: controller.lastLnUrlResends.length,
+                                    itemCount: controller.resendUsers.length,
                                     itemBuilder: (context, i) {
                                       return UserSendWidget(
-                                        user: controller.lastLnUrlResends[i],
+                                        user: controller.resendUsers[i],
                                         controller: controller,
                                       );
                                     }),
