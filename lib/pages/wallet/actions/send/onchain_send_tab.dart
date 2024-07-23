@@ -12,9 +12,9 @@ import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dar
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class OnChainSendTab extends GetWidget<SendsController> {
   const OnChainSendTab({
@@ -31,8 +31,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
           ListView(
             children: [
               Container(
-                height:
-                    MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
+                height: MediaQuery.of(context).size.height - AppTheme.cardPadding * 7.5,
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,15 +49,11 @@ class OnChainSendTab extends GetWidget<SendsController> {
                           height: AppTheme.cardPadding * 5,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.cardPadding),
+                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                           child: Obx(
                             () => Text(
-                              controller.description.value.isEmpty
-                                  ? ""
-                                  : ',,${controller.description}"',
-                              style:
-                                  Theme.of(context).textTheme.bodyLarge!.copyWith(),
+                              controller.description.value.isEmpty ? "" : ',,${controller.description}"',
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -156,8 +151,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
           subtitle: cardWithNumber(context),
           // The trailing widget is an icon button that is used to edit the user's information.
           trailing: GestureDetector(
-              child: const Icon(Icons.edit_rounded,
-                  color: Colors.grey, size: AppTheme.cardPadding),
+              child: const Icon(Icons.edit_rounded, color: Colors.grey, size: AppTheme.cardPadding),
               onTap: () {
                 controller.resetValues();
               }),
@@ -171,8 +165,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
     return GestureDetector(
       // On tap, copies the receiver address to the clipboard and displays a snackbar
       onTap: () async {
-        await Clipboard.setData(
-            ClipboardData(text: controller.bitcoinReceiverAdress));
+        await Clipboard.setData(ClipboardData(text: controller.bitcoinReceiverAdress));
         showOverlay(context, L10n.of(context)!.walletAddressCopied);
       },
       child: Row(
@@ -195,19 +188,16 @@ class OnChainSendTab extends GetWidget<SendsController> {
 
   Widget bitcoinWidget(BuildContext context) {
     final chartLine = Get.find<WalletsController>().chartLines.value;
-    String? currency =
-        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
     // final currencyEquivalent = bitcoinPrice != null
     //     ? (controller.feesDouble / 100000000 * bitcoinPrice).toStringAsFixed(2)
     //     : "0.00";
-    controller.currencyController.text = bitcoinPrice != null ? CurrencyConverter.convertCurrency(
-        "SATS",
-        double.parse(controller.satController.text),
-        currency,
-        bitcoinPrice) : "0.0";
+    controller.currencyController.text = bitcoinPrice != null
+        ? CurrencyConverter.convertCurrency("SATS", double.parse(controller.satController.text), currency, bitcoinPrice)
+        : "0.0";
     return Obx(() {
       Get.find<WalletsController>().chartLines.value;
       return Padding(
@@ -216,17 +206,16 @@ class OnChainSendTab extends GetWidget<SendsController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AmountWidget(
-                bitcoinUnit: controller.bitcoinUnit,
-                enabled: () =>
-                    double.parse(controller.currencyController.text) == 0,
-                satController: controller.satController,
-                btcController: controller.btcController,
-                currController: controller.currencyController,
-                focusNode: controller.myFocusNodeMoney,
-                context: context,
-                autoConvert: true,
-                                swapped: Get.find<WalletsController>().reversed.value,
-),
+              bitcoinUnit: controller.bitcoinUnit,
+              enabled: () => true,
+              satController: controller.satController,
+              btcController: controller.btcController,
+              currController: controller.currencyController,
+              focusNode: controller.myFocusNodeMoney,
+              context: context,
+              autoConvert: true,
+              swapped: Get.find<WalletsController>().reversed.value,
+            ),
           ],
         ),
       );
