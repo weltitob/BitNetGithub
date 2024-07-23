@@ -119,9 +119,6 @@ class SearchReceiver extends GetWidget<SendsController> {
                           ),
                           //space
                           SizedBox(height: AppTheme.cardPadding * 2),
-
-                          //tab2
-
                           if (controller.resendUsers.isNotEmpty) ...[
                             Padding(
                                 padding: EdgeInsets.only(left: AppTheme.cardPadding),
