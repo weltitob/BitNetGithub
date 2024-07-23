@@ -118,11 +118,16 @@ class SendsController extends BaseController {
   }
 
   QRTyped determineQRType(dynamic encodedString) {
+    RegExp onchainQueryValidator = RegExp(r'bitcoin:(.+?)\?amount=([0-9.]+)');
+    Match? onchainQueryMatch = onchainQueryValidator.firstMatch(encodedString);
+
     final isLightningMailValid = isLightningAdressAsMail(encodedString);
     print("isLightingMailValid: $isLightningMailValid");
     final isStringInvoice = isStringALNInvoice(encodedString);
     print("isStringInvoice: $isStringInvoice");
-    final isBitcoinValid = isBitcoinWalletValid(encodedString);
+    final isBitcoinValid =
+        isBitcoinWalletValid(encodedString) || (onchainQueryMatch != null && isBitcoinWalletValid(onchainQueryMatch.group(1)));
+    ;
     print("isBitcoinValid: $isBitcoinValid");
     final isLnUrl = (encodedString as String).toLowerCase().startsWith("lnurl");
     late QRTyped qrTyped;
@@ -213,13 +218,21 @@ class SendsController extends BaseController {
 
   void giveValuesToOnchainSend(String onchainAdress) async {
     resetValues();
-    btcController.text = "0.0";
-    satController.text = "0";
+    RegExp onchainQueryValidator = RegExp(r'bitcoin:(.+?)\?amount=([0-9.]+)');
+    Match? onchainQueryMatch = onchainQueryValidator.firstMatch(onchainAdress);
 
+    if (onchainQueryMatch != null && onchainQueryMatch.group(2) != null && double.tryParse(onchainQueryMatch.group(2)!) != null) {
+      btcController.text = onchainQueryMatch.group(2)!;
+      satController.text = CurrencyConverter.convertBitcoinToSats(double.parse(onchainQueryMatch.group(2)!)).toStringAsFixed(0);
+    } else {
+      btcController.text = '0.0';
+      satController.text = '0';
+    }
+    String finalAddress = onchainQueryMatch?.group(1) != null ? onchainQueryMatch!.group(1)! : onchainAdress;
     {
       sendType = SendType.OnChain;
       hasReceiver.value = true;
-      bitcoinReceiverAdress = onchainAdress;
+      bitcoinReceiverAdress = finalAddress;
       moneyTextFieldIsEnabled.value = true;
     }
     dynamic fundedPsbtResponse = await estimateFee(AppTheme.targetConf.toString());
