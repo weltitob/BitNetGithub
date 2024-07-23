@@ -148,23 +148,6 @@ class SearchReceiver extends GetWidget<SendsController> {
                           ],
                         ]),
                   )
-                  // Expanded(
-                  //   child: SingleChildScrollView(
-                  //     physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                  //     controller: controller.sendScrollerController,
-
-                  //     reverse: false,
-                  //     child: Container(
-                  //                 height: MediaQuery.of(context).size.height * 1.5,
-                  //       child: Column(
-                  //         mainAxisSize: MainAxisSize.max,
-                  //         children: [
-                  //           Container(height: 1)
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
               BottomCenterButton(
