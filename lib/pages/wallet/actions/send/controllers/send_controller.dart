@@ -463,6 +463,9 @@ class SendsController extends BaseController {
         .doc(Auth().currentUser!.uid)
         .collection('lnurl')
         .add({...data, 'lnurl': lnUrl, 'user_name': name, 'address_logo': lnUrlLogo});
+    resendUsers.add(ReSendUser(profileUrl: lnUrlLogo, type: 'lnurl', address: lnUrl, userName: lnUrlname));
+    resendUsers.value = resendUsers.toSet().toList();
+
     lnUrlname = '';
     lnUrlLogo = '';
   }
@@ -492,7 +495,9 @@ class SendsController extends BaseController {
         })
         .where((user) => user != null)
         .cast<ReSendUser>());
+    resendUsers.clear();
     resendUsers.addAll([...users]);
+    resendUsers.value = resendUsers.toSet().toList();
     //compile different lists to preview
   }
 
@@ -502,6 +507,12 @@ class SendsController extends BaseController {
 
   void sendPaymentDataOnchain(Map<String, dynamic> data) {
     btcSendsRef.doc(Auth().currentUser!.uid).collection('onchain').add(data);
+    resendUsers.add(ReSendUser(
+        address: data['address'],
+        profileUrl: 'https://walletofsatoshi.com/assets/images/icon.png',
+        userName: data['address'],
+        type: 'onchain'));
+    resendUsers.value = resendUsers.toSet().toList();
   }
 }
 
