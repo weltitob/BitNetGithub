@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:go_router/go_router.dart';
 
@@ -107,15 +108,17 @@ class SearchReceiver extends GetWidget<SendsController> {
                             width: MediaQuery.of(context).size.width,
                             height: 125,
                             child: HorizontalFadeListView(
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: controller.resendUsers.length,
-                                  itemBuilder: (context, i) {
-                                    return UserSendWidget(
-                                      user: controller.resendUsers[i],
-                                      controller: controller,
-                                    );
-                                  }),
+                              child: Obx(
+                                () => ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: controller.resendUsers.length,
+                                    itemBuilder: (context, i) {
+                                      return UserSendWidget(
+                                        user: controller.resendUsers[i],
+                                        controller: controller,
+                                      );
+                                    }),
+                              ),
                             ),
                           ),
                           //space
@@ -134,15 +137,17 @@ class SearchReceiver extends GetWidget<SendsController> {
                               width: MediaQuery.of(context).size.width,
                               height: 125,
                               child: HorizontalFadeListView(
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: controller.resendUsers.length,
-                                    itemBuilder: (context, i) {
-                                      return UserSendWidget(
-                                        user: controller.resendUsers[i],
-                                        controller: controller,
-                                      );
-                                    }),
+                                child: Obx(
+                                  () => ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: controller.resendUsers.length,
+                                      itemBuilder: (context, i) {
+                                        return UserSendWidget(
+                                          user: controller.resendUsers[i],
+                                          controller: controller,
+                                        );
+                                      }),
+                                ),
                               ),
                             ),
                           ],
@@ -384,6 +389,14 @@ class ReSendUser {
         address: data['lnurl'] ?? data['address'],
         type: data['lnurl'] != null ? 'lnurl' : 'onchain');
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ReSendUser && address == other.address;
+  }
+
+  @override
+  int get hashCode => address.hashCode;
 }
 
 // List<UserData> fakeUsers = [
