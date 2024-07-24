@@ -42,8 +42,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                 await Clipboard.setData(ClipboardData(
                     text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
-                showOverlay(
-                    context, L10n.of(context)!.walletAddressCopied);
+                showOverlay(context, L10n.of(context)!.walletAddressCopied);
               },
               child: SizedBox(
                 child: Center(
@@ -67,7 +66,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                               padding: const EdgeInsets.all(
                                   AppTheme.cardPadding / 1.25),
                               // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
-                              child: PrettyQrView.data(
+                              child: Obx(() => PrettyQrView.data(
                                   data:
                                       "lightning: ${controller.qrCodeDataStringLightning}",
                                   decoration: const PrettyQrDecoration(
@@ -78,7 +77,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                                       image: const AssetImage(
                                           'assets/images/lightning.png'),
                                     ),
-                                  )),
+                                  ))),
                             ),
                           ),
                         ),
@@ -88,7 +87,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                           title: L10n.of(context)!.share,
                           leadingIcon: Icon(Icons.share_rounded),
                           onTap: () {
-                             Share.share(
+                            Share.share(
                                 '${controller.qrCodeDataStringLightning}');
                           },
                           buttonType: ButtonType.transparent,
@@ -108,14 +107,14 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                 await Clipboard.setData(ClipboardData(
                     text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
-                showOverlay(
-                    context, L10n.of(context)!.walletAddressCopied);
+                showOverlay(context, L10n.of(context)!.walletAddressCopied);
               },
               text: L10n.of(context)!.invoice,
               trailing: Obx(() {
-                final qrCodeData =
-                    controller.qrCodeDataStringLightning.value;
-                if (qrCodeData.isEmpty || qrCodeData == '' || qrCodeData == 'null') {
+                final qrCodeData = controller.qrCodeDataStringLightning.value;
+                if (qrCodeData.isEmpty ||
+                    qrCodeData == '' ||
+                    qrCodeData == 'null') {
                   return Text('${L10n.of(context)!.loading}...');
                 } else {
                   final start = qrCodeData.length >= 8
@@ -145,7 +144,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
             StatefulBuilder(builder: (context, setState) {
               return BitNetListTile(
                 onTap: () async {
-                   await BitNetBottomSheet(
+                  await BitNetBottomSheet(
                     context: context,
                     //also add a help button as an action at the right once bitnetbottomsheet is fixed
                     height: MediaQuery.of(context).size.height * 0.7,
@@ -162,8 +161,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                     ),
                   );
 
-                    setState(() {});
-
+                  setState(() {});
                 },
                 text: L10n.of(context)!.amount,
                 trailing: Row(
@@ -176,17 +174,24 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
                           : AppTheme.black80,
                     ),
                     SizedBox(width: AppTheme.elementSpacing / 2),
-                    Text(controller.satController.text == "0" || controller.satController.text.isEmpty
-                        ? L10n.of(context)!.changeAmount
-                        : controller.satController.text,),
-                    controller.satController.text == "0" || controller.satController.text.isEmpty ? SizedBox() : Icon(
-                      getCurrencyIcon(
-                        BitcoinUnits.SAT.name,
-                      ),
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? AppTheme.black70
-                          : AppTheme.white90,
-                    )
+                    Text(
+                      controller.satController.text == "0" ||
+                              controller.satController.text.isEmpty
+                          ? L10n.of(context)!.changeAmount
+                          : controller.satController.text,
+                    ),
+                    controller.satController.text == "0" ||
+                            controller.satController.text.isEmpty
+                        ? SizedBox()
+                        : Icon(
+                            getCurrencyIcon(
+                              BitcoinUnits.SAT.name,
+                            ),
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? AppTheme.black70
+                                    : AppTheme.white90,
+                          )
                   ],
                 ),
               );
