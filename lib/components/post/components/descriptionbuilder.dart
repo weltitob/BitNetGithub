@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:bitnet/backbone/helper/correctencodingerrors.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

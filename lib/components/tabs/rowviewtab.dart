@@ -134,8 +134,8 @@ class _RowViewTabState extends State<RowViewTab>
                               nftName: meta?.data ?? 'metahash',
                               nftMainName:
                               asset.assetGenesis!.name ?? 'assetID',
-                              hasListForSale: true,
-                              isOwner: true,
+                              // hasListForSale: true,
+                              // isOwner: true,
                               cryptoText: asset.lockTime != null
                                   ? asset.lockTime.toString()
                                   : 'price',

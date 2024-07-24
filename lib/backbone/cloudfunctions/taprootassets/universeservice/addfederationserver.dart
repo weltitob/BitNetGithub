@@ -20,9 +20,11 @@ universeFederation(Map<String, dynamic> universeFederationServer) async {
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
-  String url = kDebugMode
-      ? ''
-      : 'https://$restHost/v1/taproot-assets/universe/federation';
+  String url =
+  //  kDebugMode
+  //     ? ''
+  //     :
+       'https://$restHost/v1/taproot-assets/universe/federation';
 
   Map<String, String> headers = {
     'Grpc-Metadata-macaroon': macaroon,

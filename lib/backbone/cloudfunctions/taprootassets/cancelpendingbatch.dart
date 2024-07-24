@@ -26,9 +26,11 @@ cancelMintAsset() async {
     'Content-Type': 'application/json',
   };
 
-  String url = kDebugMode
-      ? ''
-      : 'https://$restHost/v1/taproot-assets/assets/mint/cancel';
+  String url =
+  //  kDebugMode
+  //     ? ''
+  //     :
+       'https://$restHost/v1/taproot-assets/assets/mint/cancel';
 
   try {
     var response = await http.post(
