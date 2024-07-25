@@ -34,7 +34,8 @@ class Transactions extends StatefulWidget {
   State<Transactions> createState() => _TransactionsState();
 }
 
-class _TransactionsState extends State<Transactions> with SingleTickerProviderStateMixin {
+class _TransactionsState extends State<Transactions>
+    with SingleTickerProviderStateMixin {
   final controller = Get.put(
     WalletFilterController(),
   );
@@ -51,9 +52,11 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
     try {
       logger.i("Getting onchain transactions");
       RestResponse restBitcoinTransactions = await getTransactions();
-      BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
+      BitcoinTransactionsList bitcoinTransactions =
+          BitcoinTransactionsList.fromJson(restBitcoinTransactions.data);
       onchainTransactions = bitcoinTransactions.transactions;
-      List<Map<String, dynamic>> mapList = List<Map<String, dynamic>>.from(restBitcoinTransactions.data['transactions'] as List);
+      List<Map<String, dynamic>> mapList = List<Map<String, dynamic>>.from(
+          restBitcoinTransactions.data['transactions'] as List);
 
       sendPaymentDataReceivedOnchainBatch(mapList);
       setState(() {});
@@ -87,7 +90,8 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
     try {
       logger.i("Getting lightning payments");
       RestResponse restLightningPayments = await listPayments();
-      LightningPaymentsList lightningPayments = LightningPaymentsList.fromJson(restLightningPayments.data);
+      LightningPaymentsList lightningPayments =
+          LightningPaymentsList.fromJson(restLightningPayments.data);
       this.lightningPayments = lightningPayments.payments;
       // sendPaymentDataReceivedLightningBatch(restLightningPayments.data['transactions']);
 
@@ -106,10 +110,14 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
     logger.i("Getting lightning invoices");
     try {
       RestResponse restLightningInvoices = await listInvoices();
-      ReceivedInvoicesList lightningInvoices = ReceivedInvoicesList.fromJson(restLightningInvoices.data);
-      List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
+      ReceivedInvoicesList lightningInvoices =
+          ReceivedInvoicesList.fromJson(restLightningInvoices.data);
+      List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices
+          .where((invoice) => invoice.settled)
+          .toList();
       this.lightningInvoices = settledInvoices;
-      List<Map<String, dynamic>> mapList = List<Map<String, dynamic>>.from(restLightningInvoices.data['invoices'] as List);
+      List<Map<String, dynamic>> mapList = List<Map<String, dynamic>>.from(
+          restLightningInvoices.data['invoices'] as List);
       sendPaymentDataReceivedInvoiceBatch(mapList);
 
       setState(() {});
@@ -200,11 +208,13 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
     });
   }
 
-  void handlePageLoadErrors(int errorCount, String errorMessage, BuildContext context) {
+  void handlePageLoadErrors(
+      int errorCount, String errorMessage, BuildContext context) {
     if (errorCount == 1) {
       showOverlay(context, errorMessage, color: AppTheme.errorColor);
     } else if (errorCount > 1) {
-      showOverlay(context, L10n.of(context)!.failedToLoadCertainData, color: AppTheme.errorColor);
+      showOverlay(context, L10n.of(context)!.failedToLoadCertainData,
+          color: AppTheme.errorColor);
     }
   }
 
@@ -223,7 +233,9 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
                   txHash: transaction.value.toString(),
                   amount: "+" + transaction.amtPaid.toString(),
                   fee: 0,
-                  status: transaction.settled ? TransactionStatus.confirmed : TransactionStatus.failed,
+                  status: transaction.settled
+                      ? TransactionStatus.confirmed
+                      : TransactionStatus.failed,
                 ),
               ),
             ),
@@ -254,15 +266,21 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
                     context: context,
                     data: TransactionItemData(
                       timestamp: transaction.timeStamp,
-                      status: transaction.numConfirmations > 0 ? TransactionStatus.confirmed : TransactionStatus.pending,
+                      status: transaction.numConfirmations > 0
+                          ? TransactionStatus.confirmed
+                          : TransactionStatus.pending,
                       type: TransactionType.onChain,
-                      direction: transaction.amount!.contains("-") ? TransactionDirection.sent : TransactionDirection.received,
+                      direction: transaction.amount!.contains("-")
+                          ? TransactionDirection.sent
+                          : TransactionDirection.received,
                       receiver: transaction.amount!.contains("-")
                           ? transaction.destAddresses.last.toString()
                           : transaction.destAddresses.first.toString(),
                       txHash: transaction.txHash.toString(),
                       fee: 0,
-                      amount: transaction.amount!.contains("-") ? transaction.amount.toString() : "+" + transaction.amount.toString(),
+                      amount: transaction.amount!.contains("-")
+                          ? transaction.amount.toString()
+                          : "+" + transaction.amount.toString(),
                     ),
                   ),
                 ),
@@ -279,7 +297,9 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
                       txHash: transaction.value.toString(),
                       amount: "+" + transaction.amtPaid.toString(),
                       fee: 0,
-                      status: transaction.settled ? TransactionStatus.confirmed : TransactionStatus.failed,
+                      status: transaction.settled
+                          ? TransactionStatus.confirmed
+                          : TransactionStatus.failed,
                     ),
                   ),
                 ),
@@ -307,15 +327,21 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
                     context: context,
                     data: TransactionItemData(
                       timestamp: transaction.timeStamp,
-                      status: transaction.numConfirmations > 0 ? TransactionStatus.confirmed : TransactionStatus.pending,
+                      status: transaction.numConfirmations > 0
+                          ? TransactionStatus.confirmed
+                          : TransactionStatus.pending,
                       type: TransactionType.onChain,
-                      direction: transaction.amount!.contains("-") ? TransactionDirection.sent : TransactionDirection.received,
+                      direction: transaction.amount!.contains("-")
+                          ? TransactionDirection.sent
+                          : TransactionDirection.received,
                       receiver: transaction.amount!.contains("-")
                           ? transaction.destAddresses.last.toString()
                           : transaction.destAddresses.first.toString(),
                       txHash: transaction.txHash.toString(),
                       fee: 0,
-                      amount: transaction.amount!.contains("-") ? transaction.amount.toString() : "+" + transaction.amount.toString(),
+                      amount: transaction.amount!.contains("-")
+                          ? transaction.amount.toString()
+                          : "+" + transaction.amount.toString(),
                     ),
                   ),
                 ),
@@ -348,7 +374,9 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
                       suffixIcon: IconButton(
                         icon: Icon(
                           FontAwesomeIcons.filter,
-                          color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black60,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.white60
+                              : AppTheme.black60,
                           size: AppTheme.cardPadding * 0.75,
                         ),
                         onPressed: () async {
@@ -370,18 +398,36 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
                         shrinkWrap: true, // This is important
                         itemCount: combinedTransactions.length,
                         itemBuilder: (context, index) {
-                          if (combinedTransactions[index].data.timestamp >= controller.start &&
-                              combinedTransactions[index].data.timestamp <= controller.end) {
-                            if (controller.selectedFilters.contains('Sent') && controller.selectedFilters.contains('Received')) {
+                          if (combinedTransactions[index].data.timestamp >=
+                                  controller.start &&
+                              combinedTransactions[index].data.timestamp <=
+                                  controller.end) {
+                            if (controller.selectedFilters.contains('Sent') &&
+                                controller.selectedFilters
+                                    .contains('Received')) {
                               return combinedTransactions[index];
                             }
                             if (controller.selectedFilters.contains('Sent')) {
-                              return combinedTransactions[index].data.amount.contains('-') ? combinedTransactions[index] : SizedBox();
+                              return combinedTransactions[index]
+                                      .data
+                                      .amount
+                                      .contains('-')
+                                  ? combinedTransactions[index]
+                                  : SizedBox();
                             }
-                            if (controller.selectedFilters.contains('Received')) {
-                              return combinedTransactions[index].data.amount.contains('+') ? combinedTransactions[index] : SizedBox();
+                            if (controller.selectedFilters
+                                .contains('Received')) {
+                              return combinedTransactions[index]
+                                      .data
+                                      .amount
+                                      .contains('+')
+                                  ? combinedTransactions[index]
+                                  : SizedBox();
                             }
-                            return combinedTransactions[index].data.receiver.contains(searchCtrl.text.toLowerCase())
+                            return combinedTransactions[index]
+                                    .data
+                                    .receiver
+                                    .contains(searchCtrl.text.toLowerCase())
                                 ? combinedTransactions[index]
                                 : SizedBox();
                           }
@@ -401,12 +447,19 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
           );
   }
 
-  Future<void> sendPaymentDataReceivedOnchainBatch(List<Map<String, dynamic>> data) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef.doc(Auth().currentUser!.uid).collection('onchain').get();
-    List<Map<String, dynamic>> allData = snapshot.docs.map((doc) => doc.data()).toList();
-    BitcoinTransactionsList btcFinalList = BitcoinTransactionsList.fromList(allData);
+  Future<void> sendPaymentDataReceivedOnchainBatch(
+      List<Map<String, dynamic>> data) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef
+        .doc(Auth().currentUser!.uid)
+        .collection('onchain')
+        .get();
+    List<Map<String, dynamic>> allData =
+        snapshot.docs.map((doc) => doc.data()).toList();
+    BitcoinTransactionsList btcFinalList =
+        BitcoinTransactionsList.fromList(allData);
     List<BitcoinTransaction> transactions = btcFinalList.transactions;
-    List<BitcoinTransaction> newTransactions = BitcoinTransactionsList.fromList(data).transactions;
+    List<BitcoinTransaction> newTransactions =
+        BitcoinTransactionsList.fromList(data).transactions;
     List<String> duplicateHashes = List.empty(growable: true);
     for (int i = 0; i < newTransactions.length; i++) {
       BitcoinTransaction item1 = newTransactions[i];
@@ -415,25 +468,40 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
       }
       for (int j = 0; j < transactions.length; j++) {
         BitcoinTransaction item2 = transactions[j];
-        if ((item1.txHash == item2.txHash && item1.txHash != null && item2.txHash != null)) {
+        if ((item1.txHash == item2.txHash &&
+            item1.txHash != null &&
+            item2.txHash != null)) {
           duplicateHashes.add(item1.txHash!);
         }
       }
     }
-    newTransactions.removeWhere((test) => test.txHash != null && duplicateHashes.contains(test.txHash!));
+    newTransactions.removeWhere((test) =>
+        test.txHash != null && duplicateHashes.contains(test.txHash!));
     WriteBatch batch = FirebaseFirestore.instance.batch();
     for (int i = 0; i < newTransactions.length; i++) {
-      batch.set(btcReceiveRef.doc(Auth().currentUser!.uid).collection('onchain').doc(), newTransactions[i].toJson());
+      batch.set(
+          btcReceiveRef
+              .doc(Auth().currentUser!.uid)
+              .collection('onchain')
+              .doc(),
+          newTransactions[i].toJson());
     }
     batch.commit();
   }
 
-  Future<void> sendPaymentDataReceivedLightningBatch(List<Map<String, dynamic>> data) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnurl').get();
-    List<Map<String, dynamic>> allData = snapshot.docs.map((doc) => doc.data()).toList();
-    LightningPaymentsList btcFinalList = LightningPaymentsList.fromList(allData);
+  Future<void> sendPaymentDataReceivedLightningBatch(
+      List<Map<String, dynamic>> data) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef
+        .doc(Auth().currentUser!.uid)
+        .collection('lnurl')
+        .get();
+    List<Map<String, dynamic>> allData =
+        snapshot.docs.map((doc) => doc.data()).toList();
+    LightningPaymentsList btcFinalList =
+        LightningPaymentsList.fromList(allData);
     List<LightningPayment> transactions = btcFinalList.payments;
-    List<LightningPayment> newTransactions = LightningPaymentsList.fromList(data).payments;
+    List<LightningPayment> newTransactions =
+        LightningPaymentsList.fromList(data).payments;
     List<String> duplicateHashes = List.empty(growable: true);
     for (int i = 0; i < newTransactions.length; i++) {
       LightningPayment item1 = newTransactions[i];
@@ -444,20 +512,29 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
         }
       }
     }
-    newTransactions.removeWhere((test) => duplicateHashes.contains(test.paymentHash));
+    newTransactions
+        .removeWhere((test) => duplicateHashes.contains(test.paymentHash));
     WriteBatch batch = FirebaseFirestore.instance.batch();
     for (int i = 0; i < newTransactions.length; i++) {
-      batch.set(btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnurl').doc(), newTransactions[i]);
+      batch.set(
+          btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnurl').doc(),
+          newTransactions[i]);
     }
     batch.commit();
   }
 
-  Future<void> sendPaymentDataReceivedInvoiceBatch(List<Map<String, dynamic>> data) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').get();
-    List<Map<String, dynamic>> allData = snapshot.docs.map((doc) => doc.data()).toList();
+  Future<void> sendPaymentDataReceivedInvoiceBatch(
+      List<Map<String, dynamic>> data) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef
+        .doc(Auth().currentUser!.uid)
+        .collection('lnbc')
+        .get();
+    List<Map<String, dynamic>> allData =
+        snapshot.docs.map((doc) => doc.data()).toList();
     ReceivedInvoicesList btcFinalList = ReceivedInvoicesList.fromList(allData);
     List<ReceivedInvoice> transactions = btcFinalList.invoices;
-    List<ReceivedInvoice> newTransactions = ReceivedInvoicesList.fromList(data).invoices;
+    List<ReceivedInvoice> newTransactions =
+        ReceivedInvoicesList.fromList(data).invoices;
     List<String> duplicateHashes = List.empty(growable: true);
     for (int i = 0; i < newTransactions.length; i++) {
       ReceivedInvoice item1 = newTransactions[i];
@@ -471,7 +548,9 @@ class _TransactionsState extends State<Transactions> with SingleTickerProviderSt
     newTransactions.removeWhere((test) => duplicateHashes.contains(test.rHash));
     WriteBatch batch = FirebaseFirestore.instance.batch();
     for (int i = 0; i < newTransactions.length; i++) {
-      batch.set(btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').doc(), newTransactions[i].toJson());
+      batch.set(
+          btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').doc(),
+          newTransactions[i].toJson());
     }
     batch.commit();
   }
