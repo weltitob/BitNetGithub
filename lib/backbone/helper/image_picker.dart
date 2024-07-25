@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -86,8 +85,10 @@ class _ImagePickerState extends State<ImagePicker> {
 
   void loadData() async {
     List<AssetPathEntity> loadedAlbums = await BitnetPhotoManager.loadAlbums();
+    print(loadedAlbums.length);
+    // assert(false);
     List<AssetEntity> photos =
-        await BitnetPhotoManager.loadImages(loadedAlbums[0], 0, 50);
+        await BitnetPhotoManager.loadImages(loadedAlbums.first, 0, 50);
     albums = loadedAlbums;
     current_album = albums![0];
     current_photos = photos;
@@ -289,9 +290,7 @@ class _ImagePickerState extends State<ImagePicker> {
 }
 
 class ImagePickerNftMixed extends StatefulWidget {
-  final
-
- Function(
+  final Function(
           AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair)?
       onImageTap;
   const ImagePickerNftMixed({
@@ -524,9 +523,8 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
       if (current_photos!.length == albumAssetCount) {
         return;
       }
-     
 
- List<AssetEntity> photos =
+      List<AssetEntity> photos =
           await BitnetPhotoManager.loadImages(current_album!, start, end);
       current_photos!.addAll(photos);
     } else if (current_view == 0) {
@@ -814,9 +812,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
                                                         ? Colors.grey
                                                         : Colors.transparent,
                                                     child: (current_nfts[2]
-                                                               
-
- .media ==
+                                                                .media ==
                                                             null)
                                                         ? null
                                                         : ImageBuilder(
@@ -1125,9 +1121,7 @@ class _MixedGridViewState extends State<MixedGridView> {
                             },
                           )
                         : LazyImageBuilder(
-                            key: ValueKey(widget
-
-.mixedList[i].assetId),
+                            key: ValueKey(widget.mixedList[i].assetId),
                             asset: widget.mixedList[i],
                             loadFunc: widget.loadMetaLazyFunc,
                             forceRemove: (MediaDatePair pair) {
@@ -1243,9 +1237,32 @@ class MediaDatePair {
 
 class BitnetPhotoManager {
   static Future<List<AssetPathEntity>> loadAlbums() async {
-    List<AssetPathEntity> albums =
-        await PhotoManager.getAssetPathList(type: RequestType.image);
-    return albums;
+    // Request permissions
+    try {
+      final PermissionState permissionState =
+          await PhotoManager.requestPermissionExtend();
+
+      // Check if permissions are granted
+      if (permissionState.isAuth) {
+        // Load albums
+        final PMFilter filter = FilterOptionGroup(
+          imageOption: const FilterOption(
+            sizeConstraint: SizeConstraint(ignoreSize: true),
+          ),
+        );
+        List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
+            type: RequestType.image, filterOption: filter);
+        print(albums);
+        return albums;
+      } else {
+        // Handle permission denied case
+        PhotoManager.openSetting();
+        return [];
+      }
+    } catch (e) {
+      print(e);
+      return [];
+    }
   }
 
   static Future<List<AssetEntity>> loadImages(
