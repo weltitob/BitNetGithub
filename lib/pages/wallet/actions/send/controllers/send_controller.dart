@@ -64,6 +64,7 @@ class SendsController extends BaseController {
   RxBool moneyTextFieldIsEnabled = true.obs;
   RxBool amountWidgetOverBound = false.obs;
   RxBool amountWidgetUnderBound = false.obs;
+  RxBool loadingSending = false.obs;
   late FocusNode myFocusNodeAdress;
   late FocusNode myFocusNodeMoney;
   late double feesInEur_medium;
@@ -355,12 +356,14 @@ class SendsController extends BaseController {
   }
 
   sendBTC(BuildContext context) async {
+    loadingSending = true;
     LoggerService logger = Get.find();
     logger.i("sendBTC() called");
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
         if (sendType == SendType.LightningUrl) {
+          logger.i("Amount that is being sent: ${satController.text}");
           payLnUrl(lnCallback!, int.parse(satController.text), context);
         } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
@@ -371,6 +374,7 @@ class SendsController extends BaseController {
           paymentStream.listen((RestResponse response) {
             isFinished.value = true; // Assuming you might want to update UI on each response
             if (response.statusCode == "success") {
+              print(response.data);
               // Handle success
               if (response.data['result']['status'] != "FAILED") {
                 sendPaymentDataInvoice(response.data['result']);
@@ -446,6 +450,7 @@ class SendsController extends BaseController {
       isFinished.value = false;
       logger.e('Biometric authentication failed');
     }
+    loadingSending = false;
   }
 
   @override

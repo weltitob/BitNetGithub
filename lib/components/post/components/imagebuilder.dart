@@ -62,7 +62,7 @@ class ImageBuilder extends StatelessWidget {
         filterQuality: FilterQuality.low,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => Container(
-          height: AppTheme.cardPadding * 4,
+          height: 50,
           child: Icon(
             Icons.error,
             color: Theme.of(context).colorScheme.error,
