@@ -1247,12 +1247,11 @@ class BitnetPhotoManager {
         // Load albums
         final PMFilter filter = FilterOptionGroup(
           imageOption: const FilterOption(
-            sizeConstraint: SizeConstraint(ignoreSize: true),
+            sizeConstraint: SizeConstraint(ignoreSize: true), 
           ),
         );
         List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
             type: RequestType.image, filterOption: filter);
-        print(albums);
         return albums;
       } else {
         // Handle permission denied case
