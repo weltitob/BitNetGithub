@@ -303,7 +303,7 @@ class SendsController extends BaseController {
     String lnUrl = bitcoinReceiverAdress;
     List<String> invoiceStrings = [invoicePr];
 
-    Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings);
+    Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings, amount * 1000);
     StreamSubscription? sub;
     sub = paymentStream.listen((RestResponse response) {
       isFinished.value = true;
@@ -334,7 +334,9 @@ class SendsController extends BaseController {
     bitcoinReceiverAdress = invoiceString;
 
     Bolt11PaymentRequest req = Bolt11PaymentRequest(invoiceString);
-    satController.text = CurrencyConverter.convertBitcoinToSats(req.amount.toDouble()).toString();
+    final satoshi = CurrencyConverter.convertBitcoinToSats(req.amount.toDouble()).toString();
+    int cleanAmount = int.parse(satoshi);
+    satController.text = cleanAmount.toString();
     moneyTextFieldIsEnabled.value = false;
     description.value = req.tags[1].data;
   }
@@ -356,7 +358,7 @@ class SendsController extends BaseController {
   }
 
   sendBTC(BuildContext context) async {
-    loadingSending = true;
+    loadingSending = RxBool(true);
     LoggerService logger = Get.find();
     logger.i("sendBTC() called");
     await isBiometricsAvailable();
@@ -370,7 +372,7 @@ class SendsController extends BaseController {
 
           List<String> invoiceStrings = [bitcoinReceiverAdress]; // Assuming you want to send a list containing a single invoice for now
 
-          Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings);
+          Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings, int.parse(satController.text));
           paymentStream.listen((RestResponse response) {
             isFinished.value = true; // Assuming you might want to update UI on each response
             if (response.statusCode == "success") {
@@ -450,7 +452,7 @@ class SendsController extends BaseController {
       isFinished.value = false;
       logger.e('Biometric authentication failed');
     }
-    loadingSending = false;
+    loadingSending = RxBool(false);
   }
 
   @override

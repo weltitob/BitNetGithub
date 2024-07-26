@@ -99,11 +99,8 @@ class QRScannerController extends State<QrScanner> {
   void onScannedForSignIn(dynamic encodedString) async {
     try {
       final privateData = PrivateData.fromJson(encodedString);
-
-      final signedMessage =
-          await Auth().signMessageAuth(privateData.did, privateData.privateKey);
+      final signedMessage = await Auth().signMessageAuth(privateData.did, privateData.privateKey);
       await storePrivateData(privateData);
-
       await Auth().signIn(privateData.did, signedMessage, context);
 
       setState(() {});
