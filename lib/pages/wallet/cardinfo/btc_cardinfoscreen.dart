@@ -48,7 +48,7 @@ class _BitcoinCardInformationScreenState
       appBar: bitnetAppBar(
         context: context,
         onTap: () {
-          homeController.timer.cancel();
+          // homeController.timer.cancel();
           context.go("/feed");
         },
         text: L10n.of(context)!.bitcoinInfoCard,
@@ -57,8 +57,6 @@ class _BitcoinCardInformationScreenState
       body: PopScope(
         canPop: false,
         onPopInvoked: (v) {
-          homeController.timer.cancel();
-
           context.go("/feed");
         },
         child: Obx(
