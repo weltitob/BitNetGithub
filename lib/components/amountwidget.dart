@@ -158,96 +158,100 @@ class _AmountWidgetState extends State<AmountWidget> {
                     child: Container(
                       width: 300,
                       child: Obx(
-                        () => TextField(
-                          enabled: enabled,
-                          focusNode: widget.focusNode,
-                          onTap: () {
-                            // Validate Bitcoin address when the text field is tapped
-                          },
-                          onTapOutside: (value) {
-                            // Unfocus the text field when tapped outside
-                            if (widget.focusNode.hasFocus) {
-                              widget.focusNode.unfocus();
-                            }
-                          },
-                          textAlign: TextAlign.center,
-                          onChanged: (text) {
-                            if (widget.onAmountChange != null) {
-                              if (swapped) {
-                                widget.onAmountChange!(currencyType, widget.btcController.text);
-                              } else {
-                                widget.onAmountChange!(currencyType, widget.btcController.text);
+                        () {
+                          double? btcPrice = Get.find<WalletsController>().chartLines.value?.price;
+                          return TextField(
+                            enabled: enabled,
+                            focusNode: widget.focusNode,
+                            onTap: () {
+                              // Validate Bitcoin address when the text field is tapped
+                            },
+                            onTapOutside: (value) {
+                              // Unfocus the text field when tapped outside
+                              if (widget.focusNode.hasFocus) {
+                                widget.focusNode.unfocus();
                               }
-                            }
-                          },
-                          maxLength: widget.lowerBound != null ? 20 : 10,
-                          keyboardType: TextInputType.numberWithOptions(decimal: true),
-                          inputFormatters: [
-                            if (widget.boundType != null) ...[
-                              BoundInputFormatter(
-                                swapped: swapped,
-                                lowerBound: widget.lowerBound ?? 0,
-                                upperBound: widget.upperBound ?? 999999999999999,
-                                boundType: widget.boundType!,
-                                valueType: currentUnit,
-                                inputCurrency: currency ?? "USD",
-                                bitcoinPrice: Get.find<WalletsController>().chartLines.value?.price ?? 1,
-                                overBound: (double currentVal) {
-                                  widget.ctrler?.amountWidgetUnderBound.value = false;
-                                  widget.ctrler?.amountWidgetOverBound.value = true;
-                                },
-                                underBound: (double currentVal) {
-                                  widget.ctrler?.amountWidgetUnderBound.value = true;
-                                  widget.ctrler?.amountWidgetOverBound.value = false;
-                                },
-                                inBound: (double currentVal) {
-                                  widget.ctrler?.amountWidgetUnderBound.value = false;
-                                  widget.ctrler?.amountWidgetOverBound.value = false;
-                                },
-                              ),
-                            ], // Only allow numerical values with a decimal point or without if SAT
+                            },
+                            textAlign: TextAlign.center,
+                            onChanged: (text) {
+                              if (widget.onAmountChange != null) {
+                                if (swapped) {
+                                  widget.onAmountChange!(currencyType, widget.btcController.text);
+                                } else {
+                                  widget.onAmountChange!(currencyType, widget.btcController.text);
+                                }
+                              }
+                            },
+                            maxLength: widget.lowerBound != null ? 20 : 10,
+                            keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [
+                              if (widget.boundType != null) ...[
+                                BoundInputFormatter(
+                                  swapped: swapped,
+                                  lowerBound: widget.lowerBound ?? 0,
+                                  upperBound: widget.upperBound ?? 999999999999999,
+                                  boundType: widget.boundType!,
+                                  valueType: currentUnit,
+                                  inputCurrency: currency ?? "USD",
+                                  bitcoinPrice: btcPrice ?? 1,
+                                  overBound: (double currentVal) {
+                                    widget.ctrler?.amountWidgetUnderBound.value = false;
+                                    widget.ctrler?.amountWidgetOverBound.value = true;
+                                  },
+                                  underBound: (double currentVal) {
+                                    widget.ctrler?.amountWidgetUnderBound.value = true;
+                                    widget.ctrler?.amountWidgetOverBound.value = false;
+                                  },
+                                  inBound: (double currentVal) {
+                                    widget.ctrler?.amountWidgetUnderBound.value = false;
+                                    widget.ctrler?.amountWidgetOverBound.value = false;
+                                  },
+                                ),
+                              ], // Only allow numerical values with a decimal point or without if SAT
 
-                            currentUnit == BitcoinUnits.SAT
-                                ? FilteringTextInputFormatter.allow(RegExp(r'(^\d+)'))
-                                : FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
-                            // Restrict the range of input to be within 0 and 2000
-                            NumericalRangeFormatter(
-                                min: 0,
-                                max: (widget.upperBound != null && (widget.upperBound! > double.parse("99999999999")))
-                                    ? widget.upperBound!.toDouble()
-                                    : double.parse("99999999999"),
-                                context: context),
-                          ],
-                          decoration: InputDecoration(
-                            suffixIcon: this.swapped
-                                ? Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(getCurrency(currency!),
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              color:
-                                                  Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90)),
-                                    ],
-                                  )
-                                : Icon(getCurrencyIcon(currentUnit.name),
-                                    size: AppTheme.cardPadding * 1.25,
-                                    color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90),
-                            border: InputBorder.none,
-                            counterText: "",
-                            hintText: "0.0",
-                            hintStyle:
-                                TextStyle(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60),
-                          ),
-                          controller: swapped
-                              ? widget.currController
-                              : (currentUnit == BitcoinUnits.BTC ? widget.btcController : widget.satController),
-                          autofocus: false,
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayLarge!
-                              .copyWith(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90),
-                        ),
+                              currentUnit == BitcoinUnits.SAT
+                                  ? FilteringTextInputFormatter.allow(RegExp(r'(^\d+)'))
+                                  : FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
+                              // Restrict the range of input to be within 0 and 2000
+                              NumericalRangeFormatter(
+                                  min: 0,
+                                  max: (widget.upperBound != null && (widget.upperBound! > double.parse("99999999999")))
+                                      ? widget.upperBound!.toDouble()
+                                      : double.parse("99999999999"),
+                                  context: context),
+                            ],
+                            decoration: InputDecoration(
+                              suffixIcon: this.swapped
+                                  ? Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(getCurrency(currency!),
+                                            style: TextStyle(
+                                                fontSize: 24,
+                                                color: Theme.of(context).brightness == Brightness.light
+                                                    ? AppTheme.black70
+                                                    : AppTheme.white90)),
+                                      ],
+                                    )
+                                  : Icon(getCurrencyIcon(currentUnit.name),
+                                      size: AppTheme.cardPadding * 1.25,
+                                      color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90),
+                              border: InputBorder.none,
+                              counterText: "",
+                              hintText: "0.0",
+                              hintStyle:
+                                  TextStyle(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white60),
+                            ),
+                            controller: swapped
+                                ? widget.currController
+                                : (currentUnit == BitcoinUnits.BTC ? widget.btcController : widget.satController),
+                            autofocus: false,
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge!
+                                .copyWith(color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90),
+                          );
+                        },
                       ),
                     ),
                   ),

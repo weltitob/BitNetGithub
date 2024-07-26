@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -13,9 +11,9 @@ import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/controller/loop_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class LoopScreen extends StatefulWidget {
   final LoopController controller;
@@ -62,7 +60,6 @@ class _LoopScreenState extends State<LoopScreen> {
         ),
         body: Stack(
           children: [
-
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,8 +75,7 @@ class _LoopScreenState extends State<LoopScreen> {
                           children: [
                             Container(
                                 height: AppTheme.cardPadding * 8,
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: AppTheme.cardPadding),
+                                margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                                 child: BalanceCardBtc()),
                             Container(
                               height: AppTheme.cardPadding * 1,
@@ -95,12 +91,10 @@ class _LoopScreenState extends State<LoopScreen> {
                         Align(
                           alignment: Alignment.center,
                           child: Obx(() => AnimatedRotation(
-                                turns:
-                                    loopGetController.animate.value ? 1 / 2 : 3 / 2,
+                                turns: loopGetController.animate.value ? 1 / 2 : 3 / 2,
                                 duration: Duration(milliseconds: 400),
                                 child: RotatedBox(
-                                  quarterTurns:
-                                      loopGetController.animate.value ? 1 : 3,
+                                  quarterTurns: loopGetController.animate.value ? 1 : 3,
                                   child: RoundedButtonWidget(
                                       buttonType: ButtonType.transparent,
                                       iconData: Icons.arrow_back,
@@ -125,29 +119,23 @@ class _LoopScreenState extends State<LoopScreen> {
                       currController: loopGetController.currencyController,
                       satController: loopGetController.satController,
                       focusNode: FocusNode(),
-                      onAmountChange: (type, currency) {   },
+                      onAmountChange: (type, currency) {},
                       context: context,
                       autoConvert: true,
-                                      swapped: Get.find<WalletsController>().reversed.value,
-
+                      swapped: Get.find<WalletsController>().reversed.value,
                     ),
                   ),
                   SizedBox(
                     height: AppTheme.cardPadding * 3.5,
                   ),
-
                 ],
               ),
             ),
             BottomCenterButton(
               //loopGetController.loadingState.value
-              buttonTitle: loopGetController.animate.value
-                  ? L10n.of(context)!.onChainLightning
-                  : L10n.of(context)!.lightningOnChain,
+              buttonTitle: loopGetController.animate.value ? L10n.of(context)!.onChainLightning : L10n.of(context)!.lightningOnChain,
               onButtonTap: () {
-                loopGetController.animate.value
-                    ? loopGetController.loopInQuote(context)
-                    : loopGetController.loopOutQuote(context);
+                loopGetController.animate.value ? loopGetController.loopInQuote(context) : loopGetController.loopOutQuote(context);
               },
               buttonState: loopGetController.loadingState.value ? ButtonState.loading : ButtonState.idle,
             ),
