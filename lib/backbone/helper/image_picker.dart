@@ -17,8 +17,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 Future<T?> ImagePickerBottomSheet<T>(BuildContext context,
     {required Function(AssetPathEntity album, AssetEntity image)? onImageTap}) {
@@ -1237,46 +1239,97 @@ class MediaDatePair {
 
 class BitnetPhotoManager {
   static Future<List<AssetPathEntity>> loadAlbums() async {
-    // Request permissions
     try {
-      final PermissionState permissionState =
-          await PhotoManager.requestPermissionExtend();
-
-      // Check if permissions are granted
-      if (permissionState.isAuth) {
-        // Load albums
-        final PMFilter filter = FilterOptionGroup(
-          imageOption: const FilterOption(
-            sizeConstraint: SizeConstraint(ignoreSize: true), 
+      print('Requesting permissions...');
+      final PermissionState permissionState = await PhotoManager.requestPermissionExtend(
+        requestOption: const PermissionRequestOption(
+          iosAccessLevel: IosAccessLevel.readWrite,
+          androidPermission: AndroidPermission(
+            type: RequestType.image,
+            mediaLocation: true,
           ),
-        );
-        List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
-            type: RequestType.image, filterOption: filter);
+        ),
+      );
+      print('Permission state: $permissionState');
+
+      if (permissionState.isAuth) {
+        print('Permissions granted.');
+
+        // final FilterOptionGroup filter = FilterOptionGroup(
+        //   imageOption: const FilterOption(
+        //     sizeConstraint: SizeConstraint(ignoreSize: true),
+        //     needTitle: true,
+        //   ),
+        // );
+
+        print('Fetching asset path list...');
+        await Future.delayed(Duration(milliseconds: 500));
+        List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(type: RequestType.common);
+        print(PhotoManager.getAssetPathList(type: RequestType.image).toString());
+        //print('Supported extensions: ${await PhotoManager.}');
+        // List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
+        //   type: RequestType.image,
+        //   filterOption: filter,
+        // );
+        print('Number of albums loaded: ${albums.length}');
+
+        for (var album in albums) {
+          final assetCount = await album.assetCountAsync;
+          print('Album: ${album.name}, Asset Count: $assetCount');
+        }
+
         return albums;
+      } else if (permissionState == PermissionState.limited) {
+        print("Limited access granted");
+        // Handle limited access scenario
+        return PhotoManager.getAssetPathList(type: RequestType.image);
       } else {
-        // Handle permission denied case
-        PhotoManager.openSetting();
+        print("No access granted");
+        await PhotoManager.openSetting();
         return [];
       }
     } catch (e) {
-      print(e);
-      return [];
+      print('Error while loading albums: $e');
+      throw Exception('Failed to load albums: $e');
     }
   }
 
-  static Future<List<AssetEntity>> loadImages(
-      AssetPathEntity selectedAlbum, int start, int end) async {
-    List<AssetEntity> imageList =
-        await selectedAlbum.getAssetListRange(start: start, end: end);
-    return imageList;
+  static Future<List<AssetEntity>> loadImages(AssetPathEntity selectedAlbum, int start, int end) async {
+    try {
+      print('Loading images from album: ${selectedAlbum.name}');
+      print('Start index: $start, End index: $end');
+      List<AssetEntity> imageList = await selectedAlbum.getAssetListRange(start: start, end: end);
+      print('Loaded ${imageList.length} images');
+      return imageList;
+    } catch (e) {
+      print('Error while loading images: $e');
+      throw Exception('Failed to load images from album: ${selectedAlbum.name}: $e');
+    }
   }
 
-  static Future<List<AssetEntity>> loadAlbumThumbnails(
-      List<AssetPathEntity> albums) async {
-    List<AssetEntity> thumbnails = List.empty(growable: true);
-    for (int i = 0; i < albums.length; i++) {
-      thumbnails.add((await albums[i].getAssetListRange(start: 0, end: 1))[0]);
+  static Future<List<AssetEntity>> loadAlbumThumbnails(List<AssetPathEntity> albums) async {
+    List<AssetEntity> thumbnails = [];
+    for (var album in albums) {
+      try {
+        List<AssetEntity> assets = await album.getAssetListRange(start: 0, end: 1);
+        if (assets.isNotEmpty) {
+          thumbnails.add(assets[0]);
+        }
+      } catch (e) {
+        print('Error loading thumbnail for album ${album.name}: $e');
+      }
     }
     return thumbnails;
+  }
+
+  static Future<int> getTotalAssetCount() async {
+    try {
+      final int count = await PhotoManager.getAssetCount();
+      print('Total number of assets: $count');
+      return count;
+    } catch (e) {
+      print('Error getting total asset count: $e');
+      return 0;
+    }
   }
 }
