@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -16,6 +17,9 @@ Future<List<Asset>> listTaprootAssets() async {
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
+  // print(macaroon);
+  // print('above is the macaroon ');
+  // assert(false);
 
   // Prepare the headers
   Map<String, String> headers = {
@@ -23,10 +27,10 @@ Future<List<Asset>> listTaprootAssets() async {
   };
 
   // Make the GET request
-  // String url = kDebugMode ? '' : 'https://$restHost/v1/taproot-assets/assets';
+  // String url = kDebugMode ? '' : 'https://$restHost/v1/taproot-assets/assets';/
   String url = 'https://$restHost/v1/taproot-assets/assets';
-  // String url = 
-  // // kDebugMode ? '' : 
+  // String url =
+  // // kDebugMode ? '' :
   // 'https://$restHost/v1/taproot-assets/assets';
   try {
     final DioClient dioClient = Get.find<DioClient>();

@@ -20,9 +20,12 @@ Future<Batch?> fetchMintBatch(String batchKey) async {
   List<int> bytes = byteData.buffer.asUint8List();
   String macaroon = bytesToHex(bytes);
 
-  String url = kDebugMode
-      ? ''
-      : 'https://$restHost/v1/taproot-assets/assets/mint/batches/$batchKey';
+  String url =
+  //  kDebugMode
+  //     ? ''
+  //     :
+       'https://$restHost/v1/taproot-assets/assets/mint/batches/$batchKey';
+
 
   // Prepare the headers
   Map<String, String> headers = {

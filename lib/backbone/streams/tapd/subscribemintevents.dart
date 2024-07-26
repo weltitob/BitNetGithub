@@ -21,9 +21,11 @@ Stream<RestResponse> mintAssetStream(bool shortResponse) async* {
     'Grpc-Metadata-macaroon': macaroon,
   };
 
-  String url = kDebugMode
-      ? ''
-      : 'https://$restHost/v1/taproot-assets/events/asset-mint';
+  String url =
+  //  kDebugMode
+  //     ? ''
+  //     : 
+      'https://$restHost/v1/taproot-assets/events/asset-mint';
 
   Map<String, dynamic> data = {
     'short_response': shortResponse,

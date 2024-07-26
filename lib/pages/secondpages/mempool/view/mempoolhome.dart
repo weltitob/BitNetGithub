@@ -154,11 +154,10 @@ class _MempoolHomeState extends State<MempoolHome> {
                       : Column(
                           children: [
                             SizedBox(
-                              height: AppTheme.cardPadding * 3,
+                              height: AppTheme.cardPadding.h * 3,
                             ),
                             Container(
                               margin: EdgeInsets.only(
-                                  top: AppTheme.cardPadding,
                                   left: AppTheme.cardPadding),
                               child: Row(
                                 mainAxisAlignment:

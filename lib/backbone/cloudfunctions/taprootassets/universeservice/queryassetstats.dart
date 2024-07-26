@@ -19,9 +19,11 @@ queryAssetStats(String assetIdStr) async {
   String restHost = AppTheme.baseUrlLightningTerminal;
 
   //String url = 'https://$restHost/v1/taproot-assets/universe/roots/asset-id/$assetIdStr';
-  String url = kDebugMode
-      ? ''
-      :  'https://$restHost/v1/taproot-assets/universe/stats/assets';
+  String url = 
+  // kDebugMode
+  //     ? ''
+  //     :
+        'https://$restHost/v1/taproot-assets/universe/stats/assets';
 
   dynamic byteData = await loadTapdMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

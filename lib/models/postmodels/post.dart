@@ -219,7 +219,6 @@ class _PostState extends State<Post> {
                         child: TextBuilderNetwork(url: e.data));
                   }).toList(),
                 ),
-                SizedBox(height: AppTheme.elementSpacing),
                 buildLikeSpace(
                     type: likeSpaceType.Post,
                     targetId: postId,

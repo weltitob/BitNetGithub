@@ -50,9 +50,11 @@ Future<MintAssetResponse?> mintAsset(String assetName, String assetDataBase64, b
     'short_response': false,
   };
 
-  String url =kDebugMode
-      ? ''
-      :  'https://$restHost/v1/taproot-assets/assets';
+  String url = 
+  // kDebugMode
+  //     ? ''
+  //     :
+        'https://$restHost/v1/taproot-assets/assets';
 
   try {
     var response = await http.post(

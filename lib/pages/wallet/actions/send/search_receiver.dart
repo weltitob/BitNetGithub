@@ -62,7 +62,6 @@ class SearchReceiver extends GetWidget<SendsController> {
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height * 0.7,
-                    width: 500,
                     child: ListView(
                         controller: controller.sendScrollerController,
                         shrinkWrap: true,
@@ -83,11 +82,11 @@ class SearchReceiver extends GetWidget<SendsController> {
                                   textAlign: TextAlign.left,
                                 ),
                                 SizedBox(
-                                  height: AppTheme.cardPadding,
+                                  height: AppTheme.cardPadding.h,
                                 ),
                                 GlassContainer(
                                   width: MediaQuery.of(context).size.width,
-                                  height: AppTheme.cardPadding * 8.h,
+                                  height: AppTheme.cardPadding * 7.h,
                                   child: Container(
                                     margin: EdgeInsets.all(AppTheme.elementSpacing),
                                     child: MostPopularWidget(),
@@ -96,17 +95,17 @@ class SearchReceiver extends GetWidget<SendsController> {
                               ],
                             ),
                           ),
-                          SizedBox(height: AppTheme.cardPadding * 4),
+                          SizedBox(height: AppTheme.cardPadding * 2.h),
 
                           Padding(
                               padding: EdgeInsets.only(left: AppTheme.cardPadding),
                               child: Text("Support Bitcoin Devs", style: Theme.of(context).textTheme.titleLarge)),
                           SizedBox(
-                            height: AppTheme.cardPadding / 2,
+                            height: AppTheme.cardPadding.h,
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: 125,
+                            height: 100,
                             child: HorizontalFadeListView(
                               child: Obx(
                                 () => ListView.builder(
@@ -123,19 +122,17 @@ class SearchReceiver extends GetWidget<SendsController> {
                           ),
                           //space
                           SizedBox(height: AppTheme.cardPadding * 2),
-
-                          //tab2
-
                           if (controller.resendUsers.isNotEmpty) ...[
                             Padding(
                                 padding: EdgeInsets.only(left: AppTheme.cardPadding),
                                 child: Text("Send Again", style: Theme.of(context).textTheme.titleLarge)),
                             SizedBox(
-                              height: AppTheme.cardPadding / 2,
+                              height: AppTheme.cardPadding.h,
                             ),
                             Container(
+                              //color: Colors.green,
                               width: MediaQuery.of(context).size.width,
-                              height: 125,
+                              height: 100,
                               child: HorizontalFadeListView(
                                 child: Obx(
                                   () => ListView.builder(
@@ -151,26 +148,8 @@ class SearchReceiver extends GetWidget<SendsController> {
                               ),
                             ),
                           ],
-                          Container(height: 50)
                         ]),
                   )
-                  // Expanded(
-                  //   child: SingleChildScrollView(
-                  //     physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                  //     controller: controller.sendScrollerController,
-
-                  //     reverse: false,
-                  //     child: Container(
-                  //                 height: MediaQuery.of(context).size.height * 1.5,
-                  //       child: Column(
-                  //         mainAxisSize: MainAxisSize.max,
-                  //         children: [
-                  //           Container(height: 1)
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
               BottomCenterButton(
@@ -362,9 +341,10 @@ class UserSendWidget extends StatelessWidget {
           children: [
             Avatar(mxContent: Uri.parse(user.profileUrl), size: AppTheme.cardPadding * 3),
             SizedBox(
-                width: 160,
+                width: 80,
                 child: Text(
                   "@${user.userName}",
+                  style: Theme.of(context).textTheme.bodySmall,
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
                 ))
