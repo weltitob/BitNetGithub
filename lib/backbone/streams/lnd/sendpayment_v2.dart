@@ -33,13 +33,14 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amoun
   for (var invoiceString in invoiceStrings) {
 
     final invoiceDecoded = Bolt11PaymentRequest(invoiceString);
-    final amountInSatFromInvoice = invoiceDecoded.amount.toBigInt();
+    String amountInSatFromInvoice = invoiceDecoded.amount.toString();
     print("amountInSatFromInvoice: $amountInSatFromInvoice");
     print("amount: $amount");
 
     late Map<String, dynamic> data;
 
-    if(amountInSatFromInvoice == 0){
+    if(amountInSatFromInvoice == "0"){
+      print("amount is 0 so well use custom amount");
       data = {
         'amt': amount,
         'timeout_seconds': 60,
@@ -47,6 +48,7 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amoun
         'payment_request': invoiceString,
       };
     } else{
+      print("amount is not 0 so well use the ln invoice amount");
       data = {
         'timeout_seconds': 60,
         'fee_limit_sat': 1000,

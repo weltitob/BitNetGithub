@@ -193,8 +193,8 @@ class SendsController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    btcController.text = "0.00001"; // set the initial amount to 0.00001
-    satController.text = "1000";
+    btcController.text = "0.0"; // set the initial amount to 0.0
+    satController.text = "0.0";
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
     bitcoinReceiverAdressController = TextEditingController();
@@ -210,8 +210,8 @@ class SendsController extends BaseController {
   void resetValues() {
     hasReceiver.value = false;
     bitcoinReceiverAdress = "";
-    btcController.text = "0.00001";
-    satController.text = "1000";
+    btcController.text = "0.0";
+    satController.text = "0.0";
     moneyTextFieldIsEnabled.value = true;
     description.value = "";
     //context.go("/wallet/send");
@@ -311,8 +311,8 @@ class SendsController extends BaseController {
         sendPaymentDataLnUrl(response.data['result'], lnUrl, lnUrlname);
         sub!.cancel();
 
-        GoRouter.of(context).go("/feed");
         showOverlay(context, "Payment successful!");
+        GoRouter.of(context).go("/feed");
       } else {
         showOverlay(context, "Payment failed: ${response.message}");
         isFinished.value = false;
@@ -334,8 +334,8 @@ class SendsController extends BaseController {
     bitcoinReceiverAdress = invoiceString;
 
     Bolt11PaymentRequest req = Bolt11PaymentRequest(invoiceString);
-    final satoshi = CurrencyConverter.convertBitcoinToSats(req.amount.toDouble()).toString();
-    int cleanAmount = int.parse(satoshi);
+    double satoshi = CurrencyConverter.convertBitcoinToSats(req.amount.toDouble());
+    int cleanAmount = satoshi.toInt();
     satController.text = cleanAmount.toString();
     moneyTextFieldIsEnabled.value = false;
     description.value = req.tags[1].data;
@@ -384,10 +384,13 @@ class SendsController extends BaseController {
               logger.i("Payment successful!");
               showOverlay(context, "Payment successful!");
               GoRouter.of(context).go("/feed");
-            } else {
+            } if (response.data['result']['status'] == "FAILED") {
               // Handle error
               logger.i("Payment failed!");
               showOverlay(context, "Payment failed: ${response.message}");
+              isFinished.value = false; // Keep the user on the same page to possibly retry or show error
+            } else{
+              logger.i("Parsing of response failed! PLEASE FIX");
               isFinished.value = false; // Keep the user on the same page to possibly retry or show error
             }
           }, onError: (error) {

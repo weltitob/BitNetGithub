@@ -71,6 +71,7 @@ Future<void> main() async {
     await Stripe.instance.applySettings();
   }
   await LocalStorage.instance.initStorage();
+
   await Firebase.initializeApp(
     options: FirebaseOptions(
         apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
@@ -86,9 +87,8 @@ Future<void> main() async {
 
   await FirebaseAppCheck.instance.activate(
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider:
-        AndroidProvider.debug, //AndoroidProvider.playIntegrity nach release
-    appleProvider: AppleProvider.appAttest,
+    androidProvider: AndroidProvider.debug, //kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    appleProvider: AppleProvider.debug,
   );
 
   Get.put(LoggerService(), permanent: true);

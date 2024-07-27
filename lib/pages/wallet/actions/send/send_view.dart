@@ -56,7 +56,7 @@ class SendBTCScreen extends GetWidget<SendsController> {
       body: PopScope(
         canPop: false,
         onPopInvoked: (v) {
-          context.go('/feed');
+          controller.resetValues();
         },
         child: Column(
           children: [

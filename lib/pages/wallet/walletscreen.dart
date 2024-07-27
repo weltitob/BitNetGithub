@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -271,9 +272,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                   BitNetImageWithTextButton(
                     "Swap",
                     //L10n.of(context)!.rebalance,
-                    () {
-                      Get.put(LoopsController());
-                      context.go("/wallet/loop_screen");
+                    () async {
+                      final result = await startEcsTask('useruids9292');
+                      // Get.put(LoopsController());
+                      // context.go("/wallet/loop_screen");
                     },
                     image: "assets/images/rebalance_image.png",
                     width: AppTheme.cardPadding * 3.5.w,
