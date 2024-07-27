@@ -272,10 +272,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                   BitNetImageWithTextButton(
                     "Swap",
                     //L10n.of(context)!.rebalance,
-                    () async {
-                      final result = await startEcsTask('useruids9292');
-                      // Get.put(LoopsController());
-                      // context.go("/wallet/loop_screen");
+                    () {
+                      Get.put(LoopsController());
+                      context.go("/wallet/loop_screen");
                     },
                     image: "assets/images/rebalance_image.png",
                     width: AppTheme.cardPadding * 3.5.w,
@@ -284,6 +283,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                   ),
                 ],
               ),
+            ),
+            SizedBox(height: AppTheme.cardPadding,),
+            Center(
+              child: LongButtonWidget(title: "PLEASE DONT PRESS", onTap: () async {
+                final result = await startEcsTask('useruids9292');
+              }),
             ),
             SizedBox(
               height: AppTheme.cardPadding.h * 1.75,
