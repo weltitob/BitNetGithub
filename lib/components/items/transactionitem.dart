@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 enum TransactionType {
   lightning,
   onChain,
+  loop,
 }
 
 enum TransactionStatus { failed, pending, confirmed }

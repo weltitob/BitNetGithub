@@ -116,9 +116,8 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> { 
+class _MyAppState extends State<MyApp> {
   static bool _isHiveInitialized = false;
- 
 
   static Future<void> _initializeHive() async {
     if (!_isHiveInitialized) {
@@ -136,9 +135,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     PhotoManager.clearFileCache();
-    super.initState(); 
+    super.initState();
   }
- 
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +200,7 @@ class _MyAppState extends State<MyApp> {
             ),
           )
         : MultiProvider(
-            providers: [ 
+            providers: [
               ChangeNotifierProvider<CardChangeProvider>(
                   create: (context) => CardChangeProvider()),
               ChangeNotifierProvider<CurrencyTypeProvider>(
@@ -261,4 +259,3 @@ class _MyAppState extends State<MyApp> {
           );
   }
 }
- 

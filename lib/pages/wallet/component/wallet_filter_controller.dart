@@ -2,7 +2,6 @@ import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 class WalletFilterController extends BaseController {
   Rx<DateTime> startDate = DateTime(2024).obs;
   Rx<DateTime> endDate = DateTime.now().obs;
@@ -12,27 +11,30 @@ class WalletFilterController extends BaseController {
   int start = 0, end = 0;
 
   void toggleFilter(String filter) {
-      if (selectedFilters.contains(filter)) {
-        selectedFilters.remove(filter);
-      } else {
-        selectedFilters.add(filter);
-      }
-      change.value = true;
+    if (selectedFilters.contains(filter)) {
+      selectedFilters.remove(filter);
+    } else {
+      selectedFilters.add(filter);
+    }
+    change.value = true;
   }
 
   @override
   void onInit() async {
     super.onInit();
-    start = startDate.value.millisecondsSinceEpoch ~/1000;
-    end = endDate.value.millisecondsSinceEpoch ~/1000;
+    start = startDate.value.millisecondsSinceEpoch ~/ 1000;
+    end = endDate.value.millisecondsSinceEpoch ~/ 1000;
   }
 
-
-
-
-  initialDate(int time){
+  initialDate(int time) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(time * 1000);
-   startDate.value = date;
+    startDate.value = date;
+  }
+
+  initialLoopDate(int nanoseconds) {
+    int microseconds = nanoseconds ~/ 1000;
+    DateTime date = DateTime.fromMicrosecondsSinceEpoch(microseconds);
+    startDate.value = date;
   }
 
   Future<DateTime> selectDate(BuildContext context) async {
@@ -45,5 +47,4 @@ class WalletFilterController extends BaseController {
     if (picked == null) {}
     return picked!;
   }
-
 }

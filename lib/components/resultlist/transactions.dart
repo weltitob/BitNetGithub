@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/listswaps.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
@@ -74,9 +77,13 @@ class _TransactionsState extends State<Transactions>
       logger.i("Getting loop operations");
       RestResponse restLoopOperations = await listSwaps();
       SwapList swapList = SwapList.fromJson(restLoopOperations.data);
+      logger.i(
+          'This is the lenght og the loop operation list lenght ${swapList.swaps.length}=======}');
       this.loopOperations = swapList.swaps;
       setState(() {});
-    } on Error catch (_) {
+    } on Error catch (_, s) {
+      logger.i(
+          '=========This is the error coming from the swap response method ${_} and this is the stacktrace ${s}');
       return false;
     } catch (e) {
       return false;
@@ -285,75 +292,99 @@ class _TransactionsState extends State<Transactions>
                   ),
                 ),
               ].toList()
-            : [
-                ...lightningInvoices.map(
-                  (transaction) => TransactionItem(
-                    context: context,
-                    data: TransactionItemData(
-                      timestamp: transaction.settleDate,
-                      type: TransactionType.lightning,
-                      direction: TransactionDirection.received,
-                      receiver: transaction.paymentRequest.toString(),
-                      txHash: transaction.value.toString(),
-                      amount: "+" + transaction.amtPaid.toString(),
-                      fee: 0,
-                      status: transaction.settled
-                          ? TransactionStatus.confirmed
-                          : TransactionStatus.failed,
+            : controller.selectedFilters.contains('Loop')
+                ? [
+                    ...loopOperations.map((swap) => TransactionItem(
+                          context: context,
+                          data: TransactionItemData(
+                            timestamp:
+                                DateTime.now().millisecondsSinceEpoch ~/ 1000,
+                            status: swap.state == "SUCCEEDED"
+                                ? TransactionStatus.confirmed
+                                : swap.state == "FAILED"
+                                    ? TransactionStatus.failed
+                                    : TransactionStatus.pending,
+                            type: TransactionType.loop,
+                            direction: swap.type == "LOOP_OUT"
+                                ? TransactionDirection.sent
+                                : TransactionDirection.received,
+                            receiver: swap.htlcAddressP2tr
+                                .toString(), // Use htlc_address_p2tr as receiver
+                            txHash: swap.htlcAddress
+                                .toString(), // Use htlc_address as txHash
+                            fee: int.parse(swap
+                                .costServer), // Assuming cost_server is the fee
+                            amount: swap.amt.toString(),
+                          ),
+                        ))
+                  ].toList()
+                : [
+                    ...lightningInvoices.map(
+                      (transaction) => TransactionItem(
+                        context: context,
+                        data: TransactionItemData(
+                          timestamp: transaction.settleDate,
+                          type: TransactionType.lightning,
+                          direction: TransactionDirection.received,
+                          receiver: transaction.paymentRequest.toString(),
+                          txHash: transaction.value.toString(),
+                          amount: "+" + transaction.amtPaid.toString(),
+                          fee: 0,
+                          status: transaction.settled
+                              ? TransactionStatus.confirmed
+                              : TransactionStatus.failed,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                ...lightningPayments.map(
-                  (transaction) => TransactionItem(
-                    context: context,
-                    data: TransactionItemData(
-                      timestamp: transaction.creationDate,
-                      type: TransactionType.lightning,
-                      direction: TransactionDirection.sent,
-                      receiver: transaction.paymentHash.toString(),
-                      txHash: transaction.paymentHash.toString(),
-                      amount: "-" + transaction.valueSat.toString(),
-                      fee: transaction.fee,
-                      status: transaction.status == "SUCCEEDED"
-                          ? TransactionStatus.confirmed
-                          : transaction.status == "FAILED"
-                              ? TransactionStatus.failed
+                    ...lightningPayments.map(
+                      (transaction) => TransactionItem(
+                        context: context,
+                        data: TransactionItemData(
+                          timestamp: transaction.creationDate,
+                          type: TransactionType.lightning,
+                          direction: TransactionDirection.sent,
+                          receiver: transaction.paymentHash.toString(),
+                          txHash: transaction.paymentHash.toString(),
+                          amount: "-" + transaction.valueSat.toString(),
+                          fee: transaction.fee,
+                          status: transaction.status == "SUCCEEDED"
+                              ? TransactionStatus.confirmed
+                              : transaction.status == "FAILED"
+                                  ? TransactionStatus.failed
+                                  : TransactionStatus.pending,
+                        ),
+                      ),
+                    ),
+                    ...onchainTransactions.map(
+                      (transaction) => TransactionItem(
+                        context: context,
+                        data: TransactionItemData(
+                          timestamp: transaction.timeStamp,
+                          status: transaction.numConfirmations > 0
+                              ? TransactionStatus.confirmed
                               : TransactionStatus.pending,
+                          type: TransactionType.onChain,
+                          direction: transaction.amount!.contains("-")
+                              ? TransactionDirection.sent
+                              : TransactionDirection.received,
+                          receiver: transaction.amount!.contains("-")
+                              ? transaction.destAddresses.last.toString()
+                              : transaction.destAddresses.first.toString(),
+                          txHash: transaction.txHash.toString(),
+                          fee: 0,
+                          amount: transaction.amount!.contains("-")
+                              ? transaction.amount.toString()
+                              : "+" + transaction.amount.toString(),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                ...onchainTransactions.map(
-                  (transaction) => TransactionItem(
-                    context: context,
-                    data: TransactionItemData(
-                      timestamp: transaction.timeStamp,
-                      status: transaction.numConfirmations > 0
-                          ? TransactionStatus.confirmed
-                          : TransactionStatus.pending,
-                      type: TransactionType.onChain,
-                      direction: transaction.amount!.contains("-")
-                          ? TransactionDirection.sent
-                          : TransactionDirection.received,
-                      receiver: transaction.amount!.contains("-")
-                          ? transaction.destAddresses.last.toString()
-                          : transaction.destAddresses.first.toString(),
-                      txHash: transaction.txHash.toString(),
-                      fee: 0,
-                      amount: transaction.amount!.contains("-")
-                          ? transaction.amount.toString()
-                          : "+" + transaction.amount.toString(),
-                    ),
-                  ),
-                ),
-              ].toList();
+                  ].toList();
 
     combinedTransactions.sort(
       (a, b) => a.data.timestamp.compareTo(b.data.timestamp),
     );
     combinedTransactions = combinedTransactions.reversed.toList();
-    if (combinedTransactions.isNotEmpty) {
-      controller.initialDate(combinedTransactions.last.data.timestamp);
-    }
+    log('This is the lenght of the combinedList ${combinedTransactions.length}');
     return transactionsLoaded
         ? widget.fullList
             ? Container()
@@ -431,7 +462,7 @@ class _TransactionsState extends State<Transactions>
                                 ? combinedTransactions[index]
                                 : SizedBox();
                           }
-                          return SizedBox(); // Return a SizedBox for other cases
+                          return combinedTransactions[index];
                         },
                       ),
                       SizedBox(
