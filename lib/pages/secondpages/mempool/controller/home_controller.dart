@@ -226,6 +226,7 @@ class HomeController extends BaseController {
       isLoading.value = false;
       update();
     }
+    return null;
   }
 
   getDataHeight(int height) async {
@@ -381,7 +382,6 @@ class HomeController extends BaseController {
     });
   }
 
-  late Timer timer;
   callApiWithDelay() async {
     print('callapi with delay called ');
 
@@ -496,53 +496,54 @@ class HomeController extends BaseController {
   }
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
- 
 
- Future<void> createPost(
-    String postId,
-    bool hasLiked,
-    bool hasPrice,
-    bool hasLikeButton,
-    String nftName,
-    String nftMainName,
-    String cryptoText) async {
-  try {
-    // Check if a post with the given postId already exists
-    QuerySnapshot existingPost = await firestore
-        .collection('postsNew')
-        .where('postId', isEqualTo: postId)
-        .limit(1)
-        .get();
+  Future<void> createPost(
+      String postId,
+      bool hasLiked,
+      bool hasPrice,
+      bool hasLikeButton,
+      String nftName,
+      String nftMainName,
+      String cryptoText) async {
+    try {
+      // Check if a post with the given postId already exists
+      QuerySnapshot existingPost = await firestore
+          .collection('postsNew')
+          .where('postId', isEqualTo: postId)
+          .limit(1)
+          .get();
 
-    DocumentReference documentReference;
+      DocumentReference documentReference;
 
-    if (existingPost.docs.isEmpty) {
-      // If no document exists, create a new document reference
-      documentReference = firestore.collection('postsNew').doc();
-      print('Post added successfully!');
-    } else {
-      // If the document exists, get the existing document reference
-      documentReference = existingPost.docs.first.reference;
-      print('Post updated successfully!');
+      if (existingPost.docs.isEmpty) {
+        // If no document exists, create a new document reference
+        documentReference = firestore.collection('postsNew').doc();
+        print('Post added successfully!');
+      } else {
+        // If the document exists, get the existing document reference
+        documentReference = existingPost.docs.first.reference;
+        print('Post updated successfully!');
+      }
+
+      // Set or update the post with the current time as createdAt
+      await documentReference.set(
+          {
+            'postId': postId,
+            'hasLiked': hasLiked,
+            'hasPrice': hasPrice,
+            'hasLikeButton': hasLikeButton,
+            'nftName': nftName,
+            'nftMainName': nftMainName,
+            'cryptoText': cryptoText,
+            'createdAt': DateTime.now().millisecondsSinceEpoch,
+          },
+          SetOptions(
+              merge:
+                  true)); // Using SetOptions to merge the data instead of overwriting
+    } catch (e) {
+      print('Error adding post: $e');
     }
-
-    // Set or update the post with the current time as createdAt
-    await documentReference.set({
-      'postId': postId,
-      'hasLiked': hasLiked,
-      'hasPrice': hasPrice,
-      'hasLikeButton': hasLikeButton,
-      'nftName': nftName,
-      'nftMainName': nftMainName,
-      'cryptoText': cryptoText,
-      'createdAt': DateTime.now().millisecondsSinceEpoch,
-    }, SetOptions(merge: true));  // Using SetOptions to merge the data instead of overwriting
-  } catch (e) {
-    print('Error adding post: $e');
   }
-}
-
-
 
   Future<List<PostsDataModel>?> fetchPosts() async {
     try {
@@ -787,8 +788,7 @@ class HomeController extends BaseController {
           .where('postId', whereIn: chunk)
           .get();
       allPosts.addAll(snapshot.docs
-          .map((doc) =>
-              PostsDataModel.fromJson(doc.data() as Map<String, dynamic>))
+          .map((doc) => PostsDataModel.fromJson(doc.data()))
           .toList());
       print(allPosts);
     }

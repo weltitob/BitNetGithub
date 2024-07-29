@@ -1,20 +1,20 @@
 import 'dart:convert';
 
 class Swap {
-  final int amt;
+  final String amt;
   final String id;
   final String idBytes;
   final String type;
   final String state;
   final String failureReason;
-  final int initiationTime;
-  final int lastUpdateTime;
+  final String initiationTime;
+  final String lastUpdateTime;
   final String htlcAddress;
   final String htlcAddressP2wsh;
   final String htlcAddressP2tr;
-  final int costServer;
-  final int costOnchain;
-  final int costOffchain;
+  final String costServer;
+  final String costOnchain;
+  final String costOffchain;
   final String lastHop;
   final List<dynamic> outgoingChanSet;
   final String label;

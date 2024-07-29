@@ -19,6 +19,8 @@ import 'package:provider/provider.dart';
 enum TransactionType {
   lightning,
   onChain,
+  loopIn,
+  loopOut,
 }
 
 enum TransactionStatus { failed, pending, confirmed }
@@ -70,6 +72,19 @@ class _TransactionItemState extends State<TransactionItem> {
   void initState() {
     dollarRate();
     super.initState();
+  }
+
+  String getTransactionType() {
+    if (widget.data.type == TransactionType.loopIn) {
+      return 'On chain ↔ Lightning';
+    } else if (widget.data.type == TransactionType.loopOut) {
+      return 'Lightning ↔ On chain';
+    } else if (widget.data.type == TransactionType.lightning) {
+      return 'Lightning';
+    } else if (widget.data.type == TransactionType.onChain) {
+      return 'OnChain';
+    }
+    return '';
   }
 
   bool showInfo = false;
@@ -153,9 +168,7 @@ class _TransactionItemState extends State<TransactionItem> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.data.type == TransactionType.onChain
-                                    ? 'On chain ↔ Lightning'
-                                    : 'Lightning ↔ On chain',
+                                getTransactionType(),
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(widget.context)
                                     .textTheme

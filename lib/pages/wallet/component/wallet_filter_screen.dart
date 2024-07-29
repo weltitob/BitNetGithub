@@ -13,7 +13,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-
 class WalletFilterScreen extends GetWidget<WalletFilterController> {
   const WalletFilterScreen({super.key});
 
@@ -59,6 +58,7 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                 PillLabelModal(labelText: L10n.of(context)!.onchain),
                 PillLabelModal(labelText: L10n.of(context)!.sent),
                 PillLabelModal(labelText: L10n.of(context)!.received),
+                PillLabelModal(labelText: 'Loop'),
               ],
             ),
             CommonHeading(

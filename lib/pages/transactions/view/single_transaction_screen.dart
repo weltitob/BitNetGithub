@@ -47,7 +47,6 @@ class SingleTransactionScreen extends StatelessWidget {
       appBar: bitnetAppBar(
         context: context,
         onTap: () {
-          controllerHome.timer.cancel();
           channel.sink.add('{"track-rbf-summary":true}');
           channel.sink.add('{"track-tx":"stop"}');
           channel.sink
@@ -59,7 +58,6 @@ class SingleTransactionScreen extends StatelessWidget {
       body: PopScope(
         canPop: true,
         onPopInvoked: (bool didPop) {
-          controllerHome.timer.cancel();
           channel.sink.add('{"track-rbf-summary":true}');
           channel.sink.add('{"track-tx":"stop"}');
           channel.sink.add(
