@@ -64,6 +64,7 @@ class SendsController extends BaseController {
   RxBool moneyTextFieldIsEnabled = true.obs;
   RxBool amountWidgetOverBound = false.obs;
   RxBool amountWidgetUnderBound = false.obs;
+  RxBool loadingSending = false.obs;
   late FocusNode myFocusNodeAdress;
   late FocusNode myFocusNodeMoney;
   late double feesInEur_medium;
@@ -192,8 +193,8 @@ class SendsController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    btcController.text = "0.00001"; // set the initial amount to 0.00001
-    satController.text = "1000";
+    btcController.text = "0.0"; // set the initial amount to 0.0
+    satController.text = "0.0";
     myFocusNodeAdress = FocusNode();
     myFocusNodeMoney = FocusNode();
     bitcoinReceiverAdressController = TextEditingController();
@@ -209,8 +210,8 @@ class SendsController extends BaseController {
   void resetValues() {
     hasReceiver.value = false;
     bitcoinReceiverAdress = "";
-    btcController.text = "0.00001";
-    satController.text = "1000";
+    btcController.text = "0.0";
+    satController.text = "0.0";
     moneyTextFieldIsEnabled.value = true;
     description.value = "";
     //context.go("/wallet/send");
@@ -302,7 +303,7 @@ class SendsController extends BaseController {
     String lnUrl = bitcoinReceiverAdress;
     List<String> invoiceStrings = [invoicePr];
 
-    Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings);
+    Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings, amount * 1000);
     StreamSubscription? sub;
     sub = paymentStream.listen((RestResponse response) {
       isFinished.value = true;
@@ -310,8 +311,8 @@ class SendsController extends BaseController {
         sendPaymentDataLnUrl(response.data['result'], lnUrl, lnUrlname);
         sub!.cancel();
 
-        GoRouter.of(context).go("/feed");
         showOverlay(context, "Payment successful!");
+        GoRouter.of(context).go("/feed");
       } else {
         showOverlay(context, "Payment failed: ${response.message}");
         isFinished.value = false;
@@ -333,7 +334,9 @@ class SendsController extends BaseController {
     bitcoinReceiverAdress = invoiceString;
 
     Bolt11PaymentRequest req = Bolt11PaymentRequest(invoiceString);
-    satController.text = CurrencyConverter.convertBitcoinToSats(req.amount.toDouble()).toString();
+    double satoshi = CurrencyConverter.convertBitcoinToSats(req.amount.toDouble());
+    int cleanAmount = satoshi.toInt();
+    satController.text = cleanAmount.toString();
     moneyTextFieldIsEnabled.value = false;
     description.value = req.tags[1].data;
   }
@@ -355,22 +358,25 @@ class SendsController extends BaseController {
   }
 
   sendBTC(BuildContext context) async {
+    loadingSending = RxBool(true);
     LoggerService logger = Get.find();
     logger.i("sendBTC() called");
     await isBiometricsAvailable();
     if (isBioAuthenticated == true || hasBiometrics == false) {
       try {
         if (sendType == SendType.LightningUrl) {
+          logger.i("Amount that is being sent: ${satController.text}");
           payLnUrl(lnCallback!, int.parse(satController.text), context);
         } else if (sendType == SendType.Invoice) {
           logger.i("Sending invoice: $bitcoinReceiverAdress");
 
           List<String> invoiceStrings = [bitcoinReceiverAdress]; // Assuming you want to send a list containing a single invoice for now
 
-          Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings);
+          Stream<RestResponse> paymentStream = sendPaymentV2Stream(invoiceStrings, int.parse(satController.text));
           paymentStream.listen((RestResponse response) {
             isFinished.value = true; // Assuming you might want to update UI on each response
             if (response.statusCode == "success") {
+              print(response.data);
               // Handle success
               if (response.data['result']['status'] != "FAILED") {
                 sendPaymentDataInvoice(response.data['result']);
@@ -378,10 +384,13 @@ class SendsController extends BaseController {
               logger.i("Payment successful!");
               showOverlay(context, "Payment successful!");
               GoRouter.of(context).go("/feed");
-            } else {
+            } if (response.data['result']['status'] == "FAILED") {
               // Handle error
               logger.i("Payment failed!");
               showOverlay(context, "Payment failed: ${response.message}");
+              isFinished.value = false; // Keep the user on the same page to possibly retry or show error
+            } else{
+              logger.i("Parsing of response failed! PLEASE FIX");
               isFinished.value = false; // Keep the user on the same page to possibly retry or show error
             }
           }, onError: (error) {
@@ -446,6 +455,7 @@ class SendsController extends BaseController {
       isFinished.value = false;
       logger.e('Biometric authentication failed');
     }
+    loadingSending = RxBool(false);
   }
 
   @override

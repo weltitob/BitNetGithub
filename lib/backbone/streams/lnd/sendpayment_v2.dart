@@ -5,13 +5,16 @@ import 'package:bitnet/backbone/helper/isCompleteJSON.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 
 
-Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings) async* {
+Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amount) async* {
   String restHost = AppTheme.baseUrlLightningTerminal;
+
+
 
   ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -23,14 +26,35 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings) async* {
 
   String url = 'https://$restHost/v2/router/send';
 
+
+
   HttpOverrides.global = MyHttpOverrides();
 
   for (var invoiceString in invoiceStrings) {
-    final Map<String, dynamic> data = {
-      'timeout_seconds': 60,
-      'fee_limit_sat': 1000,
-      'payment_request': invoiceString,
-    };
+
+    final invoiceDecoded = Bolt11PaymentRequest(invoiceString);
+    String amountInSatFromInvoice = invoiceDecoded.amount.toString();
+    print("amountInSatFromInvoice: $amountInSatFromInvoice");
+    print("amount: $amount");
+
+    late Map<String, dynamic> data;
+
+    if(amountInSatFromInvoice == "0"){
+      print("amount is 0 so well use custom amount");
+      data = {
+        'amt': amount,
+        'timeout_seconds': 60,
+        'fee_limit_sat': 1000,
+        'payment_request': invoiceString,
+      };
+    } else{
+      print("amount is not 0 so well use the ln invoice amount");
+      data = {
+        'timeout_seconds': 60,
+        'fee_limit_sat': 1000,
+        'payment_request': invoiceString,
+      };
+    }
 
     try {
       var request = http.Request('POST', Uri.parse(url))

@@ -99,7 +99,7 @@ class SearchReceiver extends GetWidget<SendsController> {
 
                           Padding(
                               padding: EdgeInsets.only(left: AppTheme.cardPadding),
-                              child: Text("Support Bitcoin Devs", style: Theme.of(context).textTheme.titleLarge)),
+                              child: Text("Most often used", style: Theme.of(context).textTheme.titleLarge)),
                           SizedBox(
                             height: AppTheme.cardPadding.h,
                           ),

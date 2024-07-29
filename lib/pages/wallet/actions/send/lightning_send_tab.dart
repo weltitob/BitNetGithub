@@ -97,12 +97,14 @@ class LightningSendTab extends GetWidget<SendsController> {
               ),
             ],
           ),
-          BottomCenterButton(
-            buttonTitle: L10n.of(context)!.sendNow,
-            buttonState: ButtonState.idle,
-            onButtonTap: () async {
-              await controller.sendBTC(context);
-            },
+            Obx(
+            () => BottomCenterButton(
+              buttonTitle: L10n.of(context)!.sendNow,
+              buttonState: controller.loadingSending.value ? ButtonState.loading : ButtonState.idle,
+              onButtonTap: () async {
+                dynamic response = await controller.sendBTC(context);
+              },
+            ),
           )
         ],
       ),

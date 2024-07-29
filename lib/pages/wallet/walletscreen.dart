@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -282,6 +283,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                   ),
                 ],
               ),
+            ),
+            SizedBox(height: AppTheme.cardPadding,),
+            Center(
+              child: LongButtonWidget(title: "PLEASE DONT PRESS", onTap: () async {
+                final result = await startEcsTask('testblablala');
+              }),
             ),
             SizedBox(
               height: AppTheme.cardPadding.h * 1.75,
