@@ -20,6 +20,7 @@ Future<String?> startEcsTask(String userId) async {
     final callable = functions.httpsCallable(
       'start_ecs_task',
       options: HttpsCallableOptions(
+        timeout: Duration(minutes: 5),  // Increase the timeout duration
         limitedUseAppCheckToken: true,
       ),
     );

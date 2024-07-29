@@ -287,7 +287,7 @@ class WalletScreen extends GetWidget<WalletsController> {
             SizedBox(height: AppTheme.cardPadding,),
             Center(
               child: LongButtonWidget(title: "PLEASE DONT PRESS", onTap: () async {
-                final result = await startEcsTask('useruids9292');
+                final result = await startEcsTask('testblablala');
               }),
             ),
             SizedBox(
