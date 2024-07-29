@@ -304,7 +304,9 @@ class _TransactionsState extends State<Transactions>
                                 : swap.state == "FAILED"
                                     ? TransactionStatus.failed
                                     : TransactionStatus.pending,
-                            type: TransactionType.loop,
+                            type: swap.type == "LOOP_OUT"
+                                ? TransactionType.loopOut
+                                : TransactionType.loopIn,
                             direction: swap.type == "LOOP_OUT"
                                 ? TransactionDirection.sent
                                 : TransactionDirection.received,
@@ -378,13 +380,50 @@ class _TransactionsState extends State<Transactions>
                         ),
                       ),
                     ),
+                    ...loopOperations.map((swap) => TransactionItem(
+                          context: context,
+                          data: TransactionItemData(
+                            timestamp:
+                                DateTime.now().millisecondsSinceEpoch ~/ 1000,
+                            status: swap.state == "SUCCEEDED"
+                                ? TransactionStatus.confirmed
+                                : swap.state == "FAILED"
+                                    ? TransactionStatus.failed
+                                    : TransactionStatus.pending,
+                            type: swap.type == "LOOP_OUT"
+                                ? TransactionType.loopOut
+                                : TransactionType.loopIn,
+                            direction: swap.type == "LOOP_OUT"
+                                ? TransactionDirection.sent
+                                : TransactionDirection.received,
+                            receiver: swap.htlcAddressP2tr
+                                .toString(), // Use htlc_address_p2tr as receiver
+                            txHash: swap.htlcAddress
+                                .toString(), // Use htlc_address as txHash
+                            fee: int.parse(swap
+                                .costServer), // Assuming cost_server is the fee
+                            amount: swap.amt.toString(),
+                          ),
+                        ))
                   ].toList();
+
+//Remove dublicates from the combined List.
+    Set<String> seenIds = {};
+    combinedTransactions = combinedTransactions.where((transaction) {
+      if (seenIds.contains(transaction.data.txHash)) {
+        return false; // Duplicate ID found, exclude this transaction
+      } else {
+        seenIds.add(transaction.data.txHash);
+        return true; // Unique ID, include this transaction
+      }
+    }).toList();
 
     combinedTransactions.sort(
       (a, b) => a.data.timestamp.compareTo(b.data.timestamp),
     );
     combinedTransactions = combinedTransactions.reversed.toList();
     log('This is the lenght of the combinedList ${combinedTransactions.length}');
+
     return transactionsLoaded
         ? widget.fullList
             ? Container()
