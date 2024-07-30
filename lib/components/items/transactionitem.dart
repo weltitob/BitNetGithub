@@ -8,6 +8,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/lightning_transaction_details.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
+import 'package:bitnet/pages/transactions/view/loop_transaction_screen.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:dio/dio.dart';
@@ -121,6 +122,16 @@ class _TransactionItemState extends State<TransactionItem> {
                 MaterialPageRoute(
                   builder: (context) => LightningTransactionDetails(
                     data: widget.data,
+                  ),
+                ),
+              );
+            } else if (widget.data.type == TransactionType.loopIn ||
+                widget.data.type == TransactionType.loopOut) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoopTransactionScreen(
+                    transactionItemData: widget.data,
                   ),
                 ),
               );
