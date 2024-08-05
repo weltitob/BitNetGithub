@@ -602,7 +602,7 @@ class TransactionController extends BaseController {
                   .length +
               1;
           // now assume the script could have been split into ${spendingPaths} equal tapleaves
-          replacementSize = int.parse((script!.length ~/ 2 ~/ spendingPaths +
+          replacementSize = int.parse((script.length ~/ 2 ~/ spendingPaths +
                   32 * math.log((spendingPaths - 1) + 1) +
                   33)
               .toString());
@@ -664,7 +664,7 @@ class TransactionController extends BaseController {
       calculateRatings(txDetailsConfirmed);
       isLoading.value = false;
       update();
-    } on DioError {
+    } on DioException {
       isLoading.value = false;
       update();
     } catch (e, tr) {

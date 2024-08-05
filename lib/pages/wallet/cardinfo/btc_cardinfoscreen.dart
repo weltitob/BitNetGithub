@@ -40,7 +40,7 @@ class _BitcoinCardInformationScreenState
         'bc1p5lfahjz2j3679ynqy4fu8tvteem92fuqfqfsax7vx97lyr3vhkwqlxjh5e');
     super.initState();
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(

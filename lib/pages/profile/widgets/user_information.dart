@@ -10,70 +10,73 @@ class UserInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
-    return  Padding(
+    return Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
-        child: Column(
-          children: [
-            SizedBox(height: AppTheme.elementSpacing /2,),
-            TextField(
-              focusNode: controller.focusNodeUsername,
-              readOnly: controller.currentview.value == 2 ? false : true,
-              textAlign: TextAlign.center,
-              textAlignVertical: TextAlignVertical.center,
-              decoration: InputDecoration(
-                fillColor: Colors.transparent,
-                isDense: true,
-                border: InputBorder.none,
-                errorText: controller.displayNameValid.value
-                    ? null
-                    : L10n.of(context)!.badCharacters, // Add this line
+        child: Obx(
+          () => Column(
+            children: [
+              SizedBox(
+                height: AppTheme.elementSpacing / 2,
               ),
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: AppTheme.white70,
-                  ),
-              controller: controller.userNameController,
-            ),
-            const SizedBox(height: AppTheme.cardPadding),
-            TextField(
-              focusNode: controller.focusNodeDisplayName,
-              readOnly: controller.currentview.value == 2 ? false : true,
-              textAlign: TextAlign.center,
-              textAlignVertical: TextAlignVertical.center,
-              decoration: InputDecoration(
+              TextField(
+                focusNode: controller.focusNodeUsername,
+                readOnly: controller.currentview.value == 2 ? false : true,
+                textAlign: TextAlign.center,
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
                   fillColor: Colors.transparent,
                   isDense: true,
                   border: InputBorder.none,
                   errorText: controller.displayNameValid.value
                       ? null
-                      : L10n.of(context)!.coudntChangeUsername),
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall!
-                  .copyWith(color: AppTheme.white90),
-              controller: controller.displayNameController,
-            ),
-            TextField(
-              focusNode: controller.focusNodeBio,
-              readOnly: controller.currentview.value == 2 ? false : true,
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              textAlign: TextAlign.center,
-              textAlignVertical: TextAlignVertical.center,
-              decoration: InputDecoration(
-                fillColor: Colors.transparent,
-                border: InputBorder.none,
-                isDense: true,
+                      : L10n.of(context)!.badCharacters,
+                ),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: AppTheme.white70,
+                    ),
+                controller: controller.userNameController,
               ),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(color: AppTheme.white70),
-              controller: controller.bioController,
-            ),
-            const SizedBox(height: AppTheme.elementSpacing / 2),
-          ],
-        ),
-      );
+              const SizedBox(height: AppTheme.cardPadding),
+              TextField(
+                focusNode: controller.focusNodeDisplayName,
+                readOnly: controller.currentview.value == 2 ? false : true,
+                textAlign: TextAlign.center,
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                    fillColor: Colors.transparent,
+                    isDense: true,
+                    border: InputBorder.none,
+                    errorText: controller.displayNameValid.value
+                        ? null
+                        : L10n.of(context)!.coudntChangeUsername),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall!
+                    .copyWith(color: AppTheme.white90),
+                controller: controller.displayNameController,
+              ),
+              TextField(
+                focusNode: controller.focusNodeBio,
+                readOnly: controller.currentview.value == 2 ? false : true,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                textAlign: TextAlign.center,
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                  fillColor: Colors.transparent,
+                  border: InputBorder.none,
+                  isDense: true,
+                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: AppTheme.white70),
+                controller: controller.bioController,
+              ),
+              const SizedBox(height: AppTheme.elementSpacing / 2),
+            ],
+          ),
+        ));
   }
 }
