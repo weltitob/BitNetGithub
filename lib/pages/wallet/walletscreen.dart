@@ -77,6 +77,8 @@ class WalletScreen extends GetWidget<WalletsController> {
     ];
     // var sampleTheme = Theme.of(context).textTheme;
 
+    final String dateTime =  DateTime.now().millisecondsSinceEpoch.toString();
+
     return bitnetScaffold(
         context: context,
         body: ListView(
@@ -288,13 +290,13 @@ class WalletScreen extends GetWidget<WalletsController> {
             SizedBox(height: AppTheme.cardPadding,),
             Center(
               child: LongButtonWidget(title: "LOGIN: PLEASE DONT PRESS", onTap: () async {
-                final result = await startEcsTask('testblablala');
+                final result = await startEcsTask('inapp_user_dev_${dateTime}');
               }),
             ),
             SizedBox(height: AppTheme.cardPadding,),
             Center(
               child: LongButtonWidget(title: "REGISTER: PLEASE DONT PRESS", onTap: () async {
-                final result = await registerLitEcs('userId4324');
+                final result = await registerLitEcs('inapp_user_dev_${dateTime}');
               }),
             ),
             SizedBox(

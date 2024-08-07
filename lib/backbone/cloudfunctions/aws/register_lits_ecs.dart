@@ -5,7 +5,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 
 Future<String?> registerLitEcs(String userId) async {
   try {
-    print("STARTING ECS TASK");
+    print("STARTING ECS REGISTRATION");
 
     try{
       final appCheckToken = await FirebaseAppCheck.instance.getLimitedUseToken();
