@@ -20,7 +20,7 @@ Future<String?> registerLitEcs(String userId) async {
     final callable = functions.httpsCallable(
       'register_user_for_litd',
       options: HttpsCallableOptions(
-        timeout: Duration(minutes: 5),  // Increase the timeout duration
+        timeout: Duration(minutes: 20),  // Increase the timeout duration
         limitedUseAppCheckToken: true,
       ),
     );
