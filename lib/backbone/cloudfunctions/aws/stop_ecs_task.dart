@@ -2,12 +2,17 @@ import 'package:bitnet/backbone/helper/deepmapcast.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'dart:async';
+import 'dart:core';
+import 'dart:developer';
 
-Future<String?> registerLitEcs(String userId) async {
+Future<String?> stopUserTask(String userId) async {
+  final stopwatch = Stopwatch()..start(); // Start timing
+
   try {
-    print("STARTING ECS REGISTRATION");
+    print("STOPPING ECS TASK");
 
-    try{
+    try {
       final appCheckToken = await FirebaseAppCheck.instance.getLimitedUseToken();
       final newAppCheckToken = await FirebaseAppCheck.instance.getToken(false);
       print("App Check Token: $appCheckToken");
@@ -18,7 +23,7 @@ Future<String?> registerLitEcs(String userId) async {
 
     final functions = FirebaseFunctions.instance;
     final callable = functions.httpsCallable(
-      'register_user_for_litd',
+      'stop_ecs_task',
       options: HttpsCallableOptions(
         timeout: Duration(minutes: 10),  // Increase the timeout duration
         limitedUseAppCheckToken: true,
@@ -47,7 +52,10 @@ Future<String?> registerLitEcs(String userId) async {
     // The Python function doesn't return a customToken, so we'll return the message instead
     return callback.message;
   } catch (e) {
-    print("Error calling start_ecs_task: $e  ");
+    print("Error calling start_ecs_task: $e");
     return null;
+  } finally {
+    stopwatch.stop(); // Stop timing
+    print('Time taken for response: ${stopwatch.elapsed}');
   }
 }

@@ -77,13 +77,9 @@ class _TransactionItemState extends State<TransactionItem> {
 
   String getTransactionType() {
     if (widget.data.type == TransactionType.loopIn) {
-      return 'On chain ↔ Lightning';
+      return 'Swap';
     } else if (widget.data.type == TransactionType.loopOut) {
-      return 'Lightning ↔ On chain';
-    } else if (widget.data.type == TransactionType.lightning) {
-      return 'Lightning';
-    } else if (widget.data.type == TransactionType.onChain) {
-      return 'OnChain';
+      return 'Swap';
     }
     return '';
   }
@@ -178,13 +174,28 @@ class _TransactionItemState extends State<TransactionItem> {
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                getTransactionType(),
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(widget.context)
-                                    .textTheme
-                                    .bodySmall,
+                              Container(
+                                width: AppTheme.cardPadding * 5,
+                                child: Text(
+                                  widget.data.type == TransactionType.loopOut
+                                      ? getTransactionType()
+                                      : widget.data.type ==
+                                              TransactionType.loopIn
+                                          ? getTransactionType()
+                                          : widget.data.receiver.toString(),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(widget.context)
+                                      .textTheme
+                                      .titleSmall,
+                                ),
                               ),
+                              // Text(
+                              //   getTransactionType(),
+                              //   overflow: TextOverflow.ellipsis,
+                              //   style: Theme.of(widget.context)
+                              //       .textTheme
+                              //       .bodySmall,
+                              // ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -276,50 +287,81 @@ class _TransactionItemState extends State<TransactionItem> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: AppTheme.elementSpacing / 3,
                                       vertical: AppTheme.elementSpacing / 15),
-                                  child: Row(
-                                    children: [
-                                      //only for received transactions
-                                      GestureDetector(
-                                        onTap: () {
-                                          ///when the lightning invoice wont get trough the payment will be canceled and the user
-                                          ///will receive the funds back
-                                        },
-                                        child: Icon(
-                                          Icons.circle,
-                                          color: widget.data.status ==
-                                                  TransactionStatus.confirmed
-                                              ? AppTheme.successColor
-                                              : widget.data.status ==
-                                                      TransactionStatus.pending
-                                                  ? AppTheme.colorBitcoin
-                                                  : AppTheme.errorColor,
-                                          size: AppTheme.cardPadding * 0.75,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: AppTheme.elementSpacing / 2,
-                                      ),
-                                      Image.asset(
-                                        widget.data.type ==
-                                                TransactionType.onChain
-                                            ? "assets/images/bitcoin.png"
-                                            : "assets/images/lightning.png",
-                                        width: AppTheme.cardPadding * 0.75,
-                                        height: AppTheme.cardPadding * 0.75,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      Text(' ↔ '),
-                                      Image.asset(
-                                        widget.data.type ==
-                                                TransactionType.onChain
-                                            ? "assets/images/lightning.png"
-                                            : "assets/images/bitcoin.png",
-                                        width: AppTheme.cardPadding * 0.75,
-                                        height: AppTheme.cardPadding * 0.75,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ],
-                                  ),
+                                  child: widget.data.type ==
+                                          TransactionType.lightning
+                                      ? Image.asset(
+                                          "assets/images/lightning.png",
+                                          width: AppTheme.cardPadding * 0.75,
+                                          height: AppTheme.cardPadding * 0.75,
+                                          fit: BoxFit.contain,
+                                        )
+                                      : widget.data.type ==
+                                              TransactionType.onChain
+                                          ? Image.asset(
+                                              "assets/images/bitcoin.png",
+                                              width:
+                                                  AppTheme.cardPadding * 0.75,
+                                              height:
+                                                  AppTheme.cardPadding * 0.75,
+                                              fit: BoxFit.contain,
+                                            )
+                                          : Row(
+                                              children: [
+                                                //only for received transactions
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    ///when the lightning invoice wont get trough the payment will be canceled and the user
+                                                    ///will receive the funds back
+                                                  },
+                                                  child: Icon(
+                                                    Icons.circle,
+                                                    color: widget.data.status ==
+                                                            TransactionStatus
+                                                                .confirmed
+                                                        ? AppTheme.successColor
+                                                        : widget.data.status ==
+                                                                TransactionStatus
+                                                                    .pending
+                                                            ? AppTheme
+                                                                .colorBitcoin
+                                                            : AppTheme
+                                                                .errorColor,
+                                                    size: AppTheme.cardPadding *
+                                                        0.75,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width:
+                                                      AppTheme.elementSpacing /
+                                                          2,
+                                                ),
+                                                Image.asset(
+                                                  widget.data.type ==
+                                                          TransactionType
+                                                              .onChain
+                                                      ? "assets/images/bitcoin.png"
+                                                      : "assets/images/lightning.png",
+                                                  width: AppTheme.cardPadding *
+                                                      0.75,
+                                                  height: AppTheme.cardPadding *
+                                                      0.75,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                                Text(' ↔ '),
+                                                Image.asset(
+                                                  widget.data.type ==
+                                                          TransactionType
+                                                              .onChain
+                                                      ? "assets/images/lightning.png"
+                                                      : "assets/images/bitcoin.png",
+                                                  width: AppTheme.cardPadding *
+                                                      0.75,
+                                                  height: AppTheme.cardPadding *
+                                                      0.75,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ],
+                                            ),
                                 ),
                               ],
                             ),

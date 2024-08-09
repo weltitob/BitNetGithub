@@ -18,6 +18,7 @@ import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +106,7 @@ Future<void> main() async {
             lockScreen: const LockScreen(),
             enabled: false,
           )
-        : const MyApp(),
+        : MyApp(),
   );
 }
 
@@ -116,7 +117,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   static bool _isHiveInitialized = false;
 
   static Future<void> _initializeHive() async {
@@ -136,6 +137,42 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     PhotoManager.clearFileCache();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  //make sure to connect to the user aws container when he logs in
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final logger = Get.find<LoggerService>();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      if (state == AppLifecycleState.resumed) {
+        // App wurde geöffnet
+        logger.i("Resumed lifecycle");
+      } else if (state == AppLifecycleState.paused) {
+        // App wird geschlossen
+        logger.i("Applifecycle paused");
+      } else if (state == AppLifecycleState.detached) {
+        //close the ECS container
+        logger.i("Applicaton detached");
+        //hier wird die app dann auch wirklich geschlossen >> dann den container down shutten?
+        //dann etwas in firebase storage schreiben in die collection namens appcycle
+
+      } else if (state == AppLifecycleState.hidden) {
+        // App wird minimiert
+        logger.i("Applifecycle hidden");
+
+      } else if (state == AppLifecycleState.inactive) {
+        // App wird pausiert
+        logger.i("Applifecycle inactive");
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
