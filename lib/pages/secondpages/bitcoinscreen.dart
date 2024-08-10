@@ -14,6 +14,7 @@ import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_contr
 import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/settings/paymentmethods/paymentmethos.dart';
+import 'package:bitnet/pages/settings/paymentmethods/addpaymentmethod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -190,7 +191,11 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
             rightButtonTitle: L10n.of(context)!.sell,
             onLeftButtonTap: () {
               requestClientSecret("1000", "eur");
-              BitNetBottomSheet(context: context, child: PurchaseSheet());
+              BitNetBottomSheet(
+                  context: context,
+                  // height: MediaQuery.of(context).size.height * 0.5,
+
+                  child: PurchaseSheet());
             },
             onRightButtonTap: () {},
           ),
@@ -212,7 +217,8 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
       context: context,
       appBar: bitnetAppBar(
         text: L10n.of(context)!.purchaseBitcoin,
-        context: context,),
+        context: context,
+      ),
       body: Stack(
         children: [
           TabBarView(
@@ -221,7 +227,9 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
               children: [
                 Column(
                   children: [
-                    SizedBox(height: AppTheme.cardPadding * 2,),
+                    SizedBox(
+                      height: AppTheme.cardPadding * 4,
+                    ),
                     AmountWidget(
                         swapped: Get.find<WalletsController>().reversed.value,
                         enabled: () => true,
@@ -234,32 +242,56 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                     SizedBox(
                       height: AppTheme.cardPadding * 2,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        children: [
-                          Text(
-                            L10n.of(context)!.payemntMethod,
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    PaymentCardHorizontalWidget(controller: controller.controller),
-                    SizedBox(height: AppTheme.elementSpacing * 8),
-                    Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: LongButtonWidget(
-                          title: L10n.of(context)!.buyBitcoin,
-                          onTap: () {},
-                          customWidth: double.infinity,
-                        ))
+                    // Padding(
+                    //   padding: EdgeInsets.symmetric(horizontal: 16),
+                    //   child: Row(
+                    //     children: [
+                    //       Text(
+                    //         L10n.of(context)!.payemntMethod,
+                    //         style: Theme.of(context).textTheme.titleSmall,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    SizedBox(height: AppTheme.cardPadding),
+                    // PaymentCardHorizontalWidget(),
+                    // SizedBox(height: AppTheme.cardPadding * 2),
+                    // Padding(
+                    //     padding: EdgeInsets.symmetric(horizontal: 16),
+                    //     child: LongButtonWidget(
+                    //       title: L10n.of(context)!.buyBitcoin,
+                    //       onTap: () {},
+                    //       customWidth: double.infinity,
+                    //     ))
                   ],
                 ),
-                PaymentMethods(),
+                // PaymentMethods(),
+                // AddPaymentMethod(),
               ]),
-          BottomCenterButton(buttonTitle: "buttonTitle", buttonState: ButtonState.disabled, onButtonTap: (){})
+          BottomCenterButton(
+              buttonTitle: "Secure my Bitcoin",
+              buttonState: controller.buttonState,
+              onButtonTap: () async {
+                //change button state to loading
+                controller.buttonState = ButtonState.loading;
+                try{
+                final String clientSecret =
+                    await requestClientSecret("1000", "usd");
+                final stripesheet = await Stripe.instance.initPaymentSheet(
+                  paymentSheetParameters: SetupPaymentSheetParameters(
+                    paymentIntentClientSecret: clientSecret,
+                    // applePay: PaymentSheetApplePay(merchantCountryCode: 'DE'),
+                    // googlePay: PaymentSheetGooglePay(
+                    //   merchantCountryCode: 'DE',
+                    // ),
+                    style: ThemeMode.dark,
+                    merchantDisplayName: 'BitNet',
+                  ),
+                );} catch (e) {
+                  print(e);
+                }
+                controller.buttonState = ButtonState.idle;
+              })
         ],
       ),
     );
@@ -267,18 +299,20 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
 }
 
 class NewPaymentCardHorizontalWidget extends StatelessWidget {
-  final TabController controller;
-  NewPaymentCardHorizontalWidget({required this.controller});
+  NewPaymentCardHorizontalWidget({
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     return Center(
       child: LongButtonWidget(
-          customWidth: MediaQuery.of(context).size.width - AppTheme.cardPadding * 1,
+          customWidth:
+              MediaQuery.of(context).size.width - AppTheme.cardPadding * 1,
           buttonType: ButtonType.solid,
           leadingIcon: Icon(Icons.add),
           title: L10n.of(context)!.addNewCard,
           onTap: () {
-            controller.animateTo(2);
+            // controller.animateTo(2);
           }),
     );
   }
@@ -286,12 +320,8 @@ class NewPaymentCardHorizontalWidget extends StatelessWidget {
 
 class PaymentCardHorizontalWidget extends StatelessWidget {
   const PaymentCardHorizontalWidget(
-      {super.key,
-      required this.controller,
-      this.check = false,
-      this.forward = true});
+      {super.key, this.check = false, this.forward = true});
 
-  final TabController controller;
   final bool check;
   final bool forward;
 
@@ -331,14 +361,15 @@ class PaymentCardHorizontalWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: check
-                      ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary)
+                      ? Icon(Icons.check,
+                          color: Theme.of(context).colorScheme.primary)
                       : forward
                           ? IconButton(
                               icon: Icon(
                                 Icons.arrow_forward_ios,
                               ),
                               onPressed: () {
-                                controller.animateTo(1);
+                                // controller.animateTo(1);
                               },
                             )
                           : SizedBox(

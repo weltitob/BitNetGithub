@@ -6,17 +6,17 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 
 
-requestClientSecret(String amount, String currency) async {
+requestHelloWorld(String amount, String currency) async {
   final functions = FirebaseFunctions.instance;
   final callable = functions.httpsCallable(
-    'request_stripe_clientsecret',
+    'hello_world',
     options: HttpsCallableOptions(
       timeout: Duration(minutes: 10),  // Increase the timeout duration
       limitedUseAppCheckToken: true,
     ),
   );
   final logger = Get.find<LoggerService>();
-  logger.i("Requesting client secret for payment.");
+  logger.i("Requesting HELLO WORLD");
 
   try {
     final HttpsCallableResult<dynamic> response =
@@ -45,13 +45,13 @@ requestClientSecret(String amount, String currency) async {
       messageData['data'] as Map<String, dynamic>;
 
       // Safely extract the customToken from the data
-      if (data.containsKey('clientSecret') && data.containsKey('id')) {
-        String clientSecret = data['clientSecret'] as String;
-        logger.i("clientSecret: $clientSecret");
-        String id = data['id'] as String;
-        logger.i("id: $id");
+      if (data.containsKey('amount') && data.containsKey('currency')) {
+        String amount = data['amount'] as String;
+        logger.i("amount: $amount");
+        String id = data['currency'] as String;
+        logger.i("currency: $currency");
 
-        return clientSecret;
+        return amount;
       } else {
         logger.e("Custom Token not found in message data.");
         return null;

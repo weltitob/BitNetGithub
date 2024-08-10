@@ -1,3 +1,4 @@
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
@@ -9,6 +10,7 @@ class PurchaseSheetController extends BaseController
   late TextEditingController btcCtrlBuy;
   late TextEditingController currCtrlBuy;
   FocusNode nodeBuy = FocusNode();
+  ButtonState buttonState = ButtonState.idle;
 
   @override
   void onInit() {
