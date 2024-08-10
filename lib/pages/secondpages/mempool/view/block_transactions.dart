@@ -280,63 +280,65 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(vertical: 5),
-                                                    child: Row(
-                                                      children: [
-                                                        controller
-                                                                    .txDetails[
-                                                                        index]
-                                                                    .vout
-                                                                    .first
-                                                                    .scriptpubkeyAddress ==
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        height: 20,
+                                                        width: 20,
+                                                        decoration:
+                                                        BoxDecoration(
+                                                          color: controller
+                                                              .txDetails[
+                                                          index]
+                                                              .vin
+                                                              .first
+                                                              .isCoinbase
+                                                              ? Colors.grey
+                                                              : Colors.green,
+                                                          shape:
+                                                          BoxShape.circle,
+                                                        ),
+                                                        child: const Center(
+                                                            child: Icon(
+                                                              Icons
+                                                                  .arrow_forward_outlined,
+                                                              size: 15,
+                                                              color: Colors.white,
+                                                            )),
+                                                      ),
+                                                      SizedBox(width:  AppTheme.elementSpacing / 2,),
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .symmetric(vertical: 5),
+                                                        child: Row(
+                                                          children: [
+                                                            controller
+                                                                .txDetails[
+                                                            index]
+                                                                .vout
+                                                                .first
+                                                                .scriptpubkeyAddress ==
                                                                 null
-                                                            ? const Text('')
-                                                            : Text(
-                                                                '${controller.txDetails[index].vout.first.scriptpubkeyAddress!.substring(0, 10)}...${controller.txDetails[index].vout.first.scriptpubkeyAddress!.substring(controller.txDetails[index].vout.first.scriptpubkeyAddress!.length - 10)}',
-                                                                style: const TextStyle(
-                                                                    color: Colors
-                                                                        .white70),
-                                                              ),
-                                                      ],
-                                                    ),
+                                                                ? const Text('')
+                                                                : Text(
+                                                              '${controller.txDetails[index].vout.first.scriptpubkeyAddress!.substring(0, 10)}...${controller.txDetails[index].vout.first.scriptpubkeyAddress!.substring(controller.txDetails[index].vout.first.scriptpubkeyAddress!.length - 10)}',
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .white70),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
+
                                                   Row(
                                                     children: [
                                                       Text(controller
                                                               .isBTC.value
                                                           ? '${controller.txDetails[index].vout.first.value / 100000000} BTC'
                                                           : '\$${controller.formatAmount(((controller.txDetails[index].vout.first.value / 100000000) * controller.currentUSD.value).toStringAsFixed(0))}  '),
-                                                      const SizedBox(
-                                                        width: AppTheme
-                                                                .elementSpacing /
-                                                            2,
-                                                      ),
-                                                      Container(
-                                                        height: 20,
-                                                        width: 20,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: controller
-                                                                  .txDetails[
-                                                                      index]
-                                                                  .vin
-                                                                  .first
-                                                                  .isCoinbase
-                                                              ? Colors.grey
-                                                              : Colors.green,
-                                                          shape:
-                                                              BoxShape.circle,
-                                                        ),
-                                                        child: const Center(
-                                                            child: Icon(
-                                                          Icons
-                                                              .arrow_forward_outlined,
-                                                          size: 15,
-                                                          color: Colors.white,
-                                                        )),
-                                                      ),
+
                                                     ],
                                                   )
                                                 ],
@@ -423,6 +425,32 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                 .isCoinbase
                                             ? Row(
                                                 children: [
+                                                  Container(
+                                                    height: 20,
+                                                    width: 20,
+                                                    decoration:
+                                                    BoxDecoration(
+                                                      color: controller
+                                                          .txDetails[
+                                                      index]
+                                                          .vin
+                                                          .first
+                                                          .isCoinbase
+                                                          ? Colors.grey
+                                                          : Colors.green,
+                                                      shape:
+                                                      BoxShape.circle,
+                                                    ),
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons
+                                                            .arrow_forward_outlined,
+                                                        size: 15,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: AppTheme.elementSpacing / 2,),
                                                   SizedBox(
                                                     width: 150,
                                                     child: Text(
@@ -438,31 +466,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                       const SizedBox(
                                                         width: 5,
                                                       ),
-                                                      Container(
-                                                        height: 20,
-                                                        width: 20,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: controller
-                                                                  .txDetails[
-                                                                      index]
-                                                                  .vin
-                                                                  .first
-                                                                  .isCoinbase
-                                                              ? Colors.grey
-                                                              : Colors.green,
-                                                          shape:
-                                                              BoxShape.circle,
-                                                        ),
-                                                        child: const Center(
-                                                          child: Icon(
-                                                            Icons
-                                                                .arrow_forward_outlined,
-                                                            size: 15,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
+
                                                     ],
                                                   ),
                                                 ],
