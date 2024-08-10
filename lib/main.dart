@@ -68,7 +68,7 @@ Future<void> main() async {
   await initializeDateFormatting();
 
   if (!kIsWeb) {
-    Stripe.publishableKey = AppTheme.stripeLiveKey;
+    Stripe.publishableKey = AppTheme.stripeTestKey;
     await Stripe.instance.applySettings();
   }
   await LocalStorage.instance.initStorage();

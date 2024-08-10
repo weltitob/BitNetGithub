@@ -89,7 +89,9 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                   )
                 : controller.txDetails.isEmpty
                     ? const SizedBox()
+            //the listview builder has some space for the bottom
                     : ListView.builder(
+                        //padding: EdgeInsets.zero,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: controller.txDetails.length,
