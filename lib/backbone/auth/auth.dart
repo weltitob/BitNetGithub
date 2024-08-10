@@ -101,16 +101,15 @@ class Auth {
     required VerificationCode code,
     required String mnemonic,
   }) async {
-
     LoggerService logger = Get.find();
 
-    logger.i("Calling registerLitEcs now...");
-    final result = await registerLitEcs(user.did);
-    logger.i("Result from registerLitEcs: $result");
+    // logger.i("Calling registerLitEcs now...");
+    // final result = await registerLitEcs(user.did);
+    // logger.i("Result from registerLitEcs: $result");
 
     logger.i("Calling Cloudfunction with Microsoft ION now...");
     logger.i("Generating challenge...");
-    final String challange = generateChallenge(user.username);
+    final String challenge = generateChallenge(user.username);
     final String randomstring = generateRandomString(20); // length 20
     final String customToken = await fakeLoginION(
       randomstring,
@@ -136,18 +135,17 @@ class Auth {
     logger.i("User signed in with token. Creating user in database now...");
 
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
-    await settingsCollection.doc(currentuser?.user!.uid).set(
-      {
-        "theme_mode": "system",
-        "lang": "en",
-        "primary_color": 4283657726,
-        "selected_currency": "USD",
-        "selected_card": "lightning",
-        "hide_balance": false,
-        "country": "US"
-      }
-    );
+    logger
+        .i('Successfully created wallet/user in database: ${newUser.toMap()}');
+    await settingsCollection.doc(currentuser?.user!.uid).set({
+      "theme_mode": "system",
+      "lang": "en",
+      "primary_color": 4283657726,
+      "selected_currency": "USD",
+      "selected_card": "lightning",
+      "hide_balance": false,
+      "country": "US"
+    });
     // Call the function to generate and store verification codes
     logger.i(
         "Generating and storing verification codes for friends of the new user now...");
@@ -168,9 +166,9 @@ class Auth {
     logger.i("Adding user to userscount");
     addUserCount();
     //now login new user
-    logger.i("logging in user with startEcs now..");
-    final loginresult = await startEcsTask(newUser.did);
-    logger.i("Result from startEcsTask: $loginresult");
+    // logger.i("logging in user with startEcs now..");
+    // final loginresult = await startEcsTask(newUser.did);
+    // logger.i("Result from startEcsTask: $loginresult");
 
     logger.i("Returning new user now...");
     return newUser;
@@ -180,15 +178,15 @@ class Auth {
     required UserData user,
     required VerificationCode code,
   }) async {
-        LoggerService logger = Get.find();
+    LoggerService logger = Get.find();
 
     logger.i("Calling Cloudfunction with Microsoft ION now...");
 
     logger.i("Generating challenge...");
     //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
-    final String challange = generateChallenge(user.username);
-    logger.i("Challenge created: $challange. Creating user now...");
-    final IONData iondata = await createDID(user.username, challange);
+    final String challenge = generateChallenge(user.username);
+    logger.i("Challenge created: $challenge. Creating user now...");
+    final IONData iondata = await createDID(user.username, challenge);
     logger.i("User created: IONDATA RECEIVED: $iondata.");
     logger.i("Storing private data now...");
     final PrivateData privateData = PrivateData(
@@ -202,7 +200,8 @@ class Auth {
     final newUser = user.copyWith(did: iondata.did);
     logger.i("User signed in with token. Creating user in database now...");
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
+    logger
+        .i('Successfully created wallet/user in database: ${newUser.toMap()}');
     // Call the function to generate and store verification codes
     logger.i(
         "Generating and storing verification codes for friends of the new user now...");
@@ -228,7 +227,7 @@ class Auth {
 
   signMessageAuth(did, privateIONKey) async {
     try {
-          LoggerService logger = Get.find();
+      LoggerService logger = Get.find();
 
       logger.i("Signing Message in auth.dart ...");
       logger.i("did: $did, privateIONKey: $privateIONKey");
@@ -279,7 +278,6 @@ class Auth {
       //context.go('/ionloading');
       final String randomstring = generateRandomString(20); // length 20
 
-
       final String customToken = await fakeLoginION(
         randomstring,
       );
@@ -296,7 +294,8 @@ class Auth {
         context.pop();
         throw Exception("User couldnt be signed in with custom Token!");
       } else {
-        WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
+        WidgetsBinding.instance
+            .addPostFrameCallback(ThemeController.of(context).loadData);
         //if successfull push back to homescreen
         context.go("/");
       }
@@ -344,8 +343,6 @@ class Auth {
   }
 
   //-----------------------------FIREBASE HELPERS---------------------------
-
-  
 }
 
 extension on String {
