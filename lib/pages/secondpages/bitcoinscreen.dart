@@ -273,6 +273,8 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
               buttonState: controller.buttonState,
               onButtonTap: () async {
                 //change button state to loading
+                //disable the amount widget for changes afterwards
+
                 controller.buttonState = ButtonState.loading;
                 try{
                 final String clientSecret =
@@ -286,10 +288,18 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                     // applePay: PaymentSheetApplePay(
                     //     merchantCountryCode: 'DE',
                     // ),
-                    googlePay: PaymentSheetGooglePay(
-                      merchantCountryCode: 'DE',
-                      currencyCode: 'usd',
+                    paymentMethodOrder: [
+                      'apple_pay', 'google_pay', 'paypal', 'klarna', 'card',
 
+                    ],
+                    googlePay: PaymentSheetGooglePay(
+
+                      merchantCountryCode: 'US',
+                      currencyCode: 'usd',
+                      amount: '1000',
+                      label: 'BitNet GmbH',
+                      testEnv: true,
+                      buttonType: PlatformButtonType.pay,
                     ),
                     merchantDisplayName: 'BitNet GmbH',
                   ),
