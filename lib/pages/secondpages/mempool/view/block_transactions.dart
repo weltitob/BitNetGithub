@@ -42,25 +42,27 @@ class _BlockTransactionsState extends State<BlockTransactions> {
         child: Column(
           children: [
             SizedBox(
-              height: AppTheme.cardPadding * 2.5,
+              height: AppTheme.cardPadding * 3,
             ),
-            SearchFieldWidget(
-              onChanged: (value) {
-                controller.isLoadingTx.value = true;
-                if (value.isEmpty) {
-                  controller.txDetails = controller.txDetailsReset;
-                } else {
-                  controller.txDetails.clear;
-                  controller.txDetails = controller.txDetailsFound
-                      .where((element) => element.txid == value)
-                      .toList();
-                }
-                controller.isLoadingTx.value = false;
-              },
-              hintText:
-                  '${controller.bitcoinData[controller.indexBlock.value].txCount} transactions',
-              handleSearch: handleSearch,
-              isSearchEnabled: true,
+            Container(
+              child: SearchFieldWidget(
+                onChanged: (value) {
+                  controller.isLoadingTx.value = true;
+                  if (value.isEmpty) {
+                    controller.txDetails = controller.txDetailsReset;
+                  } else {
+                    controller.txDetails.clear;
+                    controller.txDetails = controller.txDetailsFound
+                        .where((element) => element.txid == value)
+                        .toList();
+                  }
+                  controller.isLoadingTx.value = false;
+                },
+                hintText:
+                    '${controller.bitcoinData[controller.indexBlock.value].txCount} transactions',
+                handleSearch: handleSearch,
+                isSearchEnabled: true,
+              ),
             ),
             // NumberPaginator(
             //   numberPages: controller
@@ -94,7 +96,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                         itemBuilder: (context, index) {
                           return Container(
                             margin: EdgeInsets.only(
-                              bottom: AppTheme.cardPadding * 0.75,
+                              bottom: AppTheme.cardPadding * 0.5,
                               left: AppTheme.elementSpacing,
                               right: AppTheme.elementSpacing,
                             ),
