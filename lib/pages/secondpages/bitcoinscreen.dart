@@ -277,17 +277,30 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                 try{
                 final String clientSecret =
                     await requestClientSecret("1000", "usd");
-                final stripesheet = await Stripe.instance.initPaymentSheet(
+                print("Opening the payment sheet now...");
+                await Stripe.instance.initPaymentSheet(
                   paymentSheetParameters: SetupPaymentSheetParameters(
                     paymentIntentClientSecret: clientSecret,
-                    // applePay: PaymentSheetApplePay(merchantCountryCode: 'DE'),
-                    // googlePay: PaymentSheetGooglePay(
-                    //   merchantCountryCode: 'DE',
+                    style: Theme.of(context).brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark,
+                    customFlow: false,
+                    // applePay: PaymentSheetApplePay(
+                    //     merchantCountryCode: 'DE',
                     // ),
-                    style: ThemeMode.dark,
-                    merchantDisplayName: 'BitNet',
+                    googlePay: PaymentSheetGooglePay(
+                      merchantCountryCode: 'DE',
+                      currencyCode: 'usd',
+
+                    ),
+                    merchantDisplayName: 'BitNet GmbH',
                   ),
-                );} catch (e) {
+                );
+                try {
+                  await Stripe.instance.presentPaymentSheet();
+                } catch (e) {
+                  // Handle errors
+                  print('Error presenting payment sheet: $e');
+                }
+                } catch (e) {
                   print(e);
                 }
                 controller.buttonState = ButtonState.idle;

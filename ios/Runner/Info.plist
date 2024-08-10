@@ -72,6 +72,12 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>In order to access your photo library</string>
+	<key>NSCameraUsageDescription</key>
+    <string>Scan your card to add it automatically</string>
+    <key>NSCameraUsageDescription
+    &lt;string&gt;To scan cards&lt;/string&gt;</key>
+    <string>To scan cards</string>
+
 
     <!-- end of added keys -->
 </dict>

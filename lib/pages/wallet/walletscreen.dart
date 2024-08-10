@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -312,6 +313,27 @@ class WalletScreen extends GetWidget<WalletsController> {
             Center(
               child: LongButtonWidget(title: "Request client secret", onTap: () async {
                 final result = await requestClientSecret('1000', 'usd');
+                final String clientSecret =
+                await requestClientSecret("1000", "usd");
+                print("Opening the payment sheet now...");
+                //open Stripe
+                await Stripe.instance.initPaymentSheet(
+                    paymentSheetParameters: SetupPaymentSheetParameters(
+                    paymentIntentClientSecret: clientSecret,
+                    style: Theme.of(context).brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark,
+                customFlow: false,
+                // applePay: PaymentSheetApplePay(merchantCountryCode: 'DE'),
+                // googlePay: PaymentSheetGooglePay(
+                //   merchantCountryCode: 'DE',
+                // ),
+                merchantDisplayName: 'BitNet GmbH',
+                ));
+                try {
+                  await Stripe.instance.presentPaymentSheet();
+                } catch (e) {
+                  // Handle errors
+                  print('Error presenting payment sheet: $e');
+                }
               }),
             ),
             SizedBox(
