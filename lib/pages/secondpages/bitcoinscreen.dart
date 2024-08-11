@@ -293,7 +293,6 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
 
                     ],
                     googlePay: PaymentSheetGooglePay(
-
                       merchantCountryCode: 'US',
                       currencyCode: 'usd',
                       amount: '1000',

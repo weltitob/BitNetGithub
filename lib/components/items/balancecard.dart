@@ -3,6 +3,10 @@ import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
@@ -90,6 +94,50 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
             iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
           ),
           PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
+
+          //unten rechts ein unlock button ==> you need to buy bitcoin in the app to unlock this card ==> bitnetbototmsheet
+          Positioned(
+            left: AppTheme.cardPadding,
+            bottom: AppTheme.cardPadding,
+            child: LongButtonWidget(
+              leadingIcon: Icon(
+                FontAwesomeIcons.lock,
+                size: AppTheme.cardPadding * 0.75,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+              title: 'Unlock',
+              customHeight: AppTheme.cardPadding * 1.25,
+              customWidth: AppTheme.cardPadding * 5,
+              onTap: () {
+                BitNetBottomSheet(
+                  context: context,
+                  child: bitnetScaffold(
+                    context: context,
+                    appBar: bitnetAppBar(
+                      hasBackButton: false,
+                      context: context,
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      text: 'Unlock Card',
+                    ),
+                    body: Container(
+                      child: Column(
+                        children: [
+                          Text(
+                              "You need to buy bitcoin in the app to unlock this card"),
+                          LongButtonWidget(
+                            title: 'Buy Bitcoin', //will trigger the other bitnetbottomsheet coming up
+                            onTap: () {},
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          )
         ],
       ),
     );
@@ -366,7 +414,6 @@ class PaymentNetworkPicture extends StatelessWidget {
   }
 }
 
-
 class UnconfirmedTextWidget extends GetWidget<WalletsController> {
   final String balanceSAT;
   final String balanceStr;
@@ -396,7 +443,7 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
     final bitcoinPrice = chartLine?.price;
     final currencyEquivalent = bitcoinPrice != null
         ? (double.parse(balanceSAT) / 100000000 * bitcoinPrice)
-        .toStringAsFixed(2)
+            .toStringAsFixed(2)
         : "0.00";
 
     return Obx(() {
@@ -405,30 +452,35 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
           margin: const EdgeInsets.all(
             AppTheme.cardPadding * 1.25,
           ),
-          child: coin.coin == true ? Row(
-            children: [
-              Text("incoming:"),
-              SizedBox(width: AppTheme.elementSpacing / 2,),
-              Text(balanceStr),
-              Icon(
-                iconDataUnit,
-                size: AppTheme.elementSpacing * 1.25,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? AppTheme.black60
-                    : AppTheme.white60,
-              ),
-            ],
-          ) : Row(
-            children: [
-              Text("incoming:"),
-              SizedBox(width: AppTheme.elementSpacing / 2,),
-              Text("$currencyEquivalent${getCurrency(currency!)}"),
-              // Icon(
-              //   iconDataUnit,
-              // ),
-            ],
-          )
-      );
+          child: coin.coin == true
+              ? Row(
+                  children: [
+                    Text("incoming:"),
+                    SizedBox(
+                      width: AppTheme.elementSpacing / 2,
+                    ),
+                    Text(balanceStr),
+                    Icon(
+                      iconDataUnit,
+                      size: AppTheme.elementSpacing * 1.25,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? AppTheme.black60
+                          : AppTheme.white60,
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Text("incoming:"),
+                    SizedBox(
+                      width: AppTheme.elementSpacing / 2,
+                    ),
+                    Text("$currencyEquivalent${getCurrency(currency!)}"),
+                    // Icon(
+                    //   iconDataUnit,
+                    // ),
+                  ],
+                ));
     });
   }
 }
