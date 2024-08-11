@@ -56,7 +56,7 @@ class _HashrateChartState extends State<HashrateChart> {
     double _lastimeeexact =
         chartData.isEmpty ? 1 : chartData[chartData.length - 1].time;
     double _lastpricerounded =
-        double.parse(_lastpriceexact.toString().substring(0, 2)) / 10;
+        double.parse(_lastpriceexact.toString().substring(0, 3));
     // double.parse((_lastpriceexact).toStringAsFixed(2))/1000000000000000000;
     double _firstpriceexact = chartData.isEmpty ? 0 : chartData[0].price;
     hashTrackBallValuePrice = _lastpricerounded.toString();
@@ -163,7 +163,7 @@ class _HashrateChartState extends State<HashrateChart> {
                           sales.time.toInt() * 1000,
                           isUtc: true),
                   yValueMapper: (ChartLine sales, _) =>
-                      double.parse(sales.price.toString().substring(0, 4)),
+                      double.parse(sales.price.toString().substring(0, 3)),
                 ),
                 SplineSeries<Difficulty, DateTime>(
                   name: L10n.of(context)!.difficulty,
@@ -176,7 +176,7 @@ class _HashrateChartState extends State<HashrateChart> {
                           sales.time!.toInt() * 1000,
                           isUtc: true),
                   yValueMapper: (Difficulty sales, _) => double.parse(
-                      (sales.difficulty! / 10000000000)
+                      (sales.difficulty! / 100000000000)
                           .toStringAsFixed(2)), // Assuming price is double type
                 ),
               ]),
