@@ -10,9 +10,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PostHeader extends StatelessWidget {
   final String ownerId;
+  final String username;
+  final String displayName;
   final String postId;
 
-  const PostHeader({required this.ownerId, required this.postId}) : super();
+  const PostHeader({required this.ownerId, required this.postId, required this.username, required this.displayName}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class PostHeader extends StatelessWidget {
           child: Container(
             width: AppTheme.elementSpacing * 8.w,
             child: Text(
-              '@${ownerId}',
+              '${displayName}',
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.titleLarge,
             ),
@@ -39,7 +41,7 @@ class PostHeader extends StatelessWidget {
         subtitle: Container(
           width: AppTheme.elementSpacing * 6.w,
           child: Text(
-            postId,
+            '@${username}',
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall,
           ),

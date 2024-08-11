@@ -92,6 +92,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                           medias: meta!.toMedias(),
                           timestamp: DateTime.fromMillisecondsSinceEpoch(
                               10 * 1000),
+                          displayname: "Tobias Welti" ?? '',
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 20.w),

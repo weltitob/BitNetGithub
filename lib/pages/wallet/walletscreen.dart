@@ -294,48 +294,22 @@ class WalletScreen extends GetWidget<WalletsController> {
             SizedBox(height: AppTheme.cardPadding,),
             Center(
               child: LongButtonWidget(title: "LOGIN: PLEASE DONT PRESS", onTap: () async {
-                final result = await startEcsTask('inapp_user_dev_tags');
+                final result = await startEcsTask('inapp_user_dev_new');
               }),
             ),
             SizedBox(height: AppTheme.cardPadding,),
             Center(
               child: LongButtonWidget(title: "REGISTER: PLEASE DONT PRESS", onTap: () async {
-                final result = await registerLitEcs('inapp_user_dev_tags');
+                final result = await registerLitEcs('inapp_user_dev_new');
               }),
             ),
             SizedBox(height: AppTheme.cardPadding,),
             Center(
               child: LongButtonWidget(title: "STOP ECS TASK", onTap: () async {
-                final result = await stopUserTask('inapp_user_dev_tags');
+                final result = await stopUserTask('inapp_user_dev_new');
               }),
             ),
-            SizedBox(height: AppTheme.cardPadding,),
-            Center(
-              child: LongButtonWidget(title: "Request client secret", onTap: () async {
-                final result = await requestClientSecret('1000', 'usd');
-                final String clientSecret =
-                await requestClientSecret("1000", "usd");
-                print("Opening the payment sheet now...");
-                //open Stripe
-                await Stripe.instance.initPaymentSheet(
-                    paymentSheetParameters: SetupPaymentSheetParameters(
-                    paymentIntentClientSecret: clientSecret,
-                    style: Theme.of(context).brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark,
-                customFlow: false,
-                // applePay: PaymentSheetApplePay(merchantCountryCode: 'DE'),
-                // googlePay: PaymentSheetGooglePay(
-                //   merchantCountryCode: 'DE',
-                // ),
-                merchantDisplayName: 'BitNet GmbH',
-                ));
-                try {
-                  await Stripe.instance.presentPaymentSheet();
-                } catch (e) {
-                  // Handle errors
-                  print('Error presenting payment sheet: $e');
-                }
-              }),
-            ),
+
             SizedBox(
               height: AppTheme.cardPadding.h * 1.75,
             ),
