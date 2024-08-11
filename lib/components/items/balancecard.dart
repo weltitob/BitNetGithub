@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class TopLeftGradient extends StatelessWidget {
@@ -112,6 +114,7 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
                 BitNetBottomSheet(
                   context: context,
                   child: bitnetScaffold(
+                    extendBodyBehindAppBar: true,
                     context: context,
                     appBar: bitnetAppBar(
                       hasBackButton: false,
@@ -121,17 +124,30 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
                       },
                       text: 'Unlock Card',
                     ),
-                    body: Container(
-                      child: Column(
-                        children: [
-                          Text(
-                              "You need to buy bitcoin in the app to unlock this card"),
-                          LongButtonWidget(
-                            title: 'Buy Bitcoin', //will trigger the other bitnetbottomsheet coming up
-                            onTap: () {},
-                          )
-                        ],
-                      ),
+                    body: Stack(
+                      children: [
+                        Container(
+                          child: Column(
+                            children: [
+                              SizedBox(height: AppTheme.cardPadding * 4,),
+                              Icon(FontAwesomeIcons.lock, size: AppTheme.cardPadding * 4,),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
+                                child: Text(
+                                    "You need to buy bitcoin trough our app to unlock this card. Alternatively you can receive some Onchain Bitcoin and unlock it for some additional transaction fees.",
+                                textAlign: TextAlign.center,
+                                ),
+                              ),
+                             
+                            ],
+                          ),
+                        ),
+                        BottomButtons(leftButtonTitle: "Buy Bitcoin", rightButtonTitle: "Receive OnChain", onLeftButtonTap: (){
+                          context.push('/wallet/bitcoinscreen');
+                        }, onRightButtonTap: (){
+                          context.go('/wallet/receive'); //maybe pass a parameter that says our view should be onchain
+                        })
+                      ],
                     ),
                   ),
                 );
