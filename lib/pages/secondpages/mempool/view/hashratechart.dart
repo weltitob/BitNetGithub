@@ -104,7 +104,7 @@ class _HashrateChartState extends State<HashrateChart> {
 
                   String date = dateFormat.format(datetime);
                   hashTrackBallValueDate = date.toString();
-                  hashTrackBallValuePrice = pointInfoPrice.replaceAll('K', '');
+                  hashTrackBallValuePrice = pointInfoPrice.replaceAll('EH/s', '');
                   double priceChange = (double.parse(hashTrackBallValuePrice) -
                           _firstpriceexact) /
                       _firstpriceexact;
@@ -239,7 +239,7 @@ class _HashRealTimeValuesState extends State<HashRealTimeValues>
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  "${hashTrackBallValuePrice}K",
+                  "${hashTrackBallValuePrice}EH/s",
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
               ],

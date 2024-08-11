@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/InformationWIdget.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
@@ -101,22 +102,9 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
               SizedBox(
                 height: AppTheme.cardPadding * 2,
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      L10n.of(context)!.about,
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                    SizedBox(
-                      height: AppTheme.elementSpacing * 1,
-                    ),
-                    Text(L10n.of(context)!.bitcoinDescription),
-                  ],
-                ),
+              InformationWidget(
+                title: L10n.of(context)!.about,
+                description: L10n.of(context)!.bitcoinDescription,
               ),
               SizedBox(
                 height: AppTheme.cardPadding * 2,
