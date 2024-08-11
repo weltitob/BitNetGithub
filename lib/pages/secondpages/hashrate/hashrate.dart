@@ -1,7 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/InformationWIdget.dart';
+import 'package:bitnet/components/appstandards/informationwidget.dart';
 import 'package:bitnet/components/buttons/timechooserbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -75,59 +75,66 @@ A higher hashrate indicates more miners are participating, making the network mo
 
   @override
   Widget build(BuildContext context) {
-    return bitnetScaffold(
-      context: context,
-      extendBodyBehindAppBar: true,
-      appBar: bitnetAppBar(
-        text: L10n.of(context)!.hashrate,
-        context: context,
-        onTap: () {
+    return PopScope(
+      onPopInvoked: (bool) {
+        if(bool) {
           context.pop();
-        },
-      ),
-      body: ListView(
-        children: [
-          SizedBox(
-            height: AppTheme.cardPadding * 2,
-          ),
+        }
+      },
+      child: bitnetScaffold(
+        context: context,
+        extendBodyBehindAppBar: true,
+        appBar: bitnetAppBar(
+          text: L10n.of(context)!.hashrate,
+          context: context,
+          onTap: () {
+            context.pop();
+          },
+        ),
+        body: ListView(
+          children: [
+            SizedBox(
+              height: AppTheme.cardPadding * 2,
+            ),
 
-          HashrateChart(
-            chartData: chartData,
-            difficulty: difficulty,
-          ),
-          SizedBox(
-            height: AppTheme.cardPadding,
-          ),
-          CustomizableTimeChooser(
-            timePeriods: ['3M', '6M', '1Y', '2Y', '3Y'],
-            initialSelectedPeriod: selectedMonth,
-            onTimePeriodSelected: (String newValue) {
-              setState(() {
-                selectedMonth = newValue;
-                getData();
-              });
-            },
-            buttonBuilder: (context, period, isSelected, onPressed) {
-              return TimeChooserButton(
-                timeperiod: period,
-                timespan: isSelected ? period : null,
-                onPressed: onPressed,
-              );
-            },
-          ),
-          //a widget that calculated how man raspberry pi 4s the current hashrate equals to
-          SizedBox(
-            height: AppTheme.cardPadding * 2,
-          ),
-          InformationWidget(
-            title: "Information",
-            description: hashrateExplanation,
-          ),
-          SizedBox(
-            height: AppTheme.cardPadding * 2,
-          ),
+            HashrateChart(
+              chartData: chartData,
+              difficulty: difficulty,
+            ),
+            SizedBox(
+              height: AppTheme.cardPadding,
+            ),
+            CustomizableTimeChooser(
+              timePeriods: ['3M', '6M', '1Y', '2Y', '3Y'],
+              initialSelectedPeriod: selectedMonth,
+              onTimePeriodSelected: (String newValue) {
+                setState(() {
+                  selectedMonth = newValue;
+                  getData();
+                });
+              },
+              buttonBuilder: (context, period, isSelected, onPressed) {
+                return TimeChooserButton(
+                  timeperiod: period,
+                  timespan: isSelected ? period : null,
+                  onPressed: onPressed,
+                );
+              },
+            ),
+            //a widget that calculated how man raspberry pi 4s the current hashrate equals to
+            SizedBox(
+              height: AppTheme.cardPadding * 2,
+            ),
+            InformationWidget(
+              title: "Information",
+              description: hashrateExplanation,
+            ),
+            SizedBox(
+              height: AppTheme.cardPadding * 2,
+            ),
 
-        ],
+          ],
+        ),
       ),
     );
   }
