@@ -145,7 +145,7 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
                         BottomButtons(leftButtonTitle: "Buy Bitcoin", rightButtonTitle: "Receive OnChain", onLeftButtonTap: (){
                           context.push('/wallet/bitcoinscreen');
                         }, onRightButtonTap: (){
-                          context.go('/wallet/receive'); //maybe pass a parameter that says our view should be onchain
+                          context.go('/wallet/receive/onchain'); //maybe pass a parameter that says our view should be onchain
                         })
                       ],
                     ),

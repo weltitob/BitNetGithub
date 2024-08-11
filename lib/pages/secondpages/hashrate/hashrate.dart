@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
@@ -32,7 +33,7 @@ class _HashrateScreenState extends State<HashrateScreen> {
 
   List<ChartLine> chartData = [];
   List<Difficulty> difficulty = [];
-  String selectedMonth = '3M';
+  String selectedMonth = '3Y';
 
   getData() async {
     var dio = Dio();
@@ -41,7 +42,6 @@ class _HashrateScreenState extends State<HashrateScreen> {
           'https://mempool.space/api/v1/mining/hashrate/${selectedMonth.toLowerCase()}');
       print(response.data);
       if (response.statusCode == 200) {
-        print('2---------00000-');
         List<ChartLine> line = [];
         line.clear();
         chartData.clear();
@@ -61,7 +61,6 @@ class _HashrateScreenState extends State<HashrateScreen> {
       }
     } catch (e) {
       print(e);
-      print('----------===========----------');
     }
   }
 
@@ -108,6 +107,15 @@ class _HashrateScreenState extends State<HashrateScreen> {
           ),
           SizedBox(
             height: AppTheme.cardPadding,
+          ),
+          GlassContainer(
+            child: Padding(padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
+              child: Column(
+                children: [
+                  Text("The hashrate shows the...", style: Theme.of(context).textTheme.titleLarge),
+                ],
+              ),
+            ),
           ),
         ],
       ),

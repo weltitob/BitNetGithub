@@ -217,8 +217,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                             scale: 1.0,
                             initialIndex:
                                 controller.selectedCard.value == 'onchain'
-                                    ? 0
-                                    : 1,
+                                    ? 1
+                                    : 0,
                             cardsCount: cards.length,
                             onSwipe: (int index, int? previousIndex,
                                 CardSwiperDirection direction) {
@@ -268,7 +268,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   BitNetImageWithTextButton(
                     L10n.of(context)!.receive,
                     () {
-                      context.go('/wallet/receive');
+                      context.go('/wallet/receive/${controller.selectedCard.value}');
                     },
                     image: "assets/images/receive_image.png",
                     //image: "assets/images/key_removed_bck.png",

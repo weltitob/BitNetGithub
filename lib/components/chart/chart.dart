@@ -53,6 +53,14 @@ class _ChartWidgetState extends State<ChartWidget> {
   late double _firstpriceinit;
   late double _latesttimeinit;
 
+  late double new_lastpriceexact;
+  late double new_lastimeeexact;
+  late double new_lastpricerounded;
+  late double new_firstpriceexact;
+
+  final String timeperiod = "1T";
+
+
   StreamController<ChartLine> _priceStreamController =
       StreamController<ChartLine>();
   String timespan = "1T";
@@ -86,16 +94,16 @@ class _ChartWidgetState extends State<ChartWidget> {
       days: "max",
     );
     await chartClassDay.getChartData();
-   await chartClassWeek.getChartData();
+    await chartClassWeek.getChartData();
     await chartClassMonth.getChartData();
     await chartClassYear.getChartData();
     await chartClassMax.getChartData();
-    if(chartClassDay.chartLine.isNotEmpty) {
-      Get.find<CryptoItemController>().firstPrice.value = chartClassDay.chartLine.first.price;
+    if (chartClassDay.chartLine.isNotEmpty) {
+      Get.find<CryptoItemController>().firstPrice.value =
+          chartClassDay.chartLine.first.price;
 
-      Get.find<WalletsController>().chartLines.value = chartClassDay.chartLine.last;
-
-    
+      Get.find<WalletsController>().chartLines.value =
+          chartClassDay.chartLine.last;
     }
     final maxchartunfinished = chartClassMax.chartLine.toSet().toList();
     final oneyearchartunfinished = chartClassYear.chartLine.toSet().toList();
@@ -132,11 +140,9 @@ class _ChartWidgetState extends State<ChartWidget> {
     trackBallValueTime = time.toString();
     trackBallValueDate = date.toString();
     //percent
-    double priceChange =
-        (currentline.last.price - currentline.first.price) /
-            currentline.first.price;
+    double priceChange = (currentline.last.price - currentline.first.price) /
+        currentline.first.price;
     trackBallValuePricechange = toPercent(priceChange);
-
 
     setState(() {
       _loading = false;
@@ -152,12 +158,18 @@ class _ChartWidgetState extends State<ChartWidget> {
     });
   }
 
+  void setValues(){
+     new_lastpriceexact = currentline.last.price;
+     new_lastimeeexact = currentline.last.time;
+     new_lastpricerounded = double.parse((new_lastpriceexact).toStringAsFixed(2));
+     new_firstpriceexact = currentline.first.price;
+  }
 
   @override
   void initState() {
-    super.initState(); 
+    super.initState();
     getChartLine("USD");
-    _loading = true; 
+    _loading = true;
     _trackballBehavior = TrackballBehavior(
       lineColor: Colors.grey[400],
       enable: true,
@@ -180,6 +192,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         Container(
@@ -199,150 +212,178 @@ class _ChartWidgetState extends State<ChartWidget> {
                         ),
                       ),
                     )
-                  : buildChart(),
+                  : SizedBox(
+                      height: AppTheme.cardPadding * 16.h,
+                      child: SfCartesianChart(
+                          trackballBehavior: _trackballBehavior,
+                          onTrackballPositionChanging: (args) {
+                            // Print the y-value of the first series in the trackball.
+                            if (args.chartPointInfo.yPosition != null) {
+                              final pointInfoPrice =
+                                  double.parse(args.chartPointInfo.label!)
+                                      .toStringAsFixed(2);
+                              final pointInfoTime =
+                                  double.parse(args.chartPointInfo.header!);
+                              var datetime =
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      pointInfoTime.round(),
+                                      isUtc: false);
+                              DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+                              DateFormat timeFormat = DateFormat("HH:mm");
+                              String date = dateFormat.format(datetime);
+                              String time = timeFormat.format(datetime);
+                              //update for CustomWidget
+                              trackBallValueTime = time.toString();
+                              trackBallValueDate = date.toString();
+                              trackBallValuePrice = pointInfoPrice;
+                              double priceChange =
+                                  (double.parse(trackBallValuePrice) -
+                                          new_firstpriceexact) /
+                                      new_firstpriceexact;
+                              trackBallValuePricechange =
+                                  toPercent(priceChange);
+
+                              key.currentState!.refresh();
+                            }
+                          },
+                          onChartTouchInteractionUp:
+                              (ChartTouchInteractionArgs args) {
+                            //reset to current latest price when selection ends
+                            trackBallValuePrice = new_lastpricerounded.toString();
+                            //reset to percent of screen
+                            double priceChange =
+                                (new_lastpriceexact - new_firstpriceexact) /
+                                    new_firstpriceexact;
+                            trackBallValuePricechange = toPercent(priceChange);
+                            key.currentState!.refresh();
+                            //reset to date of last value
+                            var datetime = DateTime.fromMillisecondsSinceEpoch(
+                                new_lastimeeexact.round(),
+                                isUtc: false);
+                            DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+                            DateFormat timeFormat = DateFormat("HH:mm");
+                            String date = dateFormat.format(datetime);
+                            String time = timeFormat.format(datetime);
+                            trackBallValueTime = time.toString();
+                            trackBallValueDate = date.toString();
+                          },
+                          enableAxisAnimation: true,
+                          plotAreaBorderWidth: 0,
+                          primaryXAxis: NumericAxis(
+                              //labelPlacement: LabelPlacement.onTicks,
+                              edgeLabelPlacement: EdgeLabelPlacement.none,
+                              isVisible: false,
+                              majorGridLines: const MajorGridLines(width: 0),
+                              majorTickLines: const MajorTickLines(width: 0)),
+                          primaryYAxis: NumericAxis(
+                              plotBands: <PlotBand>[
+                                PlotBand(
+                                    isVisible: true,
+                                    dashArray: const <double>[2, 5],
+                                    start: getaverage(currentline),
+                                    end: getaverage(currentline),
+                                    horizontalTextAlignment: TextAnchor.start,
+                                    textStyle: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                    borderColor: Colors.grey,
+                                    borderWidth: 1.5)
+                              ],
+                              plotOffset: 0,
+                              edgeLabelPlacement: EdgeLabelPlacement.none,
+                              isVisible: false,
+                              majorGridLines: const MajorGridLines(width: 0),
+                              majorTickLines: const MajorTickLines(width: 0)),
+                          series: <ChartSeries>[
+                            // Renders line chart
+                            SplineSeries<ChartLine, double>(
+                              onRendererCreated:
+                                  (ChartSeriesController controller) {
+                                _chartSeriesController = controller;
+                              },
+                              dataSource: currentline,
+                              splineType: SplineType.natural,
+                              cardinalSplineTension: 0.6,
+                              animationDuration: 0,
+                              xValueMapper: (ChartLine crypto, _) =>
+                                  crypto.time,
+                              yValueMapper: (ChartLine crypto, _) =>
+                                  crypto.price,
+                              color: currentline[0].price <
+                                      currentline[currentline.length - 1].price
+                                  ? AppTheme.successColor
+                                  : AppTheme.errorColor,
+                            )
+                          ]),
+                    ),
             ),
           ],
         ),
-        buildTimeChooser(),
-      ],
-    );
-  }
-
-  Widget buildChart() {
-    double _lastpriceexact = currentline.last.price;
-    double _lastimeeexact = currentline.last.time;
-    double _lastpricerounded =
-        double.parse((_lastpriceexact).toStringAsFixed(2));
-    double _firstpriceexact = currentline.first.price;
-
-    return SizedBox(
-      height: AppTheme.cardPadding * 16.h,
-      child: SfCartesianChart(
-          trackballBehavior: _trackballBehavior,
-          onTrackballPositionChanging: (args) {
-            // Print the y-value of the first series in the trackball.
-            if (args.chartPointInfo.yPosition != null) {
-              final pointInfoPrice =
-                  double.parse(args.chartPointInfo.label!).toStringAsFixed(2);
-              final pointInfoTime = double.parse(args.chartPointInfo.header!);
+        TimeChooser(
+          onPressed: (new_timeperiod){
+            setState(() {
+              timespan = new_timeperiod;
+              //update price widget
+              switch (timespan) {
+                case "1T":
+                  currentline = onedaychart;
+                  break;
+                case "1W":
+                  currentline = oneweekchart;
+                  break;
+                case "1M":
+                  currentline = onemonthchart;
+                  break;
+                case "1J":
+                  currentline = oneyearchart;
+                  break;
+                case "Max":
+                  currentline = maxchart;
+                  break;
+              }
+              //define for currentline
+              new_lastpriceexact = currentline.last.price;
+              new_lastpricerounded =
+              double.parse((new_lastpriceexact).toStringAsFixed(2));
+              new_firstpriceexact = currentline.first.price;
+              new_lastimeeexact = currentline.last.time;
+              //update last price
+              trackBallValuePrice = new_lastpricerounded.toString();
+              //update percent
+              double priceChange =
+                  (new_lastpriceexact - new_firstpriceexact) / new_firstpriceexact;
+              trackBallValuePricechange = toPercent(priceChange);
+              //update date
               var datetime = DateTime.fromMillisecondsSinceEpoch(
-                  pointInfoTime.round(),
+                  new_lastimeeexact.round(),
                   isUtc: false);
               DateFormat dateFormat = DateFormat("dd.MM.yyyy");
               DateFormat timeFormat = DateFormat("HH:mm");
               String date = dateFormat.format(datetime);
               String time = timeFormat.format(datetime);
-              //update for CustomWidget
               trackBallValueTime = time.toString();
               trackBallValueDate = date.toString();
-              trackBallValuePrice = pointInfoPrice;
-              double priceChange =
-                  (double.parse(trackBallValuePrice) - _firstpriceexact) /
-                      _firstpriceexact;
-              trackBallValuePricechange = toPercent(priceChange);
-
+              //update the entire information widget
               key.currentState!.refresh();
-            }
+            });
           },
-          onChartTouchInteractionUp: (ChartTouchInteractionArgs args) {
-            //reset to current latest price when selection ends
-            trackBallValuePrice = _lastpricerounded.toString();
-            //reset to percent of screen
-            double priceChange =
-                (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
-            trackBallValuePricechange = toPercent(priceChange);
-            key.currentState!.refresh();
-            //reset to date of last value
-            var datetime = DateTime.fromMillisecondsSinceEpoch(
-                _lastimeeexact.round(),
-                isUtc: false);
-            DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-            DateFormat timeFormat = DateFormat("HH:mm");
-            String date = dateFormat.format(datetime);
-            String time = timeFormat.format(datetime);
-            trackBallValueTime = time.toString();
-            trackBallValueDate = date.toString();
-          },
-          enableAxisAnimation: true,
-          plotAreaBorderWidth: 0,
-          primaryXAxis: NumericAxis(
-              //labelPlacement: LabelPlacement.onTicks,
-              edgeLabelPlacement: EdgeLabelPlacement.none,
-              isVisible: false,
-              majorGridLines: const MajorGridLines(width: 0),
-              majorTickLines: const MajorTickLines(width: 0)),
-          primaryYAxis: NumericAxis(
-              plotBands: <PlotBand>[
-                PlotBand(
-                    isVisible: true,
-                    dashArray: const <double>[2, 5],
-                    start: getaverage(currentline),
-                    end: getaverage(currentline),
-                    horizontalTextAlignment: TextAnchor.start,
-                    textStyle: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600),
-                    borderColor: Colors.grey,
-                    borderWidth: 1.5)
-              ],
-              plotOffset: 0,
-              edgeLabelPlacement: EdgeLabelPlacement.none,
-              isVisible: false,
-              majorGridLines: const MajorGridLines(width: 0),
-              majorTickLines: const MajorTickLines(width: 0)),
-          series: <ChartSeries>[
-            // Renders line chart
-            SplineSeries<ChartLine, double>(
-              onRendererCreated: (ChartSeriesController controller) {
-                _chartSeriesController = controller;
-              },
-              dataSource: currentline,
-                  splineType: SplineType.natural,
-                  cardinalSplineTension: 0.6,
-
-              animationDuration: 0,
-              xValueMapper: (ChartLine crypto, _) => crypto.time,
-              yValueMapper: (ChartLine crypto, _) => crypto.price,
-              color: currentline[0].price <
-                      currentline[currentline.length - 1].price
-                  ? AppTheme.successColor
-                  : AppTheme.errorColor,
-            )
-          ]),
+        ),
+      ],
     );
   }
+}
 
-  Widget buildTimeChooser() {
-    return Container(
-      padding: const EdgeInsets.only(
-          top: AppTheme.elementSpacing, bottom: AppTheme.elementSpacing),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          glassButton(
-            "1T",
-          ),
-          glassButton(
-            "1W",
-          ),
-          glassButton(
-            "1M",
-          ),
-          glassButton(
-            "1J",
-          ),
-          glassButton(
-            "Max",
-          )
-        ],
-      ),
-    );
-  }
+class TimeChooserButton extends StatelessWidget {
+  final dynamic timeperiod;
+  final dynamic timespan;
+  final Function onPressed;
 
-  Widget glassButton(
-    String timeperiod,
-  ) {
+  const TimeChooserButton(
+      {super.key, this.timeperiod, this.timespan, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2),
@@ -351,7 +392,8 @@ class _ChartWidgetState extends State<ChartWidget> {
               borderThickness: 1.5, // remove border if not active
               blur: 50,
               opacity: 0.1,
-              borderRadius: BorderRadius.all(Radius.circular(AppTheme.cardPadding / 1.5)),
+              borderRadius:
+                  BorderRadius.all(Radius.circular(AppTheme.cardPadding / 1.5)),
               child: TextButton(
                 style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -381,53 +423,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                   minimumSize: const Size(50, 20),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   alignment: Alignment.centerLeft),
-              onPressed: () {
-                setState(() {
-                  timespan = timeperiod;
-                  //update price widget
-                  switch (timespan) {
-                    case "1T":
-                      currentline = onedaychart;
-                      break;
-                    case "1W":
-                      currentline = oneweekchart;
-                      break;
-                    case "1M":
-                      currentline = onemonthchart;
-                      break;
-                    case "1J":
-                      currentline = oneyearchart;
-                      break;
-                    case "Max":
-                      currentline = maxchart;
-                      break;
-                  }
-                  //define for currentline
-                  double _lastpriceexact = currentline.last.price;
-                  double _lastpricerounded =
-                      double.parse((_lastpriceexact).toStringAsFixed(2));
-                  double _firstpriceexact = currentline.first.price;
-                  double _lastimeeexact = currentline.last.time;
-                  //update last price
-                  trackBallValuePrice = _lastpricerounded.toString();
-                  //update percent
-                  double priceChange =
-                      (_lastpriceexact - _firstpriceexact) / _firstpriceexact;
-                  trackBallValuePricechange = toPercent(priceChange);
-                  //update date
-                  var datetime = DateTime.fromMillisecondsSinceEpoch(
-                      _lastimeeexact.round(),
-                      isUtc: false);
-                  DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-                  DateFormat timeFormat = DateFormat("HH:mm");
-                  String date = dateFormat.format(datetime);
-                  String time = timeFormat.format(datetime);
-                  trackBallValueTime = time.toString();
-                  trackBallValueDate = date.toString();
-                  //update the entire information widget
-                  key.currentState!.refresh();
-                });
-              },
+              onPressed: () => onPressed,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: AppTheme.elementSpacing * 0.5,
@@ -446,33 +442,44 @@ class _ChartWidgetState extends State<ChartWidget> {
               ),
             ),
     );
+    ;
   }
+}
 
-  Widget buildChildTimeChooser(String timeperiod) {
-    return GestureDetector(
-      child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-        child: Container(
-          decoration: BoxDecoration(
-            color: timespan == timeperiod
-                ? Theme.of(context).colorScheme.primaryContainer
-                : Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.circular(8.0),
+class TimeChooser extends StatelessWidget {
+  final Function onPressed;
+  const TimeChooser({super.key, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Container(
+      padding: const EdgeInsets.only(
+          top: AppTheme.elementSpacing, bottom: AppTheme.elementSpacing),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          TimeChooserButton(
+            timeperiod: "1T",
+            onPressed: () => onPressed,
           ),
-          child: Padding(
-            padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
-            child: Text(timeperiod,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: timespan == timeperiod
-                        ? Theme.of(context).colorScheme.onPrimaryContainer
-                        : Theme.of(context)
-                            .colorScheme
-                            .onPrimaryContainer
-                            .withOpacity(0.6))),
+          TimeChooserButton(
+            timeperiod: "1W",
+            onPressed: () => onPressed,
           ),
-        ),
+          TimeChooserButton(
+            timeperiod: "1M",
+            onPressed: () => onPressed,
+          ),
+          TimeChooserButton(
+            timeperiod: "1J",
+            onPressed: () => onPressed,
+          ),
+          TimeChooserButton(
+            timeperiod: "Max",
+            onPressed: () => onPressed,
+          )
+        ],
       ),
     );
   }
@@ -525,16 +532,16 @@ class _CustomWidgetState extends State<CustomWidget>
   @override
   Widget build(BuildContext context) {
     final chartLine = Get.find<WalletsController>().chartLines.value;
-    String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    String? currency =
+        Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
 
     final bitcoinPrice = chartLine?.price;
     //final currencyEquivalent = bitcoinPrice != null ? (double.parse(balance) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
 
-    return Obx(
-      (){
-        Get.find<WalletsController>().chartLines.value;
-        return Column(
+    return Obx(() {
+      Get.find<WalletsController>().chartLines.value;
+      return Column(
         children: [
           Row(
             children: [
@@ -551,10 +558,8 @@ class _CustomWidgetState extends State<CustomWidget>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                            "Bitcoin",
-                            style: Theme.of(context).textTheme.headlineMedium
-                        ),
+                        Text("Bitcoin",
+                            style: Theme.of(context).textTheme.headlineMedium),
                         Text(
                           trackBallValueDate,
                           style: Theme.of(context).textTheme.titleSmall,
@@ -647,7 +652,7 @@ class _CustomWidgetState extends State<CustomWidget>
             ],
           ),
         ],
-      );}
-    );
+      );
+    });
   }
 }

@@ -78,7 +78,7 @@ class _HashrateChartState extends State<HashrateChart> {
             margin:
                 const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: HashRealTimeValues(key: hashKey)),
-        Divider(indent: 16, endIndent: 16),
+
         SizedBox(
           height: AppTheme.cardPadding * 16,
           child: SfCartesianChart(

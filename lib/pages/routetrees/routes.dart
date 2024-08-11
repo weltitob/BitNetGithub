@@ -270,17 +270,29 @@ class AppRoutes {
                       transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
+            // GoRoute(
+            //   name: 'finalize',
+            //   path: 'finalize/:batch_key',
+            //   builder: (ctx, state) {
+            //     final batchKey = state.pathParameters['batch_key'];
+            //     print('Batch key in route: $batchKey');
+            //     return BatchScreen(routerState: state);
+            //   },
+            // ),
             GoRoute(
-              path: 'receive',
-              builder: _dynamicTransition == null
-                  ? (ctx, state) => ReceiveScreen()
-                  : null,
-              pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(
-                      key: state.pageKey,
-                      child: ReceiveScreen(),
-                      transitionsBuilder: _dynamicTransition!)
-                  : null,
+              name: 'receive',
+              path: 'receive/:network',
+              builder: (ctx, state) {
+                final batchKey = state.pathParameters['network'];
+                print('network: $batchKey');
+                return ReceiveScreen(routerState: state);
+              },
+              // pageBuilder: _dynamicTransition != null
+              //     ? (ctx, state) => CustomTransitionPage(
+              //         key: state.pageKey,
+              //         child: ReceiveScreen(),
+              //         transitionsBuilder: _dynamicTransition!)
+              //     : null,
             ),
             GoRoute(
               path: 'loop_screen',
