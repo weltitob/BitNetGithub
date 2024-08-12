@@ -31,9 +31,6 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppTheme.elementSpacing,
-          ),
       child: GlassContainer(
         borderRadius: AppTheme.cardRadiusSmall,
         child: Container(

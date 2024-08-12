@@ -18,7 +18,6 @@ import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/ListScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
-import 'package:bitnet/pages/matrix/widgets/log_view.dart';
 import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
@@ -544,18 +543,6 @@ class AppRoutes {
               ? (ctx, state) => CustomTransitionPage(
                   key: state.pageKey,
                   child: SecuritySettingsPage(),
-                  transitionsBuilder: _dynamicTransition!)
-              : null,
-        ),
-        GoRoute(
-          path: 'settings?tab=logs',
-          builder: _dynamicTransition == null
-              ? (ctx, state) => const LogViewer()
-              : null,
-          pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: LogViewer(),
                   transitionsBuilder: _dynamicTransition!)
               : null,
         ),

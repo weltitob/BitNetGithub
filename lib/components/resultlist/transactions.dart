@@ -431,8 +431,12 @@ class _TransactionsState extends State<Transactions>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: AppTheme.elementSpacing,
+                    margin: EdgeInsets.only(
+                      left: AppTheme.cardPadding,
+                      right: AppTheme.cardPadding,
+                      bottom: AppTheme.elementSpacing.h,
+                      top: AppTheme.cardPadding.h,
+
                     ),
                     child: SearchFieldWidget(
                       hintText: 'Search',
