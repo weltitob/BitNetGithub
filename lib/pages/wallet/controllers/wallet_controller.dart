@@ -1,7 +1,11 @@
 import 'dart:async';
 
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
+import 'package:bitnet/backbone/cloudfunctions/loop/listswaps.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -15,6 +19,7 @@ import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
+import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
@@ -57,8 +62,7 @@ class WalletsController extends BaseController {
   Rx<ChartLine?> chartLines = Rx<ChartLine?>(null);
   RxString totalBalanceStr = "0".obs;
   RxDouble totalBalanceSAT = 0.0.obs;
-  Rx<BitcoinUnitModel> totalBalance =
-      BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 0).obs;
+  Rx<BitcoinUnitModel> totalBalance = BitcoinUnitModel(bitcoinUnit: BitcoinUnits.SAT, amount: 0).obs;
   String loadMessageError = "";
   int errorCount = 0;
   int loadedFutures = 0;
@@ -70,6 +74,15 @@ class WalletsController extends BaseController {
   RxString selectedCard = 'onchain'.obs;
   final String reversedConstant = 'amount_widget_reversed';
   final String cardTopConstant = 'lightning_on_top';
+
+  //transactions
+  RxMap<String, dynamic> onchainTransactions = <String, dynamic>{}.obs;
+  RxMap<String, dynamic> lightningInvoices = <String, dynamic>{}.obs;
+  RxMap<String, dynamic> lightningPayments = <String, dynamic>{}.obs;
+  RxMap<String, dynamic> loopOperations = <String, dynamic>{}.obs;
+  RxList<TransactionItemData> allTransactions = RxList.empty(growable: true);
+  RxInt futuresCompleted = 0.obs;
+
   void setHideBalance({bool? hide}) {
     print(hide);
     if (hide != null) {
@@ -157,8 +170,7 @@ class WalletsController extends BaseController {
     scrollController = ScrollController();
     reversed.value = LocalStorage.instance.getBool(reversedConstant);
     selectedCard.value = LocalStorage.instance.getString(cardTopConstant) ?? 'onchain';
-    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then(
-        (value) {
+    settingsCollection.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       coin.value = value.data()?["showCoin"] ?? false;
       selectedCurrency = RxString("");
       selectedCurrency!.value = value.data()?["selectedCurrency"] ?? "USD";
@@ -192,15 +204,28 @@ class WalletsController extends BaseController {
         queueErrorOvelay = true;
       }
     });
+    getTransactions().then((val) {
+      onchainTransactions.addAll(val.data);
+      futuresCompleted++;
+    });
+    listSwaps().then((val) {
+      loopOperations.addAll(val.data);
+      futuresCompleted++;
+    });
+    listPayments().then((val) {
+      lightningPayments.addAll(val.data);
+      futuresCompleted++;
+    });
+    listInvoices().then((val) {
+      lightningInvoices.addAll(val.data);
+      futuresCompleted++;
+    });
   }
 
   void handleFuturesCompleted(BuildContext context) {
-    logger.i(
-        "Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
+    logger.i("Handling current completed futures with an errorCount of $errorCount and an Error Message of $loadMessageError");
     if (errorCount > 1) {
-      showOverlay(
-          context, "Failed to load certain services, please try again later.",
-          color: AppTheme.errorColor);
+      showOverlay(context, "Failed to load certain services, please try again later.", color: AppTheme.errorColor);
     } else if (errorCount == 1) {
       showOverlay(context, loadMessageError, color: AppTheme.errorColor);
     }
@@ -210,8 +235,7 @@ class WalletsController extends BaseController {
     try {
       RestResponse onchainBalanceRest = await walletBalance();
       if (!onchainBalanceRest.data.isEmpty) {
-        OnchainBalance onchainBalance =
-            OnchainBalance.fromJson(onchainBalanceRest.data);
+        OnchainBalance onchainBalance = OnchainBalance.fromJson(onchainBalanceRest.data);
         this.onchainBalance = onchainBalance;
       }
       changeTotalBalanceStr();
@@ -227,8 +251,7 @@ class WalletsController extends BaseController {
     try {
       RestResponse lightningBalanceRest = await channelBalance();
 
-      LightningBalance lightningBalance =
-          LightningBalance.fromJson(lightningBalanceRest.data);
+      LightningBalance lightningBalance = LightningBalance.fromJson(lightningBalanceRest.data);
       if (!lightningBalanceRest.data.isEmpty) {
         this.lightningBalance = lightningBalance;
       }
@@ -251,8 +274,7 @@ class WalletsController extends BaseController {
 
     totalBalanceSAT.value = confirmedBalanceSAT + balanceSAT;
 
-    BitcoinUnitModel bitcoinUnit = CurrencyConverter.convertToBitcoinUnit(
-        totalBalanceSAT.value, BitcoinUnits.SAT);
+    BitcoinUnitModel bitcoinUnit = CurrencyConverter.convertToBitcoinUnit(totalBalanceSAT.value, BitcoinUnits.SAT);
     final balance = bitcoinUnit.amount;
     final unit = bitcoinUnit.bitcoinUnitAsString;
 

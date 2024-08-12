@@ -8,13 +8,16 @@ import 'package:bitnet/components/marketplace_widgets/FilterPillList.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class WalletFilterScreen extends GetWidget<WalletFilterController> {
-  const WalletFilterScreen({super.key});
+  const WalletFilterScreen({this.hideLightning = false, this.hideOnchain = false, this.forcedFilters, super.key});
+  final bool hideLightning;
+  final bool hideOnchain;
+  final List<String>? forcedFilters;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +29,7 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
       ),
       context: context,
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.cardPadding,
-            vertical: AppTheme.cardPadding * 2),
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
         child: Column(
           children: [
             Align(
@@ -42,20 +43,22 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                       ),
                       onPressed: () {
                         controller.selectedFilters.clear();
-                        controller.start =
-                            controller.startDate.value.millisecondsSinceEpoch ~/
-                                1000;
-                        controller.end =
-                            controller.endDate.value.millisecondsSinceEpoch ~/
-                                1000;
+                        if (forcedFilters != null) {
+                          for (int i = 0; i < forcedFilters!.length; i++) {
+                            controller.toggleFilter(forcedFilters![i]);
+                          }
+                        }
+
+                        controller.start = controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
+                        controller.end = controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
                       },
                     ))),
             SizedBox(height: AppTheme.cardPadding),
             BitNetFilterPillList(
               headingText: L10n.of(context)!.filterOptions,
               listDataText: [
-                PillLabelModal(labelText: L10n.of(context)!.lightning),
-                PillLabelModal(labelText: L10n.of(context)!.onchain),
+                if (!hideLightning) PillLabelModal(labelText: L10n.of(context)!.lightning),
+                if (!hideOnchain) PillLabelModal(labelText: L10n.of(context)!.onchain),
                 PillLabelModal(labelText: L10n.of(context)!.sent),
                 PillLabelModal(labelText: L10n.of(context)!.received),
                 PillLabelModal(labelText: 'Loop'),
@@ -69,29 +72,19 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                 margin: EdgeInsets.only(bottom: 30.h),
                 child: Row(
                   children: [
-                    Expanded(
-                        child: StatefulBuilder(builder: (context, setState) {
+                    Expanded(child: StatefulBuilder(builder: (context, setState) {
                       return GlassContainer(
                           child: InkWell(
                         onTap: () async {
-                          controller.startDate.value =
-                              await controller.selectDate(context);
-                          controller.start = controller
-                                  .startDate.value.millisecondsSinceEpoch ~/
-                              1000;
+                          controller.startDate.value = await controller.selectDate(context);
+                          controller.start = controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
                           setState(() {});
                         },
                         child: Padding(
-                          padding:
-                              const EdgeInsets.all(AppTheme.elementSpacing / 2),
+                          padding: const EdgeInsets.all(AppTheme.elementSpacing / 2),
                           child: Center(
-                              child: Text(
-                                  DateFormat('dd-MM-yyyy')
-                                      .format(controller.startDate.value),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
+                              child: Text(DateFormat('dd-MM-yyyy').format(controller.startDate.value),
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w400,
                                       ))),
@@ -113,23 +106,16 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                         return GlassContainer(
                           child: InkWell(
                             onTap: () async {
-                              controller.endDate.value =
-                                  await controller.selectDate(context);
-                              controller.end = controller
-                                      .endDate.value.millisecondsSinceEpoch ~/
-                                  1000;
+                              controller.endDate.value = await controller.selectDate(context);
+                              controller.end = controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
                               setState(() {});
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Center(
                                 child: Text(
-                                  DateFormat('dd-MM-yyyy')
-                                      .format(controller.endDate.value),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
+                                  DateFormat('dd-MM-yyyy').format(controller.endDate.value),
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -148,10 +134,8 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
             LongButtonWidget(
                 title: L10n.of(context)!.apply,
                 onTap: () {
-                  controller.start =
-                      controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
-                  controller.end =
-                      controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
+                  controller.start = controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
+                  controller.end = controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
                   Navigator.pop(context);
                 }),
           ],
