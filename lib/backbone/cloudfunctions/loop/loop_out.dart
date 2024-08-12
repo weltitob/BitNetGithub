@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:blockchain_utils/base58/base58_base.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,8 @@ import 'package:get/get.dart';
 Future<RestResponse> loopOut(Map<String, dynamic> data) async {
   String restHost = AppTheme.baseUrlLightningTerminal;
   String url = 'https://$restHost/v1/loop/out';
+
+  final logger = Get.find<LoggerService>();
 
   ByteData byteData = await loadLoopMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -40,6 +43,13 @@ Future<RestResponse> loopOut(Map<String, dynamic> data) async {
   String checkedBase58EncodedString = Base58Encoder.checkEncode(inputBytes);
 
   print("Base58 Encoded String: $checkedBase58EncodedString");
+
+  logger.i("Amount: ${data['amt']}");
+  logger.i("Swap Fee: ${data['swapFee']}");
+  logger.i("Miner Fee: ${data['minerFee']}");
+  logger.i("Max Prepay: ${data['maxPrepay']}");
+  logger.i("Not used: Destination: $checkedBase58EncodedString");
+
 
   // Prepare the data with the Base58 encoded string
   data = {
