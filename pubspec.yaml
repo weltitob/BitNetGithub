@@ -72,7 +72,6 @@ dependencies:
   matrix_homeserver_recommendations: ^0.3.0
   native_imaging: ^0.1.0
   package_info_plus: ^4.0.0
-  pin_code_text_field: ^1.8.0
   punycode: ^1.0.0
   qr_flutter: ^4.0.0
   receive_sharing_intent: ^1.4.5

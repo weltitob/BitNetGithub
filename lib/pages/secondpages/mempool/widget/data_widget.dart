@@ -69,27 +69,27 @@ class _DataWidgetState extends State<DataWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          widget.isAccepted
-              ? Padding(
-                  padding: EdgeInsets.only(left: AppTheme.cardPadding / 2.w),
-                  child: Text(
-                    widget.blockData!.height.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: AppTheme.colorBitcoin),
-                  ),
-                )
-              : Text(
-                  "",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(color: Colors.transparent),
-                ),
-          const SizedBox(
-            height: AppTheme.elementSpacing,
-          ),
+          // widget.isAccepted
+          //     ? Padding(
+          //         padding: EdgeInsets.only(left: AppTheme.cardPadding / 2.w),
+          //         child: Text(
+          //           widget.blockData!.height.toString(),
+          //           style: Theme.of(context)
+          //               .textTheme
+          //               .titleMedium!
+          //               .copyWith(color: AppTheme.colorBitcoin),
+          //         ),
+          //       )
+          //     : Text(
+          //         "",
+          //         style: Theme.of(context)
+          //             .textTheme
+          //             .titleMedium!
+          //             .copyWith(color: Colors.transparent),
+          //       ),
+          // const SizedBox(
+          //   height: AppTheme.elementSpacing,
+          // ),
           Container(
             height: AppTheme.cardPadding * 5.6.h,
             width: AppTheme.cardPadding *
@@ -112,6 +112,22 @@ class _DataWidgetState extends State<DataWidget> {
               children: [
                 widget.isAccepted
                     ? Text(
+                  widget.blockData!.height.toString(), // '${widget.size.toStringAsFixed(2)} MB',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20.sp),
+                )
+                    : Text(
+                  "Pending", // '${(widget.mempoolBlocks!.blockSize! / 1000000).toStringAsFixed(2)} MB',
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: AppTheme.elementSpacing * 1.h),
+                widget.isAccepted
+                    ? Text(
                         '${L10n.of(context)!.fee}: ~' +
                             '\$' +
                             '${(widget.blockData!.extras!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
@@ -123,41 +139,26 @@ class _DataWidgetState extends State<DataWidget> {
                             '${(widget.mempoolBlocks!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
                         style: TextStyle(fontSize: 14.sp, color: Colors.white),
                       ),
-                SizedBox(height: AppTheme.elementSpacing * 0.35.h),
-                widget.isAccepted
-                    ? Text(
-                        '${widget.size.toStringAsFixed(2)} MB',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20.sp),
-                      )
-                    : Text(
-                        '${(widget.mempoolBlocks!.blockSize! / 1000000).toStringAsFixed(2)} MB',
-                        style: TextStyle(
-                            fontSize: 20.sp,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      ),
-                SizedBox(height: AppTheme.elementSpacing * 0.4.h),
-                widget.isAccepted
-                    ? FittedBox(
-                        child: Text(
-                          '${formatPrice(widget.blockData?.txCount)} transactions',
-                          maxLines: 1,
-                          style:
-                              TextStyle(fontSize: 14.sp, color: Colors.white),
-                        ),
-                      )
-                    : FittedBox(
-                        child: Text(
-                          '${formatPrice(widget.mempoolBlocks?.nTx)} transactions',
-                          maxLines: 1,
-                          style:
-                              TextStyle(fontSize: 14.sp, color: Colors.white),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
+
+                // SizedBox(height: AppTheme.elementSpacing * 0.4.h),
+                // widget.isAccepted
+                //     ? FittedBox(
+                //         child: Text(
+                //           '${formatPrice(widget.blockData?.txCount)} transactions',
+                //           maxLines: 1,
+                //           style:
+                //               TextStyle(fontSize: 14.sp, color: Colors.white),
+                //         ),
+                //       )
+                //     : FittedBox(
+                //         child: Text(
+                //           '${formatPrice(widget.mempoolBlocks?.nTx)} transactions',
+                //           maxLines: 1,
+                //           style:
+                //               TextStyle(fontSize: 14.sp, color: Colors.white),
+                //           overflow: TextOverflow.ellipsis,
+                //         ),
+                //       ),
                 SizedBox(height: AppTheme.elementSpacing * 0.3.h),
                 widget.isAccepted
                     ? FittedBox(

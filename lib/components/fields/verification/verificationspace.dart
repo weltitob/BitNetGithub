@@ -1,12 +1,11 @@
 import 'dart:async';
-
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/intl/generated/l10n.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 
 class VerificationSpace extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -38,43 +37,37 @@ class _VerificationSpaceState extends State<VerificationSpace> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppTheme.cardPadding * 2.ws,
-              vertical: AppTheme.elementSpacing.h,
-            ),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black],
+      height: 270.h,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.transparent, Colors.black],
+        ),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppTheme.cardPadding * 2.ws,
+            vertical: AppTheme.elementSpacing.h,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: AppTheme.cardPadding),
+              Text(
+                L10n.of(context)!.invitationCode,
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.left,
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: AppTheme.cardPadding.h,
-                ),
-                Text(
-                  L10n.of(context)!.invitationCode,
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding.h,
-                ),
-                Form(
-                  key: widget.formKey,
+              const SizedBox(height: AppTheme.cardPadding),
+              Form(
+                key: widget.formKey,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
                   child: PinCodeTextField(
                     appContext: context,
-                    pastedTextStyle: TextStyle(
-                      color: AppTheme.white90,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    pastedTextStyle: Theme.of(context).textTheme.titleLarge,
                     length: 5,
                     obscureText: false,
                     animationType: AnimationType.fade,
@@ -89,7 +82,7 @@ class _VerificationSpaceState extends State<VerificationSpace> {
                       borderWidth: 2,
                     ),
                     cursorColor: Colors.white,
-                    animationDuration: Duration(milliseconds: 300),
+                    animationDuration: const Duration(milliseconds: 300),
                     textStyle: Theme.of(context).textTheme.titleLarge,
                     backgroundColor: Colors.transparent,
                     enableActiveFill: false,
@@ -99,36 +92,30 @@ class _VerificationSpaceState extends State<VerificationSpace> {
                     textCapitalization: TextCapitalization.characters,
                     onCompleted: widget.onCompleted,
                     onChanged: (value) {
-                      print(value);
                       setState(() {
                         currentText = value;
                       });
                     },
-                    beforeTextPaste: (text) {
-                      return true;
-                    },
+                    beforeTextPaste: (text) => true,
                   ),
                 ),
-                SizedBox(
-                  height: AppTheme.elementSpacing,
-                ),
-                Center(
-                  child: widget.loading
-                      ? Container(
-                    child: dotProgress(context),
-                  )
-                      : Text(
-                    widget.hasError ? widget.errorText : "",
-                    style:
-                    Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: AppTheme.errorColor,
-                    ),
+              ),
+              const SizedBox(height: AppTheme.elementSpacing),
+              Center(
+                child: widget.loading
+                    ? dotProgress(context)
+                    : Text(
+                  widget.hasError ? widget.errorText : "",
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: AppTheme.errorColor,
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

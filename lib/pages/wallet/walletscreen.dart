@@ -293,24 +293,24 @@ class WalletScreen extends GetWidget<WalletsController> {
                 ],
               ),
             ),
-            SizedBox(height: AppTheme.cardPadding,),
-            Center(
-              child: LongButtonWidget(title: "LOGIN: PLEASE DONT PRESS", onTap: () async {
-                final result = await startEcsTask('inapp_user_dev_new');
-              }),
-            ),
-            SizedBox(height: AppTheme.cardPadding,),
-            Center(
-              child: LongButtonWidget(title: "REGISTER: PLEASE DONT PRESS", onTap: () async {
-                final result = await registerLitEcs('inapp_user_dev_new');
-              }),
-            ),
-            SizedBox(height: AppTheme.cardPadding,),
-            Center(
-              child: LongButtonWidget(title: "STOP ECS TASK", onTap: () async {
-                final result = await stopUserTask('inapp_user_dev_new');
-              }),
-            ),
+            // SizedBox(height: AppTheme.cardPadding,),
+            // Center(
+            //   child: LongButtonWidget(title: "LOGIN: PLEASE DONT PRESS", onTap: () async {
+            //     final result = await startEcsTask('inapp_user_dev_new');
+            //   }),
+            // ),
+            // SizedBox(height: AppTheme.cardPadding,),
+            // Center(
+            //   child: LongButtonWidget(title: "REGISTER: PLEASE DONT PRESS", onTap: () async {
+            //     final result = await registerLitEcs('inapp_user_dev_new');
+            //   }),
+            // ),
+            // SizedBox(height: AppTheme.cardPadding,),
+            // Center(
+            //   child: LongButtonWidget(title: "STOP ECS TASK", onTap: () async {
+            //     final result = await stopUserTask('inapp_user_dev_new');
+            //   }),
+            // ),
 
             SizedBox(
               height: AppTheme.cardPadding.h * 1.75,

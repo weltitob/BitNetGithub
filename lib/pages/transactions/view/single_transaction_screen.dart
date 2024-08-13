@@ -12,7 +12,6 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
-import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -211,16 +210,19 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                 child: Column(
                                                   children: [
                                                     SizedBox(height: AppTheme.cardPadding * 2.5),
-                                                    SearchFieldWidget(
-                                                      // controller: searchCtrl,
-                                                      hintText:
-                                                      L10n.of(context)!.search,
-                                                      handleSearch: (v) {
-                                                        setState(() {
-                                                          inputCtrl.text = v;
-                                                        });
-                                                      },
-                                                      isSearchEnabled: true,
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                                                      child: SearchFieldWidget(
+                                                        // controller: searchCtrl,
+                                                        hintText:
+                                                        L10n.of(context)!.search,
+                                                        handleSearch: (v) {
+                                                          setState(() {
+                                                            inputCtrl.text = v;
+                                                          });
+                                                        },
+                                                        isSearchEnabled: true,
+                                                      ),
                                                     ),
                                                     !controller.showDetail.value
                                                         ? Expanded(

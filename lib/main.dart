@@ -98,15 +98,7 @@ Future<void> main() async {
   Get.put(TransactionController());
   // Run the app
   runApp(
-    PlatformInfos.isMobile
-        ? AppLock(
-            builder: (args) =>
-                //matrix_chat_app.dart apply later
-                MyApp(),
-            lockScreen: const LockScreen(),
-            enabled: false,
-          )
-        : MyApp(),
+    MyApp(),
   );
 }
 

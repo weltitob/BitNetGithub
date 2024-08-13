@@ -7,7 +7,10 @@ import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/components/resultlist/transactions.dart';
+import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/secondpages/mempool/colorhelper.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/widget/data_widget.dart';
@@ -127,14 +130,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                     // controller.timer.cancel();
                     context.pop(context);
                   },
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        context.go('/wallet/transaction');
-                      },
-                      icon: const Icon(Icons.search),
-                    ),
-                  ],
+
                   context: context,
                 ),
           body: SingleChildScrollView(
@@ -154,53 +150,53 @@ class _MempoolHomeState extends State<MempoolHome> {
                       : Column(
                           children: [
                             SizedBox(
-                              height: AppTheme.cardPadding.h * 3,
+                              height: AppTheme.cardPadding.h * 2.h,
                             ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                  left: AppTheme.cardPadding),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    L10n.of(context)!.blockChain,
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'av. block time:',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall,
-                                      ),
-                                      SizedBox(
-                                        width: AppTheme.elementSpacing,
-                                      ),
-                                      Text(
-                                        '~  ${(controller.da == null ? 10 : controller.da!.timeAvg! / 60000).toStringAsFixed(1)} minutes',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium,
-                                      ),
-                                      SizedBox(
-                                        width: AppTheme.elementSpacing,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: AppTheme.cardPadding.h,
-                            ),
+                            // Container(
+                            //   margin: EdgeInsets.only(
+                            //       left: AppTheme.cardPadding),
+                            //   child: Row(
+                            //     mainAxisAlignment:
+                            //         MainAxisAlignment.spaceBetween,
+                            //     crossAxisAlignment: CrossAxisAlignment.center,
+                            //     children: [
+                            //       Text(
+                            //         L10n.of(context)!.blockChain,
+                            //         style:
+                            //             Theme.of(context).textTheme.titleLarge,
+                            //       ),
+                            //       Row(
+                            //         crossAxisAlignment:
+                            //             CrossAxisAlignment.center,
+                            //         mainAxisAlignment: MainAxisAlignment.center,
+                            //         children: [
+                            //           Text(
+                            //             'av. block time:',
+                            //             style: Theme.of(context)
+                            //                 .textTheme
+                            //                 .bodySmall,
+                            //           ),
+                            //           SizedBox(
+                            //             width: AppTheme.elementSpacing,
+                            //           ),
+                            //           Text(
+                            //             '~  ${(controller.da == null ? 10 : controller.da!.timeAvg! / 60000).toStringAsFixed(1)} minutes',
+                            //             overflow: TextOverflow.ellipsis,
+                            //             style: Theme.of(context)
+                            //                 .textTheme
+                            //                 .bodyMedium,
+                            //           ),
+                            //           SizedBox(
+                            //             width: AppTheme.elementSpacing,
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                            // SizedBox(
+                            //   height: AppTheme.cardPadding.h,
+                            // ),
                             Stack(
                               alignment: Alignment.centerLeft,
                               children: [
@@ -507,7 +503,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                               0
                                                           ? L10n.of(context)!
                                                               .nextBlock
-                                                          : '${L10n.of(context)!.mempoolBlock}${controller.selectedIndexData + 1}',
+                                                          : '${L10n.of(context)!.mempoolBlock} ${controller.selectedIndexData + 1}',
                                                       textAlign: TextAlign.left,
                                                       style: Theme.of(context)
                                                           .textTheme
@@ -552,53 +548,55 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                     //${controller.txDetailsConfirmed!.id}
                                                   },
                                                   //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
-                                                  child: SearchFieldWidget(
-                                                    isSearchEnabled: false,
-                                                    hintText:
-                                                        '${controller.blockTransactions.length} transactions',
-                                                    handleSearch: handleSearch,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                                                    child: SearchFieldWidget(
+                                                      isSearchEnabled: false,
+                                                      hintText:
+                                                          '${controller.blockTransactions.length} transactions',
+                                                      handleSearch: handleSearch,
+                                                    ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height:
-                                                      AppTheme.elementSpacing,
-                                                ),
-                                                feeDistributionUnaccepted(),
-                                                SizedBox(
-                                                  height:
-                                                      AppTheme.elementSpacing,
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: AppTheme
-                                                          .elementSpacing),
-                                                  child: MyDivider(),
-                                                ),
-                                                SizedBox(
-                                                  height:
-                                                      AppTheme.elementSpacing,
                                                 ),
                                                 Container(
                                                   margin: EdgeInsets.symmetric(
                                                       horizontal:
-                                                          AppTheme.cardPadding),
-                                                  child: Row(
-                                                    mainAxisAlignment:
+                                                          AppTheme.elementSpacing),
+                                                  child: Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        height: AppTheme
+                                                            .cardPadding
+                                                            .h,
+                                                      ),
+                                                      feeDistributionUnaccepted(),
+                                                      SizedBox(
+                                                        height:
+                                                        AppTheme.elementSpacing,
+                                                      ),
+                                                      SizedBox(
+                                                        height:
+                                                        AppTheme.elementSpacing,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .spaceAround,
-                                                    children: [
-                                                      controller.txDetailsConfirmed ==
+                                                        children: [
+                                                          controller.txDetailsConfirmed ==
                                                               null
-                                                          ? SizedBox()
-                                                          : blockSizeUnaccepted()
+                                                              ? SizedBox()
+                                                              : blockSizeUnaccepted()
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height:
+                                                        AppTheme.cardPadding * 3,
+                                                      ),
                                                     ],
                                                   ),
                                                 ),
-                                                SizedBox(
-                                                  height:
-                                                      AppTheme.cardPadding * 3,
-                                                ),
+                                                
                                               ]),
                                             ),
                                           ),
@@ -748,22 +746,46 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                               },
                                                               //TEXT HIER ZU SEARCH TROUGH 7825 transactions oder so senden...
                                                               child:
-                                                                  SearchFieldWidget(
-                                                                isSearchEnabled:
-                                                                    false,
-                                                                hintText:
-                                                                    '${controller.bitcoinData.isNotEmpty ? controller.bitcoinData[controller.indexBlock.value].txCount : 0} transactions',
-                                                                handleSearch:
-                                                                    handleSearch,
-                                                              ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                                                                    child: SearchFieldWidget(
+                                                                      isSearchEnabled:
+                                                                      false,
+                                                                      hintText:
+                                                                      '${controller.bitcoinData.isNotEmpty ? controller.bitcoinData[controller.indexBlock.value].txCount : 0} transactions',
+                                                                                                                                    handleSearch:
+                                                                      handleSearch,
+                                                                                                                                  ),
+                                                                  ),
                                                             ),
                                                             Container(
+                                                              margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                                                               child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                                   children: [
+
+                                                                    // SizedBox(
+                                                                    //   height: AppTheme
+                                                                    //       .cardPadding
+                                                                    //       .h,
+                                                                    // ),
+                                                                    // Text("   Your Transactions:", style: Theme.of(context).textTheme.titleMedium,),
                                                                     SizedBox(
                                                                       height: AppTheme
-                                                                          .cardPadding
-                                                                          .h,
+                                                                          .elementSpacing,
+                                                                    ),
+                                                                    TransactionItem(
+                                                                     context: context,
+                                                                      data: TransactionItemData(
+                                                                        type: TransactionType.onChain,
+                                                                        amount: "500",
+                                                                        timestamp: 38399,
+                                                                        status: TransactionStatus.confirmed,
+                                                                        direction: TransactionDirection.received,
+                                                                        txHash: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                                                                        fee: 321,
+                                                                        receiver: "dihsdisd",
+                                                                      )
                                                                     ),
                                                                     BitNetListTile(
                                                                       leading: Icon(
@@ -782,7 +804,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                                   (DateTime.fromMillisecondsSinceEpoch(controller.txDetailsConfirmed!.timestamp * 1000)),
                                                                                 ),
                                                                                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
-                                                                            Text("${L10n.of(context)!.timeAgo}"),
                                                                           ],
                                                                         ),
                                                                       ),
@@ -828,14 +849,14 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                           children: [
                                                                             Row(
                                                                               children: [
-                                                                                Text((controller.txDetailsConfirmed!.extras.reward / 100000000).toStringAsFixed(3), style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
-                                                                                Transform.translate(
-                                                                                  offset: const Offset(0, 2),
-                                                                                  child: Text(
-                                                                                    ' BTC  ',
-                                                                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor),
-                                                                                  ),
-                                                                                ),
+                                                                                // Text((controller.txDetailsConfirmed!.extras.reward / 100000000).toStringAsFixed(3), style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
+                                                                                // Transform.translate(
+                                                                                //   offset: const Offset(0, 2),
+                                                                                //   child: Text(
+                                                                                //     ' BTC  ',
+                                                                                //     style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor),
+                                                                                //   ),
+                                                                                // ),
                                                                                 Text(
                                                                                   '  \$${controller.formatAmount((controller.txDetailsConfirmed!.extras.reward / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
                                                                                   style: const TextStyle(
@@ -849,48 +870,22 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    SizedBox(
-                                                                      height: AppTheme
-                                                                          .elementSpacing,
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                          horizontal:
-                                                                              AppTheme.elementSpacing),
-                                                                      child:
-                                                                          MyDivider(),
-                                                                    ),
                                                                     feeDistributionAccepted(),
                                                                     SizedBox(
                                                                       height: AppTheme
                                                                           .elementSpacing,
                                                                     ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                          horizontal:
-                                                                              AppTheme.elementSpacing),
-                                                                      child:
-                                                                          MyDivider(),
-                                                                    ),
                                                                     SizedBox(
                                                                         height:
-                                                                            AppTheme.elementSpacing),
-                                                                    Container(
-                                                                      margin: EdgeInsets.symmetric(
-                                                                          horizontal:
-                                                                              AppTheme.cardPadding),
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceAround,
-                                                                        children: [
-                                                                          blockSizeAccepted(),
-                                                                          blockHealth(),
-                                                                        ],
-                                                                      ),
-                                                                    ),
+                                                                            AppTheme.cardPadding),
+                                                                    Row(
+                                                                                                                                            mainAxisAlignment:
+                                                                      MainAxisAlignment.spaceAround,
+                                                                                                                                            children: [
+                                                                    blockSizeAccepted(),
+                                                                    blockHealth(),
+                                                                                                                                            ],
+                                                                                                                                          ),
                                                                   ]),
                                                             ),
                                                             Container(
@@ -1079,16 +1074,18 @@ class _MempoolHomeState extends State<MempoolHome> {
                   }),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * 2,
+                  height: AppTheme.cardPadding.h * 1,
+                ),
+                difficultyAdjustment(),
+                SizedBox(
+                  height: AppTheme.cardPadding.h * 1.75,
                 ),
                 LastTransactions(),
 
-                difficultyAdjustment(),
+
                 //recentReplacements(),
                 //recentTransactions(),
-                SizedBox(
-                  height: AppTheme.cardPadding.h * 2,
-                ),
+
               ],
             ),
     );
@@ -1311,16 +1308,16 @@ class _MempoolHomeState extends State<MempoolHome> {
         Row(
           children: [
             Text(
-              "of ${mwu.toStringAsFixed(2)}",
+              "of ${mwu.toStringAsFixed(2)} MB",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            Transform.translate(
-              offset: const Offset(0, 2),
-              child: Text(
-                ' MWU  ',
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-            ),
+            // Transform.translate(
+            //   offset: const Offset(0, 2),
+            //   child: Text(
+            //     ' MB  ',
+            //     style: Theme.of(context).textTheme.labelSmall,
+            //   ),
+            // ),
           ],
         ),
       ],
@@ -1432,22 +1429,22 @@ class _MempoolHomeState extends State<MempoolHome> {
         trailing: Container(
           child: Row(
             children: [
-              Text(
-                  (controller.txDetailsConfirmed!.extras.totalFees / 100000000)
-                      .toStringAsFixed(3),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontWeight: FontWeight.bold)),
-              Transform.translate(
-                offset: const Offset(0, 2),
-                child: Text(
-                  ' BTC  ',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.secondaryColor),
-                ),
-              ),
+              // Text(
+              //     (controller.txDetailsConfirmed!.extras.totalFees / 100000000)
+              //         .toStringAsFixed(3),
+              //     style: Theme.of(context)
+              //         .textTheme
+              //         .bodySmall!
+              //         .copyWith(fontWeight: FontWeight.bold)),
+              // Transform.translate(
+              //   offset: const Offset(0, 2),
+              //   child: Text(
+              //     ' BTC  ',
+              //     style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              //         fontWeight: FontWeight.bold,
+              //         color: AppTheme.secondaryColor),
+              //   ),
+              // ),
               Text(
                 '\$${controller.formatAmount((controller.txDetailsConfirmed!.extras.totalFees / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}',
                 style: const TextStyle(
@@ -1538,26 +1535,26 @@ class _MempoolHomeState extends State<MempoolHome> {
         trailing: Container(
           child: Row(
             children: [
-              Text(
-                controller.mempoolBlocks.isNotEmpty
-                    ? controller.numberFormat.format(controller
-                            .mempoolBlocks[controller.indexShowBlock.value]
-                            .totalFees! /
-                        100000000)
-                    : '',
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              Transform.translate(
-                offset: const Offset(0, 2),
-                child: Text(
-                  ' BTC  ',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.secondaryColor),
-                ),
-              ),
+              // Text(
+              //   controller.mempoolBlocks.isNotEmpty
+              //       ? controller.numberFormat.format(controller
+              //               .mempoolBlocks[controller.indexShowBlock.value]
+              //               .totalFees! /
+              //           100000000)
+              //       : '',
+              //   style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              //         fontWeight: FontWeight.bold,
+              //       ),
+              // ),
+              // Transform.translate(
+              //   offset: const Offset(0, 2),
+              //   child: Text(
+              //     ' BTC  ',
+              //     style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              //         fontWeight: FontWeight.bold,
+              //         color: AppTheme.secondaryColor),
+              //   ),
+              // ),
               Text(
                 controller.mempoolBlocks.isNotEmpty
                     ? ('\$${controller.formatAmount((controller.mempoolBlocks[controller.indexShowBlock.value].totalFees! / 100000000 * controller.currentUSD.value).toStringAsFixed(0))}')
