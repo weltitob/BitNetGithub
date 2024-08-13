@@ -60,7 +60,6 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    // final myuser = Auth().currentUser!.uid;
     return Obx(
       () => bitnetScaffold(
         context: context,

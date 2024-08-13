@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/PillLabel.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +28,9 @@ class _BitNetFilterPillListState extends State<BitNetFilterPillList> {
           collapseBtn: true,
           child: Container(
             width: size.width,
-            margin: EdgeInsets.only(bottom: 30.h),
             child: Wrap(
-              spacing: 15.w,
-              runSpacing: 15.w,
+              spacing: AppTheme.elementSpacing.w,
+              runSpacing: AppTheme.elementSpacing.w,
               children: List.generate(widget.listDataText.length, (index) {
                 return PillLabel(
                   labelText: widget.listDataText[index].labelText,

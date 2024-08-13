@@ -1,8 +1,6 @@
 import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
-import 'package:bitnet/backbone/cloudfunctions/stripe/requestclientsecret.dart';
-import 'package:bitnet/backbone/cloudfunctions/stripe/helloworld.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -18,6 +16,7 @@ import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -26,7 +25,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -83,6 +81,8 @@ class WalletScreen extends GetWidget<WalletsController> {
 
     final String dateTime =  DateTime.now().millisecondsSinceEpoch.toString();
 
+    final profilecontroller = Get.find<ProfileController>();
+
     return bitnetScaffold(
         context: context,
         body: ListView(
@@ -105,10 +105,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                           Row(
                             children: [
                               Avatar(
-                                size: AppTheme.cardPadding * 2.85.h,
+                                size: AppTheme.cardPadding * 2.5.h,
+                                mxContent: Uri.parse(profilecontroller.userData.value.profileImageUrl),
+                                type: profilePictureType.lightning,
                               ),
                               SizedBox(
-                                width: AppTheme.elementSpacing * 1.w,
+                                width: AppTheme.elementSpacing * 1.25.w,
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +203,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                       ),
                     ),
                     SizedBox(
-                      height: AppTheme.cardPadding.h,
+                      height: AppTheme.cardPadding.h * 1.25,
                     ),
                     Container(
                       height: AppTheme.cardPadding * 7.75.h,
@@ -387,7 +389,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                     ),
                   ),
                   SizedBox(
-                    height: AppTheme.elementSpacing.h,
+                    height: AppTheme.cardPadding.h * 1.25,
                   ),
                   Transactions(),
                 ],

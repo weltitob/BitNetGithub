@@ -112,6 +112,7 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
               customWidth: AppTheme.cardPadding * 5,
               onTap: () {
                 BitNetBottomSheet(
+                  height: MediaQuery.of(context).size.height * 0.6,
                   context: context,
                   child: bitnetScaffold(
                     extendBodyBehindAppBar: true,

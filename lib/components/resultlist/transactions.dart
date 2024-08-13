@@ -435,7 +435,6 @@ class _TransactionsState extends State<Transactions>
                       left: AppTheme.cardPadding,
                       right: AppTheme.cardPadding,
                       bottom: AppTheme.elementSpacing.h,
-                      top: AppTheme.cardPadding.h,
 
                     ),
                     child: SearchFieldWidget(

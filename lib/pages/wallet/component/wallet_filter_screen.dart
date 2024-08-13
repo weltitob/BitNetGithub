@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
@@ -21,141 +22,132 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+            child: LongButtonWidget(
+              customWidth: AppTheme.cardPadding * 3.75,
+                customHeight: AppTheme.cardPadding * 1.25,
+                buttonType: ButtonType.transparent,
+                title: L10n.of(context)!.clear, onTap: (){
+              controller.selectedFilters.clear();
+              controller.start =
+                  controller.startDate.value.millisecondsSinceEpoch ~/
+                      1000;
+              controller.end =
+                  controller.endDate.value.millisecondsSinceEpoch ~/
+                      1000;
+            }),
+          )
+        ],
+        hasBackButton: false,
         context: context,
         text: L10n.of(context)!.filter,
       ),
       context: context,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.cardPadding,
-            vertical: AppTheme.cardPadding * 2),
-        child: Column(
-          children: [
-            Align(
-                alignment: Alignment.topRight,
-                child: GlassContainer(
-                    height: AppTheme.cardPadding * 1.75,
-                    child: TextButton(
-                      child: Text(
-                        L10n.of(context)!.clear,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      onPressed: () {
-                        controller.selectedFilters.clear();
-                        controller.start =
-                            controller.startDate.value.millisecondsSinceEpoch ~/
-                                1000;
-                        controller.end =
-                            controller.endDate.value.millisecondsSinceEpoch ~/
-                                1000;
-                      },
-                    ))),
-            SizedBox(height: AppTheme.cardPadding),
-            BitNetFilterPillList(
-              headingText: L10n.of(context)!.filterOptions,
-              listDataText: [
-                PillLabelModal(labelText: L10n.of(context)!.lightning),
-                PillLabelModal(labelText: L10n.of(context)!.onchain),
-                PillLabelModal(labelText: L10n.of(context)!.sent),
-                PillLabelModal(labelText: L10n.of(context)!.received),
-                PillLabelModal(labelText: 'Loop'),
-              ],
-            ),
-            CommonHeading(
-              headingText: L10n.of(context)!.timeFrame,
-              hasButton: false,
-              collapseBtn: true,
-              child: Container(
-                margin: EdgeInsets.only(bottom: 30.h),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: StatefulBuilder(builder: (context, setState) {
-                      return GlassContainer(
-                          child: InkWell(
-                        onTap: () async {
-                          controller.startDate.value =
-                              await controller.selectDate(context);
-                          controller.start = controller
-                                  .startDate.value.millisecondsSinceEpoch ~/
-                              1000;
-                          setState(() {});
-                        },
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.all(AppTheme.elementSpacing / 2),
-                          child: Center(
-                              child: Text(
-                                  DateFormat('dd-MM-yyyy')
-                                      .format(controller.startDate.value),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400,
-                                      ))),
-                        ),
-                      ));
-                    })),
-                    Container(
-                      margin: EdgeInsets.only(left: 10.w, right: 11.w),
-                      child: Text(
-                        L10n.of(context)!.to,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                            ),
-                      ),
-                    ),
-                    Expanded(
-                      child: StatefulBuilder(builder: (context, setState) {
-                        return GlassContainer(
-                          child: InkWell(
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.cardPadding,
+                vertical: AppTheme.cardPadding * 2),
+            child: Column(
+              children: [
+
+                SizedBox(height: AppTheme.cardPadding),
+                BitNetFilterPillList(
+                  headingText: L10n.of(context)!.filterOptions,
+                  listDataText: [
+                    PillLabelModal(labelText: L10n.of(context)!.lightning),
+                    PillLabelModal(labelText: L10n.of(context)!.onchain),
+                    PillLabelModal(labelText: L10n.of(context)!.sent),
+                    PillLabelModal(labelText: L10n.of(context)!.received),
+                    PillLabelModal(labelText: 'Loop'),
+                  ],
+                ),
+                SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                CommonHeading(
+                  headingText: L10n.of(context)!.timeFrame,
+                  hasButton: false,
+                  collapseBtn: true,
+                  child: Container(
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: StatefulBuilder(builder: (context, setState) {
+                          return GlassContainer(
+                              child: InkWell(
                             onTap: () async {
-                              controller.endDate.value =
+                              controller.startDate.value =
                                   await controller.selectDate(context);
-                              controller.end = controller
-                                      .endDate.value.millisecondsSinceEpoch ~/
+                              controller.start = controller
+                                      .startDate.value.millisecondsSinceEpoch ~/
                                   1000;
                               setState(() {});
                             },
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding:
+                                  const EdgeInsets.all(AppTheme.elementSpacing / 2),
                               child: Center(
-                                child: Text(
-                                  DateFormat('dd-MM-yyyy')
-                                      .format(controller.endDate.value),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                                  child: Text(
+                                      DateFormat('dd-MM-yyyy')
+                                          .format(controller.startDate.value),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall)),
+                            ),
+                          ));
+                        })),
+                        Container(
+                          margin: EdgeInsets.only(left: AppTheme.elementSpacing.w, right: AppTheme.elementSpacing.w),
+                          child: Text(
+                            L10n.of(context)!.to,
+                            style: Theme.of(context).textTheme.titleSmall
+                          ),
+                        ),
+                        Expanded(
+                          child: StatefulBuilder(builder: (context, setState) {
+                            return GlassContainer(
+                              child: InkWell(
+                                onTap: () async {
+                                  controller.endDate.value =
+                                      await controller.selectDate(context);
+                                  controller.end = controller
+                                          .endDate.value.millisecondsSinceEpoch ~/
+                                      1000;
+                                  setState(() {});
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text(
+                                      DateFormat('dd-MM-yyyy')
+                                          .format(controller.endDate.value),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        );
-                      }),
+                            );
+                          }),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-            Spacer(),
-            LongButtonWidget(
-                title: L10n.of(context)!.apply,
-                onTap: () {
-                  controller.start =
-                      controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
-                  controller.end =
-                      controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
-                  Navigator.pop(context);
-                }),
-          ],
-        ),
+          ),
+          BottomCenterButton(buttonTitle: L10n.of(context)!.apply, buttonState: ButtonState.idle, onButtonTap: (){
+            controller.start =
+                controller.startDate.value.millisecondsSinceEpoch ~/ 1000;
+            controller.end =
+                controller.endDate.value.millisecondsSinceEpoch ~/ 1000;
+            Navigator.pop(context);
+          })
+        ],
       ),
     );
   }

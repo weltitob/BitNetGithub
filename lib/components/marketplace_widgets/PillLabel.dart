@@ -23,27 +23,19 @@ class _PillLabelState extends State<PillLabel> {
         onTap: () {
           controller.toggleFilter(widget.labelText);
         },
-        child: controller.selectedFilters.contains(widget.labelText)
-            ? GlassContainer(
+        child: GlassContainer(
+                opacity:  controller.selectedFilters.contains(widget.labelText) ? 0.1 : 0,
                 child: Container(
                   margin: EdgeInsets.symmetric(
-                      horizontal: AppTheme.elementSpacing.w * 0.5,
+                      horizontal: AppTheme.elementSpacing.w * 0.75,
                       vertical: AppTheme.elementSpacing.h * 0.5),
                   child: Text(
                     widget.labelText,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
               )
-            : Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing.w * 0.5 + 1.5,
-                    vertical: AppTheme.elementSpacing.h * 0.5 + 1.5),
-                child: Text(
-                  widget.labelText,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ),
+
       );
     });
   }

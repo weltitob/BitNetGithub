@@ -14,9 +14,11 @@ class CommonHeading extends StatefulWidget {
   final child;
   final isChild;
   final isNormalChild;
+  bool isCollapsed;
   final IconData customButtonIcon;
 
-  const CommonHeading(
+
+  CommonHeading(
       {Key? key,
       this.headingText = '',
       required this.hasButton,
@@ -25,7 +27,9 @@ class CommonHeading extends StatefulWidget {
       this.collapseBtn = false,
       this.child,
       this.isChild,
-      this.isNormalChild = false})
+      this.isNormalChild = false,
+      this.isCollapsed = true,
+      })
       : super(key: key);
 
   @override
@@ -33,7 +37,6 @@ class CommonHeading extends StatefulWidget {
 }
 
 class _CommonHeadingState extends State<CommonHeading> {
-  bool openCloseCollapse = false;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -66,46 +69,59 @@ class _CommonHeadingState extends State<CommonHeading> {
                     )
                   : Container(),
               widget.collapseBtn
-                  ? GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          openCloseCollapse = !openCloseCollapse;
-                        });
-                      },
-                      child: Container(
-                        width: 24.w,
-                        height: 24.w,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? AppTheme.black60
-                                  : AppTheme.white60),
-                          borderRadius: BorderRadius.circular(100.r),
-                          color: const Color.fromRGBO(255, 255, 255, 0.1),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: openCloseCollapse ? 8.h : 7.h,
-                          horizontal: openCloseCollapse ? 7.w : 8.w,
-                        ),
-                        child: Image.asset(
-                          openCloseCollapse ? bottomArrowIcon : rightArrowIcon,
-                          width: openCloseCollapse ? 5.w : 10.w,
-                          height: openCloseCollapse ? 10.h : 5.h,
-                          fit: BoxFit.contain,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? AppTheme.black60
-                                  : AppTheme.white60,
-                        ),
-                      ),
-                    )
+                  ?
+              RoundedButtonWidget(
+                size: AppTheme.cardPadding * 1.25,
+                buttonType: ButtonType.transparent,
+                iconData: widget.isCollapsed
+                    ? Icons.keyboard_arrow_down
+                    : Icons.keyboard_arrow_right,
+                onTap: () {
+                  setState(() {
+                    widget.isCollapsed = !widget.isCollapsed;
+                  });
+                },
+              )
+              // GestureDetector(
+              //         onTap: () {
+              //           setState(() {
+              //             isCollapsed = !isCollapsed;
+              //           });
+              //         },
+              //         child: Container(
+              //           width: 24.w,
+              //           height: 24.w,
+              //           decoration: BoxDecoration(
+              //             border: Border.all(
+              //                 color: Theme.of(context).brightness ==
+              //                         Brightness.light
+              //                     ? AppTheme.black60
+              //                     : AppTheme.white60),
+              //             borderRadius: BorderRadius.circular(100.r),
+              //             color: const Color.fromRGBO(255, 255, 255, 0.1),
+              //           ),
+              //           padding: EdgeInsets.symmetric(
+              //             vertical: isCollapsed ? 8.h : 7.h,
+              //             horizontal: isCollapsed ? 7.w : 8.w,
+              //           ),
+              //           child: Image.asset(
+              //             isCollapsed ? bottomArrowIcon : rightArrowIcon,
+              //             width: isCollapsed ? 5.w : 10.w,
+              //             height: isCollapsed ? 10.h : 5.h,
+              //             fit: BoxFit.contain,
+              //             color:
+              //                 Theme.of(context).brightness == Brightness.light
+              //                     ? AppTheme.black60
+              //                     : AppTheme.white60,
+              //           ),
+              //         ),
+              //       )
                   : Container(),
             ],
           ),
         ),
         widget.collapseBtn
-            ? openCloseCollapse
+            ? widget.isCollapsed
                 ? widget.child
                 : Container()
             : Container(),
