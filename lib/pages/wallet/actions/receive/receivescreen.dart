@@ -26,7 +26,8 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class ReceiveScreen extends StatefulWidget {
-  ReceiveScreen({Key? key}) : super(key: key);
+  final GoRouterState? routerState;
+  ReceiveScreen({Key? key, this.routerState}) : super(key: key);
 
   @override
   State<ReceiveScreen> createState() => _ReceiveScreenState();
@@ -40,6 +41,9 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+
+    decodeNetwork();
+
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
         controller.switchReceiveType();
@@ -49,6 +53,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
     _tabController.animation?.addListener(() {
       setState(() {});
     });
+
 
     controller.btcController = TextEditingController();
     controller.btcController.text = "0.00001";
@@ -122,6 +127,23 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
     }, onError: (error) {
       logger.e("Received error for Invoice-stream: $error");
     });
+  }
+
+  void decodeNetwork() {
+    print("DECODE NETWORK");
+    final network =
+    widget.routerState?.pathParameters['network'];
+
+    print('Current route: ${widget.routerState?.path}');
+    print('Network: $network');
+    //wenn das netzwerk onchain oder lightning is je nachdem den jeweiligen initaltab festlegen
+    if (network != null) {
+      if (network == "onchain") {
+        _tabController.index = 1;
+      } else {
+        _tabController.index = 0;
+      }
+    }
   }
 
   @override

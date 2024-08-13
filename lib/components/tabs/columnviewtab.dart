@@ -16,6 +16,7 @@ class ColumnViewTab extends StatefulWidget {
 class _ColumnViewTabState extends State<ColumnViewTab> {
   final controller = Get.put(ProfileController());
 
+
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -60,8 +61,9 @@ class _ColumnViewTabState extends State<ColumnViewTab> {
                           },
                           child: Post(
                             postId: assetId,
-                            ownerId: "Tobias Welti" ?? '',
-                            username: "username" ?? '',
+                            ownerId:  "${controller.userData.value.username}" ?? '',
+                            displayname: "${controller.userData.value.displayName}" ?? '',
+                            username: "${controller.userData.value.username}" ?? '',
                             postName: asset.assetGenesis?.name ?? '',
                             rockets: {},
                             medias: meta != null ? meta.toMedias() : [],

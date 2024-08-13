@@ -1,6 +1,7 @@
 //recent transacctions
 
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/view_sockets.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
@@ -25,45 +26,41 @@ class _RecentTransactionsState extends State<RecentTransactions> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
-        GestureDetector(
-          onLongPress: () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ViewSockets())),
-          child: Text(
-            '${L10n.of(context)!.recentTransactions}'.toUpperCase(),
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        ),
-        const SizedBox(height: 20),
+        // const SizedBox(
+        //   height: 20,
+        // ),
+        // GestureDetector(
+        //   onLongPress: () => Navigator.push(
+        //       context, MaterialPageRoute(builder: (context) => ViewSockets())),
+        //   child: Text(
+        //     '${L10n.of(context)!.recentTransactions}'.toUpperCase(),
+        //     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        //   ),
+        // ),
+        const SizedBox(height: AppTheme.cardPadding),
           Padding(
           padding: EdgeInsets.all(8.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                flex: 2,
-                child: Text(
-                  'TXID',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+              Text(
+                'TXID',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(width: 20),
-              Expanded(
-                child: Text(
-                  '${L10n.of(context)!.amount}',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+              // SizedBox(width: 20),
+              Text(
+                '${L10n.of(context)!.amount}',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(width: 20),
-              
-              SizedBox(width: 20),
-              Expanded(
-                child: Text(
-                  L10n.of(context)!.fee,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
+              // SizedBox(width: 20),
+              //
+              // SizedBox(width: 20),
+              // Expanded(
+              //   child: Text(
+              //     L10n.of(context)!.fee,
+              //     style: TextStyle(fontWeight: FontWeight.bold),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -90,57 +87,32 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                         double usdValue = btcValue * usdPrice;
                         double feeSatVb = controller.transaction[index].fee! /
                             controller.transaction[index].vsize!;
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: InkWell(
-                                  onTap: () {
-                                    final controllerTransaction = Get.put(
-                                      TransactionController(
-                                        txID: controller.transaction[index].txid
-                                            .toString(),
-                                      ),
-                                    );
-                                    controllerTransaction.txID = controller
-                                        .transaction[index].txid
-                                        .toString();
-                                    controllerTransaction.getSingleTransaction(
-                                        controllerTransaction.txID!);
-                                    controllerTransaction.changeSocket();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            SingleTransactionScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    '${controller.transaction[index].txid!.substring(0, 5)}...${controller.transaction[index].txid!.substring(controller.transaction[index].txid!.length - 5)}' ??
-                                        '',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
+                        return BitNetListTile(
+                          onTap: () {
+                            final controllerTransaction = Get.put(
+                              TransactionController(
+                                txID: controller.transaction[index].txid
+                                    .toString(),
                               ),
-                              const SizedBox(width: AppTheme.elementSpacing),
-                              Expanded(
-                                child: Text(
-                                    '${btcValue.toStringAsFixed(4)} BTC' ?? ''),
+                            );
+                            controllerTransaction.txID = controller
+                                .transaction[index].txid
+                                .toString();
+                            controllerTransaction.getSingleTransaction(
+                                controllerTransaction.txID!);
+                            controllerTransaction.changeSocket();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SingleTransactionScreen(),
                               ),
-                              const SizedBox(
-                                width: AppTheme.elementSpacing,
-                              ),
-                              Expanded(
-                                  child: Text(
-                                      '\$${(feeSatVb / 100000000 * 140 * controller.currentUSD.value).toStringAsFixed(2)}' ??
-                                          '')),
-                            ],
+                            );
+                          },
+                          text: '${controller.transaction[index].txid!.substring(0, 5)}...${controller.transaction[index].txid!.substring(controller.transaction[index].txid!.length - 5)}' ?? '',
+                          trailing: Text(
+                            '${btcValue.toStringAsFixed(4)} BTC' ?? '',
+                            style: Theme.of(context).textTheme.labelMedium,
                           ),
                         );
                       });

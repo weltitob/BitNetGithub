@@ -105,10 +105,10 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
                     child: RoundedButtonWidget(
                         buttonType: widget.buttonType ?? ButtonType.solid,
                         iconData: widget.customIcon ?? Icons.arrow_back,
-                        iconColor:
-                        Theme.of(context).brightness == Brightness.light
-                            ? AppTheme.black60
-                            : AppTheme.white60,
+                        iconColor: Theme.of(context).colorScheme.onPrimary,
+                        // Theme.of(context).brightness == Brightness.light
+                        //     ? AppTheme.black60
+                        //     : AppTheme.white60,
                         onTap: widget.onTap),
                   ),
                 ),

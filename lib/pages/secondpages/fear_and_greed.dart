@@ -1,6 +1,7 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/appstandards/informationwidget.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/model/fear_gear_chart_model.dart';
@@ -73,108 +74,106 @@ class _FearAndGreedState extends State<FearAndGreed> {
 
   @override
   Widget build(BuildContext context) {
-    return bitnetScaffold(
-      context: context,
-      extendBodyBehindAppBar: true,
-      appBar: bitnetAppBar(
-        text: L10n.of(context)!.fearAndGreed,
-        context: context,
-        onTap: () {
+    return PopScope(
+      onPopInvoked: (bool) {
+        if(bool) {
           context.pop();
-        },
-      ),
-      body: _loading
-          ? Center(
-              child: Container(
-                height: AppTheme.cardPadding * 10,
-                child: dotProgress(context),
-              ),
-            )
-          : RoundedContainer(
-              contentPadding:
-                  const EdgeInsets.only(top: AppTheme.cardPadding * 2.5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        }
+      },
+      child: bitnetScaffold(
+        context: context,
+        extendBodyBehindAppBar: true,
+        appBar: bitnetAppBar(
+          text: L10n.of(context)!.fearAndGreedIndex,
+          context: context,
+          onTap: () {
+            context.pop();
+          },
+        ),
+        body: _loading
+            ? Center(
+                child: Container(
+                  height: AppTheme.cardPadding * 10,
+                  child: dotProgress(context),
+                ),
+              )
+            : ListView(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: AppTheme.cardPadding,
-                        right: AppTheme.cardPadding,
-                        top: AppTheme.cardPadding,
-                        bottom: AppTheme.cardPadding),
-                    child: Text(
-                      L10n.of(context)!.fearAndGreedIndex,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  SizedBox(height: AppTheme.cardPadding),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: AppTheme.cardPadding,
-                          right: AppTheme.cardPadding,
-                          bottom: AppTheme.cardPadding),
-                      child: RichText(
-                        text: TextSpan(
-                          text: L10n.of(context)!.now,
-                          style: Theme.of(context).textTheme.titleLarge,
-                          children: <TextSpan>[
-                            TextSpan(
-                              text:
-                                  "${fearGearChartModel.fgi == null ? 0 : fearGearChartModel.fgi!.now!.valueText}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(color: Colors.green),
+                  Column(
+                    children: [
+                      SizedBox(height: AppTheme.cardPadding * 3),
+                      Align(
+                        alignment: (fearGearChartModel.fgi!.now!.value! >= 25)  ? (fearGearChartModel.fgi!.now!.value! > 75) ? Alignment.topRight : Alignment.topCenter : Alignment.topLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: AppTheme.cardPadding,
+                              right: AppTheme.cardPadding,
+                              bottom: AppTheme.cardPadding),
+                          child: RichText(
+                            text: TextSpan(
+                              text: L10n.of(context)!.now,
+                              style: Theme.of(context).textTheme.titleLarge,
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text:
+                                      "${fearGearChartModel.fgi == null ? 0 : fearGearChartModel.fgi!.now!.valueText}",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(color: (fearGearChartModel.fgi!.now!.value! >= 25)  ? (fearGearChartModel.fgi!.now!.value! > 75) ? AppTheme.successColor : AppTheme.colorBitcoin : AppTheme.errorColor),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                      Center(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: AnimatedRadialGauge(
+                              duration: const Duration(seconds: 1),
+                              curve: Curves.elasticOut,
+                              radius: 150,
+                              value: fearGearChartModel.fgi == null
+                                  ? 0
+                                  : fearGearChartModel.fgi!.now!.value!
+                                      .toDouble(),
+                              axis: GaugeAxis(
+                                min: 0,
+                                max: 100,
+                                degrees: 180,
+                                style: GaugeAxisStyle(
+                                  thickness: 20,
+                                  background: Theme.of(context).brightness == Brightness.dark ? AppTheme.white70 : AppTheme.black60,
+                                  segmentSpacing: 4,
+                                ),
+                                progressBar: GaugeProgressBar.rounded(
+                                    color: (fearGearChartModel.fgi!.now!.value! >= 25)  ? (fearGearChartModel.fgi!.now!.value! > 75) ? AppTheme.successColor : AppTheme.colorBitcoin : AppTheme.errorColor,
+                                ),
+                              ),
+                              builder: (context, child, value) =>
+                                  RadialGaugeLabel(
+                                value: value,
+                                style: Theme.of(context).textTheme.displayLarge,
+                              ),
+                            )),
+                      ),
+                      Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.cardPadding),
+                            child: Text(
+                                '${L10n.of(context)!.lastUpdated} $formattedDate'),
+                          )),
+                      SizedBox(
+                        height: AppTheme.cardPadding * 2,
+                      ),
+                    ],
                   ),
-                  Center(
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: AnimatedRadialGauge(
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.elasticOut,
-                          radius: 150,
-                          value: fearGearChartModel.fgi == null
-                              ? 0
-                              : fearGearChartModel.fgi!.now!.value!.toDouble(),
-                          axis: GaugeAxis(
-                            min: 0,
-                            max: 100,
-                            degrees: 180,
-                            style: const GaugeAxisStyle(
-                              thickness: 20,
-                              background: Color(0xFFDFE2EC),
-                              segmentSpacing: 4,
-                            ),
-                            progressBar: GaugeProgressBar.rounded(
-                              color: AppTheme.colorBitcoin,
-                            ),
-                          ),
-                          builder: (context, child, value) => RadialGaugeLabel(
-                            value: value,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 46,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )),
-                  ),
-                  Divider(),
-                  Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('${L10n.of(context)!.lastUpdated} $formattedDate'),
-                      ))
+                  InformationWidget(title: "Information", description: "The Fear and Greed Index is a tool used to measure the overall sentiment of investors in the stock market. It gauges whether the market is driven more by fear or greed at any given time."),
                 ],
-              )),
+              ),
+      ),
     );
   }
 }

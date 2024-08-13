@@ -49,8 +49,9 @@ abstract class AppTheme {
   //onTap: () => launchUrlString(AppTheme.supportUrl),
   //Marketing startegie ist EXTREME CONTENT STRATEGIE
 
-  static String stripeLiveKey =
-      'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
+  static String stripeTestKey = "pk_test_51Ov55sRxZq4zmuaG9zp35ejVDONTsacEXYDDbGQ2gjo97XDMKnhsRivkXBEBiMMAaeRADwrIrqrtPWMgZbFYlO0C00xBfhtT6Z";
+
+  static String stripeLiveKey = 'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
 
   static String whatsappChannelUrl = 'https://www.whatsapp.com/bitnet.ai/';
 

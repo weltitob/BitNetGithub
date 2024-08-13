@@ -163,7 +163,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                             padding:
                                 const EdgeInsets.only(left: AppTheme.cardPadding, right: AppTheme.cardPadding, top: AppTheme.cardPadding),
                             scale: 1.0,
-                            initialIndex: controller.selectedCard.value == 'onchain' ? 0 : 1,
+                            initialIndex:
+                                controller.selectedCard.value == 'onchain'
+                                    ? 1
+                                    : 0,
                             cardsCount: cards.length,
                             onSwipe: (int index, int? previousIndex, CardSwiperDirection direction) {
                               controller.setSelectedCard(controller.selectedCard.value == 'onchain' ? 'lightning' : 'onchain');

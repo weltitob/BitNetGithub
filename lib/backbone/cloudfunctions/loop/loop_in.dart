@@ -5,12 +5,15 @@ import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 
 Future<RestResponse> loopin(Map<String, dynamic> data) async {
   String restHost = AppTheme.baseUrlLightningTerminal;
   String url = 'https://$restHost/v1/loop/in';
+
+  final logger = Get.find<LoggerService>();
 
   ByteData byteData = await loadLoopMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();
@@ -22,11 +25,17 @@ Future<RestResponse> loopin(Map<String, dynamic> data) async {
 
   HttpOverrides.global = MyHttpOverrides();
 
+  logger.i("Amount: ${data['amt']}");
+  logger.i("Swap Fee: ${data['swapFee']}");
+  logger.i("Miner Fee: ${data['minerFee']}");
+
   data = {
     'amt': data['amt'],
     'max_swap_fee': data['swapFee'],
     'max_miner_fee': data['minerFee'],
   };
+
+
   try {
       final DioClient dioClient = Get.find<DioClient>();
 

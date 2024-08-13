@@ -29,6 +29,7 @@ import 'package:bitnet/components/post/components/textbuilder.dart';
 import 'package:bitnet/components/post/post_header.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/models/tapd/minassetresponse.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
@@ -277,6 +278,8 @@ class _CreateAssetState extends State<CreateAsset> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ProfileController>();
+
     return PopScope(
       canPop: true,
       onPopInvoked: (bool) {
@@ -303,8 +306,10 @@ class _CreateAssetState extends State<CreateAsset> {
                           vertical: AppTheme.elementSpacing),
                       child: Column(children: [
                         PostHeader(
-                          ownerId: '@yourself',
-                          postId: 'nopostid',
+                          displayName: '${controller.userData.value.displayName}',
+                          username: '${controller.userData.value.username}',
+                          ownerId: '${controller.userData.value.did}',
+                          postId: '${controller.userData.value.displayName}',
                         ),
                         TextField(
                           controller: nameController,

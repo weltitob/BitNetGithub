@@ -58,11 +58,7 @@ class ReportView extends StatelessWidget {
                       height: AppTheme.elementSpacing,
                     ),
 
-                    //issues: Incident, Bug, fraud, help, other
-                    Container(
-                      height: AppTheme.cardPadding * 5,
-                      color: Colors.green,
-                    ),
+                    //issue selection: Incident, Bug, fraud, help, other
                     //idea
                     Stack(
                       children: [

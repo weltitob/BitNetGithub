@@ -25,6 +25,7 @@ class Post extends StatefulWidget {
   final String ownerId;
   final String postName;
   final String username;
+  final String displayname;
   final dynamic rockets;
   final List<Media> medias;
   final DateTime timestamp;
@@ -37,6 +38,7 @@ class Post extends StatefulWidget {
     required this.medias,
     required this.timestamp,
     required this.postName,
+    required this.displayname,
   });
 
   factory Post.fromDocument(DocumentSnapshot doc) {
@@ -45,6 +47,7 @@ class Post extends StatefulWidget {
       postId: doc["postId"],
       ownerId: doc['ownerId'],
       username: doc['username'],
+      displayname: doc['displayname'],
       rockets: doc['rockets'],
       medias: List<Media>.from(doc['medias']?.map((x) => Media.fromMap(x))),
       timestamp: DateTime.fromMillisecondsSinceEpoch(
@@ -56,6 +59,7 @@ class Post extends StatefulWidget {
   Map<String, dynamic> toMap() {
     return {
       'postName': postName,
+      'displayname': displayname,
       'postId': postId,
       'ownerId': ownerId,
       'username': username,
@@ -87,6 +91,7 @@ class Post extends StatefulWidget {
     ownerId: this.ownerId,
     username: this.username,
     rockets: this.rockets,
+    displayname: this.displayname,
     rocketcount: getRocketCount(),
     medias: this.medias,
     timestamp: this.timestamp,
@@ -98,6 +103,7 @@ class _PostState extends State<Post> {
   final String postId;
   final String ownerId;
   final String username;
+  final String displayname;
   final DateTime timestamp;
   final String postName;
   int rocketcount;
@@ -108,6 +114,7 @@ class _PostState extends State<Post> {
   late bool isLiked;
 
   _PostState({
+    required this.displayname,
     required this.postId,
     required this.postName,
     required this.ownerId,
@@ -141,6 +148,8 @@ class _PostState extends State<Post> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 PostHeader(
+                  username: username,
+                  displayName: displayname,
                   ownerId: ownerId,
                   postId: postId,
                 ),
