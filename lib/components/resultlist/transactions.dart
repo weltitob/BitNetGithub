@@ -32,7 +32,8 @@ class Transactions extends StatefulWidget {
   final bool hideOnchain;
   final bool hideLightning;
   final List<String>? filters;
-  Transactions({Key? key, this.fullList = false, this.hideOnchain = false, this.hideLightning = false, this.filters}) : super(key: key);
+  final List<TransactionItem>? customTransactions;
+  Transactions({Key? key, this.fullList = false, this.hideOnchain = false, this.hideLightning = false, this.filters, this.customTransactions}) : super(key: key);
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -157,7 +158,10 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
 
     logger.i("Initializing transactions");
     super.initState();
-
+    if(widget.customTransactions != null) {
+      transactionsLoaded = true;
+      heavyFiltering();
+      return;};
     if (walletController.futuresCompleted >= 4) {
       loadTransactions();
     } else {
@@ -174,7 +178,7 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     super.didChangeDependencies();
     if (!firstInit) {
       firstInit = true;
-      if (walletController.allTransactions.isNotEmpty) {
+      if (walletController.allTransactions.isNotEmpty && widget.customTransactions == null) {
         Future.microtask(() {
           List<TransactionItem> transactions =
               walletController.allTransactions.map((item) => TransactionItem(data: item, context: context)).toList();
@@ -272,24 +276,53 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     }
   }
 
+  // List<TransactionItem> filterItems(List<TransactionItem> combinedTransactions) {
+  //   List<TransactionItem> finalList = List.empty(growable: true);
+  //   for (int index = 0; index < combinedTransactions.length; index++) {
+  //     if (combinedTransactions[index].data.timestamp >= controller.start && combinedTransactions[index].data.timestamp <= controller.end) {
+  //       if (controller.selectedFilters.contains('Sent') && controller.selectedFilters.contains('Received')) {
+  //         finalList.add(combinedTransactions[index]);
+  //       }
+  //       if (controller.selectedFilters.contains('Sent') && combinedTransactions[index].data.amount.contains('-')) {
+  //         finalList.add(combinedTransactions[index]);
+  //       }
+  //       if (controller.selectedFilters.contains('Received') && combinedTransactions[index].data.amount.contains('+')) {
+  //         finalList.add(combinedTransactions[index]);
+  //       }
+  //       if (combinedTransactions[index].data.receiver.contains(widget.specificSearch ?? searchCtrl.text.toLowerCase())) {
+  //         finalList.add(combinedTransactions[index]);
+  //       }
+  //     }
+  //     finalList.add(combinedTransactions[index]);
+  //   }
+  //   return finalList;
+  // }
+
   List<TransactionItem> filterItems(List<TransactionItem> combinedTransactions) {
     List<TransactionItem> finalList = List.empty(growable: true);
     for (int index = 0; index < combinedTransactions.length; index++) {
-      if (combinedTransactions[index].data.timestamp >= controller.start && combinedTransactions[index].data.timestamp <= controller.end) {
-        if (controller.selectedFilters.contains('Sent') && controller.selectedFilters.contains('Received')) {
+      if (combinedTransactions[index].data.timestamp >= controller.start && combinedTransactions[index].data.timestamp <= controller.end
+     ) {
+        if (combinedTransactions[index].data.receiver.contains(searchCtrl.text.toLowerCase())) {
+ if (controller.selectedFilters.contains('Sent') && controller.selectedFilters.contains('Received')) {
           finalList.add(combinedTransactions[index]);
-        }
+        } else
         if (controller.selectedFilters.contains('Sent') && combinedTransactions[index].data.amount.contains('-')) {
           finalList.add(combinedTransactions[index]);
-        }
+        } else
         if (controller.selectedFilters.contains('Received') && combinedTransactions[index].data.amount.contains('+')) {
           finalList.add(combinedTransactions[index]);
-        }
-        if (combinedTransactions[index].data.receiver.contains(searchCtrl.text.toLowerCase())) {
+        } else if(!controller.selectedFilters.contains('Sent') && !controller.selectedFilters.contains('Sent')){
           finalList.add(combinedTransactions[index]);
+        } else {
+          print('was not added');
         }
+        }
+       
+      
+      } else {
+        print('was not added');
       }
-      finalList.add(combinedTransactions[index]);
     }
     return finalList;
   }
@@ -300,7 +333,11 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
 
   void heavyFiltering({bool sticky = false}) {
     Future.microtask(() {
-      var combinedTransactions = controller.selectedFilters.contains('Lightning')
+      late List<TransactionItem> combinedTransactions;
+      if(widget.customTransactions != null) {
+        combinedTransactions = widget.customTransactions!;
+      } else {
+combinedTransactions = controller.selectedFilters.contains('Lightning')
           ? [
               ...lightningInvoices.map(
                 (transaction) => TransactionItem(
@@ -447,6 +484,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                             ),
                           ))
                     ].toList();
+      }
+       
 
 //Remove dublicates from the combined List.
       Set<String> seenIds = {};
@@ -497,6 +536,7 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                       ),
                       child: SearchFieldWidget(
                         hintText: 'Search',
+                        isSearchEnabled:true,
                         handleSearch: (v) {
                           setState(() {
                             searchCtrl.text = v;
@@ -522,7 +562,6 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                             setState(() {});
                           },
                         ),
-                        isSearchEnabled: true,
                       ),
                     );
                   } else {

@@ -31,14 +31,15 @@ class CurrencyConverter {
   }
 
   static BitcoinUnitModel convertToBitcoinUnit(double amount, BitcoinUnits unit) {
+    double absAmount = amount.abs();
     //100k sats is the conversion to BTC
-    if(unit == BitcoinUnits.SAT && amount > 100000) {
+    if(unit == BitcoinUnits.SAT && absAmount > 100000) {
       return BitcoinUnitModel(
           amount: convertSatoshiToBTC(amount),
           bitcoinUnit: BitcoinUnits.BTC
       );
       //under 100k sats convert to sats
-    } else if (unit == BitcoinUnits.BTC && amount < 0.001) {
+    } else if (unit == BitcoinUnits.BTC && absAmount < 0.001) {
       return BitcoinUnitModel(
           amount: convertBitcoinToSats(amount).toInt(),
           bitcoinUnit: BitcoinUnits.SAT

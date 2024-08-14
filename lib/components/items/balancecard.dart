@@ -69,15 +69,18 @@ class BottomRightGradient extends StatelessWidget {
   }
 }
 
-class BalanceCardLightning extends GetWidget<WalletsController> {
+class BalanceCardLightning extends StatelessWidget {
   const BalanceCardLightning({
     super.key,
+    this.balance, this.textColor
   });
-
+  final String? balance;
+  final Color? textColor;
   @override
   Widget build(BuildContext context) {
+    WalletsController controller = Get.find<WalletsController>();
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
-        double.parse(controller.lightningBalance.balance), BitcoinUnits.SAT);
+        double.parse(balance ?? controller.lightningBalance.balance), BitcoinUnits.SAT);
     final balanceStr = unitModel.amount.toString();
 
     return Container(
@@ -88,13 +91,15 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
         children: [
           const CardBackgroundLightning(),
           BalanceTextWidget(
-            balanceStr: balanceStr,
-            iconData: FontAwesomeIcons.wallet,
-            balanceSAT: controller.lightningBalance.balance,
-            walletAddress: "safdadasdas",
-            cardname: 'Lightning Balance',
-            iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
-          ),
+              balanceStr: balanceStr,
+              textColor: textColor,
+              iconData: FontAwesomeIcons.wallet,
+              balanceSAT: balance ?? controller.lightningBalance.balance,
+              walletAddress: "safdadasdas",
+              cardname: 'Lightning Balance',
+              iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+            ),
+        
           PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
 
           //unten rechts ein unlock button ==> you need to buy bitcoin in the app to unlock this card ==> bitnetbototmsheet
@@ -160,17 +165,20 @@ class BalanceCardLightning extends GetWidget<WalletsController> {
   }
 }
 
-class BalanceCardBtc extends GetWidget<WalletsController> {
+class BalanceCardBtc extends StatelessWidget {
   final String? balance;
-  BalanceCardBtc({Key? key, this.balance}) : super(key: key);
+  final Color? textColor;
+  final BitcoinUnits? defaultUnit;
+  BalanceCardBtc({Key? key, this.balance, this.textColor, this.defaultUnit}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<WalletsController>();
     final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
         double.parse(balance == null
             ? controller.onchainBalance.confirmedBalance
             : balance ?? '0'),
-        balance == null ? BitcoinUnits.SAT : BitcoinUnits.BTC);
+        defaultUnit ?? (balance == null ? BitcoinUnits.SAT : BitcoinUnits.BTC));
     final balanceStr = unitModel.amount.toString();
 
     return Container(
@@ -183,8 +191,9 @@ class BalanceCardBtc extends GetWidget<WalletsController> {
           BalanceTextWidget(
             balanceStr: balanceStr,
             iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+            textColor: textColor,
             iconData: FontAwesomeIcons.piggyBank,
-            balanceSAT: controller.onchainBalance.confirmedBalance,
+            balanceSAT: balance ?? controller.onchainBalance.confirmedBalance,
             walletAddress: "safdadasdas",
             cardname: 'On-Chain Balance',
           ),
@@ -420,7 +429,7 @@ class PaymentNetworkPicture extends StatelessWidget {
         width: AppTheme.cardPadding * 2,
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusCircular,
-          color: Theme.of(context).colorScheme.background.withOpacity(0.25),
+          color: Theme.of(context).colorScheme.surface.withOpacity(0.25),
         ),
         child: Image.asset(
           imageUrl,
@@ -501,14 +510,14 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
   }
 }
 
-class BalanceTextWidget extends GetWidget<WalletsController> {
+class BalanceTextWidget extends StatelessWidget {
   final String balanceSAT;
   final String balanceStr;
   final String cardname;
   final String walletAddress;
   final IconData iconData;
   final IconData iconDataUnit;
-
+  final Color? textColor;
   const BalanceTextWidget({
     Key? key,
     required this.balanceSAT,
@@ -516,12 +525,13 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
     required this.walletAddress,
     required this.iconData,
     required this.iconDataUnit,
-    required this.cardname,
+    required this.cardname, this.textColor,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final chartLine = Get.find<WalletsController>().chartLines.value;
+    final controller = Get.find<WalletsController>();
     String? currency =
         Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
@@ -570,13 +580,14 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
                               Text(
                                 balanceStr,
                                 style:
-                                    Theme.of(context).textTheme.headlineLarge,
+                                    Theme.of(context).textTheme.headlineLarge!.copyWith(color: textColor),
                               ),
                               // const SizedBox(
                               //   width: AppTheme.elementSpacing / 2, // Replace with your AppTheme.elementSpacing if needed
                               // ),
                               Icon(
                                 iconDataUnit,
+                                color: textColor,
                               ),
                             ],
                           ),
@@ -597,7 +608,7 @@ class BalanceTextWidget extends GetWidget<WalletsController> {
                           child: Text(
                             "$currencyEquivalent${getCurrency(currency!)}",
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.headlineLarge,
+                            style: Theme.of(context).textTheme.headlineLarge!.copyWith(color: textColor),
                           ),
                         ),
                       ),

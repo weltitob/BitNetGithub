@@ -55,6 +55,10 @@ class WalletsController extends BaseController {
     pendingOpenRemoteBalance: '',
   );
 
+  RxString predictedLightningBalance = '0'.obs;
+  RxString predictedBtcBalance = '0'.obs;
+
+
   RxBool visible = false.obs;
 
   StreamSubscription<List<ReceivedInvoice>>? invoicesSubscription;

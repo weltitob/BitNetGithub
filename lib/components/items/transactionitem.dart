@@ -138,6 +138,7 @@ class _TransactionItemState extends State<TransactionItem> {
                     txID: widget.data.txHash.toString(),
                   ),
                 );
+                if(!widget.data.txHash.isEmpty) {
                 controllerTransaction.txID = widget.data.txHash.toString();
                 controllerTransaction.getSingleTransaction(
                   controllerTransaction.txID!,
@@ -149,6 +150,7 @@ class _TransactionItemState extends State<TransactionItem> {
                     builder: (context) => SingleTransactionScreen(),
                   ),
                 );
+              }
               }
               isTapped = false;
               setState(() {});
