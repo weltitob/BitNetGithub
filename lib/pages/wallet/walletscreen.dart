@@ -246,39 +246,39 @@ class WalletScreen extends GetWidget<WalletsController> {
           ),
 
           // Section 3: Long Buttons
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "LOGIN: PLEASE DONT PRESS",
-                    onTap: () async {
-                      final result = await startEcsTask('inapp_user_dev_tags');
-                    },
-                  ),
-                ),
-                SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "REGISTER: PLEASE DONT PRESS",
-                    onTap: () async {
-                      final result = await registerLitEcs('inapp_user_dev_tags');
-                    },
-                  ),
-                ),
-                SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "STOP ECS TASK",
-                    onTap: () async {
-                      final result = await stopUserTask('inapp_user_dev_tags');
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // SliverToBoxAdapter(
+          //   child: Column(
+          //     children: [
+          //       SizedBox(height: AppTheme.cardPadding),
+          //       Center(
+          //         child: LongButtonWidget(
+          //           title: "LOGIN: PLEASE DONT PRESS",
+          //           onTap: () async {
+          //             final result = await startEcsTask('inapp_user_dev_tags');
+          //           },
+          //         ),
+          //       ),
+          //       SizedBox(height: AppTheme.cardPadding),
+          //       Center(
+          //         child: LongButtonWidget(
+          //           title: "REGISTER: PLEASE DONT PRESS",
+          //           onTap: () async {
+          //             final result = await registerLitEcs('inapp_user_dev_tags');
+          //           },
+          //         ),
+          //       ),
+          //       SizedBox(height: AppTheme.cardPadding),
+          //       Center(
+          //         child: LongButtonWidget(
+          //           title: "STOP ECS TASK",
+          //           onTap: () async {
+          //             final result = await stopUserTask('inapp_user_dev_tags');
+          //           },
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
           // Section 4: Buy/Sell Text and Item
           SliverToBoxAdapter(

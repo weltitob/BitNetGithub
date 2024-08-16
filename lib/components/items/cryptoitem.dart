@@ -107,7 +107,7 @@ class _CryptoItemState extends State<CryptoItem> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing * 0.75),
+                    horizontal: AppTheme.elementSpacing),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

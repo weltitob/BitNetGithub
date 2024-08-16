@@ -34,13 +34,22 @@ class Transactions extends StatefulWidget {
   final List<String>? filters;
   final List<TransactionItem>? customTransactions;
   final ScrollController scrollController;
-  Transactions({Key? key, this.fullList = false, this.hideOnchain = false, this.hideLightning = false, this.filters, this.customTransactions, required this.scrollController}) : super(key: key);
+  Transactions(
+      {Key? key,
+      this.fullList = false,
+      this.hideOnchain = false,
+      this.hideLightning = false,
+      this.filters,
+      this.customTransactions,
+      required this.scrollController})
+      : super(key: key);
 
   @override
   State<Transactions> createState() => _TransactionsState();
 }
 
-class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClientMixin {
+class _TransactionsState extends State<Transactions>
+    with AutomaticKeepAliveClientMixin {
   late final WalletFilterController controller;
   final walletController = Get.find<WalletsController>();
   bool transactionsLoaded = false;
@@ -60,11 +69,13 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       logger.i("Getting onchain transactions");
       Map<String, dynamic> data = walletController.onchainTransactions;
       onchainTransactions = await Future.microtask(() {
-        BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(data);
+        BitcoinTransactionsList bitcoinTransactions =
+            BitcoinTransactionsList.fromJson(data);
 
         return bitcoinTransactions.transactions;
       });
-      List<Map<String, dynamic>> mapList = List<Map<String, dynamic>>.from(data['transactions'] as List);
+      List<Map<String, dynamic>> mapList =
+          List<Map<String, dynamic>>.from(data['transactions'] as List);
       sendPaymentDataReceivedOnchainBatch(mapList);
     } on Error catch (_) {
       return false;
@@ -81,7 +92,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
 
       Map<String, dynamic> data = walletController.loopOperations;
       this.loopOperations = SwapList.fromJson(data).swaps;
-      logger.i('This is the lenght og the loop operation list lenght ${loopOperations.length}=======}');
+      logger.i(
+          'This is the lenght og the loop operation list lenght ${loopOperations.length}=======}');
 
       // compute((d) {
       //   SwapList swapList = SwapList.fromJson(d);
@@ -92,7 +104,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       //   logger.i('This is the lenght og the loop operation list lenght ${d.swaps.length}=======}');
       // });
     } on Error catch (_, s) {
-      logger.i('=========This is the error coming from the swap response method ${_} and this is the stacktrace ${s}');
+      logger.i(
+          '=========This is the error coming from the swap response method ${_} and this is the stacktrace ${s}');
       return false;
     } catch (e) {
       return false;
@@ -108,7 +121,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
       Map<String, dynamic> data = walletController.lightningPayments;
       this.lightningPayments = await compute(
         (d) {
-          LightningPaymentsList lightningPayments = LightningPaymentsList.fromJson(d);
+          LightningPaymentsList lightningPayments =
+              LightningPaymentsList.fromJson(d);
           return lightningPayments.payments;
         },
         data,
@@ -128,12 +142,16 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     try {
       Map<String, dynamic> data = walletController.lightningInvoices;
       this.lightningInvoices = await compute((d) {
-        ReceivedInvoicesList lightningInvoices = ReceivedInvoicesList.fromJson(d);
-        List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices.where((invoice) => invoice.settled).toList();
+        ReceivedInvoicesList lightningInvoices =
+            ReceivedInvoicesList.fromJson(d);
+        List<ReceivedInvoice> settledInvoices = lightningInvoices.invoices
+            .where((invoice) => invoice.settled)
+            .toList();
 
         return settledInvoices;
       }, data);
-      List<Map<String, dynamic>> mapList = List<Map<String, dynamic>>.from(data['invoices'] as List);
+      List<Map<String, dynamic>> mapList =
+          List<Map<String, dynamic>>.from(data['invoices'] as List);
       sendPaymentDataReceivedInvoiceBatch(mapList);
     } on Error catch (_) {
       return false;
@@ -161,10 +179,12 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     logger.i("Initializing transactions");
     super.initState();
     widget.scrollController.addListener(_onScroll);
-      if(widget.customTransactions != null) {
+    if (widget.customTransactions != null) {
       transactionsLoaded = true;
       heavyFiltering();
-      return;};
+      return;
+    }
+    ;
     if (walletController.futuresCompleted >= 4) {
       loadTransactions();
     } else {
@@ -181,10 +201,12 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     super.didChangeDependencies();
     if (!firstInit) {
       firstInit = true;
-      if (walletController.allTransactions.isNotEmpty && widget.customTransactions == null) {
+      if (walletController.allTransactions.isNotEmpty &&
+          widget.customTransactions == null) {
         Future.microtask(() {
-          List<TransactionItem> transactions =
-              walletController.allTransactions.map((item) => TransactionItem(data: item, context: context)).toList();
+          List<TransactionItem> transactions = walletController.allTransactions
+              .map((item) => TransactionItem(data: item, context: context))
+              .toList();
           orderedTransactions = arrangeTransactions(transactions);
           transactionsLoaded = true;
           transactionsOrdered = true;
@@ -271,11 +293,13 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     });
   }
 
-  void handlePageLoadErrors(int errorCount, String errorMessage, BuildContext context) {
+  void handlePageLoadErrors(
+      int errorCount, String errorMessage, BuildContext context) {
     if (errorCount == 1) {
       showOverlay(context, errorMessage, color: AppTheme.errorColor);
     } else if (errorCount > 1) {
-      showOverlay(context, L10n.of(context)!.failedToLoadCertainData, color: AppTheme.errorColor);
+      showOverlay(context, L10n.of(context)!.failedToLoadCertainData,
+          color: AppTheme.errorColor);
     }
   }
 
@@ -301,28 +325,32 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
   //   return finalList;
   // }
 
-  List<TransactionItem> filterItems(List<TransactionItem> combinedTransactions) {
+  List<TransactionItem> filterItems(
+      List<TransactionItem> combinedTransactions) {
     List<TransactionItem> finalList = List.empty(growable: true);
     for (int index = 0; index < combinedTransactions.length; index++) {
-      if (combinedTransactions[index].data.timestamp >= controller.start && combinedTransactions[index].data.timestamp <= controller.end
-     ) {
-        if (combinedTransactions[index].data.receiver.contains(searchCtrl.text.toLowerCase())) {
- if (controller.selectedFilters.contains('Sent') && controller.selectedFilters.contains('Received')) {
-          finalList.add(combinedTransactions[index]);
-        } else
-        if (controller.selectedFilters.contains('Sent') && combinedTransactions[index].data.amount.contains('-')) {
-          finalList.add(combinedTransactions[index]);
-        } else
-        if (controller.selectedFilters.contains('Received') && combinedTransactions[index].data.amount.contains('+')) {
-          finalList.add(combinedTransactions[index]);
-        } else if(!controller.selectedFilters.contains('Sent') && !controller.selectedFilters.contains('Sent')){
-          finalList.add(combinedTransactions[index]);
-        } else {
-          print('was not added');
+      if (combinedTransactions[index].data.timestamp >= controller.start &&
+          combinedTransactions[index].data.timestamp <= controller.end) {
+        if (combinedTransactions[index]
+            .data
+            .receiver
+            .contains(searchCtrl.text.toLowerCase())) {
+          if (controller.selectedFilters.contains('Sent') &&
+              controller.selectedFilters.contains('Received')) {
+            finalList.add(combinedTransactions[index]);
+          } else if (controller.selectedFilters.contains('Sent') &&
+              combinedTransactions[index].data.amount.contains('-')) {
+            finalList.add(combinedTransactions[index]);
+          } else if (controller.selectedFilters.contains('Received') &&
+              combinedTransactions[index].data.amount.contains('+')) {
+            finalList.add(combinedTransactions[index]);
+          } else if (!controller.selectedFilters.contains('Sent') &&
+              !controller.selectedFilters.contains('Sent')) {
+            finalList.add(combinedTransactions[index]);
+          } else {
+            print('was not added');
+          }
         }
-        }
-       
-      
       } else {
         print('was not added');
       }
@@ -337,158 +365,191 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
   void heavyFiltering({bool sticky = false}) {
     Future.microtask(() {
       late List<TransactionItem> combinedTransactions;
-      if(widget.customTransactions != null) {
+      if (widget.customTransactions != null) {
         combinedTransactions = widget.customTransactions!;
       } else {
-combinedTransactions = controller.selectedFilters.contains('Lightning')
-          ? [
-              ...lightningInvoices.map(
-                (transaction) => TransactionItem(
-                  context: context,
-                  data: TransactionItemData(
-                    timestamp: transaction.settleDate,
-                    type: TransactionType.lightning,
-                    direction: TransactionDirection.received,
-                    receiver: transaction.paymentRequest.toString(),
-                    txHash: transaction.value.toString(),
-                    amount: "+" + transaction.amtPaid.toString(),
-                    fee: 0,
-                    status: transaction.settled ? TransactionStatus.confirmed : TransactionStatus.failed,
-                  ),
-                ),
-              ),
-              ...lightningPayments.map(
-                (transaction) => TransactionItem(
-                  context: context,
-                  data: TransactionItemData(
-                    timestamp: transaction.creationDate,
-                    type: TransactionType.lightning,
-                    direction: TransactionDirection.sent,
-                    receiver: transaction.paymentHash.toString(),
-                    txHash: transaction.paymentHash.toString(),
-                    amount: "-" + transaction.valueSat.toString(),
-                    fee: transaction.fee,
-                    status: transaction.status == "SUCCEEDED"
-                        ? TransactionStatus.confirmed
-                        : transaction.status == "FAILED"
-                            ? TransactionStatus.failed
-                            : TransactionStatus.pending,
-                  ),
-                ),
-              ),
-            ].toList()
-          : controller.selectedFilters.contains('Onchain')
-              ? [
-                  ...onchainTransactions.map(
-                    (transaction) => TransactionItem(
-                      context: context,
-                      data: TransactionItemData(
-                        timestamp: transaction.timeStamp,
-                        status: transaction.numConfirmations > 0 ? TransactionStatus.confirmed : TransactionStatus.pending,
-                        type: TransactionType.onChain,
-                        direction: transaction.amount!.contains("-") ? TransactionDirection.sent : TransactionDirection.received,
-                        receiver: transaction.amount!.contains("-")
-                            ? transaction.destAddresses.last.toString()
-                            : transaction.destAddresses.first.toString(),
-                        txHash: transaction.txHash.toString(),
-                        fee: 0,
-                        amount: transaction.amount!.contains("-") ? transaction.amount.toString() : "+" + transaction.amount.toString(),
-                      ),
+        combinedTransactions = controller.selectedFilters.contains('Lightning')
+            ? [
+                ...lightningInvoices.map(
+                  (transaction) => TransactionItem(
+                    context: context,
+                    data: TransactionItemData(
+                      timestamp: transaction.settleDate,
+                      type: TransactionType.lightning,
+                      direction: TransactionDirection.received,
+                      receiver: transaction.paymentRequest.toString(),
+                      txHash: transaction.value.toString(),
+                      amount: "+" + transaction.amtPaid.toString(),
+                      fee: 0,
+                      status: transaction.settled
+                          ? TransactionStatus.confirmed
+                          : TransactionStatus.failed,
                     ),
                   ),
-                ].toList()
-              : controller.selectedFilters.contains('Loop')
-                  ? [
-                      ...loopOperations.map((swap) => TransactionItem(
+                ),
+                ...lightningPayments.map(
+                  (transaction) => TransactionItem(
+                    context: context,
+                    data: TransactionItemData(
+                      timestamp: transaction.creationDate,
+                      type: TransactionType.lightning,
+                      direction: TransactionDirection.sent,
+                      receiver: transaction.paymentHash.toString(),
+                      txHash: transaction.paymentHash.toString(),
+                      amount: "-" + transaction.valueSat.toString(),
+                      fee: transaction.fee,
+                      status: transaction.status == "SUCCEEDED"
+                          ? TransactionStatus.confirmed
+                          : transaction.status == "FAILED"
+                              ? TransactionStatus.failed
+                              : TransactionStatus.pending,
+                    ),
+                  ),
+                ),
+              ].toList()
+            : controller.selectedFilters.contains('Onchain')
+                ? [
+                    ...onchainTransactions.map(
+                      (transaction) => TransactionItem(
+                        context: context,
+                        data: TransactionItemData(
+                          timestamp: transaction.timeStamp,
+                          status: transaction.numConfirmations > 0
+                              ? TransactionStatus.confirmed
+                              : TransactionStatus.pending,
+                          type: TransactionType.onChain,
+                          direction: transaction.amount!.contains("-")
+                              ? TransactionDirection.sent
+                              : TransactionDirection.received,
+                          receiver: transaction.amount!.contains("-")
+                              ? transaction.destAddresses.last.toString()
+                              : transaction.destAddresses.first.toString(),
+                          txHash: transaction.txHash.toString(),
+                          fee: 0,
+                          amount: transaction.amount!.contains("-")
+                              ? transaction.amount.toString()
+                              : "+" + transaction.amount.toString(),
+                        ),
+                      ),
+                    ),
+                  ].toList()
+                : controller.selectedFilters.contains('Loop')
+                    ? [
+                        ...loopOperations.map((swap) => TransactionItem(
+                              context: context,
+                              data: TransactionItemData(
+                                timestamp:
+                                    DateTime.now().millisecondsSinceEpoch ~/
+                                        1000,
+                                status: swap.state == "SUCCEEDED"
+                                    ? TransactionStatus.confirmed
+                                    : swap.state == "FAILED"
+                                        ? TransactionStatus.failed
+                                        : TransactionStatus.pending,
+                                type: swap.type == "LOOP_OUT"
+                                    ? TransactionType.loopOut
+                                    : TransactionType.loopIn,
+                                direction: swap.type == "LOOP_OUT"
+                                    ? TransactionDirection.sent
+                                    : TransactionDirection.received,
+                                receiver: swap.htlcAddressP2tr
+                                    .toString(), // Use htlc_address_p2tr as receiver
+                                txHash: swap.htlcAddress
+                                    .toString(), // Use htlc_address as txHash
+                                fee: int.parse(swap
+                                    .costServer), // Assuming cost_server is the fee
+                                amount: swap.amt.toString(),
+                              ),
+                            ))
+                      ].toList()
+                    : [
+                        ...lightningInvoices.map(
+                          (transaction) => TransactionItem(
                             context: context,
                             data: TransactionItemData(
-                              timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-                              status: swap.state == "SUCCEEDED"
+                              timestamp: transaction.settleDate,
+                              type: TransactionType.lightning,
+                              direction: TransactionDirection.received,
+                              receiver: transaction.paymentRequest.toString(),
+                              txHash: transaction.value.toString(),
+                              amount: "+" + transaction.amtPaid.toString(),
+                              fee: 0,
+                              status: transaction.settled
                                   ? TransactionStatus.confirmed
-                                  : swap.state == "FAILED"
-                                      ? TransactionStatus.failed
-                                      : TransactionStatus.pending,
-                              type: swap.type == "LOOP_OUT" ? TransactionType.loopOut : TransactionType.loopIn,
-                              direction: swap.type == "LOOP_OUT" ? TransactionDirection.sent : TransactionDirection.received,
-                              receiver: swap.htlcAddressP2tr.toString(), // Use htlc_address_p2tr as receiver
-                              txHash: swap.htlcAddress.toString(), // Use htlc_address as txHash
-                              fee: int.parse(swap.costServer), // Assuming cost_server is the fee
-                              amount: swap.amt.toString(),
+                                  : TransactionStatus.failed,
                             ),
-                          ))
-                    ].toList()
-                  : [
-                      ...lightningInvoices.map(
-                        (transaction) => TransactionItem(
-                          context: context,
-                          data: TransactionItemData(
-                            timestamp: transaction.settleDate,
-                            type: TransactionType.lightning,
-                            direction: TransactionDirection.received,
-                            receiver: transaction.paymentRequest.toString(),
-                            txHash: transaction.value.toString(),
-                            amount: "+" + transaction.amtPaid.toString(),
-                            fee: 0,
-                            status: transaction.settled ? TransactionStatus.confirmed : TransactionStatus.failed,
                           ),
                         ),
-                      ),
-                      ...lightningPayments.map(
-                        (transaction) => TransactionItem(
-                          context: context,
-                          data: TransactionItemData(
-                            timestamp: transaction.creationDate,
-                            type: TransactionType.lightning,
-                            direction: TransactionDirection.sent,
-                            receiver: transaction.paymentHash.toString(),
-                            txHash: transaction.paymentHash.toString(),
-                            amount: "-" + transaction.valueSat.toString(),
-                            fee: transaction.fee,
-                            status: transaction.status == "SUCCEEDED"
-                                ? TransactionStatus.confirmed
-                                : transaction.status == "FAILED"
-                                    ? TransactionStatus.failed
-                                    : TransactionStatus.pending,
-                          ),
-                        ),
-                      ),
-                      ...onchainTransactions.map(
-                        (transaction) => TransactionItem(
-                          context: context,
-                          data: TransactionItemData(
-                            timestamp: transaction.timeStamp,
-                            status: transaction.numConfirmations > 0 ? TransactionStatus.confirmed : TransactionStatus.pending,
-                            type: TransactionType.onChain,
-                            direction: transaction.amount!.contains("-") ? TransactionDirection.sent : TransactionDirection.received,
-                            receiver: transaction.amount!.contains("-")
-                                ? transaction.destAddresses.last.toString()
-                                : transaction.destAddresses.first.toString(),
-                            txHash: transaction.txHash.toString(),
-                            fee: 0,
-                            amount: transaction.amount!.contains("-") ? transaction.amount.toString() : "+" + transaction.amount.toString(),
-                          ),
-                        ),
-                      ),
-                      ...loopOperations.map((swap) => TransactionItem(
+                        ...lightningPayments.map(
+                          (transaction) => TransactionItem(
                             context: context,
                             data: TransactionItemData(
-                              timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-                              status: swap.state == "SUCCEEDED"
+                              timestamp: transaction.creationDate,
+                              type: TransactionType.lightning,
+                              direction: TransactionDirection.sent,
+                              receiver: transaction.paymentHash.toString(),
+                              txHash: transaction.paymentHash.toString(),
+                              amount: "-" + transaction.valueSat.toString(),
+                              fee: transaction.fee,
+                              status: transaction.status == "SUCCEEDED"
                                   ? TransactionStatus.confirmed
-                                  : swap.state == "FAILED"
+                                  : transaction.status == "FAILED"
                                       ? TransactionStatus.failed
                                       : TransactionStatus.pending,
-                              type: swap.type == "LOOP_OUT" ? TransactionType.loopOut : TransactionType.loopIn,
-                              direction: swap.type == "LOOP_OUT" ? TransactionDirection.sent : TransactionDirection.received,
-                              receiver: swap.htlcAddressP2tr.toString(), // Use htlc_address_p2tr as receiver
-                              txHash: swap.htlcAddress.toString(), // Use htlc_address as txHash
-                              fee: int.parse(swap.costServer), // Assuming cost_server is the fee
-                              amount: swap.amt.toString(),
                             ),
-                          ))
-                    ].toList();
+                          ),
+                        ),
+                        ...onchainTransactions.map(
+                          (transaction) => TransactionItem(
+                            context: context,
+                            data: TransactionItemData(
+                              timestamp: transaction.timeStamp,
+                              status: transaction.numConfirmations > 0
+                                  ? TransactionStatus.confirmed
+                                  : TransactionStatus.pending,
+                              type: TransactionType.onChain,
+                              direction: transaction.amount!.contains("-")
+                                  ? TransactionDirection.sent
+                                  : TransactionDirection.received,
+                              receiver: transaction.amount!.contains("-")
+                                  ? transaction.destAddresses.last.toString()
+                                  : transaction.destAddresses.first.toString(),
+                              txHash: transaction.txHash.toString(),
+                              fee: 0,
+                              amount: transaction.amount!.contains("-")
+                                  ? transaction.amount.toString()
+                                  : "+" + transaction.amount.toString(),
+                            ),
+                          ),
+                        ),
+                        ...loopOperations.map((swap) => TransactionItem(
+                              context: context,
+                              data: TransactionItemData(
+                                timestamp:
+                                    DateTime.now().millisecondsSinceEpoch ~/
+                                        1000,
+                                status: swap.state == "SUCCEEDED"
+                                    ? TransactionStatus.confirmed
+                                    : swap.state == "FAILED"
+                                        ? TransactionStatus.failed
+                                        : TransactionStatus.pending,
+                                type: swap.type == "LOOP_OUT"
+                                    ? TransactionType.loopOut
+                                    : TransactionType.loopIn,
+                                direction: swap.type == "LOOP_OUT"
+                                    ? TransactionDirection.sent
+                                    : TransactionDirection.received,
+                                receiver: swap.htlcAddressP2tr
+                                    .toString(), // Use htlc_address_p2tr as receiver
+                                txHash: swap.htlcAddress
+                                    .toString(), // Use htlc_address as txHash
+                                fee: int.parse(swap
+                                    .costServer), // Assuming cost_server is the fee
+                                amount: swap.amt.toString(),
+                              ),
+                            ))
+                      ].toList();
       }
-       
 
 //Remove dublicates from the combined List.
       Set<String> seenIds = {};
@@ -513,7 +574,8 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
         walletController.allTransactions.value = data;
       }
       combinedTransactions = filterItems(combinedTransactions);
-      List<Widget> orderedTransactions = arrangeTransactions(combinedTransactions);
+      List<Widget> orderedTransactions =
+          arrangeTransactions(combinedTransactions);
 
       return orderedTransactions;
     }).then((val) {
@@ -531,57 +593,62 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
         ? widget.fullList
             ? SliverToBoxAdapter(child: Container())
             : SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (ctx, index) {
-                  if(index == 0) {
- return Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: AppTheme.elementSpacing,
-                      ),
-                      child: SearchFieldWidget(
-                        hintText: 'Search',
-                        isSearchEnabled:true,
-                        handleSearch: (v) {
-                          setState(() {
-                            searchCtrl.text = v;
-                            heavyFiltering();
-                          });
-                        },
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            FontAwesomeIcons.filter,
-                            color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black60,
-                            size: AppTheme.cardPadding * 0.75,
-                          ),
-                          onPressed: () async {
-                            await BitNetBottomSheet(
-                              context: context,
-                              child: WalletFilterScreen(
-                                hideLightning: widget.hideLightning,
-                                hideOnchain: widget.hideOnchain,
-                                forcedFilters: widget.filters,
-                              ),
-                            );
-                            heavyFiltering();
-                            setState(() {});
-                          },
+                delegate: SliverChildBuilderDelegate((ctx, index) {
+                if (index == 0) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: AppTheme.cardPadding,
+                      vertical: AppTheme.elementSpacing,
+                    ),
+                    child: SearchFieldWidget(
+                      hintText: 'Search',
+                      isSearchEnabled: true,
+                      handleSearch: (v) {
+                        setState(() {
+                          searchCtrl.text = v;
+                          heavyFiltering();
+                        });
+                      },
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          FontAwesomeIcons.filter,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.white60
+                              : AppTheme.black60,
+                          size: AppTheme.cardPadding * 0.75,
                         ),
+                        onPressed: () async {
+                          await BitNetBottomSheet(
+                            context: context,
+                            child: WalletFilterScreen(
+                              hideLightning: widget.hideLightning,
+                              hideOnchain: widget.hideOnchain,
+                              forcedFilters: widget.filters,
+                            ),
+                          );
+                          heavyFiltering();
+                          setState(() {});
+                        },
                       ),
-                    );
+                    ),
+                  );
+                } else {
+                  if (isLoadingTransactionGroups &&
+                      index == (loadedTransactionGroups - 1)) {
+                    return Center(
+                        child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: CircularProgressIndicator(),
+                    ));
                   } else {
-                    if(isLoadingTransactionGroups && index == (loadedTransactionGroups-1)) {
-                      return Center(child: Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: CircularProgressIndicator(),
-                      ));
-                    } else {
                     return orderedTransactions[index - 1];
-
-                    }
                   }
-                 
-  },
-  childCount: loadedTransactionGroups < orderedTransactions.length + 1 ? loadedTransactionGroups : orderedTransactions.length + 1)
+                }
+              },
+                    childCount:
+                        loadedTransactionGroups < orderedTransactions.length + 1
+                            ? loadedTransactionGroups
+                            : orderedTransactions.length + 1)
                 // delegate: SliverChildBuilderDelegate((ctx, index) {
                 //   if (index == 0) {
                 //     return Container(
@@ -621,23 +688,26 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
                 //   } else {
                 //     return orderedTransactions[index - 1];
                 //   }
-                // }, 
-                
-              )
+                // },
+
+                )
         : SliverToBoxAdapter(
-            child: Container(height: AppTheme.cardPadding * 10.h, child: dotProgress(context)),
+            child: Container(
+                height: AppTheme.cardPadding * 10.h,
+                child: dotProgress(context)),
           );
   }
 
-
   void _onScroll() {
-    if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent && !isLoadingTransactionGroups) {
+    if (widget.scrollController.position.pixels ==
+            widget.scrollController.position.maxScrollExtent &&
+        !isLoadingTransactionGroups) {
       _loadMoreTransactionGroups();
     }
   }
 
   void _loadMoreTransactionGroups() async {
-    if(!mounted) {
+    if (!mounted) {
       return;
     }
     setState(() {
@@ -653,13 +723,20 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
     });
   }
 
-  Future<void> sendPaymentDataReceivedOnchainBatch(List<Map<String, dynamic>> data) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef.doc(Auth().currentUser!.uid).collection('onchain').get();
-    List<Map<String, dynamic>> allData = snapshot.docs.map((doc) => doc.data()).toList();
+  Future<void> sendPaymentDataReceivedOnchainBatch(
+      List<Map<String, dynamic>> data) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef
+        .doc(Auth().currentUser!.uid)
+        .collection('onchain')
+        .get();
+    List<Map<String, dynamic>> allData =
+        snapshot.docs.map((doc) => doc.data()).toList();
     compute((data) {
-      BitcoinTransactionsList btcFinalList = BitcoinTransactionsList.fromList(allData);
+      BitcoinTransactionsList btcFinalList =
+          BitcoinTransactionsList.fromList(allData);
       List<BitcoinTransaction> transactions = btcFinalList.transactions;
-      List<BitcoinTransaction> newTransactions = BitcoinTransactionsList.fromList(data).transactions;
+      List<BitcoinTransaction> newTransactions =
+          BitcoinTransactionsList.fromList(data).transactions;
       List<String> duplicateHashes = List.empty(growable: true);
       for (int i = 0; i < newTransactions.length; i++) {
         BitcoinTransaction item1 = newTransactions[i];
@@ -668,30 +745,45 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
         }
         for (int j = 0; j < transactions.length; j++) {
           BitcoinTransaction item2 = transactions[j];
-          if ((item1.txHash == item2.txHash && item1.txHash != null && item2.txHash != null)) {
+          if ((item1.txHash == item2.txHash &&
+              item1.txHash != null &&
+              item2.txHash != null)) {
             duplicateHashes.add(item1.txHash!);
           }
         }
       }
-      newTransactions.removeWhere((test) => test.txHash != null && duplicateHashes.contains(test.txHash!));
+      newTransactions.removeWhere((test) =>
+          test.txHash != null && duplicateHashes.contains(test.txHash!));
       return newTransactions;
     }, allData)
         .then((data) {
       WriteBatch batch = FirebaseFirestore.instance.batch();
       for (int i = 0; i < data.length; i++) {
-        batch.set(btcReceiveRef.doc(Auth().currentUser!.uid).collection('onchain').doc(), data[i].toJson());
+        batch.set(
+            btcReceiveRef
+                .doc(Auth().currentUser!.uid)
+                .collection('onchain')
+                .doc(),
+            data[i].toJson());
       }
       batch.commit();
     });
   }
 
-  Future<void> sendPaymentDataReceivedLightningBatch(List<Map<String, dynamic>> data) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnurl').get();
-    List<Map<String, dynamic>> allData = snapshot.docs.map((doc) => doc.data()).toList();
+  Future<void> sendPaymentDataReceivedLightningBatch(
+      List<Map<String, dynamic>> data) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef
+        .doc(Auth().currentUser!.uid)
+        .collection('lnurl')
+        .get();
+    List<Map<String, dynamic>> allData =
+        snapshot.docs.map((doc) => doc.data()).toList();
     compute((data) {
-      LightningPaymentsList btcFinalList = LightningPaymentsList.fromList(allData);
+      LightningPaymentsList btcFinalList =
+          LightningPaymentsList.fromList(allData);
       List<LightningPayment> transactions = btcFinalList.payments;
-      List<LightningPayment> newTransactions = LightningPaymentsList.fromList(data).payments;
+      List<LightningPayment> newTransactions =
+          LightningPaymentsList.fromList(data).payments;
       List<String> duplicateHashes = List.empty(growable: true);
       for (int i = 0; i < newTransactions.length; i++) {
         LightningPayment item1 = newTransactions[i];
@@ -702,25 +794,38 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
           }
         }
       }
-      newTransactions.removeWhere((test) => duplicateHashes.contains(test.paymentHash));
+      newTransactions
+          .removeWhere((test) => duplicateHashes.contains(test.paymentHash));
       return newTransactions;
     }, allData)
         .then((data) {
       WriteBatch batch = FirebaseFirestore.instance.batch();
       for (int i = 0; i < data.length; i++) {
-        batch.set(btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnurl').doc(), data[i]);
+        batch.set(
+            btcReceiveRef
+                .doc(Auth().currentUser!.uid)
+                .collection('lnurl')
+                .doc(),
+            data[i]);
       }
       batch.commit();
     });
   }
 
-  Future<void> sendPaymentDataReceivedInvoiceBatch(List<Map<String, dynamic>> data) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').get();
-    List<Map<String, dynamic>> allData = snapshot.docs.map((doc) => doc.data()).toList();
+  Future<void> sendPaymentDataReceivedInvoiceBatch(
+      List<Map<String, dynamic>> data) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await btcReceiveRef
+        .doc(Auth().currentUser!.uid)
+        .collection('lnbc')
+        .get();
+    List<Map<String, dynamic>> allData =
+        snapshot.docs.map((doc) => doc.data()).toList();
     compute((data) {
-      ReceivedInvoicesList btcFinalList = ReceivedInvoicesList.fromList(allData);
+      ReceivedInvoicesList btcFinalList =
+          ReceivedInvoicesList.fromList(allData);
       List<ReceivedInvoice> transactions = btcFinalList.invoices;
-      List<ReceivedInvoice> newTransactions = ReceivedInvoicesList.fromList(data).invoices;
+      List<ReceivedInvoice> newTransactions =
+          ReceivedInvoicesList.fromList(data).invoices;
       List<String> duplicateHashes = List.empty(growable: true);
       for (int i = 0; i < newTransactions.length; i++) {
         ReceivedInvoice item1 = newTransactions[i];
@@ -731,13 +836,16 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
           }
         }
       }
-      newTransactions.removeWhere((test) => duplicateHashes.contains(test.rHash));
+      newTransactions
+          .removeWhere((test) => duplicateHashes.contains(test.rHash));
       return newTransactions;
     }, allData)
         .then((data) {
       WriteBatch batch = FirebaseFirestore.instance.batch();
       for (int i = 0; i < data.length; i++) {
-        batch.set(btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').doc(), data[i].toJson());
+        batch.set(
+            btcReceiveRef.doc(Auth().currentUser!.uid).collection('lnbc').doc(),
+            data[i].toJson());
       }
       batch.commit();
     });
@@ -758,7 +866,8 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
     DateTime startOfThisMonth = DateTime(now.year, now.month, 1);
 
     for (TransactionItem item in combinedTransactions) {
-      DateTime date = DateTime.fromMillisecondsSinceEpoch(item.data.timestamp * 1000);
+      DateTime date =
+          DateTime.fromMillisecondsSinceEpoch(item.data.timestamp * 1000);
 
       if (date.isAfter(startOfThisWeek)) {
         categorizedTransactions['This Week']!.add(item);
@@ -778,24 +887,20 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
 
     categorizedTransactions.forEach((category, transactions) {
       if (transactions.isEmpty) return;
-      
+
       finalTransactions.add(
         Builder(builder: (context) {
           return Padding(
-            padding: const EdgeInsets.all(AppTheme.cardPadding),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
             child: Text(
               category,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           );
         }),
       );
 
-      finalTransactions.add(
-        
-           TransactionContainer(transactions: transactions)
-        
-      );
+      finalTransactions.add(TransactionContainer(transactions: transactions));
     });
 
     return finalTransactions;
@@ -807,31 +912,26 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
 
 class TransactionContainer extends StatelessWidget {
   const TransactionContainer({
-    super.key, required this.transactions,
+    super.key,
+    required this.transactions,
   });
   final List<TransactionItem> transactions;
   @override
   Widget build(BuildContext context) {
     return Padding(
-     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-     child: RepaintBoundary(
-       child: GlassContainer(
-         child: Column(
-           crossAxisAlignment: CrossAxisAlignment.start,
-           children: [
-             ...transactions.map((item) {
-               
-                 return Padding(
-                   padding: EdgeInsets.symmetric(vertical: 4),
-                   child: item,
-                 );
-               
-             }).toList(),
-             SizedBox(height: 16),
-           ],
-         ),
-       ),
-     ),
-              );
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      child: RepaintBoundary(
+        child: GlassContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...transactions.map((item) {
+                return item;
+              }).toList(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

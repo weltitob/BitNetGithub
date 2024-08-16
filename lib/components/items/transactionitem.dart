@@ -96,228 +96,197 @@ class _TransactionItemState extends State<TransactionItem> with AutomaticKeepAli
 
     final currencyEquivalent =
         bitcoinPrice != null ? (double.parse(widget.data.amount) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
-      return Padding(
-        padding: const EdgeInsets.only(
-          bottom: AppTheme.elementSpacing / 2,
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            splashColor: Colors.grey,
-            onTap: () async {
-              if (!isTapped) {
-                isTapped = true;
-                setState(() {});
-              } else {
-                return;
-              }
-              await Future.delayed(Duration(milliseconds: 100));
-              if (widget.data.type == TransactionType.lightning) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LightningTransactionDetails(
-                      data: widget.data,
-                    ),
-                  ),
-                );
-              } else if (widget.data.type == TransactionType.loopIn || widget.data.type == TransactionType.loopOut) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoopTransactionScreen(
-                      transactionItemData: widget.data,
-                    ),
-                  ),
-                );
-              } else {
-                final controllerTransaction = Get.put(
-                  TransactionController(
-                    txID: widget.data.txHash.toString(),
-                  ),
-                );
-                if(!widget.data.txHash.isEmpty) {
-                controllerTransaction.txID = widget.data.txHash.toString();
-                controllerTransaction.getSingleTransaction(
-                  controllerTransaction.txID!,
-                );
-                controllerTransaction.changeSocket();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SingleTransactionScreen(),
-                  ),
-                );
-              }
-              }
-              isTapped = false;
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          //splashColor: Colors.grey,
+          onTap: () async {
+            if (!isTapped) {
+              isTapped = true;
               setState(() {});
-            },
-            child: Container(
-              height: AppTheme.cardPadding * 5.h,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: AppTheme.elementSpacing * 0.75,
-                    right: AppTheme.elementSpacing * 1,
-                    top: AppTheme.elementSpacing * 0.75,
-                    bottom: AppTheme.elementSpacing * 0.75),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(child: Avatar(size: AppTheme.cardPadding * 2.5)),
-                    const SizedBox(width: AppTheme.elementSpacing * 0.75),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: AppTheme.cardPadding / 4),
-                        Container(
-                          width: AppTheme.cardPadding * 8,
-                          child: Text(
-                            widget.data.receiver.toString(),
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(widget.context).textTheme.titleMedium,
-                          ),
-                        ),
-                        // Text(
-                        //   getTransactionType(),
-                        //   overflow: TextOverflow.ellipsis,
-                        //   style: Theme.of(widget.context)
-                        //       .textTheme
-                        //       .bodySmall,
-                        // ),
-                        Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            // Container(
-                            //   width: AppTheme.cardPadding * 5,
-                            //   child: Text(
-                            //     widget.data.receiver.toString(),
-                            //     overflow: TextOverflow.ellipsis,
-                            //     style: Theme.of(widget.context)
-                            //         .textTheme
-                            //         .titleSmall,
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: AppTheme.elementSpacing / 4,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.data.type == TransactionType.loopIn || widget.data.type == TransactionType.loopOut
-                                  ? 'Swap'
-                                  : widget.data.type == TransactionType.lightning
-                                      ? 'Lightning'
-                                      : 'Onchain',
+            } else {
+              return;
+            }
+            await Future.delayed(Duration(milliseconds: 100));
+            if (widget.data.type == TransactionType.lightning) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LightningTransactionDetails(
+                    data: widget.data,
+                  ),
+                ),
+              );
+            } else if (widget.data.type == TransactionType.loopIn || widget.data.type == TransactionType.loopOut) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoopTransactionScreen(
+                    transactionItemData: widget.data,
+                  ),
+                ),
+              );
+            } else {
+              final controllerTransaction = Get.put(
+                TransactionController(
+                  txID: widget.data.txHash.toString(),
+                ),
+              );
+              if(!widget.data.txHash.isEmpty) {
+              controllerTransaction.txID = widget.data.txHash.toString();
+              controllerTransaction.getSingleTransaction(
+                controllerTransaction.txID!,
+              );
+              controllerTransaction.changeSocket();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SingleTransactionScreen(),
+                ),
+              );
+            }
+            }
+            isTapped = false;
+            setState(() {});
+          },
+          child: Container(
+          padding: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing ),
+            child: Padding(
+              padding: const EdgeInsets.only(
+
+                  left: AppTheme.elementSpacing * 0.75,
+                  right: AppTheme.elementSpacing * 1,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(child: Avatar(size: AppTheme.cardPadding * 2)),
+                      const SizedBox(width: AppTheme.elementSpacing * 0.75),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: AppTheme.cardPadding * 6.5.w,
+                            child: Text(
+                              widget.data.receiver.toString(),
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(widget.context).textTheme.bodyMedium,
+                              style: Theme.of(widget.context).textTheme.titleMedium,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: AppTheme.elementSpacing / 3, vertical: AppTheme.elementSpacing / 15),
-                              child: widget.data.type == TransactionType.lightning
-                                  ? Image.asset(
-                                      "assets/images/lightning.png",
+                          ),
+                          SizedBox(height: AppTheme.elementSpacing,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: AppTheme.elementSpacing / 2,),
+                                child: widget.data.type == TransactionType.lightning
+                                    ? Image.asset(
+                                  "assets/images/lightning.png",
+                                  width: AppTheme.cardPadding * 0.75,
+                                  height: AppTheme.cardPadding * 0.75,
+                                  fit: BoxFit.contain,
+                                )
+                                    : widget.data.type == TransactionType.onChain
+                                    ? Image.asset(
+                                  "assets/images/bitcoin.png",
+                                  width: AppTheme.cardPadding * 0.75,
+                                  height: AppTheme.cardPadding * 0.75,
+                                  fit: BoxFit.contain,
+                                )
+                                    : Row(
+                                  children: [
+                                    //only for received transactions
+
+                                    Image.asset(
+                                      widget.data.type == TransactionType.onChain
+                                          ? "assets/images/bitcoin.png"
+                                          : "assets/images/lightning.png",
                                       width: AppTheme.cardPadding * 0.75,
                                       height: AppTheme.cardPadding * 0.75,
                                       fit: BoxFit.contain,
-                                    )
-                                  : widget.data.type == TransactionType.onChain
-                                      ? Image.asset(
-                                          "assets/images/bitcoin.png",
-                                          width: AppTheme.cardPadding * 0.75,
-                                          height: AppTheme.cardPadding * 0.75,
-                                          fit: BoxFit.contain,
-                                        )
-                                      : Row(
-                                          children: [
-                                            //only for received transactions
-              
-                                            Image.asset(
-                                              widget.data.type == TransactionType.onChain
-                                                  ? "assets/images/bitcoin.png"
-                                                  : "assets/images/lightning.png",
-                                              width: AppTheme.cardPadding * 0.75,
-                                              height: AppTheme.cardPadding * 0.75,
-                                              fit: BoxFit.contain,
-                                            ),
-                                            Text(' ↔ '),
-                                            Image.asset(
-                                              widget.data.type == TransactionType.onChain
-                                                  ? "assets/images/lightning.png"
-                                                  : "assets/images/bitcoin.png",
-                                              width: AppTheme.cardPadding * 0.75,
-                                              height: AppTheme.cardPadding * 0.75,
-                                              fit: BoxFit.contain,
-                                            ),
-                                          ],
-                                        ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Obx(
-                      () => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Spacer(),
-                          controller.hideBalance.value
-                              ? Text(
-                                  '*****',
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                )
-                              : Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
-                                      },
-                                      child: Text(
-                                        coin.coin ?? true ? widget.data.amount : "$currencyEquivalent${getCurrency(currency!)}",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                            color: widget.data.direction == TransactionDirection.received
-                                                ? AppTheme.successColor
-                                                : AppTheme.errorColor),
-                                      ),
                                     ),
-                                    coin.coin ?? true
-                                        ? Icon(
-                                            AppTheme.satoshiIcon,
-                                            color: widget.data.direction == TransactionDirection.received
-                                                ? AppTheme.successColor
-                                                : AppTheme.errorColor,
-                                          )
-                                        : SizedBox.shrink(),
+                                    Text(' ↔ '),
+                                    Image.asset(
+                                      widget.data.type == TransactionType.onChain
+                                          ? "assets/images/lightning.png"
+                                          : "assets/images/bitcoin.png",
+                                      width: AppTheme.cardPadding * 0.75,
+                                      height: AppTheme.cardPadding * 0.75,
+                                      fit: BoxFit.contain,
+                                    ),
                                   ],
                                 ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: AppTheme.elementSpacing / 3, vertical: AppTheme.elementSpacing / 15),
-                            child: Icon(
-                              Icons.circle,
-                              color: widget.data.status == TransactionStatus.confirmed
-                                  ? AppTheme.successColor
-                                  : widget.data.status == TransactionStatus.pending
-                                      ? AppTheme.colorBitcoin
-                                      : AppTheme.errorColor,
-                              size: AppTheme.cardPadding * 0.75,
-                            ),
+                              ),
+                              Text(
+                                widget.data.type == TransactionType.loopIn || widget.data.type == TransactionType.loopOut
+                                    ? 'Swap'
+                                    : widget.data.type == TransactionType.lightning
+                                        ? 'Lightning'
+                                        : 'Onchain',
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(widget.context).textTheme.bodyMedium,
+                              ),
+
+                            ],
                           ),
                         ],
                       ),
+                    ],
+                  ),
+                  Obx(
+                        () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        controller.hideBalance.value
+                            ? Text(
+                          '*****',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        )
+                            : Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
+                              },
+                              child: Text(
+                                coin.coin ?? true ? widget.data.amount : "$currencyEquivalent${getCurrency(currency!)}",
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    color: widget.data.direction == TransactionDirection.received
+                                        ? AppTheme.successColor
+                                        : AppTheme.errorColor),
+                              ),
+                            ),
+                            coin.coin ?? true
+                                ? Icon(
+                              AppTheme.satoshiIcon,
+                              color: widget.data.direction == TransactionDirection.received
+                                  ? AppTheme.successColor
+                                  : AppTheme.errorColor,
+                            )
+                                : SizedBox.shrink(),
+                          ],
+                        ),
+                        SizedBox(height: AppTheme.elementSpacing,),
+                        Icon(
+                          Icons.circle,
+                          color: widget.data.status == TransactionStatus.confirmed
+                              ? AppTheme.successColor
+                              : widget.data.status == TransactionStatus.pending
+                              ? AppTheme.colorBitcoin
+                              : AppTheme.errorColor,
+                          size: AppTheme.cardPadding * 0.75,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
