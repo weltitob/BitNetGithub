@@ -53,11 +53,14 @@ class SearchReceiver extends GetWidget<SendsController> {
                       }
                       return child!;
                     },
-                    child: SearchFieldWidget(
-                      hintText: L10n.of(context)!.searchReceipient,
-                      isSearchEnabled: true,
-                      handleSearch: controller.handleSearch,
-                      node: controller.myFocusNodeAdressSearch,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                      child: SearchFieldWidget(
+                        hintText: L10n.of(context)!.searchReceipient,
+                        isSearchEnabled: true,
+                        handleSearch: controller.handleSearch,
+                        node: controller.myFocusNodeAdressSearch,
+                      ),
                     ),
                   ),
                   Container(

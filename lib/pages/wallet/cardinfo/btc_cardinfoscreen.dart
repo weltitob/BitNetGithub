@@ -7,6 +7,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/balancecard.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
@@ -21,14 +22,16 @@ class BitcoinCardInformationScreen extends StatefulWidget {
   BitcoinCardInformationScreen({super.key});
 
   @override
-  State<BitcoinCardInformationScreen> createState() => _BitcoinCardInformationScreenState();
+  State<BitcoinCardInformationScreen> createState() =>
+      _BitcoinCardInformationScreenState();
 }
 
-class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScreen> {
+class _BitcoinCardInformationScreenState
+    extends State<BitcoinCardInformationScreen> {
   bool isShowMore = false;
   final controller = Get.put(TransactionController());
   final homeController = Get.put(HomeController());
-  bool isLoadingAddress = false;
+
   late ScrollController scrollController;
 
   @override
@@ -36,11 +39,13 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
     scrollController = ScrollController();
     super.initState();
   }
+
   @override
   void dispose() {
     super.dispose();
     scrollController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
@@ -63,152 +68,54 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.only(top: 60.0),
+                padding: const EdgeInsets.only(top: AppTheme.cardPadding * 3),
                 child: Container(
-                  height: 200,
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  height: AppTheme.cardPadding * 7.5,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                   child: BalanceCardBtc(),
                 ),
               ),
             ),
-            // SliverToBoxAdapter(
-            //   child: BitNetListTile(
-            //     text: L10n.of(context)!.address,
-            //     trailing: Text(
-            //       'bc1qkmlp...' + '30fltzunefdjln',
-            //       style: Theme.of(context).textTheme.bodyMedium,
-            //     ),
-            //   ),
-            // ),
-            // SliverToBoxAdapter(
-            //   child: BitNetListTile(
-            //     text: L10n.of(context)!.scanQr,
-            //     trailing: Container(
-            //       padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
-            //       height: 200,
-            //       decoration: BoxDecoration(
-            //         color: Colors.white,
-            //         borderRadius: AppTheme.cardRadiusBigger,
-            //       ),
-            //       child: PrettyQrView.data(
-            //         data: "bc1qkmlpuea96ekcjlk2wpjhsrr030fltzunefdjln",
-            //         decoration: const PrettyQrDecoration(
-            //           shape: PrettyQrSmoothSymbol(
-            //             roundFactor: 1,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // SliverToBoxAdapter(
-            //   child: const SizedBox(height: 10),
-            // ),
-            // SliverToBoxAdapter(
-            //   child: BitNetListTile(
-            //     text: L10n.of(context)!.totalReceived,
-            //     trailing: Row(
-            //       children: [
-            //         Text(
-            //           '${((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000).toStringAsFixed(8)} BTC',
-            //           style: Theme.of(context).textTheme.bodyMedium,
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            // SliverToBoxAdapter(
-            //   child: const SizedBox(height: 5),
-            // ),
-            // SliverToBoxAdapter(
-            //   child: BitNetListTile(
-            //     text: L10n.of(context)!.totalSent,
-            //     trailing: Row(
-            //       children: [
-            //         Text(
-            //           '${((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000).toStringAsFixed(8)} BTC',
-            //           style: Theme.of(context).textTheme.bodyMedium,
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            // SliverToBoxAdapter(
-            //   child: const SizedBox(height: 5),
-            // ),
-            // SliverToBoxAdapter(
-            //   child: BitNetListTile(
-            //     text: L10n.of(context)!.balance,
-            //     trailing: Row(
-            //       children: [
-            //         Text(
-            //           '${(((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)).toStringAsFixed(8)} BTC',
-            //           style: Theme.of(context).textTheme.bodyMedium,
-            //         ),
-            //         const SizedBox(width: 5),
-            //         Text(
-            //           '\$${((((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)) * controller.currentUSD.value).toStringAsFixed(2)}',
-            //           style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            SliverToBoxAdapter(child: SizedBox(height: AppTheme.elementSpacing * 2)),
             SliverToBoxAdapter(
               child: Center(
-                child: isLoadingAddress
-                    ? CircularProgressIndicator()
-                    : LongButtonWidget(
-                        title: 'Show Addresses',
-                        onTap: () async {
-                          if (!isLoadingAddress) {
-                            setState(() {
-                              isLoadingAddress = true;
-                            });
-                            Map<String, double> finalAddresses = {};
-                            RestResponse response = await listBtcAddresses();
-                            var accounts = response.data['account_with_addresses'] as List;
-                            for (int i = 0; i < accounts.length; i++) {
-                              var addresses = accounts[i]['addresses'];
-                              for (int j = 0; j < addresses.length; j++) {
-                                finalAddresses[addresses[j]['address']] = double.parse(addresses[j]['balance']);
-                              }
-                            }
-                            List<MapEntry<String, double>> sortedAddresses = finalAddresses.entries.toList();
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.elementSpacing),
+                child: BitNetListTile(
+                  text: "Addresses",
+                  trailing: Text("Show"),
+                  onTap: () async {
 
-                            sortedAddresses.sort((a, b) => b.value.compareTo(a.value));
-
-                            isLoadingAddress = false;
-                            setState(() {});
-                            BitNetBottomSheet(
-                                context: context,
-                                height: MediaQuery.of(context).size.height * 0.65.h,
-                                borderRadius: AppTheme.borderRadiusBig,
-                                child: AddressesWidget(sortedAddresses: sortedAddresses));
-                          }
-                        }),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: const SizedBox(height: AppTheme.elementSpacing * 2),
+                      BitNetBottomSheet(
+                          context: context,
+                          height: MediaQuery.of(context).size.height * 0.65.h,
+                          borderRadius: AppTheme.borderRadiusBig,
+                          child: AddressesWidget());
+                    }
+                ),
+              )),
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.cardPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                    Text(L10n.of(context)!.activity, style: Theme.of(context).textTheme.titleLarge),
+                    Text(L10n.of(context)!.activity,
+                        style: Theme.of(context).textTheme.titleLarge),
                     SizedBox(height: AppTheme.elementSpacing.h),
                   ],
                 ),
               ),
             ),
-            Transactions(hideLightning: true, hideOnchain: true, filters: [L10n.of(context)!.onchain], scrollController: scrollController,),
-            SliverToBoxAdapter(
-              child: const SizedBox(height: 20),
+            Transactions(
+              hideLightning: true,
+              hideOnchain: true,
+              filters: [L10n.of(context)!.onchain],
+              scrollController: scrollController,
             ),
           ],
         ),
@@ -218,19 +125,54 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
 }
 
 class AddressesWidget extends StatefulWidget {
-  const AddressesWidget({
+  AddressesWidget({
     super.key,
-    required this.sortedAddresses,
   });
-
-  final List<MapEntry<String, double>> sortedAddresses;
 
   @override
   State<AddressesWidget> createState() => _AddressesWidgetState();
 }
 
 class _AddressesWidgetState extends State<AddressesWidget> {
+
   String searchPrompt = '';
+  bool isLoadingAddress = false;
+  late List<MapEntry<String, double>> sortedAddresses;
+
+  @override
+  void initState() {
+    super.initState();
+    // TODO: implement initState
+    loadData();
+  }
+
+  void loadData() async {
+    if (!isLoadingAddress) {
+      setState(() {
+        isLoadingAddress = true;
+      });
+      Map<String, double> finalAddresses = {};
+      RestResponse response = await listBtcAddresses();
+      var accounts =
+      response.data['account_with_addresses'] as List;
+      for (int i = 0; i < accounts.length; i++) {
+        var addresses = accounts[i]['addresses'];
+        for (int j = 0; j < addresses.length; j++) {
+          finalAddresses[addresses[j]['address']] =
+              double.parse(addresses[j]['balance']);
+        }
+      }
+      List<MapEntry<String, double>> sortedAddresses =
+      finalAddresses.entries.toList();
+
+      sortedAddresses
+          .sort((a, b) => b.value.compareTo(a.value));
+
+      isLoadingAddress = false;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
@@ -238,69 +180,84 @@ class _AddressesWidgetState extends State<AddressesWidget> {
       resizeToAvoidBottomInset: true,
       context: context,
       appBar: bitnetAppBar(
+        hasBackButton: false,
         text: 'Your Addresses',
         context: context,
         buttonType: ButtonType.transparent,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: 50),
-            SearchFieldWidget(
-              hintText: 'Search for specific address',
-              isSearchEnabled: true,
-              handleSearch: (dynamic) {},
-              onChanged: (val) {
-                setState(() {
-                  searchPrompt = val;
-                });
-              },
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.35.h,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.sortedAddresses.length,
-                itemBuilder: (ctx, i) {
-                  if (!widget.sortedAddresses[i].key.contains(searchPrompt) && searchPrompt.isNotEmpty) {
-                    return Container();
-                  }
-                  return Container(
-                      height: 60,
-                      child: BitNetListTile(
-                        leading: SizedBox(
-                            width: 0.4.sw,
-                            child: Text(
-                              widget.sortedAddresses[i].key,
-                              style: Theme.of(context).textTheme.titleMedium,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                        trailing: SizedBox(
-                            width: 0.3.sw,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  textAlign: TextAlign.end,
-                                  widget.sortedAddresses[i].value.toInt().toString(),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Icon(AppTheme.satoshiIcon)
-                              ],
-                            )),
-                        onTap: () {
-                          context.go('/wallet/bitcoincard/btcaddressinfo/${widget.sortedAddresses[i].key}',
-                              extra: widget.sortedAddresses[i].value);
-                        },
-                      ));
-                },
+      body: isLoadingAddress
+          ? Container(
+        height: AppTheme.cardPadding * 6,
+        child: Center(
+          child: dotProgress(context),
+        ),
+      )
+          : SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: AppTheme.cardPadding * 3),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.cardPadding),
+                    child: SearchFieldWidget(
+                      hintText: 'Search for specific address',
+                      isSearchEnabled: true,
+                      handleSearch: (dynamic) {},
+                      onChanged: (val) {
+                        setState(() {
+                          searchPrompt = val;
+                        });
+                      },
+                    ),
+                  ),
+                  Container(
+                    height: AppTheme.cardPadding * 6,
+                    child: ListView.builder(
+                      // shrinkWrap: true,
+                      itemCount: sortedAddresses.length,
+                      itemBuilder: (ctx, i) {
+                        if (!sortedAddresses[i].key
+                                .contains(searchPrompt) &&
+                            searchPrompt.isNotEmpty) {
+                          return Container();
+                        }
+                        return BitNetListTile(
+                          leading: SizedBox(
+                              width: 0.4.sw,
+                              child: Text(
+                                sortedAddresses[i].key,
+                                style: Theme.of(context).textTheme.titleMedium,
+                                overflow: TextOverflow.ellipsis,
+                              )),
+                          trailing: SizedBox(
+                              width: 0.3.sw,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    textAlign: TextAlign.end,
+                                    sortedAddresses[i].value
+                                        .toInt()
+                                        .toString(),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Icon(AppTheme.satoshiIcon)
+                                ],
+                              )),
+                          onTap: () {
+                            context.go(
+                                '/wallet/bitcoincard/btcaddressinfo/${sortedAddresses[i].key}',
+                                extra: sortedAddresses[i].value);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
