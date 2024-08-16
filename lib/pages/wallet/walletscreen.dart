@@ -16,6 +16,7 @@ import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -70,6 +71,8 @@ class WalletScreen extends GetWidget<WalletsController> {
       ),
     ];
 
+    final profilecontroller = Get.find<ProfileController>();
+
     return bitnetScaffold(
       context: context,
       body: CustomScrollView(
@@ -92,8 +95,14 @@ class WalletScreen extends GetWidget<WalletsController> {
                         children: [
                           Row(
                             children: [
-                              Avatar(size: AppTheme.cardPadding * 2.85.h),
-                              SizedBox(width: AppTheme.elementSpacing * 1.w),
+                              Avatar(
+                                size: AppTheme.cardPadding * 2.5.h,
+                                mxContent: Uri.parse(profilecontroller.userData.value.profileImageUrl),
+                                type: profilePictureType.lightning,
+                              ),
+                              SizedBox(
+                                width: AppTheme.elementSpacing * 1.25.w,
+                              ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -153,7 +162,9 @@ class WalletScreen extends GetWidget<WalletsController> {
                         ],
                       ),
                     ),
-                    SizedBox(height: AppTheme.cardPadding.h),
+                    SizedBox(
+                      height: AppTheme.cardPadding.h * 1.25,
+                    ),
                     Container(
                       height: AppTheme.cardPadding * 7.75.h,
                       child: Stack(

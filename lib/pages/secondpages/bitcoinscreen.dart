@@ -180,6 +180,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
             onLeftButtonTap: () {
               requestClientSecret("1000", "eur");
               BitNetBottomSheet(
+                  height: MediaQuery.of(context).size.height * 0.85,
                   context: context,
                   // height: MediaQuery.of(context).size.height * 0.5,
 
@@ -204,6 +205,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
+        hasBackButton: false,
         text: L10n.of(context)!.purchaseBitcoin,
         context: context,
       ),

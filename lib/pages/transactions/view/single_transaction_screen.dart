@@ -12,7 +12,6 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
-import 'package:bitnet/pages/secondpages/mempool/view/mempoolhome.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
@@ -25,9 +24,16 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class SingleTransactionScreen extends StatelessWidget {
+class SingleTransactionScreen extends StatefulWidget {
   SingleTransactionScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SingleTransactionScreen> createState() => _SingleTransactionScreenState();
+}
+
+class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
   final TextEditingController inputCtrl = TextEditingController();
+
   final TextEditingController outputCtrl = TextEditingController();
 
   @override
@@ -170,6 +176,30 @@ class SingleTransactionScreen extends StatelessWidget {
                                               context: context,
                                               hasBackButton: false,
                                               text: L10n.of(context)!.inputTx,
+                                              actions: [
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                                                  child: LongButtonWidget(
+                                                      customWidth: AppTheme.cardPadding * 4.75,
+                                                      customHeight: AppTheme.cardPadding * 1.25,
+                                                      buttonType: ButtonType.transparent,
+                                                      title: !controller
+                                                          .showDetail
+                                                          .value
+                                                          ? L10n.of(
+                                                          context)!
+                                                          .showDetails
+                                                          : L10n.of(
+                                                          context)!
+                                                          .hideDetails, onTap: (){
+                                                    controller
+                                                        .toggleExpansion();
+                                                    setState(() {
+
+                                                    });
+                                                  }),
+                                                )
+                                              ],
                                             ),
                                             body: StatefulBuilder(
                                                 builder: (context, setState) {
@@ -180,53 +210,20 @@ class SingleTransactionScreen extends StatelessWidget {
                                                 child: Column(
                                                   children: [
                                                     SizedBox(height: AppTheme.cardPadding * 2.5),
-                                                    SearchFieldWidget(
-                                                      // controller: searchCtrl,
-                                                      hintText:
-                                                      L10n.of(context)!.search,
-                                                      handleSearch: (v) {
-                                                        setState(() {
-                                                          inputCtrl.text = v;
-                                                        });
-                                                      },
-                                                      isSearchEnabled: true,
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                                                      child: SearchFieldWidget(
+                                                        // controller: searchCtrl,
+                                                        hintText:
+                                                        L10n.of(context)!.search,
+                                                        handleSearch: (v) {
+                                                          setState(() {
+                                                            inputCtrl.text = v;
+                                                          });
+                                                        },
+                                                        isSearchEnabled: true,
+                                                      ),
                                                     ),
-                                                    // Row(
-                                                    //   crossAxisAlignment:
-                                                    //       CrossAxisAlignment.start,
-                                                    //   mainAxisAlignment:
-                                                    //       MainAxisAlignment
-                                                    //           .spaceBetween,
-                                                    //   children: [
-                                                    //     Text(
-                                                    //       L10n.of(context)!.inputTx,
-                                                    //       style: Theme.of(context)
-                                                    //           .textTheme
-                                                    //           .headlineMedium,
-                                                    //     ),
-                                                    //     LongButtonWidget(
-                                                    //       buttonType: ButtonType
-                                                    //           .transparent,
-                                                    //       customWidth: AppTheme.cardPadding * 6,
-                                                    //       customHeight: AppTheme.cardPadding * 1.5,
-                                                    //       title:
-                                                    //           !controller.showDetail
-                                                    //                   .value
-                                                    //               ? L10n.of(
-                                                    //                       context)!
-                                                    //                   .showDetails
-                                                    //               : L10n.of(
-                                                    //                       context)!
-                                                    //                   .hideDetails,
-                                                    //       onTap: () {
-                                                    //         controller
-                                                    //             .toggleExpansion();
-                                                    //         setState(() {});
-                                                    //       },
-                                                    //     ),
-                                                    //   ],
-                                                    // ),
-
                                                     !controller.showDetail.value
                                                         ? Expanded(
                                                             child: ListView.builder(
@@ -571,6 +568,30 @@ class SingleTransactionScreen extends StatelessWidget {
                                               context: context,
                                               hasBackButton: false,
                                               text: L10n.of(context)!.outputTx,
+                                              actions: [
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                                                  child: LongButtonWidget(
+                                                      customWidth: AppTheme.cardPadding * 4.75,
+                                                      customHeight: AppTheme.cardPadding * 1.25,
+                                                      buttonType: ButtonType.transparent,
+                                                      title: !controller
+                                                          .showDetail
+                                                          .value
+                                                          ? L10n.of(
+                                                          context)!
+                                                          .showDetails
+                                                          : L10n.of(
+                                                          context)!
+                                                          .hideDetails, onTap: (){
+                                                    controller
+                                                        .toggleExpansion();
+                                                    setState(() {
+
+                                                    });
+                                                  }),
+                                                )
+                                              ],
                                             ),
                                             body: StatefulBuilder(
                                               builder: (context, setState) {
@@ -591,33 +612,8 @@ class SingleTransactionScreen extends StatelessWidget {
                                                         },
                                                         isSearchEnabled: true,
                                                       ),
-                                                      // SizedBox(height: AppTheme.elementSpacing,),
-                                                      // Row(
-                                                      //   mainAxisAlignment: MainAxisAlignment.end,
-                                                      //   children: [
-                                                      //
-                                                      //     LongButtonWidget(
-                                                      //       buttonType: ButtonType
-                                                      //           .transparent,
-                                                      //       customWidth: AppTheme.cardPadding * 6,
-                                                      //       customHeight: AppTheme.cardPadding * 1.5,
-                                                      //       title: !controller
-                                                      //           .showDetail
-                                                      //           .value
-                                                      //           ? L10n.of(
-                                                      //           context)!
-                                                      //           .showDetails
-                                                      //           : L10n.of(
-                                                      //           context)!
-                                                      //           .hideDetails,
-                                                      //       onTap: () {
-                                                      //         controller
-                                                      //             .toggleExpansion();
-                                                      //         setState(() {});
-                                                      //       },
-                                                      //     ),
-                                                      //   ],
-                                                      // ),
+                                                      SizedBox(height: AppTheme.elementSpacing,),
+
                                                       !controller
                                                               .showDetail.value
                                                           ? Expanded(
