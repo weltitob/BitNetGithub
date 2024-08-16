@@ -7,6 +7,7 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/createinvoicebottomsheet.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +17,21 @@ import 'package:get/get.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
-class OnChainReceiveTab extends GetWidget<ReceiveController> {
+class OnChainReceiveTab extends StatefulWidget {
   OnChainReceiveTab({super.key});
 
+  @override
+  State<OnChainReceiveTab> createState() => _OnChainReceiveTabState();
+}
+
+class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKeepAliveClientMixin {
   // Get the current user's wallet from a provider
   final GlobalKey globalKeyQR = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    final controller = Get.find<ReceiveController>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SingleChildScrollView(
@@ -175,16 +183,21 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
                     ),
                     SizedBox(width: AppTheme.elementSpacing / 2),
                     Text(
-                      controller.currController.text == "0" || controller.currController.text.isEmpty
+                      controller.satController.text == "0" || controller.satController.text.isEmpty
                           ? "Change Amount"
-                          : controller.currController.text,
+                          : controller.satController.text,
                     ),
-                    controller.currController.text == "0" || controller.currController.text.isEmpty
+                    controller.satController.text == "0" || controller.satController.text.isEmpty
                         ? SizedBox()
-                        : Text(getCurrency('USD'),
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90)),
+                        : Icon(
+                            getCurrencyIcon(
+                              BitcoinUnits.SAT.name,
+                            ),
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? AppTheme.black70
+                                    : AppTheme.white90,
+                          )
                   ],
                 ),
               );
@@ -197,4 +210,7 @@ class OnChainReceiveTab extends GetWidget<ReceiveController> {
       ),
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }

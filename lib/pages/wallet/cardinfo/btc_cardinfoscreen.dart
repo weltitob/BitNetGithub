@@ -29,13 +29,18 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
   final controller = Get.put(TransactionController());
   final homeController = Get.put(HomeController());
   bool isLoadingAddress = false;
+  late ScrollController scrollController;
 
   @override
   void initState() {
-    controller.getAddressComponent('bc1p5lfahjz2j3679ynqy4fu8tvteem92fuqfqfsax7vx97lyr3vhkwqlxjh5e');
+    scrollController = ScrollController();
     super.initState();
   }
-
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
@@ -54,6 +59,7 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
           context.go("/feed");
         },
         child: CustomScrollView(
+          controller: scrollController,
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
@@ -200,7 +206,7 @@ class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScr
                 ),
               ),
             ),
-            Transactions(hideLightning: true, hideOnchain: true, filters: [L10n.of(context)!.onchain]),
+            Transactions(hideLightning: true, hideOnchain: true, filters: [L10n.of(context)!.onchain], scrollController: scrollController,),
             SliverToBoxAdapter(
               child: const SizedBox(height: 20),
             ),

@@ -32,7 +32,7 @@ class TrendingSellersSlider extends StatelessWidget {
           //     border: Border.all(color: AppTheme.black100),
           //     color: const Color.fromRGBO(255, 255, 255, 0.1),
           //     borderRadius: BorderRadius.circular(12.r)),
-          child: Column(
+          child: Stack(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.only(
@@ -46,31 +46,32 @@ class TrendingSellersSlider extends StatelessWidget {
                   height: 80.w,
                 ),
               ),
-              Column(
-                children: [
-                  Transform.translate(
-                    offset: Offset(0.0, -24.h),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100.r),
-                      child: Image.asset(
-                        userImage,
-                        width: 48.w,
-                        height: 48.w,
-                      ),
-                    ),
-                  ),
-                  Transform.translate(
-                    offset: Offset(0.0, -14.h),
-                    child: Text(
-                      nftName,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ),
-                ],
-              ),
+               Positioned(
+                bottom: 4,
+                left: 0,
+                right: 0,
+                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                   children: [
+                     ClipRRect(
+                      clipBehavior: Clip.hardEdge,
+                      borderRadius:BorderRadius.circular(100.r),
+                       child: Image.asset(
+                         userImage,
+                         width: 48.w,
+                         height: 48.w,
+                       ),
+                     ),
+                        Text(
+                          nftName,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                   ],
+                 ),
+               ),
             ],
           ),
         ),

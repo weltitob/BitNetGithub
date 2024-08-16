@@ -41,7 +41,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-
+    
     decodeNetwork();
 
     _tabController.addListener(() {
@@ -50,9 +50,9 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       }
     });
 
-    _tabController.animation?.addListener(() {
-      setState(() {});
-    });
+    // _tabController.animation?.addListener(() {
+    //   setState(() {});
+    // });
 
 
     controller.btcController = TextEditingController();
@@ -223,11 +223,12 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
                   child: TabBar(
                     dividerColor: Colors.transparent,
                     indicatorColor: Colors.transparent,
+                    indicatorSize: TabBarIndicatorSize.tab,
                     controller: _tabController,
                     tabs: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: [ 
                           Icon(FontAwesomeIcons.bolt),
                           SizedBox(
                             width: AppTheme.cardPadding * 0.25,

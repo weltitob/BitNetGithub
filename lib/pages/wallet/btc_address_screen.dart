@@ -34,10 +34,12 @@ class _BitcoinAddressInformationScreenState extends State<BitcoinAddressInformat
   final controller = Get.put(TransactionController());
   final homeController = Get.put(HomeController());
   bool isLoadingAddress = false;
+  late ScrollController scrollController;
   List<TransactionItem> transactions = List.empty(growable:true);
 
   @override
   void initState() {
+    scrollController = ScrollController();
     String address = widget.state.pathParameters['address']!;
     controller.getAddressComponent(widget.state.pathParameters['address']).then((val) {
 
@@ -134,6 +136,11 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
 
     super.initState();
   }
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +169,7 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
                 child: CircularProgressIndicator(),
               )
             : CustomScrollView(
+              controller: scrollController,
                 slivers: [
                   // SliverToBoxAdapter(
                   //   child: Padding(
@@ -281,7 +289,7 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
                       ),
                     ),
                   ),
-                  Transactions(hideLightning: true, hideOnchain: true, filters: [L10n.of(context)!.onchain], customTransactions: transactions,),
+                  Transactions(hideLightning: true, hideOnchain: true, filters: [L10n.of(context)!.onchain], customTransactions: transactions,scrollController: scrollController),
                   SliverToBoxAdapter(
                     child: const SizedBox(height: 20),
                   ),

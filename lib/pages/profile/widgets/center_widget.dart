@@ -1,6 +1,5 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/center_widget_icon.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,7 @@ class CenterWidget extends StatelessWidget {
       bottom: 0,
       child: Container(
         height: AppTheme.cardPadding * 2,
-        width: AppTheme.cardPadding * 10,
+        width: AppTheme.cardPadding * 12,
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusBigger,
           boxShadow: [AppTheme.boxShadowProfile],

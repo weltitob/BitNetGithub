@@ -47,7 +47,7 @@ class LightningSendTab extends GetWidget<SendsController> {
                         // A Center widget with a child of bitcoinWidget()
                         Center(child: bitcoinWidget(context)),
                         const SizedBox(
-                          height: AppTheme.cardPadding * 5,
+                          height: AppTheme.cardPadding * 2,
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),

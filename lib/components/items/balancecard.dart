@@ -179,6 +179,12 @@ class BalanceCardBtc extends StatelessWidget {
             ? controller.onchainBalance.confirmedBalance
             : balance ?? '0'),
         defaultUnit ?? (balance == null ? BitcoinUnits.SAT : BitcoinUnits.BTC));
+        final BitcoinUnitModel unconfirmedUnitModel = CurrencyConverter.convertToBitcoinUnit(
+        double.parse(
+             controller.onchainBalance.unconfirmedBalance
+            ),
+        BitcoinUnits.SAT);
+
     final balanceStr = unitModel.amount.toString();
 
     return Container(
@@ -197,11 +203,12 @@ class BalanceCardBtc extends StatelessWidget {
             walletAddress: "safdadasdas",
             cardname: 'On-Chain Balance',
           ),
-          Align(
-            alignment: Alignment.bottomLeft,
+          Positioned(
+            bottom: -10,
+            left: 0,
             child: UnconfirmedTextWidget(
-              balanceStr: controller.onchainBalance.unconfirmedBalance,
-              iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+              balanceStr: unconfirmedUnitModel.amount.toString(),
+              iconDataUnit: getCurrencyIcon(unconfirmedUnitModel.bitcoinUnitAsString),
               iconData: FontAwesomeIcons.piggyBank,
               balanceSAT: controller.onchainBalance.unconfirmedBalance,
               walletAddress: "safdadasdas",
@@ -484,6 +491,13 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
                     SizedBox(
                       width: AppTheme.elementSpacing / 2,
                     ),
+                    if(controller.hideBalance.value)
+                    Text(
+                        '*****',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    if(!controller.hideBalance.value)
+                    ...[
                     Text(balanceStr),
                     Icon(
                       iconDataUnit,
@@ -491,7 +505,7 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
                       color: Theme.of(context).brightness == Brightness.light
                           ? AppTheme.black60
                           : AppTheme.white60,
-                    ),
+                    ),]
                   ],
                 )
               : Row(
@@ -500,6 +514,12 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
                     SizedBox(
                       width: AppTheme.elementSpacing / 2,
                     ),
+                    controller.hideBalance.value
+                    ? Text(
+                        '*****',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      )
+                    : 
                     Text("$currencyEquivalent${getCurrency(currency!)}"),
                     // Icon(
                     //   iconDataUnit,

@@ -44,7 +44,7 @@ class SearchReceiver extends GetWidget<SendsController> {
               Column(
                 children: [
                   SizedBox(
-                    height: AppTheme.cardPadding * 2,
+                    height: AppTheme.cardPadding * 3,
                   ),
                   Consumer<ScreenHeight>(
                     builder: (ctx, res, child) {
@@ -86,7 +86,7 @@ class SearchReceiver extends GetWidget<SendsController> {
                                 ),
                                 GlassContainer(
                                   width: MediaQuery.of(context).size.width,
-                                  height: AppTheme.cardPadding * 7.h,
+                                  height: AppTheme.cardPadding * 7.5.h,
                                   child: Container(
                                     margin: EdgeInsets.all(AppTheme.elementSpacing),
                                     child: MostPopularWidget(),

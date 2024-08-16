@@ -24,6 +24,7 @@ class LightningCardInformationScreen extends StatefulWidget {
 
 class _LightningCardInformationScreenState
     extends State<LightningCardInformationScreen> {
+      late ScrollController scrollController;
       List<TransactionItem> transactions = List.empty(growable:true);
 //   @override
 //   Widget build(BuildContext context) {
@@ -48,15 +49,25 @@ class _LightningCardInformationScreenState
 
   @override
   void initState() {
+        final controller = Get.put(LightningInfoController());
+        scrollController = ScrollController();
+    controller.loadingState.listen((val) {
+   setState((){});
+    });
     super.initState();
 
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(LightningInfoController());
     final List<dynamic> data = controller.combinedTransactions;
-    if(data.isNotEmpty) {
+    if(!controller.loadingState.value && transactions.isEmpty) {
     Future.microtask((){
       for(int index = 0; index < data.length; index++) {
 final transaction = controller
@@ -136,6 +147,8 @@ final transaction = controller
               child: CircularProgressIndicator(),
             )
           : CustomScrollView(
+            controller: scrollController,
+            
               slivers: [
                 SliverPadding(
                   padding: const EdgeInsets.only(top: 60.0),
@@ -176,6 +189,7 @@ final transaction = controller
                         hideOnchain: true,
                         filters: ['Lightning'],
                         customTransactions: transactions,
+                        scrollController: scrollController,
                       ),
                 SliverPadding(
                   padding: const EdgeInsets.only(bottom: 20.0),

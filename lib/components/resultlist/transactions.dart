@@ -33,7 +33,8 @@ class Transactions extends StatefulWidget {
   final bool hideLightning;
   final List<String>? filters;
   final List<TransactionItem>? customTransactions;
-  Transactions({Key? key, this.fullList = false, this.hideOnchain = false, this.hideLightning = false, this.filters, this.customTransactions}) : super(key: key);
+  final ScrollController scrollController;
+  Transactions({Key? key, this.fullList = false, this.hideOnchain = false, this.hideLightning = false, this.filters, this.customTransactions, required this.scrollController}) : super(key: key);
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -51,17 +52,18 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
   List<Swap> loopOperations = [];
   final searchCtrl = TextEditingController();
   List<Widget> orderedTransactions = List.empty(growable: true);
-
+  int loadedTransactionGroups = 4;
+  bool isLoadingTransactionGroups = false;
   Future<bool> getOnchainTransactions() async {
     LoggerService logger = Get.find();
     try {
       logger.i("Getting onchain transactions");
       Map<String, dynamic> data = walletController.onchainTransactions;
-      onchainTransactions = await compute((d) {
-        BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(d);
+      onchainTransactions = await Future.microtask(() {
+        BitcoinTransactionsList bitcoinTransactions = BitcoinTransactionsList.fromJson(data);
 
         return bitcoinTransactions.transactions;
-      }, data);
+      });
       List<Map<String, dynamic>> mapList = List<Map<String, dynamic>>.from(data['transactions'] as List);
       sendPaymentDataReceivedOnchainBatch(mapList);
     } on Error catch (_) {
@@ -158,7 +160,8 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
 
     logger.i("Initializing transactions");
     super.initState();
-    if(widget.customTransactions != null) {
+    widget.scrollController.addListener(_onScroll);
+      if(widget.customTransactions != null) {
       transactionsLoaded = true;
       heavyFiltering();
       return;};
@@ -528,9 +531,10 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
         ? widget.fullList
             ? SliverToBoxAdapter(child: Container())
             : SliverList(
-                delegate: SliverChildBuilderDelegate((ctx, index) {
-                  if (index == 0) {
-                    return Container(
+              delegate: SliverChildBuilderDelegate(
+                (ctx, index) {
+                  if(index == 0) {
+ return Container(
                       margin: EdgeInsets.symmetric(
                         horizontal: AppTheme.elementSpacing,
                       ),
@@ -565,13 +569,88 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
                       ),
                     );
                   } else {
+                    if(isLoadingTransactionGroups && index == (loadedTransactionGroups-1)) {
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: CircularProgressIndicator(),
+                      ));
+                    } else {
                     return orderedTransactions[index - 1];
+
+                    }
                   }
-                }, childCount: orderedTransactions.length + 1),
+                 
+  },
+  childCount: loadedTransactionGroups < orderedTransactions.length + 1 ? loadedTransactionGroups : orderedTransactions.length + 1)
+                // delegate: SliverChildBuilderDelegate((ctx, index) {
+                //   if (index == 0) {
+                //     return Container(
+                //       margin: EdgeInsets.symmetric(
+                //         horizontal: AppTheme.elementSpacing,
+                //       ),
+                //       child: SearchFieldWidget(
+                //         hintText: 'Search',
+                //         isSearchEnabled:true,
+                //         handleSearch: (v) {
+                //           setState(() {
+                //             searchCtrl.text = v;
+                //             heavyFiltering();
+                //           });
+                //         },
+                //         suffixIcon: IconButton(
+                //           icon: Icon(
+                //             FontAwesomeIcons.filter,
+                //             color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black60,
+                //             size: AppTheme.cardPadding * 0.75,
+                //           ),
+                //           onPressed: () async {
+                //             await BitNetBottomSheet(
+                //               context: context,
+                //               child: WalletFilterScreen(
+                //                 hideLightning: widget.hideLightning,
+                //                 hideOnchain: widget.hideOnchain,
+                //                 forcedFilters: widget.filters,
+                //               ),
+                //             );
+                //             heavyFiltering();
+                //             setState(() {});
+                //           },
+                //         ),
+                //       ),
+                //     );
+                //   } else {
+                //     return orderedTransactions[index - 1];
+                //   }
+                // }, 
+                
               )
         : SliverToBoxAdapter(
             child: Container(height: AppTheme.cardPadding * 10.h, child: dotProgress(context)),
           );
+  }
+
+
+  void _onScroll() {
+    if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent && !isLoadingTransactionGroups) {
+      _loadMoreTransactionGroups();
+    }
+  }
+
+  void _loadMoreTransactionGroups() async {
+    if(!mounted) {
+      return;
+    }
+    setState(() {
+      isLoadingTransactionGroups = true;
+    });
+
+    // Simulate a delay to show the "Loading..." text
+    await Future.delayed(Duration(seconds: 1));
+
+    setState(() {
+      loadedTransactionGroups += 4; // Load 2 more groups
+      isLoadingTransactionGroups = false;
+    });
   }
 
   Future<void> sendPaymentDataReceivedOnchainBatch(List<Map<String, dynamic>> data) async {
@@ -699,7 +778,7 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
 
     categorizedTransactions.forEach((category, transactions) {
       if (transactions.isEmpty) return;
-
+      
       finalTransactions.add(
         Builder(builder: (context) {
           return Padding(
@@ -713,27 +792,9 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
       );
 
       finalTransactions.add(
-        Builder(builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: GlassContainer(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...transactions.map((item) {
-                    return Builder(builder: (context) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4),
-                        child: item,
-                      );
-                    });
-                  }).toList(),
-                  SizedBox(height: 16),
-                ],
-              ),
-            ),
-          );
-        }),
+        
+           TransactionContainer(transactions: transactions)
+        
       );
     });
 
@@ -742,4 +803,35 @@ combinedTransactions = controller.selectedFilters.contains('Lightning')
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class TransactionContainer extends StatelessWidget {
+  const TransactionContainer({
+    super.key, required this.transactions,
+  });
+  final List<TransactionItem> transactions;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+     padding: const EdgeInsets.symmetric(horizontal: 16.0),
+     child: RepaintBoundary(
+       child: GlassContainer(
+         child: Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+             ...transactions.map((item) {
+               
+                 return Padding(
+                   padding: EdgeInsets.symmetric(vertical: 4),
+                   child: item,
+                 );
+               
+             }).toList(),
+             SizedBox(height: 16),
+           ],
+         ),
+       ),
+     ),
+              );
+  }
 }
