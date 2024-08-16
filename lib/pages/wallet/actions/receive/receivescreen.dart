@@ -160,8 +160,6 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    double glassContainerLeftPosition =
-        _tabController.animation!.value * (MediaQuery.of(context).size.width / 2.5 - AppTheme.cardPadding * .5);
 
     return bitnetScaffold(
       extendBodyBehindAppBar: true,

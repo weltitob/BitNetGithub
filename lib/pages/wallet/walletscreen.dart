@@ -220,7 +220,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                       BitNetImageWithTextButton(
                         L10n.of(context)!.receive,
                         () {
-                          context.go('/wallet/receive/onchain');
+                          context.go('/wallet/receive/${controller.selectedCard.value}');
                         },
                         image: "assets/images/receive_image.png",
                         width: AppTheme.cardPadding * 3.5.w,
