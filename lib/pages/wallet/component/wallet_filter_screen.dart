@@ -9,13 +9,16 @@ import 'package:bitnet/components/marketplace_widgets/FilterPillList.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class WalletFilterScreen extends GetWidget<WalletFilterController> {
-  const WalletFilterScreen({super.key});
+  const WalletFilterScreen({this.hideLightning = false, this.hideOnchain = false, this.forcedFilters, super.key});
+  final bool hideLightning;
+  final bool hideOnchain;
+  final List<String>? forcedFilters;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,11 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                 buttonType: ButtonType.transparent,
                 title: L10n.of(context)!.clear, onTap: (){
               controller.selectedFilters.clear();
+                if (forcedFilters != null) {
+                          for (int i = 0; i < forcedFilters!.length; i++) {
+                            controller.toggleFilter(forcedFilters![i]);
+                          }
+                        }
               controller.start =
                   controller.startDate.value.millisecondsSinceEpoch ~/
                       1000;
@@ -58,9 +66,9 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
                 BitNetFilterPillList(
                   headingText: L10n.of(context)!.filterOptions,
                   listDataText: [
-                    PillLabelModal(labelText: L10n.of(context)!.lightning),
-                    PillLabelModal(labelText: L10n.of(context)!.onchain),
-                    PillLabelModal(labelText: L10n.of(context)!.sent),
+    if (!hideLightning) PillLabelModal(labelText: L10n.of(context)!.lightning),
+                if (!hideOnchain) PillLabelModal(labelText: L10n.of(context)!.onchain),
+                                  PillLabelModal(labelText: L10n.of(context)!.sent),
                     PillLabelModal(labelText: L10n.of(context)!.received),
                     PillLabelModal(labelText: 'Loop'),
                   ],

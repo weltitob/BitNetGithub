@@ -54,7 +54,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 ,
         body: Container(
           margin: EdgeInsets.only(
-            top: AppTheme.cardPadding * 5.hs,
+            top: AppTheme.cardPadding * 1.hs,
             bottom: AppTheme.cardPadding * 2.hs,
             left: AppTheme.cardPadding,
             right: AppTheme.cardPadding,
@@ -107,10 +107,10 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   onTap: () async {
                     context.go('/authhome/pinverification');
                   }),
-              SizedBox(height: AppTheme.cardPadding * 2.h),
+              SizedBox(height: AppTheme.cardPadding * 1.h),
               Container(
                 margin: EdgeInsets.only(
-                    top: AppTheme.cardPadding, bottom: AppTheme.cardPadding),
+                    top: AppTheme.cardPadding, bottom: 2),
                 child: GestureDetector(
                   onTap: () {
                     logger.i("AGBS and Impressum was clicked");

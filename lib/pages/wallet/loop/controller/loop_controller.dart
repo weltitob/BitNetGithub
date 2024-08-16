@@ -20,10 +20,27 @@ class LoopGetxController extends GetxController {
   //false is lightning to onchain
   RxBool animate = false.obs;
   RxBool loadingState = false.obs;
-  TextEditingController satController = TextEditingController();
-  TextEditingController btcController = TextEditingController();
-  TextEditingController currencyController = TextEditingController();
+  late TextEditingController satController;
+  late TextEditingController btcController;
+  late TextEditingController currencyController;
+  late FocusNode amtNode;
+  @override
+  void onInit() {
+    super.onInit();
+    satController = TextEditingController();
+    btcController = TextEditingController();
+    currencyController = TextEditingController();
+    amtNode = FocusNode();
 
+  }
+  @override
+  void dispose() {
+    satController.dispose();
+    btcController.dispose();
+    currencyController.dispose();
+    amtNode.dispose();
+    super.dispose();
+  }
   void changeAnimate() {
     animate.value = !animate.value;
     log('Animate Value: ${animate.value}');

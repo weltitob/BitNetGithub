@@ -1,5 +1,4 @@
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:get/get.dart';
+
 
 class ReceivedInvoice {
   final String memo;
@@ -33,11 +32,11 @@ class ReceivedInvoice {
   });
 
   factory ReceivedInvoice.fromJson(Map<String, dynamic> json) {
-    LoggerService logger = Get.find();
+    //LoggerService logger = Get.find();
 
     String parseString(dynamic value, String fieldName) {
       if (value == null) {
-        logger.e('$fieldName is missing or null');
+        //logger.e('$fieldName is missing or null');
         throw ArgumentError('$fieldName is missing or null');
       }
       return value as String;
@@ -45,7 +44,7 @@ class ReceivedInvoice {
 
     int parseInt(dynamic value, String fieldName) {
       if (value == null) {
-        logger.e('$fieldName is missing or null');
+        //logger.e('$fieldName is missing or null');
         throw ArgumentError('$fieldName is missing or null');
       }
       return int.tryParse(value.toString()) ?? 0;
@@ -53,7 +52,7 @@ class ReceivedInvoice {
 
     bool parseBool(dynamic value, String fieldName) {
       if (value == null) {
-        logger.e('$fieldName is missing or null');
+        //logger.e('$fieldName is missing or null');
         throw ArgumentError('$fieldName is missing or null');
       }
       return value as bool;

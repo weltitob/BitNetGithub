@@ -17,13 +17,21 @@ import 'package:get/get.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
-class LightningReceiveTab extends GetWidget<ReceiveController> {
+class LightningReceiveTab extends StatefulWidget {
   const LightningReceiveTab({
     super.key,
   });
 
   @override
+  State<LightningReceiveTab> createState() => _LightningReceiveTabState();
+}
+
+class _LightningReceiveTabState extends State<LightningReceiveTab> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+    final controller = Get.find<ReceiveController>();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: SingleChildScrollView(
@@ -204,4 +212,7 @@ class LightningReceiveTab extends GetWidget<ReceiveController> {
       ),
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }

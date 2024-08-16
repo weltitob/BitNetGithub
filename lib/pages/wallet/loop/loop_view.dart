@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -28,18 +29,29 @@ class LoopScreen extends StatefulWidget {
 
 class _LoopScreenState extends State<LoopScreen> {
   final loopGetController = Get.put(LoopGetxController());
-
   @override
   void dispose() {
+    loopGetController.satController.clear();
     loopGetController.btcController.clear();
     loopGetController.currencyController.clear();
 
-    loopGetController.dispose();
+    //loopGetController.dispose();
     super.dispose();
   }
-
+  @override
+  void initState() {
+    super.initState();
+    WalletsController walletController = Get.find<WalletsController>();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+    walletController.predictedLightningBalance.value = walletController.lightningBalance.balance;
+    walletController.predictedBtcBalance.value = walletController.onchainBalance.confirmedBalance;
+    setState((){});
+    });
+  }
   @override
   Widget build(BuildContext context) {
+    WalletsController walletController = Get.find<WalletsController>();
+    print('triggered rebuild');
     return PopScope(
       onPopInvoked: (bool bool) {
         if (bool) {
@@ -76,7 +88,7 @@ class _LoopScreenState extends State<LoopScreen> {
                             Container(
                                 height: AppTheme.cardPadding * 8,
                                 margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                                child: BalanceCardBtc()),
+                                child: Obx(()=> BalanceCardBtc(balance: double.parse(walletController.predictedBtcBalance.value).toStringAsFixed(8),defaultUnit: BitcoinUnits.SAT, textColor: double.parse(walletController.onchainBalance.confirmedBalance) < double.parse(walletController.predictedBtcBalance.value) ? Colors.green :double.parse(walletController.onchainBalance.confirmedBalance) > double.parse(walletController.predictedBtcBalance.value) ? Colors.red : null))),
                             Container(
                               height: AppTheme.cardPadding * 1,
                             ),
@@ -85,10 +97,12 @@ class _LoopScreenState extends State<LoopScreen> {
                                 margin: EdgeInsets.symmetric(
                                   horizontal: AppTheme.cardPadding,
                                 ),
-                                child: BalanceCardLightning()),
+                                child: Obx((){ 
+                                  return BalanceCardLightning(balance: double.parse(walletController.predictedLightningBalance.value).toStringAsFixed(8),textColor: double.parse(walletController.lightningBalance.balance) < double.parse(walletController.predictedLightningBalance.value) ? Colors.green :double.parse(walletController.lightningBalance.balance) > double.parse(walletController.predictedLightningBalance.value) ? Colors.red : null);
+                                  })),
                           ],
                         ),
-                        Align(
+                            Align(
                           alignment: Alignment.center,
                           child: Obx(() => AnimatedRotation(
                                 turns: loopGetController.animate.value ? 1 / 2 : 3 / 2,
@@ -100,6 +114,12 @@ class _LoopScreenState extends State<LoopScreen> {
                                       iconData: Icons.arrow_back,
                                       onTap: () {
                                         loopGetController.changeAnimate();
+                                        double lightningBalance = double.parse(walletController.predictedLightningBalance.value);
+                                        double normalLightningBalance = double.parse(walletController.lightningBalance.balance);
+                                        double difference = normalLightningBalance - lightningBalance;
+                                        walletController.predictedBtcBalance.value = (double.parse(walletController.onchainBalance.confirmedBalance) - difference).toString();
+                                        walletController.predictedLightningBalance.value = (double.parse(walletController.lightningBalance.balance) + difference).toString();
+                                        setState((){});
                                       }),
                                 ),
                               )),
@@ -110,19 +130,48 @@ class _LoopScreenState extends State<LoopScreen> {
                   SizedBox(
                     height: AppTheme.cardPadding * 1,
                   ),
+                   
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                    child: AmountWidget(
-                      enabled: () => true,
-                      bitcoinUnit: BitcoinUnits.SAT,
-                      btcController: loopGetController.btcController,
-                      currController: loopGetController.currencyController,
-                      satController: loopGetController.satController,
-                      focusNode: FocusNode(),
-                      onAmountChange: (type, currency) {},
-                      context: context,
-                      autoConvert: true,
-                      swapped: Get.find<WalletsController>().reversed.value,
+                    child: Obx(
+                      ()=> AmountWidget(
+                        enabled: () => true,
+                        bitcoinUnit: BitcoinUnits.SAT,
+                        btcController: loopGetController.btcController,
+                        currController: loopGetController.currencyController,
+                        satController: loopGetController.satController,
+                        lowerBound: 0,
+                        upperBound: loopGetController.animate.value ? int.parse(walletController.onchainBalance.confirmedBalance) : int.parse(walletController.lightningBalance.balance),
+                        boundType: BitcoinUnits.SAT,
+                        focusNode: loopGetController.amtNode,
+                        onAmountChange: (type, currency) {
+                          WalletsController walletController = Get.find<WalletsController>();
+                          late String sats;
+                          if(type == 'BTC') {
+                           sats = CurrencyConverter.convertBitcoinToSats(double.parse(currency)).toString();
+
+                          } else {
+                             sats = loopGetController.satController.text;
+                          }
+                                                  print('current amount= $sats');
+                      
+                          bool toLightning = loopGetController.animate.value;
+                          try {
+                           walletController.predictedLightningBalance.value = (toLightning ? double.parse(walletController.lightningBalance.balance) + double.parse(sats) : double.parse(walletController.lightningBalance.balance) - double.parse(sats)).toString();
+                           walletController.predictedBtcBalance.value = (toLightning ? double.parse(walletController.onchainBalance.confirmedBalance) - double.parse(sats) : double.parse(walletController.onchainBalance.confirmedBalance) + double.parse(sats)).toString();
+                           print('predictedlightning ${walletController.predictedLightningBalance.value}');
+                                                    print('predictedBtc ${walletController.predictedBtcBalance.value}');
+                            setState((){});
+                          } catch(e){
+                            walletController.predictedLightningBalance.value = walletController.lightningBalance.balance;
+                            walletController.predictedBtcBalance.value = walletController.onchainBalance.confirmedBalance;
+                          }
+                          
+                        },
+                        context: context,
+                        autoConvert: true,
+                        swapped: Get.find<WalletsController>().reversed.value,
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -131,13 +180,15 @@ class _LoopScreenState extends State<LoopScreen> {
                 ],
               ),
             ),
-            BottomCenterButton(
-              //loopGetController.loadingState.value
-              buttonTitle: loopGetController.animate.value ? L10n.of(context)!.onChainLightning : L10n.of(context)!.lightningOnChain,
-              onButtonTap: () {
-                loopGetController.animate.value ? loopGetController.loopInQuote(context) : loopGetController.loopOutQuote(context);
-              },
-              buttonState: loopGetController.loadingState.value ? ButtonState.loading : ButtonState.idle,
+            Obx(
+              ()=> BottomCenterButton(
+                //loopGetController.loadingState.value
+                buttonTitle: loopGetController.animate.value ? L10n.of(context)!.onChainLightning : L10n.of(context)!.lightningOnChain,
+                onButtonTap: () {
+                  loopGetController.animate.value ? loopGetController.loopInQuote(context) : loopGetController.loopOutQuote(context);
+                },
+                buttonState: loopGetController.loadingState.value ? ButtonState.loading : ButtonState.idle,
+              ),
             ),
           ],
         ),

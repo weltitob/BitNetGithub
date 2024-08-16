@@ -83,6 +83,7 @@ class _AmountWidgetState extends State<AmountWidget> {
     enabled = widget.enabled?.call() ?? true;
     btcPriceStream = Get.find<WalletsController>().chartLines.listen((data) {
       setState(() {});
+      print('price stream should be updated now.');
     });
     super.initState();
   }
@@ -174,11 +175,12 @@ class _AmountWidgetState extends State<AmountWidget> {
                             },
                             textAlign: TextAlign.center,
                             onChanged: (text) {
+                            
                               if (widget.onAmountChange != null) {
                                 if (swapped) {
-                                  widget.onAmountChange!(currencyType, widget.btcController.text);
+                                  //widget.onAmountChange!(currencyType, widget.btcController.text.isEmpty ? '0' : widget.btcController.text);
                                 } else {
-                                  widget.onAmountChange!(currencyType, widget.btcController.text);
+                                  widget.onAmountChange!(currencyType, widget.btcController.text.isEmpty ? '0' : widget.btcController.text);
                                 }
                               }
                             },
@@ -209,7 +211,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                                 ),
                               ], // Only allow numerical values with a decimal point or without if SAT
 
-                              currentUnit == BitcoinUnits.SAT
+                              (currentUnit == BitcoinUnits.SAT && !swapped)
                                   ? FilteringTextInputFormatter.allow(RegExp(r'(^\d+)'))
                                   : FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
                               // Restrict the range of input to be within 0 and 2000
@@ -341,7 +343,7 @@ class _AmountWidgetState extends State<AmountWidget> {
         ? CurrencyConverter.convertBitcoinToSats(unitEquivalent.amount)
         : CurrencyConverter.convertSatoshiToBTC((unitEquivalent.amount as int).toDouble());
     if (widget.autoConvert) {
-      processAutoConvert(unitEquivalent);
+      processAutoConvert(unitEquivalent, oppositeUnit);
     } else {
       if (unitEquivalent.bitcoinUnit == BitcoinUnits.BTC && currentUnit != BitcoinUnits.BTC) {
         widget.btcController.text = unitEquivalent.amount.toString();
@@ -368,7 +370,7 @@ class _AmountWidgetState extends State<AmountWidget> {
     });
   }
 
-  void processAutoConvert(BitcoinUnitModel unitEquivalent) {
+  void processAutoConvert(BitcoinUnitModel unitEquivalent, double oppositeUnit) {
     if (unitEquivalent.bitcoinUnit != currentUnit) {
       currentUnit = unitEquivalent.bitcoinUnit;
       if (currentUnit == BitcoinUnits.BTC) {
@@ -404,15 +406,29 @@ class _AmountWidgetState extends State<AmountWidget> {
         : "0.00";
     widget.btcController.text = double.parse(currencyEquivalent).toString();
     widget.satController.text = double.parse(currencyEquivalentSats).round().toString();
+    print('satController after currency change: ${widget.satController.text}');
     if (widget.autoConvert) {
       final unitEquivalent = CurrencyConverter.convertToBitcoinUnit(
           currentUnit == BitcoinUnits.BTC
               ? double.parse((!widget.btcController.text.isEmpty ? widget.btcController.text : "0.0"))
               : double.parse(!widget.satController.text.isEmpty ? widget.satController.text : "0"),
           currentUnit);
+    final oppositeUnit = unitEquivalent.bitcoinUnit == BitcoinUnits.BTC
+        ? CurrencyConverter.convertBitcoinToSats(unitEquivalent.amount)
+        : CurrencyConverter.convertSatoshiToBTC((unitEquivalent.amount as int).toDouble());
 
-      processAutoConvert(unitEquivalent);
+      processAutoConvert(unitEquivalent, oppositeUnit);
     }
+        String? currencyType = swapped ? "USD" : currentUnit.name;
+              if(widget.onAmountChange!=null) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    widget.onAmountChange!(currencyType, widget.btcController.text.isEmpty ? '0' : widget.btcController.text);
+
+      
+
+    });
+              }
     return Obx(() {
       Get.find<WalletsController>().chartLines.value;
       return Row(
@@ -482,7 +498,7 @@ class BoundInputFormatter extends TextInputFormatter {
       }
     } else {
       convertedNewValue =
-          double.parse(CurrencyConverter.convertCurrency(inputCurrency, double.parse(newValue.text), boundType.name, bitcoinPrice));
+          double.parse(CurrencyConverter.convertCurrency(inputCurrency, double.tryParse(newValue.text) ?? 0, boundType.name, bitcoinPrice));
       if (convertedNewValue < lowerBound) {
         underBound?.call(convertedNewValue);
 

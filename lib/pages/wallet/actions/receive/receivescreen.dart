@@ -41,7 +41,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-
+    
     decodeNetwork();
 
     _tabController.addListener(() {
@@ -50,9 +50,9 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       }
     });
 
-    _tabController.animation?.addListener(() {
-      setState(() {});
-    });
+    // _tabController.animation?.addListener(() {
+    //   setState(() {});
+    // });
 
 
     controller.btcController = TextEditingController();
@@ -74,19 +74,20 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       BitcoinTransaction bitcoinTransaction = BitcoinTransaction.fromJson(restResponse.data);
       sendPaymentDataOnchainReceived(restResponse.data);
 
-      showOverlayTransaction(
-          context,
-          "Onchain transaction settled",
-          TransactionItemData(
-            amount: bitcoinTransaction.amount.toString(),
-            timestamp: bitcoinTransaction.timeStamp,
-            type: TransactionType.onChain,
-            fee: 0,
-            status: TransactionStatus.confirmed,
-            direction: TransactionDirection.received,
-            receiver: bitcoinTransaction.destAddresses[0],
-            txHash: bitcoinTransaction.txHash ?? 'null',
-          ));
+      if (Get.overlayContext != null && Get.overlayContext!.mounted)
+        showOverlayTransaction(
+            Get.overlayContext!,
+            "Onchain transaction settled",
+            TransactionItemData(
+              amount: bitcoinTransaction.amount.toString(),
+              timestamp: bitcoinTransaction.timeStamp,
+              type: TransactionType.onChain,
+              fee: 0,
+              status: TransactionStatus.confirmed,
+              direction: TransactionDirection.received,
+              receiver: bitcoinTransaction.destAddresses[0],
+              txHash: bitcoinTransaction.txHash ?? 'null',
+            ));
       //});
     }, onError: (error) {
       logger.e("Received error for Transactions-stream: $error");
@@ -99,25 +100,27 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
       logger.i("Result: $result");
       ReceivedInvoice receivedInvoice = ReceivedInvoice.fromJson(result);
       if (receivedInvoice.settled == true) {
+        sendPaymentDataInvoiceReceived(restResponse.data);
+
         logger.i("showOverlay should be triggered now");
-        showOverlayTransaction(
-          context,
-          "Lightning invoice settled",
-          TransactionItemData(
-            amount: receivedInvoice.amtPaidSat.toString(),
-            timestamp: receivedInvoice.settleDate,
-            type: TransactionType.lightning,
-            fee: 0,
-            status: TransactionStatus.confirmed,
-            direction: TransactionDirection.received,
-            receiver: receivedInvoice.paymentRequest ?? "Yourself",
-            txHash: receivedInvoice.rHash ?? "forwarded trough lightning",
-          ),
-        );
+        if (Get.overlayContext != null && Get.overlayContext!.mounted)
+          showOverlayTransaction(
+            Get.overlayContext!,
+            "Lightning invoice settled",
+            TransactionItemData(
+              amount: receivedInvoice.amtPaidSat.toString(),
+              timestamp: receivedInvoice.settleDate,
+              type: TransactionType.lightning,
+              fee: 0,
+              status: TransactionStatus.confirmed,
+              direction: TransactionDirection.received,
+              receiver: receivedInvoice.paymentRequest ?? "Yourself",
+              txHash: receivedInvoice.rHash ?? "forwarded trough lightning",
+            ),
+          );
         //generate a new invoice for the user with 0 amount
         logger.i("Generating new empty invoice for user");
-        ReceiveController(context).getInvoice(0, "Empty invoice");
-        sendPaymentDataInvoiceReceived(restResponse.data);
+        if (Get.context != null && Get.context!.mounted) ReceiveController(Get.context!).getInvoice(0, "Empty invoice");
       } else {
         logger.i("Invoice received but not settled yet: ${receivedInvoice.settled}");
       }
@@ -220,11 +223,12 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
                   child: TabBar(
                     dividerColor: Colors.transparent,
                     indicatorColor: Colors.transparent,
+                    indicatorSize: TabBarIndicatorSize.tab,
                     controller: _tabController,
                     tabs: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: [ 
                           Icon(FontAwesomeIcons.bolt),
                           SizedBox(
                             width: AppTheme.cardPadding * 0.25,

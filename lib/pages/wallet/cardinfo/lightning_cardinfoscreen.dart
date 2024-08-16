@@ -1,27 +1,18 @@
-import 'dart:math' as math;
-
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
-import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
-import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
-import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
-import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:bitnet/pages/wallet/cardinfo/controller/lightning_info_controller.dart';
-import 'package:bitnet/pages/wallet/component/wallet_filter_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class LightningCardInformationScreen extends StatefulWidget {
   const LightningCardInformationScreen({super.key});
@@ -33,6 +24,8 @@ class LightningCardInformationScreen extends StatefulWidget {
 
 class _LightningCardInformationScreenState
     extends State<LightningCardInformationScreen> {
+      late ScrollController scrollController;
+      List<TransactionItem> transactions = List.empty(growable:true);
 //   @override
 //   Widget build(BuildContext context) {
 //     return bitnetScaffold(
@@ -56,77 +49,31 @@ class _LightningCardInformationScreenState
 
   @override
   void initState() {
+        final controller = Get.put(LightningInfoController());
+        scrollController = ScrollController();
+    controller.loadingState.listen((val) {
+   setState((){});
+    });
     super.initState();
+
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(LightningInfoController());
-    return bitnetScaffold(
-      extendBodyBehindAppBar: true,
-      appBar: bitnetAppBar(
-        context: context,
-        onTap: () {
-          context.go("/feed");
-        },
-        text: L10n.of(context)!.lightningCardInfo,
-      ),
-      context: context,
-      body: PopScope(
-        canPop: false,
-        onPopInvoked: (v) {
-          context.go("/feed");
-        },
-        child: Obx(
-          () => controller.loadingState.value
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Padding(
-                  padding: const EdgeInsets.only(top: 60.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                            height: 200,
-                            padding: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: BalanceCardLightning()),
-                        const SizedBox(
-                          height: AppTheme.elementSpacing,
-                        ),
-                        StatefulBuilder(builder: (context, setState) {
-                          return Column(
-                            children: [
-                              SearchFieldWidget(
-                                hintText: L10n.of(context)!.search,
-                                handleSearch: (v) {
-                                  setState(() {
-                                    // controller.searchValue = v;
-                                  });
-                                },
-                                suffixIcon: IconButton(
-                                    icon: Icon(FontAwesomeIcons.filter),
-                                    onPressed: () async {
-                                      await BitNetBottomSheet(
-                                          context: context,
-                                          child: WalletFilterScreen());
-                                      setState(() {});
-                                    }),
-                                isSearchEnabled: true,
-                              ),
-                              controller.lightningInvoices.isEmpty
-                                  ? const Text('Loading')
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: controller
-                                          .combinedTransactions.length,
-                                      itemBuilder: (context, index) {
-                                        final transaction = controller
+    final List<dynamic> data = controller.combinedTransactions;
+    if(!controller.loadingState.value && transactions.isEmpty) {
+    Future.microtask((){
+      for(int index = 0; index < data.length; index++) {
+final transaction = controller
                                             .combinedTransactions[index];
                                         if (transaction is ReceivedInvoice) {
-                                          return TransactionItem(
+                                          transactions.add( TransactionItem(
                                             context: context,
                                             data: TransactionItemData(
                                               timestamp: transaction.settleDate,
@@ -146,10 +93,10 @@ class _LightningCardInformationScreenState
                                                   ? TransactionStatus.confirmed
                                                   : TransactionStatus.failed,
                                             ),
-                                          );
+                                          ));
                                         } else if (transaction
                                             is LightningPayment) {
-                                          return TransactionItem(
+                                          transactions.add( TransactionItem(
                                             context: context,
                                             data: TransactionItemData(
                                               timestamp:
@@ -170,23 +117,88 @@ class _LightningCardInformationScreenState
                                                   ? TransactionStatus.confirmed
                                                   : TransactionStatus.failed,
                                             ),
-                                          );
+                                          ));
                                         }
-                                        return SizedBox.shrink();
-                                      },
-                                    ),
-                            ],
-                          );
-                        }),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                      ],
+
+      }
+    },).then((val){
+      setState((){});
+    });
+
+    }
+   return bitnetScaffold(
+  extendBodyBehindAppBar: true,
+  appBar: bitnetAppBar(
+    context: context,
+    onTap: () {
+      context.go("/feed");
+    },
+    text: L10n.of(context)!.lightningCardInfo,
+  ),
+  context: context,
+  body: PopScope(
+    canPop: false,
+    onPopInvoked: (v) {
+      context.go("/feed");
+    },
+    child: Obx(
+      () => controller.loadingState.value
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : CustomScrollView(
+            controller: scrollController,
+            
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.only(top: 60.0),
+                  sliver: SliverToBoxAdapter(
+                    child: Container(
+                      height: 200,
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: BalanceCardLightning(),
                     ),
                   ),
                 ),
-        ),
-      ),
-    );
+                SliverToBoxAdapter(
+                  child: const SizedBox(
+                    height: AppTheme.elementSpacing * 4
+                    ,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                    Text(L10n.of(context)!.activity, style: Theme.of(context).textTheme.titleLarge),
+                    SizedBox(height: AppTheme.elementSpacing.h),
+                  ],
+                ),
+              )
+            ),
+          
+                transactions.isEmpty
+                    ? SliverToBoxAdapter(
+                        child: const Text('Loading'),
+                      )
+                    : Transactions(
+                        hideLightning: true,
+                        hideOnchain: true,
+                        filters: ['Lightning'],
+                        customTransactions: transactions,
+                        scrollController: scrollController,
+                      ),
+                SliverPadding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                ),
+              ],
+            ),
+    ),
+  ),
+);
+
   }
 }

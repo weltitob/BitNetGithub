@@ -7,14 +7,13 @@ import 'dart:math' as math;
 
 import 'package:bitnet/backbone/mempool_utils.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
-import 'package:bitnet/components/chart/chart.dart';
 import 'package:bitnet/models/mempool_models/address_component.dart';
-import 'package:bitnet/models/mempool_models/transactionRbfModel.dart';
-import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
-import 'package:bitnet/models/mempool_models/validate_address_component.dart';
-import 'package:bitnet/models/mempool_models/txModel.dart' as txModel;
 import 'package:bitnet/models/mempool_models/transactionCacheModel.dart'
     as cacheTx;
+import 'package:bitnet/models/mempool_models/transactionRbfModel.dart';
+import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
+import 'package:bitnet/models/mempool_models/txModel.dart' as txModel;
+import 'package:bitnet/models/mempool_models/validate_address_component.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/model/transaction_model.dart';
 import 'package:dio/dio.dart';
@@ -783,7 +782,7 @@ class TransactionController extends BaseController {
 
   Future<void> totalBTC() async {
     double total = 0.0;
-    for (int i = 0; i <= transactionModel!.vout!.length; i++) {
+    for (int i = 0; i < transactionModel!.vout!.length; i++) {
       total = (transactionModel!.vout?[i].value!)! / 100000000 + total;
       totalOutPutBTC.value = total;
     }
