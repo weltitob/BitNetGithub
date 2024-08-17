@@ -2,7 +2,6 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
-
 class PurchaseSheetController extends BaseController
     with GetTickerProviderStateMixin {
   late TabController controller;
@@ -16,9 +15,13 @@ class PurchaseSheetController extends BaseController
   void onInit() {
     super.onInit();
 
+    controller = TabController(length: 3, vsync: this);
     satCtrlBuy = TextEditingController();
     btcCtrlBuy = TextEditingController();
     currCtrlBuy = TextEditingController();
+
+    // Request focus on the nodeBuy as soon as the controller is initialized
+    nodeBuy.requestFocus();
   }
 
   @override
@@ -27,6 +30,7 @@ class PurchaseSheetController extends BaseController
     btcCtrlBuy.dispose();
     currCtrlBuy.dispose();
     nodeBuy.dispose();
+    controller.dispose();
     super.dispose();
   }
 }
@@ -37,16 +41,19 @@ class SellSheetController extends BaseController
   late TextEditingController satCtrlBuy;
   late TextEditingController btcCtrlBuy;
   late TextEditingController currCtrlBuy;
-  FocusNode nodeBuy = FocusNode();
+  FocusNode nodeSell = FocusNode();
   ButtonState buttonState = ButtonState.idle;
 
   @override
   void onInit() {
     super.onInit();
-
+    controller = TabController(length: 3, vsync: this);
     satCtrlBuy = TextEditingController();
     btcCtrlBuy = TextEditingController();
     currCtrlBuy = TextEditingController();
+
+    // Request focus on the nodeBuy as soon as the controller is initialized
+    nodeSell.requestFocus();
   }
 
   @override
@@ -54,7 +61,8 @@ class SellSheetController extends BaseController
     satCtrlBuy.dispose();
     btcCtrlBuy.dispose();
     currCtrlBuy.dispose();
-    nodeBuy.dispose();
+    nodeSell.dispose();
+    controller.dispose();
     super.dispose();
   }
 }

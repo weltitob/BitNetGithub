@@ -171,6 +171,7 @@ class WalletsController extends BaseController {
     Get.put(WalletFilterController());
     Get.put(BitcoinScreenController());
     Get.put(PurchaseSheetController());
+    Get.put(SellSheetController());
     scrollController = ScrollController();
     reversed.value = LocalStorage.instance.getBool(reversedConstant);
     selectedCard.value = LocalStorage.instance.getString(cardTopConstant) ?? 'onchain';

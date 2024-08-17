@@ -53,7 +53,11 @@ abstract class AppTheme {
 
   static String stripeLiveKey = 'pk_live_51Ov55sRxZq4zmuaGqPWpgAj2CQWjApOVT6zoILTT5vRbwsltB6FFCS8RpfC0DvaeJEs7SztsSFLajGJpsKWZGkNp00a3AtBcwb';
 
+  static String createStripeAccountUrl = "https://bitnet.ai/#/website/redirect";
+
   static String whatsappChannelUrl = 'https://www.whatsapp.com/bitnet.ai/';
+
+
 
   static String instagramUrl = 'https://www.instagram.com/bitnet.ai/';
   static String twitterUrl = 'https://twitter.com/bitnet_ai';

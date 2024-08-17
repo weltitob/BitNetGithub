@@ -1,5 +1,7 @@
+import 'package:bitnet/backbone/cloudfunctions/stripe/createstripeaccount.dart';
 import 'package:bitnet/backbone/cloudfunctions/stripe/requestclientsecret.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -22,6 +24,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BitcoinScreen extends GetWidget<BitcoinScreenController> {
   const BitcoinScreen({
@@ -181,15 +184,13 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
               BitNetBottomSheet(
                   height: MediaQuery.of(context).size.height * 0.85,
                   context: context,
-
                   child: PurchaseSheet());
             },
             onRightButtonTap: () {
               BitNetBottomSheet(
-              height: MediaQuery.of(context).size.height * 0.85,
-              context: context,
-              child: SellSheet());
-
+                  height: MediaQuery.of(context).size.height * 0.85,
+                  context: context,
+                  child: SellSheet());
             },
           ),
         ],
@@ -215,41 +216,32 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
       ),
       body: Stack(
         children: [
-          TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: controller.controller,
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: AppTheme.cardPadding * 4,
-                    ),
-                    AmountWidget(
-                        swapped: Get.find<WalletsController>().reversed.value,
-                        enabled: () => true,
-                        satController: controller.satCtrlBuy,
-                        btcController: controller.btcCtrlBuy,
-                        currController: controller.currCtrlBuy,
-                        focusNode: controller.nodeBuy,
-                        autoConvert: true,
-                        context: context),
-                    SizedBox(
-                      height: AppTheme.cardPadding * 2,
-                    ),
+          Column(
+            children: [
+              SizedBox(
+                height: AppTheme.cardPadding * 4,
+              ),
+              AmountWidget(
+                  swapped: Get.find<WalletsController>().reversed.value,
+                  enabled: () => true,
+                  satController: controller.satCtrlBuy,
+                  btcController: controller.btcCtrlBuy,
+                  currController: controller.currCtrlBuy,
+                  focusNode: controller.nodeBuy,
+                  autoConvert: true,
+                  context: context),
+              SizedBox(
+                height: AppTheme.cardPadding * 2,
+              ),
+              SizedBox(height: AppTheme.cardPadding),
 
-                    SizedBox(height: AppTheme.cardPadding),
-
-                  ],
-                ),
-
-              ]),
+            ],
+          ),
           BottomCenterButton(
               buttonTitle: "Secure my Bitcoin",
               buttonState: controller.buttonState,
               onButtonTap: () async {
-                //change button state to loading
-                //disable the amount widget for changes afterwards
-
+                //why doesnt it switch then
                 controller.buttonState = ButtonState.loading;
                 try{
                 final String clientSecret =
@@ -265,7 +257,6 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                     // ),
                     paymentMethodOrder: [
                       'apple_pay', 'google_pay', 'paypal', 'klarna', 'card',
-
                     ],
                     googlePay: PaymentSheetGooglePay(
                       merchantCountryCode: 'US',
@@ -303,63 +294,63 @@ class SellSheet extends GetWidget<SellSheetController> {
 
   @override
   Widget build(BuildContext context) {
+    final logger = Get.find<LoggerService>();
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
       appBar: bitnetAppBar(
         hasBackButton: false,
-        text: L10n.of(context)!.purchaseBitcoin,
+        text: L10n.of(context)!.sell,
         context: context,
       ),
       body: Stack(
         children: [
-          TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: controller.controller,
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: AppTheme.cardPadding * 4,
-                    ),
-                    AmountWidget(
-                        swapped: Get.find<WalletsController>().reversed.value,
-                        enabled: () => true,
-                        satController: controller.satCtrlBuy,
-                        btcController: controller.btcCtrlBuy,
-                        currController: controller.currCtrlBuy,
-                        focusNode: controller.nodeBuy,
-                        autoConvert: true,
-                        context: context),
-                    SizedBox(
-                      height: AppTheme.cardPadding * 2,
-                    ),
-
-                    SizedBox(height: AppTheme.cardPadding),
-
-                  ],
-                ),
-                // PaymentMethods(),
-                // AddPaymentMethod(),
-              ]),
+          Column(
+            children: [
+              SizedBox(
+                height: AppTheme.cardPadding * 4,
+              ),
+              AmountWidget(
+                  swapped: Get.find<WalletsController>().reversed.value,
+                  enabled: () => true,
+                  satController: controller.satCtrlBuy,
+                  btcController: controller.btcCtrlBuy,
+                  currController: controller.currCtrlBuy,
+                  focusNode: controller.nodeSell,
+                  autoConvert: true,
+                  context: context),
+              SizedBox(
+                height: AppTheme.cardPadding * 2,
+              ),
+              SizedBox(height: AppTheme.cardPadding),
+            ],
+          ),
           BottomCenterButton(
               buttonTitle: "Sell my Bitcoin",
               buttonState: controller.buttonState,
               onButtonTap: () async {
-                //change button state to loading
-                //disable the amount widget for changes afterwards
-
                 controller.buttonState = ButtonState.loading;
-                try{
+                bool hasStripeAccount = false;
+                if(!hasStripeAccount){
+                  logger.i("Creating a new stripe account for the user...");
+                  //get the link for the user
+                  String accountlink = await createStripeAccount("USERIDNEW", "DE");
+                  //launch the link for the user
+                  logger.i("Opening the link now... $accountlink");
+                  //convert the link to a url
+                  final uri = Uri.parse(accountlink);
+                  //launch the link
+                  await launchUrl(uri);
+                  //we need to redirect to the app
 
-                  try {
+                  //then we proceed with the payment
 
-                  } catch (e) {
-                    // Handle errors
-                    print('Error presenting payment sheet: $e');
-                  }
-                } catch (e) {
-                  print(e);
+
+                } else {
+                  //use the stripe account that already exists for the user to pay him out
+                  logger.i("Using the existing stripe account for the user...");
+
+
                 }
                 controller.buttonState = ButtonState.idle;
               })
@@ -368,7 +359,6 @@ class SellSheet extends GetWidget<SellSheetController> {
     );
   }
 }
-
 //
 // class NewPaymentCardHorizontalWidget extends StatelessWidget {
 //   NewPaymentCardHorizontalWidget({

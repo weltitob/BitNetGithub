@@ -52,6 +52,7 @@ import 'package:bitnet/pages/website/contact/report/report.dart';
 import 'package:bitnet/pages/website/contact/submitidea/submitidea.dart';
 import 'package:bitnet/pages/website/product/aboutus/aboutus.dart';
 import 'package:bitnet/pages/website/product/ourteam/ourteam.dart';
+import 'package:bitnet/pages/website/redirecttoapp.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -326,6 +327,10 @@ class AppRoutes {
           GoRoute(
             path: 'aboutus',
             builder: (ctx, state) => const AboutUs(),
+          ),
+          GoRoute(
+            path: 'redirect',
+            builder: (ctx, state) => const RedirectToApp(),
           ),
           GoRoute(
             path: 'ourteam',
