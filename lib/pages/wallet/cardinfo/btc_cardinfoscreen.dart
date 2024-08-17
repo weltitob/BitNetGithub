@@ -186,13 +186,19 @@ class _AddressesWidgetState extends State<AddressesWidget> {
       ),
       body: isLoadingAddress
           ? Container(
-        height: AppTheme.cardPadding * 6,
+        margin: EdgeInsets.symmetric(
+            horizontal: AppTheme.cardPadding * 2),
+        height: AppTheme.cardPadding * 5,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Loading your OnChain addresses... This might take a while"),
+
             Center(
               child: dotProgress(context),
             ),
+            SizedBox(height: AppTheme.cardPadding),
+            Text("Loading your OnChain addresses... This might take a while", textAlign: TextAlign.center,),
           ],
         ),
       )
