@@ -91,7 +91,6 @@ class _TransactionItemState extends State<TransactionItem> with AutomaticKeepAli
     String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
-
     final bitcoinPrice = chartLine?.price;
 
     final currencyEquivalent =

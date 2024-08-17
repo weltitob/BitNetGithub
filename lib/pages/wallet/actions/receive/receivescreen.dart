@@ -36,8 +36,8 @@ class ReceiveScreen extends StatefulWidget {
 class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProviderStateMixin {
   final controller = Get.find<ReceiveController>();
   late TabController _tabController;
-  late Animation<double> _animation;
-  late AnimationController _animationController;
+  // late Animation<double> _animation;
+  // late AnimationController _animationController;
 
   @override
   void initState() {
@@ -172,29 +172,25 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
         actions: [
           Obx(() {
             return controller.receiveType == ReceiveType.Lightning
-                ? SizeTransition(
-              sizeFactor: _animation,
-              axis: Axis.horizontal,
-              child: Obx(() {
-                return LongButtonWidget(
-                  buttonType: ButtonType.transparent,
-                  customHeight: AppTheme.cardPadding * 1.5,
-                  customWidth: AppTheme.cardPadding * 4,
-                  leadingIcon: controller.createdInvoice.value
-                      ? Icon(FontAwesomeIcons.cancel,
-                      color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80)
-                      : Icon(FontAwesomeIcons.refresh,
-                      color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80),
-                  title: "${controller.min.value}:${controller.sec.value}",
-                  onTap: () {
-                    controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
-                    controller.timer.cancel();
-                    controller.duration = Duration(minutes: 20);
-                    controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
-                  },
-                );
-              }),
-            )
+                ? Obx(() {
+                  return LongButtonWidget(
+                    buttonType: ButtonType.transparent,
+                    customHeight: AppTheme.cardPadding * 1.5,
+                    customWidth: AppTheme.cardPadding * 4,
+                    leadingIcon: controller.createdInvoice.value
+                        ? Icon(FontAwesomeIcons.cancel,
+                        color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80)
+                        : Icon(FontAwesomeIcons.refresh,
+                        color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80),
+                    title: "${controller.min.value}:${controller.sec.value}",
+                    onTap: () {
+                      controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
+                      controller.timer.cancel();
+                      controller.duration = Duration(minutes: 20);
+                      controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+                    },
+                  );
+                })
                 : RoundedButtonWidget(
                     size: AppTheme.cardPadding * 1.5,
                     buttonType: ButtonType.transparent,

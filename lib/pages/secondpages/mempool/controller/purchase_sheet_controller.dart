@@ -16,7 +16,6 @@ class PurchaseSheetController extends BaseController
   void onInit() {
     super.onInit();
 
-    controller = TabController(length: 3, vsync: this);
     satCtrlBuy = TextEditingController();
     btcCtrlBuy = TextEditingController();
     currCtrlBuy = TextEditingController();
@@ -28,7 +27,34 @@ class PurchaseSheetController extends BaseController
     btcCtrlBuy.dispose();
     currCtrlBuy.dispose();
     nodeBuy.dispose();
-    controller.dispose();
+    super.dispose();
+  }
+}
+
+class SellSheetController extends BaseController
+    with GetTickerProviderStateMixin {
+  late TabController controller;
+  late TextEditingController satCtrlBuy;
+  late TextEditingController btcCtrlBuy;
+  late TextEditingController currCtrlBuy;
+  FocusNode nodeBuy = FocusNode();
+  ButtonState buttonState = ButtonState.idle;
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    satCtrlBuy = TextEditingController();
+    btcCtrlBuy = TextEditingController();
+    currCtrlBuy = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    satCtrlBuy.dispose();
+    btcCtrlBuy.dispose();
+    currCtrlBuy.dispose();
+    nodeBuy.dispose();
     super.dispose();
   }
 }

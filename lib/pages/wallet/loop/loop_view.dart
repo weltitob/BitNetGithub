@@ -51,7 +51,6 @@ class _LoopScreenState extends State<LoopScreen> {
   @override
   Widget build(BuildContext context) {
     WalletsController walletController = Get.find<WalletsController>();
-    print('triggered rebuild');
     return PopScope(
       onPopInvoked: (bool bool) {
         if (bool) {
@@ -153,14 +152,14 @@ class _LoopScreenState extends State<LoopScreen> {
                           } else {
                              sats = loopGetController.satController.text;
                           }
-                                                  print('current amount= $sats');
+                                                  // print('current amount= $sats');
                       
                           bool toLightning = loopGetController.animate.value;
                           try {
                            walletController.predictedLightningBalance.value = (toLightning ? double.parse(walletController.lightningBalance.balance) + double.parse(sats) : double.parse(walletController.lightningBalance.balance) - double.parse(sats)).toString();
                            walletController.predictedBtcBalance.value = (toLightning ? double.parse(walletController.onchainBalance.confirmedBalance) - double.parse(sats) : double.parse(walletController.onchainBalance.confirmedBalance) + double.parse(sats)).toString();
-                           print('predictedlightning ${walletController.predictedLightningBalance.value}');
-                                                    print('predictedBtc ${walletController.predictedBtcBalance.value}');
+                           // print('predictedlightning ${walletController.predictedLightningBalance.value}');
+                           //                          print('predictedBtc ${walletController.predictedBtcBalance.value}');
                             setState((){});
                           } catch(e){
                             walletController.predictedLightningBalance.value = walletController.lightningBalance.balance;

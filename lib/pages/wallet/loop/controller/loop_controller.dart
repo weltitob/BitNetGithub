@@ -5,14 +5,19 @@ import 'package:bitnet/backbone/cloudfunctions/loop/get_loopout_quote.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/loop_in.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/loop_out.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
+import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/loop/loop_quote_model.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:get/get.dart';
 
 class LoopGetxController extends GetxController {
@@ -31,8 +36,8 @@ class LoopGetxController extends GetxController {
     btcController = TextEditingController();
     currencyController = TextEditingController();
     amtNode = FocusNode();
-
   }
+
   @override
   void dispose() {
     satController.dispose();
@@ -41,6 +46,7 @@ class LoopGetxController extends GetxController {
     amtNode.dispose();
     super.dispose();
   }
+
   void changeAnimate() {
     animate.value = !animate.value;
     log('Animate Value: ${animate.value}');
@@ -96,83 +102,111 @@ class LoopGetxController extends GetxController {
   }
 
   _buildLoopOutDialog(context, LoopQuoteModel data) {
+
+    //
+    // final controller = Get.find<WalletsController>();
+    // // Use DateFormat for formatting the timestamp
+    // final chartLine = controller.chartLines.value;
+    // String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    // final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
+    // currency = currency ?? "USD";
+    //
+    // final bitcoinPrice = chartLine?.price;
+    // final currencyEquivalent =
+    // bitcoinPrice != null ? (double.parse(data.swapFeeSat) / 100000000 * bitcoinPrice).toStringAsFixed(2) : "0.00";
+
     return BitNetBottomSheet(
       context: context,
       child: bitnetScaffold(
         extendBodyBehindAppBar: true,
         context: context,
         appBar: bitnetAppBar(
+          hasBackButton: false,
           context: context,
           text: "Lightning to On-Chain",
         ),
-        body: Container(
-          child: Padding(
-            padding: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                 margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: AppTheme.elementSpacing,
+        body: Stack(
+          children: [
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppTheme.elementSpacing),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: AppTheme.elementSpacing,
+                          ),
+                          BitNetListTile(
+                            text: 'Swap Fee (SAT)',
+                            trailing: Text(data.swapFeeSat),
+                          ),
+                          BitNetListTile(
+                            text: 'HTLC Sweep Fee (SAT)',
+                            trailing: Text(data.htlcSweepFeeSat.toString()),
+                          ),
+                          BitNetListTile(
+                            text: 'Pre-pay amount (SAT)',
+                            trailing: Text(data.prepayAmtSat.toString()),
+                          ),
+                        ],
                       ),
-                      BitNetListTile(
-                        text: 'Swap Fee (SAT)',
-                        trailing: Text(data.swapFeeSat),
-                      ),
-                      BitNetListTile(
-                        text: 'HTLC Sweep Fee (SAT)',
-                        trailing: Text(data.htlcSweepFeeSat.toString()),
-                      ),
-                      BitNetListTile(
-                        text: 'Pre-pay amount (SAT)',
-                        trailing: Text(data.prepayAmtSat.toString()),
-                      ),
-                    ],
-                  ),
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //       vertical: AppTheme.cardPadding),
+                    //   child: Column(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       SizedBox(
+                    //         height: AppTheme.cardPadding,
+                    //       ),
+                    //       LongButtonWidget(
+                    //         title: "Transfer",
+                    //       ),
+                    //       SizedBox(
+                    //         height: AppTheme.elementSpacing,
+                    //       ),
+                    //       LongButtonWidget(
+                    //         title: "Cancel",
+                    //         onTap: () {
+                    //           Navigator.pop(context);
+                    //         },
+                    //         buttonType: ButtonType.transparent,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // )
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppTheme.cardPadding),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                     SizedBox(height: AppTheme.cardPadding,),
-                      LongButtonWidget(
-                        title: "Transfer",
-                        onTap: () {
-                          double amount =
-                              double.tryParse(btcController.text) ?? 0;
-                          int roundedAmount = amount.round();
-                          log(roundedAmount.toString());
-                          final mapData = {
-                            'amt': roundedAmount.toString(),
-                            'swapFee': data.swapFeeSat.toString(),
-                            'minerFee': data.htlcSweepFeeSat,
-                            'dest': data.swapPaymentDest,
-                            'maxPrepay': data.prepayAmtSat,
-                          };
-                          loopOut(mapData);
-                        },
-
-                      ),
-                      SizedBox(height: AppTheme.elementSpacing,),
-                      LongButtonWidget(
-                        title: "Cancel",
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        buttonType: ButtonType.transparent,
-
-                      ),
-                    ],
-                  ),
-                )
-              ],
+              ),
             ),
-          ),
+            BottomButtons(
+              leftButtonTitle: "Cancel",
+              rightButtonTitle: "Transfer",
+              onLeftButtonTap: () {
+                Navigator.pop(context);
+              },
+              onRightButtonTap: () {
+                double amount = double.tryParse(btcController.text) ?? 0;
+                int roundedAmount = amount.round();
+                log(roundedAmount.toString());
+                final mapData = {
+                  'amt': roundedAmount.toString(),
+                  'swapFee': data.swapFeeSat.toString(),
+                  'minerFee': data.htlcSweepFeeSat,
+                  'dest': data.swapPaymentDest,
+                  'maxPrepay': data.prepayAmtSat,
+                };
+                loopOut(mapData);
+              },
+            )
+          ],
         ),
       ),
     );
@@ -196,7 +230,8 @@ class LoopGetxController extends GetxController {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                  margin:
+                      EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                   child: Column(
                     children: [
                       SizedBox(
@@ -214,11 +249,14 @@ class LoopGetxController extends GetxController {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppTheme.cardPadding),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: AppTheme.cardPadding),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(height: AppTheme.cardPadding,),
+                      SizedBox(
+                        height: AppTheme.cardPadding,
+                      ),
                       LongButtonWidget(
                         title: "Transfer",
                         onTap: () {
@@ -233,7 +271,9 @@ class LoopGetxController extends GetxController {
                           loopin(mapData);
                         },
                       ),
-                      SizedBox(height: AppTheme.elementSpacing,),
+                      SizedBox(
+                        height: AppTheme.elementSpacing,
+                      ),
                       LongButtonWidget(
                         title: "Cancel",
                         onTap: () {
@@ -251,5 +291,4 @@ class LoopGetxController extends GetxController {
       ),
     );
   }
-
 }
