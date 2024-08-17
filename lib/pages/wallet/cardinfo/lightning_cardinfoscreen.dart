@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
@@ -150,21 +151,25 @@ final transaction = controller
             controller: scrollController,
             
               slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.only(top: 60.0),
-                  sliver: SliverToBoxAdapter(
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: AppTheme.cardPadding * 3),
                     child: Container(
-                      height: 200,
-                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      height: AppTheme.cardPadding * 7.5,
+                      padding:
+                      EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                       child: BalanceCardLightning(),
                     ),
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: const SizedBox(
-                    height: AppTheme.elementSpacing * 4
-                    ,
-                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                    child: const BitNetListTile(
+                      text: "Possible Capacity", //this is the inbound liquidity of the users node
+                      trailing: Text("9000"),
+                    ),
+                  )
                 ),
                 SliverToBoxAdapter(
                   child: Padding(

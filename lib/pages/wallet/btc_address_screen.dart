@@ -171,40 +171,31 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
             : CustomScrollView(
               controller: scrollController,
                 slivers: [
-                  // SliverToBoxAdapter(
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.only(top: 60.0),
-                  //     child: Container(
-                  //       height: 200,
-                  //       padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  //       child: BalanceCardBtc(),
-                  //     ),
-                  //   ),
-                  // ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: AppTheme.cardPadding * 3,
+                    ),
+                  ),
                   SliverToBoxAdapter(
                     child: RepaintBoundary(
                       child: Container(
-                        margin: const EdgeInsets.all(AppTheme.cardPadding * 2),
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
-                          // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
-                          child: CustomPaint(
-                            foregroundPainter: Theme.of(context).brightness == Brightness.light ? BorderPainterBlack() : BorderPainter(),
-                            child: Container(
-                              padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
-                              margin: const EdgeInsets.all(AppTheme.cardPadding),
-                              decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusBigger),
-                              child: PrettyQrView.data(
-                                  data: address,
-                                  decoration: const PrettyQrDecoration(
-                                    shape: PrettyQrSmoothSymbol(
-                                      roundFactor: 1,
-                                    ),
-                                    image: PrettyQrDecorationImage(
-                                      image: const AssetImage('assets/images/bitcoin.png'),
-                                    ),
-                                  )),
-                            ),
+                        margin: const EdgeInsets.all(AppTheme.cardPadding ),
+                        child: CustomPaint(
+                          foregroundPainter: Theme.of(context).brightness == Brightness.light ? BorderPainterBlack() : BorderPainter(),
+                          child: Container(
+                            padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                            margin: const EdgeInsets.all(AppTheme.cardPadding),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusBigger),
+                            child: PrettyQrView.data(
+                                data: address,
+                                decoration: const PrettyQrDecoration(
+                                  shape: PrettyQrSmoothSymbol(
+                                    roundFactor: 1,
+                                  ),
+                                  image: PrettyQrDecorationImage(
+                                    image: const AssetImage('assets/images/bitcoin.png'),
+                                  ),
+                                )),
                           ),
                         ),
                       ),
@@ -213,15 +204,19 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
                   SliverToBoxAdapter(
                     child: BitNetListTile(
                       text: L10n.of(context)!.address,
-                      trailing: Text(
-                        address,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                      trailing: Container(
+                        width: AppTheme.cardPadding * 10,
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          address,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                     ),
                   ),
 
                   SliverToBoxAdapter(
-                    child: const SizedBox(height: 10),
+                    child: const SizedBox(height: AppTheme.elementSpacing),
                   ),
                   SliverToBoxAdapter(
                     child: BitNetListTile(

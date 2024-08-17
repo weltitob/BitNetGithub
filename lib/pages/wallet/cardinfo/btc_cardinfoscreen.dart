@@ -162,8 +162,7 @@ class _AddressesWidgetState extends State<AddressesWidget> {
               double.parse(addresses[j]['balance']);
         }
       }
-      List<MapEntry<String, double>> sortedAddresses =
-      finalAddresses.entries.toList();
+      sortedAddresses = finalAddresses.entries.toList();
 
       sortedAddresses
           .sort((a, b) => b.value.compareTo(a.value));
@@ -188,8 +187,13 @@ class _AddressesWidgetState extends State<AddressesWidget> {
       body: isLoadingAddress
           ? Container(
         height: AppTheme.cardPadding * 6,
-        child: Center(
-          child: dotProgress(context),
+        child: Column(
+          children: [
+            Text("Loading your OnChain addresses... This might take a while"),
+            Center(
+              child: dotProgress(context),
+            ),
+          ],
         ),
       )
           : SingleChildScrollView(
@@ -212,7 +216,7 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                     ),
                   ),
                   Container(
-                    height: AppTheme.cardPadding * 6,
+                    height: 500,
                     child: ListView.builder(
                       // shrinkWrap: true,
                       itemCount: sortedAddresses.length,
@@ -222,35 +226,38 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                             searchPrompt.isNotEmpty) {
                           return Container();
                         }
-                        return BitNetListTile(
-                          leading: SizedBox(
-                              width: 0.4.sw,
-                              child: Text(
-                                sortedAddresses[i].key,
-                                style: Theme.of(context).textTheme.titleMedium,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                          trailing: SizedBox(
-                              width: 0.3.sw,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    textAlign: TextAlign.end,
-                                    sortedAddresses[i].value
-                                        .toInt()
-                                        .toString(),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Icon(AppTheme.satoshiIcon)
-                                ],
-                              )),
-                          onTap: () {
-                            context.go(
-                                '/wallet/bitcoincard/btcaddressinfo/${sortedAddresses[i].key}',
-                                extra: sortedAddresses[i].value);
-                          },
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                          child: BitNetListTile(
+                            leading: SizedBox(
+                                width: 0.4.sw,
+                                child: Text(
+                                  sortedAddresses[i].key,
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                            trailing: SizedBox(
+                                width: 0.3.sw,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      textAlign: TextAlign.end,
+                                      sortedAddresses[i].value
+                                          .toInt()
+                                          .toString(),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Icon(AppTheme.satoshiIcon)
+                                  ],
+                                )),
+                            onTap: () {
+                              context.go(
+                                  '/wallet/bitcoincard/btcaddressinfo/${sortedAddresses[i].key}',
+                                  extra: sortedAddresses[i].value);
+                            },
+                          ),
                         );
                       },
                     ),

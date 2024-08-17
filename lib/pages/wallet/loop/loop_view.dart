@@ -88,7 +88,7 @@ class _LoopScreenState extends State<LoopScreen> {
                             Container(
                                 height: AppTheme.cardPadding * 8,
                                 margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                                child: Obx(()=> BalanceCardBtc(balance: double.parse(walletController.predictedBtcBalance.value).toStringAsFixed(8),defaultUnit: BitcoinUnits.SAT, textColor: double.parse(walletController.onchainBalance.confirmedBalance) < double.parse(walletController.predictedBtcBalance.value) ? Colors.green :double.parse(walletController.onchainBalance.confirmedBalance) > double.parse(walletController.predictedBtcBalance.value) ? Colors.red : null))),
+                                child: Obx(()=> BalanceCardBtc(balance: double.parse(walletController.predictedBtcBalance.value).toStringAsFixed(8),defaultUnit: BitcoinUnits.SAT, textColor: double.parse(walletController.onchainBalance.confirmedBalance) < double.parse(walletController.predictedBtcBalance.value) ? AppTheme.successColor :double.parse(walletController.onchainBalance.confirmedBalance) > double.parse(walletController.predictedBtcBalance.value) ? AppTheme.errorColor : null))),
                             Container(
                               height: AppTheme.cardPadding * 1,
                             ),
@@ -98,7 +98,7 @@ class _LoopScreenState extends State<LoopScreen> {
                                   horizontal: AppTheme.cardPadding,
                                 ),
                                 child: Obx((){ 
-                                  return BalanceCardLightning(balance: double.parse(walletController.predictedLightningBalance.value).toStringAsFixed(8),textColor: double.parse(walletController.lightningBalance.balance) < double.parse(walletController.predictedLightningBalance.value) ? Colors.green :double.parse(walletController.lightningBalance.balance) > double.parse(walletController.predictedLightningBalance.value) ? Colors.red : null);
+                                  return BalanceCardLightning(balance: double.parse(walletController.predictedLightningBalance.value).toStringAsFixed(8),textColor: double.parse(walletController.lightningBalance.balance) < double.parse(walletController.predictedLightningBalance.value) ? AppTheme.successColor :double.parse(walletController.lightningBalance.balance) > double.parse(walletController.predictedLightningBalance.value) ? AppTheme.errorColor : null);
                                   })),
                           ],
                         ),
