@@ -9,6 +9,7 @@ import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/camera/qrscanneroverlay.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
@@ -165,8 +166,8 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
       context: context,
       body: Obx(
         () => controller.isLoadingAddress.value
-            ? const Center(
-                child: CircularProgressIndicator(),
+            ?  Center(
+                child: dotProgress(context),
               )
             : CustomScrollView(
               controller: scrollController,
