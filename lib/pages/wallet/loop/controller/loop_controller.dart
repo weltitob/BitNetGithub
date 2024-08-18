@@ -176,31 +176,7 @@ class LoopGetxController extends GetxController {
                         ],
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(
-                    //       vertical: AppTheme.cardPadding),
-                    //   child: Column(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       SizedBox(
-                    //         height: AppTheme.cardPadding,
-                    //       ),
-                    //       LongButtonWidget(
-                    //         title: "Transfer",
-                    //       ),
-                    //       SizedBox(
-                    //         height: AppTheme.elementSpacing,
-                    //       ),
-                    //       LongButtonWidget(
-                    //         title: "Cancel",
-                    //         onTap: () {
-                    //           Navigator.pop(context);
-                    //         },
-                    //         buttonType: ButtonType.transparent,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // )
+
                   ],
                 ),
               ),

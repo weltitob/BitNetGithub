@@ -30,13 +30,17 @@ Future<RestResponse> loopOut(Map<String, dynamic> data) async {
   // Extract the input string
   String inputString = data['dest'];
 
-  // Check and remove any prefix before '/'
+  //String inputString = "bc1pxm3sjkyshzyvwvl0pwrckpd3znfp2mgfjczhhmx4k5ravsgv8ynqwjsnhl";
+
+  //Check and remove any prefix before '/'
   // if (inputString.contains('/')) {
   //   inputString = inputString.split('/')[1];
   // }
 
   // Convert input string to Uint8List using base64.decode
   Uint8List inputBytes = base64.decode(inputString);
+
+
 
   // Encode the Uint8List to a Base58 string using the provided encoder with checksum
   String base58EncodedString = Base58Encoder.encode(inputBytes);
@@ -48,13 +52,20 @@ Future<RestResponse> loopOut(Map<String, dynamic> data) async {
   logger.i("Swap Fee: ${data['swapFee']}");
   logger.i("Miner Fee: ${data['minerFee']}");
   logger.i("Max Prepay: ${data['maxPrepay']}");
-  logger.i("Not used: Destination: $checkedBase58EncodedString");
+  logger.i("Not used: Destination: $inputString");
 
-
+  //onchain addr bc1pxm3sjkyshzyvwvl0pwrckpd3znfp2mgfjczhhmx4k5ravsgv8ynqwjsnhl
   // Prepare the data with the Base58 encoded string
+  //try to use a bitcoin address for loopout
   data = {
-    'amt': data['amt'],
-    'max_swap_fee': data['swapFee'],
+    //use a account as loopout
+
+    //"account": base58EncodedString,
+    'account': "default",
+    "account_addr_type": "TAPROOT_PUBKEY",
+    'amt': "260000", //data['amt'],
+    'max_swap_fee': "1000", //data['swapFee'],
+    'max_swap_routing_fee': "10000", //data['minerFee'], //THIS IS NEW
     'max_miner_fee': data['minerFee'],
     //'dest': checkedBase58EncodedString, //base58Encode(),
     'max_prepay_amt': data['maxPrepay'],
