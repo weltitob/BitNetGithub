@@ -21,10 +21,6 @@ import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:get/get.dart';
 
 class LoopGetxController extends GetxController {
-  //Animate value true is onchain to lightning
-  //false is lightning to onchain
-  //Animate value true is onchain to lightning
-  //false is lightning to onchain
   RxBool animate = false.obs;
   RxBool loadingState = false.obs;
   late TextEditingController satController;
@@ -41,6 +37,8 @@ class LoopGetxController extends GetxController {
     currencyController = TextEditingController();
     amtNode = FocusNode();
     scrollController = ScrollController();
+
+
   }
 
   @override
@@ -48,6 +46,11 @@ class LoopGetxController extends GetxController {
     satController.dispose();
     btcController.dispose();
     currencyController.dispose();
+    amtNode.removeListener(() {
+      if (amtNode.hasFocus) {
+        scrollToBottom();
+      }
+    });
     amtNode.dispose();
     scrollController.dispose();
     super.dispose();

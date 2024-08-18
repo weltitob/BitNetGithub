@@ -28,13 +28,19 @@ class LoopScreen extends StatefulWidget {
 }
 
 class _LoopScreenState extends State<LoopScreen> {
+
   final loopGetController = Get.put(LoopGetxController());
+
   @override
   void dispose() {
     loopGetController.satController.clear();
     loopGetController.btcController.clear();
     loopGetController.currencyController.clear();
-
+    loopGetController.amtNode.removeListener(() {
+      if (loopGetController.amtNode.hasFocus) {
+        loopGetController.scrollToBottom();
+      }
+    });
     //loopGetController.dispose();
     super.dispose();
   }
@@ -46,6 +52,14 @@ class _LoopScreenState extends State<LoopScreen> {
     walletController.predictedLightningBalance.value = walletController.lightningBalance.balance;
     walletController.predictedBtcBalance.value = walletController.onchainBalance.confirmedBalance;
     setState((){});
+    // Add listener to FocusNode
+
+    });
+    loopGetController.amtNode.addListener(() {
+      if (loopGetController.amtNode.hasFocus) {
+        loopGetController.scrollToBottom();
+        print('Keyboard is open');
+      }
     });
   }
   @override
@@ -140,6 +154,7 @@ class _LoopScreenState extends State<LoopScreen> {
                             : int.parse(walletController.lightningBalance.balance),
                         boundType: BitcoinUnits.SAT,
                         focusNode: loopGetController.amtNode,
+
                         onAmountChange: (type, currency) {
                           // Handle amount change
                           loopGetController.scrollToBottom(); // Scroll to bottom when amount changes
@@ -150,7 +165,7 @@ class _LoopScreenState extends State<LoopScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: AppTheme.cardPadding * 20),
+                  SizedBox(height: AppTheme.cardPadding * 5.5),
                 ],
               ),
             ),
