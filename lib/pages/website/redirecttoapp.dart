@@ -5,9 +5,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class RedirectToApp extends StatefulWidget {
