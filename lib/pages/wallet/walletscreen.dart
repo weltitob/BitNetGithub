@@ -64,6 +64,13 @@ class WalletScreen extends GetWidget<WalletsController> {
         child: BalanceCardLightning(),
       ),
       GestureDetector(
+        //
+        onTap: () {
+          context.go('/wallet/fiatcard');
+        },
+        child: FiatCard(),
+      ),
+      GestureDetector(
         onTap: () {
           context.go('/wallet/bitcoincard');
         },

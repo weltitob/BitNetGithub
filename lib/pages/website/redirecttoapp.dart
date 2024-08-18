@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class RedirectToApp extends StatefulWidget {
   const RedirectToApp({super.key});
@@ -13,21 +18,40 @@ class RedirectToApp extends StatefulWidget {
 }
 
 class _RedirectToAppState extends State<RedirectToApp> {
+  late StreamSubscription<Uri?> sub;
 
-  //using deeplinkage back to the app
+  void _initDeepLinkListener() {
+    sub = uriLinkStream.listen((Uri? uri) {
+      if (uri != null) {
+        // Handle the deep link, for instance by parsing the path or query
+        print('Received deep link: $uri');
+        // You can navigate or perform other actions based on the deep link
+      }
+    }, onError: (err) {
+      // Handle any errors
+      print('Error occurred: $err');
+    });
+  }
+
   @override
   initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 2), () {
-      Get.offAllNamed("/home");
-    });
+    _initDeepLinkListener();
   }
+
+  @override
+  void dispose() {
+    sub.cancel();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
         extendBodyBehindAppBar: true,
         appBar: bitnetAppBar(
+          hasBackButton: false,
           text: "Redirecting to the app",
           context: context,
         ),

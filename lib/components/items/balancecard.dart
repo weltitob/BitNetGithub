@@ -69,6 +69,106 @@ class BottomRightGradient extends StatelessWidget {
   }
 }
 
+
+class FiatCard extends StatelessWidget {
+  const FiatCard({
+    super.key,
+    this.balance, this.textColor
+  });
+  final String? balance;
+  final Color? textColor;
+  @override
+  Widget build(BuildContext context) {
+    WalletsController controller = Get.find<WalletsController>();
+    final BitcoinUnitModel unitModel = CurrencyConverter.convertToBitcoinUnit(
+        double.parse(balance ?? controller.lightningBalance.balance), BitcoinUnits.SAT);
+    final balanceStr = unitModel.amount.toString();
+
+    return Container(
+      decoration: BoxDecoration(boxShadow: [
+        AppTheme.boxShadowBig,
+      ]),
+      child: Stack(
+        children: [
+          const CardBackgroundLightning(),
+          BalanceTextWidget(
+            balanceStr: "balanceStr",
+            textColor: textColor,
+            iconData: FontAwesomeIcons.eur,
+            balanceSAT: "500", //balance ?? controller.lightningBalance.balance,
+            walletAddress: "safdadasdas",
+            cardname: 'Fiatcurrency Balance',
+            iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
+          ),
+
+          //whatever currency the user uses
+          PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
+
+          //unten rechts ein unlock button ==> you need to buy bitcoin in the app to unlock this card ==> bitnetbototmsheet
+          Positioned(
+            left: AppTheme.cardPadding,
+            bottom: AppTheme.cardPadding,
+            child: LongButtonWidget(
+              leadingIcon: Icon(
+                FontAwesomeIcons.lock,
+                size: AppTheme.cardPadding * 0.75,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+              title: 'Unlock',
+              customHeight: AppTheme.cardPadding * 1.25,
+              customWidth: AppTheme.cardPadding * 5,
+              onTap: () {
+                BitNetBottomSheet(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  context: context,
+                  child: bitnetScaffold(
+                    extendBodyBehindAppBar: true,
+                    context: context,
+                    appBar: bitnetAppBar(
+                      hasBackButton: false,
+                      context: context,
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      text: 'Unlock Card',
+                    ),
+                    body: Stack(
+                      children: [
+                        Container(
+                          child: Column(
+                            children: [
+                              SizedBox(height: AppTheme.cardPadding * 4,),
+                              Icon(FontAwesomeIcons.lock, size: AppTheme.cardPadding * 4,),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
+                                child: Text(
+                                  "You need to buy bitcoin trough our app to unlock this card. Alternatively you can receive some Onchain Bitcoin and unlock it for some additional transaction fees.",
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                        BottomButtons(leftButtonTitle: "Buy Bitcoin", rightButtonTitle: "Receive OnChain", onLeftButtonTap: (){
+                          context.push('/wallet/bitcoinscreen');
+                        }, onRightButtonTap: (){
+                          context.go('/wallet/receive/onchain'); //maybe pass a parameter that says our view should be onchain
+                        })
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+
 class BalanceCardLightning extends StatelessWidget {
   const BalanceCardLightning({
     super.key,
