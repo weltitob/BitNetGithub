@@ -23,12 +23,16 @@ import 'package:get/get.dart';
 class LoopGetxController extends GetxController {
   //Animate value true is onchain to lightning
   //false is lightning to onchain
+  //Animate value true is onchain to lightning
+  //false is lightning to onchain
   RxBool animate = false.obs;
   RxBool loadingState = false.obs;
   late TextEditingController satController;
   late TextEditingController btcController;
   late TextEditingController currencyController;
   late FocusNode amtNode;
+  late ScrollController scrollController;
+
   @override
   void onInit() {
     super.onInit();
@@ -36,6 +40,7 @@ class LoopGetxController extends GetxController {
     btcController = TextEditingController();
     currencyController = TextEditingController();
     amtNode = FocusNode();
+    scrollController = ScrollController();
   }
 
   @override
@@ -44,6 +49,7 @@ class LoopGetxController extends GetxController {
     btcController.dispose();
     currencyController.dispose();
     amtNode.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -54,6 +60,16 @@ class LoopGetxController extends GetxController {
 
   void updateLoadingState(bool value) {
     loadingState.value = value;
+  }
+
+  void scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   void loopInQuote(BuildContext context) async {

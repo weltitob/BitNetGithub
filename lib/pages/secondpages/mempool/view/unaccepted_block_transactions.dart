@@ -1,6 +1,7 @@
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -92,8 +93,8 @@ class _UnacceptedBlockTransactionsState
               ),
             ),
             controller.isLoadingTx.value
-                ? const Center(
-                    child: CircularProgressIndicator(),
+                ? Center(
+                    child: dotProgress(context),
                   )
                 : controller.blockTransactions.isEmpty
                     ? const SizedBox()

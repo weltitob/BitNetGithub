@@ -11,6 +11,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/address_component.dart';
@@ -73,8 +74,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
         },
         child: Obx(() {
           return controller.isLoading.isTrue
-              ? const Center(
-                  child: CircularProgressIndicator(),
+              ? Center(
+                  child: dotProgress(context),
                 )
               : controller.transactionModel == null
                   ? Center(child: Text('Something went wrong'))

@@ -9,7 +9,11 @@ class PurchaseSheetController extends BaseController
   late TextEditingController btcCtrlBuy;
   late TextEditingController currCtrlBuy;
   FocusNode nodeBuy = FocusNode();
-  ButtonState buttonState = ButtonState.idle;
+  Rx<ButtonState> buttonState = ButtonState.idle.obs;
+
+  void setButtonState(ButtonState state) {
+    buttonState.value = state;
+  }
 
   @override
   void onInit() {
@@ -42,7 +46,7 @@ class SellSheetController extends BaseController
   late TextEditingController btcCtrlBuy;
   late TextEditingController currCtrlBuy;
   FocusNode nodeSell = FocusNode();
-  ButtonState buttonState = ButtonState.idle;
+  Rx<ButtonState> buttonState = ButtonState.idle.obs;
 
   @override
   void onInit() {

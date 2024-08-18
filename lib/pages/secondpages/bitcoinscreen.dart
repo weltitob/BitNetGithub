@@ -237,55 +237,67 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
 
             ],
           ),
-          BottomCenterButton(
-              buttonTitle: "Secure my Bitcoin",
-              buttonState: controller.buttonState,
-              onButtonTap: () async {
-                //why doesnt it switch then
-                controller.buttonState = ButtonState.loading;
-                try{
-                final String clientSecret =
-                    await requestClientSecret("1000", "usd");
-                print("Opening the payment sheet now...");
-                await Stripe.instance.initPaymentSheet(
-                  paymentSheetParameters: SetupPaymentSheetParameters(
-                    paymentIntentClientSecret: clientSecret,
-                    style: Theme.of(context).brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark,
-                    customFlow: false,
-                    // applePay: PaymentSheetApplePay(
-                    //     merchantCountryCode: 'DE',
-                    // ),
-                    paymentMethodOrder: [
-                      'apple_pay', 'google_pay', 'paypal', 'klarna', 'card',
-                    ],
-                    googlePay: PaymentSheetGooglePay(
-                      merchantCountryCode: 'US',
-                      currencyCode: 'usd',
-                      amount: '1000',
-                      label: 'BitNet GmbH',
-                      testEnv: true,
-                      buttonType: PlatformButtonType.pay,
-                    ),
-                    merchantDisplayName: 'BitNet GmbH',
-                  ),
-                );
-                try {
-                  await Stripe.instance.presentPaymentSheet();
-                } catch (e) {
-                  // Handle errors
-                  print('Error presenting payment sheet: $e');
-                }
-                } catch (e) {
-                  print(e);
-                }
-                controller.buttonState = ButtonState.idle;
-              })
+          Obx(() {
+            // Use Obx to reactively display the button state
+              return BottomCenterButton(
+                  buttonTitle: "Secure my Bitcoin",
+                  buttonState: controller.buttonState.value,
+                onButtonTap: () async {
+                  // Set the button to loading state
+                  controller.setButtonState(ButtonState.loading);
+              
+                  // Wait for the UI to update
+                  await Future.delayed(Duration(milliseconds: 100));
+              
+                  try {
+                    final String clientSecret = await requestClientSecret("100000", "usd");
+                    await _initializePaymentSheet(clientSecret, context);
+                    await _presentPaymentSheet();
+                  } catch (e) {
+                    print('Error during payment process: $e');
+                  }
+              
+                  // Reset the button state to idle after operations
+                  controller.setButtonState(ButtonState.idle);
+                },);
+            }
+          )
         ],
       ),
     );
   }
 }
 
+Future<void> _initializePaymentSheet(String clientSecret, BuildContext context) async {
+  await Stripe.instance.initPaymentSheet(
+    paymentSheetParameters: SetupPaymentSheetParameters(
+      paymentIntentClientSecret: clientSecret,
+      style: Theme.of(context).brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark,
+      customFlow: false,
+      paymentMethodOrder: [
+        'apple_pay', 'google_pay', 'paypal', 'klarna', 'card',
+      ],
+      googlePay: PaymentSheetGooglePay(
+        merchantCountryCode: 'US',
+        currencyCode: 'usd',
+        amount: '100000',
+        label: 'BitNet GmbH',
+        testEnv: true,
+        buttonType: PlatformButtonType.pay,
+      ),
+      merchantDisplayName: 'BitNet GmbH',
+    ),
+  );
+}
+
+Future<void> _presentPaymentSheet() async {
+  try {
+    await Stripe.instance.presentPaymentSheet();
+  } catch (e) {
+    // Handle errors
+    print('Error presenting payment sheet: $e');
+  }
+}
 
 class SellSheet extends GetWidget<SellSheetController> {
   const SellSheet({
@@ -325,35 +337,39 @@ class SellSheet extends GetWidget<SellSheetController> {
               SizedBox(height: AppTheme.cardPadding),
             ],
           ),
-          BottomCenterButton(
-              buttonTitle: "Sell my Bitcoin",
-              buttonState: controller.buttonState,
-              onButtonTap: () async {
-                controller.buttonState = ButtonState.loading;
-                bool hasStripeAccount = false;
-                if(!hasStripeAccount){
-                  logger.i("Creating a new stripe account for the user...");
-                  //get the link for the user
-                  String accountlink = await createStripeAccount("USERIDNEW", "DE");
-                  //launch the link for the user
-                  logger.i("Opening the link now... $accountlink");
-                  //convert the link to a url
-                  final uri = Uri.parse(accountlink);
-                  //launch the link
-                  await launchUrl(uri);
-                  //we need to redirect to the app
-
-                  //then we proceed with the payment
-
-
-                } else {
-                  //use the stripe account that already exists for the user to pay him out
-                  logger.i("Using the existing stripe account for the user...");
-
-
-                }
-                controller.buttonState = ButtonState.idle;
-              })
+          Obx(() {
+            // Use Obx to reactively display the button state
+              return BottomCenterButton(
+                  buttonTitle: "Sell my Bitcoin",
+                  buttonState: controller.buttonState.value,
+                  onButtonTap: () async {
+                    controller.buttonState.value = ButtonState.loading;
+                    bool hasStripeAccount = false;
+                    if(!hasStripeAccount){
+                      logger.i("Creating a new stripe account for the user...");
+                      //get the link for the user
+                      String accountlink = await createStripeAccount("USERIDNEW", "DE");
+                      //launch the link for the user
+                      logger.i("Opening the link now... $accountlink");
+                      //convert the link to a url
+                      final uri = Uri.parse(accountlink);
+                      //launch the link
+                      await launchUrl(uri);
+                      //we need to redirect to the app
+              
+                      //then we proceed with the payment
+              
+              
+                    } else {
+                      //use the stripe account that already exists for the user to pay him out
+                      logger.i("Using the existing stripe account for the user...");
+              
+              
+                    }
+                    controller.buttonState.value = ButtonState.idle;
+                  });
+            }
+          )
         ],
       ),
     );

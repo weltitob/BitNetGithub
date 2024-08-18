@@ -1,5 +1,6 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
@@ -63,7 +64,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
         Obx(
           () {
             return controller.transactionLoading.isTrue
-                ? const Center(child: CircularProgressIndicator())
+                ?  Center(child: dotProgress(context))
                 : controller.transactionReplacements.isEmpty
                     ? const Text(
                         'Something went wrong!',

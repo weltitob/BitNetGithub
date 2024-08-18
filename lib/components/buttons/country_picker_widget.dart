@@ -10,6 +10,7 @@ import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:country_state_city/country_state_city.dart' as countryProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -86,7 +87,7 @@ String flag = iso.toUpperCase().replaceAllMapped(RegExp(r'[A-Z]'),
                               context: context,
                               buttonType: ButtonType.transparent,
                             ),
-                            body: (countries.isEmpty || initialCountry == null) ? Center(child:CircularProgressIndicator()) : CountryPickerSheet(
+                            body: (countries.isEmpty || initialCountry == null) ? Center(child:dotProgress(context)) : CountryPickerSheet(
                               onTapCountry: (country) {
                                 Provider.of<CountryProvider>(context, listen: false)
                                     .setCountryInDatabase(country.isoCode,

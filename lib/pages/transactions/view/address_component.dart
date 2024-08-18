@@ -11,6 +11,7 @@ import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
@@ -41,8 +42,8 @@ class AddressComponent extends StatelessWidget {
         ),
         body: Obx(
           () => controller.isLoadingAddress.value
-              ? const Center(
-                  child: CircularProgressIndicator(),
+              ? Center(
+                  child: dotProgress(context),
                 )
               : Padding(
                   padding: const EdgeInsets.only(top: 60.0),

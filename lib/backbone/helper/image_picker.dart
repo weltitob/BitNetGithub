@@ -216,7 +216,7 @@ class _ImagePickerState extends State<ImagePicker> {
                                           width: 50,
                                           height: 50,
                                           child: Center(
-                                              child: CircularProgressIndicator()))
+                                              child: dotProgress(context)))
                                       : Container(
                                           color: Colors.transparent);
                             })
@@ -962,7 +962,7 @@ class ImgGridView extends StatelessWidget {
                   ? Container(
                       width: 50,
                       height: 50,
-                      child: Center(child: CircularProgressIndicator()))
+                      child: Center(child: dotProgress(context)))
                   : Container(width: 50, height: 50, color: Colors.transparent);
         });
   }
@@ -1040,7 +1040,7 @@ class _NftGridViewState extends State<NftGridView> {
                   ? Container(
                       width: 50,
                       height: 50,
-                      child: Center(child: CircularProgressIndicator()))
+                      child: Center(child: dotProgress(context)))
                   : Container(width: 50, height: 50, color: Colors.transparent);
         });
   }
@@ -1132,7 +1132,7 @@ class _MixedGridViewState extends State<MixedGridView> {
                   ? Container(
                       width: 50,
                       height: 50,
-                      child: Center(child: CircularProgressIndicator()))
+                      child: Center(child: dotProgress(context)))
                   : Container(width: 50, height: 50, color: Colors.transparent);
         });
   }

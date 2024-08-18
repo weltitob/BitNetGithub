@@ -67,7 +67,7 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
                 !snapshot.hasData) {
               return Container(
                   height: 400,
-                  child: Center(child: CircularProgressIndicator()));
+                  child: Center(child: dotProgress(context)));
             }
             return Column(
               children: [

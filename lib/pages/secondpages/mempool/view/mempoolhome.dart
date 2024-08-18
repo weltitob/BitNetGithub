@@ -937,7 +937,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                       EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                   child: Obx(() {
                     return controller.transactionLoading.isTrue
-                        ? const Center(child: CircularProgressIndicator())
+                        ? Center(child: dotProgress(context))
                         : Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1107,10 +1107,10 @@ class _MempoolHomeState extends State<MempoolHome> {
       ),
       Obx(() {
         return controller.transactionLoading.isTrue
-            ? const Center(child: CircularProgressIndicator())
+            ? Center(child: dotProgress(context))
             : Obx(() {
                 return controller.daLoading.isTrue
-                    ? const Center(child: CircularProgressIndicator())
+                    ? Center(child: dotProgress(context))
                     : Container(
                         margin: const EdgeInsets.symmetric(
                             horizontal: AppTheme.cardPadding),

@@ -638,7 +638,7 @@ class _TransactionsState extends State<Transactions>
                     return Center(
                         child: Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
-                      child: CircularProgressIndicator(),
+                      child: dotProgress(context),
                     ));
                   } else {
                     return orderedTransactions[index - 1];

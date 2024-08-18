@@ -124,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                             );
                           }
 
-                          return Center(child: CircularProgressIndicator());
+                          return Center(child: dotProgress(context));
                         }),
                 CommonHeading(
                   hasButton: true,

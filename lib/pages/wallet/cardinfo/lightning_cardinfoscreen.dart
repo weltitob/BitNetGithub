@@ -4,6 +4,7 @@ import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
@@ -144,8 +145,8 @@ final transaction = controller
     },
     child: Obx(
       () => controller.loadingState.value
-          ? const Center(
-              child: CircularProgressIndicator(),
+          ? Center(
+              child: dotProgress(context),
             )
           : CustomScrollView(
             controller: scrollController,
