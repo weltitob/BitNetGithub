@@ -199,7 +199,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: AppTheme.cardPadding),
+                                        SizedBox(height: AppTheme.cardPadding * 0.75),
                                         controllerWallet.hideBalance.value
                                             ? Text(
                                           '*****',
@@ -301,9 +301,8 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                     BitNetListTile(
                                       text: L10n.of(context)!.status,
                                       trailing: Container(
-                                        height: AppTheme.cardPadding * 1.5,
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: AppTheme.elementSpacing),
+                                            horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2),
                                         decoration: BoxDecoration(
                                           borderRadius: AppTheme.cardRadiusCircular,
                                           color: controller.transactionModel == null
@@ -472,7 +471,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             ),
                                             Container(
                                               padding: EdgeInsets.symmetric(
-                                                  horizontal: 8, vertical: 4),
+                                                  horizontal: 4,),
                                               decoration: BoxDecoration(
                                                   color: Colors.purple,
                                                   borderRadius:
@@ -482,7 +481,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                   L10n.of(context)!.accelerate,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyLarge,
+                                                      .bodyMedium,
                                                 ),
                                               ),
                                             )
@@ -497,10 +496,9 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             if (controller.segwitEnabled.value)
                                               Container(
                                                 padding: const EdgeInsets.symmetric(
-                                                    horizontal: 4, vertical: 2),
+                                                    horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
                                                 margin: const EdgeInsets.symmetric(
-                                                  horizontal: 2,
-                                                  vertical: 2,
+                                                  horizontal: 4,
                                                 ),
                                                 decoration: BoxDecoration(
                                                   color: controller
@@ -521,8 +519,9 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                   'SegWit',
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyLarge
+                                                      .bodyMedium
                                                       ?.copyWith(
+                                                      color: Colors.white,
                                                       decoration: controller
                                                           .potentialP2shSegwitGains !=
                                                           0
@@ -534,9 +533,9 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             if (controller.taprootEnabled.value)
                                               Container(
                                                 padding: const EdgeInsets.symmetric(
-                                                    horizontal: 4, vertical: 2),
-                                                margin: const EdgeInsets.symmetric(
-                                                    horizontal: 2, vertical: 2),
+                                                  horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 4,),
                                                 decoration: BoxDecoration(
                                                   color: controller.isTaproot.value
                                                       ? AppTheme.successColor
@@ -548,8 +547,9 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                   'Taproot',
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyLarge
+                                                      .bodyMedium
                                                       ?.copyWith(
+                                                      color: Colors.white,
                                                       decoration: controller
                                                           .isTaproot.value
                                                           ? TextDecoration.none
@@ -560,9 +560,9 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             if (controller.rbfEnabled.value)
                                               Container(
                                                   padding: const EdgeInsets.symmetric(
-                                                      horizontal: 4, vertical: 2),
+                                                  horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
                                                   margin: EdgeInsets.symmetric(
-                                                      horizontal: 2, vertical: 2),
+                                                      horizontal: 4,),
                                                   decoration: BoxDecoration(
                                                     color: controller
                                                         .isRbfTransaction.value
@@ -575,15 +575,18 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                     'RBF',
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyLarge
+                                                        .bodyMedium
                                                         ?.copyWith(
+                                                      color: Colors.white,
                                                         decoration: controller
                                                             .isRbfTransaction
                                                             .value
                                                             ? TextDecoration.none
                                                             : TextDecoration
                                                             .lineThrough),
-                                                  )),
+
+                                                  )
+                                              ),
                                           ],
                                         )),
                                     BitNetListTile(
@@ -604,7 +607,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                 overflow: TextOverflow.ellipsis,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyLarge,
+                                                    .titleMedium,
                                               ),
                                             ),
                                             coin.coin ?? true
@@ -629,7 +632,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                 .confirmed!
                                                 ? Container(
                                               padding: EdgeInsets.symmetric(
-                                                  horizontal: 8, vertical: 4),
+                                                  horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2),
                                               decoration: BoxDecoration(
                                                 color: controller
                                                     .feeRating.value ==
@@ -652,7 +655,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                       : '${L10n.of(context)!.overpaid} ${controller.overpaidTimes ?? 1}x',
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyLarge,
+                                                      .bodyMedium!.copyWith(color: Colors.white),
                                                 ),
                                               ),
                                             )
