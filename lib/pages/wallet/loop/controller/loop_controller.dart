@@ -4,9 +4,8 @@ import 'package:bitnet/backbone/cloudfunctions/loop/get_loopin_quote.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/get_loopout_quote.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/loop_in.dart';
 import 'package:bitnet/backbone/cloudfunctions/loop/loop_out.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/streams/currency_provider.dart';
-import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -14,10 +13,10 @@ import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/components/items/amount_previewer.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/loop/loop_quote_model.dart';
-import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:get/get.dart';
 
 class LoopGetxController extends GetxController {
@@ -163,15 +162,15 @@ class LoopGetxController extends GetxController {
                           ),
                           BitNetListTile(
                             text: 'Swap Fee (SAT)',
-                            trailing: Text(data.swapFeeSat),
+                        trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(double.parse(data.swapFeeSat), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.bodyMedium!,textColor: null, shouldHideBalance: false,),
                           ),
                           BitNetListTile(
                             text: 'HTLC Sweep Fee (SAT)',
-                            trailing: Text(data.htlcSweepFeeSat.toString()),
+                        trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(double.parse(data.htlcSweepFeeSat!), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.bodyMedium!,textColor: null, shouldHideBalance: false,),
                           ),
                           BitNetListTile(
                             text: 'Pre-pay amount (SAT)',
-                            trailing: Text(data.prepayAmtSat.toString()),
+                        trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(double.parse(data.prepayAmtSat!), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.bodyMedium!,textColor: null, shouldHideBalance: false,),
                           ),
                         ],
                       ),
@@ -234,11 +233,11 @@ class LoopGetxController extends GetxController {
                       ),
                       BitNetListTile(
                         text: 'Swap Fee (SAT)',
-                        trailing: Text(data.swapFeeSat),
+                        trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(double.parse(data.swapFeeSat), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.bodyMedium!,textColor: null, shouldHideBalance: false,),
                       ),
                       BitNetListTile(
                         text: 'HTLC publish fee (SAT)',
-                        trailing: Text(data.htlcPublishFeeSat.toString()),
+                        trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(double.parse(data.htlcPublishFeeSat!), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.bodyMedium!,textColor: null, shouldHideBalance: false,),
                       ),
                     ],
                   ),

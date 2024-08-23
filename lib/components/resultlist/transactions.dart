@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -439,8 +440,7 @@ class _TransactionsState extends State<Transactions>
                               context: context,
                               data: TransactionItemData(
                                 timestamp:
-                                    DateTime.now().millisecondsSinceEpoch ~/
-                                        1000,
+                                    int.parse(swap.initiationTime) ~/ 1000000000,
                                 status: swap.state == "SUCCEEDED"
                                     ? TransactionStatus.confirmed
                                     : swap.state == "FAILED"
@@ -526,8 +526,7 @@ class _TransactionsState extends State<Transactions>
                               context: context,
                               data: TransactionItemData(
                                 timestamp:
-                                    DateTime.now().millisecondsSinceEpoch ~/
-                                        1000,
+                                    int.parse(swap.initiationTime) ~/ 1000000000,
                                 status: swap.state == "SUCCEEDED"
                                     ? TransactionStatus.confirmed
                                     : swap.state == "FAILED"
@@ -718,7 +717,7 @@ class _TransactionsState extends State<Transactions>
     await Future.delayed(Duration(seconds: 1));
 
     setState(() {
-      loadedTransactionGroups += 4; // Load 2 more groups
+      loadedTransactionGroups += 4; 
       isLoadingTransactionGroups = false;
     });
   }
@@ -869,12 +868,9 @@ class _TransactionsState extends State<Transactions>
       DateTime date =
           DateTime.fromMillisecondsSinceEpoch(item.data.timestamp * 1000);
 
-      if (date.isAfter(startOfThisWeek)) {
-        categorizedTransactions['This Week']!.add(item);
-      } else if (date.isAfter(startOfLastWeek)) {
-        categorizedTransactions['Last Week']!.add(item);
-      } else if (date.isAfter(startOfThisMonth)) {
-        categorizedTransactions['This Month']!.add(item);
+        if (date.isAfter(startOfThisMonth)) {
+        String timeTag = displayTimeAgoFromInt(item.data.timestamp);
+        categorizedTransactions.putIfAbsent(timeTag, ()=>[]).add(item);
       } else if (date.year == now.year) {
         String monthName = DateFormat('MMMM').format(date);
         String key = monthName;

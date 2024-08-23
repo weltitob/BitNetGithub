@@ -9,12 +9,11 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
-
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageTwo extends StatefulWidget {
   final WebsiteLandingPageController controller;
@@ -203,6 +202,7 @@ class _PageTwoState extends State<PageTwo> {
                                         size: AppTheme.cardPadding * 4,
                                         mxContent:
                                             Uri.parse(userData.profileImageUrl),
+                                        isNft: userData.nft_profile_id.isNotEmpty
                                       ),
                                       SizedBox(
                                           height: AppTheme.elementSpacing / 2),

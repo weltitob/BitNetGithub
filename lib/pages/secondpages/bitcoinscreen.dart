@@ -5,19 +5,16 @@ import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/informationwidget.dart';
 import 'package:bitnet/components/appstandards/buildroundedbox.dart';
+import 'package:bitnet/components/appstandards/informationwidget.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/chart/chart.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
-import 'package:bitnet/pages/settings/paymentmethods/paymentmethos.dart';
-import 'package:bitnet/pages/settings/paymentmethods/addpaymentmethod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -36,7 +33,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
     return bitnetScaffold(
       context: context,
       extendBodyBehindAppBar: true,
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: bitnetAppBar(
         text: L10n.of(context)!.bitcoinChart,
         context: context,
@@ -181,12 +178,17 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
             leftButtonTitle: L10n.of(context)!.buy,
             rightButtonTitle: L10n.of(context)!.sell,
             onLeftButtonTap: () {
+              Get.delete<PurchaseSheetController>();
+              Get.put<PurchaseSheetController>(PurchaseSheetController());
               BitNetBottomSheet(
                   height: MediaQuery.of(context).size.height * 0.85,
                   context: context,
                   child: PurchaseSheet());
             },
             onRightButtonTap: () {
+                            Get.delete<SellSheetController>();
+              Get.put<SellSheetController>(SellSheetController());
+
               BitNetBottomSheet(
                   height: MediaQuery.of(context).size.height * 0.85,
                   context: context,

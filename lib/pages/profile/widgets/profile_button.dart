@@ -1,4 +1,3 @@
-import 'package:bitnet/components/container/coinlogo.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,9 +12,7 @@ class ProfileButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(45),
       child: Material(
         color: Colors.transparent,
-        child: controller.currentview.value != 2
-            ? CoinLogoWidgetSmall(coinid: 1)
-            : Container(
+        child: Container(
                 width: 30.0,
                 height: 30.0,
                 color: Theme.of(context).colorScheme.primary,

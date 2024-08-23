@@ -1,6 +1,6 @@
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class CoinLogoWidget extends StatelessWidget {
@@ -29,9 +29,12 @@ class CoinLogoWidget extends StatelessWidget {
 
 class CoinLogoWidgetSmall extends StatelessWidget {
   final int coinid;
+  final double width;
+  final double height;
+
   const CoinLogoWidgetSmall({
     Key? key,
-    required this.coinid,
+    required this.coinid,  this.width = 30.0,  this.height = 30.0,
   }) : super(key: key);
 
   @override
@@ -40,8 +43,9 @@ class CoinLogoWidgetSmall extends StatelessWidget {
         "https://s2.coinmarketcap.com/static/img/coins/64x64/";
 
     return Container(
-        height: 30.0,
-        width: 30.0,
+        height: height,
+        width: width,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(width * 2)),
         child: CachedNetworkImage(
           imageUrl: ((coinIconUrl + coinid.toString() + ".png").toLowerCase()),
           placeholder: (context, url) => dotProgress(context),

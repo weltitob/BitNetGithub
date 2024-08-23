@@ -198,6 +198,7 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                   size: AppTheme.cardPadding * 2.75,
                   name: "Tor (bc...)",
                   mxContent: Uri.parse("https://kinsta.com/wp-content/uploads/2023/03/tor-browser-logo.png"),
+                  isNft: false
                 ),
                 SizedBox(
                   height: AppTheme.elementSpacing / 2,
@@ -225,6 +226,8 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                   size: AppTheme.cardPadding * 2.75,
                   name: "Wikileaks (bc...)",
                   mxContent: Uri.parse("https://miro.medium.com/v2/resize:fit:720/format:webp/0*TMH4r49yraVirAiH.png"),
+                                    isNft: false
+
                 ),
                 SizedBox(
                   height: AppTheme.elementSpacing / 2,
@@ -252,6 +255,8 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                   size: AppTheme.cardPadding * 2.75,
                   name: "BitNet",
                   mxContent: Uri.parse("https://bitnet.cash"),
+                                    isNft: false
+
                 ),
                 SizedBox(
                   height: AppTheme.elementSpacing / 2,
@@ -342,7 +347,7 @@ class UserSendWidget extends StatelessWidget {
         },
         child: Column(
           children: [
-            Avatar(mxContent: Uri.parse(user.profileUrl), size: AppTheme.cardPadding * 3),
+            Avatar(mxContent: Uri.parse(user.profileUrl), size: AppTheme.cardPadding * 3, isNft: false),
             SizedBox(
                 width: 80,
                 child: Text(

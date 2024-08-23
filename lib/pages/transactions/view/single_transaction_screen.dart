@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
@@ -165,7 +164,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                   size: AppTheme.cardPadding * 4,
                                                   onTap: () {
                                                     LeftAvatarBitNetBottomSheet(controller);
-                                                  },
+                                                  }, isNft: false,
                                                 ),
                                                 SizedBox(height: AppTheme.elementSpacing * 0.5,),
                                                 Text("Sender"),
@@ -189,6 +188,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                               children: [
                                                 Avatar(
                                                   size: AppTheme.cardPadding * 4,
+                                                  isNft: false,
                                                   onTap: () {
                                                     RightAvatarBitnetBottomSheet(controller);
                                                   },

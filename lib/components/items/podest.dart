@@ -65,6 +65,7 @@ class _PodestWidgetState extends State<PodestWidget> {
                     name: widget.avatarName,
                     size: AppTheme.cardPadding * 4,
                     mxContent: Uri.parse(widget.avatarUri),
+                    isNft: false,
                   ),
                   SizedBox(height: AppTheme.elementSpacing),
                   isHovered ? BitNetShaderMask(child: Text(

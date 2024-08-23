@@ -2,29 +2,36 @@ import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/appstandards/BitNetWebsiteAppBar.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/fadein.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
-import 'package:bitnet/pages/website/contact/report/report.dart';
+import 'package:bitnet/pages/report/report_mobile_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:go_router/go_router.dart';
 import 'package:popover/popover.dart';
 
-class ReportView extends StatelessWidget {
-  final ReportController controller;
+class ReportMobileView extends StatelessWidget {
+  final ReportMobileController controller;
 
-  const ReportView({super.key, required this.controller});
+  const ReportMobileView({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
-        appBar: kIsWeb ? bitnetWebsiteAppBar() : bitnetAppBar(context: context),
+        extendBodyBehindAppBar: true,
+        appBar: bitnetAppBar(
+          text: L10n.of(context)!.reportIssue,
+          context: context,
+          onTap: () {
+            context.pop();
+          },
+        ),
         body: SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 32),
@@ -37,16 +44,7 @@ class ReportView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: AppTheme.cardPadding * 2,
-                      ),
-                      Container(
-                        child: Text(
-                          L10n.of(context)!.reportIssue,
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
-                      ),
-                      SizedBox(
-                        height: AppTheme.cardPadding,
+                        height: AppTheme.cardPadding * 4,
                       ),
                       Container(
                         child: Text(
@@ -128,7 +126,7 @@ class ReportView extends StatelessWidget {
                             bottom: AppTheme.elementSpacing,
                             right: AppTheme.elementSpacing,
                             child: GestureDetector(
-                              onTap: controller.onAddButton,
+                              onTap: () {controller.onAddButton(context);},
                               child: GlassContainer(
                                   height: AppTheme.cardPadding * 1.25,
                                   width: AppTheme.cardPadding * 1.25,

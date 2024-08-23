@@ -10,9 +10,7 @@ import 'package:bitnet/models/mempool_models/txConfirmDetail.dart';
 import 'package:bitnet/models/mempool_models/txPaginationModel.dart';
 import 'package:bitnet/pages/transactions/model/transaction_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +29,7 @@ class HomeController extends BaseController {
   RxBool isLoadingPage = false.obs;
   RxBool isLoading = false.obs;
   RxBool isLoadingTx = false.obs;
+  RxBool isLoadingMoreTx = false.obs;
   RxBool socketLoading = false.obs;
   RxBool transactionLoading = false.obs;
   RxBool isBTC = false.obs;
@@ -482,6 +481,35 @@ class HomeController extends BaseController {
       update();
     }
   }
+
+//returns amount loaded, if less than 25, we are at the final page.
+  Future<int> txDetailsMore(String txId, int page) async {
+    try {
+      isLoadingMoreTx.value = true;
+      String url = 'https://mempool.space/api/block/$txId/txs/$page';
+
+      final response = await dioClient.get(url: url);
+
+      response.data.length;
+      for (int i = 0; i < response.data.length; i++) {
+        txDetails.add(TransactionDetailsModel.fromJson(response.data[i]));
+      }
+      txDetailsFound = txDetails;
+      txDetailsReset = txDetails;
+      isLoadingMoreTx.value = false;
+      update();
+      return response.data.length;
+    } on DioException {
+      isLoadingMoreTx.value = false;
+      update();
+      return -1;
+    } catch (e) {
+      isLoadingMoreTx.value = false;
+      update();
+      return -1;
+    }
+  }
+
 
   String formatTimeAgo(DateTime dateTime) {
     return timeago.format(dateTime);

@@ -13,6 +13,7 @@ class SettingsController extends BaseController {
   Rx<ThemeMode> selectedTheme = ThemeMode.system.obs;
   void switchTab(String newTab) {
     currentTab.value = newTab;
+   
   }
 
   RxBool profileUpdated = false.obs;

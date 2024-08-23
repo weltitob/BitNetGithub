@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/mintasset.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
@@ -8,7 +9,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/services/file_picker_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
-
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/textfieldbutton.dart';
@@ -22,24 +22,22 @@ import 'package:bitnet/components/post/components/attributesbuilder.dart';
 import 'package:bitnet/components/post/components/audiobuilder.dart';
 import 'package:bitnet/components/post/components/imagebuilder.dart';
 import 'package:bitnet/components/post/components/linkbuilder.dart';
-
 import 'package:bitnet/components/post/components/postfile_model.dart';
-
 import 'package:bitnet/components/post/components/textbuilder.dart';
 import 'package:bitnet/components/post/post_header.dart';
 import 'package:bitnet/models/postmodels/media_model.dart';
 import 'package:bitnet/models/tapd/minassetresponse.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mime/mime.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:uuid/uuid.dart';
-import 'package:mime/mime.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 //THIS ONE HERE SEEMS TO BE TH EISSUE THIS IMPORT FUCKS EVERYTHING UP
 //import 'package:bitnet/models/postmodels/post.dart';
@@ -283,7 +281,7 @@ class _CreateAssetState extends State<CreateAsset> {
     return PopScope(
       canPop: true,
       onPopInvoked: (bool) {
-        context.go("/");
+        context.pop();
       },
       child: bitnetScaffold(
         appBar: bitnetAppBar(
@@ -291,7 +289,7 @@ class _CreateAssetState extends State<CreateAsset> {
           context: context,
           hasBackButton: true,
           onTap: () {
-            context.go("/");
+            context.pop();
           },
         ),
         body: Container(

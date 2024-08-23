@@ -146,7 +146,7 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
   @override
   Widget build(BuildContext context) {
     String address = widget.state.pathParameters['address']!;
-    double balance = CurrencyConverter.convertSatoshiToBTC((widget.state.extra! as double));
+    double balance =  widget.state.extra! as double != -1 ? CurrencyConverter.convertSatoshiToBTC((widget.state.extra! as double)) : ((controller.addressComponentModel?.chainStats.fundedTxoSum ?? 0) + (controller.addressComponentModel?.mempoolStats.fundedTxoSum ?? 0) - (controller.addressComponentModel?.chainStats.spentTxoSum ?? 0) + (controller.addressComponentModel?.mempoolStats.spentTxoSum ?? 0)).toDouble() / 100000000.0;
     String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
     final chartLine = Get.find<WalletsController>().chartLines.value;

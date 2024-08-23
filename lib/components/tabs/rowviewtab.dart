@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -7,7 +9,6 @@ import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'dart:convert';
 
 class RowViewTab extends StatefulWidget {
   @override
@@ -89,6 +90,7 @@ class _RowViewTabState extends State<RowViewTab>
                           children: [
                             Avatar(
                               size: AppTheme.cardPadding * 2,
+                              isNft: false,
                             ),
                             SizedBox(
                               width: AppTheme.elementSpacing * 0.75,

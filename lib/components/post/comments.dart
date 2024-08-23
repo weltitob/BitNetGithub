@@ -9,7 +9,6 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -67,6 +66,7 @@ class CommentsState extends State<Comments> {
         'timestamp': DateTime.now(),
         'avatarUrl': user.profileImageUrl,
         'userId': user.did,
+        'nft_profile_id': user.nft_profile_id
       });
 
       if (isNotPostOwner) {
@@ -78,6 +78,8 @@ class CommentsState extends State<Comments> {
           'userProfileImg': user.profileImageUrl,
           'postId': postId,
           'timestamp': DateTime.now(),
+                  'nft_profile_id': user.nft_profile_id
+
         });
       }
 
@@ -133,6 +135,7 @@ class CommentsState extends State<Comments> {
                 size: AppTheme.cardPadding * 2,
                 fontSize: 18,
                 onTap: () => print('tapped'),
+                isNft: false
               ),
               Padding(padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2 )),
               Expanded(
@@ -172,6 +175,7 @@ class Comment extends StatelessWidget {
   final String avatarUrl;
   final String comment;
   final Timestamp timestamp;
+  final bool isNft;
 
   Comment({
     required this.username,
@@ -179,6 +183,7 @@ class Comment extends StatelessWidget {
     required this.avatarUrl,
     required this.comment,
     required this.timestamp,
+    required this.isNft
   });
 
   factory Comment.fromDocument(DocumentSnapshot doc) {
@@ -188,6 +193,7 @@ class Comment extends StatelessWidget {
       comment: doc['comment'],
       timestamp: doc['timestamp'],
       avatarUrl: doc['avatarUrl'],
+      isNft: doc['nft_profile_id'] != null ? true : false,
     );
   }
 
@@ -212,6 +218,7 @@ class Comment extends StatelessWidget {
           leading: Avatar(
               profileId: userId,
               mxContent: Uri.parse(avatarUrl),
+              isNft: isNft
           ),
           subtitle: RichText(
             text: TextSpan(

@@ -68,6 +68,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                   children: [
                     Avatar(
                       size: AppTheme.cardPadding * 4.75,
+                      isNft: false,
                     ),
                     SizedBox(
                       width: AppTheme.elementSpacing,
@@ -84,6 +85,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                     ),
                     Avatar(
                       size: AppTheme.cardPadding * 4.75,
+                      isNft: false,
                     ),
                   ],
                 ),

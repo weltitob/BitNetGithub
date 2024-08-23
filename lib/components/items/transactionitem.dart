@@ -163,7 +163,7 @@ class _TransactionItemState extends State<TransactionItem> with AutomaticKeepAli
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(child: Avatar(size: AppTheme.cardPadding * 2)),
+                      Container(child: Avatar(size: AppTheme.cardPadding * 2, isNft: false)),
                       const SizedBox(width: AppTheme.elementSpacing * 0.75),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

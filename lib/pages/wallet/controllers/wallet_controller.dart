@@ -23,7 +23,6 @@ import 'package:bitnet/models/bitcoin/transactiondata.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
-import 'package:bitnet/pages/secondpages/mempool/controller/purchase_sheet_controller.dart';
 import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -170,8 +169,8 @@ class WalletsController extends BaseController {
     Get.put(CryptoItemController());
     Get.put(WalletFilterController());
     Get.put(BitcoinScreenController());
-    Get.put(PurchaseSheetController());
-    Get.put(SellSheetController());
+    // Get.put(PurchaseSheetController());
+    // Get.put(() => SellSheetController());
     scrollController = ScrollController();
     reversed.value = LocalStorage.instance.getBool(reversedConstant);
     selectedCard.value = LocalStorage.instance.getString(cardTopConstant) ?? 'onchain';

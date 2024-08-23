@@ -1,8 +1,8 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
-import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -50,6 +50,7 @@ class _UserResultState extends State<UserResult> {
                     mxContent: Uri.parse(widget.userData.profileImageUrl),
                     size: AppTheme.cardPadding * 1.75,
                     onTap: widget.onTap,
+                    isNft: widget.userData.nft_profile_id.isNotEmpty
                   ),
                   SizedBox(width: AppTheme.elementSpacing),
                   Container(

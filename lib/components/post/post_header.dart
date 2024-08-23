@@ -26,6 +26,7 @@ class PostHeader extends StatelessWidget {
           size: AppTheme.cardPadding * 2,
           fontSize: 18,
           onTap: () {},
+          isNft: false
         ),
         title: GestureDetector(
           onTap: () {},

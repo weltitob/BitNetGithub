@@ -44,7 +44,7 @@ class bitnetWebsiteAppBar extends StatelessWidget
                 : AppTheme.columnWidth;
 
             return Container(
-              margin: EdgeInsets.symmetric(horizontal: centerSpacing),
+              margin: isSmallScreen ? EdgeInsets.zero : EdgeInsets.symmetric(horizontal: centerSpacing),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -80,12 +80,8 @@ class bitnetWebsiteAppBar extends StatelessWidget
                       ),
                     ),
                   ),
-                  centerWidget ??
-                  Container(
-                    alignment: Alignment.center,
-                          width: AppTheme.cardPadding * 17,
-                          child: centerWidget,
-                        ),
+                                  if(centerWidget != null) centerWidget!,
+
                   Container(
                     //color: Colors.green,
                     child: LongButtonWidget(

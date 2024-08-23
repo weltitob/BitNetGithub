@@ -1,7 +1,12 @@
+import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/inbound_liquidity.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
+import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/items/amount_previewer.dart';
 import 'package:bitnet/components/items/balancecard.dart';
 import 'package:bitnet/components/items/transactionitem.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -9,12 +14,15 @@ import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/lnd/payment_model.dart';
 import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
 import 'package:bitnet/models/bitcoin/transactiondata.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/pages/wallet/cardinfo/controller/lightning_info_controller.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class LightningCardInformationScreen extends StatefulWidget {
   const LightningCardInformationScreen({super.key});
@@ -28,6 +36,12 @@ class _LightningCardInformationScreenState
     extends State<LightningCardInformationScreen> {
       late ScrollController scrollController;
       List<TransactionItem> transactions = List.empty(growable:true);
+      bool loadedLiquidity = false;
+      int liquidity = 0;
+      BitcoinUnitModel? liquidityUnitModel;
+      String liquidityCurrBalance='';
+      String liquidityCurrSymbol = '';
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return bitnetScaffold(
@@ -53,6 +67,27 @@ class _LightningCardInformationScreenState
   void initState() {
         final controller = Get.put(LightningInfoController());
         scrollController = ScrollController();
+        inboundLiquidity().then((response)  {
+          if(response.data.isEmpty) {
+liquidity = -1;
+          loadedLiquidity = true;
+          setState((){});
+          } else {
+   liquidity = response.data['liquidity'].toInt();
+    liquidityUnitModel = CurrencyConverter.convertToBitcoinUnit(liquidity.toDouble(), BitcoinUnits.SAT);
+  String? currency = Provider.of<CurrencyChangeProvider>(context, listen: false).selectedCurrency;
+    currency = currency ?? "USD";
+    final chartLine = Get.find<WalletsController>().chartLines.value;
+    final bitcoinPrice = chartLine?.price;
+
+     liquidityCurrBalance = CurrencyConverter.convertCurrency(liquidityUnitModel!.bitcoinUnitAsString, (liquidityUnitModel!.amount as num).toDouble(), currency, bitcoinPrice);
+     liquidityCurrSymbol = getCurrency(currency);        
+      loadedLiquidity = true;
+          setState((){});
+          }
+       
+        }
+      );
     controller.loadingState.listen((val) {
    setState((){});
     });
@@ -67,6 +102,9 @@ class _LightningCardInformationScreenState
 
   @override
   Widget build(BuildContext context) {
+      String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
+    currency = currency ?? "USD";
+
     final controller = Get.put(LightningInfoController());
     final List<dynamic> data = controller.combinedTransactions;
     if(!controller.loadingState.value && transactions.isEmpty) {
@@ -166,9 +204,9 @@ final transaction = controller
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                    child: const BitNetListTile(
+                    child:  BitNetListTile(
                       text: "Possible Capacity", //this is the inbound liquidity of the users node
-                      trailing: Text("9000"),
+                      trailing: loadedLiquidity ? liquidity == -1 ? Text('Error') : AmountPreviewer(unitModel: liquidityUnitModel!, textStyle: Theme.of(context).textTheme.bodyMedium!, textColor: Colors.white,) : dotProgress(context),
                     ),
                   )
                 ),

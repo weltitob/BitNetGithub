@@ -20,6 +20,7 @@ import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
+import 'package:bitnet/pages/report/report_mobile_controller.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:bitnet/pages/secondpages/agbs_and_impressum.dart';
 import 'package:bitnet/pages/secondpages/analysisscreen.dart';
@@ -74,7 +75,10 @@ class AppRoutes {
   // Define your routes like this
   List<dynamic> get bottomnav_routes => [
         GoRoute(path: '/loading', builder: (ctx, state) => const LoadingViewAppStart()),
-
+         GoRoute(
+            path: '/report',
+            builder: (ctx, state) => const ReportMobile(),
+          ),
         GoRoute(
             path: '/qrscanner',
             builder: _dynamicTransition == null ? (ctx, state) => const QrScanner() : null,
