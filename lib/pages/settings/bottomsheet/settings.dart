@@ -18,41 +18,54 @@ class Settings extends StatelessWidget {
     final controller = Get.find<SettingsController>();
 
     return Obx(
-      () => Column(
-        children: [
-          if (controller.currentTab.value == 'main')
-            Expanded(
-              child: SettingsView(),
-            ),
-          if (controller.currentTab.value == 'style')
-            Expanded(
-              child: SettingsStyleView(),
-            ),
-          if (controller.currentTab.value == 'security')
-            Expanded(
-              child: SecuritySettingsPage(),
-            ),
-          if (controller.currentTab.value == 'invite')
-            Expanded(
-              child: InvitationSettingsPage(),
-            ),
-          if (controller.currentTab.value == 'currency')
-            Expanded(
-              child: ChangeCurrency(),
-            ),
-          if (controller.currentTab.value == 'language')
-            Expanded(
-              child: ChangeLanguage(),
-            ),
-          if (controller.currentTab.value == "agbs")
-            Expanded(
-              child: AgbsAndImpressumScreen(
-                onBackButton: () {
-                  controller.switchTab("main");
-                },
-              ),
-            )
-        ],
+      ()=> PopScope(
+        canPop: controller.currentTab.value == 'main',
+        onPopInvoked: (val) {
+          if(controller.currentTab.value != 'main') {
+            controller.switchTab('main');
+            
+          } else {
+      
+          }
+        },
+        child: Obx(
+          () => Column(
+            children: [
+              if (controller.currentTab.value == 'main')
+                Expanded(
+                  child: SettingsView(),
+                ),
+              if (controller.currentTab.value == 'style')
+                Expanded(
+                  child: SettingsStyleView(),
+                ),
+              if (controller.currentTab.value == 'security')
+                Expanded(
+                  child: SecuritySettingsPage(),
+                ),
+              if (controller.currentTab.value == 'invite')
+                Expanded(
+                  child: InvitationSettingsPage(),
+                ),
+              if (controller.currentTab.value == 'currency')
+                Expanded(
+                  child: ChangeCurrency(),
+                ),
+              if (controller.currentTab.value == 'language')
+                Expanded(
+                  child: ChangeLanguage(),
+                ),
+              if (controller.currentTab.value == "agbs")
+                Expanded(
+                  child: AgbsAndImpressumScreen(
+                    onBackButton: () {
+                      controller.switchTab("main");
+                    },
+                  ),
+                )
+            ],
+          ),
+        ),
       ),
     );
   }

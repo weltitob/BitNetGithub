@@ -3,7 +3,7 @@ import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 class CurrencyConverter {
 
   static String convertCurrency(String inputCurrency, double amount,
-      String outputCurrency, double? bitcoinPrice) {
+      String outputCurrency, double? bitcoinPrice, {bool fixed = true}) {
     try {
       if (inputCurrency == outputCurrency) {
         return amount.toStringAsFixed(2);
@@ -23,7 +23,9 @@ class CurrencyConverter {
         return (amount / bitcoinPrice!).toStringAsFixed(8);
       }
       else {
-        return (amount * bitcoinPrice! / 100000000).toStringAsFixed(2);
+        
+        if(fixed)return (amount * bitcoinPrice! / 100000000).toStringAsFixed(2);
+        return (amount *bitcoinPrice! / 100000000).toString();
       }
     } catch (e) {
       throw Exception("Error converting currency: $e");

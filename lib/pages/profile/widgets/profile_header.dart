@@ -118,22 +118,16 @@ class ProfileHeader extends StatelessWidget {
                                           context: context,
                                         );
                                       },
-                                child: Stack(
-                                  children: [
+                                child:
                                     Obx(
                                       () => Avatar(
                                         mxContent: Uri.parse(controller.userData.value.profileImageUrl),
                                         size: AppTheme.cardPadding * 5.25.h,
-                                        type: profilePictureType.lightning,
+                                        type: profilePictureType.lightning, isNft: controller.userData.value.nft_profile_id.isNotEmpty,
+                                        cornerWidget: controller.currentview.value == 2? ProfileButton() : null,
                                       ),
                                     ),
-                                    Positioned(
-                                      bottom: 0,
-                                      right: 4,
-                                      child: ProfileButton(),
-                                    ),
-                                  ],
-                                ),
+                                   
                               ),
                             ),
                           ),

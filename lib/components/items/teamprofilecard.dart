@@ -57,6 +57,7 @@ class _TeamProfileCardState extends State<TeamProfileCard> {
                     mxContent: Uri.parse(widget.avatarUrl),
                     name: widget.name,
                     profileId: "did:ethr:0x1234567890123456789012345678901234567890",
+                    isNft: false,
                   ),
                 ],
               ),

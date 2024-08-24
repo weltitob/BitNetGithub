@@ -1,12 +1,13 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/chart/chart.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 GlobalKey<_HashRealTimeValuesState> hashKey =
     GlobalKey<_HashRealTimeValuesState>();
@@ -79,7 +80,9 @@ class _HashrateChartState extends State<HashrateChart> {
                 const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: HashRealTimeValues(key: hashKey)),
 
-        SizedBox(
+         widget.chartData.isEmpty ? SizedBox(
+              height: AppTheme.cardPadding * 16,
+              child: dotProgress(context)): SizedBox(
           height: AppTheme.cardPadding * 16,
           child: SfCartesianChart(
               trackballBehavior: _trackballBehavior,
@@ -158,6 +161,8 @@ class _HashrateChartState extends State<HashrateChart> {
                   dataSource: widget.chartData,
                   splineType: SplineType.cardinal,
                   cardinalSplineTension: 0.7,
+                                animationDuration: 0,
+
                   xValueMapper: (ChartLine sales, _) =>
                       DateTime.fromMillisecondsSinceEpoch(
                           sales.time.toInt() * 1000,
@@ -170,6 +175,8 @@ class _HashrateChartState extends State<HashrateChart> {
                   enableTooltip: true,
                   splineType: SplineType.cardinal,
                   cardinalSplineTension: 0.3,
+                                animationDuration: 0,
+
                   dataSource: widget.difficulty,
                   xValueMapper: (Difficulty sales, _) =>
                       DateTime.fromMillisecondsSinceEpoch(

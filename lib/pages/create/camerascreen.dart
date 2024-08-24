@@ -5,7 +5,9 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/container/avatar.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CameraPage extends StatefulWidget {
   final VoidCallback onPostButtonPressed;
@@ -24,6 +26,7 @@ class _CameraPageState extends State<CameraPage> {
 
   Widget getFooter() {
     final currentUser = Auth().currentUser!.uid;
+    bool isNft = Get.find<ProfileController>().userData.value.nft_profile_id.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -44,6 +47,7 @@ class _CameraPageState extends State<CameraPage> {
                     profileId: currentUser,
                     size: AppTheme.cardPadding * 2,
                     fontSize: 18,
+                    isNft: isNft,
                     onTap: () => print('tapped'),
                   ),
                   title: Text(

@@ -1,12 +1,12 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/models/mempool_models/bitcoin_data.dart';
 import 'package:bitnet/models/mempool_models/mempool_model.dart';
+import 'package:bitnet/pages/secondpages/mempool/colorhelper.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:bitnet/pages/secondpages/mempool/colorhelper.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class DataWidget extends StatefulWidget {
   final bool isAccepted;
@@ -24,7 +24,7 @@ class DataWidget extends StatefulWidget {
   final int? index;
   final String? txId;
   final bool singleTx;
-
+  final bool hasUserTxs;
   // Constructor for accepted blocks
   DataWidget.accepted({
     Key? key,
@@ -34,6 +34,7 @@ class DataWidget extends StatefulWidget {
     this.index,
     this.txId,
     required this.singleTx,
+    required this.hasUserTxs,
   })  : isAccepted = true,
         mempoolBlocks = null,
         mins = null,
@@ -46,6 +47,7 @@ class DataWidget extends StatefulWidget {
     required this.mins,
     this.index,
     this.txId,
+    required this.hasUserTxs,
     required this.singleTx,
   })  : isAccepted = false,
         blockData = null,
@@ -90,102 +92,109 @@ class _DataWidgetState extends State<DataWidget> {
           // const SizedBox(
           //   height: AppTheme.elementSpacing,
           // ),
-          Container(
-            height: AppTheme.cardPadding * 5.6.h,
-            width: AppTheme.cardPadding *
-                6.w, //MediaQuery.of(context).size.height * 0.2,
-            margin: widget.isAccepted
-                ? EdgeInsets.only(left: AppTheme.cardPadding.w, top: 10.h)
-                : EdgeInsets.only(
-                    top: 10.h,
-                    left: AppTheme.cardPadding / 2.5.w,
-                    right: AppTheme.cardPadding / 2.5.w),
-            padding: const EdgeInsets.all(AppTheme.elementSpacing),
-            decoration: getDecoration(
-              widget.isAccepted
-                  ? widget.blockData?.extras?.medianFee ?? 0
-                  : widget.mempoolBlocks?.medianFee ?? 0,
-              widget.isAccepted,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                widget.isAccepted
-                    ? Text(
-                  widget.blockData!.height.toString(), // '${widget.size.toStringAsFixed(2)} MB',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20.sp),
-                )
-                    : Text(
-                  "Pending", // '${(widget.mempoolBlocks!.blockSize! / 1000000).toStringAsFixed(2)} MB',
-                  style: TextStyle(
-                      fontSize: 20.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
+          Stack(
+            children: [
+              Container(
+                height: AppTheme.cardPadding * 7.h,
+                width: AppTheme.cardPadding * 6.w, //MediaQuery.of(context).size.height * 0.2,
+                margin: widget.isAccepted
+                    ? EdgeInsets.only(left: AppTheme.cardPadding.w, top: 10.h)
+                    : EdgeInsets.only(top: 10.h, left: AppTheme.cardPadding / 2.5.w, right: AppTheme.cardPadding / 2.5.w),
+                padding: const EdgeInsets.all(AppTheme.elementSpacing),
+                decoration: getDecoration(
+                  widget.isAccepted ? widget.blockData?.extras?.medianFee ?? 0 : widget.mempoolBlocks?.medianFee ?? 0,
+                  widget.isAccepted,
                 ),
-                SizedBox(height: AppTheme.elementSpacing * 1.h),
-                widget.isAccepted
-                    ? Text(
-                        '${L10n.of(context)!.fee}: ~' +
-                            '\$' +
-                            '${(widget.blockData!.extras!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
-                        style: const TextStyle(color: Colors.white),
-                      )
-                    : Text(
-                        '${L10n.of(context)!.fee}: ~' +
-                            '\$' +
-                            '${(widget.mempoolBlocks!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
-                        style: TextStyle(fontSize: 14.sp, color: Colors.white),
-                      ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    widget.isAccepted
+                        ? Text(
+                            widget.blockData!.height.toString(), // '${widget.size.toStringAsFixed(2)} MB',
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20.sp),
+                          )
+                        : Text(
+                            "Pending", // '${(widget.mempoolBlocks!.blockSize! / 1000000).toStringAsFixed(2)} MB',
+                            style: TextStyle(fontSize: 20.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                    SizedBox(height: AppTheme.elementSpacing * 1.h),
+                    widget.isAccepted
+                        ? Text(
+                            '${L10n.of(context)!.fee}: ~' +
+                                '\$' +
+                                '${(widget.blockData!.extras!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
+                            style: const TextStyle(color: Colors.white),
+                          )
+                        : Text(
+                            '${L10n.of(context)!.fee}: ~' +
+                                '\$' +
+                                '${(widget.mempoolBlocks!.medianFee! * 140 / 100000000 * controller.currentUSD.value).toStringAsFixed(2)}',
+                            style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                          ),
 
-                // SizedBox(height: AppTheme.elementSpacing * 0.4.h),
-                // widget.isAccepted
-                //     ? FittedBox(
-                //         child: Text(
-                //           '${formatPrice(widget.blockData?.txCount)} transactions',
-                //           maxLines: 1,
-                //           style:
-                //               TextStyle(fontSize: 14.sp, color: Colors.white),
-                //         ),
-                //       )
-                //     : FittedBox(
-                //         child: Text(
-                //           '${formatPrice(widget.mempoolBlocks?.nTx)} transactions',
-                //           maxLines: 1,
-                //           style:
-                //               TextStyle(fontSize: 14.sp, color: Colors.white),
-                //           overflow: TextOverflow.ellipsis,
-                //         ),
-                //       ),
-                SizedBox(height: AppTheme.elementSpacing * 0.3.h),
-                widget.isAccepted
-                    ? FittedBox(
+                    // SizedBox(height: AppTheme.elementSpacing * 0.4.h),
+                    // widget.isAccepted
+                    //     ? FittedBox(
+                    //         child: Text(
+                    //           '${formatPrice(widget.blockData?.txCount)} transactions',
+                    //           maxLines: 1,
+                    //           style:
+                    //               TextStyle(fontSize: 14.sp, color: Colors.white),
+                    //         ),
+                    //       )
+                    //     : FittedBox(
+                    //         child: Text(
+                    //           '${formatPrice(widget.mempoolBlocks?.nTx)} transactions',
+                    //           maxLines: 1,
+                    //           style:
+                    //               TextStyle(fontSize: 14.sp, color: Colors.white),
+                    //           overflow: TextOverflow.ellipsis,
+                    //         ),
+                    //       ),
+                    SizedBox(height: AppTheme.elementSpacing * 0.3.h),
+                    widget.isAccepted
+                        ? FittedBox(
+                            child: Text(
+                              '${widget.time}',
+                              maxLines: 1,
+                              style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                            ),
+                          )
+                        : FittedBox(
+                            child: Text(
+                              'In ~${widget.mins} ${L10n.of(context)!.minutesTx}',
+                              maxLines: 1,
+                              style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+              if (widget.hasUserTxs)
+                Positioned(
+                  bottom: 0,
+                  left: 40,
+                  child: Container(
+                    width: 45,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: AppTheme.colorBitcoin,
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 2),
+                    child: Center(
                       child: Text(
-                          '${widget.time}',
-                          maxLines: 1,
-                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
-                        ),
-                    )
-                    : FittedBox(
-                        child: Text(
-                          'In ~${widget.mins} ${L10n.of(context)!.minutesTx}',
-                          maxLines: 1,
-                          style:
-                              TextStyle(fontSize: 14.sp, color: Colors.white),
-                        ),
+                        'has Tx',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
                       ),
-              ],
-            ),
+                    ),
+                  ),
+                ),
+            ],
           ),
           i! == 1 && widget.txId == widget.blockData?.id
               ? Container(
-                  margin: widget.isAccepted
-                      ? const EdgeInsets.only(left: AppTheme.cardPadding)
-                      : const EdgeInsets.only(left: 0),
-                  child: Icon(Icons.arrow_drop_down_rounded,
-                      size: AppTheme.cardPadding * 2),
+                  margin: widget.isAccepted ? const EdgeInsets.only(left: AppTheme.cardPadding) : const EdgeInsets.only(left: 0),
+                  child: Icon(Icons.arrow_drop_down_rounded, size: AppTheme.cardPadding * 2),
                 )
               : SizedBox(
                   height: AppTheme.cardPadding * 1.h,

@@ -17,4 +17,5 @@ static final _rootNavigatorKey = GlobalKey<NavigatorState>();
 );
 
 static GoRouter get router => _router;
+static GlobalKey<NavigatorState> get navigatorKey => _rootNavigatorKey;
 }

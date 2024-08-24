@@ -4,19 +4,22 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletkitservice/estimatefee.
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/cancelpendingbatch.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/finalize.dart';
 import 'package:bitnet/backbone/cloudfunctions/taprootassets/listbatches.dart';
+import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/components/items/amount_previewer.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
+import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
 import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/batch.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 
 class BatchScreen extends StatefulWidget {
@@ -179,13 +182,11 @@ class _BatchScreenState extends State<BatchScreen> {
                   children: [
                     BitNetListTile(
                       text: L10n.of(context)!.transactionFees,
-                      trailing: Text(sat_per_vbyte.toString(),
-                          style: Theme.of(context).textTheme.titleMedium),
+                      trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit(sat_per_vbyte, BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
                     ),
                     BitNetListTile(
                       text: L10n.of(context)!.bitnetUsageFee,
-                      trailing: Text((sat_per_vbyte * 0.5).round().toString() ,
-                          style: Theme.of(context).textTheme.titleMedium),
+                      trailing: AmountPreviewer(unitModel: CurrencyConverter.convertToBitcoinUnit((sat_per_vbyte * 0.5), BitcoinUnits.SAT),textStyle: Theme.of(context).textTheme.titleMedium!,textColor: null, shouldHideBalance: false,)
                     ),
                   ],
                 ),

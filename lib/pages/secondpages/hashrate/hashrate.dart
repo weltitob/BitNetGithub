@@ -3,14 +3,13 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/informationwidget.dart';
 import 'package:bitnet/components/buttons/timechooserbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/pages/secondpages/mempool/view/hashratechart.dart';
 import 'package:bitnet/pages/transactions/model/hash_chart_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:go_router/go_router.dart';
 
 
 class HashrateScreen extends StatefulWidget {
@@ -37,15 +36,19 @@ A higher hashrate indicates more miners are participating, making the network mo
 
   List<ChartLine> chartData = [];
   List<Difficulty> difficulty = [];
+  List<ChartLine> currentChartData = [];
+  List<Difficulty> currentDifficulty = [];
   String selectedMonth = '3Y';
 
+//we don't want a new network call each time we click a button, that's bad.
   getData() async {
     var dio = Dio();
     try {
       var response = await dio.get(
-          'https://mempool.space/api/v1/mining/hashrate/${selectedMonth.toLowerCase()}');
+          'https://mempool.space/api/v1/mining/hashrate/3Y');
       print(response.data);
       if (response.statusCode == 200) {
+
         List<ChartLine> line = [];
         line.clear();
         chartData.clear();
@@ -63,9 +66,52 @@ A higher hashrate indicates more miners are participating, making the network mo
         print(chartData.length);
         setState(() {});
       }
+
+      setData();
     } catch (e) {
       print(e);
     }
+  }
+
+  void setData() {
+    DateTime range = DateTime.now().subtract(Duration(days: 365 * 3));
+    switch(selectedMonth) {
+      case '3M':
+        range = DateTime.now().subtract(Duration(days: 90));
+        break;
+      case '6M':
+        range = DateTime.now().subtract(Duration(days: 180));
+        break;
+      case '1Y':
+        range = DateTime.now().subtract(Duration(days: 365));
+        break;
+      case '2Y':
+        range = DateTime.now().subtract(Duration(days: 365 * 2));
+        break;
+      case '3Y':
+        range = DateTime.now().subtract(Duration(days: 365 * 3));
+        break;
+      default:
+        range = DateTime.now().subtract(Duration(days: 365 * 3));
+        break;
+    }
+        
+    currentChartData = chartData.where((test) {
+      DateTime time = DateTime.fromMillisecondsSinceEpoch(
+        (test.time * 1000).round(),
+        isUtc: false);
+        return time.isAfter(range) || time.isAtSameMomentAs(range);
+    }  ).toList();
+     currentDifficulty = difficulty.where((test) {
+      if(test.time == null) {
+        return false;
+      }
+      DateTime time = DateTime.fromMillisecondsSinceEpoch(
+        (test.time! * 1000).round(),
+        isUtc: false);
+        return time.isAfter(range) || time.isAtSameMomentAs(range);
+    }  ).toList();
+    setState((){});
   }
 
   @override
@@ -98,8 +144,8 @@ A higher hashrate indicates more miners are participating, making the network mo
             ),
 
             HashrateChart(
-              chartData: chartData,
-              difficulty: difficulty,
+              chartData: currentChartData,
+              difficulty: currentDifficulty,
             ),
             SizedBox(
               height: AppTheme.cardPadding,
@@ -110,7 +156,7 @@ A higher hashrate indicates more miners are participating, making the network mo
               onTimePeriodSelected: (String newValue) {
                 setState(() {
                   selectedMonth = newValue;
-                  getData();
+                  setData();
                 });
               },
               buttonBuilder: (context, period, isSelected, onPressed) {

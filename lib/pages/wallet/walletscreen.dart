@@ -1,6 +1,3 @@
-import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -106,6 +103,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                 size: AppTheme.cardPadding * 2.5.h,
                                 mxContent: Uri.parse(profilecontroller.userData.value.profileImageUrl),
                                 type: profilePictureType.lightning,
+                                isNft: profilecontroller.userData.value.nft_profile_id.isNotEmpty
                               ),
                               SizedBox(
                                 width: AppTheme.elementSpacing * 1.25.w,

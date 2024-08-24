@@ -33,29 +33,60 @@ class ReceiveScreen extends StatefulWidget {
   State<ReceiveScreen> createState() => _ReceiveScreenState();
 }
 
-class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProviderStateMixin {
+class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateMixin {
   final controller = Get.find<ReceiveController>();
   late TabController _tabController;
-  // late Animation<double> _animation;
-  // late AnimationController _animationController;
+  double oldOffset = 0.0;
+  late Animation<double> _animation;
+  late AnimationController _animationController;
+  late StreamSubscription<ReceiveType> receiveTypeSub;
+  bool tappedOffset = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 300), // Adjust duration as needed
+      vsync: this,
+    );
 
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+    controller.receiveType.value = ReceiveType.Lightning;
     decodeNetwork();
 
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
+        tappedOffset = true;
         controller.switchReceiveType();
+      }
+    });
+    _tabController.animation?.addListener(() {
+      if (_tabController.offset == 0.0 || _tabController.offset == -0.0) {
+        if (tappedOffset) {
+          tappedOffset = false;
+        }
+      } else if (tappedOffset) {
+      } else if (!_tabController.offset.isNegative && _tabController != 0.0 && _tabController.offset > 0.5) {
+        controller.receiveType.value = ReceiveType.OnChain;
+      } else if (!_tabController.offset.isNegative && _tabController != 0.0 && _tabController.offset < 0.5) {
+        controller.receiveType.value = ReceiveType.Lightning;
+      } else if (_tabController.offset.isNegative &&
+          _tabController != 0.0 &&
+          _tabController.offset < -0.5 &&
+          !(_tabController.offset < -1.5)) {
+        controller.receiveType.value = ReceiveType.Lightning;
+      } else if (_tabController.offset.isNegative && _tabController != 0.0 && _tabController.offset > -0.5) {
+        controller.receiveType.value = ReceiveType.OnChain;
       }
     });
 
     // _tabController.animation?.addListener(() {
     //   setState(() {});
     // });
-
 
     controller.btcController = TextEditingController();
     controller.btcController.text = "0.00001";
@@ -65,8 +96,17 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
     controller.currController = TextEditingController();
     controller.getInvoice(0, "");
     controller.getTaprootAddress();
-    controller.duration = Duration(minutes: 20);
-    controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+    //im not sure if the timer should reset each time the page is open or if it is a bug. (assuming it is a bug for now.)
+    if ((controller.duration.inSeconds <= 0)) {
+      controller.duration = Duration(minutes: 20);
+      controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+    }
+    _animationController.forward();
+    receiveTypeSub = controller.receiveType.listen((data) {
+      // Restart the animation whenever the receiveType changes
+      _animationController.reset();
+      _animationController.forward();
+    });
 
     LoggerService logger = Get.find();
 
@@ -133,8 +173,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
 
   void decodeNetwork() {
     print("DECODE NETWORK");
-    final network =
-    widget.routerState?.pathParameters['network'];
+    final network = widget.routerState?.pathParameters['network'];
 
     print('Current route: ${widget.routerState?.path}');
     print('Network: $network');
@@ -151,16 +190,18 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
   @override
   void dispose() {
     _tabController.dispose();
+    _animationController.dispose();
     controller.currController.dispose();
     controller.btcController.dispose();
     controller.satController.dispose();
-    controller.timer.cancel();
+    receiveTypeSub.cancel();
+
+    //controller.timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       appBar: bitnetAppBar(
@@ -171,33 +212,41 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
         },
         actions: [
           Obx(() {
-            return controller.receiveType == ReceiveType.Lightning
-                ? Obx(() {
-                  return LongButtonWidget(
-                    buttonType: ButtonType.transparent,
-                    customHeight: AppTheme.cardPadding * 1.5,
-                    customWidth: AppTheme.cardPadding * 4,
-                    leadingIcon: controller.createdInvoice.value
-                        ? Icon(FontAwesomeIcons.cancel,
-                        color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80)
-                        : Icon(FontAwesomeIcons.refresh,
-                        color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80),
-                    title: "${controller.min.value}:${controller.sec.value}",
-                    onTap: () {
-                      controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
-                      controller.timer.cancel();
-                      controller.duration = Duration(minutes: 20);
-                      controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
-                    },
-                  );
-                })
-                : RoundedButtonWidget(
-                    size: AppTheme.cardPadding * 1.5,
-                    buttonType: ButtonType.transparent,
-                    iconData: FontAwesomeIcons.refresh,
-                    onTap: () {
-                      controller.getTaprootAddress();
-                    });
+            return SizeTransition(
+              sizeFactor: _animation,
+              axis: Axis.horizontal,
+              axisAlignment: -1.0, // Adjust to control the direction of the animation
+              child: controller.receiveType.value == ReceiveType.Lightning
+                  ? LongButtonWidget(
+                      buttonType: ButtonType.transparent,
+                      customHeight: AppTheme.cardPadding * 1.5,
+                      customWidth: AppTheme.cardPadding * 4,
+                      leadingIcon: controller.createdInvoice.value
+                          ? Icon(
+                              FontAwesomeIcons.cancel,
+                              color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80,
+                            )
+                          : Icon(
+                              FontAwesomeIcons.refresh,
+                              color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80,
+                            ),
+                      title: "${controller.min.value}:${controller.sec.value}",
+                      onTap: () {
+                        controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
+                        controller.timer.cancel();
+                        controller.duration = Duration(minutes: 20);
+                        controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+                      },
+                    )
+                  : RoundedButtonWidget(
+                      size: AppTheme.cardPadding * 1.5,
+                      buttonType: ButtonType.transparent,
+                      iconData: FontAwesomeIcons.refresh,
+                      onTap: () {
+                        controller.getTaprootAddress();
+                      },
+                    ),
+            );
           }),
           SizedBox(
             width: AppTheme.elementSpacing,
@@ -217,50 +266,48 @@ class _ReceiveScreenState extends State<ReceiveScreen> with SingleTickerProvider
               SizedBox(
                 height: AppTheme.cardPadding.h * 4,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
-                child: Container(
-                  height: AppTheme.cardPadding * 2,
-                  child: TabBar(
-                    dividerColor: Colors.transparent,
-                    indicatorColor: Colors.transparent,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    controller: _tabController,
-                    tabs: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(FontAwesomeIcons.bolt),
-                          SizedBox(
-                            width: AppTheme.cardPadding * 0.25,
-                          ),
-                          Text(
-                            ReceiveType.Lightning.name,
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(FontAwesomeIcons.bitcoin),
-                          SizedBox(
-                            width: AppTheme.cardPadding * 0.25,
-                          ),
-                          Text(
-                            ReceiveType.OnChain.name,
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                        ],
-                      ),
-                    ],
-                    labelStyle: Theme.of(context).textTheme.headlineSmall,
-                    indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: Colors.white.withOpacity(0.1),
+              Container(
+                height: AppTheme.cardPadding * 2,
+                child: TabBar.secondary(
+                  dividerColor: Colors.transparent,
+                  indicatorColor: Colors.transparent,
+                  indicatorPadding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 2),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  controller: _tabController,
+                  tabs: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(FontAwesomeIcons.bolt),
+                        SizedBox(
+                          width: AppTheme.cardPadding * 0.25,
+                        ),
+                        Text(
+                          ReceiveType.Lightning.name,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ],
                     ),
-                    unselectedLabelColor: Colors.white,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(FontAwesomeIcons.bitcoin),
+                        SizedBox(
+                          width: AppTheme.cardPadding * 0.25,
+                        ),
+                        Text(
+                          ReceiveType.OnChain.name,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ],
+                    ),
+                  ],
+                  labelStyle: Theme.of(context).textTheme.headlineSmall,
+                  indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.white.withOpacity(0.1),
                   ),
+                  unselectedLabelColor: Colors.white,
                 ),
               ),
               Expanded(

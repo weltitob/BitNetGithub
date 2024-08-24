@@ -13,24 +13,25 @@ import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/routetrees/widgettree.dart' as bTree;
-import 'package:bitnet/pages/secondpages/lock_screen.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
+import 'package:bitnet/router.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
+import 'package:shake/shake.dart';
 
 import 'backbone/auth/auth.dart';
 
@@ -72,6 +73,14 @@ Future<void> main() async {
     await Stripe.instance.applySettings();
   }
   await LocalStorage.instance.initStorage();
+  ShakeDetector.autoStart(
+    shakeThresholdGravity: 1.2,
+    onPhoneShake: () {
+      if (AppRouter.navigatorKey.currentContext != null) {
+        GoRouter.of(AppRouter.navigatorKey.currentContext!).push('/report');
+      }
+    },
+  );
 
   await Firebase.initializeApp(
     options: FirebaseOptions(
@@ -127,7 +136,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    PhotoManager.clearFileCache();
+    if (!kIsWeb) {
+      PhotoManager.clearFileCache();
+    }
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -149,11 +160,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         logger.i("Applicaton detached");
         //hier wird die app dann auch wirklich geschlossen >> dann den container down shutten?
         //dann etwas in firebase storage schreiben in die collection namens appcycle
-
       } else if (state == AppLifecycleState.hidden) {
         // App wird minimiert
         logger.i("Applifecycle hidden");
-
       } else if (state == AppLifecycleState.inactive) {
         // App wird pausiert
         logger.i("Applifecycle inactive");
@@ -197,32 +206,24 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 // ChangeNotifierProvider<BalanceHideProvider>(
                 //   create: (context) => BalanceHideProvider(),
                 // ),
-                ChangeNotifierProvider<CurrencyTypeProvider>(
-                    create: (context) => CurrencyTypeProvider()),
+                ChangeNotifierProvider<CurrencyTypeProvider>(create: (context) => CurrencyTypeProvider()),
                 ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
-                  update:
-                      (context, currencyChangeProvider, bitcoinPriceStream) {
-                    if (bitcoinPriceStream == null ||
-                        bitcoinPriceStream.localCurrency !=
-                            currencyChangeProvider.selectedCurrency) {
+                  update: (context, currencyChangeProvider, bitcoinPriceStream) {
+                    if (bitcoinPriceStream == null || bitcoinPriceStream.localCurrency != currencyChangeProvider.selectedCurrency) {
                       bitcoinPriceStream?.dispose();
                       final newStream = BitcoinPriceStream();
-                      newStream.updateCurrency(
-                          currencyChangeProvider.selectedCurrency ?? 'usd');
+                      newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
                       newStream.priceStream.asBroadcastStream().listen((data) {
                         Get.find<WalletsController>().chartLines.value = data;
                       });
                       return newStream;
                     }
-                    bitcoinPriceStream.priceStream
-                        .asBroadcastStream()
-                        .listen((data) {
+                    bitcoinPriceStream.priceStream.asBroadcastStream().listen((data) {
                       Get.find<WalletsController>().chartLines.value = data;
                     });
                     return bitcoinPriceStream;
                   },
-                  dispose: (context, bitcoinPriceStream) =>
-                      bitcoinPriceStream.dispose(),
+                  dispose: (context, bitcoinPriceStream) => bitcoinPriceStream.dispose(),
                 ),
               ],
               child: bTree.WidgetTree(),
@@ -230,10 +231,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           )
         : MultiProvider(
             providers: [
-              ChangeNotifierProvider<CardChangeProvider>(
-                  create: (context) => CardChangeProvider()),
-              ChangeNotifierProvider<CurrencyTypeProvider>(
-                  create: (context) => CurrencyTypeProvider()),
+              ChangeNotifierProvider<CardChangeProvider>(create: (context) => CardChangeProvider()),
+              ChangeNotifierProvider<CurrencyTypeProvider>(create: (context) => CurrencyTypeProvider()),
               ChangeNotifierProvider<LocalProvider>(
                 create: (context) => LocalProvider(),
               ),
@@ -245,27 +244,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               ),
               ProxyProvider<CurrencyChangeProvider, BitcoinPriceStream>(
                 update: (context, currencyChangeProvider, bitcoinPriceStream) {
-                  if (bitcoinPriceStream == null ||
-                      bitcoinPriceStream.localCurrency !=
-                          currencyChangeProvider.selectedCurrency) {
+                  if (bitcoinPriceStream == null || bitcoinPriceStream.localCurrency != currencyChangeProvider.selectedCurrency) {
                     bitcoinPriceStream?.dispose();
                     final newStream = BitcoinPriceStream();
-                    newStream.updateCurrency(
-                        currencyChangeProvider.selectedCurrency ?? 'usd');
+                    newStream.updateCurrency(currencyChangeProvider.selectedCurrency ?? 'usd');
                     newStream.priceStream.asBroadcastStream().listen((data) {
                       Get.find<WalletsController>().chartLines.value = data;
                     });
                     return newStream;
                   }
-                  bitcoinPriceStream.priceStream
-                      .asBroadcastStream()
-                      .listen((data) {
+                  bitcoinPriceStream.priceStream.asBroadcastStream().listen((data) {
                     Get.find<WalletsController>().chartLines.value = data;
                   });
                   return bitcoinPriceStream;
                 },
-                dispose: (context, bitcoinPriceStream) =>
-                    bitcoinPriceStream.dispose(),
+                dispose: (context, bitcoinPriceStream) => bitcoinPriceStream.dispose(),
               ),
               // This provider is now made redundant, use WalletsController.chartlines and
               //Obx if you need to listen for changes.

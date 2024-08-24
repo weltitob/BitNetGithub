@@ -15,10 +15,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class WalletFilterScreen extends GetWidget<WalletFilterController> {
-  const WalletFilterScreen({this.hideLightning = false, this.hideOnchain = false, this.forcedFilters, super.key});
+  const WalletFilterScreen({this.hideLightning = false, this.hideOnchain = false,this.hideFilters = false, this.forcedFilters, super.key});
   final bool hideLightning;
   final bool hideOnchain;
   final List<String>? forcedFilters;
+  final bool hideFilters;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
               children: [
 
                 SizedBox(height: AppTheme.cardPadding),
-                BitNetFilterPillList(
+                if(!hideFilters) BitNetFilterPillList(
                   headingText: L10n.of(context)!.filterOptions,
                   listDataText: [
     if (!hideLightning) PillLabelModal(labelText: L10n.of(context)!.lightning),

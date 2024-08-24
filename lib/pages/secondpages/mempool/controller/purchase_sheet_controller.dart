@@ -1,7 +1,7 @@
+import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 class PurchaseSheetController extends BaseController
     with GetTickerProviderStateMixin {
   late TabController controller;
@@ -68,5 +68,9 @@ class SellSheetController extends BaseController
     nodeSell.dispose();
     controller.dispose();
     super.dispose();
+  }
+  @override
+  void onReady() {
+
   }
 }

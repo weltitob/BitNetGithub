@@ -172,7 +172,7 @@ class LightningSendTab extends GetWidget<SendsController> {
       children: [
         ListTile(
           // The leading widget is a circle avatar that displays an image.
-          leading: Avatar(),
+          leading: Avatar(isNft: false,),
           // The title displays the user's name.
           title: Text(
             L10n.of(context)!.unknown,
@@ -237,9 +237,17 @@ class LightningSendTab extends GetWidget<SendsController> {
                   ? () {
                       //IZAK: bitcoin price might be null on init, potential fix would be not allowing user to Send when
                       //btc price is unknown, currently temporary fix of letting currencyController text be "0.0"
-                      controller.currencyController.text = bitcoinPrice != null
-                          ? CurrencyConverter.convertCurrency("SATS", double.parse(controller.satController.text), currency!, bitcoinPrice)
+                      String currencyEquivalent = bitcoinPrice != null
+                          ? CurrencyConverter.convertCurrency("SATS", double.parse(controller.satController.text), currency!, bitcoinPrice, fixed: false)
                           : "0.0";
+                               String oneSat =  (bitcoinPrice! / 100000000).toString();
+    int oneSatDigits = 2;
+    if(oneSat.split('.').length > 1) {
+      oneSatDigits = oneSat.split('.')[1].replaceAll(RegExp(r'0+$'), '').length;
+
+    }
+                          controller.currencyController.text = double.parse(currencyEquivalent).toStringAsFixed(oneSatDigits);
+                          controller.currencyController.text = double.parse(controller.currencyController.text).toString();
 
                       if (controller.bitcoinUnit == BitcoinUnits.BTC) {
                         controller.btcController.text =

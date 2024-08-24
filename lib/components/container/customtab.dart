@@ -22,6 +22,7 @@ class CustomTabContent extends StatelessWidget {
         Avatar(
           mxContent: mxContent,
           size: 30,
+          isNft: false,
         ),
         SizedBox(width: AppTheme.elementSpacing / 2),
         Text(

@@ -99,6 +99,7 @@ class ReceiveController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+    duration = Duration(seconds:0);
     //ONCHAIN
 
   }

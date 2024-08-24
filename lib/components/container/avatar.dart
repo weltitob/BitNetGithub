@@ -1,9 +1,8 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/container/coinlogo.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 enum profilePictureType { none, lightning, onchain }
 
@@ -16,6 +15,8 @@ class Avatar extends StatelessWidget {
   final void Function()? onTap;
   static const double defaultSize = AppTheme.cardPadding * 2;
   final double fontSize;
+  final bool isNft;
+  final Widget? cornerWidget;
 
   const Avatar({
     this.type = profilePictureType.none,
@@ -25,7 +26,7 @@ class Avatar extends StatelessWidget {
     this.onTap,
     this.fontSize = 18,
     Key? key,
-    this.profileId,
+    this.profileId, required this.isNft, this.cornerWidget,
   }) : super(key: key);
 
   @override
@@ -66,8 +67,8 @@ class Avatar extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            isSpecialType ? AppTheme.colorBitcoin : Theme.of(context).primaryColor,
-            isSpecialType ? AppTheme.colorPrimaryGradient : Theme.of(context).primaryColor,
+            isNft ? AppTheme.colorBitcoin : Theme.of(context).primaryColor,
+            isNft ? AppTheme.colorPrimaryGradient : Theme.of(context).primaryColor,
           ],
         ),
       ),
@@ -94,12 +95,16 @@ class Avatar extends StatelessWidget {
       ),
     );
 
-    if (onTap == null) return container;
 
-    return InkWell(
-      onTap: onTap ?? () => context.go("/showprofile/:$profileId"),
-      borderRadius: borderRadius,
-      child: container,
+    return ClipRRect(
+      child: Stack(
+        children: [InkWell(
+          onTap: onTap ?? () => context.go("/showprofile/:$profileId"),
+          borderRadius: borderRadius,
+          child: container,
+        ),
+        Positioned(bottom: 0,right:0, child: cornerWidget ?? CoinLogoWidgetSmall(coinid: 1, width:size / 4, height:size / 4, ))]
+      ),
     );
   }
 }
