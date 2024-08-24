@@ -348,92 +348,22 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                       text: L10n.of(context)!.time,
                                       trailing: controller
                                           .transactionModel!.status!.confirmed!
-                                          ? SizedBox(
-                                        width: 250.w,
-                                        child: Container(
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceEvenly,
-                                                children: [
-                                                  Text(
-                                                    L10n.of(context)!
-                                                        .timestamp +
-                                                        " ",
-                                                    overflow:
-                                                    TextOverflow.ellipsis,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleMedium,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      SizedBox(
-                                                        width: 100.w,
-                                                        child: Text(
-                                                          '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
-                                                              ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))})',
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style:
-                                                          Theme.of(context)
-                                                              .textTheme
-                                                              .bodyMedium,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceEvenly,
-                                                children: [
-                                                  Text(
-                                                      L10n.of(context)!
-                                                          .confirmed +
-                                                          " ",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyMedium),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        L10n.of(context)!
-                                                            .afterTx +
-                                                            DateTime
-                                                                .fromMillisecondsSinceEpoch(
-                                                              (controller
-                                                                  .transactionModel!
-                                                                  .status!
-                                                                  .blockTime! *
-                                                                  1000) -
-                                                                  (controller
-                                                                      .txTime *
-                                                                      1000),
-                                                            )
-                                                                .minute
-                                                                .toString() +
-                                                            L10n.of(context)!
-                                                                .minutesTx,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyMedium,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )
+                                          ? Container(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
+                                                      ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))})',
+                                                  overflow: TextOverflow
+                                                      .ellipsis,
+                                                  style:
+                                                  Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium,
+                                                ),
+                                              ],
+                                            ),
+                                          )
                                           : Obx(
                                             () {
                                           return Text(
@@ -485,6 +415,49 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             )
                                           ],
                                         )),
+                                    // BitNetListTile(
+                                    //   text: L10n.of(context)!.confirmed,
+                                    //   trailing: Row(
+                                    //     mainAxisAlignment:
+                                    //     MainAxisAlignment
+                                    //         .spaceEvenly,
+                                    //     children: [
+                                    //       Text(
+                                    //           L10n.of(context)!
+                                    //               .confirmed +
+                                    //               " ",
+                                    //           style: Theme.of(context)
+                                    //               .textTheme
+                                    //               .bodyMedium),
+                                    //       Row(
+                                    //         children: [
+                                    //           Text(
+                                    //             L10n.of(context)!
+                                    //                 .afterTx +
+                                    //                 DateTime
+                                    //                     .fromMillisecondsSinceEpoch(
+                                    //                   (controller
+                                    //                       .transactionModel!
+                                    //                       .status!
+                                    //                       .blockTime! *
+                                    //                       1000) -
+                                    //                       (controller
+                                    //                           .txTime *
+                                    //                           1000),
+                                    //                 )
+                                    //                     .minute
+                                    //                     .toString() +
+                                    //                 L10n.of(context)!
+                                    //                     .minutesTx,
+                                    //             style: Theme.of(context)
+                                    //                 .textTheme
+                                    //                 .bodyMedium,
+                                    //           ),
+                                    //         ],
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                     // BitNetListTile(
                                     //     text: L10n.of(context)!.features,
                                     //     trailing: Row(
