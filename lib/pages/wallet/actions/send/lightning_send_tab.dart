@@ -97,7 +97,7 @@ class LightningSendTab extends GetWidget<SendsController> {
               ),
             ],
           ),
-            Obx(
+          Obx(
             () => BottomCenterButton(
               buttonTitle: L10n.of(context)!.sendNow,
               buttonState: controller.loadingSending.value ? ButtonState.loading : ButtonState.idle,
@@ -172,7 +172,9 @@ class LightningSendTab extends GetWidget<SendsController> {
       children: [
         ListTile(
           // The leading widget is a circle avatar that displays an image.
-          leading: Avatar(isNft: false,),
+          leading: Avatar(
+            isNft: false,
+          ),
           // The title displays the user's name.
           title: Text(
             L10n.of(context)!.unknown,
@@ -238,16 +240,11 @@ class LightningSendTab extends GetWidget<SendsController> {
                       //IZAK: bitcoin price might be null on init, potential fix would be not allowing user to Send when
                       //btc price is unknown, currently temporary fix of letting currencyController text be "0.0"
                       String currencyEquivalent = bitcoinPrice != null
-                          ? CurrencyConverter.convertCurrency("SATS", double.parse(controller.satController.text), currency!, bitcoinPrice, fixed: false)
+                          ? CurrencyConverter.convertCurrency("SATS", double.parse(controller.satController.text), currency!, bitcoinPrice,
+                              fixed: false)
                           : "0.0";
-                               String oneSat =  (bitcoinPrice! / 100000000).toString();
-    int oneSatDigits = 2;
-    if(oneSat.split('.').length > 1) {
-      oneSatDigits = oneSat.split('.')[1].replaceAll(RegExp(r'0+$'), '').length;
 
-    }
-                          controller.currencyController.text = double.parse(currencyEquivalent).toStringAsFixed(oneSatDigits);
-                          controller.currencyController.text = double.parse(controller.currencyController.text).toString();
+                      controller.currencyController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
 
                       if (controller.bitcoinUnit == BitcoinUnits.BTC) {
                         controller.btcController.text =
@@ -255,7 +252,7 @@ class LightningSendTab extends GetWidget<SendsController> {
                       }
                     }
                   : null,
-              enabled: () => double.parse(controller.currencyController.text) == 0 || controller.sendType == SendType.LightningUrl,
+              enabled: () => double.parse(controller.satController.text) == 0 || controller.sendType == SendType.LightningUrl,
               btcController: controller.btcController,
               satController: controller.satController,
               currController: controller.currencyController,
@@ -265,7 +262,8 @@ class LightningSendTab extends GetWidget<SendsController> {
               lowerBound: controller.lowerBound,
               upperBound: controller.upperBound,
               boundType: controller.boundType,
-              autoConvert: !(controller.sendType == SendType.LightningUrl)),
+              autoConvert: !(controller.sendType == SendType.LightningUrl),
+              preventConversion: () => controller.sendType == SendType.Invoice && double.parse(controller.satController.text) != 0)
         ],
       ),
     );

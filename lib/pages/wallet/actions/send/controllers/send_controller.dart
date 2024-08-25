@@ -337,6 +337,7 @@ class SendsController extends BaseController {
     double satoshi = CurrencyConverter.convertBitcoinToSats(req.amount.toDouble());
     int cleanAmount = satoshi.toInt();
     satController.text = cleanAmount.toString();
+    // currencyController.text = CurrencyConverter.convertCurrency(BitcoinUnits.SAT.name, cleanAmount.toDouble(), outputCurrency, bitcoinPrice);
     moneyTextFieldIsEnabled.value = false;
     description.value = req.tags[1].data;
   }
@@ -384,12 +385,13 @@ class SendsController extends BaseController {
               logger.i("Payment successful!");
               showOverlay(context, "Payment successful!");
               GoRouter.of(context).go("/feed");
-            } if (response.data['result']['status'] == "FAILED") {
+            }
+            if (response.data['result']['status'] == "FAILED") {
               // Handle error
               logger.i("Payment failed!");
               showOverlay(context, "Payment failed: ${response.message}");
               isFinished.value = false; // Keep the user on the same page to possibly retry or show error
-            } else{
+            } else {
               logger.i("Parsing of response failed! PLEASE FIX");
               isFinished.value = false; // Keep the user on the same page to possibly retry or show error
             }

@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 class AmountWidget extends StatefulWidget {
   final BuildContext context;
   final bool Function()? enabled;
+
   final TextEditingController btcController;
   final TextEditingController currController;
   final TextEditingController satController;
@@ -28,6 +29,8 @@ class AmountWidget extends StatefulWidget {
   final Function()? init;
   final Function(String currencyType, String text)? onAmountChange;
   final bool autoConvert;
+  //to prevent usd to btc units conversion and vice versa, set amounts in the controller will be used.
+  final bool Function()? preventConversion;
   //only useful for when in a send tab
   final SendsController? ctrler;
 
@@ -47,7 +50,8 @@ class AmountWidget extends StatefulWidget {
       required this.autoConvert,
       this.onAmountChange,
       this.ctrler,
-      this.init});
+      this.init,
+      this.preventConversion});
 
   @override
   State<AmountWidget> createState() => _AmountWidgetState();
@@ -55,6 +59,7 @@ class AmountWidget extends StatefulWidget {
 
 class _AmountWidgetState extends State<AmountWidget> {
   bool swapped = true;
+  bool preventConversion = false;
   bool enabled = true;
   var currControllerFunc;
   var amtControllerFunc;
@@ -65,6 +70,9 @@ class _AmountWidgetState extends State<AmountWidget> {
   @override
   void initState() {
     widget.init?.call();
+    if (widget.preventConversion != null) {
+      preventConversion = widget.preventConversion!.call();
+    }
     satControllerFunc = () {
       setState(() {});
     };
@@ -132,13 +140,8 @@ class _AmountWidgetState extends State<AmountWidget> {
                                   bitcoinPrice,
                                   fixed: false)
                               : "0.00";
-                          String oneSat = (bitcoinPrice! / 100000000).toString();
-                          int oneSatDigits = 2;
-                          if (oneSat.split('.').length > 1) {
-                            oneSatDigits = oneSat.split('.')[1].replaceAll(RegExp(r'0+$'), '').length;
-                          }
-                          this.widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(oneSatDigits);
-                          this.widget.currController.text = double.parse(this.widget.currController.text).toString();
+
+                          this.widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
                         } else {
                           final chartLine = Get.find<WalletsController>().chartLines.value;
                           currency = currency ?? "USD";
@@ -362,21 +365,14 @@ class _AmountWidgetState extends State<AmountWidget> {
         widget.satController.text = oppositeUnit.toString();
       }
     }
-
-    //in order to have accurate satoshi values, we will give the minimum floating point values needed for an accurate
-    //transition
-    String oneSat = (bitcoinPrice! / 100000000).toString();
-    int oneSatDigits = 2;
-    if (oneSat.split('.').length > 1) {
-      oneSatDigits = oneSat.split('.')[1].replaceAll(RegExp(r'0+$'), '').length;
+    if (!preventConversion) {
+      widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(2);
     }
-    widget.currController.text = double.parse(currencyEquivalent).toStringAsFixed(oneSatDigits);
-    widget.currController.text = double.parse(widget.currController.text).toString();
 
     return Obx(() {
       Get.find<WalletsController>().chartLines.value;
       return Text(
-        "≈ ${double.parse(currencyEquivalent).toStringAsFixed(2)}${getCurrency(currency!)}", // show the converted value of Bitcoin to Euro with 2 decimal places
+        "≈ ${widget.currController.text}${getCurrency(currency!)}", // show the converted value of Bitcoin to Euro with 2 decimal places
         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: Theme.of(context).brightness == Brightness.light
                 ? AppTheme.black70
@@ -419,9 +415,10 @@ class _AmountWidgetState extends State<AmountWidget> {
             BitcoinUnits.SAT.name,
             bitcoinPrice)
         : "0.00";
-    widget.btcController.text = double.parse(currencyEquivalent).toString();
-    widget.satController.text = double.parse(currencyEquivalentSats).round().toString();
-    // print('satController after currency change: ${widget.satController.text}');
+    if (!preventConversion) {
+      widget.btcController.text = double.parse(currencyEquivalent).toString();
+      widget.satController.text = double.parse(currencyEquivalentSats).round().toString();
+    }
     if (widget.autoConvert) {
       final unitEquivalent = CurrencyConverter.convertToBitcoinUnit(
           currentUnit == BitcoinUnits.BTC
