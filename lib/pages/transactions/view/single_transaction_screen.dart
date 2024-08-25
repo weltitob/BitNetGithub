@@ -33,7 +33,6 @@ class SingleTransactionScreen extends StatefulWidget {
 
 class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
   final TextEditingController inputCtrl = TextEditingController();
-
   final TextEditingController outputCtrl = TextEditingController();
 
   @override
@@ -337,12 +336,11 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                           Image.asset("assets/images/bitcoin.png",
                                               width: AppTheme.cardPadding * 1,
                                               height: AppTheme.cardPadding * 1),
-                                          // Text('  ↔  '),
-                                          // Image.asset(
-                                          //   "assets/images/lightning.png",
-                                          //   width: AppTheme.cardPadding * 1,
-                                          //   height: AppTheme.cardPadding * 1,
-                                          // )
+                                          SizedBox(width: AppTheme.elementSpacing / 2,),
+                                          Text(
+                                            'Onchain',
+                                            style: Theme.of(context).textTheme.titleMedium,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -350,92 +348,22 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                       text: L10n.of(context)!.time,
                                       trailing: controller
                                           .transactionModel!.status!.confirmed!
-                                          ? SizedBox(
-                                        width: 250.w,
-                                        child: Container(
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceEvenly,
-                                                children: [
-                                                  Text(
-                                                    L10n.of(context)!
-                                                        .timestamp +
-                                                        " ",
-                                                    overflow:
-                                                    TextOverflow.ellipsis,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleMedium,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      SizedBox(
-                                                        width: 100.w,
-                                                        child: Text(
-                                                          '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
-                                                              ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))})',
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style:
-                                                          Theme.of(context)
-                                                              .textTheme
-                                                              .bodyMedium,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceEvenly,
-                                                children: [
-                                                  Text(
-                                                      L10n.of(context)!
-                                                          .confirmed +
-                                                          " ",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyMedium),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        L10n.of(context)!
-                                                            .afterTx +
-                                                            DateTime
-                                                                .fromMillisecondsSinceEpoch(
-                                                              (controller
-                                                                  .transactionModel!
-                                                                  .status!
-                                                                  .blockTime! *
-                                                                  1000) -
-                                                                  (controller
-                                                                      .txTime *
-                                                                      1000),
-                                                            )
-                                                                .minute
-                                                                .toString() +
-                                                            L10n.of(context)!
-                                                                .minutesTx,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyMedium,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )
+                                          ? Container(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))}'
+                                                      ' (${controller.formatTimeAgo(DateTime.fromMillisecondsSinceEpoch(controller.transactionModel!.status!.blockTime! * 1000))})',
+                                                  overflow: TextOverflow
+                                                      .ellipsis,
+                                                  style:
+                                                  Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium,
+                                                ),
+                                              ],
+                                            ),
+                                          )
                                           : Obx(
                                             () {
                                           return Text(
@@ -487,108 +415,151 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                             )
                                           ],
                                         )),
-                                    BitNetListTile(
-                                        text: L10n.of(context)!.features,
-                                        trailing: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            if (controller.segwitEnabled.value)
-                                              Container(
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
-                                                margin: const EdgeInsets.symmetric(
-                                                  horizontal: 4,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: controller
-                                                      .realizedSegwitGains !=
-                                                      0 &&
-                                                      controller
-                                                          .potentialSegwitGains !=
-                                                          0
-                                                      ? AppTheme.colorBitcoin
-                                                      : controller.potentialP2shSegwitGains !=
-                                                      0
-                                                      ? AppTheme.errorColor
-                                                      : AppTheme.successColor,
-                                                  borderRadius:
-                                                  AppTheme.cardRadiusCircular,
-                                                ),
-                                                child: Text(
-                                                  'SegWit',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium
-                                                      ?.copyWith(
-                                                      color: Colors.white,
-                                                      decoration: controller
-                                                          .potentialP2shSegwitGains !=
-                                                          0
-                                                          ? TextDecoration
-                                                          .lineThrough
-                                                          : TextDecoration.none),
-                                                ),
-                                              ),
-                                            if (controller.taprootEnabled.value)
-                                              Container(
-                                                padding: const EdgeInsets.symmetric(
-                                                  horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 4,),
-                                                decoration: BoxDecoration(
-                                                  color: controller.isTaproot.value
-                                                      ? AppTheme.successColor
-                                                      : AppTheme.errorColor,
-                                                  borderRadius:
-                                                  AppTheme.cardRadiusCircular,
-                                                ),
-                                                child: Text(
-                                                  'Taproot',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium
-                                                      ?.copyWith(
-                                                      color: Colors.white,
-                                                      decoration: controller
-                                                          .isTaproot.value
-                                                          ? TextDecoration.none
-                                                          : TextDecoration
-                                                          .lineThrough),
-                                                ),
-                                              ),
-                                            if (controller.rbfEnabled.value)
-                                              Container(
-                                                  padding: const EdgeInsets.symmetric(
-                                                  horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
-                                                  margin: EdgeInsets.symmetric(
-                                                      horizontal: 4,),
-                                                  decoration: BoxDecoration(
-                                                    color: controller
-                                                        .isRbfTransaction.value
-                                                        ? AppTheme.successColor
-                                                        : AppTheme.errorColor,
-                                                    borderRadius:
-                                                    AppTheme.cardRadiusCircular,
-                                                  ),
-                                                  child: Text(
-                                                    'RBF',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium
-                                                        ?.copyWith(
-                                                      color: Colors.white,
-                                                        decoration: controller
-                                                            .isRbfTransaction
-                                                            .value
-                                                            ? TextDecoration.none
-                                                            : TextDecoration
-                                                            .lineThrough),
-
-                                                  )
-                                              ),
-                                          ],
-                                        )),
+                                    // BitNetListTile(
+                                    //   text: L10n.of(context)!.confirmed,
+                                    //   trailing: Row(
+                                    //     mainAxisAlignment:
+                                    //     MainAxisAlignment
+                                    //         .spaceEvenly,
+                                    //     children: [
+                                    //       Text(
+                                    //           L10n.of(context)!
+                                    //               .confirmed +
+                                    //               " ",
+                                    //           style: Theme.of(context)
+                                    //               .textTheme
+                                    //               .bodyMedium),
+                                    //       Row(
+                                    //         children: [
+                                    //           Text(
+                                    //             L10n.of(context)!
+                                    //                 .afterTx +
+                                    //                 DateTime
+                                    //                     .fromMillisecondsSinceEpoch(
+                                    //                   (controller
+                                    //                       .transactionModel!
+                                    //                       .status!
+                                    //                       .blockTime! *
+                                    //                       1000) -
+                                    //                       (controller
+                                    //                           .txTime *
+                                    //                           1000),
+                                    //                 )
+                                    //                     .minute
+                                    //                     .toString() +
+                                    //                 L10n.of(context)!
+                                    //                     .minutesTx,
+                                    //             style: Theme.of(context)
+                                    //                 .textTheme
+                                    //                 .bodyMedium,
+                                    //           ),
+                                    //         ],
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                    // BitNetListTile(
+                                    //     text: L10n.of(context)!.features,
+                                    //     trailing: Row(
+                                    //       mainAxisAlignment:
+                                    //       MainAxisAlignment.spaceBetween,
+                                    //       children: [
+                                    //         if (controller.segwitEnabled.value)
+                                    //           Container(
+                                    //             padding: const EdgeInsets.symmetric(
+                                    //                 horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
+                                    //             margin: const EdgeInsets.symmetric(
+                                    //               horizontal: 4,
+                                    //             ),
+                                    //             decoration: BoxDecoration(
+                                    //               color: controller
+                                    //                   .realizedSegwitGains !=
+                                    //                   0 &&
+                                    //                   controller
+                                    //                       .potentialSegwitGains !=
+                                    //                       0
+                                    //                   ? AppTheme.colorBitcoin
+                                    //                   : controller.potentialP2shSegwitGains !=
+                                    //                   0
+                                    //                   ? AppTheme.errorColor
+                                    //                   : AppTheme.successColor,
+                                    //               borderRadius:
+                                    //               AppTheme.cardRadiusCircular,
+                                    //             ),
+                                    //             child: Text(
+                                    //               'SegWit',
+                                    //               style: Theme.of(context)
+                                    //                   .textTheme
+                                    //                   .bodyMedium
+                                    //                   ?.copyWith(
+                                    //                   color: Colors.white,
+                                    //                   decoration: controller
+                                    //                       .potentialP2shSegwitGains !=
+                                    //                       0
+                                    //                       ? TextDecoration
+                                    //                       .lineThrough
+                                    //                       : TextDecoration.none),
+                                    //             ),
+                                    //           ),
+                                    //         if (controller.taprootEnabled.value)
+                                    //           Container(
+                                    //             padding: const EdgeInsets.symmetric(
+                                    //               horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
+                                    //             margin: EdgeInsets.symmetric(
+                                    //                 horizontal: 4,),
+                                    //             decoration: BoxDecoration(
+                                    //               color: controller.isTaproot.value
+                                    //                   ? AppTheme.successColor
+                                    //                   : AppTheme.errorColor,
+                                    //               borderRadius:
+                                    //               AppTheme.cardRadiusCircular,
+                                    //             ),
+                                    //             child: Text(
+                                    //               'Taproot',
+                                    //               style: Theme.of(context)
+                                    //                   .textTheme
+                                    //                   .bodyMedium
+                                    //                   ?.copyWith(
+                                    //                   color: Colors.white,
+                                    //                   decoration: controller
+                                    //                       .isTaproot.value
+                                    //                       ? TextDecoration.none
+                                    //                       : TextDecoration
+                                    //                       .lineThrough),
+                                    //             ),
+                                    //           ),
+                                    //         if (controller.rbfEnabled.value)
+                                    //           Container(
+                                    //               padding: const EdgeInsets.symmetric(
+                                    //               horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2,),
+                                    //               margin: EdgeInsets.symmetric(
+                                    //                   horizontal: 4,),
+                                    //               decoration: BoxDecoration(
+                                    //                 color: controller
+                                    //                     .isRbfTransaction.value
+                                    //                     ? AppTheme.successColor
+                                    //                     : AppTheme.errorColor,
+                                    //                 borderRadius:
+                                    //                 AppTheme.cardRadiusCircular,
+                                    //               ),
+                                    //               child: Text(
+                                    //                 'RBF',
+                                    //                 style: Theme.of(context)
+                                    //                     .textTheme
+                                    //                     .bodyMedium
+                                    //                     ?.copyWith(
+                                    //                   color: Colors.white,
+                                    //                     decoration: controller
+                                    //                         .isRbfTransaction
+                                    //                         .value
+                                    //                         ? TextDecoration.none
+                                    //                         : TextDecoration
+                                    //                         .lineThrough),
+                                    //
+                                    //               )
+                                    //           ),
+                                    //       ],
+                                    //     )),
                                     BitNetListTile(
                                         text: 'Fee',
                                         trailing: Row(
@@ -615,54 +586,54 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                 : SizedBox.shrink(),
                                           ],
                                         )),
-                                    BitNetListTile(
-                                        text: L10n.of(context)!.feeRate,
-                                        trailing: Row(
-                                          children: [
-                                            Text(
-                                              '${(controller.feeRate * 4).toStringAsFixed(1)} sat/vB',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyLarge,
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            controller.transactionModel!.status!
-                                                .confirmed!
-                                                ? Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2),
-                                              decoration: BoxDecoration(
-                                                color: controller
-                                                    .feeRating.value ==
-                                                    1
-                                                    ? AppTheme.successColor
-                                                    : controller.feeRating
-                                                    .value ==
-                                                    2
-                                                    ? AppTheme.colorBitcoin
-                                                    : AppTheme.errorColor,
-                                                borderRadius:
-                                                AppTheme.cardRadiusCircular,
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  controller.feeRating.value ==
-                                                      1
-                                                      ? L10n.of(context)!
-                                                      .optimal
-                                                      : '${L10n.of(context)!.overpaid} ${controller.overpaidTimes ?? 1}x',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium!.copyWith(color: Colors.white),
-                                                ),
-                                              ),
-                                            )
-                                                : SizedBox(),
-                                          ],
-                                        )
-                                    ),
+                                    // BitNetListTile(
+                                    //     text: L10n.of(context)!.feeRate,
+                                    //     trailing: Row(
+                                    //       children: [
+                                    //         Text(
+                                    //           '${(controller.feeRate * 4).toStringAsFixed(1)} sat/vB',
+                                    //           style: Theme.of(context)
+                                    //               .textTheme
+                                    //               .bodyLarge,
+                                    //         ),
+                                    //         SizedBox(
+                                    //           width: 10,
+                                    //         ),
+                                    //         controller.transactionModel!.status!
+                                    //             .confirmed!
+                                    //             ? Container(
+                                    //           padding: EdgeInsets.symmetric(
+                                    //               horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing / 2),
+                                    //           decoration: BoxDecoration(
+                                    //             color: controller
+                                    //                 .feeRating.value ==
+                                    //                 1
+                                    //                 ? AppTheme.successColor
+                                    //                 : controller.feeRating
+                                    //                 .value ==
+                                    //                 2
+                                    //                 ? AppTheme.colorBitcoin
+                                    //                 : AppTheme.errorColor,
+                                    //             borderRadius:
+                                    //             AppTheme.cardRadiusCircular,
+                                    //           ),
+                                    //           child: Center(
+                                    //             child: Text(
+                                    //               controller.feeRating.value ==
+                                    //                   1
+                                    //                   ? L10n.of(context)!
+                                    //                   .optimal
+                                    //                   : '${L10n.of(context)!.overpaid} ${controller.overpaidTimes ?? 1}x',
+                                    //               style: Theme.of(context)
+                                    //                   .textTheme
+                                    //                   .bodyMedium!.copyWith(color: Colors.white),
+                                    //             ),
+                                    //           ),
+                                    //         )
+                                    //             : SizedBox(),
+                                    //       ],
+                                    //     )
+                                    // ),
                                     SizedBox(height: AppTheme.cardPadding,),
                                   ],
                                 ),
