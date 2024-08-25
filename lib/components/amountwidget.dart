@@ -91,7 +91,6 @@ class _AmountWidgetState extends State<AmountWidget> {
     enabled = widget.enabled?.call() ?? true;
     btcPriceStream = Get.find<WalletsController>().chartLines.listen((data) {
       setState(() {});
-      print('price stream should be updated now.');
     });
     super.initState();
   }

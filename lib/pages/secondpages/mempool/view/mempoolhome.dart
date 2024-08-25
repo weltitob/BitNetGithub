@@ -55,7 +55,6 @@ class _MempoolHomeState extends State<MempoolHome> {
 
   Future<void> getDataBlockHeightSearch() async {
     if (controller.blockHeight != null) {
-      print('inside block height not is null ');
       controller.isLoading.value = true;
       controller.bitcoinData.clear();
       await controller.getDataHeight(controller.blockHeight! + 15);
@@ -353,7 +352,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                               .sorted((tx, tx1) => tx.timeStamp > tx1.timeStamp)
                                                                               .toList();
                                                                         });
-                                                                        print("available transactions: ${onchainTransactions.length}");
                                                                       }
                                                                     });
                                                                     controller.txDetailsF(controller.bitcoinData[index].id!, 0);
@@ -409,7 +407,6 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                       .sorted((tx, tx1) => tx.timeStamp > tx1.timeStamp)
                                                       .toList();
                                                 });
-                                                print("available transactions: ${onchainTransactions.length}");
                                               }
                                             });
                                             ;
