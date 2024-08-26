@@ -87,7 +87,6 @@ class _BlockTransactionsState extends State<BlockTransactions> {
     lastQuery = query;
 
     controller.isLoadingTx.value = false;
-    print('amount left after filter: ${controller.txDetails.length}');
     setState(() {});
   }
 

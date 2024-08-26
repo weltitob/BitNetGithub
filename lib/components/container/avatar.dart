@@ -26,7 +26,9 @@ class Avatar extends StatelessWidget {
     this.onTap,
     this.fontSize = 18,
     Key? key,
-    this.profileId, required this.isNft, this.cornerWidget,
+    this.profileId,
+    required this.isNft,
+    this.cornerWidget,
   }) : super(key: key);
 
   @override
@@ -40,9 +42,7 @@ class Avatar extends StatelessWidget {
         fallbackLetters = name;
       }
     }
-    final noPic = mxContent == null ||
-        mxContent.toString().isEmpty ||
-        mxContent.toString() == 'null';
+    final noPic = mxContent == null || mxContent.toString().isEmpty || mxContent.toString() == 'null';
 
     final textWidget = Center(
       child: Icon(
@@ -82,36 +82,42 @@ class Avatar extends StatelessWidget {
             child: noPic
                 ? textWidget
                 : MxcImage(
-              key: Key(mxContent.toString()),
-              uri: mxContent,
-              fit: BoxFit.cover,
-              width: size,
-              height: size,
-              placeholder: (_) => textWidget,
-              cacheKey: mxContent.toString(),
-            ),
+                    key: Key(mxContent.toString()),
+                    uri: mxContent,
+                    fit: BoxFit.cover,
+                    width: size,
+                    height: size,
+                    placeholder: (_) => textWidget,
+                    cacheKey: mxContent.toString(),
+                  ),
           ),
         ),
       ),
     );
 
-
     return ClipRRect(
-      child: Stack(
-        children: [InkWell(
+      child: Stack(children: [
+        InkWell(
           onTap: onTap ?? () => context.go("/showprofile/:$profileId"),
           borderRadius: borderRadius,
           child: container,
         ),
-        Positioned(bottom: 0,right:0, child: cornerWidget ?? CoinLogoWidgetSmall(coinid: 1, width:size / 4, height:size / 4, ))]
-      ),
+        if (cornerWidget != null || isNft)
+          Positioned(
+              bottom: 0,
+              right: 0,
+              child: cornerWidget ??
+                  (isNft
+                      ? CoinLogoWidgetSmall(
+                          coinid: 1,
+                          width: size / 4,
+                          height: size / 4,
+                        )
+                      : Container()))
+      ]),
     );
   }
 }
-
-
-
-
 
 class MxcImage extends StatefulWidget {
   final Uri? uri;
@@ -146,7 +152,6 @@ class MxcImage extends StatefulWidget {
 }
 
 class _MxcImageState extends State<MxcImage> {
-
   @override
   void initState() {
     super.initState();
@@ -154,25 +159,21 @@ class _MxcImageState extends State<MxcImage> {
 
   Widget placeholder(BuildContext context) =>
       widget.placeholder?.call(context) ??
-          const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
+      const Center(
+        child: CircularProgressIndicator.adaptive(),
+      );
 
   @override
   Widget build(BuildContext context) {
-
-    return
-      CachedNetworkImage(
-        imageUrl: widget.uri!.toString(),
-        width: widget.width,
-        height: widget.height,
-        fit: widget.fit,
-        filterQuality: FilterQuality.medium,
-        errorWidget: (context, __, ___) {
-          return placeholder(context);
-        },
-
-      );
+    return CachedNetworkImage(
+      imageUrl: widget.uri!.toString(),
+      width: widget.width,
+      height: widget.height,
+      fit: widget.fit,
+      filterQuality: FilterQuality.medium,
+      errorWidget: (context, __, ___) {
+        return placeholder(context);
+      },
+    );
   }
 }
-

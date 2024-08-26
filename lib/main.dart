@@ -74,7 +74,6 @@ Future<void> main() async {
   }
   await LocalStorage.instance.initStorage();
   ShakeDetector.autoStart(
-    shakeThresholdGravity: 1.2,
     onPhoneShake: () {
       if (AppRouter.navigatorKey.currentContext != null) {
         GoRouter.of(AppRouter.navigatorKey.currentContext!).push('/report');
