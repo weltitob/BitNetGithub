@@ -15,7 +15,7 @@ class TeamProfileCard extends StatefulWidget {
   final String quote;
   final bool isYou;
 
-  TeamProfileCard({
+  const TeamProfileCard({
     required this.avatarUrl,
     required this.name,
     required this.position,
@@ -44,7 +44,7 @@ class _TeamProfileCardState extends State<TeamProfileCard> {
         });
       },
       child: AnimatedScale(
-          duration: Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 200),
           scale: isHovered ? 1.0 : 0.9, // your widget tree
         child: Container(
           child: Column(
@@ -61,19 +61,19 @@ class _TeamProfileCardState extends State<TeamProfileCard> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding,
               ),
               Text(
                 widget.name,
                 style: Theme.of(context).textTheme.displaySmall,
               ),
-              SizedBox(height: AppTheme.elementSpacing),
+              const SizedBox(height: AppTheme.elementSpacing),
               Text(
                 widget.position,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
-              SizedBox(height: AppTheme.cardPadding),
+              const SizedBox(height: AppTheme.cardPadding),
               widget.isYou ? Container() : Container(
                 width: AppTheme.cardPadding * 9,
                 child: isHovered ? BitNetShaderMask(

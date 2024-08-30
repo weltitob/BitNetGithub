@@ -14,7 +14,7 @@ class InformationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -23,7 +23,7 @@ class InformationWidget extends StatelessWidget {
             title,
             style: Theme.of(context).textTheme.displayMedium,
           ),
-          SizedBox(
+          const SizedBox(
             height: AppTheme.elementSpacing * 1,
           ),
           Text(description),

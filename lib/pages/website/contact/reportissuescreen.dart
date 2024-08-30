@@ -55,21 +55,21 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: AppTheme.colorBackground,
-      appBar: bitnetWebsiteAppBar(),
+      appBar: const bitnetWebsiteAppBar(),
       body: Container(
-        padding: EdgeInsets.only(top: AppTheme.cardPadding * 2),
+        padding: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
         child: ListView(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
               horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding),
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.email_outlined,
                   color: Colors.white,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: AppTheme.elementSpacing / 2,
                 ),
                 Text(
@@ -79,7 +79,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
               ],
             ),
             MyDivider(),
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding,
             ),
             Container(
@@ -117,7 +117,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding,
             ),
             Center(

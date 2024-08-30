@@ -248,17 +248,17 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline,
                         color: Colors.white,
                       ),
-                      const SizedBox(width: 5.0),
+                      SizedBox(width: 5.0),
                       Expanded(
                         child: Text(
                           'An Error occured, please try again later.',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w300,
                             fontSize: 15.0,
@@ -288,12 +288,12 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        margin: EdgeInsets.only(top: 5.0),
+        margin: const EdgeInsets.only(top: 5.0),
         width: 120,
         height: 35,
         decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.4),
-            borderRadius: BorderRadius.all(Radius.circular(20))),
+            borderRadius: const BorderRadius.all(Radius.circular(20))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -304,7 +304,7 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
                   size: 20,
                   color: Colors.white.withOpacity(0.8),
                 ),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 5.0)),
+                const Padding(padding: EdgeInsets.symmetric(horizontal: 5.0)),
                 Text(
                   "POST",
                   style: Theme.of(context).textTheme.titleMedium,
@@ -365,7 +365,7 @@ class _ShortsPlayerState extends State<ShortsPlayer> {
               !controller.value.isControlsVisible &&
               widget.showVideoProgressIndicator &&
               !controller.flags.isLive)
-            Positioned(
+            const Positioned(
               top: 10.0,
               left: 15.0,
               right: 15.0,
@@ -578,7 +578,7 @@ class RawShortsPlayer extends StatefulWidget {
   final void Function(YoutubeMetaData metaData)? onEnded;
 
   /// Creates a [RawShortsPlayer] widget.
-  RawShortsPlayer({
+  const RawShortsPlayer({
     this.key,
     this.onEnded,
   });

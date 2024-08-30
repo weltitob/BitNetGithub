@@ -11,10 +11,10 @@ import 'package:get/get.dart';
 
 Future<RestResponse> listBtcAddresses() async {
   LoggerService logger = Get.find();
-    String baseUrl = AppTheme.baseUrlLightningTerminal;
+  String baseUrl = AppTheme.baseUrlLightningTerminal;
 
   // const String macaroonPath = 'assets/keys/lnd_admin.macaroon';
-  String url = '$baseUrl/v2/wallet/addresses';
+  String url = 'https://$baseUrl/v2/wallet/addresses';
 
   ByteData byteData = await loadMacaroonAsset();
   List<int> bytes = byteData.buffer.asUint8List();

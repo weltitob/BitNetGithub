@@ -29,7 +29,7 @@ class _BottomCenterButtonState extends State<BottomCenterButton> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          BottomNavGradient(),
+          const BottomNavGradient(),
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.dark
@@ -37,7 +37,7 @@ class _BottomCenterButtonState extends State<BottomCenterButton> {
                   : lighten(Theme.of(context).colorScheme.primaryContainer, 50),
             ),
             child: Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 left: AppTheme.elementSpacing,
                 right: AppTheme.elementSpacing,
                 bottom: AppTheme.elementSpacing,
@@ -86,7 +86,7 @@ class _BottomButtonsState extends State<BottomButtons> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          BottomNavGradient(),
+          const BottomNavGradient(),
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.dark
@@ -94,7 +94,7 @@ class _BottomButtonsState extends State<BottomButtons> {
                   : lighten(Theme.of(context).colorScheme.primaryContainer, 50),
             ),
             child: Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 left: AppTheme.elementSpacing,
                 right: AppTheme.elementSpacing,
                 bottom: AppTheme.elementSpacing,

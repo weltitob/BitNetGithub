@@ -34,7 +34,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
           margin: isSuperSmallScreen
-              ? EdgeInsets.symmetric(horizontal: 0)
+              ? const EdgeInsets.symmetric(horizontal: 0)
               : EdgeInsets.symmetric(horizontal: screenWidth / 2 - 250),
           extendBodyBehindAppBar: true,
           appBar: bitnetAppBar(
@@ -44,10 +44,10 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                       context.go(
                           '/authhome/login/social_recovery/info_social_recovery');
                     },
-                    child: AppBarActionButton(
+                    child: const AppBarActionButton(
                       iconData: Icons.info_outline_rounded,
                     )),
-                PopUpLangPickerWidget(),
+                const PopUpLangPickerWidget(),
               ],
               text: L10n.of(context)!.socialRecovery,
               context: context,
@@ -57,7 +57,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
           body: Stack(children: [
             SingleChildScrollView(
               child: Container(
-                margin: EdgeInsets.symmetric(
+                margin: const EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding,
                     vertical: AppTheme.cardPadding),
                 child: Column(

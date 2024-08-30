@@ -2,7 +2,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/informationwidget.dart';
-import 'package:bitnet/components/appstandards/buildroundedbox.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/model/fear_gear_chart_model.dart';
 import 'package:dio/dio.dart';
@@ -101,7 +100,7 @@ class _FearAndGreedState extends State<FearAndGreed> {
                 children: [
                   Column(
                     children: [
-                      SizedBox(height: AppTheme.cardPadding * 3),
+                      const SizedBox(height: AppTheme.cardPadding * 3),
                       Align(
                         alignment: (fearGearChartModel.fgi!.now!.value! >= 25)  ? (fearGearChartModel.fgi!.now!.value! > 75) ? Alignment.topRight : Alignment.topCenter : Alignment.topLeft,
                         child: Padding(
@@ -165,12 +164,12 @@ class _FearAndGreedState extends State<FearAndGreed> {
                             child: Text(
                                 '${L10n.of(context)!.lastUpdated} $formattedDate'),
                           )),
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.cardPadding * 2,
                       ),
                     ],
                   ),
-                  InformationWidget(title: "Information", description: "The Fear and Greed Index is a tool used to measure the overall sentiment of investors in the stock market. It gauges whether the market is driven more by fear or greed at any given time."),
+                  const InformationWidget(title: "Information", description: "The Fear and Greed Index is a tool used to measure the overall sentiment of investors in the stock market. It gauges whether the market is driven more by fear or greed at any given time."),
                 ],
               ),
       ),

@@ -2,14 +2,11 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/buttons/roundedbutton.dart';
-import 'package:flutter/material.dart';
-import 'package:bitnet/backbone/helper/helpers.dart';
 
 class AddContentWidget extends StatelessWidget {
   final controller;
 
-  AddContentWidget({Key? key, required this.controller}) : super(key: key);
+  const AddContentWidget({Key? key, required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +41,7 @@ class AddContentWidget extends StatelessWidget {
 
           ],
         ),
-        SizedBox(height: AppTheme.elementSpacing),
+        const SizedBox(height: AppTheme.elementSpacing),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -74,7 +71,7 @@ class AddContentWidget extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: AppTheme.elementSpacing),
+        const SizedBox(height: AppTheme.elementSpacing),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -139,7 +136,7 @@ class IconCreationWidget extends StatelessWidget {
   final MediaType mediaType;
   final Function(MediaType) onTap;
 
-  IconCreationWidget({
+  const IconCreationWidget({
     required this.icon,
     required this.color,
     required this.text,
@@ -157,7 +154,7 @@ class IconCreationWidget extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusMid,
         ),
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
             horizontal: AppTheme.elementSpacing,
             vertical: AppTheme.elementSpacing),
         child: Column(
@@ -166,7 +163,7 @@ class IconCreationWidget extends StatelessWidget {
               iconData: icon,
               onTap: () => onTap(mediaType),
             ),
-            SizedBox(height: AppTheme.cardPadding / 2.5),
+            const SizedBox(height: AppTheme.cardPadding / 2.5),
             Text(
               text,
               style: Theme.of(context).textTheme.labelSmall,

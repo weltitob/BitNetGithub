@@ -15,7 +15,7 @@ class DeezerBuilder extends StatelessWidget {
         height: AppTheme.cardPadding * 1.5,
         child: Row(
           children: [
-            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.deezer)),
+            IconButton(onPressed: (){}, icon: const Icon(FontAwesomeIcons.deezer)),
             Container(
                 width: AppTheme.cardPadding * 12,
                 child: Text("$deezerUrl", overflow: TextOverflow.ellipsis,)),

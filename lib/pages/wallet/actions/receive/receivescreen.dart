@@ -27,7 +27,7 @@ import 'package:go_router/go_router.dart';
 
 class ReceiveScreen extends StatefulWidget {
   final GoRouterState? routerState;
-  ReceiveScreen({Key? key, this.routerState}) : super(key: key);
+  const ReceiveScreen({Key? key, this.routerState}) : super(key: key);
 
   @override
   State<ReceiveScreen> createState() => _ReceiveScreenState();
@@ -47,7 +47,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 300), // Adjust duration as needed
+      duration: const Duration(milliseconds: 300), // Adjust duration as needed
       vsync: this,
     );
 
@@ -98,8 +98,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
     controller.getTaprootAddress();
     //im not sure if the timer should reset each time the page is open or if it is a bug. (assuming it is a bug for now.)
     if ((controller.duration.inSeconds <= 0)) {
-      controller.duration = Duration(minutes: 20);
-      controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+      controller.duration = const Duration(minutes: 20);
+      controller.timer = Timer.periodic(const Duration(seconds: 1), controller.updateTimer);
     }
     _animationController.forward();
     receiveTypeSub = controller.receiveType.listen((data) {
@@ -234,8 +234,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                       onTap: () {
                         controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
                         controller.timer.cancel();
-                        controller.duration = Duration(minutes: 20);
-                        controller.timer = Timer.periodic(Duration(seconds: 1), controller.updateTimer);
+                        controller.duration = const Duration(minutes: 20);
+                        controller.timer = Timer.periodic(const Duration(seconds: 1), controller.updateTimer);
                       },
                     )
                   : RoundedButtonWidget(
@@ -248,7 +248,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                     ),
             );
           }),
-          SizedBox(
+          const SizedBox(
             width: AppTheme.elementSpacing,
           ),
         ],
@@ -271,15 +271,15 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                 child: TabBar.secondary(
                   dividerColor: Colors.transparent,
                   indicatorColor: Colors.transparent,
-                  indicatorPadding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 2),
+                  indicatorPadding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 2),
                   indicatorSize: TabBarIndicatorSize.tab,
                   controller: _tabController,
                   tabs: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(FontAwesomeIcons.bolt),
-                        SizedBox(
+                        const Icon(FontAwesomeIcons.bolt),
+                        const SizedBox(
                           width: AppTheme.cardPadding * 0.25,
                         ),
                         Text(
@@ -291,8 +291,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(FontAwesomeIcons.bitcoin),
-                        SizedBox(
+                        const Icon(FontAwesomeIcons.bitcoin),
+                        const SizedBox(
                           width: AppTheme.cardPadding * 0.25,
                         ),
                         Text(
@@ -314,8 +314,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    LightningReceiveTab(),
-                    OnChainReceiveTab(),
+                    const LightningReceiveTab(),
+                    const OnChainReceiveTab(),
                   ],
                 ),
               ),

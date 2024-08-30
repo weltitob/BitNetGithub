@@ -3,7 +3,6 @@ import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/components/marketplace_widgets/BarChart.dart';
 import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
-import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:bitnet/components/marketplace_widgets/TradingHistoryList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -116,7 +115,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       headingText: L10n.of(context)!.priceHistory,
                       hasButton: false,
                       collapseBtn: true,
-                      child: BarChart()
+                      child: const BarChart()
                     ),
                   ),
                   CommonHeading(

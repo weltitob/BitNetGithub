@@ -82,7 +82,7 @@ Future<void> main() async {
   );
 
   await Firebase.initializeApp(
-    options: FirebaseOptions(
+    options: const FirebaseOptions(
         apiKey: 'AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY',
         //authDomain: '...',
         //appId von firebase ist iwie für ios und android unterschiedlich
@@ -106,7 +106,7 @@ Future<void> main() async {
   Get.put(TransactionController());
   // Run the app
   runApp(
-    MyApp(),
+    const MyApp(),
   );
 }
 

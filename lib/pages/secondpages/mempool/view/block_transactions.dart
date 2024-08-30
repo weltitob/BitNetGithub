@@ -63,7 +63,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
       if (reachedFinalPage) return;
       controller.isLoadingMoreTx.value = true;
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
       int returnedTxsAmt = await controller.txDetailsMore(controller.txDetailsConfirmed!.id, (currentPage + 1) * 25);
       currentPage++;
@@ -105,7 +105,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
         controller: scrollController,
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding * 3,
             ),
             Container(
@@ -136,7 +136,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                   onPressed: () async {
                     await BitNetBottomSheet(
                       context: context,
-                      child: WalletFilterScreen(hideFilters: true),
+                      child: const WalletFilterScreen(hideFilters: true),
                     );
                     handleSearch(lastQuery);
                   },
@@ -178,10 +178,10 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                             itemCount: controller.txDetails.length,
                             itemBuilder: (context, index) {
                               if (controller.isLoadingMoreTx.value && index == (controller.txDetails.length - 1)) {
-                                return Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 32), child: dotProgress(context)));
+                                return Center(child: Padding(padding: const EdgeInsets.symmetric(vertical: 32), child: dotProgress(context)));
                               }
                               return Container(
-                                margin: EdgeInsets.only(
+                                margin: const EdgeInsets.only(
                                   bottom: AppTheme.cardPadding * 0.5,
                                   left: AppTheme.elementSpacing,
                                   right: AppTheme.elementSpacing,
@@ -189,6 +189,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                 child: Material(
                                   color: Colors.transparent,
                                   child: InkWell(
+                                    borderRadius: const BorderRadius.all(Radius.circular(AppTheme.cardPadding * 2.5 / 2.5)),
                                     onTap: () async {
                                       if (!isTxTapped) {
                                         isTxTapped = true;
@@ -196,7 +197,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                       } else {
                                         return;
                                       }
-                                      await Future.delayed(Duration(milliseconds: 100));
+                                      await Future.delayed(const Duration(milliseconds: 100));
                                       final controllerTransaction = Get.put(
                                         TransactionController(
                                           txID: controller.txDetails[index].txid.toString(),
@@ -211,7 +212,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => SingleTransactionScreen(),
+                                            builder: (context) => const SingleTransactionScreen(),
                                           ),
                                         );
                                       }
@@ -225,7 +226,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                             leading: Icon(
                                               size: AppTheme.cardPadding * 0.75,
                                               Icons.copy_outlined,
-                                              color: AppTheme.white80,
+                                              color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
                                             ),
                                             text: controller.txDetails.isEmpty
                                                 ? ''
@@ -265,7 +266,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                             color: Colors.white,
                                                           )),
                                                         )
-                                                      : SizedBox(),
+                                                      : const SizedBox(),
                                                   const SizedBox(
                                                     width: 5,
                                                   ),
@@ -277,14 +278,16 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                                 ? '${L10n.of(context)!.coinBase}'
                                                                     '${controller.hex2ascii(controller.txDetails[index].vin.first.scriptsig.substring(0, 50))}'
                                                                 : '',
-                                                            style: const TextStyle(
-                                                              color: Colors.white,
+                                                            style: TextStyle(
+                                                              color: Theme.of(context).brightness == Brightness.light
+                                                                  ? Colors.black
+                                                                  : Colors.white,
                                                               fontSize: 12,
                                                               fontWeight: FontWeight.w400,
                                                             ),
                                                           ),
                                                         )
-                                                      : SizedBox(),
+                                                      : const SizedBox(),
                                                 ]),
                                                 const SizedBox(height: AppTheme.elementSpacing),
                                                 ListView.builder(
@@ -335,15 +338,20 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                                             child: Text(
                                                                               '${controller.txDetails[index].vin[i].prevout!.scriptpubkeyAddress!.substring(0, 10)}...'
                                                                               '${controller.txDetails[index].vin[i].prevout!.scriptpubkeyAddress!.substring(controller.txDetails[index].vin[i].prevout!.scriptpubkeyAddress!.length - 10)}',
-                                                                              style: TextStyle(color: AppTheme.white70),
+                                                                              style: TextStyle(
+                                                                                  color: Theme.of(context).brightness == Brightness.light
+                                                                                      ? AppTheme.black70
+                                                                                      : AppTheme.white70),
                                                                             ),
                                                                           ),
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    Text(controller.isBTC.value
-                                                                        ? '${controller.txDetails[index].vin[i].prevout!.value / 100000000} BTC'
-                                                                        : '\$${controller.formatAmount(((controller.txDetails[index].vin[i].prevout!.value / 100000000) * controller.currentUSD.value).toStringAsFixed(0))}  ')
+                                                                    Text(
+                                                                      controller.isBTC.value
+                                                                          ? '${controller.txDetails[index].vin[i].prevout!.value / 100000000} BTC'
+                                                                          : '\$${controller.formatAmount(((controller.txDetails[index].vin[i].prevout!.value / 100000000) * controller.currentUSD.value).toStringAsFixed(0))}  ',
+                                                                    )
                                                                   ],
                                                                 ),
                                                               ],
@@ -374,7 +382,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                                   color: Colors.white,
                                                                 )),
                                                               ),
-                                                              SizedBox(
+                                                              const SizedBox(
                                                                 width: AppTheme.elementSpacing / 2,
                                                               ),
                                                               //possible
@@ -394,7 +402,10 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                                             },
                                                                             child: Text(
                                                                               '${controller.txDetails[index].vout.first.scriptpubkeyAddress!.substring(0, 10)}...${controller.txDetails[index].vout.first.scriptpubkeyAddress!.substring(controller.txDetails[index].vout.first.scriptpubkeyAddress!.length - 10)}',
-                                                                              style: const TextStyle(color: Colors.white70),
+                                                                              style: TextStyle(
+                                                                                  color: Theme.of(context).brightness == Brightness.light
+                                                                                      ? AppTheme.black70
+                                                                                      : AppTheme.white70),
                                                                             ),
                                                                           ),
                                                                   ],
@@ -437,7 +448,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                                       color: Colors.white,
                                                                     )),
                                                                   ),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                     width: 5,
                                                                   ),
                                                                   //possible
@@ -463,7 +474,10 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                                                       null
                                                                                   ? ''
                                                                                   : '${controller.txDetails[index].vout[j].scriptpubkeyAddress.toString().substring(0, 10)}...${controller.txDetails[index].vout[j].scriptpubkeyAddress.toString().substring(controller.txDetails[index].vout[j].scriptpubkeyAddress!.length - 10)}',
-                                                                              style: TextStyle(color: Colors.white70),
+                                                                              style: TextStyle(
+                                                                                  color: Theme.of(context).brightness == Brightness.light
+                                                                                      ? AppTheme.black70
+                                                                                      : AppTheme.white70),
                                                                             ),
                                                                           ),
                                                                   ),
@@ -495,7 +509,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                               ),
                                                             ),
                                                           ),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             width: AppTheme.elementSpacing / 2,
                                                           ),
                                                           SizedBox(
@@ -506,10 +520,10 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                             ),
                                                           ),
                                                           const Spacer(),
-                                                          Row(
+                                                          const Row(
                                                             children: [
-                                                              const Text('\$0.00'),
-                                                              const SizedBox(
+                                                              Text('\$0.00'),
+                                                              SizedBox(
                                                                 width: 5,
                                                               ),
                                                             ],
@@ -547,8 +561,8 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                               //   style: TextStyle(
                                                               //       color: Colors.grey),
                                                               // ),
-                                                              Text("Fee"),
-                                                              SizedBox(
+                                                              const Text("Fee"),
+                                                              const SizedBox(
                                                                 width: AppTheme.elementSpacing / 2,
                                                               ),
                                                               Text(
@@ -581,7 +595,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                                           ),
                                                         ],
                                                       ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: AppTheme.elementSpacing,
                                                 ),
                                               ],

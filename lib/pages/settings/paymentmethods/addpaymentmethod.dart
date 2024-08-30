@@ -17,7 +17,7 @@ class _AddPaymentMethodState extends State<AddPaymentMethod> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
               left: AppTheme.cardPadding,
               right: AppTheme.cardPadding,
               top: AppTheme.elementSpacing),
@@ -25,7 +25,7 @@ class _AddPaymentMethodState extends State<AddPaymentMethod> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
                   // controller.animateTo(1);
                 },
@@ -37,16 +37,16 @@ class _AddPaymentMethodState extends State<AddPaymentMethod> {
                     .textTheme
                     .titleSmall,
               ),
-              SizedBox(width: 48)
+              const SizedBox(width: 48)
             ],
           ),
         ),
-        SizedBox(height: 15),
+        const SizedBox(height: 15),
         CardFormField(
             style: CardFormStyle(
                 textColor: Colors.white,
                 placeholderColor: Colors.white)),
-        SizedBox(height: 15),
+        const SizedBox(height: 15),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: LongButtonWidget(

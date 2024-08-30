@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
 
@@ -26,9 +25,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
         customTitle: Text(
           'Notifications',
           style: TextStyle(
-            fontSize: 28.sp,
+            fontSize: 20.sp,
             fontWeight: FontWeight.w700,
-            color: Colors.white,
+            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
           ),
         ),
         onTap: () {
@@ -52,13 +51,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   itemCount: notificationListData.length,
                   itemBuilder: (context, index) {
                     return NotificationList(
-                      notificationImg:
-                          notificationListData[index].notificationImage,
-                      notificationText:
-                          notificationListData[index].notificationText,
-                      notificationTime:
-                          notificationListData[index].notificationTime,
-                      headingColor: notificationListData[index].headingColor,
+                      notificationImg: notificationListData[index].notificationImage,
+                      notificationText: notificationListData[index].notificationText,
+                      notificationTime: notificationListData[index].notificationTime,
+                      headingColor: Theme.of(context).brightness == Brightness.light
+                          ? (notificationListData[index].headingColor as Color) == Colors.white
+                              ? Colors.black
+                              : Colors.grey
+                          : notificationListData[index].headingColor,
                     );
                   },
                 ),

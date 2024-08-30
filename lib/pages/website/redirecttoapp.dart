@@ -6,7 +6,6 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class RedirectToApp extends StatefulWidget {
   const RedirectToApp({super.key});
@@ -61,11 +60,11 @@ class _RedirectToAppState extends State<RedirectToApp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: AppTheme.cardPadding * 4),
+                const SizedBox(height: AppTheme.cardPadding * 4),
                 dotProgress(context),
-                SizedBox(height: AppTheme.cardPadding),
-                Text("Redirecting to the app..."),
-                SizedBox(height: AppTheme.cardPadding * 4),
+                const SizedBox(height: AppTheme.cardPadding),
+                const Text("Redirecting to the app..."),
+                const SizedBox(height: AppTheme.cardPadding * 4),
               ],
             ),
           ),

@@ -40,7 +40,7 @@ class _HashrateChartState extends State<HashrateChart> {
       activationMode: ActivationMode.singleTap,
       lineWidth: 2,
       lineType: TrackballLineType.horizontal,
-      tooltipSettings: InteractiveTooltip(enable: false),
+      tooltipSettings: const InteractiveTooltip(enable: false),
       markerSettings: const TrackballMarkerSettings(
           color: Colors.white,
           borderColor: Colors.white,
@@ -146,7 +146,7 @@ class _HashrateChartState extends State<HashrateChart> {
                 majorGridLines: const MajorGridLines(width: 0),
               ),
               primaryYAxis: NumericAxis(
-                axisLine: AxisLine(width: 0),
+                axisLine: const AxisLine(width: 0),
                 plotOffset: 0,
                 edgeLabelPlacement: EdgeLabelPlacement.none,
                 isVisible: false,
@@ -219,7 +219,7 @@ class _HashRealTimeValuesState extends State<HashRealTimeValues>
   void blinkAnimation() {
     if (mounted) {
       _hashController = AnimationController(
-          vsync: this, duration: Duration(milliseconds: 1000));
+          vsync: this, duration: const Duration(milliseconds: 1000));
       _hashAnimation =
           ColorTween(begin: initAnimationColor, end: Colors.transparent)
               .animate(_hashController)

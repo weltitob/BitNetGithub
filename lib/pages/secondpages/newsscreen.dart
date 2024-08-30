@@ -106,7 +106,7 @@ class _NewsScreenState extends State<NewsScreen> {
                             ? newslist.length = 20
                             : newslist.length,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return NewsTile(
                             imgUrl: newslist[index].urlToImage,

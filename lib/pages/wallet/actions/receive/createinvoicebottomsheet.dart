@@ -43,7 +43,7 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             ),
           );
         }),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.cardPadding * 1,
         ),
         Container(
@@ -53,7 +53,7 @@ class CreateInvoice extends GetWidget<ReceiveController> {
             hintText: L10n.of(context)!.addAMessage,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.cardPadding * 0.75,
         ),
         LongButtonWidget(

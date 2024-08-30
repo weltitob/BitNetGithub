@@ -35,7 +35,7 @@ Future<Placemark> determinePosition() async {
 
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
-  Position pos =  await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.lowest, timeLimit: Duration(minutes: 1));
+  Position pos =  await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.lowest, timeLimit: const Duration(minutes: 1));
  List<Placemark> marks =  await placemarkFromCoordinates(pos.latitude, pos.longitude);
  return marks.first;
 }

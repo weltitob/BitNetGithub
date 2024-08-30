@@ -9,7 +9,7 @@ class BitNetScale extends StatefulWidget {
   final double scaleOnHover;
   final double scale;
 
-  BitNetScale({
+  const BitNetScale({
     Key? key,
     required this.child,
     this.duration = const Duration(milliseconds: 200),

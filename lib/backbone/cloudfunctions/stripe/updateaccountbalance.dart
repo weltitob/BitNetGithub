@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/helper/deepmapcast.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
@@ -8,7 +7,7 @@ updateAccountBalance(String accountId, String amount, String currency) async {
   final callable = functions.httpsCallable(
     '.........',
     options: HttpsCallableOptions(
-      timeout: Duration(minutes: 10),
+      timeout: const Duration(minutes: 10),
       limitedUseAppCheckToken: true,
     ),
   );

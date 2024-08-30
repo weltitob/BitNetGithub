@@ -5,12 +5,10 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
-
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageOne extends StatefulWidget {
   final WebsiteLandingPageController controller;
@@ -34,10 +32,8 @@ class _PageOneState extends State<PageOne> {
         // Check if the screen width is less than 600 pixels.
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-        bool isSuperSmallScreen =
-            constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        bool isIntermediateScreen =
-            constraints.maxWidth < AppTheme.isIntermediateScreen;
+        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
 
         double bigtextWidth = isMidScreen
             ? isSmallScreen
@@ -96,9 +92,7 @@ class _PageOneState extends State<PageOne> {
                         "Don’t get fucked. Get ahead with BitNet.", //We bring Bitcoin to ordinary people! //We digitize the world with Bitcoin!
                         tagStyle: TextTagStyle.h1,
                         textAlign: TextAlign.center,
-                        style: isSuperSmallScreen
-                            ? Theme.of(context).textTheme.displayMedium
-                            : Theme.of(context).textTheme.displayLarge,
+                        style: isSuperSmallScreen ? Theme.of(context).textTheme.displayMedium : Theme.of(context).textTheme.displayLarge,
                       ),
                     ),
                     SizedBox(
@@ -109,9 +103,7 @@ class _PageOneState extends State<PageOne> {
                       child: SeoText(
                         L10n.of(context)!.weAreGrowingBitcoin,
                         textAlign: TextAlign.center,
-                        style: isSuperSmallScreen
-                            ? Theme.of(context).textTheme.bodyLarge
-                            : Theme.of(context).textTheme.bodyLarge,
+                        style: isSuperSmallScreen ? Theme.of(context).textTheme.bodyLarge : Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                     SizedBox(
@@ -126,25 +118,19 @@ class _PageOneState extends State<PageOne> {
                       },
                     ),
                     SizedBox(
-                       height: AppTheme.cardPadding * 10 * spacingMultiplier,
+                      height: AppTheme.cardPadding * 10 * spacingMultiplier,
                     ),
                     TweenAnimationBuilder<num>(
-                      duration: Duration(
-                          seconds:
-                              3), // Adjust the duration according to your need
+                      duration: const Duration(seconds: 3), // Adjust the duration according to your need
                       tween: Tween(begin: startvalue, end: endvalue),
                       builder: (context, value, child) {
                         return AnimatedFlipCounter(
                           value: value, // Animated value
-                          duration: Duration(
-                              milliseconds: 500), // Adjust the flip duration
+                          duration: const Duration(milliseconds: 500), // Adjust the flip duration
                           curve: Curves.easeOut, // Adjust the animation curve
                           thousandSeparator: ".",
                           decimalSeparator: ",",
-                          textStyle: Theme.of(context)
-                              .textTheme
-                              .displayLarge!
-                              .copyWith(
+                          textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
                                 fontSize: isSuperSmallScreen ? 74 : 84,
                               ),
                         );

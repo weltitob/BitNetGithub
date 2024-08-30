@@ -19,7 +19,7 @@ class SettingsController extends BaseController {
   RxBool profileUpdated = false.obs;
   RxBool? crossSigningCached;
 
-  Rx<Color> pickerColor = Color(0xff443a49).obs;
+  Rx<Color> pickerColor = const Color(0xff443a49).obs;
   final user = Auth().currentUser;
 
   void changeColor(Color color) {

@@ -4,7 +4,6 @@ import 'package:bitnet/components/marketplace_widgets/CommonHeading.dart';
 import 'package:bitnet/components/marketplace_widgets/FilterBtn.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
 import 'package:bitnet/components/marketplace_widgets/NftProductSlider.dart';
-import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:bitnet/components/marketplace_widgets/TrendingSellersSlider.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
 import 'package:flutter/material.dart';

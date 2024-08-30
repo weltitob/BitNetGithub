@@ -15,7 +15,7 @@ Future<bool?> showColorPickerDialouge({
     context: context,
     builder: (context) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(topLeft: Radius.circular(200.0),
               topRight: Radius.circular(200.0),
               bottomRight: Radius.circular(24),
@@ -46,7 +46,7 @@ Future<bool?> showColorPickerDialouge({
                     shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
                   ),
-                  child: Icon(Icons.stop_rounded),
+                  child: const Icon(Icons.stop_rounded),
                 ),
                 ElevatedButton(
                   onPressed: actionright,
@@ -55,7 +55,7 @@ Future<bool?> showColorPickerDialouge({
                     shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100))),
                   ),
-                  child: Icon(Icons.done_rounded),
+                  child: const Icon(Icons.done_rounded),
                 )
               ],
             ),

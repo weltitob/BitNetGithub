@@ -10,23 +10,14 @@ class HorizontalFadeListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color fadeColor = Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black;
     return ShaderMask(
       shaderCallback: (Rect bounds) {
         return LinearGradient(
           begin: Alignment.centerRight,
           end: Alignment.centerLeft,
-          colors: [
-            Colors.black,
-            Colors.transparent,
-            Colors.transparent,
-            Colors.black
-          ],
-          stops: [
-            0.0,
-            0.05,
-            0.95,
-            1.0
-          ],
+          colors: [fadeColor, Colors.transparent, Colors.transparent, fadeColor],
+          stops: [0.0, 0.05, 0.95, 1.0],
         ).createShader(bounds);
       },
       blendMode: BlendMode.dstOut,
@@ -47,21 +38,11 @@ class VerticalFadeListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShaderMask(
       shaderCallback: (Rect bounds) {
-        return LinearGradient(
+        return const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Colors.black,
-            Colors.transparent,
-            Colors.transparent,
-            Colors.black
-          ],
-          stops: [
-            0.0,
-            0.05,
-            0.95,
-            1.0
-          ],
+          colors: [Colors.black, Colors.transparent, Colors.transparent, Colors.black],
+          stops: [0.0, 0.05, 0.95, 1.0],
         ).createShader(bounds);
       },
       blendMode: BlendMode.dstOut,

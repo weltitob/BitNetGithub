@@ -1,6 +1,6 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BitNetImageWithTextContainer extends StatelessWidget {
@@ -12,7 +12,7 @@ class BitNetImageWithTextContainer extends StatelessWidget {
   final double height;
   final bool isActive;
 
-  BitNetImageWithTextContainer(
+  const BitNetImageWithTextContainer(
     this.text,
     this.action, {
     this.fallbackIcon,
@@ -25,7 +25,6 @@ class BitNetImageWithTextContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     BorderRadius borderRadius = BorderRadius.circular(width / 3);
 
     TextStyle textstyle = width > 100
@@ -73,14 +72,11 @@ class BitNetImageWithTextContainer extends StatelessWidget {
                       ),
               ),
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   right: AppTheme.elementSpacing,
                   left: AppTheme.elementSpacing,
                 ),
-                child: Text(text,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center, style: textstyle),
+                child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: textstyle),
               ),
             ],
           ),
@@ -99,7 +95,7 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
   final double height;
   final bool isActive;
 
-  AnimatedBitNetImageWithTextContainer(
+  const AnimatedBitNetImageWithTextContainer(
     this.text,
     this.action, {
     this.fallbackIcon,
@@ -112,7 +108,6 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     BorderRadius borderRadius = BorderRadius.circular(width / 3);
 
     TextStyle textstyle = width > 100
@@ -129,7 +124,7 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
 
     return AnimatedScale(
       scale: isActive ? 1 : 0.9,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       child: InkWell(
         onTap: action,
         borderRadius: borderRadius,
@@ -138,6 +133,7 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
           height: height,
           borderThickness: isActive ? 1 : 0,
           borderRadius: borderRadius,
+          customShadow: [AppTheme.boxShadowSmall],
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -161,14 +157,11 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
                       ),
               ),
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   right: AppTheme.elementSpacing,
                   left: AppTheme.elementSpacing,
                 ),
-                child: Text(text,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center, style: textstyle),
+                child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: textstyle),
               ),
             ],
           ),
@@ -177,8 +170,6 @@ class AnimatedBitNetImageWithTextContainer extends StatelessWidget {
     );
   }
 }
-
-
 
 class BitNetImageWithTextButton extends StatelessWidget {
   final String text;
@@ -189,20 +180,19 @@ class BitNetImageWithTextButton extends StatelessWidget {
   final double height;
   final bool isActive;
 
-  BitNetImageWithTextButton(
-      this.text,
-      this.action, {
-        this.fallbackIcon,
-        this.image,
-        this.width = AppTheme.cardPadding * 6,
-        this.height = AppTheme.cardPadding * 7,
-        this.isActive = true, // default value is true
-        Key? key,
-      }) : super(key: key);
+  const BitNetImageWithTextButton(
+    this.text,
+    this.action, {
+    this.fallbackIcon,
+    this.image,
+    this.width = AppTheme.cardPadding * 6,
+    this.height = AppTheme.cardPadding * 7,
+    this.isActive = true, // default value is true
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     BorderRadius borderRadius = BorderRadius.circular(width / 3);
 
     return InkWell(
@@ -230,10 +220,10 @@ class BitNetImageWithTextButton extends StatelessWidget {
                   child: image != null
                       ? Image.asset(image!)
                       : Icon(
-                    fallbackIcon ?? Icons.error,
-                    size: AppTheme.cardPadding * 1.75,
-                    color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
-                  ),
+                          fallbackIcon ?? Icons.error,
+                          size: AppTheme.cardPadding * 1.75,
+                          color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
+                        ),
                 ),
               ],
             ),
@@ -241,14 +231,12 @@ class BitNetImageWithTextButton extends StatelessWidget {
           SizedBox(height: AppTheme.elementSpacing.h),
           Container(
             width: width / 1.25,
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               right: AppTheme.elementSpacing,
               left: AppTheme.elementSpacing,
             ),
             child: Text(text,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+                maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
           ),
         ],
       ),

@@ -10,7 +10,7 @@ class BitNetShaderMask extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShaderMask(
       shaderCallback: (bounds) {
-        return LinearGradient(
+        return const LinearGradient(
           colors: [
             AppTheme.colorBitcoin,
             AppTheme.colorPrimaryGradient,

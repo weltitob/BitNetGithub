@@ -19,7 +19,7 @@ class PostHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        contentPadding: EdgeInsets.all(0.0),
+        contentPadding: const EdgeInsets.all(0.0),
         leading: Avatar(
           profileId: ownerId,
           mxContent: Uri.parse(''),
@@ -81,7 +81,7 @@ class PostHeader extends StatelessWidget {
                   context: context),
             );
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.more_vert,
             color: Colors.white,
           ),

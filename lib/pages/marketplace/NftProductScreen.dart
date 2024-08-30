@@ -291,7 +291,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             headingText: L10n.of(context)!.priceHistory,
                             hasButton: false,
                             collapseBtn: true,
-                            child: BarChart(),
+                            child: const BarChart(),
                           ),
                         ),
                         // Container(
@@ -405,12 +405,12 @@ class _NftProductScreenState extends State<NftProductScreen> {
                             .textTheme
                             .headlineMedium!
                             .copyWith(color: Colors.white)),
-                    Divider(
+                    const Divider(
                       color: AppTheme.colorBitcoin,
                       thickness: 2,
                     ),
                     _buildHorizontalProductWithId(),
-                    Spacer(),
+                    const Spacer(),
                     Container(
                       width: AppTheme.cardPadding * 10,
                       child: Column(
@@ -434,7 +434,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               )
                             ],
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -454,7 +454,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               )
                             ],
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -474,7 +474,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               )
                             ],
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -494,7 +494,7 @@ class _NftProductScreenState extends State<NftProductScreen> {
                               )
                             ],
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                         ],
                       ),
                     ),

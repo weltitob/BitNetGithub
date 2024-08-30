@@ -4,7 +4,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
-import 'package:bitnet/pages/secondpages/mempool/view/view_sockets.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
 import 'package:flutter/material.dart';
@@ -40,18 +39,18 @@ class _RecentTransactionsState extends State<RecentTransactions> {
         // ),
         const SizedBox(height: AppTheme.cardPadding),
           Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'TXID',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               // SizedBox(width: 20),
               Text(
                 '${L10n.of(context)!.amount}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               // SizedBox(width: 20),
               //
@@ -106,7 +105,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    SingleTransactionScreen(),
+                                    const SingleTransactionScreen(),
                               ),
                             );
                           },

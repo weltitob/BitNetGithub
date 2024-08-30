@@ -6,7 +6,6 @@ import 'package:bitnet/pages/marketplace/FavouriteScreen.dart';
 import 'package:bitnet/pages/marketplace/FilterScreen.dart';
 import 'package:bitnet/pages/marketplace/HomeScreen.dart';
 import 'package:bitnet/pages/marketplace/ListScreen.dart';
-import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
 import 'package:bitnet/pages/marketplace/OwnerDetailScreen.dart';
 import 'package:bitnet/pages/marketplace/SearchScreen.dart';

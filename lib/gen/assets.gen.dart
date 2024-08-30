@@ -587,12 +587,27 @@ class $AssetsTextfilesGen {
   List<String> get values => [bipWords];
 }
 
+class $AssetsTokensGen {
+  const $AssetsTokensGen();
+
+  /// File path: assets/tokens/genisisstone.webp
+  AssetGenImage get genisisstone =>
+      const AssetGenImage('assets/tokens/genisisstone.webp');
+
+  /// File path: assets/tokens/hotdog.webp
+  AssetGenImage get hotdog => const AssetGenImage('assets/tokens/hotdog.webp');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [genisisstone, hotdog];
+}
+
 class Assets {
   Assets._();
 
   static const AssetGenImage colors = AssetGenImage('assets/colors.png');
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsKeysGen keys = $AssetsKeysGen();
+  static const String keysZip = 'assets/keys.zip';
   static const AssetGenImage logo = AssetGenImage('assets/logo.png');
   static const AssetGenImage logoBlack = AssetGenImage('assets/logo_black.png');
   static const AssetGenImage logoForeground =
@@ -600,18 +615,24 @@ class Assets {
   static const $AssetsLottiefilesGen lottiefiles = $AssetsLottiefilesGen();
   static const $AssetsMarketplaceGen marketplace = $AssetsMarketplaceGen();
   static const $AssetsTextfilesGen textfiles = $AssetsTextfilesGen();
+  static const $AssetsTokensGen tokens = $AssetsTokensGen();
 
   /// List of all assets
-  static List<AssetGenImage> get values =>
-      [colors, logo, logoBlack, logoForeground];
+  static List<dynamic> get values =>
+      [colors, keysZip, logo, logoBlack, logoForeground];
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName, {this.size = null});
+  const AssetGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  });
 
   final String _assetName;
 
   final Size? size;
+  final Set<String> flavors;
 
   Image image({
     Key? key,

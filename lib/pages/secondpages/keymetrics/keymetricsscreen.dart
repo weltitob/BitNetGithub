@@ -39,10 +39,10 @@ class _KeyMetricsScreenState extends State<KeyMetricsScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding,
             ),
-            buildKeymetrics(),
+            const buildKeymetrics(),
           ],
         ),
       ),

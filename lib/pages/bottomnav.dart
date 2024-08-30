@@ -114,13 +114,13 @@ class _BottomNavState extends State<BottomNav>
     super.dispose();
   }
 
-  static List<Widget> navItems = <Widget>[FeedScreen(), Wallet(), Profile()];
+  static List<Widget> navItems = <Widget>[FeedScreen(), const Wallet(), const Profile()];
 
   void _onItemTapped(int index, ScrollController controller) {
     setState(() {
       if (index == _selectedIndex) {
         controller.animateTo(0,
-            duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+            duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
       } else {
         _selectedIndex = index;
       }
@@ -229,7 +229,7 @@ class _BottomNavState extends State<BottomNav>
             Center(
               child: navItems.elementAt(_selectedIndex),
             ),
-            Align(
+            const Align(
               alignment: Alignment.bottomCenter,
               child: BottomNavGradient(),
             ),

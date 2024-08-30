@@ -67,7 +67,7 @@ class bitnetScaffold extends StatelessWidget {
               ),
               child: Padding(
                 padding: extendBodyBehindBottomNav
-                    ? EdgeInsets.only(bottom: AppTheme.cardPadding * 3)
+                    ? const EdgeInsets.only(bottom: AppTheme.cardPadding * 3)
                     : EdgeInsets.zero,
                 child: Container(
                   margin: margin,
@@ -234,7 +234,7 @@ class bitnetScaffoldUnsafe extends StatelessWidget {
             ),
             child: Padding(
               padding: extendBodyBehindBottomNav
-                  ? EdgeInsets.only(bottom: AppTheme.cardPadding * 3)
+                  ? const EdgeInsets.only(bottom: AppTheme.cardPadding * 3)
                   : EdgeInsets.zero,
               child: Container(
                 margin: margin,

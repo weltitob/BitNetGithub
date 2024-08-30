@@ -154,7 +154,7 @@ class _BatchScreenState extends State<BatchScreen> {
                     customWidth: AppTheme.cardPadding * 6.5,
                     customHeight: AppTheme.cardPadding * 1.75,
                     buttonType: ButtonType.transparent,
-                    leadingIcon: Icon(Icons.add_rounded),
+                    leadingIcon: const Icon(Icons.add_rounded),
                     title: L10n.of(context)!.addMore,
                     onTap: () {
                       if (mounted) {
@@ -172,7 +172,7 @@ class _BatchScreenState extends State<BatchScreen> {
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.elementSpacing,
               ),
               Padding(
@@ -191,7 +191,7 @@ class _BatchScreenState extends State<BatchScreen> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 2,
               ),
               Center(

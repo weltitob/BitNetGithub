@@ -11,7 +11,7 @@ requestHelloWorld(String amount, String currency) async {
   final callable = functions.httpsCallable(
     'hello_world',
     options: HttpsCallableOptions(
-      timeout: Duration(minutes: 10),  // Increase the timeout duration
+      timeout: const Duration(minutes: 10),  // Increase the timeout duration
       limitedUseAppCheckToken: true,
     ),
   );

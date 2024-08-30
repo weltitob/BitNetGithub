@@ -1,5 +1,4 @@
 import 'package:bitnet/models/tapd/assetmeta.dart';
-import 'package:bitnet/models/tapd/minassetresponse.dart';
 
 class AssetInBatchList {
   String? version;

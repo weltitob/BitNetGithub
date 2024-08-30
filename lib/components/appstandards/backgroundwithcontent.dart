@@ -65,7 +65,7 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
       updateVisibility();
     } else if (widget.backgroundType == BackgroundType.asset) {
       // This is optional, just a dummy delay to simulate loading
-      Future.delayed(Duration(milliseconds: 300)).then((_) {
+      Future.delayed(const Duration(milliseconds: 300)).then((_) {
         if (mounted) {
           setState(() {
             _visible = true;
@@ -115,7 +115,7 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                         } else {
                           return AnimatedOpacity(
                               opacity: _visible ? 1.0 : 0.0,
-                              duration: Duration(milliseconds: 3000),
+                              duration: const Duration(milliseconds: 3000),
                               child: FittedBox(
                                 fit: BoxFit.cover,
                                 child:
@@ -147,9 +147,9 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     colors: [
                       Colors.transparent,
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background,
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),
@@ -170,9 +170,9 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     colors: [
                       Colors.transparent,
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background,
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),
@@ -193,9 +193,9 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     colors: [
                       Colors.transparent,
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background,
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),
@@ -216,10 +216,10 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     end: Alignment.topCenter,
                     colors: [
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.25),
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background.withOpacity(0.75),
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.25),
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface.withOpacity(0.75),
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),
@@ -239,10 +239,10 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     end: Alignment.topCenter,
                     colors: [
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.25),
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background.withOpacity(0.75),
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.25),
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface.withOpacity(0.75),
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),
@@ -262,10 +262,10 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     end: Alignment.topCenter,
                     colors: [
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.25),
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background.withOpacity(0.75),
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.25),
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface.withOpacity(0.75),
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),
@@ -283,10 +283,10 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                   end: Alignment.centerLeft,
                   colors: [
                     Colors.transparent,
-                    Theme.of(context).colorScheme.background.withOpacity(0.25),
-                    Theme.of(context).colorScheme.background.withOpacity(0.5),
-                    Theme.of(context).colorScheme.background.withOpacity(0.75),
-                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.surface.withOpacity(0.25),
+                    Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                    Theme.of(context).colorScheme.surface.withOpacity(0.75),
+                    Theme.of(context).colorScheme.surface,
                   ],
                 ),
               ),
@@ -307,9 +307,9 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     colors: [
                       Colors.transparent,
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background,
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),
@@ -331,9 +331,9 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     colors: [
                       Colors.transparent,
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background,
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),
@@ -351,10 +351,10 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                   end: Alignment.centerRight,
                   colors: [
                     Colors.transparent,
-                    Theme.of(context).colorScheme.background.withOpacity(0.25),
-                    Theme.of(context).colorScheme.background.withOpacity(0.5),
-                    Theme.of(context).colorScheme.background.withOpacity(0.75),
-                    Theme.of(context).colorScheme.background,
+                    Theme.of(context).colorScheme.surface.withOpacity(0.25),
+                    Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                    Theme.of(context).colorScheme.surface.withOpacity(0.75),
+                    Theme.of(context).colorScheme.surface,
                   ],
                 ),
               ),
@@ -375,9 +375,9 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     colors: [
                       Colors.transparent,
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background,
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),
@@ -399,9 +399,9 @@ class _BackgroundWithContentState extends State<BackgroundWithContent> {
                     colors: [
                       Colors.transparent,
                       Colors.transparent,
-                      Theme.of(context).colorScheme.background.withOpacity(0.5),
-                      Theme.of(context).colorScheme.background,
-                      Theme.of(context).colorScheme.background,
+                      Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.surface,
                     ],
                   ),
                 ),

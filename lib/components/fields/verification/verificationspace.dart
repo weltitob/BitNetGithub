@@ -56,7 +56,7 @@ class _VerificationSpaceState extends State<VerificationSpace> {
             children: [
               const SizedBox(height: AppTheme.cardPadding),
               Text(
-                L10n.of(context)!.invitationCode,
+                L10n.of(context).invitationCode,
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.left,
               ),

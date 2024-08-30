@@ -57,7 +57,7 @@ class _CreateAssetState extends State<CreateAsset> {
   bool isRecorderReady = false;
 
   bool isLoading = false;
-  String postId = Uuid().v4();
+  String postId = const Uuid().v4();
 
   @override
   void initState() {
@@ -135,7 +135,7 @@ class _CreateAssetState extends State<CreateAsset> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: AppTheme.elementSpacing,
                     ),
                     Row(
@@ -160,7 +160,7 @@ class _CreateAssetState extends State<CreateAsset> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: AppTheme.elementSpacing,
                     ),
                     Row(
@@ -356,8 +356,8 @@ class _CreateAssetState extends State<CreateAsset> {
                           customHeight: AppTheme.cardPadding * 2,
                           customWidth: AppTheme.cardPadding * 6,
                           leadingIcon: postFiles.isNotEmpty
-                              ? Icon(Icons.arrow_forward_ios_rounded)
-                              : Icon(Icons.lock_rounded),
+                              ? const Icon(Icons.arrow_forward_ios_rounded)
+                              : const Icon(Icons.lock_rounded),
                           title: L10n.of(context)!.post,
                           onTap: () {
                             if (postFiles.isNotEmpty) {
@@ -384,7 +384,7 @@ class _CreateAssetState extends State<CreateAsset> {
 
   Widget buildTextField() {
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.cardPadding / 2,
         vertical: AppTheme.cardPadding / 2,
       ),
@@ -401,12 +401,12 @@ class _CreateAssetState extends State<CreateAsset> {
               child: GlassContainer(
                 child: Container(
                   height: AppTheme.cardPadding * 2,
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.elementSpacing,
                   ),
                   child: Row(
                     children: [
-                      SizedBox(width: AppTheme.cardPadding / 4),
+                      const SizedBox(width: AppTheme.cardPadding / 4),
                       Expanded(
                         child: recorder.isRecording
                             ? StreamBuilder<RecordingDisposition>(
@@ -445,7 +445,7 @@ class _CreateAssetState extends State<CreateAsset> {
                                     L10n.of(context)!.typeMessage, context)),
                       ),
                       Container(
-                        margin: EdgeInsets.symmetric(
+                        margin: const EdgeInsets.symmetric(
                             horizontal: AppTheme.elementSpacing / 2),
                       ),
                       TextFieldButtonMorph(
@@ -474,7 +474,7 @@ class _CreateAssetState extends State<CreateAsset> {
                 ),
               ),
             ),
-            SizedBox(width: AppTheme.cardPadding / 3),
+            const SizedBox(width: AppTheme.cardPadding / 3),
             buildMicrophoneOrTextPushButton(),
           ],
         ),

@@ -25,11 +25,11 @@ class _TokensTabState extends State<TokensTab> {
           SingleChildScrollView(
             controller: ScrollController()..addListener(() {}),
             physics:
-                BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding * 0.1,
                 ),
                 CommonHeading(
@@ -59,7 +59,7 @@ class _TokensTabState extends State<TokensTab> {
                                           CrossAxisAlignment.center,
                                       children: [
                                         Container(
-                                          margin: EdgeInsets.only(top: 5),
+                                          margin: const EdgeInsets.only(top: 5),
                                           height: 30.h,
                                           width: 30.w,
                                           child: Image.asset(
@@ -77,7 +77,7 @@ class _TokensTabState extends State<TokensTab> {
                                     SizedBox(
                                       height: 40.h,
                                       child: Container(
-                                        margin: EdgeInsets.only(
+                                        margin: const EdgeInsets.only(
                                             right: AppTheme.elementSpacing),
                                         width: AppTheme.cardPadding * 3.75.w,
                                         color: Colors.transparent,
@@ -139,7 +139,7 @@ class _TokensTabState extends State<TokensTab> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.arrow_upward,
                                           color: Colors.green,
                                           size: 20,
@@ -173,7 +173,7 @@ class _TokensTabState extends State<TokensTab> {
                   headingText: 'Top 3 by Market Cap',
                   isNormalChild: true,
                   isChild: Container(
-                    margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                     child: Column(
                       children: [
                         CryptoItem(
@@ -184,7 +184,7 @@ class _TokensTabState extends State<TokensTab> {
                           ),
                           context: context,
                         ),
-                        SizedBox(height: AppTheme.elementSpacing / 2,),
+                        const SizedBox(height: AppTheme.elementSpacing / 2,),
                         CryptoItem(
                           currency: Currency(
                             code: 'GENST',
@@ -193,7 +193,7 @@ class _TokensTabState extends State<TokensTab> {
                           ),
                           context: context,
                         ),
-                        SizedBox(height: AppTheme.elementSpacing / 2,),
+                        const SizedBox(height: AppTheme.elementSpacing / 2,),
                         CryptoItem(
                           currency: Currency(
                             code: 'HTDG',
@@ -236,7 +236,7 @@ class _TokensTabState extends State<TokensTab> {
                                     SizedBox(
                                       height: 40.h,
                                       child: Container(
-                                        margin: EdgeInsets.only(
+                                        margin: const EdgeInsets.only(
                                             right: AppTheme.elementSpacing),
                                         width: AppTheme.cardPadding * 3.75.w,
                                         color: Colors.transparent,
@@ -298,7 +298,7 @@ class _TokensTabState extends State<TokensTab> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.arrow_upward,
                                           color: Colors.grey,
                                           size: 20,

@@ -16,7 +16,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 class MnemonicGenScreen extends StatelessWidget {
   final MnemonicController mnemonicController;
 
-  MnemonicGenScreen({
+  const MnemonicGenScreen({
     super.key,
     required this.mnemonicController,
   });
@@ -29,7 +29,7 @@ class MnemonicGenScreen extends StatelessWidget {
       appBar: bitnetAppBar(
         text: L10n.of(context)!.yourPassowrdBackup,
         context: context,
-        actions: [PopUpLangPickerWidget()],
+        actions: [const PopUpLangPickerWidget()],
       ),
       body: Stack(
         children: [
@@ -63,7 +63,7 @@ class MnemonicGenScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Container(

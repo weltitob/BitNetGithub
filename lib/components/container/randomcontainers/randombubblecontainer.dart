@@ -8,7 +8,7 @@ class BubbleWidget extends StatefulWidget {
   final double width;
   final double height;
 
-  BubbleWidget({required this.width, required this.height});
+  const BubbleWidget({required this.width, required this.height});
 
   @override
   _BubbleWidgetState createState() => _BubbleWidgetState();
@@ -23,7 +23,7 @@ class _BubbleWidgetState extends State<BubbleWidget> with TickerProviderStateMix
     super.initState();
 
     Future.doWhile(() async {
-      await Future.delayed(Duration(milliseconds: 200)); // Creates a bubble every half-second
+      await Future.delayed(const Duration(milliseconds: 200)); // Creates a bubble every half-second
       if(!mounted) {
         return false;
       }
@@ -38,7 +38,7 @@ class _BubbleWidgetState extends State<BubbleWidget> with TickerProviderStateMix
       bubble.radius = Tween<double>(begin: 0, end: endRadius).animate(bubble.controller);
 
       // Speed up the animation
-      bubble.controller.duration = Duration(milliseconds: 750);
+      bubble.controller.duration = const Duration(milliseconds: 750);
 
       bubble.controller.addStatusListener((status) {
         if (status == AnimationStatus.completed) {

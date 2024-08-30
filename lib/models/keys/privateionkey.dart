@@ -50,7 +50,7 @@ class PrivateIONKey {
         y: keyMap['y'],
       );
     } else {
-      throw FormatException('Invalid key string format');
+      throw const FormatException('Invalid key string format');
     }
   }
 

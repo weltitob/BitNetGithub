@@ -120,7 +120,7 @@ class LightningSendTab extends GetWidget<SendsController> {
     return isActive
         ? GlassContainer(
             child: Container(
-            margin: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(
               horizontal: AppTheme.elementSpacing * 0.75,
               vertical: AppTheme.elementSpacing * 0.5,
             ),
@@ -142,7 +142,7 @@ class LightningSendTab extends GetWidget<SendsController> {
             ),
           ))
         : Container(
-            margin: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(
               horizontal: AppTheme.elementSpacing * 0.75,
               vertical: AppTheme.elementSpacing * 0.5,
             ),
@@ -172,7 +172,7 @@ class LightningSendTab extends GetWidget<SendsController> {
       children: [
         ListTile(
           // The leading widget is a circle avatar that displays an image.
-          leading: Avatar(
+          leading: const Avatar(
             isNft: false,
           ),
           // The title displays the user's name.

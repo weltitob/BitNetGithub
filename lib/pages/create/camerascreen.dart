@@ -42,7 +42,7 @@ class _CameraPageState extends State<CameraPage> {
             children: [
               Expanded(
                 child: ListTile(
-                  contentPadding: EdgeInsets.all(0.0),
+                  contentPadding: const EdgeInsets.all(0.0),
                   leading: Avatar(
                     profileId: currentUser,
                     size: AppTheme.cardPadding * 2,
@@ -70,9 +70,9 @@ class _CameraPageState extends State<CameraPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //can here remix post from other plattform
-                    RoundedButtonWidget(iconData: Icons.link,
+                    const RoundedButtonWidget(iconData: Icons.link,
                         onTap: null,),
-                    SizedBox(
+                    const SizedBox(
                       width: AppTheme.elementSpacing,
                     ),
                     ClipRRect(
@@ -92,28 +92,28 @@ class _CameraPageState extends State<CameraPage> {
                                   Icons.refresh,
                                   color: AppTheme.white90,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: AppTheme.cardPadding * 0.75,
                                 ),
                                 Icon(
                                   Icons.flash_auto,
                                   color: AppTheme.white90,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: AppTheme.cardPadding * 0.75,
                                 ),
                                 Icon(
                                   Icons.play_arrow,
                                   color: AppTheme.white90,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: AppTheme.cardPadding * 0.75,
                                 ),
                                 Icon(
                                   Icons.timer,
                                   color: AppTheme.white90,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: AppTheme.cardPadding * 0.75,
                                 ),
                                 Icon(
@@ -142,7 +142,7 @@ class _CameraPageState extends State<CameraPage> {
                   }),
                 buttonType: ButtonType.transparent,
               ),
-              SizedBox(
+              const SizedBox(
                 width: AppTheme.cardPadding,
               ),
               Container(
@@ -152,7 +152,7 @@ class _CameraPageState extends State<CameraPage> {
                     borderRadius: AppTheme.cardRadiusBigger,
                     border: Border.all(width: 5, color: AppTheme.white90)),
               ),
-              SizedBox(
+              const SizedBox(
                 width: AppTheme.cardPadding,
               ),
               RoundedButtonWidget(

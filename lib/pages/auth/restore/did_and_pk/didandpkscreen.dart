@@ -102,7 +102,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
         margin: 
-            EdgeInsets.symmetric(horizontal: 0)
+            const EdgeInsets.symmetric(horizontal: 0)
             ,
         extendBodyBehindAppBar: true,
         context: context,
@@ -114,7 +114,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
             Navigator.of(context).pop();
           },
           actions: [
-            PopUpLangPickerWidget(),
+            const PopUpLangPickerWidget(),
           ],
         ),
         body: Form(
@@ -124,7 +124,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                 left: AppTheme.cardPadding * 2.ws,
                 right: AppTheme.cardPadding * 2.ws,
                 top: AppTheme.cardPadding * 6.h),
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             children: [
               Container(
                 height: AppTheme.cardPadding * 4.5.h,
@@ -243,7 +243,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(
+                    margin: const EdgeInsets.only(
                         top: AppTheme.cardPadding,
                         bottom: AppTheme.cardPadding),
                     child: GestureDetector(

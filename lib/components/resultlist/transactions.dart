@@ -35,7 +35,7 @@ class Transactions extends StatefulWidget {
   final List<String>? filters;
   final List<TransactionItem>? customTransactions;
   final ScrollController scrollController;
-  Transactions(
+  const Transactions(
       {Key? key,
       this.fullList = false,
       this.hideOnchain = false,
@@ -61,7 +61,7 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
   List<Swap> loopOperations = [];
   final searchCtrl = TextEditingController();
   List<Widget> orderedTransactions = List.empty(growable: true);
-  int loadedTransactionGroups = 4;
+  int loadedTransactionGroups = 6;
   bool isLoadingTransactionGroups = false;
   Future<bool> getOnchainTransactions() async {
     LoggerService logger = Get.find();
@@ -536,7 +536,7 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
                 delegate: SliverChildBuilderDelegate((ctx, index) {
                 if (index == 0) {
                   return Container(
-                    margin: EdgeInsets.symmetric(
+                    margin: const EdgeInsets.symmetric(
                       horizontal: AppTheme.cardPadding,
                       vertical: AppTheme.elementSpacing,
                     ),
@@ -646,7 +646,7 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
     });
 
     // Simulate a delay to show the "Loading..." text
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     setState(() {
       loadedTransactionGroups += 4;
@@ -755,7 +755,7 @@ class _TransactionsState extends State<Transactions> with AutomaticKeepAliveClie
 
     DateTime now = DateTime.now();
     DateTime startOfThisWeek = now.subtract(Duration(days: now.weekday - 1));
-    DateTime startOfLastWeek = startOfThisWeek.subtract(Duration(days: 7));
+    DateTime startOfLastWeek = startOfThisWeek.subtract(const Duration(days: 7));
     DateTime startOfThisMonth = DateTime(now.year, now.month, 1);
 
     for (TransactionItem item in combinedTransactions) {

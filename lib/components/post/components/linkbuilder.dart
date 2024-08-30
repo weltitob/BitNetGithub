@@ -6,14 +6,14 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 //USED FOR POSTS IN FEED ETC. PDF IS FETCHED FROM DATABASE
 class LinkBuilder extends StatelessWidget {
   final String url;
-  LinkBuilder({
+  const LinkBuilder({
     Key? key,
     required this.url,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return YouTubeVideo();
+    return const YouTubeVideo();
     //return YouTubeVideo();
     // return Container(
     //   padding: EdgeInsets.symmetric(
@@ -89,7 +89,7 @@ class _YouTubeShortState extends State<YouTubeShort> {
       borderRadius: BorderRadius.circular(16.0),
       child: ShortsPlayerBuilder(
         player: ShortsPlayer(
-          actionsPadding: EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
+          actionsPadding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
           topActions: [
             Expanded(
               child: Text(
@@ -101,11 +101,11 @@ class _YouTubeShortState extends State<YouTubeShort> {
             ),
           ],
           bottomActions: [
-            PlaybackSpeedButtonCustom(fontSize: 16),
-            SizedBox(width: 20,),
+            const PlaybackSpeedButtonCustom(fontSize: 16),
+            const SizedBox(width: 20,),
             CurrentPosition(),
             ProgressBar(isExpanded: true,
-              colors: ProgressBarColors(
+              colors: const ProgressBarColors(
                   playedColor: Colors.orange,
                   handleColor: Colors.orange,
                   bufferedColor: Colors.grey,
@@ -117,7 +117,7 @@ class _YouTubeShortState extends State<YouTubeShort> {
           liveUIColor: Colors.orange,
           showVideoProgressIndicator: true,
           progressIndicatorColor: Colors.orange,
-          progressColors: ProgressBarColors(
+          progressColors: const ProgressBarColors(
               playedColor: Colors.orange,
               handleColor: Colors.orange,
               bufferedColor: Colors.grey,
@@ -177,11 +177,11 @@ class _YouTubeVideoState extends State<YouTubeVideo> {
               ),
             ],
             bottomActions: [
-            PlaybackSpeedButtonCustom(),
-            SizedBox(width: 10,),
+            const PlaybackSpeedButtonCustom(),
+            const SizedBox(width: 10,),
             CurrentPosition(),
             ProgressBar(isExpanded: true,
-              colors: ProgressBarColors(
+              colors: const ProgressBarColors(
                   playedColor: Colors.orange,
                   handleColor: Colors.orange,
                   bufferedColor: Colors.grey,
@@ -193,7 +193,7 @@ class _YouTubeVideoState extends State<YouTubeVideo> {
             liveUIColor: Colors.orange,
             showVideoProgressIndicator: true,
             progressIndicatorColor: Colors.orange,
-            progressColors: ProgressBarColors(
+            progressColors: const ProgressBarColors(
               playedColor: Colors.orange,
               handleColor: Colors.orange,
               bufferedColor: Colors.grey,

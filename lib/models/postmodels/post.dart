@@ -30,7 +30,7 @@ class Post extends StatefulWidget {
   final List<Media> medias;
   final DateTime timestamp;
 
-  Post({
+  const Post({
     required this.postId,
     required this.ownerId,
     required this.username,
@@ -87,19 +87,19 @@ class Post extends StatefulWidget {
 
   @override
   _PostState createState() => _PostState(
-    postId: this.postId,
-    ownerId: this.ownerId,
-    username: this.username,
-    rockets: this.rockets,
-    displayname: this.displayname,
-    rocketcount: getRocketCount(),
-    medias: this.medias,
-    timestamp: this.timestamp,
-    postName: this.postName,
-  );
+        postId: this.postId,
+        ownerId: this.ownerId,
+        username: this.username,
+        rockets: this.rockets,
+        displayname: this.displayname,
+        rocketcount: getRocketCount(),
+        medias: this.medias,
+        timestamp: this.timestamp,
+        postName: this.postName,
+      );
 }
 
-class _PostState extends State<Post> {
+class _PostState extends State<Post> with AutomaticKeepAliveClientMixin {
   final String postId;
   final String ownerId;
   final String username;
@@ -127,6 +127,7 @@ class _PostState extends State<Post> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final String? currentUserId = Auth().currentUser!.uid;
 
     isLiked = (rockets[currentUserId] == true);
@@ -157,85 +158,54 @@ class _PostState extends State<Post> {
                   postName,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                SizedBox(height: AppTheme.elementSpacing * 1.5),
+                const SizedBox(height: AppTheme.elementSpacing * 1.5),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: medias.map((e) {
                     final type = e.type;
                     if (type == "text") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: TextBuilderNetwork(url: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: TextBuilderNetwork(url: e.data));
                     }
                     if (type == "collection") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: CollectionBuilder(data: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: CollectionBuilder(data: e.data));
                     }
                     if (type == "description") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: DescriptionBuilder(description: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: DescriptionBuilder(description: e.data));
                     }
                     if (type == "attributes") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: AttributesBuilder(attributes: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: AttributesBuilder(attributes: e.data));
                     }
                     if (type == "spotify_url") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: SpotifyBuilder(spotifyUrl: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: SpotifyBuilder(spotifyUrl: e.data));
                     }
                     if (type == "youtubemusic_url") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: YoutubeMusicBuilder(youtubeUrl: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: YoutubeMusicBuilder(youtubeUrl: e.data));
                     }
                     if (type == "deezer_url") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: DeezerBuilder(deezerUrl: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: DeezerBuilder(deezerUrl: e.data));
                     }
                     if (type == "applemusic_url") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: AppleMusicBuilder(applemusicUrl: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: AppleMusicBuilder(applemusicUrl: e.data));
                     }
                     if (type == "external_link") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: LinkBuilder(url: 'haha'));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: const LinkBuilder(url: 'haha'));
                     }
                     if (type == "image" || type == "camera") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: ImageBuilder(encodedData: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: ImageBuilder(encodedData: e.data));
                     }
                     if (type == "image_data" || type == "camera") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: ImageBuilder(encodedData: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: ImageBuilder(encodedData: e.data));
                     }
                     if (type == "audio") {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          child: AudioBuilderNetwork(url: e.data));
+                      return Container(margin: const EdgeInsets.only(bottom: 10.0), child: AudioBuilderNetwork(url: e.data));
                     }
 
-                    return Container(
-                        margin: EdgeInsets.only(bottom: 10.0),
-                        child: TextBuilderNetwork(url: e.data));
+                    return Container(margin: const EdgeInsets.only(bottom: 10.0), child: TextBuilderNetwork(url: e.data));
                   }).toList(),
                 ),
                 buildLikeSpace(
-                    type: likeSpaceType.Post,
-                    targetId: postId,
-                    postName: postName,
-                    username: username,
-                    ownerId: ownerId,
-                    rockets: rockets),
-                SizedBox(height: AppTheme.elementSpacing),
+                    type: likeSpaceType.Post, targetId: postId, postName: postName, username: username, ownerId: ownerId, rockets: rockets),
+                const SizedBox(height: AppTheme.elementSpacing),
               ],
             ),
           ),
@@ -243,6 +213,9 @@ class _PostState extends State<Post> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 //
 // //NOCHMAL GUCKEN DAS IWIE ABÄNDERN ZU GANZEM POST UND DANN AUTOMATISCH 5SATS SENDEN ODER SO
 //   buildPostImage() {

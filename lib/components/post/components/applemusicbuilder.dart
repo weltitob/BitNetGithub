@@ -16,7 +16,7 @@ class AppleMusicBuilder extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-                onPressed: () {}, icon: Icon(FontAwesomeIcons.apple)),
+                onPressed: () {}, icon: const Icon(FontAwesomeIcons.apple)),
             Container(
               width: AppTheme.cardPadding * 12,
               child: Text(

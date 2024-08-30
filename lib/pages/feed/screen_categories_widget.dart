@@ -10,18 +10,13 @@ class ScreenCategoryWidget extends StatelessWidget {
   final String text;
   final String header;
   final int index;
-  ScreenCategoryWidget(
-      {required this.image,
-      required this.text,
-      required this.header,
-      required this.index,
-      super.key});
+  const ScreenCategoryWidget({required this.image, required this.text, required this.header, required this.index, super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         right: 10,
         top: 10,
         bottom: 10,
@@ -32,7 +27,7 @@ class ScreenCategoryWidget extends StatelessWidget {
         color: Colors.transparent,
         borderRadius: AppTheme.cardRadiusMid,
         boxShadow: [
-          AppTheme.boxShadowSmall,
+          AppTheme.boxShadowSuperSmall,
         ],
       ),
       child: Transform.scale(
@@ -44,15 +39,14 @@ class ScreenCategoryWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.only(top: 5),
+                margin: const EdgeInsets.only(top: 5),
                 height: 35.h,
                 width: 35.w,
                 child: Image.asset(image),
               ),
               Container(
-                margin: EdgeInsets.only(top: 5),
-                child:
-                    Text(text, style: Theme.of(context).textTheme.labelLarge),
+                margin: const EdgeInsets.only(top: 5),
+                child: Text(text, style: Theme.of(context).textTheme.labelLarge),
               )
             ],
           ),

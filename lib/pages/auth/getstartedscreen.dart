@@ -16,7 +16,7 @@ import 'package:lottie/lottie.dart';
 
 
 class GetStartedScreen extends StatefulWidget {
-  GetStartedScreen({Key? key}) : super(key: key);
+  const GetStartedScreen({Key? key}) : super(key: key);
   @override
   _GetStartedScreenState createState() => _GetStartedScreenState();
 }
@@ -46,11 +46,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
       return bitnetScaffold(
         extendBodyBehindAppBar: true,
         appBar: bitnetAppBar(context: context, hasBackButton: false, actions: [
-          PopUpLangPickerWidget(),
+          const PopUpLangPickerWidget(),
         ]),
         context: context,
         backgroundColor: Theme.of(context).colorScheme.surface,
-        margin:  EdgeInsets.symmetric(horizontal: AppTheme.cardPadding)
+        margin:  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding)
                 ,
         body: Container(
           margin: EdgeInsets.only(
@@ -100,7 +100,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 },
               ),
               // creating the signup button
-              SizedBox(height: AppTheme.cardPadding),
+              const SizedBox(height: AppTheme.cardPadding),
               LongButtonWidget(
                   customWidth: AppTheme.cardPadding * 14.h,
                   title: L10n.of(context)!.register,
@@ -109,7 +109,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   }),
               SizedBox(height: AppTheme.cardPadding * 1.h),
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                     top: AppTheme.cardPadding, bottom: 2),
                 child: GestureDetector(
                   onTap: () {

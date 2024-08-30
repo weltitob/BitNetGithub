@@ -28,6 +28,6 @@ class _WalletState extends State<Wallet> {
 
   @override
   Widget build(BuildContext context) {
-    return WalletScreen();
+    return const WalletScreen();
   }
 }

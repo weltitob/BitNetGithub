@@ -51,8 +51,8 @@ Widget avatarGlowProgressAudio(BuildContext context) {
         child: AvatarGlow(
             glowColor: Colors.white, // Set the color of the glow
             endRadius: 10.0, // Set the size of the glow
-            duration: Duration(milliseconds: 1000), // Set the duration of the animation
-            repeatPauseDuration: Duration(milliseconds: 0), // Set the duration of the pause between animations
+            duration: const Duration(milliseconds: 1000), // Set the duration of the animation
+            repeatPauseDuration: const Duration(milliseconds: 0), // Set the duration of the pause between animations
             repeat: true, // Set the animation to repeat
             showTwoGlows: true, // Set the glow to display two glows instead of one
             child: Container() // Set an empty container as the child of the AvatarGlow widget
@@ -68,8 +68,8 @@ Widget avatarGlowProgressSmall(BuildContext context) {
     child: AvatarGlow(
         glowColor: Theme.of(context).colorScheme.primary, // Set the color of the glow
         endRadius: 20.0, // Set the size of the glow
-        duration: Duration(milliseconds: 1000), // Set the duration of the animation
-        repeatPauseDuration: Duration(milliseconds: 0), // Set the duration of the pause between animations
+        duration: const Duration(milliseconds: 1000), // Set the duration of the animation
+        repeatPauseDuration: const Duration(milliseconds: 0), // Set the duration of the pause between animations
         repeat: true, // Set the animation to repeat
         showTwoGlows: true, // Set the glow to display two glows instead of one
         child: Container() // Set an empty container as the child of the AvatarGlow widget

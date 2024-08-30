@@ -46,7 +46,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
       bool isSuperSmallScreen =
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
-        margin: EdgeInsets.symmetric(horizontal: 0)
+        margin: const EdgeInsets.symmetric(horizontal: 0)
             ,
         extendBodyBehindAppBar: true,
         context: context,
@@ -57,7 +57,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
             Navigator.of(context).pop();
           },
           actions: [
-            PopUpLangPickerWidget(),
+            const PopUpLangPickerWidget(),
           ],
         ),
         body: Padding(
@@ -73,7 +73,7 @@ class _InfoSocialRecoveryScreenState extends State<InfoSocialRecoveryScreen> {
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.elementSpacing,
               ),
               Row(

@@ -32,33 +32,30 @@ class FeedScreen extends StatefulWidget {
   _FeedScreenState createState() => _FeedScreenState();
 }
 
-class _FeedScreenState extends State<FeedScreen>
-    with SingleTickerProviderStateMixin {
+class _FeedScreenState extends State<FeedScreen> with SingleTickerProviderStateMixin {
   late FocusNode searchNode;
   late ScrollController homeScrollController;
   late Function() scrollListener;
   @override
   void initState() {
-    
     super.initState();
-  
+
     Get.put(FeedController()).initNFC(context);
-     homeScrollController = Get.find<FeedController>().scrollControllerColumn;
-     scrollListener = (){
+    homeScrollController = Get.find<FeedController>().scrollControllerColumn;
+    scrollListener = () {
       scrollToSearchFunc(homeScrollController, searchNode);
     };
     homeScrollController.addListener(scrollListener);
-       searchNode = FocusNode();
+    searchNode = FocusNode();
   }
 
-   
+  @override
+  void dispose() {
+    homeScrollController.removeListener(scrollListener);
+    searchNode.dispose();
+    super.dispose();
+  }
 
-@override
-void dispose() {
-  homeScrollController.removeListener(scrollListener);
-  searchNode.dispose();
-  super.dispose();
-}
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FeedController>();
@@ -75,36 +72,31 @@ void dispose() {
                       GetBuilder<FeedController>(
                         builder: (controller) {
                           return Consumer<ScreenHeight>(
-                            builder: (context, res, child) {
-                              if(!res.isOpen) {
-                                searchNode.unfocus();
-                              }
-                              return child!;
-                            },
-                            child: SearchFieldWithNotificationsWidget(
+                              builder: (context, res, child) {
+                                if (!res.isOpen) {
+                                  searchNode.unfocus();
+                                }
+                                return child!;
+                              },
+                              child: SearchFieldWithNotificationsWidget(
                                 isSearchEnabled: true,
                                 hintText: "Paste walletaddress, transactionid or blockid...",
                                 focus: searchNode,
                                 // hintText: "${L10n.of(context)!.search}...",
                                 onChanged: (v) {
-                                  setState(() {}); 
+                                  setState(() {});
                                   if (controller.tabController!.index == 2) {
-                                    controller.searchresults = controller
-                                        .searchresults
-                                        .where((e) => e.userData.username
-                                            .toLowerCase()
-                                            .contains(v))
-                                        .toList();
+                                    controller.searchresults =
+                                        controller.searchresults.where((e) => e.userData.username.toLowerCase().contains(v)).toList();
                                   }
                                 },
-                              )
-                          );
+                              ));
                         },
                       ),
                       HorizontalFadeListView(
                         child: Container(
                           height: 100.h,
-                          margin: EdgeInsets.only(left: AppTheme.elementSpacing),
+                          margin: const EdgeInsets.only(left: AppTheme.elementSpacing),
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: controller.walletcategorys.length,
@@ -115,11 +107,9 @@ void dispose() {
                                   setState(() {});
                                 },
                                 child: ScreenCategoryWidget(
-                                  image:
-                                      controller.walletcategorys[index].imageURL,
+                                  image: controller.walletcategorys[index].imageURL,
                                   text: controller.walletcategorys[index].text,
-                                  header:
-                                      controller.walletcategorys[index].header,
+                                  header: controller.walletcategorys[index].header,
                                   index: index,
                                 ),
                               );
@@ -127,7 +117,7 @@ void dispose() {
                           ),
                         ),
                       ),
-                      Divider(),
+                      const Divider(),
                     ],
                   ),
                 ),
@@ -137,17 +127,17 @@ void dispose() {
                 //  controller.searchResultsFuture?.value == null
                 //     ?
                 TabBarView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               controller: controller.tabController,
               children: [
                 HomeScreen(ctrler: homeScrollController),
-                TokensTab(),
-              MempoolHome(
+                const TokensTab(),
+                MempoolHome(
                   isFromHome: true,
                 ),
                 GetBuilder<FeedController>(
                   builder: (controller) {
-                    return SearchResultWidget();
+                    return const SearchResultWidget();
                   },
                 ),
                 Container(

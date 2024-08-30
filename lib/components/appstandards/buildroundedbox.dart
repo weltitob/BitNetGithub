@@ -6,7 +6,7 @@ class RoundedContainer extends StatefulWidget {
   final Widget child;
   final EdgeInsets? contentPadding; // Make contentPadding optional
 
-  RoundedContainer({
+  const RoundedContainer({
     Key? key,
     required this.child,
     this.contentPadding, // Add contentPadding parameter

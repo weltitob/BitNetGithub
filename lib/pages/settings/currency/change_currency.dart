@@ -37,7 +37,7 @@ class _ChangeCurrencyState extends State<ChangeCurrency> {
           controller.switchTab('main');
         },
       ),
-      body: DashboardPage(),
+      body: const DashboardPage(),
     );
   }
 }

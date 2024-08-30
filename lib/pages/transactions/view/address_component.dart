@@ -25,7 +25,7 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class AddressComponent extends StatelessWidget {
-  AddressComponent({super.key});
+  const AddressComponent({super.key});
   final bool isShowMore = false;
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class AddressComponent extends StatelessWidget {
                       children: [
                         Container(
                             height: 200,
-                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
                             child: BalanceCardBtc(
                                 balance:
                                     '${(((controller.addressComponentModel?.chainStats.fundedTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.fundedTxoSum)! / 100000000) - ((controller.addressComponentModel?.chainStats.spentTxoSum)! / 100000000 + (controller.addressComponentModel?.mempoolStats.spentTxoSum)! / 100000000)).toStringAsFixed(8)}')),
@@ -167,11 +167,11 @@ class AddressComponent extends StatelessWidget {
                                   });
                                 },
                                 suffixIcon: IconButton(
-                                    icon: Icon(FontAwesomeIcons.filter),
+                                    icon: const Icon(FontAwesomeIcons.filter),
                                     onPressed: () async {
                                       await BitNetBottomSheet(
                                           context: context,
-                                          child: WalletFilterScreen());
+                                          child: const WalletFilterScreen());
                                       setState(() {});
                                     }),
                                 isSearchEnabled: true,
@@ -181,7 +181,7 @@ class AddressComponent extends StatelessWidget {
                                     ? Text(L10n.of(context)!.loading)
                                     : ListView.builder(
                                         shrinkWrap: true,
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                             horizontal: 12.0),
                                         physics:
                                             const NeverScrollableScrollPhysics(),
@@ -253,7 +253,7 @@ class AddressComponent extends StatelessWidget {
                                                             index]
                                                         .txid!;
                                                     Get.to(
-                                                        SingleTransactionScreen(),
+                                                        const SingleTransactionScreen(),
                                                         arguments: controller
                                                             .subTransactionModel[
                                                                 index]
@@ -308,7 +308,7 @@ class AddressComponent extends StatelessWidget {
                                                         // other properties
                                                       )),
                                                 )
-                                              : SizedBox();
+                                              : const SizedBox();
                                         });
                               }),
                             ],

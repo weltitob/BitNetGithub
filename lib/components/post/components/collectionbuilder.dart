@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
 

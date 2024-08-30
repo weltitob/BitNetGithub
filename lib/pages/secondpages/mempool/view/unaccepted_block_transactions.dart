@@ -58,35 +58,35 @@ class _UnacceptedBlockTransactionsState
               isSearchEnabled: true,
             ),
               Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  Expanded(
+                  const Expanded(
                     flex: 2,
                     child: Text(
                       'TXID',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   Expanded(
                     child: Text(
                       L10n.of(context)!.amount,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  SizedBox(width: 20),
-                  Expanded(
+                  const SizedBox(width: 20),
+                  const Expanded(
                     child: Text(
                       'USD',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   Expanded(
                     child: Text(
                       L10n.of(context)!.fee,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

@@ -1,9 +1,6 @@
 import 'package:bitnet/backbone/helper/language.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
-import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
-import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +38,7 @@ class _PopUpLangPickerWidgetState extends State<PopUpLangPickerWidget> {
                     //   topRight: AppTheme.cornerRadiusBig.w,
                     // ),
                   ),
-                  child: ClipRRect(
+                  child: const ClipRRect(
                     // borderRadius: BorderRadius.only(
                     //   topLeft: AppTheme.cornerRadiusBig.w,
                     //   topRight: AppTheme.cornerRadiusBig.w,

@@ -32,7 +32,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
     final borderRadius = BorderRadius.circular(height / 2.5);
 
     return Container(
-      margin: EdgeInsets.only(top: AppTheme.elementSpacing),
+      margin: const EdgeInsets.only(top: AppTheme.elementSpacing),
 
       height: height,
       width:
@@ -48,7 +48,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
             borderRadius: AppTheme.cardRadiusBig,
             child: Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: AppTheme.elementSpacing * 0.75,
                 ),
                 WebAvatar(
@@ -58,7 +58,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
                   name: widget.userData.username,
                   profileId: widget.userData.did,
                 ),
-                SizedBox(width: AppTheme.elementSpacing),
+                const SizedBox(width: AppTheme.elementSpacing),
                 Container(
                   width: AppTheme.cardPadding * 5,
                   child: Column(
@@ -69,7 +69,7 @@ class _UserSearchResultState extends State<UserSearchResult> {
                         "@${widget.userData.username}",
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
-                      SizedBox(height: AppTheme.elementSpacing / 4),
+                      const SizedBox(height: AppTheme.elementSpacing / 4),
                       Text(
                         widget.userData.did,
                         style: Theme.of(context).textTheme.bodySmall,

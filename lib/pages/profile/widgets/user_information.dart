@@ -1,8 +1,9 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:get/get.dart';
 
 class UserInformation extends StatelessWidget {
   const UserInformation({super.key});
@@ -11,69 +12,124 @@ class UserInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<ProfileController>();
     return Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
         child: Obx(
           () => Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.elementSpacing / 2,
               ),
-              TextField(
-                focusNode: controller.focusNodeUsername,
-                readOnly: controller.currentview.value == 2 ? false : true,
-                textAlign: TextAlign.center,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  fillColor: Colors.transparent,
-                  isDense: true,
-                  border: InputBorder.none,
-                  errorText: controller.displayNameValid.value
-                      ? null
-                      : L10n.of(context)!.badCharacters,
-                ),
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: AppTheme.white70,
+              controller.currentview.value == 2
+                  ? GlassContainer(
+                      customColor: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.5) : null,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextField(
+                          focusNode: controller.focusNodeUsername,
+                          readOnly: controller.currentview.value == 2 ? false : true,
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                            fillColor: Colors.transparent,
+                            isDense: true,
+                            border: InputBorder.none,
+                            errorText: controller.displayNameValid.value ? null : L10n.of(context)!.badCharacters,
+                          ),
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                color: AppTheme.white70,
+                              ),
+                          controller: controller.userNameController,
+                        ),
+                      ),
+                    )
+                  : TextField(
+                      focusNode: controller.focusNodeUsername,
+                      readOnly: controller.currentview.value == 2 ? false : true,
+                      textAlign: TextAlign.center,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                        fillColor: Colors.transparent,
+                        isDense: true,
+                        border: InputBorder.none,
+                        errorText: controller.displayNameValid.value ? null : L10n.of(context)!.badCharacters,
+                      ),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: AppTheme.white70,
+                          ),
+                      controller: controller.userNameController,
                     ),
-                controller: controller.userNameController,
-              ),
-              const SizedBox(height: AppTheme.cardPadding),
-              TextField(
-                focusNode: controller.focusNodeDisplayName,
-                readOnly: controller.currentview.value == 2 ? false : true,
-                textAlign: TextAlign.center,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                    fillColor: Colors.transparent,
-                    isDense: true,
-                    border: InputBorder.none,
-                    errorText: controller.displayNameValid.value
-                        ? null
-                        : L10n.of(context)!.coudntChangeUsername),
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall!
-                    .copyWith(color: AppTheme.white90),
-                controller: controller.displayNameController,
-              ),
-              TextField(
-                focusNode: controller.focusNodeBio,
-                readOnly: controller.currentview.value == 2 ? false : true,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                textAlign: TextAlign.center,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  fillColor: Colors.transparent,
-                  border: InputBorder.none,
-                  isDense: true,
-                ),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: AppTheme.white70),
-                controller: controller.bioController,
-              ),
+              const SizedBox(height: AppTheme.cardPadding - 4),
+              controller.currentview.value == 2
+                  ? GlassContainer(
+                      customColor: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.5) : null,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextField(
+                          focusNode: controller.focusNodeDisplayName,
+                          readOnly: controller.currentview.value == 2 ? false : true,
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                              fillColor: Colors.transparent,
+                              isDense: true,
+                              border: InputBorder.none,
+                              errorText: controller.displayNameValid.value ? null : L10n.of(context)!.coudntChangeUsername),
+                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: AppTheme.white90),
+                          controller: controller.displayNameController,
+                        ),
+                      ),
+                    )
+                  : TextField(
+                      focusNode: controller.focusNodeDisplayName,
+                      readOnly: controller.currentview.value == 2 ? false : true,
+                      textAlign: TextAlign.center,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                          fillColor: Colors.transparent,
+                          isDense: true,
+                          border: InputBorder.none,
+                          errorText: controller.displayNameValid.value ? null : L10n.of(context)!.coudntChangeUsername),
+                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: AppTheme.white90),
+                      controller: controller.displayNameController,
+                    ),
+              const SizedBox(height: 4),
+              controller.currentview.value == 2
+                  ? GlassContainer(
+                      customColor: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.5) : null,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextField(
+                          focusNode: controller.focusNodeBio,
+                          readOnly: controller.currentview.value == 2 ? false : true,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: const InputDecoration(
+                            fillColor: Colors.transparent,
+                            border: InputBorder.none,
+                            isDense: true,
+                          ),
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppTheme.white70),
+                          controller: controller.bioController,
+                        ),
+                      ),
+                    )
+                  : TextField(
+                      focusNode: controller.focusNodeBio,
+                      readOnly: controller.currentview.value == 2 ? false : true,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      textAlign: TextAlign.center,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: const InputDecoration(
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        isDense: true,
+                      ),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppTheme.white70),
+                      controller: controller.bioController,
+                    ),
               const SizedBox(height: AppTheme.elementSpacing / 2),
             ],
           ),

@@ -37,7 +37,7 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
           constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
         context: context,
-        margin: EdgeInsets.symmetric(horizontal: 0),
+        margin: const EdgeInsets.symmetric(horizontal: 0),
         extendBodyBehindAppBar: true,
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: bitnetAppBar(
@@ -46,10 +46,10 @@ class _MnemonicGenConfirm extends State<MnemonicGenConfirm> {
           onTap: () {
             widget.mnemonicController.changeWrittenDown();
           },
-          actions: [PopUpLangPickerWidget()],
+          actions: [const PopUpLangPickerWidget()],
         ),
         body: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             SizedBox(

@@ -50,8 +50,8 @@ class _LastTransactionsState extends State<LastTransactions> with SingleTickerPr
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  SingleChildScrollView(child: RecentTransactions()),
-                  SingleChildScrollView(child: RecentReplacements()),
+                  const SingleChildScrollView(child: RecentTransactions()),
+                  const SingleChildScrollView(child: RecentReplacements()),
                 ],
               ),
             ),

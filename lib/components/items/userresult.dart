@@ -12,7 +12,7 @@ class UserResult extends StatefulWidget {
   final dynamic onTap;
   final VoidCallback onDelete;
 
-  UserResult({
+  const UserResult({
     required this.userData,
     required this.onTap,
     required this.onDelete,
@@ -42,7 +42,7 @@ class _UserResultState extends State<UserResult> {
             children: [
               Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: AppTheme.elementSpacing,
                   ),
                   Avatar(
@@ -52,7 +52,7 @@ class _UserResultState extends State<UserResult> {
                     onTap: widget.onTap,
                     isNft: widget.userData.nft_profile_id.isNotEmpty
                   ),
-                  SizedBox(width: AppTheme.elementSpacing),
+                  const SizedBox(width: AppTheme.elementSpacing),
                   Container(
                     width: AppTheme.cardPadding * 5,
                     child: Column(
@@ -78,7 +78,7 @@ class _UserResultState extends State<UserResult> {
                 children: _loading
                     ? [
                         dotProgress(context),
-                        SizedBox(
+                        const SizedBox(
                           width: AppTheme.cardPadding,
                         )
                       ]

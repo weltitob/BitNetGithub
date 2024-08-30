@@ -1,7 +1,7 @@
-import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
-import 'package:flutter/material.dart';
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
+import 'package:buttons_tabbar/buttons_tabbar.dart';
+import 'package:flutter/material.dart';
 
 class BitNetTabBar extends StatelessWidget {
   final TabController? tabController;
@@ -40,15 +40,10 @@ class BitNetTabBar extends StatelessWidget {
     Key? key,
     this.tabController,
     required this.tabs,
-    this.buttonMargin = const EdgeInsets.only(
-        left: AppTheme
-            .elementSpacing), // Default value from AppTheme.elementSpacing
+    this.buttonMargin = const EdgeInsets.only(left: AppTheme.elementSpacing), // Default value from AppTheme.elementSpacing
     this.contentPadding = const EdgeInsets.symmetric(
-      vertical:
-      AppTheme.elementSpacing *
-          0.5,
-      horizontal:
-      AppTheme.elementSpacing / 4,
+      vertical: AppTheme.elementSpacing * 0.5,
+      horizontal: AppTheme.elementSpacing / 4,
     ),
     this.borderWidth = AppTheme.tabbarBorderWidth,
     this.unselectedBorderColor = Colors.transparent,
@@ -56,8 +51,7 @@ class BitNetTabBar extends StatelessWidget {
     this.physics = const ClampingScrollPhysics(),
     this.unselectedDecoration = const BoxDecoration(
       color: Colors.transparent,
-      borderRadius: BorderRadius.all(Radius.circular(AppTheme
-          .cardPaddingSmall)),
+      borderRadius: BorderRadius.all(Radius.circular(AppTheme.cardPaddingSmall)),
     ),
   }) : super(key: key);
 

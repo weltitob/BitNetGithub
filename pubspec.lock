@@ -1721,7 +1721,7 @@ packages:
     source: hosted
     version: "1.1.0"
   html:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: html
       sha256: "3a7812d5bcd2894edf53dfaf8cd640876cf6cef50a8f238745c8b8120ea74d3a"
@@ -2170,7 +2170,7 @@ packages:
     source: hosted
     version: "2.0.0"
   mime:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mime
       sha256: "2e123074287cc9fd6c09de8336dae606d1ddb88d9ac47358826db698c176a1f2"
@@ -3431,6 +3431,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+  web_smooth_scroll:
+    dependency: "direct main"
+    description:
+      name: web_smooth_scroll
+      sha256: "2a4adc22e42e4045f02ecc1598885bf46adbe7ed9b05aab0a0f5df9ed071e9b6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   web_socket_channel:
     dependency: "direct main"
     description:

@@ -9,10 +9,9 @@ import 'package:bitnet/components/resultlist/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class ChooseRestoreScreen extends StatefulWidget {
-  ChooseRestoreScreen({
+  const ChooseRestoreScreen({
     Key? key,
   }) : super(key: key);
 
@@ -39,17 +38,17 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
 
       return bitnetScaffold(
         margin: isSuperSmallScreen
-            ? EdgeInsets.symmetric(horizontal: 0)
+            ? const EdgeInsets.symmetric(horizontal: 0)
             : EdgeInsets.symmetric(horizontal: (screenWidth / 2 - 250.w) < 0 ? 0 :screenWidth / 2 - 250.w),
         extendBodyBehindAppBar: true,
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: bitnetAppBar(
           text: L10n.of(context)!.restoreAccount,
           context: context,
           onTap: () {
             Navigator.pop(context);
           },
-          actions: [PopUpLangPickerWidget()],
+          actions: [const PopUpLangPickerWidget()],
         ),
         body: ListView(
           children: [
@@ -65,7 +64,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding,
             ),
             Row(
@@ -112,7 +111,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             UsersList(
               showError: showError,
             ),
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding,
             ),
           ],

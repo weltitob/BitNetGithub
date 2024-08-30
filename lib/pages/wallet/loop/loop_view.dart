@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/amountwidget.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
@@ -89,7 +88,7 @@ class _LoopScreenState extends State<LoopScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: AppTheme.cardPadding * 3.5),
+                  const SizedBox(height: AppTheme.cardPadding * 3.5),
                   Container(
                     height: AppTheme.cardPadding * (7.5 * 2 + 1),
                     child: Stack(
@@ -98,14 +97,14 @@ class _LoopScreenState extends State<LoopScreen> {
                           children: [
                             Container(
                                 height: AppTheme.cardPadding * 7.5,
-                                margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                                margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                                 child: Obx(()=> BalanceCardBtc(balance: double.parse(walletController.predictedBtcBalance.value).toStringAsFixed(8),defaultUnit: BitcoinUnits.SAT, textColor: double.parse(walletController.onchainBalance.confirmedBalance) < double.parse(walletController.predictedBtcBalance.value) ? AppTheme.successColor :double.parse(walletController.onchainBalance.confirmedBalance) > double.parse(walletController.predictedBtcBalance.value) ? AppTheme.errorColor : null))),
                             Container(
                               height: AppTheme.cardPadding * 1,
                             ),
                             Container(
                                 height: AppTheme.cardPadding * 7.5,
-                                margin: EdgeInsets.symmetric(
+                                margin: const EdgeInsets.symmetric(
                                   horizontal: AppTheme.cardPadding,
                                 ),
                                 child: Obx((){
@@ -117,7 +116,7 @@ class _LoopScreenState extends State<LoopScreen> {
                           alignment: Alignment.center,
                           child: Obx(() => AnimatedRotation(
                             turns: loopGetController.animate.value ? 1 / 2 : 3 / 2,
-                            duration: Duration(milliseconds: 400),
+                            duration: const Duration(milliseconds: 400),
                             child: RotatedBox(
                               quarterTurns: loopGetController.animate.value ? 1 : 3,
                               child: RoundedButtonWidget(
@@ -138,9 +137,9 @@ class _LoopScreenState extends State<LoopScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: AppTheme.cardPadding * 1),
+                  const SizedBox(height: AppTheme.cardPadding * 1),
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                    margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                     child: Obx(
                           () => AmountWidget(
                         enabled: () => true,
@@ -165,7 +164,7 @@ class _LoopScreenState extends State<LoopScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: AppTheme.cardPadding * 5.5),
+                  const SizedBox(height: AppTheme.cardPadding * 5.5),
                 ],
               ),
             ),

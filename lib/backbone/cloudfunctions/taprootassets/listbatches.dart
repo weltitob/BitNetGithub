@@ -6,7 +6,6 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/tapd/batch.dart';
 import 'package:bitnet/models/tapd/fetchbatchresponse.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 

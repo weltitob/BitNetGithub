@@ -24,7 +24,7 @@ class _CurrentBatchesScreenState extends State<CurrentBatchesScreen> {
               Navigator.of(context).pop();
             }),
         body: Container(
-          margin: EdgeInsets.only(top: AppTheme.cardPadding * 4),
+          margin: const EdgeInsets.only(top: AppTheme.cardPadding * 4),
         ),
         context: context);
   }

@@ -107,7 +107,7 @@ List<String> findLongestWords(List<String> words) {
     return Container(
       width: widget.width, // Use the custom or default width
       height: widget.height, // Use the custom or default height
-      margin: EdgeInsets.only(top: AppTheme.elementSpacing),
+      margin: const EdgeInsets.only(top: AppTheme.elementSpacing),
       child: ClipRRect(
         borderRadius: AppTheme.cardRadiusMid,
         child: BackdropFilter(

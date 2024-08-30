@@ -51,7 +51,7 @@ class SettingsButton extends StatelessWidget {
                             topLeft: AppTheme.cornerRadiusBig,
                             topRight: AppTheme.cornerRadiusBig,
                           ),
-                          child: Settings(),
+                          child: const Settings(),
                         ),
                       ),
                     );

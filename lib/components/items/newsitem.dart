@@ -6,7 +6,7 @@ import 'package:bitnet/backbone/helper/theme/theme.dart';
 class NewsTile extends StatelessWidget {
   final String imgUrl, title, desc, content, posturl, author, publishedAt;
 
-  NewsTile({
+  const NewsTile({
     required this.imgUrl,
     required this.desc,
     required this.title,
@@ -26,7 +26,7 @@ class NewsTile extends StatelessWidget {
         child: Container(
           height: AppTheme.cardPadding * 4,
           width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
+          margin: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing * 0.5),
           child: Row(
             children: [
               NewsPicture(imgUrl: imgUrl,),

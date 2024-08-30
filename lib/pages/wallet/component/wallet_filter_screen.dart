@@ -63,7 +63,7 @@ class WalletFilterScreen extends GetWidget<WalletFilterController> {
             child: Column(
               children: [
 
-                SizedBox(height: AppTheme.cardPadding),
+                const SizedBox(height: AppTheme.cardPadding),
                 if(!hideFilters) BitNetFilterPillList(
                   headingText: L10n.of(context)!.filterOptions,
                   listDataText: [

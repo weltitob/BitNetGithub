@@ -29,11 +29,11 @@ class _RecentReplacementsState extends State<RecentReplacements> {
         // ),
         const SizedBox(height: AppTheme.cardPadding),
           Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'TXID',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -56,7 +56,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
               // SizedBox(width: 0),
               Text(
                 L10n.of(context)!.status,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -110,7 +110,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          SingleTransactionScreen()),
+                                          const SingleTransactionScreen()),
                                 );
                               },
                               text: '${controller.transactionReplacements[index].txid!.substring(0, 5)}...${controller.transactionReplacements[index].txid!.substring(controller.transactionReplacements[index].txid!.length - 5)}' ??
@@ -145,7 +145,7 @@ class _RecentReplacementsState extends State<RecentReplacements> {
                                               color: Colors.green),
                                           child: Text('${L10n.of(context)!.mined}'),
                                         )
-                                      : SizedBox.shrink(),
+                                      : const SizedBox.shrink(),
                                 ],
                               ),
                             );

@@ -2,9 +2,7 @@ import 'package:bitnet/backbone/helper/deepmapcast.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'dart:async';
 import 'dart:core';
-import 'dart:developer';
 
 Future<String?> startEcsTask(String userId) async {
   final stopwatch = Stopwatch()..start(); // Start timing
@@ -25,7 +23,7 @@ Future<String?> startEcsTask(String userId) async {
     final callable = functions.httpsCallable(
       'start_ecs_task',
       options: HttpsCallableOptions(
-        timeout: Duration(minutes: 10),  // Increase the timeout duration
+        timeout: const Duration(minutes: 10),  // Increase the timeout duration
         limitedUseAppCheckToken: true,
       ),
     );

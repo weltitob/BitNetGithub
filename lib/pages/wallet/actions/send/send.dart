@@ -13,6 +13,6 @@ class Send extends GetWidget<SendsController> {
     controller.processParameters(context, null);
 
     return Obx(() =>
-        controller.hasReceiver.value ? SendBTCScreen() : SearchReceiver());
+        controller.hasReceiver.value ? const SendBTCScreen() : const SearchReceiver());
   }
 }

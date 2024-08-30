@@ -16,7 +16,7 @@ import 'package:go_router/go_router.dart';
 
 class CreateAccountView extends StatefulWidget {
   final CreateAccountController controller;
-  CreateAccountView({required this.controller});
+  const CreateAccountView({required this.controller});
 
   @override
   State<CreateAccountView> createState() => _CreateAccountViewState();
@@ -40,7 +40,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
             constraints.maxWidth < AppTheme.isSuperSmallScreen;
         return bitnetScaffold(
           margin: 
-              EdgeInsets.symmetric(horizontal: 0)
+              const EdgeInsets.symmetric(horizontal: 0)
              ,
           extendBodyBehindAppBar: true,
           context: context,
@@ -53,7 +53,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   context.go('/authhome');
                 }
               },
-              actions: [PopUpLangPickerWidget()]),
+              actions: [const PopUpLangPickerWidget()]),
           body: Form(
             key: widget.controller.form,
             child: ListView(
@@ -61,7 +61,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   left: AppTheme.cardPadding * 2.ws,
                   right: AppTheme.cardPadding * 2.ws,
                   top: AppTheme.cardPadding * 5.h),
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               children: [
                 SizedBox(
                   height: AppTheme.cardPadding * 2.h,
@@ -81,7 +81,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    PopUpCountryPickerWidget(),
+                    const PopUpCountryPickerWidget(),
                     FormTextField(
                       width: AppTheme.cardPadding * 14.ws,
                       hintText: L10n.of(context)!.username,
@@ -127,7 +127,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                             ),
                           ),
                     Container(
-                      margin: EdgeInsets.only(top: AppTheme.cardPadding * 2),
+                      margin: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
                       child: Text(
                         textAlign: TextAlign.center,
                         L10n.of(context)!.alreadyHaveAccount,

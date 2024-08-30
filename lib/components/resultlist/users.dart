@@ -42,7 +42,7 @@ class _UsersListState extends State<UsersList>
 
   void updatevisibility() async {
     await _searchforfilesComposition;
-    var timer = Timer(Duration(milliseconds: 50), () {
+    var timer = Timer(const Duration(milliseconds: 50), () {
       setState(() {
         _visible = true;
       });
@@ -109,7 +109,7 @@ class _UsersListState extends State<UsersList>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: AppTheme.cardPadding * 0.75),
+          padding: const EdgeInsets.only(top: AppTheme.cardPadding * 0.75),
           child: Container(
             height: AppTheme.cardPadding * 8,
             child: FutureBuilder<List<PrivateData>>(
@@ -161,7 +161,7 @@ class _UsersListState extends State<UsersList>
                                   tween:
                                       Tween<double>(begin: _scale, end: _scale),
                                   curve: Curves.ease,
-                                  duration: Duration(milliseconds: 350),
+                                  duration: const Duration(milliseconds: 350),
                                   builder: (context, value, child) {
                                     return Transform.scale(
                                       scale: value,
@@ -187,7 +187,7 @@ class _UsersListState extends State<UsersList>
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: AppTheme.cardPadding,
                         ),
                         Center(
@@ -223,7 +223,7 @@ class _UsersListState extends State<UsersList>
                     fit: BoxFit.fitHeight,
                     child: AnimatedOpacity(
                       opacity: _visible ? 1.0 : 0.0,
-                      duration: Duration(milliseconds: 1000),
+                      duration: const Duration(milliseconds: 1000),
                       child: Lottie(composition: composition),
                     ),
                   );
@@ -235,11 +235,11 @@ class _UsersListState extends State<UsersList>
               },
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: AppTheme.elementSpacing,
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+            margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
             child: Text(
               "It appears that you haven't added any users to your device yet.",
               textAlign: TextAlign.center,

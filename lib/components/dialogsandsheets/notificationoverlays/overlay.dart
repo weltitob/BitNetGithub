@@ -7,10 +7,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 
-
-void showOverlayInternet(
-    BuildContext context, String? message,
-    {Color color = AppTheme.successColor}) async {
+void showOverlayInternet(BuildContext context, String? message, {Color color = AppTheme.successColor}) async {
   // Trigger a simple vibration
   if (await Vibration.hasVibrator() ?? false) {
     Vibration.vibrate();
@@ -23,7 +20,7 @@ void showOverlayInternet(
       right: 0,
       child: SlideTransition(
         position: Tween<Offset>(
-          begin: Offset(0, -1),
+          begin: const Offset(0, -1),
           end: Offset.zero,
         ).animate(
           CurvedAnimation(
@@ -38,10 +35,10 @@ void showOverlayInternet(
           elevation: 10.0,
           child: Container(
             height: 100, // Set the height to 200
-            padding: EdgeInsets.all(AppTheme.elementSpacing),
+            padding: const EdgeInsets.all(AppTheme.elementSpacing),
             decoration: BoxDecoration(
               color: color ?? AppTheme.successColor,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(AppTheme.borderRadiusBig),
                 bottomRight: Radius.circular(AppTheme.borderRadiusBig),
               ),
@@ -49,9 +46,7 @@ void showOverlayInternet(
             child: Center(
               child: Text(
                 message ?? 'Transaction received!',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16), // Optional: Adjust font size as needed
+                style: const TextStyle(color: Colors.white, fontSize: 16), // Optional: Adjust font size as needed
               ),
             ),
           ),
@@ -63,20 +58,19 @@ void showOverlayInternet(
   // Add the overlay entry to the overlay
   Overlay.of(context).insert(overlayEntry);
 
-  
-  final timer = Timer.periodic(Duration(seconds: 2), (timer) async {
+  final timer = Timer.periodic(const Duration(seconds: 2), (timer) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult != ConnectivityResult.none) {
       print('inside connectivity overlay');
       // If there is an internet connection, remove the overlay and cancel the timer
       overlayEntry.remove();
 
-       timer.cancel();
+      timer.cancel();
     }
   });
 }
-void showOverlay(BuildContext context, String? message,
-    {Color color = AppTheme.successColor}) async {
+
+void showOverlay(BuildContext context, String? message, {Color color = AppTheme.successColor}) async {
   // Trigger a simple vibration
   if (await Vibration.hasVibrator() ?? false) {
     Vibration.vibrate();
@@ -89,7 +83,7 @@ void showOverlay(BuildContext context, String? message,
       right: 0,
       child: SlideTransition(
         position: Tween<Offset>(
-          begin: Offset(0, -1),
+          begin: const Offset(0, -1),
           end: Offset.zero,
         ).animate(
           CurvedAnimation(
@@ -101,13 +95,15 @@ void showOverlay(BuildContext context, String? message,
           ),
         ),
         child: Material(
+          shadowColor: Colors.transparent,
+          color: Colors.transparent,
           elevation: 10.0,
           child: Container(
             height: 100, // Set the height to 200
-            padding: EdgeInsets.all(AppTheme.elementSpacing),
+            padding: const EdgeInsets.all(AppTheme.elementSpacing),
             decoration: BoxDecoration(
               color: color ?? AppTheme.successColor,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(AppTheme.borderRadiusBig),
                 bottomRight: Radius.circular(AppTheme.borderRadiusBig),
               ),
@@ -115,9 +111,7 @@ void showOverlay(BuildContext context, String? message,
             child: Center(
               child: Text(
                 message ?? 'Transaction received!',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16), // Optional: Adjust font size as needed
+                style: const TextStyle(color: Colors.white, fontSize: 16), // Optional: Adjust font size as needed
               ),
             ),
           ),
@@ -130,13 +124,12 @@ void showOverlay(BuildContext context, String? message,
   Overlay.of(context).insert(overlayEntry);
 
   // Remove the overlay entry after a duration
-  Future.delayed(Duration(seconds: 3), () {
+  Future.delayed(const Duration(seconds: 3), () {
     overlayEntry.remove();
   });
 }
 
-void showOverlayTransaction(
-    BuildContext context, String? message, TransactionItemData itemData) async {
+void showOverlayTransaction(BuildContext context, String? message, TransactionItemData itemData) async {
   // Trigger a simple vibration
   if (await Vibration.hasVibrator() ?? false) {
     Vibration.vibrate();
@@ -149,7 +142,7 @@ void showOverlayTransaction(
       right: 0,
       child: SlideTransition(
         position: Tween<Offset>(
-          begin: Offset(0, -1),
+          begin: const Offset(0, -1),
           end: Offset.zero,
         ).animate(
           CurvedAnimation(
@@ -164,7 +157,7 @@ void showOverlayTransaction(
           elevation: 10.0,
           child: Container(
             height: AppTheme.cardPadding * 8, // Set the height to 200
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppTheme.successColor,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(AppTheme.borderRadiusBig),
@@ -175,27 +168,25 @@ void showOverlayTransaction(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: AppTheme.cardPadding),
+                const SizedBox(height: AppTheme.cardPadding),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.check_circle_outline_rounded,
                       size: AppTheme.cardPadding * 1.25,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: AppTheme.elementSpacing / 2,
                     ),
                     Text(
                       message ?? 'Transaction received!',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge, // Optional: Adjust font size as needed
+                      style: Theme.of(context).textTheme.titleLarge, // Optional: Adjust font size as needed
                     ),
                   ],
                 ),
-                SizedBox(height: AppTheme.elementSpacing),
+                const SizedBox(height: AppTheme.elementSpacing),
                 TransactionItem(
                   data: itemData,
                   context: context,
@@ -212,7 +203,7 @@ void showOverlayTransaction(
   Overlay.of(context).insert(overlayEntry);
 
   // Remove the overlay entry after a duration
-  Future.delayed(Duration(seconds: 3), () {
+  Future.delayed(const Duration(seconds: 3), () {
     overlayEntry.remove();
   });
 }

@@ -4,10 +4,8 @@ import 'package:bitnet/backbone/futures/cryptochartline.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/components/buttons/timechooserbutton.dart';
-import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/items/crypto_item_controller.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
@@ -181,7 +179,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       activationMode: ActivationMode.singleTap,
       lineWidth: 2,
       lineType: TrackballLineType.horizontal,
-      tooltipSettings: InteractiveTooltip(enable: false),
+      tooltipSettings: const InteractiveTooltip(enable: false),
       markerSettings: const TrackballMarkerSettings(
           color: Colors.white,
           borderColor: Colors.white,
@@ -407,7 +405,7 @@ class _CustomWidgetState extends State<CustomWidget>
   void blinkAnimation() {
     if (mounted) {
       _controller = AnimationController(
-          vsync: this, duration: Duration(milliseconds: 1000));
+          vsync: this, duration: const Duration(milliseconds: 1000));
       _animation =
           ColorTween(begin: initAnimationColor, end: Colors.transparent)
               .animate(_controller)

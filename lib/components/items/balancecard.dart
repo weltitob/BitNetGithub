@@ -102,7 +102,7 @@ class FiatCard extends StatelessWidget {
           ),
 
           //whatever currency the user uses
-          PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
+          const PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
 
           //unten rechts ein unlock button ==> you need to buy bitcoin in the app to unlock this card ==> bitnetbototmsheet
         ],
@@ -143,7 +143,7 @@ class BalanceCardLightning extends StatelessWidget {
               iconDataUnit: getCurrencyIcon(unitModel.bitcoinUnitAsString),
             ),
         
-          PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
+          const PaymentNetworkPicture(imageUrl: "assets/images/lightning.png"),
 
           //unten rechts ein unlock button ==> you need to buy bitcoin in the app to unlock this card ==> bitnetbototmsheet
           Positioned(
@@ -176,12 +176,12 @@ class BalanceCardLightning extends StatelessWidget {
                     body: Stack(
                       children: [
                         Container(
-                          child: Column(
+                          child: const Column(
                             children: [
                               SizedBox(height: AppTheme.cardPadding * 4,),
                               Icon(FontAwesomeIcons.lock, size: AppTheme.cardPadding * 4,),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
+                                padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
                                 child: Text(
                                     "You need to buy bitcoin trough our app to unlock this card. Alternatively you can receive some Onchain Bitcoin and unlock it for some additional transaction fees.",
                                 textAlign: TextAlign.center,
@@ -213,7 +213,7 @@ class BalanceCardBtc extends StatelessWidget {
   final String? balance;
   final Color? textColor;
   final BitcoinUnits? defaultUnit;
-  BalanceCardBtc({Key? key, this.balance, this.textColor, this.defaultUnit}) : super(key: key);
+  const BalanceCardBtc({Key? key, this.balance, this.textColor, this.defaultUnit}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +271,7 @@ class BalanceCardBtc extends StatelessWidget {
           //     cardname: 'incoming Balance',
           //   ),
           // ),
-          PaymentNetworkPicture(imageUrl: 'assets/images/bitcoin.png'),
+          const PaymentNetworkPicture(imageUrl: 'assets/images/bitcoin.png'),
         ],
       ),
     );
@@ -323,7 +323,7 @@ class CardBackgroundLightning extends StatelessWidget {
               TopLeftGradient(),
               BottomRightGradient(),
               CustomPaint(
-                size: Size(double.infinity,
+                size: const Size(double.infinity,
                     double.infinity), // nimmt die Größe des Containers an
                 painter: WavyGleamPainter(),
               ),
@@ -453,7 +453,7 @@ class CardBackgroundOnchain extends StatelessWidget {
               TopLeftGradient(),
               BottomRightGradient(),
               CustomPaint(
-                size: Size(double.infinity,
+                size: const Size(double.infinity,
                     double.infinity), // nimmt die Größe des Containers an
                 painter: WavyGleamPainter(),
               ),
@@ -468,7 +468,7 @@ class CardBackgroundOnchain extends StatelessWidget {
 class PaymentNetworkPicture extends StatelessWidget {
   final String imageUrl;
 
-  PaymentNetworkPicture({required this.imageUrl});
+  const PaymentNetworkPicture({required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -531,8 +531,8 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
           child: coin.coin == true
               ? Row(
                   children: [
-                    Text("incoming:"),
-                    SizedBox(
+                    const Text("incoming:"),
+                    const SizedBox(
                       width: AppTheme.elementSpacing / 2,
                     ),
                     if(controller.hideBalance.value)
@@ -554,8 +554,8 @@ class UnconfirmedTextWidget extends GetWidget<WalletsController> {
                 )
               : Row(
                   children: [
-                    Text("incoming:"),
-                    SizedBox(
+                    const Text("incoming:"),
+                    const SizedBox(
                       width: AppTheme.elementSpacing / 2,
                     ),
                     controller.hideBalance.value
@@ -625,7 +625,7 @@ class BalanceTextWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.elementSpacing * 0.5,
               ),
               if (coin.coin ?? true) ...[

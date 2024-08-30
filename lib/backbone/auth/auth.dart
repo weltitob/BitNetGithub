@@ -5,8 +5,6 @@ import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';

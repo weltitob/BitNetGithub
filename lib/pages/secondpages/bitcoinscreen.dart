@@ -47,7 +47,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
             scrollDirection: Axis.vertical,
             controller: controller.controller,
             children: [
-              SingleChildScrollView(
+              const SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 child: Column(
                   children: [
@@ -99,14 +99,14 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 2,
               ),
               InformationWidget(
                 title: L10n.of(context)!.about,
                 description: L10n.of(context)!.bitcoinDescription,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 2,
               ),
               RoundedContainer(
@@ -116,7 +116,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                     L10n.of(context)!.quickLinks,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: AppTheme.cardPadding,
                   ),
                   Row(
@@ -154,24 +154,24 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: AppTheme.cardPadding * 1,
                   ),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: AppTheme.cardPadding * 2,
                   ),
                 ],
               )),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 2,
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: AppTheme.cardPadding * 1,
           ),
           BottomButtons(
@@ -183,7 +183,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
               BitNetBottomSheet(
                   height: MediaQuery.of(context).size.height * 0.85,
                   context: context,
-                  child: PurchaseSheet());
+                  child: const PurchaseSheet());
             },
             onRightButtonTap: () {
                             Get.delete<SellSheetController>();
@@ -192,7 +192,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
               BitNetBottomSheet(
                   height: MediaQuery.of(context).size.height * 0.85,
                   context: context,
-                  child: SellSheet());
+                  child: const SellSheet());
             },
           ),
         ],
@@ -220,7 +220,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
         children: [
           Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 4,
               ),
               AmountWidget(
@@ -232,10 +232,10 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                   focusNode: controller.nodeBuy,
                   autoConvert: true,
                   context: context),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 2,
               ),
-              SizedBox(height: AppTheme.cardPadding),
+              const SizedBox(height: AppTheme.cardPadding),
 
             ],
           ),
@@ -249,7 +249,7 @@ class PurchaseSheet extends GetWidget<PurchaseSheetController> {
                   controller.setButtonState(ButtonState.loading);
               
                   // Wait for the UI to update
-                  await Future.delayed(Duration(milliseconds: 100));
+                  await Future.delayed(const Duration(milliseconds: 100));
               
                   try {
                     final String clientSecret = await requestClientSecret("100000", "usd");
@@ -279,7 +279,7 @@ Future<void> _initializePaymentSheet(String clientSecret, BuildContext context) 
       paymentMethodOrder: [
         'apple_pay', 'google_pay', 'paypal', 'klarna', 'card',
       ],
-      googlePay: PaymentSheetGooglePay(
+      googlePay: const PaymentSheetGooglePay(
         merchantCountryCode: 'US',
         currencyCode: 'usd',
         amount: '100000',
@@ -321,7 +321,7 @@ class SellSheet extends GetWidget<SellSheetController> {
         children: [
           Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 4,
               ),
               AmountWidget(
@@ -333,10 +333,10 @@ class SellSheet extends GetWidget<SellSheetController> {
                   focusNode: controller.nodeSell,
                   autoConvert: true,
                   context: context),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 2,
               ),
-              SizedBox(height: AppTheme.cardPadding),
+              const SizedBox(height: AppTheme.cardPadding),
             ],
           ),
           Obx(() {

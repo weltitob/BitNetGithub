@@ -79,7 +79,7 @@ class _MempoolHomeState extends State<MempoolHome> {
       controller.isLoading.value = false;
       _controller.animateTo(
         controller.scrollValue.value.w + (140.w * controller.indexBlock.value).w,
-        duration: Duration(
+        duration: const Duration(
           milliseconds: 500,
         ),
         curve: Curves.easeInOut,
@@ -102,14 +102,14 @@ class _MempoolHomeState extends State<MempoolHome> {
     getDataBlockHeightSearch();
     if (controller.blockHeight == null)
       Future.delayed(
-        Duration(seconds: 3),
+        const Duration(seconds: 3),
         () {
           // Scrollable.ensureVisible(key1.currentContext!,
           //     curve: AppTheme.animationCurve, );
 
           _controller.animateTo(
             controller.scrollValue.value.w,
-            duration: Duration(
+            duration: const Duration(
               milliseconds: 500,
             ),
             curve: Curves.easeInOut,
@@ -146,7 +146,7 @@ class _MempoolHomeState extends State<MempoolHome> {
           extendBodyBehindAppBar: true,
           context: context,
           appBar: widget.isFromHome == true
-              ? PreferredSize(
+              ? const PreferredSize(
                   preferredSize: Size(0, 0),
                   child: SizedBox(),
                 )
@@ -165,7 +165,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                 children: [
                   controller.socketLoading.isTrue
                       ? Padding(
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                             top: AppTheme.cardPadding * 15,
                           ),
                           child: Center(
@@ -289,7 +289,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                         },
                                       ),
                                       Container(
-                                        margin: EdgeInsets.symmetric(
+                                        margin: const EdgeInsets.symmetric(
                                           horizontal: AppTheme.elementSpacing,
                                         ),
                                         decoration: BoxDecoration(
@@ -321,7 +321,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                           // itemScrollController:
                                                           //     itemScrollController,
                                                           scrollDirection: Axis.horizontal,
-                                                          physics: BouncingScrollPhysics(),
+                                                          physics: const BouncingScrollPhysics(),
                                                           itemCount: controller.bitcoinData.length,
                                                           itemBuilder: (context, index) {
                                                             double size = controller.bitcoinData[index].size! / 1000000;
@@ -412,7 +412,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                             ;
                                             await controller.txDetailsF(controller.bitcoinData.first.id!, 0);
                                             _controller.animateTo(controller.scrollValue.value.w,
-                                                duration: Duration(seconds: 2), curve: Curves.easeInOut);
+                                                duration: const Duration(seconds: 2), curve: Curves.easeInOut);
                                             controller.blockHeight == null;
                                           },
                                           child: Opacity(
@@ -423,7 +423,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                 color: AppTheme.white60,
                                                 shape: BoxShape.circle,
                                               ),
-                                              child: Icon(
+                                              child: const Icon(
                                                 Icons.arrow_back,
                                                 color: AppTheme.colorBackground,
                                               ),
@@ -431,7 +431,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                           ),
                                         ),
                                       )
-                                    : SizedBox(),
+                                    : const SizedBox(),
                               ],
                             ),
                             Obx(
@@ -502,26 +502,26 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                   ),
                                                 ),
                                                 Container(
-                                                  margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                                                  margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                                                   child: Column(
                                                     children: [
                                                       SizedBox(
                                                         height: AppTheme.cardPadding.h,
                                                       ),
                                                       feeDistributionUnaccepted(),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: AppTheme.elementSpacing,
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: AppTheme.elementSpacing,
                                                       ),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                         children: [
-                                                          controller.txDetailsConfirmed == null ? SizedBox() : blockSizeUnaccepted()
+                                                          controller.txDetailsConfirmed == null ? const SizedBox() : blockSizeUnaccepted()
                                                         ],
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: AppTheme.cardPadding * 3,
                                                       ),
                                                     ],
@@ -575,7 +575,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                           : AppTheme.white60,
                                                                       size: AppTheme.elementSpacing * 1.5,
                                                                     ),
-                                                                    SizedBox(
+                                                                    const SizedBox(
                                                                       width: AppTheme.elementSpacing / 2,
                                                                     ),
                                                                     Text(
@@ -589,7 +589,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   ],
                                                                 ),
                                                               ),
-                                                              SizedBox(
+                                                              const SizedBox(
                                                                 width: AppTheme.elementSpacing / 2,
                                                               ),
                                                               IconButton(
@@ -640,7 +640,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                               ),
                                                             ),
                                                             Container(
-                                                              margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                                                              margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                                                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                                                 // SizedBox(
                                                                 //   height: AppTheme
@@ -648,7 +648,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                 //       .h,
                                                                 // ),
                                                                 // Text("   Your Transactions:", style: Theme.of(context).textTheme.titleMedium,),
-                                                                SizedBox(
+                                                                const SizedBox(
                                                                   height: AppTheme.elementSpacing,
                                                                 ),
                                                                 ...onchainTransactions.map(
@@ -686,7 +686,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                 //       receiver: "dihsdisd",
                                                                 //     )),
                                                                 BitNetListTile(
-                                                                  leading: Icon(Icons.timelapse),
+                                                                  leading: const Icon(Icons.timelapse),
                                                                   text: L10n.of(context)!.minedAt,
                                                                   trailing: Container(
                                                                     child: Column(
@@ -705,7 +705,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   ),
                                                                 ),
                                                                 BitNetListTile(
-                                                                  leading: Icon(FontAwesomeIcons.truckPickup),
+                                                                  leading: const Icon(FontAwesomeIcons.truckPickup),
                                                                   text: L10n.of(context)!.mined,
                                                                   trailing: Container(
                                                                     child: Column(
@@ -730,7 +730,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   ),
                                                                 ),
                                                                 BitNetListTile(
-                                                                  leading: Icon(FontAwesomeIcons.bitcoin),
+                                                                  leading: const Icon(FontAwesomeIcons.bitcoin),
                                                                   text: L10n.of(context)!.minerRewardAndFees,
                                                                   trailing: Container(
                                                                     child: Column(
@@ -759,10 +759,10 @@ class _MempoolHomeState extends State<MempoolHome> {
                                                                   ),
                                                                 ),
                                                                 feeDistributionAccepted(),
-                                                                SizedBox(
+                                                                const SizedBox(
                                                                   height: AppTheme.elementSpacing,
                                                                 ),
-                                                                SizedBox(height: AppTheme.cardPadding),
+                                                                const SizedBox(height: AppTheme.cardPadding),
                                                                 Row(
                                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                                   children: [
@@ -815,7 +815,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                   height: AppTheme.cardPadding,
                 ),
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                   child: Obx(() {
                     return controller.transactionLoading.isTrue
                         ? Center(child: dotProgress(context))
@@ -830,7 +830,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       decoration: BoxDecoration(
                                         borderRadius: AppTheme.cardRadiusSmall,
                                       ),
-                                      padding: EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                           horizontal: AppTheme.elementSpacing * 1, vertical: AppTheme.elementSpacing / 3),
                                       child: Text(
                                         L10n.of(context)!.low,
@@ -838,7 +838,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
                                   Text(
@@ -859,7 +859,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       decoration: BoxDecoration(
                                         borderRadius: AppTheme.cardRadiusSmall,
                                       ),
-                                      padding: EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                           horizontal: AppTheme.elementSpacing * 1, vertical: AppTheme.elementSpacing / 3),
                                       child: Text(
                                         L10n.of(context)!.medium,
@@ -867,7 +867,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
                                   Text(
@@ -885,7 +885,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                 children: [
                                   GlassContainer(
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                           horizontal: AppTheme.elementSpacing * 1, vertical: AppTheme.elementSpacing / 3),
                                       child: Text(
                                         L10n.of(context)!.high,
@@ -893,7 +893,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: AppTheme.elementSpacing / 2,
                                   ),
                                   Text('\$ ${controller.dollarConversion(num.parse(controller.highPriority.value)).toStringAsFixed(2)}',
@@ -915,7 +915,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                 SizedBox(
                   height: AppTheme.cardPadding.h * 1.75,
                 ),
-                LastTransactions(),
+                const LastTransactions(),
 
                 //recentReplacements(),
                 //recentTransactions(),
@@ -935,7 +935,7 @@ class _MempoolHomeState extends State<MempoolHome> {
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
-      SizedBox(
+      const SizedBox(
         height: AppTheme.elementSpacing,
       ),
       Obx(() {
@@ -975,7 +975,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                                     controller.da!.difficultyChange!.isNegative ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
                                     color: controller.da!.difficultyChange!.isNegative ? AppTheme.errorColor : AppTheme.successColor,
                                     size: AppTheme.cardPadding * 1.25),
-                                SizedBox(
+                                const SizedBox(
                                   width: AppTheme.elementSpacing / 2,
                                 ),
                                 Text(
@@ -1004,7 +1004,7 @@ class _MempoolHomeState extends State<MempoolHome> {
               L10n.of(context)!.health,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            SizedBox(
+            const SizedBox(
               width: AppTheme.elementSpacing / 2,
             ),
             Icon(
@@ -1014,7 +1014,7 @@ class _MempoolHomeState extends State<MempoolHome> {
             )
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.cardPadding * 0.75,
         ),
         Icon(
@@ -1026,7 +1026,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                   : AppTheme.errorColor,
           size: AppTheme.cardPadding * 2.5,
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.elementSpacing * 1.25,
         ),
         Row(
@@ -1061,7 +1061,7 @@ class _MempoolHomeState extends State<MempoolHome> {
               L10n.of(context)!.blockSize,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            SizedBox(
+            const SizedBox(
               width: AppTheme.elementSpacing / 2,
             ),
             Icon(
@@ -1071,7 +1071,7 @@ class _MempoolHomeState extends State<MempoolHome> {
             )
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.cardPadding * 0.5,
         ),
         Stack(
@@ -1112,7 +1112,7 @@ class _MempoolHomeState extends State<MempoolHome> {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.elementSpacing * 0.75,
         ),
         Row(
@@ -1152,7 +1152,7 @@ class _MempoolHomeState extends State<MempoolHome> {
               L10n.of(context)!.blockSize,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            SizedBox(
+            const SizedBox(
               width: AppTheme.elementSpacing / 2,
             ),
             Icon(
@@ -1162,7 +1162,7 @@ class _MempoolHomeState extends State<MempoolHome> {
             )
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.cardPadding * 0.5,
         ),
         Stack(
@@ -1206,7 +1206,7 @@ class _MempoolHomeState extends State<MempoolHome> {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.elementSpacing * 0.75,
         ),
         Row(
@@ -1231,7 +1231,7 @@ class _MempoolHomeState extends State<MempoolHome> {
   Widget feeDistributionAccepted() {
     return Column(children: [
       BitNetListTile(
-        leading: Icon(FontAwesomeIcons.moneyBill),
+        leading: const Icon(FontAwesomeIcons.moneyBill),
         text: L10n.of(context)!.feeDistribution,
         trailing: Container(
           child: Row(
@@ -1263,7 +1263,7 @@ class _MempoolHomeState extends State<MempoolHome> {
           ),
         ),
       ),
-      SizedBox(
+      const SizedBox(
         height: AppTheme.elementSpacing,
       ),
       Text(
@@ -1273,7 +1273,7 @@ class _MempoolHomeState extends State<MempoolHome> {
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: AppTheme.white90,
               )),
-      SizedBox(
+      const SizedBox(
         height: AppTheme.elementSpacing,
       ),
       Container(
@@ -1285,7 +1285,7 @@ class _MempoolHomeState extends State<MempoolHome> {
               showTicks: false,
               showLabels: false,
               useRangeColorForAxis: true,
-              axisTrackStyle: LinearAxisTrackStyle(
+              axisTrackStyle: const LinearAxisTrackStyle(
                   thickness: AppTheme.cardPadding,
                   color: Colors.grey,
                   edgeStyle: LinearEdgeStyle.bothCurve,
@@ -1303,7 +1303,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                     child: Container(
                       height: AppTheme.cardPadding * 1.25,
                       width: AppTheme.elementSpacing * 0.75,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(4.0)),
                       ),
@@ -1337,7 +1337,7 @@ class _MempoolHomeState extends State<MempoolHome> {
   Widget feeDistributionUnaccepted() {
     return Column(children: [
       BitNetListTile(
-        leading: Icon(FontAwesomeIcons.moneyBill),
+        leading: const Icon(FontAwesomeIcons.moneyBill),
         text: L10n.of(context)!.feeDistribution,
         trailing: Container(
           child: Row(
@@ -1375,7 +1375,7 @@ class _MempoolHomeState extends State<MempoolHome> {
           ),
         ),
       ),
-      SizedBox(
+      const SizedBox(
         height: AppTheme.elementSpacing,
       ),
       Text(
@@ -1385,7 +1385,7 @@ class _MempoolHomeState extends State<MempoolHome> {
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: AppTheme.black60,
               )),
-      SizedBox(
+      const SizedBox(
         height: AppTheme.elementSpacing,
       ),
       Container(
@@ -1397,7 +1397,7 @@ class _MempoolHomeState extends State<MempoolHome> {
               showTicks: false,
               showLabels: false,
               useRangeColorForAxis: true,
-              axisTrackStyle: LinearAxisTrackStyle(
+              axisTrackStyle: const LinearAxisTrackStyle(
                   thickness: AppTheme.cardPadding,
                   color: Colors.grey,
                   edgeStyle: LinearEdgeStyle.bothCurve,
@@ -1415,7 +1415,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                     child: Container(
                       height: AppTheme.cardPadding * 1.25,
                       width: AppTheme.elementSpacing * 0.75,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(4.0)),
                       ),

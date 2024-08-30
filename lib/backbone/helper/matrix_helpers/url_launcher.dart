@@ -1,13 +1,7 @@
-import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
-import 'package:bitnet/pages/routetrees/matrix.dart';
 import 'package:flutter/material.dart';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:future_loading_dialog/future_loading_dialog.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:punycode/punycode.dart';
 import 'package:url_launcher/url_launcher_string.dart';

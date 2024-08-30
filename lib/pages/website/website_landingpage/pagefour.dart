@@ -4,11 +4,11 @@ import 'package:bitnet/components/appstandards/mydivider.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:seo/seo.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageFour extends StatefulWidget {
   const PageFour({super.key});
@@ -24,10 +24,8 @@ class _PageFourState extends State<PageFour> {
       builder: (BuildContext context, BoxConstraints constraints) {
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-        bool isSuperSmallScreen =
-            constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        bool isIntermediateScreen =
-            constraints.maxWidth < AppTheme.isIntermediateScreen;
+        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
 
         double textWidth = isMidScreen
             ? isSmallScreen
@@ -67,9 +65,7 @@ class _PageFourState extends State<PageFour> {
           withGradientBottomSmall: true,
           withGradientRightBig: true,
           child: Container(
-            margin: isSmallScreen
-                ? EdgeInsets.symmetric(horizontal: 0)
-                : EdgeInsets.symmetric(horizontal: centerSpacing),
+            margin: isSmallScreen ? const EdgeInsets.symmetric(horizontal: 0) : EdgeInsets.symmetric(horizontal: centerSpacing),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,11 +84,8 @@ class _PageFourState extends State<PageFour> {
                                   alignment: Alignment.center,
                                   child: Container(
                                     alignment: Alignment.center,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.9,
-                                    width: MediaQuery.of(context).size.width *
-                                            0.3 +
-                                        280,
+                                    height: MediaQuery.of(context).size.height * 0.9,
+                                    width: MediaQuery.of(context).size.width * 0.3 + 280,
                                     child: Stack(
                                       children: [
                                         Align(
@@ -111,69 +104,46 @@ class _PageFourState extends State<PageFour> {
                               )
                             : Container(),
                         Container(
-                          height: isSmallScreen
-                              ? MediaQuery.of(context).size.height * 0.9
-                              : 500,
-                          width: isSmallScreen
-                              ? MediaQuery.of(context).size.width
-                              : MediaQuery.of(context).size.width / 2.6,
+                          height: isSmallScreen ? MediaQuery.of(context).size.height * 0.9 : 500,
+                          width: isSmallScreen ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width / 2.6,
                           alignment: Alignment.center,
                           child: Column(
-                            crossAxisAlignment: isSmallScreen
-                                ? CrossAxisAlignment.center
-                                : CrossAxisAlignment.start,
+                            crossAxisAlignment: isSmallScreen ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
                                 margin: isSmallScreen
-                                    ? EdgeInsets.only(
-                                        top: AppTheme.cardPadding * 4)
-                                    : EdgeInsets.symmetric(horizontal: 0),
-                                width: isSmallScreen
-                                    ? 180 +
-                                        MediaQuery.of(context).size.width / 3.5
-                                    : textWidth,
+                                    ? const EdgeInsets.only(top: AppTheme.cardPadding * 4)
+                                    : const EdgeInsets.symmetric(horizontal: 0),
+                                width: isSmallScreen ? 180 + MediaQuery.of(context).size.width / 3.5 : textWidth,
                                 child: SeoText(
                                   tagStyle: TextTagStyle.h2,
                                   L10n.of(context)!.beAPart,
-                                  style:
-                                      Theme.of(context).textTheme.displayMedium,
+                                  style: Theme.of(context).textTheme.displayMedium,
                                 ),
                               ),
                               SizedBox(
-                                height: AppTheme.cardPadding *
-                                    1 *
-                                    spacingMultiplier,
+                                height: AppTheme.cardPadding * 1 * spacingMultiplier,
                               ),
                               Container(
-                                width: isSmallScreen
-                                    ? 180 +
-                                        MediaQuery.of(context).size.width / 3.5
-                                    : subtitleWidth,
+                                width: isSmallScreen ? 180 + MediaQuery.of(context).size.width / 3.5 : subtitleWidth,
                                 child: SeoText(
                                   L10n.of(context)!.moreAndMore,
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ),
-                              SizedBox(
-                                  height: AppTheme.cardPadding *
-                                      2.5 *
-                                      spacingMultiplier),
-                              buildAllButtons(
-                                  isSmallScreen, isIntermediateScreen),
+                              SizedBox(height: AppTheme.cardPadding * 2.5 * spacingMultiplier),
+                              AllButtons(isSmallScreen: isSmallScreen, isIntermediateScreen: isIntermediateScreen),
                             ],
                           ),
                         ),
                         isSmallScreen
                             ? Positioned(
                                 bottom: MediaQuery.of(context).size.height / 12,
-                                left: MediaQuery.of(context).size.width * 0.65 -
-                                    80,
+                                left: MediaQuery.of(context).size.width * 0.65 - 80,
                                 child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.width / 2.5,
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.5,
+                                  height: MediaQuery.of(context).size.width / 2.5,
+                                  width: MediaQuery.of(context).size.width / 2.5,
                                   child: Lottie.asset(
                                     'assets/lottiefiles/chartgoup.json',
                                     fit: BoxFit.cover,
@@ -194,35 +164,6 @@ class _PageFourState extends State<PageFour> {
     );
   }
 
-  Widget buildAllButtons(isSmallScreen, isIntermediateScreen) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: isSmallScreen
-              ? 180 + MediaQuery.of(context).size.width / 3.5
-              : 500,
-          child: Row(
-            mainAxisAlignment: isIntermediateScreen
-                ? isSmallScreen
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.start
-                : MainAxisAlignment.center,
-            children: [
-              ...downloadFromStores(
-                  isIntermediateScreen), // Using the spread operator
-            ],
-          ),
-        ),
-        SizedBox(
-          height: AppTheme.cardPadding,
-        ),
-        isIntermediateScreen ? Container() : downloadAPKButton(),
-      ],
-    );
-  }
-
   Widget downloadAPKButton() {
     return Column(
       children: [
@@ -233,27 +174,27 @@ class _PageFourState extends State<PageFour> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(child: MyDivider()),
-              SizedBox(
+              const SizedBox(
                 width: AppTheme.elementSpacing,
               ),
               Text(
                 L10n.of(context)!.or.toUpperCase(),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
-              SizedBox(
+              const SizedBox(
                 width: AppTheme.elementSpacing,
               ),
               Expanded(child: MyDivider()),
             ],
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.cardPadding,
         ),
         Container(
           width: AppTheme.cardPadding * 10,
           child: LongButtonWidget(
-              leadingIcon: Icon(FontAwesomeIcons.download),
+              leadingIcon: const Icon(FontAwesomeIcons.download),
               title: "${L10n.of(context)!.download} .apk",
               buttonType: ButtonType.solid,
               onTap: () async {
@@ -280,8 +221,7 @@ class _PageFourState extends State<PageFour> {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        padding:
-                            EdgeInsets.only(bottom: AppTheme.elementSpacing),
+                        padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
                         height: AppTheme.cardPadding * 17.6,
                         width: AppTheme.cardPadding * 14,
                         alignment: Alignment.bottomCenter,
@@ -292,7 +232,7 @@ class _PageFourState extends State<PageFour> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.only(bottom: AppTheme.elementSpacing),
+                      padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
                       alignment: Alignment.bottomCenter,
                       child: Image.asset(
                         'assets/images/phone.png',
@@ -305,8 +245,7 @@ class _PageFourState extends State<PageFour> {
           Align(
               alignment: Alignment.bottomRight,
               child: Container(
-                margin: EdgeInsets.only(
-                    right: 0, bottom: AppTheme.elementSpacing * 0),
+                margin: const EdgeInsets.only(right: 0, bottom: AppTheme.elementSpacing * 0),
                 height: AppTheme.cardPadding * 8,
                 width: AppTheme.cardPadding * 8,
                 child: Lottie.asset(
@@ -335,7 +274,7 @@ class _PageFourState extends State<PageFour> {
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Theme.of(context).colorScheme.background,
+                Theme.of(context).colorScheme.surface,
               ],
             )),
           ),
@@ -347,7 +286,7 @@ class _PageFourState extends State<PageFour> {
   List<Widget> downloadFromStores(isIntermediateScreen) {
     return [
       isIntermediateScreen
-          ? Icon(
+          ? const Icon(
               FontAwesomeIcons.googlePlay,
               size: AppTheme.cardPadding * 1.4,
             )
@@ -364,7 +303,7 @@ class _PageFourState extends State<PageFour> {
                     context.go('/authhome/pinverification');
                   }),
             ),
-      SizedBox(
+      const SizedBox(
         width: AppTheme.elementSpacing,
         height: AppTheme.elementSpacing,
       ),
@@ -377,7 +316,7 @@ class _PageFourState extends State<PageFour> {
           : Container(
               width: AppTheme.cardPadding * 10,
               child: LongButtonWidget(
-                  leadingIcon: Icon(FontAwesomeIcons.apple),
+                  leadingIcon: const Icon(FontAwesomeIcons.apple),
                   title: "Apple Store",
                   buttonType: ButtonType.transparent,
                   onTap: () async {
@@ -385,7 +324,7 @@ class _PageFourState extends State<PageFour> {
                   }),
             ),
       isIntermediateScreen
-          ? SizedBox(
+          ? const SizedBox(
               width: AppTheme.elementSpacing,
               height: AppTheme.elementSpacing,
             )
@@ -398,5 +337,241 @@ class _PageFourState extends State<PageFour> {
             )
           : Container(),
     ];
+  }
+}
+
+class AllButtons extends StatelessWidget {
+  final bool isSmallScreen;
+  final bool isIntermediateScreen;
+
+  const AllButtons({
+    Key? key,
+    required this.isSmallScreen,
+    required this.isIntermediateScreen,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: isSmallScreen ? 180 + MediaQuery.of(context).size.width / 3.5 : 500,
+          child: Row(
+            mainAxisAlignment: isIntermediateScreen ? MainAxisAlignment.start : MainAxisAlignment.center,
+            children: [
+              DownloadFromStores(
+                isIntermediateScreen: isIntermediateScreen,
+                isSmallScreen: isSmallScreen,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppTheme.cardPadding),
+        isIntermediateScreen ? Container() : const DownloadAPKButton(),
+      ],
+    );
+  }
+}
+
+class DownloadAPKButton extends StatelessWidget {
+  const DownloadAPKButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          height: AppTheme.cardPadding,
+          width: AppTheme.cardPadding * 20,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: MyDivider()),
+              const SizedBox(width: AppTheme.elementSpacing),
+              Text(
+                L10n.of(context)!.or.toUpperCase(),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(width: AppTheme.elementSpacing),
+              Expanded(child: MyDivider()),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppTheme.cardPadding),
+        Container(
+          width: AppTheme.cardPadding * 10,
+          child: LongButtonWidget(
+            leadingIcon: const Icon(FontAwesomeIcons.download),
+            title: "${L10n.of(context)!.download} .apk",
+            buttonType: ButtonType.solid,
+            onTap: () async {
+              context.go('/authhome/pinverification');
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class MobileWithPicture extends StatelessWidget {
+  const MobileWithPicture({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: AppTheme.cardPadding * 20,
+      width: AppTheme.cardPadding * 14,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: AppTheme.cardPadding * 18.5,
+              width: AppTheme.cardPadding * 14,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
+                      height: AppTheme.cardPadding * 17.6,
+                      width: AppTheme.cardPadding * 14,
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(
+                        'assets/images/screenshot_small.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing),
+                    alignment: Alignment.bottomCenter,
+                    child: Image.asset(
+                      'assets/images/phone.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin: const EdgeInsets.only(right: 0, bottom: AppTheme.elementSpacing * 0),
+              height: AppTheme.cardPadding * 8,
+              width: AppTheme.cardPadding * 8,
+              child: Lottie.asset(
+                'assets/lottiefiles/chartgoup.json',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const BottomGradientPhone(),
+        ],
+      ),
+    );
+  }
+}
+
+class BottomGradientPhone extends StatelessWidget {
+  const BottomGradientPhone({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            height: AppTheme.cardPadding * 2,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Theme.of(context).colorScheme.surface,
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DownloadFromStores extends StatelessWidget {
+  final bool isIntermediateScreen;
+  final bool isSmallScreen;
+
+  const DownloadFromStores({
+    Key? key,
+    required this.isIntermediateScreen,
+    required this.isSmallScreen,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: isIntermediateScreen
+          ? isSmallScreen
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.start
+          : MainAxisAlignment.center,
+      children: [
+        isIntermediateScreen
+            ? const Icon(
+                FontAwesomeIcons.googlePlay,
+                size: AppTheme.cardPadding * 1.4,
+              )
+            : Container(
+                width: AppTheme.cardPadding * 10,
+                child: LongButtonWidget(
+                  leadingIcon: Icon(
+                    color: AppTheme.white90,
+                    FontAwesomeIcons.googlePlay,
+                  ),
+                  title: "Google Play",
+                  buttonType: ButtonType.transparent,
+                  onTap: () async {
+                    context.go('/authhome/pinverification');
+                  },
+                ),
+              ),
+        const SizedBox(width: AppTheme.elementSpacing, height: AppTheme.elementSpacing),
+        isIntermediateScreen
+            ? Icon(
+                FontAwesomeIcons.apple,
+                size: AppTheme.cardPadding * 1.6,
+                color: AppTheme.white90,
+              )
+            : Container(
+                width: AppTheme.cardPadding * 10,
+                child: LongButtonWidget(
+                  leadingIcon: const Icon(FontAwesomeIcons.apple),
+                  title: "Apple Store",
+                  buttonType: ButtonType.transparent,
+                  onTap: () async {
+                    context.go('/authhome/pinverification');
+                  },
+                ),
+              ),
+        isIntermediateScreen ? const SizedBox(width: AppTheme.elementSpacing, height: AppTheme.elementSpacing) : Container(),
+        isIntermediateScreen
+            ? Icon(
+                color: AppTheme.white90,
+                FontAwesomeIcons.download,
+                size: AppTheme.cardPadding * 1.35,
+              )
+            : Container(),
+      ],
+    );
   }
 }

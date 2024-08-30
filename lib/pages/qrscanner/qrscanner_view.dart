@@ -59,89 +59,68 @@ class QRScannerView extends StatelessWidget {
             ),
             controller.isQRScanner
                 ? QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5))
-                : TextScannerOverlay(
-                    overlayColour: Colors.black.withOpacity(0.5)),
+                : TextScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding:
-                    const EdgeInsets.only(bottom: AppTheme.cardPadding * 8),
+                padding: const EdgeInsets.only(bottom: AppTheme.cardPadding * 8),
                 child: GlassContainer(
                   width: AppTheme.cardPadding * 6.5.w,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.elementSpacing * 1.5,
-                        vertical: AppTheme.elementSpacing / 1.25),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 1.5, vertical: AppTheme.elementSpacing / 1.25),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          child: controller.cameraController.facing ==
-                                  CameraFacing.front
+                          child: controller.cameraController.facing == CameraFacing.front
                               ? const Icon(Icons.camera_front)
                               : const Icon(Icons.camera_rear),
-                          onTap: () =>
-                              controller.cameraController.switchCamera(),
+                          onTap: () => controller.cameraController.switchCamera(),
                         ),
                         GestureDetector(
                           child: !controller.cameraController.torchEnabled
                               ? Icon(
                                   Icons.flash_off,
-                                  color: AppTheme.white90,
+                                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black90 : AppTheme.white90,
                                 )
                               : Icon(
                                   Icons.flash_on,
-                                  color: AppTheme.white90,
+                                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black90 : AppTheme.white90,
                                 ),
-                          onTap: () =>
-                              controller.cameraController.toggleTorch(),
+                          onTap: () => controller.cameraController.toggleTorch(),
                         ),
                         GestureDetector(
                             onTap: () async {
-                              final PermissionState ps =
-                                  await PhotoManager.requestPermissionExtend();
+                              final PermissionState ps = await PhotoManager.requestPermissionExtend();
                               if (ps.isAuth || ps.hasAccess) {
-                                ImagePickerBottomSheet(context,
-                                    onImageTap: (album, img) async {
-                                  String? fileUrl =
-                                      (await img.loadFile())!.path;
-                                  String? fileDir = (await img.loadFile())!
-                                      .parent
-                                      .uri
-                                      .toFilePath();
-                                  BarcodeCapture? capture = await controller
-                                      .cameraController
-                                      .analyzeImage(fileUrl!);
+                                ImagePickerBottomSheet(context, onImageTap: (album, img) async {
+                                  String? fileUrl = (await img.loadFile())!.path;
+                                  String? fileDir = (await img.loadFile())!.parent.uri.toFilePath();
+                                  BarcodeCapture? capture = await controller.cameraController.analyzeImage(fileUrl);
                                   if (capture != null) {
                                     List<Barcode> codes = capture.barcodes;
                                     for (Barcode code in codes) {
-                                      debugPrint(
-                                          'Barcode found! ${code.rawValue}');
+                                      debugPrint('Barcode found! ${code.rawValue}');
                                       context.pop();
-                                      controller.onQRCodeScanned(
-                                          code.rawValue!, context);
+                                      controller.onQRCodeScanned(code.rawValue!, context);
                                     }
                                   } else {
-                                    showOverlay(
-                                        context,
-                                        L10n.of(context)!
-                                            .noCodeFoundOverlayError,
-                                        color: AppTheme.errorColor);
+                                    showOverlay(context, L10n.of(context)!.noCodeFoundOverlayError, color: AppTheme.errorColor);
                                   }
                                 });
                               } else {
-                                showOverlay(context,
-                                    L10n.of(context)!.pleaseGiveAccess);
+                                showOverlay(context, L10n.of(context)!.pleaseGiveAccess);
                               }
                             },
-                            child: Icon(Icons.image))
+                            child: const Icon(Icons.image))
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [],
             )

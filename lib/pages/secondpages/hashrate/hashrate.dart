@@ -74,25 +74,25 @@ A higher hashrate indicates more miners are participating, making the network mo
   }
 
   void setData() {
-    DateTime range = DateTime.now().subtract(Duration(days: 365 * 3));
+    DateTime range = DateTime.now().subtract(const Duration(days: 365 * 3));
     switch(selectedMonth) {
       case '3M':
-        range = DateTime.now().subtract(Duration(days: 90));
+        range = DateTime.now().subtract(const Duration(days: 90));
         break;
       case '6M':
-        range = DateTime.now().subtract(Duration(days: 180));
+        range = DateTime.now().subtract(const Duration(days: 180));
         break;
       case '1Y':
-        range = DateTime.now().subtract(Duration(days: 365));
+        range = DateTime.now().subtract(const Duration(days: 365));
         break;
       case '2Y':
-        range = DateTime.now().subtract(Duration(days: 365 * 2));
+        range = DateTime.now().subtract(const Duration(days: 365 * 2));
         break;
       case '3Y':
-        range = DateTime.now().subtract(Duration(days: 365 * 3));
+        range = DateTime.now().subtract(const Duration(days: 365 * 3));
         break;
       default:
-        range = DateTime.now().subtract(Duration(days: 365 * 3));
+        range = DateTime.now().subtract(const Duration(days: 365 * 3));
         break;
     }
         
@@ -139,7 +139,7 @@ A higher hashrate indicates more miners are participating, making the network mo
         ),
         body: ListView(
           children: [
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding * 2,
             ),
 
@@ -147,7 +147,7 @@ A higher hashrate indicates more miners are participating, making the network mo
               chartData: currentChartData,
               difficulty: currentDifficulty,
             ),
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding,
             ),
             CustomizableTimeChooser(
@@ -168,14 +168,14 @@ A higher hashrate indicates more miners are participating, making the network mo
               },
             ),
             //a widget that calculated how man raspberry pi 4s the current hashrate equals to
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding * 2,
             ),
-            InformationWidget(
+            const InformationWidget(
               title: "Information",
               description: hashrateExplanation,
             ),
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding * 2,
             ),
 

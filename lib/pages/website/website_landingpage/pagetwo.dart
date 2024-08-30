@@ -34,11 +34,9 @@ class _PageTwoState extends State<PageTwo> {
         // Check if the screen width is less than 600 pixels.
         bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
         bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-        bool isSuperSmallScreen =
-            constraints.maxWidth < AppTheme.isSuperSmallScreen;
-        bool isIntermediateScreen =
-            constraints.maxWidth < AppTheme.isIntermediateScreen;
- 
+        bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+        bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+
         double textWidth = isMidScreen
             ? isSmallScreen
                 ? isSuperSmallScreen
@@ -79,9 +77,7 @@ class _PageTwoState extends State<PageTwo> {
           assetPath: "assets/images/x.png",
           opacity: 0.7,
           child: Container(
-            margin: EdgeInsets.symmetric(
-                horizontal:
-                    centerSpacing + AppTheme.cardPadding * spacingMultiplier),
+            margin: EdgeInsets.symmetric(horizontal: centerSpacing + AppTheme.cardPadding * spacingMultiplier),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,9 +103,7 @@ class _PageTwoState extends State<PageTwo> {
                       ),
                       Container(
                         width: subtitleWidth,
-                        child: SeoText(
-                            L10n.of(context)!.beAmongFirst,
-                            style: Theme.of(context).textTheme.bodyLarge),
+                        child: SeoText(L10n.of(context)!.beAmongFirst, style: Theme.of(context).textTheme.bodyLarge),
                       ),
                       SizedBox(
                         height: AppTheme.cardPadding * 1.5 * spacingMultiplier,
@@ -126,8 +120,7 @@ class _PageTwoState extends State<PageTwo> {
                   ),
                 ),
                 SizedBox(
-                  height: AppTheme.cardPadding * 3 +
-                      AppTheme.cardPadding * 3 * spacingMultiplier,
+                  height: AppTheme.cardPadding * 3 + AppTheme.cardPadding * 3 * spacingMultiplier,
                 ),
                 isSmallScreen
                     ? Container(
@@ -140,7 +133,7 @@ class _PageTwoState extends State<PageTwo> {
                               L10n.of(context)!.claimNFT,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: AppTheme.elementSpacing,
                             ),
                             Expanded(child: MyDivider()),
@@ -152,24 +145,24 @@ class _PageTwoState extends State<PageTwo> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(FontAwesomeIcons.boltLightning),
-                            SizedBox(
+                            const Icon(FontAwesomeIcons.boltLightning),
+                            const SizedBox(
                               width: AppTheme.elementSpacing,
                             ),
                             Expanded(child: MyDivider()),
-                            SizedBox(
+                            const SizedBox(
                               width: AppTheme.elementSpacing,
                             ),
                             SeoText(
                               L10n.of(context)!.historyClaim,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: AppTheme.elementSpacing,
                             ),
                             Expanded(child: MyDivider()),
-                            SizedBox(width: AppTheme.elementSpacing),
-                            Icon(FontAwesomeIcons.boltLightning),
+                            const SizedBox(width: AppTheme.elementSpacing),
+                            const Icon(FontAwesomeIcons.boltLightning),
                           ],
                         ),
                       ),
@@ -179,9 +172,7 @@ class _PageTwoState extends State<PageTwo> {
                 Container(
                   height: AppTheme.cardPadding * 5.5,
                   child: latestUserData.isEmpty
-                      ? SizedBox(
-                          height: AppTheme.cardPadding * 4,
-                          child: Center(child: dotProgress(context)))
+                      ? SizedBox(height: AppTheme.cardPadding * 4, child: Center(child: dotProgress(context)))
                       : Container(
                           alignment: Alignment.center,
                           height: AppTheme.cardPadding * 5.5,
@@ -192,27 +183,21 @@ class _PageTwoState extends State<PageTwo> {
                               scrollDirection: Axis.horizontal,
                               itemCount: latestUserData.length,
                               itemBuilder: (context, index) {
-                                final userData =
-                                    latestUserData.reversed.toList()[index];
+                                final userData = latestUserData.reversed.toList()[index];
                                 return Container(
                                   width: AppTheme.cardPadding * 5.5,
                                   child: Column(
                                     children: [
                                       Avatar(
-                                        size: AppTheme.cardPadding * 4,
-                                        mxContent:
-                                            Uri.parse(userData.profileImageUrl),
-                                        isNft: userData.nft_profile_id.isNotEmpty
-                                      ),
-                                      SizedBox(
-                                          height: AppTheme.elementSpacing / 2),
+                                          size: AppTheme.cardPadding * 4,
+                                          mxContent: Uri.parse(userData.profileImageUrl),
+                                          isNft: userData.nft_profile_id.isNotEmpty),
+                                      const SizedBox(height: AppTheme.elementSpacing / 2),
                                       Container(
                                         child: Text(
                                           overflow: TextOverflow.ellipsis,
                                           "${userData.username}",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
+                                          style: Theme.of(context).textTheme.bodySmall,
                                         ),
                                       ),
                                     ],

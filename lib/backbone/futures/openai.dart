@@ -30,10 +30,10 @@ callOpenAiApiPicture() async {
       final networkimage = NetworkImage(generatedimg.imageurl);
       return networkimage;
     } else {
-      return AssetImage("assets/images/prison_background.png");
+      return const AssetImage("assets/images/prison_background.png");
     }
   } catch(e){
     print("An error occured at api request to openai $e");
-    return AssetImage("assets/images/prison_background.png");
+    return const AssetImage("assets/images/prison_background.png");
   }
 }

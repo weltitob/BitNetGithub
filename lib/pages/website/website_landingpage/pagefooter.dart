@@ -5,11 +5,11 @@ import 'package:bitnet/pages/website/seo/seo_text.dart';
 import 'package:bitnet/pages/website/website_landingpage/quoteswidget.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:seo/seo.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 class PageFooter extends StatefulWidget {
   final WebsiteLandingPageController controller;
@@ -35,14 +35,11 @@ class _PageFooterState extends State<PageFooter> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
       bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
       bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-      bool isSuperSmallScreen =
-          constraints.maxWidth < AppTheme.isSuperSmallScreen;
-      bool isIntermediateScreen =
-          constraints.maxWidth < AppTheme.isIntermediateScreen;
+      bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
 
       double spacingMultiplier = isMidScreen
           ? isSmallScreen
@@ -62,7 +59,7 @@ class _PageFooterState extends State<PageFooter> {
           : AppTheme.columnWidth;
 
       return Container(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
           child: Stack(children: [
             Positioned(
                 bottom: 0,
@@ -88,140 +85,19 @@ class _PageFooterState extends State<PageFooter> {
             showFab
                 ? Container()
                 : Container(
-                    padding: EdgeInsets.only(
-                        bottom: AppTheme.cardPadding * 10 * spacingMultiplier),
+                    padding: EdgeInsets.only(bottom: AppTheme.cardPadding * 10 * spacingMultiplier),
                     child: Quotes(
                       controller: widget.controller,
                     ),
                   ), //PageFive(controller: widget.controller,),
-            buildFooter(
-                context, centerSpacing, spacingMultiplier, isSmallScreen),
+            FooterWidget(
+                showFab: showFab,
+                centerSpacing: centerSpacing,
+                spacingMultiplier: spacingMultiplier,
+                isSmallScreen: isSmallScreen,
+                toggleFooter: toggleFooter),
           ]));
     });
-  }
-
-  Widget buildFooter(
-      BuildContext context, centerSpacing, spacingMultiplier, isSmallScreen) {
-    return Positioned(
-      bottom: AppTheme.cardPadding * 3 * spacingMultiplier,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(horizontal: centerSpacing),
-        child: Row(
-          mainAxisAlignment: isSmallScreen
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-               crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () {
-                        context.go("/");
-                      },
-                      child: Row(
-                        children: [
-                          isSmallScreen
-                              ? RoundedButtonWidget(
-                                  buttonType: ButtonType.transparent,
-                                  iconData: showFab
-                                      ? Icons.keyboard_arrow_down_rounded
-                                      : Icons.keyboard_arrow_up_rounded,
-                                  onTap: () {
-                                    toggleFooter();
-                                    print("showFab: " + showFab.toString());
-                                  },
-                                )
-                              : Container(),
-                          isSmallScreen
-                              ? SizedBox(width: AppTheme.cardPadding)
-                              : Container(),
-                          Container(
-                            height: AppTheme.cardPadding * 2.5,
-                            width: AppTheme.cardPadding * 2.5,
-                            child: Image(
-                                image: AssetImage(
-                                    'assets/images/logotransparent.png')),
-                          ),
-                          SizedBox(
-                            width: AppTheme.cardPadding,
-                          ),
-                          SeoText(
-                            tagStyle: TextTagStyle.h6,
-                            "BitNet",
-                            style: Theme.of(context).textTheme.displaySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: AppTheme.cardPadding,
-                  ),
-                  SeoText(
-                    tagStyle: TextTagStyle.h6,
-                    "©2023 by BitNet GmBH, Germany",
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                  isSmallScreen
-                      ? smallScreenFooter(spacingMultiplier)
-                      : SizedBox(
-                          height: 0,
-                        ),
-                ],
-              ),
-            ),
-            isSmallScreen
-                ? Container()
-                : Row(
-                    children: [
-                      product(),
-                      SizedBox(
-                        width: AppTheme.cardPadding * 4 * spacingMultiplier,
-                      ),
-                      helpandSupport(),
-                      SizedBox(
-                        width: AppTheme.cardPadding * 4 * spacingMultiplier,
-                      ),
-                      socials(spacingMultiplier),
-                    ],
-                  ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget smallScreenFooter(spacingMultiplier) {
-    double footerHeight = showFab ? 475 : 0; // Adjust these values as needed
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 300), // Adjust duration as needed
-      curve: Curves.easeInOut, // This is the animation curve
-      height: footerHeight,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: AppTheme.cardPadding * 4 * spacingMultiplier,
-          ),
-          Row(
-            children: [
-              product(),
-              SizedBox(
-                width: AppTheme.cardPadding * 4 * spacingMultiplier,
-              ),
-              helpandSupport(),
-            ],
-          ),
-          SizedBox(height: AppTheme.cardPadding * 2 * spacingMultiplier),
-          socials(spacingMultiplier),
-        ],
-      ),
-    );
   }
 
   Widget socials(spacingMultiplier) {
@@ -234,7 +110,7 @@ class _PageFooterState extends State<PageFooter> {
             "Socials",
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          SizedBox(
+          const SizedBox(
             height: AppTheme.elementSpacing,
           ),
           Row(
@@ -339,7 +215,7 @@ class _PageFooterState extends State<PageFooter> {
           L10n.of(context)!.product,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.elementSpacing,
         ),
         SocialRow(
@@ -361,9 +237,8 @@ class _PageFooterState extends State<PageFooter> {
             }), // Support the project give money or buy these nfts
         SocialRow(
           platformName: L10n.of(context)!.whitePaper,
-          onTap: () {
-          },
-        ), 
+          onTap: () {},
+        ),
       ],
     );
   }
@@ -377,7 +252,7 @@ class _PageFooterState extends State<PageFooter> {
           L10n.of(context)!.contacts,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        SizedBox(
+        const SizedBox(
           height: AppTheme.elementSpacing,
         ),
         SocialRow(
@@ -387,8 +262,7 @@ class _PageFooterState extends State<PageFooter> {
           },
         ), //vrouter help page (faq voreingetsellt)
         SocialRow(
-          platformName:
-              L10n.of(context)!.reportIssue, //bugs, incidents, security issues etc abuse and fraud etc problems in general
+          platformName: L10n.of(context)!.reportIssue, //bugs, incidents, security issues etc abuse and fraud etc problems in general
           onTap: () {
             context.go("/website/report");
           },
@@ -398,11 +272,8 @@ class _PageFooterState extends State<PageFooter> {
             onTap: () {
               context.go('/website/submitidea');
             }), //vrouter reporting page (fraud voreingetsellt)//vrouter reporting page (security voreingetsellt)
-        SocialRow(
-            platformName: "AGBS", onTap: () => context.go('/website/agbs')), //
-        SocialRow(
-            platformName: "Impressum",
-            onTap: () => context.go('/website/impressum')), //
+        SocialRow(platformName: "AGBS", onTap: () => context.go('/website/agbs')), //
+        SocialRow(platformName: "Impressum", onTap: () => context.go('/website/impressum')), //
       ],
     );
   }
@@ -422,23 +293,340 @@ class SocialRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppTheme.elementSpacing / 1.25),
+      padding: const EdgeInsets.only(bottom: AppTheme.elementSpacing / 1.25),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: onTap, // <-- Use the passed function here
           child: Row(
             children: [
-              if (iconData != null)
-                Icon(iconData, size: AppTheme.elementSpacing * 1.5),
-              if (iconData != null)
-                SizedBox(width: AppTheme.elementSpacing / 2),
-              SeoText(platformName,
-                  style: Theme.of(context).textTheme.bodyMedium),
+              if (iconData != null) Icon(iconData, size: AppTheme.elementSpacing * 1.5),
+              if (iconData != null) const SizedBox(width: AppTheme.elementSpacing / 2),
+              SeoText(platformName, style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class FooterWidget extends StatelessWidget {
+  final double centerSpacing;
+  final double spacingMultiplier;
+  final bool isSmallScreen;
+  final bool showFab;
+  final VoidCallback toggleFooter;
+
+  const FooterWidget({
+    Key? key,
+    required this.centerSpacing,
+    required this.spacingMultiplier,
+    required this.isSmallScreen,
+    required this.showFab,
+    required this.toggleFooter,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: AppTheme.cardPadding * 3 * spacingMultiplier,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(horizontal: centerSpacing),
+        child: Row(
+          mainAxisAlignment: isSmallScreen ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      context.go("/");
+                    },
+                    child: Row(
+                      children: [
+                        if (isSmallScreen)
+                          RoundedButtonWidget(
+                            buttonType: ButtonType.transparent,
+                            iconData: showFab ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                            onTap: () {
+                              toggleFooter();
+                              print("showFab: $showFab");
+                            },
+                          ),
+                        if (isSmallScreen) const SizedBox(width: AppTheme.cardPadding),
+                        const SizedBox(
+                          height: AppTheme.cardPadding * 2.5,
+                          width: AppTheme.cardPadding * 2.5,
+                          child: Image(
+                            image: AssetImage('assets/images/logotransparent.png'),
+                          ),
+                        ),
+                        const SizedBox(width: AppTheme.cardPadding),
+                        SeoText(
+                          tagStyle: TextTagStyle.h6,
+                          "BitNet",
+                          style: Theme.of(context).textTheme.displaySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppTheme.cardPadding),
+                SeoText(
+                  tagStyle: TextTagStyle.h6,
+                  "©2023 by BitNet GmBH, Germany",
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+                if (isSmallScreen)
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300), // Adjust duration as needed
+                    curve: Curves.easeInOut, // This is the animation curve
+                    height: showFab ? 475 : 0, // Adjust these values as needed
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: AppTheme.cardPadding * 4 * spacingMultiplier,
+                        ),
+                        Row(
+                          children: [
+                            const ProductWidget(),
+                            SizedBox(
+                              width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                            ),
+                            const HelpAndSupportWidget(),
+                          ],
+                        ),
+                        SizedBox(height: AppTheme.cardPadding * 2 * spacingMultiplier),
+                        SocialsWidget(spacingMultiplier: spacingMultiplier),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            if (!isSmallScreen)
+              Row(
+                children: [
+                  const ProductWidget(),
+                  SizedBox(
+                    width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                  ),
+                  const HelpAndSupportWidget(),
+                  SizedBox(
+                    width: AppTheme.cardPadding * 4 * spacingMultiplier,
+                  ),
+                  SocialsWidget(spacingMultiplier: spacingMultiplier),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SocialsWidget extends StatelessWidget {
+  final double spacingMultiplier;
+
+  const SocialsWidget({Key? key, required this.spacingMultiplier}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SeoText(
+          tagStyle: TextTagStyle.h3,
+          "Socials",
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(
+          height: AppTheme.elementSpacing,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SocialRow(
+                  iconData: FontAwesomeIcons.instagram,
+                  platformName: "Instagram",
+                  onTap: () {
+                    launchUrlString(AppTheme.instagramUrl);
+                  },
+                ),
+                SocialRow(
+                  iconData: FontAwesomeIcons.facebook,
+                  platformName: "Facebook",
+                  onTap: () {
+                    launchUrlString(AppTheme.facebookUrl);
+                  },
+                ),
+                SocialRow(
+                  iconData: FontAwesomeIcons.twitter,
+                  platformName: "Twitter",
+                  onTap: () {
+                    launchUrlString(AppTheme.twitterUrl);
+                  },
+                ),
+                SocialRow(
+                  iconData: FontAwesomeIcons.linkedin,
+                  platformName: "LinkedIn",
+                  onTap: () {
+                    launchUrlString(AppTheme.linkedinUrl);
+                  },
+                ),
+                SocialRow(
+                  iconData: FontAwesomeIcons.tiktok,
+                  platformName: "TikTok",
+                  onTap: () {
+                    launchUrlString(AppTheme.tiktokUrl);
+                  },
+                ),
+              ],
+            ),
+            SizedBox(
+              width: AppTheme.cardPadding * 2 * spacingMultiplier,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SocialRow(
+                  iconData: FontAwesomeIcons.youtube,
+                  platformName: "YouTube",
+                  onTap: () {
+                    launchUrlString(AppTheme.youtubeUrl);
+                  },
+                ),
+                SocialRow(
+                  iconData: FontAwesomeIcons.pinterest,
+                  platformName: "Pinterest",
+                  onTap: () {
+                    launchUrlString(AppTheme.pinterestUrl);
+                  },
+                ),
+                SocialRow(
+                  iconData: FontAwesomeIcons.snapchat,
+                  platformName: "Snapchat",
+                  onTap: () {
+                    launchUrlString(AppTheme.snapchatUrl);
+                  },
+                ),
+                SocialRow(
+                  iconData: FontAwesomeIcons.telegram,
+                  platformName: "Telegram",
+                  onTap: () {
+                    launchUrlString(AppTheme.telegramUrl);
+                  },
+                ),
+                SocialRow(
+                  iconData: FontAwesomeIcons.discord,
+                  platformName: "Discord",
+                  onTap: () {
+                    launchUrlString(AppTheme.discordUrl);
+                  },
+                ),
+              ],
+            )
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class ProductWidget extends StatelessWidget {
+  const ProductWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SeoText(
+          tagStyle: TextTagStyle.h3,
+          L10n.of(context)!.product,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(
+          height: AppTheme.elementSpacing,
+        ),
+        SocialRow(
+          platformName: L10n.of(context)!.getStarted,
+          onTap: () => context.go('/website'),
+        ),
+        SocialRow(
+          platformName: L10n.of(context)!.aboutUs,
+          onTap: () => context.go('/website/aboutus'),
+        ),
+        SocialRow(
+          platformName: L10n.of(context)!.ourTeam,
+          onTap: () => context.go('/website/ourteam'),
+        ),
+        SocialRow(
+          platformName: L10n.of(context)!.fundUs,
+          onTap: () {
+            launchUrlString(AppTheme.goFundMeUrl);
+          },
+        ),
+        SocialRow(
+          platformName: L10n.of(context)!.whitePaper,
+          onTap: () {},
+        ),
+      ],
+    );
+  }
+}
+
+class HelpAndSupportWidget extends StatelessWidget {
+  const HelpAndSupportWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SeoText(
+          tagStyle: TextTagStyle.h3,
+          L10n.of(context)!.contacts,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(
+          height: AppTheme.elementSpacing,
+        ),
+        SocialRow(
+          platformName: L10n.of(context)!.helpCenter,
+          onTap: () {
+            context.go("/help");
+          },
+        ),
+        SocialRow(
+          platformName: L10n.of(context)!.reportIssue,
+          onTap: () {
+            context.go("/website/report");
+          },
+        ),
+        SocialRow(
+          platformName: L10n.of(context)!.submitIdea,
+          onTap: () {
+            context.go('/website/submitidea');
+          },
+        ),
+        SocialRow(
+          platformName: "AGBS",
+          onTap: () => context.go('/website/agbs'),
+        ),
+        SocialRow(
+          platformName: "Impressum",
+          onTap: () => context.go('/website/impressum'),
+        ),
+      ],
     );
   }
 }

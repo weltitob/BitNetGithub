@@ -18,7 +18,7 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
 class OnChainReceiveTab extends StatefulWidget {
-  OnChainReceiveTab({super.key});
+  const OnChainReceiveTab({super.key});
 
   @override
   State<OnChainReceiveTab> createState() => _OnChainReceiveTabState();
@@ -90,7 +90,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                             customHeight: AppTheme.cardPadding * 2,
                             customWidth: AppTheme.cardPadding * 5,
                             title: L10n.of(context)!.share,
-                            leadingIcon: Icon(Icons.share_rounded),
+                            leadingIcon: const Icon(Icons.share_rounded),
                             onTap: () {
                               // Share the wallet address
                               double? invoiceAmount = double.tryParse(controller.btcController.text);
@@ -140,9 +140,9 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                         Icons.copy_rounded,
                         color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,
                       ),
-                      SizedBox(width: AppTheme.elementSpacing / 2),
+                      const SizedBox(width: AppTheme.elementSpacing / 2),
                       Text(start),
-                      if (qrCodeData.length > 8) Text('....'),
+                      if (qrCodeData.length > 8) const Text('....'),
                       Text(end),
                     ],
                   );
@@ -181,14 +181,14 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                       Icons.edit,
                       color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,
                     ),
-                    SizedBox(width: AppTheme.elementSpacing / 2),
+                    const SizedBox(width: AppTheme.elementSpacing / 2),
                     Text(
                       controller.satController.text == "0" || controller.satController.text.isEmpty
                           ? "Change Amount"
                           : controller.satController.text,
                     ),
                     controller.satController.text == "0" || controller.satController.text.isEmpty
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Icon(
                             getCurrencyIcon(
                               BitcoinUnits.SAT.name,

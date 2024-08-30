@@ -2,7 +2,6 @@ import 'package:bitnet/backbone/helper/marketplace_helpers/imageassets.dart';
 import 'package:bitnet/backbone/helper/marketplace_helpers/sampledata.dart';
 import 'package:bitnet/components/marketplace_widgets/CategoriesList.dart';
 import 'package:bitnet/components/marketplace_widgets/Header.dart';
-import 'package:bitnet/components/marketplace_widgets/StatusBarBg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:bitnet/pages/routetrees/marketplaceroutes.dart' as route;
