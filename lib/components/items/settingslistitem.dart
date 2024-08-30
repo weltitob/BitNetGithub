@@ -20,7 +20,7 @@ class SettingsListItem extends StatelessWidget {
     return
       Container(
         height: AppTheme.cardPadding * 2,
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
           horizontal: AppTheme.cardPadding * 1,
         ).copyWith(
           bottom: AppTheme.elementSpacing,
@@ -32,7 +32,7 @@ class SettingsListItem extends StatelessWidget {
             child:Container(
               color: Colors.white.withOpacity(0.1),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding,
                   ),
                   child: Row(
@@ -42,9 +42,9 @@ class SettingsListItem extends StatelessWidget {
                         color: Theme.of(context).colorScheme.onSecondaryContainer,
                         size: AppTheme.iconSize,
                       ),
-                      SizedBox(width: AppTheme.cardPadding),
+                      const SizedBox(width: AppTheme.cardPadding),
                       Text(this.text, style: Theme.of(context).textTheme.titleSmall),
-                      Spacer(),
+                      const Spacer(),
                       if (this.hasNavigation)
                         Icon(
                           Icons.arrow_forward_ios_rounded,

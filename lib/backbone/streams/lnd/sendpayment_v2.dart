@@ -88,7 +88,7 @@ Stream<RestResponse> sendPaymentV2Stream(List<String> invoiceStrings, int? amoun
 
     // Implement your logic for when to send the next payment
     // For example, wait for some time before sending the next one
-    await Future.delayed(Duration(seconds: 10));  // Adjust delay as needed
+    await Future.delayed(const Duration(seconds: 10));  // Adjust delay as needed
   }
 }
 

@@ -8,7 +8,7 @@ class CenterWidgetIcon extends StatelessWidget {
   final IconData iconData;
   final int index;
   final Function() onTap;
-  CenterWidgetIcon(
+  const CenterWidgetIcon(
       {required this.iconData,
       required this.index,
       required this.onTap,

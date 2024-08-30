@@ -41,7 +41,7 @@ class _BitNetFABState extends State<BitNetFAB> {
       },
       onTap: widget.onPressed,
       child: AnimatedScale(
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         scale: isHovered ? 1.0 : 0.9,
         child: SizedBox(
           width: widget.width,

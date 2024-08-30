@@ -54,7 +54,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
             },
             style: Theme.of(context).textTheme.bodyLarge,
             decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(AppTheme.cardPadding / 100),
+                contentPadding: const EdgeInsets.all(AppTheme.cardPadding / 100),
                 hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(),
                 hintText: widget.hintText,
                 prefixIcon: Icon(
@@ -66,7 +66,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                 suffixIcon: _textFieldController.text.isEmpty || _textFieldController.text == ''
                     ? widget.suffixIcon != null
                         ? widget.suffixIcon
-                        : SizedBox.shrink()
+                        : const SizedBox.shrink()
                     : IconButton(
                         icon: Icon(
                           Icons.cancel,
@@ -84,7 +84,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
                         },
                       ),
                 border: OutlineInputBorder(
-                    borderSide: BorderSide(width: 0, style: BorderStyle.none),
+                    borderSide: const BorderSide(width: 0, style: BorderStyle.none),
                     borderRadius: AppTheme.cardRadiusMid)),
           ),
         ),

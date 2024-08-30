@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class CountColumn extends StatelessWidget {
   final int count;
   final String label;
-  CountColumn(
+  const CountColumn(
       {
       required this.count,
       required this.label,
@@ -26,7 +26,7 @@ class CountColumn extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing / 4,
                 ),
                 Text(
@@ -36,7 +36,7 @@ class CountColumn extends StatelessWidget {
                       .headlineMedium!
                       .copyWith(color: AppTheme.white90),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing / 4,
                 ),
                 Text(
@@ -44,7 +44,7 @@ class CountColumn extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: AppTheme.white70, fontWeight: FontWeight.w500),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing / 4,
                 ),
               ],

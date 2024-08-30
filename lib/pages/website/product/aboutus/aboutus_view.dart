@@ -48,7 +48,7 @@ class AboutUsView extends StatelessWidget {
 
         return bitnetScaffold(
           extendBodyBehindAppBar: true,
-          appBar: bitnetWebsiteAppBar(),
+          appBar: const bitnetWebsiteAppBar(),
           body: BackgroundWithContent(
             backgroundType: BackgroundType.asset,
             withGradientRightBig: true,
@@ -86,7 +86,7 @@ class AboutUsView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         isSmallScreen
-                            ? SizedBox(
+                            ? const SizedBox(
                                 width: 0,
                                 height: 0,
                               )
@@ -188,11 +188,11 @@ class AboutUsView extends StatelessWidget {
                       ],
                     ),
                     isSmallScreen
-                        ? SizedBox(
+                        ? const SizedBox(
                             width: 0,
                             height: 0,
                           )
-                        : SizedBox(
+                        : const SizedBox(
                             width: AppTheme.cardPadding * 2,
                             height: AppTheme.cardPadding * 2,
                           ),

@@ -112,16 +112,13 @@ class HomeController extends BaseController {
     }
 
     int mid = text.length ~/ 1.5;
-    String truncatedString =
-        "${text.substring(0, mid - 1)}...${text.substring(mid + 2)}";
+    String truncatedString = "${text.substring(0, mid - 1)}...${text.substring(mid + 2)}";
     return truncatedString;
   }
 
   int getTotalTxOutput(TransactionDetailsModel tx) {
     return tx.vout
-        .map((Vout v) =>
-            v.value ??
-            0) // Use the null-aware operator ?? to handle null values
+        .map((Vout v) => v.value ?? 0) // Use the null-aware operator ?? to handle null values
         .reduce((int a, int b) => a + b);
   }
 
@@ -164,8 +161,7 @@ class HomeController extends BaseController {
     return dollarPerRate.value;
   }
 
-  List<BlockData> removeElementsBefore<BlockData>(
-      List<BlockData> list, BlockData element) {
+  List<BlockData> removeElementsBefore<BlockData>(List<BlockData> list, BlockData element) {
     int index = list.indexWhere((e) => e == element);
 
     // If the element is found, remove elements before it
@@ -286,8 +282,7 @@ class HomeController extends BaseController {
     transactionLoading.value = true;
     update();
     channel.sink.add('{"action":"init"}');
-    channel.sink.add(
-        '{"action":"want","data":["blocks","stats","mempool-blocks","live-2h-chart"]}');
+    channel.sink.add('{"action":"want","data":["blocks","stats","mempool-blocks","live-2h-chart"]}');
     channel.sink.add('{"track-rbf-summary":true}');
     Future.delayed(
       const Duration(minutes: 5),
@@ -300,19 +295,15 @@ class HomeController extends BaseController {
       if (data['projected-block-transactions'] != null) {
         if (data['projected-block-transactions']['blockTransactions'] != null) {
           blockTransactions.clear();
-          blockTransactions =
-              data['projected-block-transactions']['blockTransactions'];
-          print(
-              'message+3 ${data['projected-block-transactions']['blockTransactions']}');
+          blockTransactions = data['projected-block-transactions']['blockTransactions'];
+          print('message+3 ${data['projected-block-transactions']['blockTransactions']}');
         }
         if (data['projected-block-transactions']['delta']['added'] != null) {
-          blockTransactions
-              .addAll(data['projected-block-transactions']['delta']['added']);
+          blockTransactions.addAll(data['projected-block-transactions']['delta']['added']);
         }
 
         if (data['projected-block-transactions']['delta']['removed'] != null) {
-          List remove =
-              data['projected-block-transactions']['delta']['removed'];
+          List remove = data['projected-block-transactions']['delta']['removed'];
           for (int i = 0; i < blockTransactions.length; i++) {
             String e = blockTransactions[i].first;
             print(remove.contains(e));
@@ -354,8 +345,7 @@ class HomeController extends BaseController {
         daLoading.value = true;
         da = memPool.da;
         DateTime currentDate = DateTime.now();
-        DateTime targetDate = DateTime.fromMillisecondsSinceEpoch(
-            da!.estimatedRetargetDate!.toInt());
+        DateTime targetDate = DateTime.fromMillisecondsSinceEpoch(da!.estimatedRetargetDate!.toInt());
         Duration difference = targetDate.difference(currentDate);
         days = '${difference.inDays + 1} days';
         daLoading.value = false;
@@ -510,15 +500,13 @@ class HomeController extends BaseController {
     }
   }
 
-
   String formatTimeAgo(DateTime dateTime) {
     return timeago.format(dateTime);
   }
 
   String timeFormat(int millisecondsString, int median) {
     DateTime medianDate = DateTime.now();
-    DateTime targetDate =
-        DateTime.fromMicrosecondsSinceEpoch(millisecondsString);
+    DateTime targetDate = DateTime.fromMicrosecondsSinceEpoch(millisecondsString);
     Duration difference = targetDate.difference(medianDate);
     return formatTimeAgo(targetDate);
   }
@@ -526,20 +514,10 @@ class HomeController extends BaseController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> createPost(
-      String postId,
-      bool hasLiked,
-      bool hasPrice,
-      bool hasLikeButton,
-      String nftName,
-      String nftMainName,
-      String cryptoText) async {
+      String postId, bool hasLiked, bool hasPrice, bool hasLikeButton, String nftName, String nftMainName, String cryptoText) async {
     try {
       // Check if a post with the given postId already exists
-      QuerySnapshot existingPost = await firestore
-          .collection('postsNew')
-          .where('postId', isEqualTo: postId)
-          .limit(1)
-          .get();
+      QuerySnapshot existingPost = await firestore.collection('postsNew').where('postId', isEqualTo: postId).limit(1).get();
 
       DocumentReference documentReference;
 
@@ -554,20 +532,16 @@ class HomeController extends BaseController {
       }
 
       // Set or update the post with the current time as createdAt
-      await documentReference.set(
-          {
-            'postId': postId,
-            'hasLiked': hasLiked,
-            'hasPrice': hasPrice,
-            'hasLikeButton': hasLikeButton,
-            'nftName': nftName,
-            'nftMainName': nftMainName,
-            'cryptoText': cryptoText,
-            'createdAt': DateTime.now().millisecondsSinceEpoch,
-          },
-          SetOptions(
-              merge:
-                  true)); // Using SetOptions to merge the data instead of overwriting
+      await documentReference.set({
+        'postId': postId,
+        'hasLiked': hasLiked,
+        'hasPrice': hasPrice,
+        'hasLikeButton': hasLikeButton,
+        'nftName': nftName,
+        'nftMainName': nftMainName,
+        'cryptoText': cryptoText,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+      }, SetOptions(merge: true)); // Using SetOptions to merge the data instead of overwriting
     } catch (e) {
       print('Error adding post: $e');
     }
@@ -576,18 +550,12 @@ class HomeController extends BaseController {
   Future<List<PostsDataModel>?> fetchPosts() async {
     try {
       final currentTime = DateTime.now();
-      final oneWeekAgo =
-          currentTime.subtract(Duration(days: 7)).millisecondsSinceEpoch;
+      final oneWeekAgo = currentTime.subtract(const Duration(days: 7)).millisecondsSinceEpoch;
 
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('postsNew')
-          .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
-          .get();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('postsNew').where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo).get();
 
-      return querySnapshot.docs
-          .map((doc) =>
-              PostsDataModel.fromJson(doc.data() as Map<String, dynamic>))
-          .toList();
+      return querySnapshot.docs.map((doc) => PostsDataModel.fromJson(doc.data() as Map<String, dynamic>)).toList();
     } catch (e, tr) {
       print(e);
       print(tr);
@@ -613,17 +581,12 @@ class HomeController extends BaseController {
       String userId = Auth().currentUser!.uid;
 
       // Check if a like with the given postId and userId already exists
-      QuerySnapshot existingLike = await firestore
-          .collection('postsLike')
-          .where('postId', isEqualTo: postId)
-          .where('userId', isEqualTo: userId)
-          .limit(1)
-          .get();
+      QuerySnapshot existingLike =
+          await firestore.collection('postsLike').where('postId', isEqualTo: postId).where('userId', isEqualTo: userId).limit(1).get();
 
       if (existingLike.docs.isEmpty) {
         // If no document exists, create a new like
-        DocumentReference documentReference =
-            firestore.collection('postsLike').doc();
+        DocumentReference documentReference = firestore.collection('postsLike').doc();
         String likeId = documentReference.id;
         await documentReference.set({
           'likeId': likeId,
@@ -651,8 +614,7 @@ class HomeController extends BaseController {
         print('The posts collection does not exist.');
         return;
       }
-      QuerySnapshot querySnapshot =
-          await postsCollection.where('postId', isEqualTo: postId).get();
+      QuerySnapshot querySnapshot = await postsCollection.where('postId', isEqualTo: postId).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentReference docRef = querySnapshot.docs.first.reference;
@@ -668,18 +630,14 @@ class HomeController extends BaseController {
 
   Future<bool?> fetchHasLiked(String postId, String userId) async {
     try {
-      QuerySnapshot collectionSnapshot =
-          await firestore.collection('postsLike').limit(1).get();
+      QuerySnapshot collectionSnapshot = await firestore.collection('postsLike').limit(1).get();
       if (collectionSnapshot.docs.isEmpty) {
         print('The postLikes collection does not exist.');
         return false;
       }
 
-      QuerySnapshot querySnapshot = await firestore
-          .collection('postsLike')
-          .where('postId', isEqualTo: postId)
-          .where('userId', isEqualTo: userId)
-          .get();
+      QuerySnapshot querySnapshot =
+          await firestore.collection('postsLike').where('postId', isEqualTo: postId).where('userId', isEqualTo: userId).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         return true;
@@ -695,16 +653,12 @@ class HomeController extends BaseController {
 
   Future<void> createClicks(String postId) async {
     try {
-      DocumentReference documentReference =
-          firestore.collection('postsClick').doc();
+      DocumentReference documentReference = firestore.collection('postsClick').doc();
       String clickId = documentReference.id;
       String currentUserId = Auth().currentUser!.uid;
 
-      QuerySnapshot querySnapshot = await firestore
-          .collection('postsClick')
-          .where('postId', isEqualTo: postId)
-          .where('userId', isEqualTo: currentUserId)
-          .get();
+      QuerySnapshot querySnapshot =
+          await firestore.collection('postsClick').where('postId', isEqualTo: postId).where('userId', isEqualTo: currentUserId).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentReference existingDocRef = querySnapshot.docs.first.reference;
@@ -725,13 +679,10 @@ class HomeController extends BaseController {
   }
 
   Future<Map<String, int>> getMostLikedPostIds() async {
-    final oneWeekAgo =
-        DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
+    final oneWeekAgo = DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch;
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('postsLike')
-        .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
-        .get();
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('postsLike').where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo).get();
 
     Map<String, int> likeCountMap = {};
 
@@ -746,13 +697,10 @@ class HomeController extends BaseController {
   }
 
   Future<Map<String, int>> getMostClickedPostIds() async {
-    final oneWeekAgo =
-        DateTime.now().subtract(Duration(days: 7)).millisecondsSinceEpoch;
+    final oneWeekAgo = DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch;
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('postsClick')
-        .where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo)
-        .get();
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('postsClick').where('createdAt', isGreaterThanOrEqualTo: oneWeekAgo).get();
 
     Map<String, int> clickCountMap = {};
 
@@ -787,11 +735,9 @@ class HomeController extends BaseController {
     }
 
     // Sort by total interactions
-    final sortedPostIds = totalCountMap.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedPostIds = totalCountMap.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
-    final sortedRelevantPostIds =
-        sortedPostIds.map((entry) => entry.key).toList();
+    final sortedRelevantPostIds = sortedPostIds.map((entry) => entry.key).toList();
     print(sortedRelevantPostIds);
 
     if (sortedRelevantPostIds.isEmpty) {
@@ -805,19 +751,12 @@ class HomeController extends BaseController {
     for (var i = 0; i < sortedRelevantPostIds.length; i += chunkSize) {
       var chunk = sortedRelevantPostIds.sublist(
         i,
-        i + chunkSize > sortedRelevantPostIds.length
-            ? sortedRelevantPostIds.length
-            : i + chunkSize,
+        i + chunkSize > sortedRelevantPostIds.length ? sortedRelevantPostIds.length : i + chunkSize,
       );
       print(chunk);
 
-      final snapshot = await FirebaseFirestore.instance
-          .collection('postsNew')
-          .where('postId', whereIn: chunk)
-          .get();
-      allPosts.addAll(snapshot.docs
-          .map((doc) => PostsDataModel.fromJson(doc.data()))
-          .toList());
+      final snapshot = await FirebaseFirestore.instance.collection('postsNew').where('postId', whereIn: chunk).get();
+      allPosts.addAll(snapshot.docs.map((doc) => PostsDataModel.fromJson(doc.data())).toList());
       print(allPosts);
     }
 

@@ -16,7 +16,7 @@ class Comments extends StatefulWidget {
   final String postId;
   final String postOwnerId;
 
-  Comments({
+  const Comments({
     required this.postId,
     required this.postOwnerId,
   });
@@ -116,7 +116,7 @@ class CommentsState extends State<Comments> {
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           vertical: AppTheme.elementSpacing,
           horizontal: AppTheme.elementSpacing,
         ),
@@ -137,17 +137,17 @@ class CommentsState extends State<Comments> {
                 onTap: () => print('tapped'),
                 isNft: false
               ),
-              Padding(padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2 )),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing / 2 )),
               Expanded(
                 child: GlassContainer(
                   child: Container(
                     height: AppTheme.cardPadding.h *  2,
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.elementSpacing,
                     ),
                     child: Row(
                       children: [
-                        SizedBox(width: AppTheme.elementSpacing),
+                        const SizedBox(width: AppTheme.elementSpacing),
                         Expanded(
                           child: TextField(
                             controller: commentController,
@@ -177,7 +177,7 @@ class Comment extends StatelessWidget {
   final Timestamp timestamp;
   final bool isNft;
 
-  Comment({
+  const Comment({
     required this.username,
     required this.userId,
     required this.avatarUrl,
@@ -205,7 +205,7 @@ class Comment extends StatelessWidget {
           title: RichText(
             text: TextSpan(
                 text: '@$username  ',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -222,7 +222,7 @@ class Comment extends StatelessWidget {
           ),
           subtitle: RichText(
             text: TextSpan(
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

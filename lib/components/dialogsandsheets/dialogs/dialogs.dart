@@ -24,7 +24,7 @@ Future<bool?> showDialogue({
         surfaceTintColor: Colors.transparent,
         backgroundColor: Colors.transparent,
         elevation: 20.0,
-        insetPadding: EdgeInsets.all(0),
+        insetPadding: const EdgeInsets.all(0),
         child: Container(
           height: AppTheme.cardPadding * 13,
           width: AppTheme.cardPadding * 13,
@@ -44,7 +44,7 @@ Future<bool?> showDialogue({
                     textAlign: TextAlign.center,
                   ),
                   Container(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           top: AppTheme.elementSpacing * 1.5, bottom: AppTheme.elementSpacing),
                       height: AppTheme.elementSpacing * 12,
                       width: AppTheme.elementSpacing * 12,
@@ -111,7 +111,7 @@ Future<bool?> showDialogueMultipleOptions({
               image: images[index]!,
             );
           } else {
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
         },
       );
@@ -124,20 +124,20 @@ Future<bool?> showDialogueMultipleOptions({
             children: [
               optionContainers[i],
               if (i + 1 < optionContainers.length) ...[
-                SizedBox(width: AppTheme.elementSpacing),
+                const SizedBox(width: AppTheme.elementSpacing),
                 optionContainers[i + 1],
               ]
             ],
           ),
         );
-        if (i + 2 < optionContainers.length) rows.add(SizedBox(height: AppTheme.elementSpacing));
+        if (i + 2 < optionContainers.length) rows.add(const SizedBox(height: AppTheme.elementSpacing));
       }
 
       return AlertDialog(
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.transparent,
         backgroundColor: AppTheme.colorSchemeSeed,
-        contentPadding: EdgeInsets.all(0),
+        contentPadding: const EdgeInsets.all(0),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: AppTheme.cardRadiusBig,

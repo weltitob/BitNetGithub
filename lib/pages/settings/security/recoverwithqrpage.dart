@@ -53,7 +53,7 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
           key: globalKeyQR,
           child: Column(
             children: [
-              SizedBox(height: AppTheme.cardPadding,),
+              const SizedBox(height: AppTheme.cardPadding,),
               FutureBuilder(
                 future: getPrivateKey(),
                 builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -63,7 +63,7 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
                         child: Center(child: dotProgress(context)));
                   }
                   return Container(
-                    margin: EdgeInsets.all(AppTheme.cardPadding),
+                    margin: const EdgeInsets.all(AppTheme.cardPadding),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: AppTheme.cardRadiusBigger),
@@ -84,8 +84,8 @@ class _RecoverWithQRPageState extends State<RecoverWithQRPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(FontAwesomeIcons.solidEyeSlash, size: AppTheme.elementSpacing,),
-                  SizedBox(width: AppTheme.elementSpacing / 2,),
+                  const Icon(FontAwesomeIcons.solidEyeSlash, size: AppTheme.elementSpacing,),
+                  const SizedBox(width: AppTheme.elementSpacing / 2,),
                   Text(L10n.of(context)!.dontShareAnyone, style: Theme.of(context).textTheme.labelLarge,),
                 ],
               ),

@@ -82,7 +82,7 @@ class BitNetListTile extends StatelessWidget {
               children: <Widget>[
                 if (leading != null) ...[
                   leading!,
-                  SizedBox(width: AppTheme.elementSpacing),
+                  const SizedBox(width: AppTheme.elementSpacing),
                 ],
                 Expanded(
                   child: Column(
@@ -98,7 +98,7 @@ class BitNetListTile extends StatelessWidget {
                               Theme.of(context).textTheme.titleMedium,
                         ),
                       if (subtitle != null) ...[
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         DefaultTextStyle(
                           style: subtitleStyle ??
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -111,7 +111,7 @@ class BitNetListTile extends StatelessWidget {
                   ),
                 ),
                 if (trailing != null) ...[
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   trailing!,
                 ],
               ],

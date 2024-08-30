@@ -20,7 +20,7 @@ class AgbsAndImpressumScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(top: AppTheme.cardPadding * 3, left: AppTheme.cardPadding, right: AppTheme.cardPadding),
+            padding: const EdgeInsets.only(top: AppTheme.cardPadding * 3, left: AppTheme.cardPadding, right: AppTheme.cardPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -30,18 +30,18 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                   maxLines: 2,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
-                Divider(indent: 10, endIndent: 10),
-                SizedBox(
+                const Divider(indent: 10, endIndent: 10),
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Anwendungsbereich:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "Diese Geschäftsbedingungen"
                       "regeln die Nutzung der Bitcoin-Wallet-App"
@@ -51,14 +51,14 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.start,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Funktionalität:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "Die App ermöglicht es Benutzern, Bitcoins zu empfangen, zu senden und zu verwalten."
                       "Die App ist keine Bank und bietet keine Bankdienstleistungen an."
@@ -66,14 +66,14 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.start,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Verantwortung des Benutzers:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "Der Benutzer ist allein für die Sicherheit seiner Bitcoins verantwortlich. Die App bietet Schutzfunktionen wie Passwortschutz und Zwei-Faktor-Authentifizierung,"
                       "aber es liegt in der Verantwortung des Benutzers, diese Funktionen sorgfältig zu verwenden."
@@ -81,14 +81,14 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.start,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Gebühren:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "Für bestimmte Funktionen der App können Gebühren anfallen."
                       "Diese Gebühren werden dem Benutzer im Vorfeld mitgeteilt und"
@@ -96,56 +96,56 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.start,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Haftungsbeschränkung:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "BitNet haftet nur für Schäden, die durch vorsätzliches oder grob fahrlässiges Handeln von"
                       "BitNet verursacht werden. [Name des Unternehmens] haftet nicht für Schäden, die aus der Nutzung der App oder dem Verlust von Bitcoins resultieren.",
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.start,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Änderungen:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "BitNet behält sich das Recht vor, diese Geschäftsbedingungen jederzeit zu ändern."
                       "Der Benutzer wird über solche Änderungen informiert und muss diesen zustimmen, um die App weiterhin nutzen zu können.",
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.start,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Schlussbestimmungen:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "Diese Geschäftsbedingungen stellen die gesamte Vereinbarung zwischen dem Benutzer und BitNet dar."
                       "Sollte eine Bestimmung unwirksam sein, bleiben die übrigen Bestimmungen in Kraft.",
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.start,
                 ),
-                SizedBox(height: AppTheme.cardPadding),
-                Divider(),
-                SizedBox(height: AppTheme.cardPadding),
+                const SizedBox(height: AppTheme.cardPadding),
+                const Divider(),
+                const SizedBox(height: AppTheme.cardPadding),
                 Text(
                   "Alpha-Entwicklungsphase und Risiko:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "Diese App befindet sich in der Alpha-Entwicklungsphase. Das bedeutet, dass die App noch getestet wird und viele Änderungen und Aktualisierungen stattfinden können."
                       " Durch die Nutzung dieser App erklären Sie sich damit einverstanden, dass es zu unerwarteten Ausfällen und Fehlern kommen kann, die zu einem Verlust von Daten oder erworbenen Geldern führen können."
@@ -153,23 +153,23 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.start,
                 ),
-                SizedBox(height: AppTheme.cardPadding * 2),
+                const SizedBox(height: AppTheme.cardPadding * 2),
                 Text(
                   "Impressum",
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding / 2,
                 ),
-                Divider(),
-                SizedBox(
+                const Divider(),
+                const SizedBox(
                   height: AppTheme.cardPadding / 2,
                 ),
                 Text(
                   "Anbieter:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "BitNet GmbH",
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -186,14 +186,14 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                   "Deutschland",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Kontakt:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "Telefon: +49 17636384058",
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -202,26 +202,26 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                   "E-Mail: contact@mybitnet.com",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Verantwortlich für den Inhalt:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Text(
                   "Tobias Welti",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding,
                 ),
                 Text(
                   "Haftungsausschluss:",
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                SizedBox(height: AppTheme.elementSpacing / 2),
+                const SizedBox(height: AppTheme.elementSpacing / 2),
                 Column(
                   children: [
                     Text(
@@ -236,7 +236,7 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.start,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: AppTheme.elementSpacing / 2,
                     ),
                     Text(
@@ -247,7 +247,7 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                       textAlign: TextAlign.start,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: AppTheme.elementSpacing / 2,
                     ),
                     Text(
@@ -267,15 +267,15 @@ class AgbsAndImpressumScreen extends StatelessWidget {
                       textAlign: TextAlign.start,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    SizedBox(height: AppTheme.cardPadding * 2),
-                    Divider(),
+                    const SizedBox(height: AppTheme.cardPadding * 2),
+                    const Divider(),
                     Center(
                       child: Text(
                         "© BitNet 2023",
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
-                    SizedBox(height: AppTheme.cardPadding * 2),
+                    const SizedBox(height: AppTheme.cardPadding * 2),
                   ],
                 ),
               ],

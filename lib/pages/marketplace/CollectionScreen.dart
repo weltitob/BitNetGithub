@@ -13,7 +13,6 @@ import 'package:bitnet/components/marketplace_widgets/NftProductHorizontal.dart'
 import 'package:bitnet/components/marketplace_widgets/NftProductSliderClickable.dart';
 import 'package:bitnet/components/marketplace_widgets/OwnerDataText.dart';
 import 'package:bitnet/models/marketplace/modals.dart';
-import 'package:bitnet/pages/routetrees/marketplaceroutes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -178,7 +177,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: GlassContainer(
                     opacity: 0.05,
                     width: double.infinity,
@@ -196,7 +195,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                 .copyWith(color: AppTheme.colorBitcoin),
                           ),
                           Row(children: [
-                            Text("0.025"),
+                            const Text("0.025"),
                             Image.asset(
                               bitCoinIcon,
                               width: 15,
@@ -209,7 +208,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: GlassContainer(
                     opacity: 0.05,
                     width: double.infinity,
@@ -226,14 +225,14 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                 .titleSmall!
                                 .copyWith(color: AppTheme.colorBitcoin),
                           ),
-                          Text("500"),
+                          const Text("500"),
                         ],
                       ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: GlassContainer(
                     opacity: 0.05,
                     width: double.infinity,
@@ -251,7 +250,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                 .copyWith(color: AppTheme.colorBitcoin),
                           ),
                           Row(children: [
-                            Text("0.021"),
+                            const Text("0.021"),
                             Image.asset(
                               bitCoinIcon,
                               width: 15,
@@ -264,7 +263,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: GlassContainer(
                     opacity: 0.05,
                     width: double.infinity,
@@ -282,7 +281,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                 .copyWith(color: AppTheme.colorBitcoin),
                           ),
                           Row(children: [
-                            Text("1.0235"),
+                            const Text("1.0235"),
                             Image.asset(
                               bitCoinIcon,
                               width: 15,
@@ -295,7 +294,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: GlassContainer(
                     opacity: 0.05,
                     width: double.infinity,
@@ -312,14 +311,14 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                 .titleSmall!
                                 .copyWith(color: AppTheme.colorBitcoin),
                           ),
-                          Text("52"),
+                          const Text("52"),
                         ],
                       ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: GlassContainer(
                     opacity: 0.05,
                     width: double.infinity,
@@ -336,14 +335,14 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                 .titleSmall!
                                 .copyWith(color: AppTheme.colorBitcoin),
                           ),
-                          Text("1000"),
+                          const Text("1000"),
                         ],
                       ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: GlassContainer(
                     opacity: 0.05,
                     width: double.infinity,
@@ -360,17 +359,17 @@ class _CollectionScreenState extends State<CollectionScreen> {
                                 .titleSmall!
                                 .copyWith(color: AppTheme.colorBitcoin),
                           ),
-                          Text("250"),
+                          const Text("250"),
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Center(
                     child: Text("Inscriptions",
                         style: Theme.of(context).textTheme.headlineMedium)),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 64.0),
                   child: Row(
@@ -423,7 +422,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -680,29 +679,29 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                   margin: EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                   margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                     child: Column(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: AppTheme.elementSpacing/2,
                         ),
                         _buildHorizontalProductWithId(item_buy),
-                         SizedBox(
+                         const SizedBox(
                           height: AppTheme.elementSpacing/2,
                         ),
-                        BitNetListTile(
+                        const BitNetListTile(
                           text: 'Subtotal',
                           trailing: Text('0.5'),
                         ),
-                        BitNetListTile(
+                        const BitNetListTile(
                           text: 'Network Fee',
                           trailing: Text('0.5'),
                         ),
-                        BitNetListTile(
+                        const BitNetListTile(
                           text: 'Market Fee',
                           trailing: Text('0.5'),
                         ),
-                          BitNetListTile(
+                          const BitNetListTile(
                           text: 'Total Price',
                           trailing: Text('0.5'),
                         ),
@@ -714,7 +713,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                       SizedBox(height: AppTheme.cardPadding,),
+                       const SizedBox(height: AppTheme.cardPadding,),
                         LongButtonWidget(
                           title: "Purchase",
                           onTap: () {
@@ -722,7 +721,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           },
               
                         ),
-                        SizedBox(height: AppTheme.elementSpacing,),
+                        const SizedBox(height: AppTheme.elementSpacing,),
                         LongButtonWidget(
                           title: "Cancel",
                           onTap: () {
@@ -923,9 +922,9 @@ class SortingCategoryPopup extends StatelessWidget {
             child: Row(
               children: [
                 Text(currentSortingCategory,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontWeight: FontWeight.w600, color: Colors.white)),
-                Icon(Icons.arrow_drop_down_outlined)
+                const Icon(Icons.arrow_drop_down_outlined)
               ],
             ),
           )),
@@ -945,11 +944,11 @@ class SortingCategoryPopup extends StatelessWidget {
               width: 160,
               decoration: BoxDecoration(
                   color: AppTheme.colorGlassContainer,
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text("Recently Listed",
                     style: TextStyle(color: Colors.white)),
               )),
@@ -964,8 +963,8 @@ class SortingCategoryPopup extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.colorGlassContainer,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text("Rank", style: TextStyle(color: Colors.white)),
               )),
         ),
@@ -979,8 +978,8 @@ class SortingCategoryPopup extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.colorGlassContainer,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child:
                     Text("Lowest Price", style: TextStyle(color: Colors.white)),
               )),
@@ -995,8 +994,8 @@ class SortingCategoryPopup extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.colorGlassContainer,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text("Highest Price",
                     style: TextStyle(color: Colors.white)),
               )),
@@ -1011,8 +1010,8 @@ class SortingCategoryPopup extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.colorGlassContainer,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text("Lowest Inscription",
                     style: TextStyle(color: Colors.white)),
               )),
@@ -1026,11 +1025,11 @@ class SortingCategoryPopup extends StatelessWidget {
               width: 160,
               decoration: BoxDecoration(
                   color: AppTheme.colorGlassContainer,
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20))),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text("Highest Inscription",
                     style: TextStyle(color: Colors.white)),
               )),
@@ -1055,7 +1054,7 @@ class _CartSheetState extends State<CartSheet> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: AppTheme.elementSpacing),
+        const SizedBox(height: AppTheme.elementSpacing),
         Container(
           height: AppTheme.elementSpacing / 1.5,
           width: AppTheme.cardPadding * 2.25,
@@ -1065,10 +1064,10 @@ class _CartSheetState extends State<CartSheet> {
                 BorderRadius.circular(AppTheme.borderRadiusCircular),
           ),
         ),
-        SizedBox(height: AppTheme.elementSpacing * 0.75),
+        const SizedBox(height: AppTheme.elementSpacing * 0.75),
         Expanded(
           child: ClipRRect(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(32), topRight: Radius.circular(32)),
             child: Container(
               height: 600,
               child: MediaQuery.removePadding(
@@ -1120,31 +1119,31 @@ class _CartSheetState extends State<CartSheet> {
                                               );
                                             }),
                                       ),
-                                      Spacer(),
+                                      const Spacer(),
                                       Container(
                                         width: AppTheme.cardPadding * 10,
                                         child: Column(
                                           children: [
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [Text(L10n.of(context)!.subTotal), Text("0.024")],
+                                              children: [Text(L10n.of(context)!.subTotal), const Text("0.024")],
                                             ),
-                                            SizedBox(height: 10),
+                                            const SizedBox(height: 10),
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [Text(L10n.of(context)!.networkFee), Text("0.024")],
+                                              children: [Text(L10n.of(context)!.networkFee), const Text("0.024")],
                                             ),
-                                            SizedBox(height: 10),
+                                            const SizedBox(height: 10),
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [Text(L10n.of(context)!.marketFee), Text("0.024")],
+                                              children: [Text(L10n.of(context)!.marketFee), const Text("0.024")],
                                             ),
-                                            SizedBox(height: 10),
+                                            const SizedBox(height: 10),
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [Text(L10n.of(context)!.totalPrice), Text("0.024")],
+                                              children: [Text(L10n.of(context)!.totalPrice), const Text("0.024")],
                                             ),
-                                            SizedBox(height: 10),
+                                            const SizedBox(height: 10),
                                           ],
                                         ),
                                       ),

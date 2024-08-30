@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 class StrongMouseScrollPhysics extends ScrollPhysics {
   final double scrollSensitivity;
 
-  StrongMouseScrollPhysics({ScrollPhysics? parent, this.scrollSensitivity = 2.0})
+  const StrongMouseScrollPhysics({ScrollPhysics? parent, this.scrollSensitivity = 2.0})
       : super(parent: parent);
 
   @override

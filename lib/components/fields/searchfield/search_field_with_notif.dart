@@ -17,16 +17,15 @@ class SearchFieldWithNotificationsWidget extends StatefulWidget {
     required this.hintText,
     required this.isSearchEnabled,
     // required this.handleSearch,
-    this.onChanged, required this.focus, // Initialize it in the constructor
+    this.onChanged,
+    required this.focus, // Initialize it in the constructor
   }) : super(key: key);
 
   @override
-  _SearchFieldWithNotificationsWidgetState createState() =>
-      _SearchFieldWithNotificationsWidgetState();
+  _SearchFieldWithNotificationsWidgetState createState() => _SearchFieldWithNotificationsWidgetState();
 }
 
-class _SearchFieldWithNotificationsWidgetState
-    extends State<SearchFieldWithNotificationsWidget> {
+class _SearchFieldWithNotificationsWidgetState extends State<SearchFieldWithNotificationsWidget> {
   final TextEditingController _textFieldController = TextEditingController();
 
   @override
@@ -34,9 +33,7 @@ class _SearchFieldWithNotificationsWidgetState
     final controller = Get.find<FeedController>();
 
     return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppTheme.elementSpacing,
-          vertical: AppTheme.elementSpacing),
+      margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
       child: GlassContainer(
         borderRadius: AppTheme.cardRadiusSmall,
         child: Container(
@@ -51,7 +48,6 @@ class _SearchFieldWithNotificationsWidgetState
             children: [
               Expanded(
                 child: TextFormField(
-
                   enabled: widget.isSearchEnabled,
                   focusNode: widget.focus,
                   controller: _textFieldController,
@@ -63,67 +59,59 @@ class _SearchFieldWithNotificationsWidgetState
                   onChanged: widget.onChanged, // Use the onChanged callback
                   style: Theme.of(context).textTheme.bodyLarge,
                   decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(
+                      contentPadding: const EdgeInsets.all(
                         AppTheme.cardPadding / 100,
                       ),
-                      hintStyle:
-                          Theme.of(context).textTheme.bodySmall,
+                      hintStyle: Theme.of(context).textTheme.bodySmall,
                       hintText: widget.hintText,
                       prefixIcon: Icon(
                         Icons.search,
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? AppTheme.black60
-                            : AppTheme.white70,
+                        color: Theme.of(context).brightness == Brightness.light ? null : AppTheme.white70,
                       ),
                       suffixIcon: _textFieldController.text.isEmpty
                           ? IconButton(
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.paste_outlined,
                               ),
                               onPressed: () async {
-                                ClipboardData? clipboardData =
-                                    await Clipboard.getData(
-                                        Clipboard.kTextPlain);
+                                ClipboardData? clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
                                 if (clipboardData != null) {
-                                  _textFieldController.text =
-                                      clipboardData.text!;
+                                  _textFieldController.text = clipboardData.text!;
                                 }
                               },
                             )
                           : IconButton(
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.cancel,
                               ),
                               onPressed: () => _textFieldController.clear()),
                       border: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 0, style: BorderStyle.none),
-                          borderRadius: AppTheme.cardRadiusMid)),
+                          borderSide: const BorderSide(width: 0, style: BorderStyle.none), borderRadius: AppTheme.cardRadiusMid)),
                 ),
               ),
               PopupMenuButton<int>(
-                color: AppTheme.black80,
+                color: Theme.of(context).brightness == Brightness.light ? AppTheme.white80 : AppTheme.black80,
                 elevation: 2,
                 position: PopupMenuPosition.under,
-                offset: Offset(0, 16),
+                offset: const Offset(0, 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
                 itemBuilder: (BuildContext context) => [
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     child: Text("Notification 1"),
                     value: 0,
                   ),
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     child: Text("Notification 2"),
                     value: 1,
                   ),
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     child: Text("Notification 3"),
                     value: 2,
                   ),
-                  PopupMenuDivider(height: 1),
-                  PopupMenuItem(
+                  const PopupMenuDivider(height: 1),
+                  const PopupMenuItem(
                     child: Text("View All Notification"),
                     value: -1,
                   ),
@@ -133,9 +121,8 @@ class _SearchFieldWithNotificationsWidgetState
                     context.go('/feed/notification_screen_route');
                   }
                 },
-                icon: Icon(
-                  Icons.notifications,
-                  color: Colors.white,
+                icon: const Icon(
+                  Icons.notifications_none_outlined,
                 ),
               )
             ],

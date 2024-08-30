@@ -93,17 +93,17 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
       return bitnetScaffold(
         context: context,
         margin: isSuperSmallScreen
-            ? EdgeInsets.symmetric(horizontal: 0)
+            ? const EdgeInsets.symmetric(horizontal: 0)
             : EdgeInsets.symmetric(horizontal: (screenWidth / 2 - 250.w) < 0 ? 0 :screenWidth / 2 - 250.w),
         extendBodyBehindAppBar: true,
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: bitnetAppBar(
             text: L10n.of(context)!.confirmMnemonic,
             context: context,
             onTap: () {
               context.go('/authhome/login');
             },
-            actions: [PopUpLangPickerWidget()]),
+            actions: [const PopUpLangPickerWidget()]),
         body: MnemonicFieldWidget(
           mnemonicController: null,
           triggerMnemonicCheck: onSignInPressesd,

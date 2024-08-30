@@ -75,10 +75,10 @@ class AppRoutes {
   // Define your routes like this
   List<dynamic> get bottomnav_routes => [
         GoRoute(path: '/loading', builder: (ctx, state) => const LoadingViewAppStart()),
-         GoRoute(
-            path: '/report',
-            builder: (ctx, state) => const ReportMobile(),
-          ),
+        GoRoute(
+          path: '/report',
+          builder: (ctx, state) => const ReportMobile(),
+        ),
         GoRoute(
             path: '/qrscanner',
             builder: _dynamicTransition == null ? (ctx, state) => const QrScanner() : null,
@@ -88,9 +88,10 @@ class AppRoutes {
                 : null),
         GoRoute(
           path: '/error',
-          builder: _dynamicTransition == null ? (ctx, state) => ReceiveScreen() : null,
+          builder: _dynamicTransition == null ? (ctx, state) => const ReceiveScreen() : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(key: state.pageKey, child: ReceiveScreen(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) =>
+                  CustomTransitionPage(key: state.pageKey, child: const ReceiveScreen(), transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
@@ -102,8 +103,8 @@ class AppRoutes {
           },
         ),
         GoRoute(path: '/feed', builder: (ctx, state) => BottomNav(routerState: state), routes: [
-          GoRoute(path: kListScreenRoute, name: kListScreenRoute, builder: (ctx, state) => ListScreen()),
-          GoRoute(path: kNotificationScreenRoute, builder: (ctx, state) => NotificationScreen()),
+          GoRoute(path: kListScreenRoute, name: kListScreenRoute, builder: (ctx, state) => const ListScreen()),
+          GoRoute(path: kNotificationScreenRoute, builder: (ctx, state) => const NotificationScreen()),
           GoRoute(
             path: kCollectionScreenRoute + "/:collection_id",
             name: kCollectionScreenRoute,
@@ -186,7 +187,7 @@ class AppRoutes {
                   ),
                   GoRoute(
                     path: 'fearandgreed',
-                    builder: _dynamicTransition == null ? (ctx, state) => FearAndGreed() : null,
+                    builder: _dynamicTransition == null ? (ctx, state) => const FearAndGreed() : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
@@ -235,9 +236,9 @@ class AppRoutes {
             ),
             GoRoute(
               path: 'loop_screen',
-              builder: _dynamicTransition == null ? (ctx, state) => Loop() : null,
+              builder: _dynamicTransition == null ? (ctx, state) => const Loop() : null,
               pageBuilder: _dynamicTransition != null
-                  ? (ctx, state) => CustomTransitionPage(key: state.pageKey, child: Loop(), transitionsBuilder: _dynamicTransition!)
+                  ? (ctx, state) => CustomTransitionPage(key: state.pageKey, child: const Loop(), transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
@@ -257,7 +258,7 @@ class AppRoutes {
             ),
             GoRoute(
                 path: 'bitcoincard',
-                builder: _dynamicTransition == null ? (ctx, state) => BitcoinCardInformationScreen() : null,
+                builder: _dynamicTransition == null ? (ctx, state) => const BitcoinCardInformationScreen() : null,
                 pageBuilder: _dynamicTransition != null
                     ? (ctx, state) =>
                         CustomTransitionPage(key: state.pageKey, child: const BitcoinScreen(), transitionsBuilder: _dynamicTransition!)
@@ -276,10 +277,10 @@ class AppRoutes {
                 ]),
           ],
         ),
-        GoRoute(path: '/profile/:profileId', name: '/profile', builder: (ctx, state) => Profile(), routes: []),
+        GoRoute(path: '/profile/:profileId', name: '/profile', builder: (ctx, state) => const Profile(), routes: []),
         GoRoute(
           path: '/create',
-          builder: (ctx, state) => CreateAsset(),
+          builder: (ctx, state) => const CreateAsset(),
           routes: [
             GoRoute(
               name: 'finalize',
@@ -295,15 +296,15 @@ class AppRoutes {
 
         GoRoute(
           path: '/single_transaction',
-          builder: _dynamicTransition == null ? (ctx, state) => SingleTransactionScreen() : null,
+          builder: _dynamicTransition == null ? (ctx, state) => const SingleTransactionScreen() : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: SingleTransactionScreen(), transitionsBuilder: _dynamicTransition!)
+                  CustomTransitionPage(key: state.pageKey, child: const SingleTransactionScreen(), transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
           path: '/settings',
-          builder: (ctx, state) => Settings(),
+          builder: (ctx, state) => const Settings(),
           routes: _settingsRoutes,
         ),
 
@@ -323,7 +324,7 @@ class AppRoutes {
 
   List<GoRoute> get _authRoutes => [
         GoRoute(path: '/', builder: (ctx, state) => const LoadingViewAppStart()),
-        GoRoute(path: '/website', builder: (ctx, state) => WebsiteLandingPage(), routes: [
+        GoRoute(path: '/website', builder: (ctx, state) => const WebsiteLandingPage(), routes: [
           GoRoute(
             path: 'report',
             builder: (ctx, state) => const Report(),
@@ -346,7 +347,7 @@ class AppRoutes {
         ]),
         GoRoute(
           path: '/authhome',
-          builder: (ctx, state) => GetStartedScreen(),
+          builder: (ctx, state) => const GetStartedScreen(),
           routes: [
             GoRoute(
               path: 'pinverification',
@@ -354,7 +355,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: 'createaccount',
-                  builder: (ctx, state) => CreateAccount(),
+                  builder: (ctx, state) => const CreateAccount(),
                 ),
                 GoRoute(
                   path: 'mnemonicgen',
@@ -364,13 +365,13 @@ class AppRoutes {
             ),
             GoRoute(
               path: 'ionloading',
-              builder: (ctx, state) => IONLoadingScreen(
+              builder: (ctx, state) => const IONLoadingScreen(
                 loadingText: "Patience, please. We're validating your account on the blockchain...",
               ),
             ),
             GoRoute(
               path: 'login',
-              builder: (ctx, state) => ChooseRestoreScreen(),
+              builder: (ctx, state) => const ChooseRestoreScreen(),
               routes: [
                 GoRoute(
                   path: 'word_recovery',
@@ -378,15 +379,15 @@ class AppRoutes {
                 ),
                 GoRoute(
                   path: 'device_recovery',
-                  builder: (ctx, state) => OtherDeviceScreen(),
+                  builder: (ctx, state) => const OtherDeviceScreen(),
                 ),
                 GoRoute(
                   path: 'social_recovery',
-                  builder: (ctx, state) => SocialRecoveryScreen(),
+                  builder: (ctx, state) => const SocialRecoveryScreen(),
                   routes: [
                     GoRoute(
                       path: 'info_social_recovery',
-                      builder: (ctx, state) => InfoSocialRecoveryScreen(),
+                      builder: (ctx, state) => const InfoSocialRecoveryScreen(),
                     ),
                   ],
                 ),
@@ -409,16 +410,18 @@ class AppRoutes {
   List<GoRoute> get _settingsRoutes => [
         GoRoute(
           path: 'settings?tab=language',
-          builder: _dynamicTransition == null ? (ctx, state) => ChangeLanguage() : null,
+          builder: _dynamicTransition == null ? (ctx, state) => const ChangeLanguage() : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(key: state.pageKey, child: ChangeLanguage(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) =>
+                  CustomTransitionPage(key: state.pageKey, child: const ChangeLanguage(), transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
           path: 'settings?tab=currency',
-          builder: _dynamicTransition == null ? (ctx, state) => ChangeCurrency() : null,
+          builder: _dynamicTransition == null ? (ctx, state) => const ChangeCurrency() : null,
           pageBuilder: _dynamicTransition != null
-              ? (ctx, state) => CustomTransitionPage(key: state.pageKey, child: ChangeCurrency(), transitionsBuilder: _dynamicTransition!)
+              ? (ctx, state) =>
+                  CustomTransitionPage(key: state.pageKey, child: const ChangeCurrency(), transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
@@ -426,23 +429,23 @@ class AppRoutes {
           builder: _dynamicTransition == null ? (ctx, state) => const SettingsStyleView() : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: SettingsStyleView(), transitionsBuilder: _dynamicTransition!)
+                  CustomTransitionPage(key: state.pageKey, child: const SettingsStyleView(), transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
           path: 'settings?tab=invite_friends',
-          builder: _dynamicTransition == null ? (ctx, state) => InvitationSettingsPage() : null,
+          builder: _dynamicTransition == null ? (ctx, state) => const InvitationSettingsPage() : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: InvitationSettingsPage(), transitionsBuilder: _dynamicTransition!)
+                  CustomTransitionPage(key: state.pageKey, child: const InvitationSettingsPage(), transitionsBuilder: _dynamicTransition!)
               : null,
         ),
         GoRoute(
           path: 'settings?tab=security_own',
-          builder: _dynamicTransition == null ? (ctx, state) => SecuritySettingsPage() : null,
+          builder: _dynamicTransition == null ? (ctx, state) => const SecuritySettingsPage() : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) =>
-                  CustomTransitionPage(key: state.pageKey, child: SecuritySettingsPage(), transitionsBuilder: _dynamicTransition!)
+                  CustomTransitionPage(key: state.pageKey, child: const SecuritySettingsPage(), transitionsBuilder: _dynamicTransition!)
               : null,
         ),
       ];

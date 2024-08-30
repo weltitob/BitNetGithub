@@ -30,7 +30,7 @@ class buildLikeSpace extends StatefulWidget {
   final String username;
   final String postName;
 
-  buildLikeSpace({
+  const buildLikeSpace({
     required this.type,
     required this.targetId,
     required this.ownerId,
@@ -153,7 +153,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
         rocketsmap[currentUserId] = true;
         showheart = true;
       });
-      Timer(Duration(milliseconds: 500), () {
+      Timer(const Duration(milliseconds: 500), () {
         setState(() {
           showheart = false;
         });
@@ -211,7 +211,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
             children: [
               GestureDetector(
                 onTap: () => onCommentButtonPressed(),
-                child: Icon(
+                child: const Icon(
                   FontAwesomeIcons.comment,
                   size: 24,
                   color: Colors.grey,
@@ -221,7 +221,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
                 () => LikeButton(
                   isLiked: isLiked.value,
                   // likeCount: rocketcount,
-                  bubblesColor: BubblesColor(
+                  bubblesColor: const BubblesColor(
                     dotPrimaryColor: AppTheme.colorBitcoin,
                     dotSecondaryColor: AppTheme.colorBitcoin,
                   ),
@@ -283,7 +283,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
                           .update({'likes.did': true});
                       // addLikeToAcitivityFeed();
 
-                      Timer(Duration(milliseconds: 500), () {
+                      Timer(const Duration(milliseconds: 500), () {
                         setState(() {
                           showheart = false;
                           print('showheart false ');
@@ -296,7 +296,7 @@ class _buildLikeSpaceState extends State<buildLikeSpace> {
               ),
               GestureDetector(
                 onTap: handleSharePost,
-                child: Icon(
+                child: const Icon(
                   FontAwesomeIcons.share,
                   size: 22.5,
                   color: Colors.grey,

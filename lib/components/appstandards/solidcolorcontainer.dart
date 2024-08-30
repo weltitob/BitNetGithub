@@ -1,5 +1,4 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/components/appstandards/glasscontainerborder.dart';
 import 'package:flutter/material.dart';
 
 class SolidContainer extends StatelessWidget {

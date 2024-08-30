@@ -93,7 +93,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                           customHeight: AppTheme.cardPadding * 2,
                           customWidth: AppTheme.cardPadding * 5,
                           title: L10n.of(context)!.share,
-                          leadingIcon: Icon(Icons.share_rounded),
+                          leadingIcon: const Icon(Icons.share_rounded),
                           onTap: () {
                             Share.share(
                                 '${controller.qrCodeDataStringLightning}');
@@ -107,7 +107,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: AppTheme.cardPadding,
             ),
             BitNetListTile(
@@ -140,9 +140,9 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                             ? AppTheme.white60
                             : AppTheme.black80,
                       ),
-                      SizedBox(width: AppTheme.elementSpacing / 2),
+                      const SizedBox(width: AppTheme.elementSpacing / 2),
                       Text(start),
-                      if (qrCodeData.length > 8) Text('....'),
+                      if (qrCodeData.length > 8) const Text('....'),
                       Text(end),
                     ],
                   );
@@ -181,7 +181,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                           ? AppTheme.white60
                           : AppTheme.black80,
                     ),
-                    SizedBox(width: AppTheme.elementSpacing / 2),
+                    const SizedBox(width: AppTheme.elementSpacing / 2),
                     Text(
                       controller.satController.text == "0" ||
                               controller.satController.text.isEmpty
@@ -190,7 +190,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                     ),
                     controller.satController.text == "0" ||
                             controller.satController.text.isEmpty
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Icon(
                             getCurrencyIcon(
                               BitcoinUnits.SAT.name,

@@ -36,25 +36,21 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void _scrollListener() {
-    if (controller.scrollController.position.pixels ==
-            controller.scrollController.position.maxScrollExtent &&
-        !controller.assetsLoading) {
+    if (controller.scrollController.position.pixels == controller.scrollController.position.maxScrollExtent &&
+        !controller.assetsLoading.value) {
       _loadMoreData();
     }
   }
 
   Future<void> _loadMoreData() async {
-    if (controller.assetsLoading == false) {
-      setState(() {
-        controller.assetsLoading = true;
-      });
+    if (controller.assetsLoading.value == false) {
+      controller.assetsLoading.value = true;
+      await Future.delayed(const Duration(seconds: 1));
 
       // Call controller method to load more assets
       await controller.loadMoreAssets();
 
-      setState(() {
-        controller.assetsLoading = false;
-      });
+      controller.assetsLoading.value = false;
     }
   }
 
@@ -66,11 +62,15 @@ class _ProfileViewState extends State<ProfileView> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: controller.isUserLoading.value
             ? Center(child: dotProgress(context))
-            : ListView(
+            : CustomScrollView(
                 controller: controller.scrollController,
-                children: [
-                  ProfileHeader(),
-                  SizedBox(height: AppTheme.cardPadding * 0.75,),
+                slivers: [
+                  const SliverToBoxAdapter(child: const ProfileHeader()),
+                  const SliverToBoxAdapter(
+                    child: const SizedBox(
+                      height: AppTheme.cardPadding * 0.75,
+                    ),
+                  ),
                   Obx(() {
                     return controller.pages[controller.currentview.value];
                   }),
@@ -84,9 +84,7 @@ class _ProfileViewState extends State<ProfileView> {
             customWidth: AppTheme.cardPadding * 4,
             leadingIcon: Icon(
               FontAwesomeIcons.add,
-              color: Theme.of(context).brightness == Brightness.light
-                  ? AppTheme.black80
-                  : AppTheme.white80,
+              color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
             ),
             title: 'Add',
             onTap: () {
@@ -116,12 +114,10 @@ class _ProfileViewState extends State<ProfileView> {
             key: controller.globalKeyQR,
             child: Column(
               children: [
-                SizedBox(height: AppTheme.cardPadding * 4),
+                const SizedBox(height: AppTheme.cardPadding * 4),
                 Container(
-                  margin: EdgeInsets.all(AppTheme.cardPadding),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: AppTheme.cardRadiusSmall),
+                  margin: const EdgeInsets.all(AppTheme.cardPadding),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusSmall),
                   child: Padding(
                     padding: const EdgeInsets.all(AppTheme.elementSpacing),
                     child: PrettyQr(

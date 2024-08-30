@@ -1,4 +1,3 @@
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +18,7 @@ class _AnimatedTextState extends State<AnimatedText> with SingleTickerProviderSt
       child: 
       Text(
         widget.text,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       )
       // Marquee(
       //   text: widget.text,

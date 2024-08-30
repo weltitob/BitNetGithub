@@ -11,7 +11,7 @@ requestClientSecret(String amount, String currency) async {
   final callable = functions.httpsCallable(
     'request_stripe_clientsecret',
     options: HttpsCallableOptions(
-      timeout: Duration(minutes: 10),  // Increase the timeout duration
+      timeout: const Duration(minutes: 10),  // Increase the timeout duration
       limitedUseAppCheckToken: true,
     ),
   );

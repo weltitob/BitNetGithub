@@ -35,7 +35,7 @@ class OurTeamView extends StatelessWidget {
         return bitnetScaffold(
           extendBodyBehindAppBar: true,
 
-          appBar: bitnetWebsiteAppBar(),
+          appBar: const bitnetWebsiteAppBar(),
           body: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -113,7 +113,7 @@ class OurTeamView extends StatelessWidget {
             ),
           ),
         );
-        rows.add(SizedBox(height: AppTheme.cardPadding)); // Add spacing between rows
+        rows.add(const SizedBox(height: AppTheme.cardPadding)); // Add spacing between rows
         itemsInRow = [];
       }
     }

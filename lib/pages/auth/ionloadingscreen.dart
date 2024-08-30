@@ -47,7 +47,7 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(height: AppTheme.elementSpacing),
+                  const SizedBox(height: AppTheme.elementSpacing),
                   Container(
                     color: Colors.transparent,
                     height: AppTheme.cardPadding * 10,
@@ -85,7 +85,7 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
                     ),
                     Container(
                       margin:
-                          EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                          const EdgeInsets.only(left: AppTheme.elementSpacing / 2),
                       height: AppTheme.cardPadding * 2,
                       child: Image.asset("assets/images/ion.png"),
                     ),

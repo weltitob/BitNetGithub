@@ -24,7 +24,7 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 
 class BitcoinAddressInformationScreen extends StatefulWidget {
-  BitcoinAddressInformationScreen({super.key, required this.state});
+  const BitcoinAddressInformationScreen({super.key, required this.state});
   final GoRouterState state;
   @override
   State<BitcoinAddressInformationScreen> createState() => _BitcoinAddressInformationScreenState();
@@ -36,107 +36,98 @@ class _BitcoinAddressInformationScreenState extends State<BitcoinAddressInformat
   final homeController = Get.put(HomeController());
   bool isLoadingAddress = false;
   late ScrollController scrollController;
-  List<TransactionItem> transactions = List.empty(growable:true);
+  List<TransactionItem> transactions = List.empty(growable: true);
 
   @override
   void initState() {
     scrollController = ScrollController();
     String address = widget.state.pathParameters['address']!;
     controller.getAddressComponent(widget.state.pathParameters['address']).then((val) {
+      //find and initialize specific transactions
+      setState(() {});
+      final homeController = Get.find<HomeController>();
 
-    //find and initialize specific transactions
+      for (int index = 0; index < controller.subTransactionModel.length; index++) {
+        int confirmation = 0;
+        int height = controller.subTransactionModel[index].status?.blockHeight ?? 0;
+        int chainTip = homeController.bitcoinData.first.height ?? 0;
+        confirmation = max(1, chainTip - height + 1);
+        num bitCoin = controller.subTransactionModel[index].fee! / 100000000;
+        String feeUsd = (bitCoin * usdPrice).toStringAsFixed(2);
+        String time = controller.subTransactionModel[index].status?.blockTime == null
+            ? ''
+            : DateTime.fromMillisecondsSinceEpoch(controller.subTransactionModel[index].status!.blockTime!.toInt() * 1000).toString();
+        DateTime? timeDate = controller.subTransactionModel[index].status?.blockTime == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(controller.subTransactionModel[index].status!.blockTime!.toInt() * 1000);
+        int value = controller.calculateAddressValue(controller.subTransactionModel[index]);
 
-                                          final homeController =
-                                              Get.find<HomeController>();
-                                
-for (int index = 0; index < controller.subTransactionModel.length; index++) {
-  int confirmation = 0;
-  int height = controller.subTransactionModel[index].status?.blockHeight ?? 0;
-  int chainTip = homeController.bitcoinData.first.height ?? 0;
-  confirmation = max(1, chainTip - height + 1);
-  num bitCoin = controller.subTransactionModel[index].fee! / 100000000;
-  String feeUsd = (bitCoin * usdPrice).toStringAsFixed(2);
-  String time = controller.subTransactionModel[index].status?.blockTime == null
-      ? ''
-      : DateTime.fromMillisecondsSinceEpoch(
-          controller.subTransactionModel[index].status!.blockTime!.toInt() * 1000)
-          .toString();
-  DateTime? timeDate = controller.subTransactionModel[index].status?.blockTime == null
-      ? null
-      : DateTime.fromMillisecondsSinceEpoch(
-          controller.subTransactionModel[index].status!.blockTime!.toInt() * 1000)
-          ;
-  int value = controller.calculateAddressValue(controller.subTransactionModel[index]);
+        if (controller.subTransactionModel[index].status?.blockTime != null) {
+          List<String> date = time.split(" ");
+          String singleDate = date[0];
+          String times = date[1];
+          List<String> splitTime = times.split(":");
 
-  if (controller.subTransactionModel[index].status?.blockTime != null) {
-    List<String> date = time.split(" ");
-    String singleDate = date[0];
-    String times = date[1];
-    List<String> splitTime = times.split(":");
+          String hour = splitTime[0];
+          String min = splitTime[1];
+          time = '$singleDate $hour:$min';
+        }
 
-    String hour = splitTime[0];
-    String min = splitTime[1];
-    time = '$singleDate $hour:$min';
-  }
+        // Initialize variables for amounts and addresses
+        num totalReceived = 0;
+        num totalSent = 0;
+        String otherAddress = '';
 
-  // Initialize amounts and addresses
-  num totalInput = 0;
-  num totalOutput = 0;
-  String? otherAddress;
+        for (var vin in controller.subTransactionModel[index].vin!) {
+          if (vin.prevout != null && vin.prevout!.value != null) {
+            // Check if the input is from our address
+            if (vin.prevout?.scriptpubkeyAddress == address) {
+              totalSent += vin.prevout!.value!;
+            }
+          }
+        }
 
-  for (var vin in controller.subTransactionModel[index].vin!) {
-    if (vin.prevout != null && vin.prevout!.value != null) {
-      totalInput += vin.prevout!.value!;
-      // Find the address from prevout (if available)
-      if (vin.prevout?.scriptpubkeyAddress != address) {
-        otherAddress = vin.prevout?.scriptpubkeyAddress;
+        for (var vout in controller.subTransactionModel[index].vout!) {
+          if (vout.value != null) {
+            // Check if the output is to our address
+            if (vout.scriptpubkeyAddress == address) {
+              totalReceived += vout.value!;
+            } else if (vout.scriptpubkeyAddress != null) {
+              otherAddress = vout.scriptpubkeyAddress!;
+            }
+          }
+        }
+
+// Determine the net amount and direction
+        num amount = totalReceived - totalSent;
+        TransactionDirection direction;
+
+        if (amount >= 0) {
+          direction = TransactionDirection.received;
+        } else {
+          direction = TransactionDirection.sent;
+        }
+
+        transactions.add(TransactionItem(
+            context: context,
+            data: TransactionItemData(
+              timestamp: timeDate != null ? (timeDate.millisecondsSinceEpoch ~/ 1000) : 0,
+              type: TransactionType.onChain,
+              direction: direction,
+              txHash: controller.subTransactionModel[index].txid ?? '',
+              amount: amount.toString(), // Format the amount as needed
+              fee: controller.subTransactionModel[index].fee ?? 0,
+              status:
+                  controller.subTransactionModel[index].status?.confirmed ?? false ? TransactionStatus.confirmed : TransactionStatus.failed,
+              receiver: otherAddress ?? 'Unknown', // Handle case where address might not be found
+              // other properties
+            )));
       }
-    }
-  }
-
-  // Calculate total output amount and find addresses
-  for (var vout in controller.subTransactionModel[index].vout!) {
-    if (vout.value != null) {
-      totalOutput += vout.value!;
-      // Find the address from vout (if available)
-      if (vout.scriptpubkeyAddress != address) {
-        otherAddress = vout.scriptpubkeyAddress;
-      }
-    }
-  }
-
-  // Determine the amount and direction
-  num amount = totalOutput - totalInput;
-  TransactionDirection direction;
-
-  if (amount >= 0) {
-    direction = TransactionDirection.received;
-  } else {
-    direction = TransactionDirection.sent;
-  }
-
-  transactions.add(TransactionItem(
-    context: context,
-    data: TransactionItemData(
-      timestamp: timeDate != null ? (timeDate.millisecondsSinceEpoch ~/ 1000) : 0,
-      type: TransactionType.onChain,
-      direction: direction,
-      txHash: controller.subTransactionModel[index].txid ?? '',
-      amount: amount.toStringAsFixed(8), // Format the amount as needed
-      fee: controller.subTransactionModel[index].fee ?? 0,
-      status: controller.subTransactionModel[index].status?.confirmed ?? false
-          ? TransactionStatus.confirmed
-          : TransactionStatus.failed,
-      receiver: otherAddress ?? 'Unknown', // Handle case where address might not be found
-      // other properties
-    )
-  ));
-}
-
     });
 
     super.initState();
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -146,7 +137,16 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
   @override
   Widget build(BuildContext context) {
     String address = widget.state.pathParameters['address']!;
-    double balance =  widget.state.extra! as double != -1 ? CurrencyConverter.convertSatoshiToBTC((widget.state.extra! as double)) : ((controller.addressComponentModel?.chainStats.fundedTxoSum ?? 0) + (controller.addressComponentModel?.mempoolStats.fundedTxoSum ?? 0) - (controller.addressComponentModel?.chainStats.spentTxoSum ?? 0) + (controller.addressComponentModel?.mempoolStats.spentTxoSum ?? 0)).toDouble() / 100000000.0;
+    double balance =
+        // widget.state.extra! as double != -1
+        //     ? CurrencyConverter.convertSatoshiToBTC((widget.state.extra! as double))
+        //     :
+        ((controller.addressComponentModel?.chainStats.fundedTxoSum ?? 0) +
+                    (controller.addressComponentModel?.mempoolStats.fundedTxoSum ?? 0) -
+                    (controller.addressComponentModel?.chainStats.spentTxoSum ?? 0) +
+                    (controller.addressComponentModel?.mempoolStats.spentTxoSum ?? 0))
+                .toDouble() /
+            100000000.0;
     String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
     final chartLine = Get.find<WalletsController>().chartLines.value;
@@ -166,11 +166,11 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
       context: context,
       body: Obx(
         () => controller.isLoadingAddress.value
-            ?  Center(
+            ? Center(
                 child: dotProgress(context),
               )
             : CustomScrollView(
-              controller: scrollController,
+                controller: scrollController,
                 slivers: [
                   SliverToBoxAdapter(
                     child: Container(
@@ -180,7 +180,7 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
                   SliverToBoxAdapter(
                     child: RepaintBoundary(
                       child: Container(
-                        margin: const EdgeInsets.all(AppTheme.cardPadding ),
+                        margin: const EdgeInsets.all(AppTheme.cardPadding),
                         child: CustomPaint(
                           foregroundPainter: Theme.of(context).brightness == Brightness.light ? BorderPainterBlack() : BorderPainter(),
                           child: Container(
@@ -215,9 +215,8 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
                       ),
                     ),
                   ),
-
-                  SliverToBoxAdapter(
-                    child: const SizedBox(height: AppTheme.elementSpacing),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppTheme.elementSpacing),
                   ),
                   SliverToBoxAdapter(
                     child: BitNetListTile(
@@ -232,8 +231,8 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: const SizedBox(height: 5),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 5),
                   ),
                   SliverToBoxAdapter(
                     child: BitNetListTile(
@@ -248,8 +247,8 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: const SizedBox(height: 5),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 5),
                   ),
                   SliverToBoxAdapter(
                     child: BitNetListTile(
@@ -269,8 +268,8 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: const SizedBox(height: AppTheme.elementSpacing),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppTheme.elementSpacing),
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
@@ -285,9 +284,14 @@ for (int index = 0; index < controller.subTransactionModel.length; index++) {
                       ),
                     ),
                   ),
-                  Transactions(hideLightning: true, hideOnchain: true, filters: [L10n.of(context)!.onchain], customTransactions: transactions,scrollController: scrollController),
-                  SliverToBoxAdapter(
-                    child: const SizedBox(height: 20),
+                  Transactions(
+                      hideLightning: true,
+                      hideOnchain: true,
+                      filters: [L10n.of(context)!.onchain],
+                      customTransactions: transactions,
+                      scrollController: scrollController),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 20),
                   ),
                 ],
               ),

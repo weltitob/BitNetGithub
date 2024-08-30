@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 Future<int> _userCountFrom7DaysAgo() async {
   LoggerService logger = Get.find();
   logger.i("usercount 7 days ago called");
-  DateTime sevenDaysAgo = DateTime.now().subtract(Duration(days: 7));
+  DateTime sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
   var snapshot = await usersCollection.where('createdAt', isLessThanOrEqualTo: sevenDaysAgo).get();
   logger.e("Error: usercount 7 days ago cant work now because of deleted users // createdAt is not there yet");
   return snapshot.size;

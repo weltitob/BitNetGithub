@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/settings/setting_keys.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -156,7 +155,7 @@ class WebBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return MediaQuery(
       data: cloneMediaQueryWithSize(
-          MediaQueryData.fromView(View.of(context)), Size(375, 812)),
+          MediaQueryData.fromView(View.of(context)), const Size(375, 812)),
       child: Container(
           width: double.infinity,
           height: double.infinity,

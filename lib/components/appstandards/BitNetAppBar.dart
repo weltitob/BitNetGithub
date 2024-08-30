@@ -17,7 +17,7 @@ class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget {
   final IconData? customIcon;
   final ButtonType? buttonType;
 
-  bitnetAppBar(
+  const bitnetAppBar(
       {required this.context,
       this.onTap,
       this.hasBackButton = true,
@@ -32,7 +32,7 @@ class bitnetAppBar extends StatefulWidget implements PreferredSizeWidget {
   _BitnetAppBarState createState() => _BitnetAppBarState();
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 class _BitnetAppBarState extends State<bitnetAppBar> {
@@ -47,8 +47,7 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
 
     // Define breakpoint values for responsive layout.
     bool isSuperSmallScreen = width < AppTheme.isSuperSmallScreen;
-    bool isSmallScreen =
-        width < AppTheme.isSmallScreen; // Example breakpoint for small screens
+    bool isSmallScreen = width < AppTheme.isSmallScreen; // Example breakpoint for small screens
     bool isMidScreen = width < AppTheme.isMidScreen;
     bool isIntermediateScreen = width < AppTheme.isIntermediateScreen;
 
@@ -75,10 +74,7 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
       title: widget.customTitle ??
           (widget.text != null
               ? animateText
-                  ? Container(
-                      width: AppTheme.cardPadding * 10,
-                      height: AppTheme.cardPadding,
-                      child: AnimatedText(text: widget.text!))
+                  ? Container(width: AppTheme.cardPadding * 10, height: AppTheme.cardPadding, child: AnimatedText(text: widget.text!))
                   : Container(
                       key: _textKey,
                       padding: EdgeInsets.symmetric(horizontal: centerSpacing),
@@ -119,8 +115,7 @@ class _BitnetAppBarState extends State<bitnetAppBar> {
   }
 
   void _checkOverflow() {
-    final RenderBox? renderBox =
-        _textKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? renderBox = _textKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox != null && renderBox.hasSize) {
       final double textWidth = renderBox.size.width;
 

@@ -18,19 +18,19 @@ class CustomTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(width: AppTheme.elementSpacing / 2),
+        const SizedBox(width: AppTheme.elementSpacing / 2),
         Avatar(
           mxContent: mxContent,
           size: 30,
           isNft: false,
         ),
-        SizedBox(width: AppTheme.elementSpacing / 2),
+        const SizedBox(width: AppTheme.elementSpacing / 2),
         Text(
           text,
           style: AppTheme.textTheme.titleMedium!
               .copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(width: AppTheme.elementSpacing),
+        const SizedBox(width: AppTheme.elementSpacing),
       ],
     );
   }

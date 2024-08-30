@@ -193,7 +193,7 @@ class _AmountWidgetState extends State<AmountWidget> {
                               }
                             },
                             maxLength: widget.lowerBound != null ? 20 : 10,
-                            keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             inputFormatters: [
                               if (widget.boundType != null) ...[
                                 BoundInputFormatter(
@@ -313,7 +313,7 @@ class _AmountWidgetState extends State<AmountWidget> {
               // ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: AppTheme.elementSpacing,
           ),
           // A Center widget with a child of bitcoinToMoneyWidget()

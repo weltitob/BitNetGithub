@@ -197,7 +197,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
           ),
           Text(
             text2,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
               fontSize: 16,
@@ -225,11 +225,11 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
                   fontSize: 12,
                 ),
               ),
-              Padding(
+              const Padding(
                   padding: EdgeInsets.only(
                     left: 5,
                   )),
-              Text(
+              const Text(
                 "\$20.11",
                 style: TextStyle(
                   color: Colors.white,
@@ -250,14 +250,14 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.trending_down,
                         color: Colors.white,
                         size: 14,
                       ),
-                      Padding(padding: EdgeInsets.only(left: 5)),
+                      const Padding(padding: EdgeInsets.only(left: 5)),
                       Text(L10n.of(context)!.bear,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,
                               fontWeight: FontWeight.bold)),
@@ -291,7 +291,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
             children: [
               Text(
                 minstring,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
@@ -303,13 +303,13 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: Colors.grey,
                       inactiveTrackColor: Colors.grey,
-                      trackShape: RectangularSliderTrackShape(),
+                      trackShape: const RectangularSliderTrackShape(),
                       trackHeight: 3.0,
                       thumbColor: max / 2 > 2//widget.coin.quoteModel.usdModel.price.toDouble()
                           ? Colors.redAccent
                           : Colors.greenAccent,
                       thumbShape:
-                      RoundSliderThumbShape(enabledThumbRadius: 5.0),
+                      const RoundSliderThumbShape(enabledThumbRadius: 5.0),
                       overlayColor: max / 2 > 2// widget.coin.quoteModel.usdModel.price.toDouble()
                           ? Colors.red.withAlpha(32)
                           : Colors.green.withAlpha(32),
@@ -324,7 +324,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
               ),
               Text(
                 maxstring,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
@@ -362,7 +362,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
                 ),
                 Text(
                   text2,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
@@ -371,7 +371,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
               ],
             ),
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
+          const Padding(padding: EdgeInsets.symmetric(horizontal: 7.5)),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -386,7 +386,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
                 ),
                 Text(
                   text4,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
@@ -426,7 +426,7 @@ class _buildKeymetricsState extends State<buildKeymetrics> {
         alignment: Alignment.center,
         child: Text(
           L10n.of(context)!.seeMore,
-          style: TextStyle(
+          style: const TextStyle(
             decoration: TextDecoration.underline,
             color: Colors.blue,
             fontWeight: FontWeight.w500,

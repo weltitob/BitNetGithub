@@ -72,9 +72,9 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
             return Column(
               children: [
                 BitNetListTile(
-                  leading: Icon(Icons.share_outlined),
+                  leading: const Icon(Icons.share_outlined),
                   text: L10n.of(context)!.inviteContact,
-                  trailing: Icon(
+                  trailing: const Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: AppTheme.iconSize * 0.75,
                   ),
@@ -90,7 +90,7 @@ class _InvitationSettingsPageState extends State<InvitationSettingsPage> {
                 ),
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     final verificationkey = snapshot.data![index];
@@ -154,12 +154,12 @@ class _KeyItemState extends State<_KeyItem> {
             },
       child: Container(
         height: AppTheme.cardPadding * 2,
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
           horizontal: AppTheme.cardPadding * 1.5,
         ).copyWith(
           bottom: AppTheme.cardPadding,
         ),
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: AppTheme.cardPadding,
         ),
         decoration: BoxDecoration(
@@ -175,10 +175,10 @@ class _KeyItemState extends State<_KeyItem> {
                     color: Theme.of(context).colorScheme.onSecondaryContainer,
                     size: AppTheme.iconSize,
                   ),
-            SizedBox(width: AppTheme.cardPadding),
+            const SizedBox(width: AppTheme.cardPadding),
             Text(widget.verificationkey.code,
                 style: Theme.of(context).textTheme.titleSmall),
-            Spacer(),
+            const Spacer(),
             widget.verificationkey.used
                 ? Text("used", style: Theme.of(context).textTheme.titleSmall)
                 : Text(_free, style: Theme.of(context).textTheme.titleSmall),

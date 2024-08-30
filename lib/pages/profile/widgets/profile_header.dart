@@ -1,7 +1,10 @@
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
 import 'package:bitnet/components/container/avatar.dart';
-import 'package:bitnet/components/dialogsandsheets/dialogs/dialogs.dart';
+import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/center_widget.dart';
@@ -11,6 +14,7 @@ import 'package:bitnet/pages/profile/widgets/setting_button.dart';
 import 'package:bitnet/pages/profile/widgets/user_information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -39,7 +43,7 @@ class ProfileHeader extends StatelessWidget {
                       ),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.25),
+                        Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.25),
                         BlendMode.dstATop,
                       ),
                     ),
@@ -62,78 +66,141 @@ class ProfileHeader extends StatelessWidget {
                                         print('follow dagelassen lol');
                                       }
                                     : () {
-                                        showDialogueMultipleOptions(
-                                          isActives: [
-                                            true,
-                                            true,
-                                            true,
-                                            true,
-                                          ],
-                                          actions: [
-                                            (ctx) async {
-                                              Navigator.pop(ctx);
-                                              final PermissionState ps = await PhotoManager.requestPermissionExtend();
-                                              if (!ps.isAuth && !ps.hasAccess) {
-                                                showOverlay(context, 'please give the app photo access to continue.',
-                                                    color: AppTheme.errorColor);
-                                                return;
-                                              }
-                                              ImagePickerNftMixedBottomSheet(context,
-                                                  onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
-                                                if (image != null) {
-                                                  await controller.handleProfileImageSelected(image);
-                                                } else if (pair != null) {
-                                                  await controller.handleProfileNftSelected(pair);
-                                                }
-                                                Navigator.pop(context);
-                                              });
-                                            },
-                                            (ctx) async {
-                                              Navigator.pop(ctx);
-                                              final PermissionState ps = await PhotoManager.requestPermissionExtend();
-                                              if (!ps.isAuth && !ps.hasAccess) {
-                                                showOverlay(context, 'please give the app photo access to continue.',
-                                                    color: AppTheme.errorColor);
-                                                return;
-                                              }
-                                              ImagePickerNftMixedBottomSheet(context,
-                                                  onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
-                                                if (image != null) {
-                                                  await controller.handleBackgroundImageSelected(image);
-                                                } else if (pair != null) {
-                                                  await controller.handleBackgroundNftSelected(pair);
-                                                }
-                                                Navigator.pop(context);
-                                              });
-                                            },
-                                          ],
-                                          images: [
-                                            'assets/images/bitcoin.png',
-                                            'assets/images/bitcoin.png',
-                                          ],
-                                          texts: [
-                                            'Profile Picture',
-                                            'Background',
-                                          ],
+                                        BitNetBottomSheet(
+                                          height: MediaQuery.of(context).size.height * 0.6,
                                           context: context,
+                                          child: bitnetScaffold(
+                                            extendBodyBehindAppBar: true,
+                                            context: context,
+                                            appBar: bitnetAppBar(
+                                              hasBackButton: false,
+                                              context: context,
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                              },
+                                              text: 'Change Images',
+                                            ),
+                                            body: Stack(
+                                              children: [
+                                                Container(
+                                                  child: const Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        height: AppTheme.cardPadding * 4,
+                                                      ),
+                                                      Icon(
+                                                        FontAwesomeIcons.image,
+                                                        size: AppTheme.cardPadding * 4,
+                                                      ),
+                                                      Padding(
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: AppTheme.cardPadding, vertical: AppTheme.cardPadding * 2),
+                                                        child: Text(
+                                                          "Here you can change your profile picture or background image.",
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                BottomButtons(
+                                                    leftButtonTitle: "Change Profile Picture",
+                                                    rightButtonTitle: "Change Background Image",
+                                                    onLeftButtonTap: () async {
+                                                      Navigator.pop(context);
+                                                      final PermissionState ps = await PhotoManager.requestPermissionExtend();
+                                                      if (!ps.isAuth && !ps.hasAccess) {
+                                                        showOverlay(context, 'please give the app photo access to continue.',
+                                                            color: AppTheme.errorColor);
+                                                        return;
+                                                      }
+                                                      ImagePickerNftMixedBottomSheet(context, onImageTap:
+                                                          (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
+                                                        if (image != null) {
+                                                          await controller.handleProfileImageSelected(image);
+                                                        } else if (pair != null) {
+                                                          await controller.handleProfileNftSelected(pair);
+                                                        }
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    onRightButtonTap: () async {
+                                                      Navigator.pop(context);
+                                                      final PermissionState ps = await PhotoManager.requestPermissionExtend();
+                                                      if (!ps.isAuth && !ps.hasAccess) {
+                                                        showOverlay(context, 'please give the app photo access to continue.',
+                                                            color: AppTheme.errorColor);
+                                                        return;
+                                                      }
+                                                      ImagePickerNftMixedBottomSheet(context, onImageTap:
+                                                          (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
+                                                        if (image != null) {
+                                                          await controller.handleBackgroundImageSelected(image);
+                                                        } else if (pair != null) {
+                                                          await controller.handleBackgroundNftSelected(pair);
+                                                        }
+                                                        Navigator.pop(context);
+                                                      });
+                                                    })
+                                              ],
+                                            ),
+                                          ),
                                         );
+                                        // showDialogueMultipleOptions(
+                                        //   isActives: [
+                                        //     true,
+                                        //     true,
+                                        //     true,
+                                        //     true,
+                                        //   ],
+                                        //   actions: [
+                                        //     (ctx) async {
+
+                                        //     (ctx) async {
+                                        // Navigator.pop(ctx);
+                                        // final PermissionState ps = await PhotoManager.requestPermissionExtend();
+                                        // if (!ps.isAuth && !ps.hasAccess) {
+                                        //   showOverlay(context, 'please give the app photo access to continue.',
+                                        //       color: AppTheme.errorColor);
+                                        //   return;
+                                        // }
+                                        // ImagePickerNftMixedBottomSheet(context,
+                                        //     onImageTap: (AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair) async {
+                                        //   if (image != null) {
+                                        //     await controller.handleBackgroundImageSelected(image);
+                                        //   } else if (pair != null) {
+                                        //     await controller.handleBackgroundNftSelected(pair);
+                                        //   }
+                                        //   Navigator.pop(context);
+                                        // });
+                                        //     },
+                                        //   ],
+                                        //   images: [
+                                        //     'assets/images/bitcoin.png',
+                                        //     'assets/images/bitcoin.png',
+                                        //   ],
+                                        //   texts: [
+                                        //     'Profile Picture',
+                                        //     'Background',
+                                        //   ],
+                                        //   context: context,
+                                        // );
                                       },
-                                child:
-                                    Obx(
-                                      () => Avatar(
-                                        mxContent: Uri.parse(controller.userData.value.profileImageUrl),
-                                        size: AppTheme.cardPadding * 5.25.h,
-                                        type: profilePictureType.lightning, isNft: controller.userData.value.nft_profile_id.isNotEmpty,
-                                        cornerWidget: controller.currentview.value == 2? ProfileButton() : null,
-                                      ),
-                                    ),
-                                   
+                                child: Obx(
+                                  () => Avatar(
+                                    mxContent: Uri.parse(controller.userData.value.profileImageUrl),
+                                    size: AppTheme.cardPadding * 5.25.h,
+                                    type: profilePictureType.lightning,
+                                    isNft: controller.userData.value.nft_profile_id.isNotEmpty,
+                                    cornerWidget: controller.currentview.value == 2 ? const ProfileButton() : null,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      UserInformation(),
+                      const UserInformation(),
                       SizedBox(height: AppTheme.cardPadding * 1.5.h),
                     ],
                   ),
@@ -144,9 +211,9 @@ class ProfileHeader extends StatelessWidget {
               ),
             ],
           ),
-          SettingsButton(),
+          const SettingsButton(),
           QrButton(),
-          CenterWidget(),
+          const CenterWidget(),
         ]),
       ],
     );

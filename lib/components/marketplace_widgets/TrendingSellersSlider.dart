@@ -35,7 +35,7 @@ class TrendingSellersSlider extends StatelessWidget {
           child: Stack(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(AppTheme.cardPadding),
                   topLeft: Radius.circular(AppTheme.cardPadding),
                 ),

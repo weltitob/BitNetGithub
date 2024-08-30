@@ -16,7 +16,7 @@ class SettingsStyleView extends GetWidget<SettingsController> {
   @override
   Widget build(BuildContext context) {
     const colorPickerSize = AppTheme.cardPadding * 1.5;
-    
+
     return bitnetScaffold(
       extendBodyBehindAppBar: true,
       context: context,
@@ -35,7 +35,7 @@ class SettingsStyleView extends GetWidget<SettingsController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 3,
               ),
               Text(
@@ -43,7 +43,7 @@ class SettingsStyleView extends GetWidget<SettingsController> {
                 textAlign: TextAlign.start,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.elementSpacing,
               ),
               SizedBox(
@@ -54,11 +54,9 @@ class SettingsStyleView extends GetWidget<SettingsController> {
                   children: controller.customColors
                       .map(
                         (color) => Padding(
-                          padding:
-                              const EdgeInsets.all(AppTheme.elementSpacing),
+                          padding: const EdgeInsets.all(AppTheme.elementSpacing),
                           child: InkWell(
-                            borderRadius:
-                                BorderRadius.circular(colorPickerSize),
+                            borderRadius: BorderRadius.circular(colorPickerSize),
                             onTap: () {
                               controller.setChatColor(color, context);
                             },
@@ -66,33 +64,20 @@ class SettingsStyleView extends GetWidget<SettingsController> {
                                 ? GestureDetector(
                                     onTap: () => showColorPickerDialouge(
                                       actionright: () {
-                                        controller.setChatColor(
-                                            controller.pickerColor.value,
-                                            context);
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
+                                        controller.setChatColor(controller.pickerColor.value, context);
+                                        Navigator.of(context, rootNavigator: true).pop();
                                       },
                                       actionleft: () {
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
+                                        Navigator.of(context, rootNavigator: true).pop();
                                       },
-                                      pickerColor:
-                                          controller.currentColor(context) ??
-                                              Colors.white,
+                                      pickerColor: controller.currentColor(context) ?? Colors.white,
                                       context: context,
                                       onColorChanged: controller.changeColor,
                                     ),
                                     child: Material(
-                                      elevation:
-                                          AppTheme.colorSchemeSeed?.value ==
-                                                  null
-                                              ? 100
-                                              : 0,
+                                      elevation: AppTheme.colorSchemeSeed?.value == null ? 100 : 0,
                                       shadowColor: AppTheme.colorSchemeSeed,
-                                      borderRadius: BorderRadius.circular(
-                                          colorPickerSize),
+                                      borderRadius: BorderRadius.circular(colorPickerSize),
                                       child: Image.asset(
                                         'assets/colors.png',
                                         width: colorPickerSize,
@@ -105,20 +90,18 @@ class SettingsStyleView extends GetWidget<SettingsController> {
                                     : Material(
                                         color: color,
                                         elevation: 6,
-                                        borderRadius: BorderRadius.circular(
-                                            colorPickerSize),
+                                        borderRadius: BorderRadius.circular(colorPickerSize),
                                         child: SizedBox(
                                           width: colorPickerSize,
                                           height: colorPickerSize,
-                                          child:
-                                              controller.currentColor == color
-                                                  ? const Center(
-                                                      child: Icon(
-                                                        Icons.check,
-                                                        color: Colors.white,
-                                                      ),
-                                                    )
-                                                  : null,
+                                          child: controller.currentColor == color
+                                              ? const Center(
+                                                  child: Icon(
+                                                    Icons.check,
+                                                    color: Colors.white,
+                                                  ),
+                                                )
+                                              : null,
                                         ),
                                       ),
                           ),
@@ -127,7 +110,7 @@ class SettingsStyleView extends GetWidget<SettingsController> {
                       .toList(),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding,
               ),
               Text(
@@ -135,63 +118,56 @@ class SettingsStyleView extends GetWidget<SettingsController> {
                 textAlign: TextAlign.start,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.elementSpacing,
               ),
-                Obx(()=>
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      
-                      AnimatedBitNetImageWithTextContainer(
-                        L10n.of(context)!.systemTheme,
-                        () {
-                          controller.switchTheme(ThemeMode.system, context);
-                          controller.selectedTheme.value = ThemeMode.system;
-                        },
-                        isActive:
-                            controller.selectedTheme.value == ThemeMode.system,
-                        image: "assets/images/system_theme.png",
-                        height: AppTheme.cardPadding * 5.5,
-                        width: AppTheme.cardPadding * 4,
-                      ),
-                      SizedBox(
-                        width: AppTheme.cardPadding,
-                      ),
-                      AnimatedBitNetImageWithTextContainer(
-                        L10n.of(context)!.lightTheme,
-                        () {
-                          controller.switchTheme(ThemeMode.light, context);
-                                                  controller.selectedTheme.value = ThemeMode.light;
-                  
-                        },
-                        image: "assets/images/sun_theme.png",
-                        height: AppTheme.cardPadding * 5.5,
-                        isActive:
-                            controller.selectedTheme.value == ThemeMode.light,
-                        width: AppTheme.cardPadding * 4,
-                      ),
-                      SizedBox(
-                        width: AppTheme.cardPadding,
-                      ),
-                      AnimatedBitNetImageWithTextContainer(
-                        L10n.of(context)!.darkTheme,
-                        () {
-                          controller.switchTheme(ThemeMode.dark, context);
-                                                  controller.selectedTheme.value = ThemeMode.dark;
-                  
-                        },
-                        image: "assets/images/moon_theme.png",
-                        height: AppTheme.cardPadding * 5.5,
-                        isActive:
-                            controller.selectedTheme.value == ThemeMode.dark,
-                        width: AppTheme.cardPadding * 4,
-                      ),
-                    ],
-                  ),
+              Obx(
+                () => Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedBitNetImageWithTextContainer(
+                      L10n.of(context)!.systemTheme,
+                      () {
+                        controller.switchTheme(ThemeMode.system, context);
+                        controller.selectedTheme.value = ThemeMode.system;
+                      },
+                      isActive: controller.selectedTheme.value == ThemeMode.system,
+                      image: "assets/images/system_theme.png",
+                      height: AppTheme.cardPadding * 5.5,
+                      width: AppTheme.cardPadding * 4,
+                    ),
+                    const SizedBox(
+                      width: AppTheme.cardPadding,
+                    ),
+                    AnimatedBitNetImageWithTextContainer(
+                      L10n.of(context)!.lightTheme,
+                      () {
+                        controller.switchTheme(ThemeMode.light, context);
+                        controller.selectedTheme.value = ThemeMode.light;
+                      },
+                      image: "assets/images/sun_theme.png",
+                      height: AppTheme.cardPadding * 5.5,
+                      isActive: controller.selectedTheme.value == ThemeMode.light,
+                      width: AppTheme.cardPadding * 4,
+                    ),
+                    const SizedBox(
+                      width: AppTheme.cardPadding,
+                    ),
+                    AnimatedBitNetImageWithTextContainer(
+                      L10n.of(context)!.darkTheme,
+                      () {
+                        controller.switchTheme(ThemeMode.dark, context);
+                        controller.selectedTheme.value = ThemeMode.dark;
+                      },
+                      image: "assets/images/moon_theme.png",
+                      height: AppTheme.cardPadding * 5.5,
+                      isActive: controller.selectedTheme.value == ThemeMode.dark,
+                      width: AppTheme.cardPadding * 4,
+                    ),
+                  ],
                 ),
-              
+              ),
             ],
           ),
         ),
@@ -235,18 +211,15 @@ class CirclePainter extends CustomPainter {
 
     // Draw white slice
     paint.color = Colors.white;
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 0,
-        2 * 3.14 / 3, true, paint);
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 0, 2 * 3.14 / 3, true, paint);
 
     // Draw black slice
     paint.color = Colors.black;
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
-        2 * 3.14 / 3, 2 * 3.14 / 3, true, paint);
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 2 * 3.14 / 3, 2 * 3.14 / 3, true, paint);
 
     // Draw colorBitcoin slice
     paint.color = AppTheme.colorBitcoin;
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
-        4 * 3.14 / 3, 2 * 3.14 / 3, true, paint);
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 4 * 3.14 / 3, 2 * 3.14 / 3, true, paint);
   }
 
   @override

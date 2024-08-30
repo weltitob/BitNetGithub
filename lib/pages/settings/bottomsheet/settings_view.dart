@@ -5,7 +5,6 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
@@ -27,17 +26,16 @@ class SettingsView extends StatelessWidget {
         hasBackButton: false,
       ),
       body: ListTileTheme(
-        iconColor: Theme.of(context).colorScheme.onBackground,
+        iconColor: Theme.of(context).colorScheme.onSurface,
         child: Container(
-          margin:
-              EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.25),
+          margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing * 0.25),
           child: ListView(
             key: const Key('SettingsListViewContent'),
             children: [
               BitNetListTile(
-                leading: Icon(Icons.color_lens),
+                leading: const Icon(Icons.color_lens),
                 text: L10n.of(context)!.changeTheme,
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
                 ),
@@ -46,9 +44,9 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: Icon(Icons.security),
+                leading: const Icon(Icons.security),
                 text: L10n.of(context)!.ownSecurity,
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
                 ),
@@ -57,9 +55,9 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: Icon(Icons.key_rounded),
+                leading: const Icon(Icons.key_rounded),
                 text: L10n.of(context)!.inviteContact,
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
                 ),
@@ -68,9 +66,9 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: Icon(Icons.currency_bitcoin),
+                leading: const Icon(Icons.currency_bitcoin),
                 text: L10n.of(context)!.changeLanguage,
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
                 ),
@@ -79,9 +77,9 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: Icon(Icons.language),
+                leading: const Icon(Icons.language),
                 text: L10n.of(context)!.changeCurrency,
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
                 ),
@@ -90,9 +88,9 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: Icon(Icons.info),
+                leading: const Icon(Icons.info),
                 text: L10n.of(context)!.agbsImpress,
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
                 ),
@@ -101,9 +99,9 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
-                leading: Icon(Icons.login_rounded),
+                leading: const Icon(Icons.login_rounded),
                 text: L10n.of(context)!.logout,
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: AppTheme.iconSize * 0.75,
                 ),
@@ -114,8 +112,7 @@ class SettingsView extends StatelessWidget {
                   });
 
                   // Clear shared preferences if used
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
                   await prefs.remove('theme_mode');
                   await prefs.remove('primary_color');
                   await Auth().signOut();
@@ -124,7 +121,7 @@ class SettingsView extends StatelessWidget {
                   context.go('/authhome');
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding * 4,
               )
             ],

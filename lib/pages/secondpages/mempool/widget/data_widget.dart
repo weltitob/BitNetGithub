@@ -26,7 +26,7 @@ class DataWidget extends StatefulWidget {
   final bool singleTx;
   final bool hasUserTxs;
   // Constructor for accepted blocks
-  DataWidget.accepted({
+  const DataWidget.accepted({
     Key? key,
     required this.blockData,
     required this.size,
@@ -41,7 +41,7 @@ class DataWidget extends StatefulWidget {
         super(key: key);
 
   // Constructor for not accepted blocks
-  DataWidget.notAccepted({
+  const DataWidget.notAccepted({
     Key? key,
     required this.mempoolBlocks,
     required this.mins,
@@ -180,8 +180,8 @@ class _DataWidgetState extends State<DataWidget> {
                       borderRadius: BorderRadius.circular(8),
                       color: AppTheme.colorBitcoin,
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 2),
-                    child: Center(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: const Center(
                       child: Text(
                         'has Tx',
                         style: TextStyle(color: Colors.white, fontSize: 12),
@@ -194,7 +194,7 @@ class _DataWidgetState extends State<DataWidget> {
           i! == 1 && widget.txId == widget.blockData?.id
               ? Container(
                   margin: widget.isAccepted ? const EdgeInsets.only(left: AppTheme.cardPadding) : const EdgeInsets.only(left: 0),
-                  child: Icon(Icons.arrow_drop_down_rounded, size: AppTheme.cardPadding * 2),
+                  child: const Icon(Icons.arrow_drop_down_rounded, size: AppTheme.cardPadding * 2),
                 )
               : SizedBox(
                   height: AppTheme.cardPadding * 1.h,

@@ -50,7 +50,7 @@ class ReceiveController extends BaseController {
 
   void updateTimer(Timer timer) {
     if (duration.inSeconds > 0) {
-      duration = duration - Duration(seconds: 1);
+      duration = duration - const Duration(seconds: 1);
       min.value = (duration.inMinutes % 60).toString().padLeft(2, '0');
       sec.value = (duration.inSeconds % 60).toString().padLeft(2, '0');
       print(duration);
@@ -99,7 +99,7 @@ class ReceiveController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    duration = Duration(seconds:0);
+    duration = const Duration(seconds:0);
     //ONCHAIN
 
   }

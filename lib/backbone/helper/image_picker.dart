@@ -27,16 +27,11 @@ Future<T?> ImagePickerBottomSheet<T>(BuildContext context,
       context: context,
       width: MediaQuery.sizeOf(context).width,
       height: MediaQuery.sizeOf(context).height * 0.7,
-      child: ImagePicker(
-        onImageTap: onImageTap,
-        onPop: onPop
-      ));
+      child: ImagePicker(onImageTap: onImageTap, onPop: onPop));
 }
 
 Future<T?> ImagePickerNftMixedBottomSheet<T>(BuildContext context,
-    {required Function(
-            AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair)?
-        onImageTap}) {
+    {required Function(AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair)? onImageTap}) {
   return BitNetBottomSheet<T>(
       context: context,
       width: MediaQuery.sizeOf(context).width,
@@ -51,7 +46,8 @@ class ImagePicker extends StatefulWidget {
   final Function(List<AssetEntity> selected_images)? onPop;
   const ImagePicker({
     super.key,
-    this.onImageTap, this.onPop,
+    this.onImageTap,
+    this.onPop,
   });
 
   @override
@@ -64,7 +60,7 @@ class _ImagePickerState extends State<ImagePicker> {
   AssetPathEntity? current_album = null;
   List<AssetEntity>? current_photos = List.empty(growable: true);
   List<AssetEntity>? album_thumbnails = null;
-  List<AssetEntity> selected_photos = List.empty(growable:true);
+  List<AssetEntity> selected_photos = List.empty(growable: true);
   bool loading = true;
   bool loaded_thumbnails = false;
   bool loadingMoreImages = false;
@@ -73,9 +69,7 @@ class _ImagePickerState extends State<ImagePicker> {
   void initState() {
     imgScrollController = ScrollController(keepScrollOffset: true);
     imgScrollController.addListener(() async {
-      if (imgScrollController.position.pixels >=
-              imgScrollController.position.maxScrollExtent &&
-          !loadingMoreImages) {
+      if (imgScrollController.position.pixels >= imgScrollController.position.maxScrollExtent && !loadingMoreImages) {
         loadingMoreImages = true;
         setState(() {});
         await loadMoreImages();
@@ -91,8 +85,7 @@ class _ImagePickerState extends State<ImagePicker> {
     List<AssetPathEntity> loadedAlbums = await BitnetPhotoManager.loadAlbums();
     print(loadedAlbums.length);
     // assert(false);
-    List<AssetEntity> photos =
-        await BitnetPhotoManager.loadImages(loadedAlbums.first, 0, 50);
+    List<AssetEntity> photos = await BitnetPhotoManager.loadImages(loadedAlbums.first, 0, 50);
     albums = loadedAlbums;
     current_album = albums![0];
     current_photos = photos;
@@ -102,14 +95,11 @@ class _ImagePickerState extends State<ImagePicker> {
   Future<void> loadMoreImages() async {
     int albumAssetCount = await current_album!.assetCountAsync;
     int start = current_photos!.length;
-    int end = (current_photos!.length + 50) > albumAssetCount
-        ? albumAssetCount
-        : (current_photos!.length + 50);
+    int end = (current_photos!.length + 50) > albumAssetCount ? albumAssetCount : (current_photos!.length + 50);
     if (current_photos!.length == albumAssetCount) {
       return;
     }
-    List<AssetEntity> photos =
-        await BitnetPhotoManager.loadImages(current_album!, start, end);
+    List<AssetEntity> photos = await BitnetPhotoManager.loadImages(current_album!, start, end);
     current_photos!.addAll(photos);
   }
 
@@ -125,8 +115,10 @@ class _ImagePickerState extends State<ImagePicker> {
       });
     }
     return PopScope(
-      onPopInvoked: (bool){
-        if(widget.onPop != null) {widget.onPop!(selected_photos);}
+      onPopInvoked: (bool) {
+        if (widget.onPop != null) {
+          widget.onPop!(selected_photos);
+        }
       },
       child: bitnetScaffold(
         context: context,
@@ -144,19 +136,17 @@ class _ImagePickerState extends State<ImagePicker> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (albums == null || current_photos == null)
-                Center(child: dotProgress(context)),
+              if (albums == null || current_photos == null) Center(child: dotProgress(context)),
               if (albums != null && current_photos != null) ...[
                 TextButton(
                   child: Row(
                     children: [
-                      Text(current_album!.name,
-                          style: Theme.of(context).textTheme.titleLarge,),
-                      Icon(
-                          selecting_photos
-                              ? Icons.arrow_drop_down_rounded
-                              : Icons.arrow_drop_up_rounded,
-                          color: Colors.white)
+                      Text(
+                        current_album!.name,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      Icon(selecting_photos ? Icons.arrow_drop_down_rounded : Icons.arrow_drop_up_rounded,
+                          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white)
                     ],
                   ),
                   onPressed: () {
@@ -178,110 +168,85 @@ class _ImagePickerState extends State<ImagePicker> {
                               itemCount: loadingMoreImages
                                   ? ((current_photos!.length % 3) == 0
                                       ? current_photos!.length + 3
-                                      : current_photos!.length +
-                                          3 +
-                                          (current_photos!.length % 3))
+                                      : current_photos!.length + 3 + (current_photos!.length % 3))
                                   : current_photos!.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3),
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
                               itemBuilder: (ctx, i) {
                                 return (i < current_photos!.length)
                                     ? InkWell(
-                                      onTap: () {
-                                        if(selected_photos.contains(current_photos![i])) {
-                                          selected_photos.remove(current_photos![i]);
-                                        } else {
-                                          selected_photos.add(current_photos![i]);
-                                        }
-                                        if (widget.onImageTap != null) {
-                                          widget.onImageTap!(current_album!,
-                                              current_photos![i]);
-                                        }
-                                        setState((){});
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(border: Border.all(width: 4, color: selected_photos.contains(current_photos![i]) ? Colors.blue : Colors.transparent)),
-                                        child: AssetEntityImage(
-                                          current_photos![i],
-                                          isOriginal: false,
-                                          thumbnailSize:
-                                              ThumbnailSize.square(250),
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stacktrace) {
-                                            return const Center(
-                                                child: Icon(Icons.error,
-                                                    color: Colors.red));
-                                          },
+                                        onTap: () {
+                                          if (selected_photos.contains(current_photos![i])) {
+                                            selected_photos.remove(current_photos![i]);
+                                          } else {
+                                            selected_photos.add(current_photos![i]);
+                                          }
+                                          if (widget.onImageTap != null) {
+                                            widget.onImageTap!(current_album!, current_photos![i]);
+                                          }
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 4,
+                                                  color: selected_photos.contains(current_photos![i]) ? Colors.blue : Colors.transparent)),
+                                          child: AssetEntityImage(
+                                            current_photos![i],
+                                            isOriginal: false,
+                                            thumbnailSize: const ThumbnailSize.square(250),
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stacktrace) {
+                                              return const Center(child: Icon(Icons.error, color: Colors.red));
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                    )
+                                      )
                                     : (i ==
                                             current_photos!.length +
-                                                (((current_photos!.length % 3) == 0
-                                                        ? 3
-                                                        : 3 +
-                                                            (current_photos!
-                                                                    .length %
-                                                                3)) -
-                                                    2))
-                                        ? Container(
-                                            width: 50,
-                                            height: 50,
-                                            child: Center(
-                                                child: dotProgress(context)))
-                                        : Container(
-                                            color: Colors.transparent);
+                                                (((current_photos!.length % 3) == 0 ? 3 : 3 + (current_photos!.length % 3)) - 2))
+                                        ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
+                                        : Container(color: Colors.transparent);
                               })
                           : (loaded_thumbnails && album_thumbnails != null)
                               ? GridView.builder(
                                   shrinkWrap: true,
                                   itemCount: albums!.length,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2),
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
                                   itemBuilder: (ctx, i) {
                                     return Container(
-      
                                         child: InkWell(
-                                          onTap: () {
-                                            current_album = albums![i];
-                                            selecting_photos = true;
-                                            setState(() {});
-                                          },
-                                          child: Container(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  width: 150,
-                                                  height: 150,
-                                                  child: ClipRRect(
-                                                    clipBehavior: Clip.hardEdge,
-                                                    borderRadius:
-                                                        AppTheme.cardRadiusMid,
-                                                    child: AssetEntityImage(
-                                                      album_thumbnails![i],
-                                                      isOriginal: false,
-                                                      fit: BoxFit.cover,
-                                                      thumbnailSize:
-                                                          ThumbnailSize.square(
-                                                              360),
-                                                    ),
-                                                  ),
+                                      onTap: () {
+                                        current_album = albums![i];
+                                        selecting_photos = true;
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              width: 150,
+                                              height: 150,
+                                              child: ClipRRect(
+                                                clipBehavior: Clip.hardEdge,
+                                                borderRadius: AppTheme.cardRadiusMid,
+                                                child: AssetEntityImage(
+                                                  album_thumbnails![i],
+                                                  isOriginal: false,
+                                                  fit: BoxFit.cover,
+                                                  thumbnailSize: const ThumbnailSize.square(360),
                                                 ),
-                                                SizedBox(height: AppTheme.elementSpacing / 2,),
-                                                Text(albums![i].name,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleSmall),
-                                              ],
+                                              ),
                                             ),
-                                          ),
-                                        ));
+                                            const SizedBox(
+                                              height: AppTheme.elementSpacing / 2,
+                                            ),
+                                            Text(albums![i].name, style: Theme.of(context).textTheme.titleSmall),
+                                          ],
+                                        ),
+                                      ),
+                                    ));
                                   },
                                 )
                               : Center(
@@ -298,9 +263,7 @@ class _ImagePickerState extends State<ImagePicker> {
 }
 
 class ImagePickerNftMixed extends StatefulWidget {
-  final Function(
-          AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair)?
-      onImageTap;
+  final Function(AssetPathEntity? album, AssetEntity? image, MediaDatePair? pair)? onImageTap;
   const ImagePickerNftMixed({
     super.key,
     this.onImageTap,
@@ -331,9 +294,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
     imgScrollController = ScrollController();
     profileController = Get.find<ProfileController>();
     imgScrollController.addListener(() async {
-      if (imgScrollController.position.pixels >=
-              imgScrollController.position.maxScrollExtent &&
-          !loadingMoreImages) {
+      if (imgScrollController.position.pixels >= imgScrollController.position.maxScrollExtent && !loadingMoreImages) {
         loadingMoreImages = true;
         setState(() {});
         await loadMoreImages(current_view);
@@ -349,24 +310,15 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
     if (profileController.assetMetaMap[assetId] != null) {
       Media? media = profileController.assetMetaMap[assetId]!
           .toMedias()
-          .where((test) =>
-              test.type == "image" ||
-              test.type == "image_data" ||
-              test.type == "camera")
+          .where((test) => test.type == "image" || test.type == "image_data" || test.type == "camera")
           .firstOrNull;
 
       if (media != null) {
         mixedList
-            .where((test) => (test is MediaDatePair &&
-                test.media == null &&
-                test.assetId == pair.assetId))
+            .where((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId))
             .firstOrNull
             ?.setMedia(media);
-        current_nfts
-            .where(
-                (test) => (test.media == null && test.assetId == pair.assetId))
-            .firstOrNull
-            ?.setMedia(media);
+        current_nfts.where((test) => (test.media == null && test.assetId == pair.assetId)).firstOrNull?.setMedia(media);
       } else {
         // int removeIndex = mixedList.indexWhere((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
         // if(removeIndex != -1) {
@@ -381,9 +333,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
 
         // }
 
-        if (current_view == 0
-            ? mixedList.length < 9
-            : current_nfts.length < 9) {
+        if (current_view == 0 ? mixedList.length < 9 : current_nfts.length < 9) {
           loadingMoreImages = true;
           setState(() {});
           await loadMoreImages(current_view);
@@ -406,9 +356,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
         // WidgetsBinding.instance.addPostFrameCallback((t) {setState((){});});
 
         // }
-        if (current_view == 0
-            ? mixedList.length < 9
-            : current_nfts.length < 9) {
+        if (current_view == 0 ? mixedList.length < 9 : current_nfts.length < 9) {
           loadingMoreImages = true;
           setState(() {});
           await loadMoreImages(current_view);
@@ -416,25 +364,16 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
           setState(() {});
         }
       } else {
-        Media? media = meta
-            .toMedias()
-            .where((test) =>
-                test.type == "image" ||
-                test.type == "image_data" ||
-                test.type == "camera")
-            .firstOrNull;
+        Media? media =
+            meta.toMedias().where((test) => test.type == "image" || test.type == "image_data" || test.type == "camera").firstOrNull;
 
         if (media != null) {
-          int index = mixedList.indexWhere((test) => (test is MediaDatePair &&
-              test.media == null &&
-              test.assetId == pair.assetId));
-          int indexNft = current_nfts.indexWhere(
-              (test) => (test.media == null && test.assetId == pair.assetId));
+          int index = mixedList.indexWhere((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
+          int indexNft = current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
 
           if (index != -1) {
             mixedList[index].setMedia(media);
-            Get.find<LoggerService>()
-                .i('asset at mixedList index: $index, has had its media set.');
+            Get.find<LoggerService>().i('asset at mixedList index: $index, has had its media set.');
           }
           if (indexNft != -1) {
             current_nfts[indexNft].setMedia(media);
@@ -452,9 +391,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
           // WidgetsBinding.instance.addPostFrameCallback((t) {setState((){});});
 
           // }
-          if (current_view == 0
-              ? mixedList.length < 9
-              : current_nfts.length < 9) {
+          if (current_view == 0 ? mixedList.length < 9 : current_nfts.length < 9) {
             loadingMoreImages = true;
             setState(() {});
             await loadMoreImages(current_view);
@@ -471,8 +408,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
 
     List<AssetPathEntity> loadedAlbums = await BitnetPhotoManager.loadAlbums();
     current_album = loadedAlbums[0];
-    List<AssetEntity> photos =
-        await BitnetPhotoManager.loadImages(loadedAlbums[0], 0, 50);
+    List<AssetEntity> photos = await BitnetPhotoManager.loadImages(loadedAlbums[0], 0, 50);
     if (50 == await current_album!.assetCountAsync) {
       loadedFullList = true;
     }
@@ -488,8 +424,7 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
       }
       MediaDatePair pair = MediaDatePair(
           assetId: metaList[i].assetGenesis!.assetId ?? '',
-          date: profileController.originalBlockDate.add(Duration(
-              minutes: (10 * (metaList[i].chainAnchor?.blockHeight ?? 0)))));
+          date: profileController.originalBlockDate.add(Duration(minutes: (10 * (metaList[i].chainAnchor?.blockHeight ?? 0)))));
       nfts.add(pair);
     }
     albums = loadedAlbums;
@@ -525,45 +460,36 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
     if (current_view > 0) {
       int albumAssetCount = await current_album!.assetCountAsync;
       int start = current_photos!.length;
-      int end = (current_photos!.length + 50) > albumAssetCount
-          ? albumAssetCount
-          : (current_photos!.length + 50);
+      int end = (current_photos!.length + 50) > albumAssetCount ? albumAssetCount : (current_photos!.length + 50);
       if (current_photos!.length == albumAssetCount) {
         return;
       }
 
-      List<AssetEntity> photos =
-          await BitnetPhotoManager.loadImages(current_album!, start, end);
+      List<AssetEntity> photos = await BitnetPhotoManager.loadImages(current_album!, start, end);
       current_photos!.addAll(photos);
     } else if (current_view == 0) {
       List<MediaDatePair> nfts = List.empty(growable: true);
 
       int albumAssetCount = await current_album!.assetCountAsync;
       int start = loads * 50;
-      int end = ((loads * 50) + 50) > albumAssetCount
-          ? albumAssetCount
-          : ((loads * 50) + 50);
+      int end = ((loads * 50) + 50) > albumAssetCount ? albumAssetCount : ((loads * 50) + 50);
       if (end == albumAssetCount) {
         loadedFullList = true;
       }
       List<AssetEntity> photos = List.empty();
 
       if (current_photos!.length != albumAssetCount) {
-        photos =
-            await BitnetPhotoManager.loadImages(current_album!, start, end);
+        photos = await BitnetPhotoManager.loadImages(current_album!, start, end);
         logger.i("start: $start, end: $end");
       }
       List<Asset> metaList = profileController.assets.value as List<Asset>;
-      for (int i = loads * 50;
-          i < metaList.length && i < (loads * 50) + 50;
-          i++) {
+      for (int i = loads * 50; i < metaList.length && i < (loads * 50) + 50; i++) {
         if (i == metaList.length - 1) {
           loadedFullList = true;
         }
         MediaDatePair pair = MediaDatePair(
             assetId: metaList[i].assetGenesis!.assetId ?? '',
-            date: profileController.originalBlockDate.add(Duration(
-                minutes: (10 * (metaList[i].chainAnchor?.blockHeight ?? 0)))));
+            date: profileController.originalBlockDate.add(Duration(minutes: (10 * (metaList[i].chainAnchor?.blockHeight ?? 0)))));
 
         nfts.add(pair);
       }
@@ -577,22 +503,16 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
       mixedList.sort(compareMixedList);
       if (!loadedFullList)
         mixedList.removeRange(
-            current_photos!.length > current_nfts.length
-                ? current_nfts.length
-                : current_photos!.length,
-            mixedList.length);
+            current_photos!.length > current_nfts.length ? current_nfts.length : current_photos!.length, mixedList.length);
 
       loads++;
     } else {
       List<MediaDatePair> nfts = List.empty(growable: true);
       List<Asset> metaList = profileController.assets.value as List<Asset>;
-      for (int i = loads * 50;
-          i < metaList.length && i < (loads + 1) * 50;
-          i++) {
+      for (int i = loads * 50; i < metaList.length && i < (loads + 1) * 50; i++) {
         nfts.add(MediaDatePair(
             assetId: metaList[i].assetGenesis!.assetId ?? '',
-            date: profileController.originalBlockDate.add(Duration(
-                minutes: (10 * (metaList[i].chainAnchor?.blockHeight ?? 0))))));
+            date: profileController.originalBlockDate.add(Duration(minutes: (10 * (metaList[i].chainAnchor?.blockHeight ?? 0))))));
       }
       current_nfts.addAll(nfts);
       loads++;
@@ -631,23 +551,18 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
+          const SizedBox(
             height: AppTheme.cardPadding / 2,
           ),
-          if (albums == null || current_photos == null)
-            Center(child: dotProgress(context)),
+          if (albums == null || current_photos == null) Center(child: dotProgress(context)),
           if (albums != null && current_photos != null) ...[
             TextButton(
               child: Row(
                 children: [
                   Text(current_view < 0 ? "Assets" : current_album!.name,
-                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          fontSize: 18, decoration: TextDecoration.underline)),
-                  Icon(
-                      selecting_photos
-                          ? Icons.arrow_drop_down_rounded
-                          : Icons.arrow_drop_up_rounded,
-                      color: Colors.white)
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 18, decoration: TextDecoration.underline)),
+                  Icon(selecting_photos ? Icons.arrow_drop_down_rounded : Icons.arrow_drop_up_rounded,
+                      color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white)
                 ],
               ),
               onPressed: () {
@@ -661,8 +576,8 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
                 setState(() {});
               },
             ),
-            Divider(),
-            SizedBox(
+            const Divider(),
+            const SizedBox(
               height: AppTheme.cardPadding / 2,
             ),
             Container(
@@ -679,16 +594,13 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
                               current_album: current_album,
                               loadMetaLazyFunc: loadMetaLazy,
                               forceRemove: (pair) {
-                                int removeIndex = mixedList.indexWhere((test) =>
-                                    (test is MediaDatePair &&
-                                        test.media == null &&
-                                        test.assetId == pair.assetId));
+                                int removeIndex = mixedList
+                                    .indexWhere((test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
                                 if (removeIndex != -1) {
                                   mixedList.removeAt(removeIndex);
                                 }
-                                int removeIndexNft = current_nfts.indexWhere(
-                                    (test) => (test.media == null &&
-                                        test.assetId == pair.assetId));
+                                int removeIndexNft =
+                                    current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
                                 if (removeIndexNft != -1) {
                                   current_nfts.removeAt(removeIndexNft);
                                 }
@@ -705,23 +617,17 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
                                   loadMetaLazyFunc: loadMetaLazy,
                                   forceRemove: (pair) {
                                     int removeIndex = mixedList.indexWhere(
-                                        (test) => (test is MediaDatePair &&
-                                            test.media == null &&
-                                            test.assetId == pair.assetId));
+                                        (test) => (test is MediaDatePair && test.media == null && test.assetId == pair.assetId));
                                     if (removeIndex != -1) {
                                       mixedList.removeAt(removeIndex);
                                     }
                                     int removeIndexNft =
-                                        current_nfts.indexWhere((test) =>
-                                            (test.media == null &&
-                                                test.assetId == pair.assetId));
+                                        current_nfts.indexWhere((test) => (test.media == null && test.assetId == pair.assetId));
                                     if (removeIndexNft != -1) {
                                       current_nfts.removeAt(removeIndexNft);
-                                      Get.find<LoggerService>().i(
-                                          "${pair.assetId} was removed from current_nfts at ${removeIndexNft}");
+                                      Get.find<LoggerService>().i("${pair.assetId} was removed from current_nfts at ${removeIndexNft}");
                                     } else {
-                                      Get.find<LoggerService>().i(
-                                          "${pair.assetId} could not be removed from current_nfts ");
+                                      Get.find<LoggerService>().i("${pair.assetId} could not be removed from current_nfts ");
                                     }
                                     setState(() {});
                                   })
@@ -740,10 +646,8 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
                                     GestureDetector(
                                       onTap: () async {
                                         selecting_photos = true;
-                                        current_photos =
-                                            List.empty(growable: true);
-                                        current_nfts =
-                                            List.empty(growable: true);
+                                        current_photos = List.empty(growable: true);
+                                        current_nfts = List.empty(growable: true);
                                         mixedList = List.empty(growable: true);
                                         loading = true;
                                         current_view = -1;
@@ -753,83 +657,47 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
                                         setState(() {});
                                       },
                                       child: GlassContainer(
-                                          width:
-                                              MediaQuery.sizeOf(context).width *
-                                                  0.7,
+                                          width: MediaQuery.sizeOf(context).width * 0.7,
                                           child: Column(
                                             children: [
-                                              Text('Your Assets',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge),
-                                              SizedBox(
-                                                  height: AppTheme.cardPadding),
+                                              Text('Your Assets', style: Theme.of(context).textTheme.bodyLarge),
+                                              const SizedBox(height: AppTheme.cardPadding),
                                               Row(
                                                 children: [
                                                   Expanded(
                                                       child: Container(
                                                     width: 100,
                                                     height: 100,
-                                                    color: (current_nfts[0]
-                                                                .media ==
-                                                            null)
-                                                        ? Colors.grey
-                                                        : Colors.transparent,
-                                                    child: (current_nfts[0]
-                                                                .media ==
-                                                            null)
+                                                    color: (current_nfts[0].media == null) ? Colors.grey : Colors.transparent,
+                                                    child: (current_nfts[0].media == null)
                                                         ? null
                                                         : ImageBuilder(
-                                                            radius: BorderRadius
-                                                                .zero,
-                                                            encodedData:
-                                                                current_nfts[0]
-                                                                    .media!
-                                                                    .data,
+                                                            radius: BorderRadius.zero,
+                                                            encodedData: current_nfts[0].media!.data,
                                                           ),
                                                   )),
                                                   Expanded(
                                                       child: Container(
                                                     width: 100,
                                                     height: 100,
-                                                    color: (current_nfts[1]
-                                                                .media ==
-                                                            null)
-                                                        ? Colors.grey
-                                                        : Colors.transparent,
-                                                    child: (current_nfts[1]
-                                                                .media ==
-                                                            null)
+                                                    color: (current_nfts[1].media == null) ? Colors.grey : Colors.transparent,
+                                                    child: (current_nfts[1].media == null)
                                                         ? null
                                                         : ImageBuilder(
-                                                            radius: BorderRadius
-                                                                .zero,
-                                                            encodedData:
-                                                                current_nfts[1]
-                                                                    .media!
-                                                                    .data,
+                                                            radius: BorderRadius.zero,
+                                                            encodedData: current_nfts[1].media!.data,
                                                           ),
                                                   )),
                                                   Expanded(
                                                       child: Container(
                                                     width: 100,
                                                     height: 100,
-                                                    color: (current_nfts[2]
-                                                                .media ==
-                                                            null)
-                                                        ? Colors.grey
-                                                        : Colors.transparent,
-                                                    child: (current_nfts[2]
-                                                                .media ==
-                                                            null)
+                                                    color: (current_nfts[2].media == null) ? Colors.grey : Colors.transparent,
+                                                    child: (current_nfts[2].media == null)
                                                         ? null
                                                         : ImageBuilder(
-                                                            radius: BorderRadius
-                                                                .zero,
-                                                            encodedData:
-                                                                current_nfts[2]
-                                                                    .media!
-                                                                    .data,
+                                                            radius: BorderRadius.zero,
+                                                            encodedData: current_nfts[2].media!.data,
                                                           ),
                                                   )),
                                                 ],
@@ -837,28 +705,23 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
                                             ],
                                           )),
                                     ),
-                                    SizedBox(height: AppTheme.cardPadding),
+                                    const SizedBox(height: AppTheme.cardPadding),
                                     GridView.builder(
                                       primary: false,
                                       shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
+                                      physics: const NeverScrollableScrollPhysics(),
                                       itemCount: albums!.length,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2),
+                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
                                       itemBuilder: (ctx, i) {
                                         return Padding(
-                                            padding: EdgeInsets.all(16),
+                                            padding: const EdgeInsets.all(16),
                                             child: InkWell(
                                               onTap: () async {
                                                 current_album = albums![i];
                                                 selecting_photos = true;
-                                                current_photos =
-                                                    List.empty(growable: true);
-                                                current_nfts =
-                                                    List.empty(growable: true);
-                                                mixedList =
-                                                    List.empty(growable: true);
+                                                current_photos = List.empty(growable: true);
+                                                current_nfts = List.empty(growable: true);
+                                                mixedList = List.empty(growable: true);
                                                 current_view = 1;
                                                 loading = true;
                                                 setState(() {});
@@ -868,34 +731,24 @@ class _ImagePickerNftMixedState extends State<ImagePickerNftMixed> {
                                               },
                                               child: Container(
                                                 child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
                                                     Container(
                                                       width: 180,
                                                       height: 150,
                                                       child: ClipRRect(
-                                                        clipBehavior:
-                                                            Clip.hardEdge,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(16),
+                                                        clipBehavior: Clip.hardEdge,
+                                                        borderRadius: BorderRadius.circular(16),
                                                         child: AssetEntityImage(
                                                           album_thumbnails![i],
                                                           isOriginal: false,
                                                           fit: BoxFit.cover,
-                                                          thumbnailSize:
-                                                              ThumbnailSize
-                                                                  .square(360),
+                                                          thumbnailSize: const ThumbnailSize.square(360),
                                                         ),
                                                       ),
                                                     ),
-                                                    Text(albums![i].name,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .titleSmall)
+                                                    Text(albums![i].name, style: Theme.of(context).textTheme.titleSmall)
                                                   ],
                                                 ),
                                               ),
@@ -933,24 +786,20 @@ class ImgGridView extends StatelessWidget {
   final List<AssetEntity>? current_photos;
   final ImagePickerNftMixed widget;
   final AssetPathEntity? current_album;
-  final Function(AssetPathEntity? album, AssetEntity? img, MediaDatePair? pair)?
-      onImageTap;
+  final Function(AssetPathEntity? album, AssetEntity? img, MediaDatePair? pair)? onImageTap;
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
         controller: imgScrollController,
         itemCount: loadingMoreImages
-            ? ((current_photos!.length % 3) == 0
-                ? current_photos!.length + 3
-                : current_photos!.length + 3 + (current_photos!.length % 3))
+            ? ((current_photos!.length % 3) == 0 ? current_photos!.length + 3 : current_photos!.length + 3 + (current_photos!.length % 3))
             : current_photos!.length,
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemBuilder: (ctx, i) {
           return (i < current_photos!.length)
               ? Padding(
-                  padding: EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
                   child: InkWell(
                     onTap: () {
                       if (onImageTap != null) {
@@ -960,24 +809,15 @@ class ImgGridView extends StatelessWidget {
                     child: AssetEntityImage(
                       current_photos![i],
                       isOriginal: false,
-                      thumbnailSize: ThumbnailSize.square(250),
+                      thumbnailSize: const ThumbnailSize.square(250),
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stacktrace) {
-                        return const Center(
-                            child: Icon(Icons.error, color: Colors.red));
+                        return const Center(child: Icon(Icons.error, color: Colors.red));
                       },
                     ),
                   ))
-              : (i ==
-                      current_photos!.length +
-                          (((current_photos!.length % 3) == 0
-                                  ? 3
-                                  : 3 + (current_photos!.length % 3)) -
-                              2))
-                  ? Container(
-                      width: 50,
-                      height: 50,
-                      child: Center(child: dotProgress(context)))
+              : (i == current_photos!.length + (((current_photos!.length % 3) == 0 ? 3 : 3 + (current_photos!.length % 3)) - 2))
+                  ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
                   : Container(width: 50, height: 50, color: Colors.transparent);
         });
   }
@@ -1000,8 +840,7 @@ class NftGridView extends StatefulWidget {
   final ImagePickerNftMixed widget;
   final Future<void> Function(String, MediaDatePair) loadMetaLazyFunc;
   final Function(MediaDatePair) forceRemove;
-  final Function(AssetPathEntity? album, AssetEntity? img, MediaDatePair? pair)?
-      onImageTap;
+  final Function(AssetPathEntity? album, AssetEntity? img, MediaDatePair? pair)? onImageTap;
 
   @override
   State<NftGridView> createState() => _NftGridViewState();
@@ -1020,17 +859,13 @@ class _NftGridViewState extends State<NftGridView> {
     Get.find<LoggerService>().i('list nfts length : ${nfts.length}');
     return GridView.builder(
         controller: widget.imgScrollController,
-        itemCount: widget.loadingMoreImages
-            ? ((nfts.length % 3) == 0
-                ? nfts.length + 3
-                : nfts.length + 3 + (nfts.length % 3))
-            : nfts.length,
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+        itemCount:
+            widget.loadingMoreImages ? ((nfts.length % 3) == 0 ? nfts.length + 3 : nfts.length + 3 + (nfts.length % 3)) : nfts.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemBuilder: (ctx, i) {
           return (i < nfts.length)
               ? Padding(
-                  padding: EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
                   child: InkWell(
                     onTap: () {
                       if (widget.onImageTap != null) {
@@ -1046,16 +881,8 @@ class _NftGridViewState extends State<NftGridView> {
                       },
                     ),
                   ))
-              : (i ==
-                      nfts.length +
-                          (((nfts.length % 3) == 0
-                                  ? 3
-                                  : 3 + (nfts.length % 3)) -
-                              2))
-                  ? Container(
-                      width: 50,
-                      height: 50,
-                      child: Center(child: dotProgress(context)))
+              : (i == nfts.length + (((nfts.length % 3) == 0 ? 3 : 3 + (nfts.length % 3)) - 2))
+                  ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
                   : Container(width: 50, height: 50, color: Colors.transparent);
         });
   }
@@ -1081,8 +908,7 @@ class MixedGridView extends StatefulWidget {
   final AssetPathEntity? current_album;
   final Future<void> Function(String, MediaDatePair) loadMetaLazyFunc;
   final Function(MediaDatePair) forceRemove;
-  final Function(AssetPathEntity? album, AssetEntity? img, MediaDatePair? pair)?
-      onImageTap;
+  final Function(AssetPathEntity? album, AssetEntity? img, MediaDatePair? pair)? onImageTap;
 
   @override
   State<MixedGridView> createState() => _MixedGridViewState();
@@ -1098,34 +924,26 @@ class _MixedGridViewState extends State<MixedGridView> {
                 ? widget.mixedList.length + 3
                 : widget.mixedList.length + 3 + (widget.mixedList.length % 3))
             : widget.mixedList.length,
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemBuilder: (ctx, i) {
           return (i < widget.mixedList.length)
               ? Padding(
-                  padding: EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
                   child: InkWell(
                     onTap: () {
                       if (widget.onImageTap != null) {
-                        widget.onImageTap!(
-                            widget.current_album,
-                            (widget.mixedList[i] is AssetEntity)
-                                ? widget.mixedList[i]
-                                : null,
-                            (widget.mixedList[i] is MediaDatePair)
-                                ? widget.mixedList[i]
-                                : null);
+                        widget.onImageTap!(widget.current_album, (widget.mixedList[i] is AssetEntity) ? widget.mixedList[i] : null,
+                            (widget.mixedList[i] is MediaDatePair) ? widget.mixedList[i] : null);
                       }
                     },
                     child: (widget.mixedList[i] is AssetEntity)
                         ? AssetEntityImage(
                             (widget.mixedList[i] as AssetEntity),
                             isOriginal: false,
-                            thumbnailSize: ThumbnailSize.square(250),
+                            thumbnailSize: const ThumbnailSize.square(250),
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stacktrace) {
-                              return const Center(
-                                  child: Icon(Icons.error, color: Colors.red));
+                              return const Center(child: Icon(Icons.error, color: Colors.red));
                             },
                           )
                         : LazyImageBuilder(
@@ -1138,16 +956,8 @@ class _MixedGridViewState extends State<MixedGridView> {
                             },
                           ),
                   ))
-              : (i ==
-                      widget.mixedList.length +
-                          (((widget.mixedList.length % 3) == 0
-                                  ? 3
-                                  : 3 + (widget.mixedList.length % 3)) -
-                              2))
-                  ? Container(
-                      width: 50,
-                      height: 50,
-                      child: Center(child: dotProgress(context)))
+              : (i == widget.mixedList.length + (((widget.mixedList.length % 3) == 0 ? 3 : 3 + (widget.mixedList.length % 3)) - 2))
+                  ? Container(width: 50, height: 50, child: Center(child: dotProgress(context)))
                   : Container(width: 50, height: 50, color: Colors.transparent);
         });
   }
@@ -1157,11 +967,7 @@ class LazyImageBuilder extends StatefulWidget {
   final MediaDatePair asset;
   final Future<void> Function(String, MediaDatePair) loadFunc;
   final Function(MediaDatePair pair) forceRemove;
-  const LazyImageBuilder(
-      {super.key,
-      required this.asset,
-      required this.loadFunc,
-      required this.forceRemove});
+  const LazyImageBuilder({super.key, required this.asset, required this.loadFunc, required this.forceRemove});
 
   @override
   State<LazyImageBuilder> createState() => _LazyImageBuilderState();
@@ -1210,8 +1016,7 @@ class _LazyImageBuilderState extends State<LazyImageBuilder> {
 
       logger.i("asset: ${widget.asset.assetId} is loading");
     } else {
-      logger.i(
-          "smthn happened asset is either loading or loaded, id: ${widget.asset.assetId}");
+      logger.i("smthn happened asset is either loading or loaded, id: ${widget.asset.assetId}");
     }
 
     return (widget.asset.media == null)
@@ -1219,10 +1024,7 @@ class _LazyImageBuilderState extends State<LazyImageBuilder> {
             onTap: () async {
               await load();
             },
-            child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(color: Colors.grey)))
+            child: Container(width: 50, height: 50, decoration: const BoxDecoration(color: Colors.grey)))
         : ImageBuilder(
             encodedData: widget.asset.media!.data,
           );

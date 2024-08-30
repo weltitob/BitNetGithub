@@ -10,10 +10,9 @@ import 'package:bitnet/components/items/usersearchresult.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-
 
 class Quotes extends StatefulWidget {
   final WebsiteLandingPageController controller;
@@ -38,15 +37,12 @@ class _QuotesState extends State<Quotes> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) { 
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
       bool isSmallScreen = constraints.maxWidth < AppTheme.isSmallScreen;
       bool isMidScreen = constraints.maxWidth < AppTheme.isMidScreen;
-      bool isSuperSmallScreen =
-          constraints.maxWidth < AppTheme.isSuperSmallScreen;
-      bool isIntermediateScreen =
-          constraints.maxWidth < AppTheme.isIntermediateScreen;
- 
+      bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isIntermediateScreen = constraints.maxWidth < AppTheme.isIntermediateScreen;
+
       double spacingMultiplier = isMidScreen
           ? isSmallScreen
               ? isSuperSmallScreen
@@ -60,8 +56,8 @@ class _QuotesState extends State<Quotes> {
           _isThirdAnimationCompleted
               ? Container()
               : FadeIn(
-                  delay: Duration(milliseconds: 1200),
-                  duration: Duration(seconds: 2),
+                  delay: const Duration(milliseconds: 1200),
+                  duration: const Duration(seconds: 2),
                   child: Align(
                     alignment: Alignment.center,
                     child: Container(
@@ -69,19 +65,15 @@ class _QuotesState extends State<Quotes> {
                         top: isIntermediateScreen
                             ? isSmallScreen
                                 ? AppTheme.cardPadding * 16 + 160
-                                : AppTheme.cardPadding * 5 +
-                                    spacingMultiplier +
-                                    180
-                            : AppTheme.cardPadding * 5 +
-                                spacingMultiplier +
-                                180,
+                                : AppTheme.cardPadding * 5 + spacingMultiplier + 180
+                            : AppTheme.cardPadding * 5 + spacingMultiplier + 180,
                         left: isIntermediateScreen
                             ? isSmallScreen
                                 ? 425 - AppTheme.cardPadding * 6
                                 : 700 - AppTheme.cardPadding
                             : 850 - AppTheme.cardPadding,
                       ),
-                      child: quoteText(),
+                      child: const QuoteTextWidget(),
                     ),
                   ),
                 ),
@@ -155,8 +147,7 @@ class _QuotesState extends State<Quotes> {
                                       : 240
                                   : 240,
                               padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    AppTheme.cardPadding * spacingMultiplier,
+                                horizontal: AppTheme.cardPadding * spacingMultiplier,
                                 vertical: AppTheme.cardPadding * 2.25,
                               ),
                               child: _isThirdAnimationCompleted
@@ -169,28 +160,18 @@ class _QuotesState extends State<Quotes> {
                                             TypewriterAnimatedText(
                                               L10n.of(context)!.weEmpowerTomorrow,
                                               textAlign: TextAlign.center,
-                                              textStyle: Theme.of(context)
-                                                  .textTheme
-                                                  .displayLarge!
-                                                  .copyWith(
-                                                    color: Colors
-                                                        .white, // This color will be replaced by the gradient effect
+                                              textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                                    color: Colors.white, // This color will be replaced by the gradient effect
                                                   ),
-                                              speed: const Duration(
-                                                  milliseconds: 50),
+                                              speed: const Duration(milliseconds: 50),
                                             ),
                                             TypewriterAnimatedText(
                                               L10n.of(context)!.joinUsToday,
                                               textAlign: TextAlign.center,
-                                              textStyle: Theme.of(context)
-                                                  .textTheme
-                                                  .displayLarge!
-                                                  .copyWith(
-                                                    color: Colors
-                                                        .white, // This color will be replaced by the gradient effect
+                                              textStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                                    color: Colors.white, // This color will be replaced by the gradient effect
                                                   ),
-                                              speed: const Duration(
-                                                  milliseconds: 50),
+                                              speed: const Duration(milliseconds: 50),
                                             ),
                                           ],
                                         ),
@@ -204,44 +185,31 @@ class _QuotesState extends State<Quotes> {
                                             _selectedindex = index;
                                           });
                                           // Restart the FadeIn animation
-                                          fadeInKey.currentState
-                                              ?.restartAnimation();
+                                          fadeInKey.currentState?.restartAnimation();
                                         },
-                                        itemCount: widget
-                                            .controller.pageDataList.length,
+                                        itemCount: widget.controller.pageDataList.length,
                                         itemBuilder: (context, index) {
                                           return Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal:
-                                                    AppTheme.cardPadding *
-                                                        1.25),
+                                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.25),
                                             child: Column(
                                               children: [
-                                                _buildTypewriterText(
-                                                    widget
-                                                        .controller
-                                                        .pageDataList[index]
-                                                        .text, () {
-                                                  if (index <
-                                                      widget
-                                                              .controller
-                                                              .pageDataList
-                                                              .length -
-                                                          1) {
-                                                    Future.delayed(
-                                                        const Duration(
-                                                            milliseconds: 2000),
-                                                        () {
-                                                      _pageController.nextPage(
-                                                        duration:
-                                                            const Duration(
-                                                                milliseconds:
-                                                                    400),
-                                                        curve: Curves.easeInOut,
-                                                      );
-                                                    });
-                                                  }
-                                                }),
+                                                TypewriterTextWidget(
+                                                    text: widget.controller.pageDataList[index].text,
+                                                    selectedIndex: _selectedindex,
+                                                    isThirdAnimationCompleted: () {
+                                                      _isThirdAnimationCompleted = true;
+                                                      setState(() {});
+                                                    },
+                                                    onCompleted: () {
+                                                      if (index < widget.controller.pageDataList.length - 1) {
+                                                        Future.delayed(const Duration(milliseconds: 2000), () {
+                                                          _pageController.nextPage(
+                                                            duration: const Duration(milliseconds: 400),
+                                                            curve: Curves.easeInOut,
+                                                          );
+                                                        });
+                                                      }
+                                                    }),
                                               ],
                                             ),
                                           );
@@ -254,15 +222,15 @@ class _QuotesState extends State<Quotes> {
                                 : Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
-                                        margin: EdgeInsets.only(
-                                            bottom: AppTheme.cardPadding * 1),
-                                        child: CustomIndicator (
+                                        margin: const EdgeInsets.only(bottom: AppTheme.cardPadding * 1),
+                                        child: CustomIndicator(
                                           dotHeight: AppTheme.elementSpacing,
                                           dotWidth: AppTheme.elementSpacing,
                                           pageController: _pageController,
                                           count: 3,
                                           onClickIndicator: (i) {
-                                            _pageController.animateToPage(i, duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+                                            _pageController.animateToPage(i,
+                                                duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
                                           },
                                         )),
                                   ),
@@ -278,8 +246,8 @@ class _QuotesState extends State<Quotes> {
           _isThirdAnimationCompleted
               ? Container()
               : FadeIn(
-                  delay: Duration(milliseconds: 1200),
-                  duration: Duration(seconds: 2),
+                  delay: const Duration(milliseconds: 1200),
+                  duration: const Duration(seconds: 2),
                   child: Align(
                     alignment: Alignment.center,
                     child: Container(
@@ -295,7 +263,7 @@ class _QuotesState extends State<Quotes> {
                                 : 700
                             : 850,
                       ),
-                      child: quoteText(),
+                      child: const QuoteTextWidget(),
                     ),
                   ),
                 ),
@@ -333,18 +301,15 @@ class _QuotesState extends State<Quotes> {
               ? Container()
               : FadeIn(
                   key: fadeInKey,
-                  delay: Duration(milliseconds: 400),
-                  duration: Duration(seconds: 2),
+                  delay: const Duration(milliseconds: 400),
+                  duration: const Duration(seconds: 2),
                   child: Align(
                     alignment: Alignment.center,
                     child: Container(
                       margin: EdgeInsets.only(
-                        bottom: isSmallScreen
-                            ? 240 + AppTheme.cardPadding * 10.5
-                            : AppTheme.cardPadding * 10.5,
+                        bottom: isSmallScreen ? 240 + AppTheme.cardPadding * 10.5 : AppTheme.cardPadding * 10.5,
                       ),
-                      child: _buildUserSearchResult(widget
-                          .controller.pageDataList[_selectedindex].userData),
+                      child: UserSearchResultWidget(userData: widget.controller.pageDataList[_selectedindex].userData),
                     ),
                   ),
                 ),
@@ -352,24 +317,43 @@ class _QuotesState extends State<Quotes> {
       );
     });
   }
+}
 
-  Widget quoteText() {
+class QuoteTextWidget extends StatelessWidget {
+  const QuoteTextWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Text(
       '"',
       style: Theme.of(context).textTheme.displayLarge!.copyWith(
             fontSize: 170,
             fontFamily: GoogleFonts.lobster().fontFamily,
-            color: AppTheme
-                .colorBitcoin, // This color will be replaced by the gradient effect
+            color: AppTheme.colorBitcoin, // This color will be replaced by the gradient effect
           ),
     );
   }
+}
 
-  Widget _buildTypewriterText(String text, VoidCallback onCompleted) {
+class TypewriterTextWidget extends StatelessWidget {
+  final String text;
+  final VoidCallback onCompleted;
+  final int selectedIndex;
+  final VoidCallback isThirdAnimationCompleted;
+
+  const TypewriterTextWidget({
+    Key? key,
+    required this.text,
+    required this.onCompleted,
+    required this.selectedIndex,
+    required this.isThirdAnimationCompleted,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       child: AnimatedTextKit(
         totalRepeatCount: 1,
-        //pause: const Duration(milliseconds: 4000),
         animatedTexts: [
           TypewriterAnimatedText(
             text,
@@ -381,21 +365,25 @@ class _QuotesState extends State<Quotes> {
           ),
         ],
         onFinished: () {
-          if (_selectedindex == 2) {
-            // Assuming the pages are 0-indexed and the third page is index 2
+          if (selectedIndex == 2) {
             onCompleted();
-            setState(() {
-              _isThirdAnimationCompleted = true;
-            });
+            isThirdAnimationCompleted();
           } else {
             onCompleted();
           }
-        }, // Call the callback when the animation is finished
+        },
       ),
     );
   }
+}
 
-  Widget _buildUserSearchResult(UserData userData) {
+class UserSearchResultWidget extends StatelessWidget {
+  final UserData userData;
+
+  const UserSearchResultWidget({Key? key, required this.userData}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return UserSearchResult(
       scaleRatio: 1.15,
       onTap: () {

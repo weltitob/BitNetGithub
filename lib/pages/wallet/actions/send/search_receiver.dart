@@ -43,7 +43,7 @@ class SearchReceiver extends GetWidget<SendsController> {
             children: [
               Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: AppTheme.cardPadding * 3,
                   ),
                   Consumer<ScreenHeight>(
@@ -68,10 +68,10 @@ class SearchReceiver extends GetWidget<SendsController> {
                     child: ListView(
                         controller: controller.sendScrollerController,
                         shrinkWrap: true,
-                        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                         children: [
                           Container(
-                            margin: EdgeInsets.only(
+                            margin: const EdgeInsets.only(
                               right: AppTheme.cardPadding,
                               left: AppTheme.cardPadding,
                             ),
@@ -91,7 +91,7 @@ class SearchReceiver extends GetWidget<SendsController> {
                                   width: MediaQuery.of(context).size.width,
                                   height: AppTheme.cardPadding * 7.5.h,
                                   child: Container(
-                                    margin: EdgeInsets.all(AppTheme.elementSpacing),
+                                    margin: const EdgeInsets.all(AppTheme.elementSpacing),
                                     child: MostPopularWidget(),
                                   ),
                                 ),
@@ -101,7 +101,7 @@ class SearchReceiver extends GetWidget<SendsController> {
                           SizedBox(height: AppTheme.cardPadding * 2.h),
 
                           Padding(
-                              padding: EdgeInsets.only(left: AppTheme.cardPadding),
+                              padding: const EdgeInsets.only(left: AppTheme.cardPadding),
                               child: Text("Most often used", style: Theme.of(context).textTheme.titleLarge)),
                           SizedBox(
                             height: AppTheme.cardPadding.h,
@@ -124,10 +124,10 @@ class SearchReceiver extends GetWidget<SendsController> {
                             ),
                           ),
                           //space
-                          SizedBox(height: AppTheme.cardPadding * 2),
+                          const SizedBox(height: AppTheme.cardPadding * 2),
                           if (controller.resendUsers.isNotEmpty) ...[
                             Padding(
-                                padding: EdgeInsets.only(left: AppTheme.cardPadding),
+                                padding: const EdgeInsets.only(left: AppTheme.cardPadding),
                                 child: Text("Send Again", style: Theme.of(context).textTheme.titleLarge)),
                             SizedBox(
                               height: AppTheme.cardPadding.h,
@@ -191,7 +191,7 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                   "Tor",
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing,
                 ),
                 Avatar(
@@ -200,7 +200,7 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                   mxContent: Uri.parse("https://kinsta.com/wp-content/uploads/2023/03/tor-browser-logo.png"),
                   isNft: false
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing / 2,
                 ),
                 Container(
@@ -219,7 +219,7 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                   "Wikileaks",
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing,
                 ),
                 Avatar(
@@ -229,7 +229,7 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                                     isNft: false
 
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing / 2,
                 ),
                 SizedBox(
@@ -248,7 +248,7 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                   "BitNet",
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing,
                 ),
                 Avatar(
@@ -258,7 +258,7 @@ class _MostPopularWidgetState extends State<MostPopularWidget> {
                                     isNft: false
 
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing / 2,
                 ),
                 Container(

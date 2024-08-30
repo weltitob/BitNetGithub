@@ -87,7 +87,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
     return isActive
         ? GlassContainer(
             child: Container(
-            margin: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(
               horizontal: AppTheme.elementSpacing * 0.75,
               vertical: AppTheme.elementSpacing * 0.5,
             ),
@@ -109,7 +109,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
             ),
           ))
         : Container(
-            margin: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(
               horizontal: AppTheme.elementSpacing * 0.75,
               vertical: AppTheme.elementSpacing * 0.5,
             ),
@@ -141,7 +141,7 @@ class OnChainSendTab extends GetWidget<SendsController> {
         // The ListTile widget is used to display the user tile.
         ListTile(
           // The leading widget is a circle avatar that displays an image.
-          leading: Avatar(isNft: false),
+          leading: const Avatar(isNft: false),
           // The title displays the user's name.
           title: Text(
             L10n.of(context)!.unknown,

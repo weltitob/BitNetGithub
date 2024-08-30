@@ -68,7 +68,7 @@ class LoopGetxController extends GetxController {
     if (scrollController.hasClients) {
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
     }
@@ -153,11 +153,11 @@ class LoopGetxController extends GetxController {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(
+                      margin: const EdgeInsets.symmetric(
                           horizontal: AppTheme.elementSpacing),
                       child: Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: AppTheme.elementSpacing,
                           ),
                           BitNetListTile(
@@ -225,10 +225,10 @@ class LoopGetxController extends GetxController {
               children: [
                 Container(
                   margin:
-                      EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                      const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                   child: Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.elementSpacing,
                       ),
                       BitNetListTile(
@@ -248,7 +248,7 @@ class LoopGetxController extends GetxController {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.cardPadding,
                       ),
                       LongButtonWidget(
@@ -265,7 +265,7 @@ class LoopGetxController extends GetxController {
                           loopin(mapData);
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.elementSpacing,
                       ),
                       LongButtonWidget(

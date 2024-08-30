@@ -77,7 +77,7 @@ class FeedController extends GetxController
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AddressComponent(),
+            builder: (context) => const AddressComponent(),
           ),
         );
       }
@@ -92,9 +92,9 @@ class FeedController extends GetxController
   }
 
   final List<Widget> myTabs = [
-    Tab(text: 'auto short'),
-    Tab(text: 'auto long'),
-    Tab(text: 'fixed'),
+    const Tab(text: 'auto short'),
+    const Tab(text: 'auto long'),
+    const Tab(text: 'fixed'),
   ];
 
   final List<WalletCategory> walletcategorys = [
@@ -159,7 +159,7 @@ class FeedController extends GetxController
   smoothScrollToTop() {
     scrollController?.value.animateTo(
       0,
-      duration: Duration(microseconds: 300),
+      duration: const Duration(microseconds: 300),
       curve: Curves.ease,
     );
     fixedScroll.value = tabController?.index == 0;

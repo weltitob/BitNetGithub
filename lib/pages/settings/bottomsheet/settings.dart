@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'settings_view.dart';
 
 class Settings extends StatelessWidget {
-  Settings({Key? key}) : super(key: key);
+  const Settings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,27 +32,27 @@ class Settings extends StatelessWidget {
           () => Column(
             children: [
               if (controller.currentTab.value == 'main')
-                Expanded(
+                const Expanded(
                   child: SettingsView(),
                 ),
               if (controller.currentTab.value == 'style')
-                Expanded(
+                const Expanded(
                   child: SettingsStyleView(),
                 ),
               if (controller.currentTab.value == 'security')
-                Expanded(
+                const Expanded(
                   child: SecuritySettingsPage(),
                 ),
               if (controller.currentTab.value == 'invite')
-                Expanded(
+                const Expanded(
                   child: InvitationSettingsPage(),
                 ),
               if (controller.currentTab.value == 'currency')
-                Expanded(
+                const Expanded(
                   child: ChangeCurrency(),
                 ),
               if (controller.currentTab.value == 'language')
-                Expanded(
+                const Expanded(
                   child: ChangeLanguage(),
                 ),
               if (controller.currentTab.value == "agbs")

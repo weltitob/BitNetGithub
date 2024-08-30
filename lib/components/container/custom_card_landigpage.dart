@@ -19,7 +19,7 @@ class CustomCard extends StatefulWidget {
   final bool isBiggerOnHover; // New parameter
   final bool longButtonBackgroundPainter;
 
-  CustomCard(
+  const CustomCard(
       {required this.lottieAssetPath,
       required this.mainTitle,
       required this.subTitle,
@@ -80,7 +80,7 @@ class _CustomCardState extends State<CustomCard>
       },
       onTap: widget.onButtonTap,
       child: AnimatedScale(
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         scale: isHovered
             ? 1.0
             : widget.isBiggerOnHover
@@ -94,7 +94,7 @@ class _CustomCardState extends State<CustomCard>
           child: Container(
             height: height * 0.08 + widget.customHeight,
             width: width * 0.01 + widget.customWidth,
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 top: AppTheme.cardPadding,
                 bottom: AppTheme.cardPadding,
                 left: AppTheme.cardPadding,
@@ -130,7 +130,7 @@ class _CustomCardState extends State<CustomCard>
                       height: height * 0.02,
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(
+                      margin: const EdgeInsets.symmetric(
                           horizontal: AppTheme.elementSpacing),
                       child: kIsWeb
                           ? SeoText(
@@ -146,7 +146,7 @@ class _CustomCardState extends State<CustomCard>
                       height: height * 0.015,
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(
+                      margin: const EdgeInsets.symmetric(
                           horizontal: AppTheme.elementSpacing),
                       child: kIsWeb
                           ? SeoText(
@@ -168,7 +168,7 @@ class _CustomCardState extends State<CustomCard>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        margin: EdgeInsets.symmetric(
+                        margin: const EdgeInsets.symmetric(
                             horizontal: AppTheme.elementSpacing),
                         child: LongButtonWidget(
                           backgroundPainter: widget.longButtonBackgroundPainter,

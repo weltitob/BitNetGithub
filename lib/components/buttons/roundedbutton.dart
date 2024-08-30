@@ -1,8 +1,8 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/backgroundgradient.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 class RoundedButtonWidget extends StatefulWidget {
   final IconData iconData;
@@ -54,9 +54,7 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
                 opacity: 0.1,
                 borderRadius: borderRadius,
                 child: AnimatedScale(
-                    duration: const Duration(milliseconds: 200),
-                    scale: isHovered ? 1.0 : 0.9,
-                    child: icon(context, widget.buttonType)),
+                    duration: const Duration(milliseconds: 200), scale: isHovered ? 1.0 : 0.9, child: icon(context, widget.buttonType)),
               )
             : BackgroundGradient(
                 borderRadius: borderRadius,
@@ -65,9 +63,7 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
                 child: Container(
                   alignment: Alignment.center,
                   child: AnimatedScale(
-                      duration: const Duration(milliseconds: 200),
-                      scale: isHovered ? 1.0 : 0.9,
-                      child: icon(context, widget.buttonType)),
+                      duration: const Duration(milliseconds: 200), scale: isHovered ? 1.0 : 0.9, child: icon(context, widget.buttonType)),
                 ),
               ),
       ),
@@ -77,7 +73,11 @@ class _RoundedButtonWidgetState extends State<RoundedButtonWidget> {
   Widget icon(BuildContext context, ButtonType buttonType) {
     return Icon(
       widget.iconData,
-      color: widget.buttonType == ButtonType.transparent ? AppTheme.white70 : widget.iconColor ?? AppTheme.white60,
+      color: widget.buttonType == ButtonType.transparent
+          ? Theme.of(context).brightness == Brightness.light
+              ? AppTheme.black80
+              : AppTheme.white70
+          : widget.iconColor ?? AppTheme.white60,
       size: widget.size * 0.6,
     );
   }

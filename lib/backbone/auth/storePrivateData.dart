@@ -4,7 +4,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final secureStorage = FlutterSecureStorage();
+final secureStorage = const FlutterSecureStorage();
 
 Future<void> storePrivateData(PrivateData privateData) async {
   try {

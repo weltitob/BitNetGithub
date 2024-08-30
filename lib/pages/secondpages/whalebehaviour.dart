@@ -216,7 +216,7 @@ class InsiderWidget extends StatelessWidget {
             right: AppTheme.elementSpacing,
             top: AppTheme.cardPadding * 3),
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: Colors.grey[900],
@@ -235,14 +235,14 @@ class InsiderWidget extends StatelessWidget {
                       width: 110,
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.person_rounded,
                             color: Colors.white,
                             size: 12,
                           ),
                           Text(
                             L10n.of(context)!.nameBehavior,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
@@ -290,14 +290,14 @@ class InsiderWidget extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.bar_chart,
                           color: Colors.white,
                           size: 12,
                         ),
                         Text(
                           L10n.of(context)!.typeBehavior,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
@@ -339,7 +339,7 @@ class InsiderWidget extends StatelessWidget {
                     if (snapshot.hasError) {
                       return Text(
                         '${snapshot.error}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -349,7 +349,7 @@ class InsiderWidget extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child:   Text(L10n.of(context)!.noResultsFound,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.bold)),
                       );
@@ -364,7 +364,7 @@ class InsiderWidget extends StatelessWidget {
   Widget ChildbuildWhaleBehavior(String name, String date, String value, type, BuildContext context) {
     return Column(
       children: [
-        Padding(
+        const Padding(
           padding: EdgeInsets.only(top: 10),
         ),
         Row(
@@ -374,7 +374,7 @@ class InsiderWidget extends StatelessWidget {
               width: 110,
               child: Text(
                 name,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
                   fontSize: 12,
@@ -415,14 +415,14 @@ class InsiderWidget extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.trending_up,
                             color: Colors.white,
                             size: 12,
                           ),
-                          Padding(padding: EdgeInsets.only(left: 5)),
+                          const Padding(padding: EdgeInsets.only(left: 5)),
                           Text(L10n.of(context)!.buy,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold)),
@@ -441,14 +441,14 @@ class InsiderWidget extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.trending_down,
                             color: Colors.white,
                             size: 12,
                           ),
-                          Padding(padding: EdgeInsets.only(left: 5)),
+                          const Padding(padding: EdgeInsets.only(left: 5)),
                           Text(L10n.of(context)!.sell,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold)),
@@ -463,7 +463,7 @@ class InsiderWidget extends StatelessWidget {
   }
 
   Widget MyDividerStandard() {
-    return Divider(
+    return const Divider(
       height: 10,
       color: Colors.grey,
     );

@@ -88,11 +88,11 @@ class _RowViewTabState extends State<RowViewTab>
                             bottom: AppTheme.elementSpacing * 1.5),
                         child: Row(
                           children: [
-                            Avatar(
+                            const Avatar(
                               size: AppTheme.cardPadding * 2,
                               isNft: false,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: AppTheme.elementSpacing * 0.75,
                             ),
                             Container(
@@ -112,7 +112,7 @@ class _RowViewTabState extends State<RowViewTab>
                       ),
                       GridView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         padding: EdgeInsets.symmetric(
                             horizontal: AppTheme.elementSpacing.w / 2),
@@ -146,8 +146,8 @@ class _RowViewTabState extends State<RowViewTab>
                         },
                       ),
                       if (groupAssets.length > 10)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Center(
                             child: Text(
                               'Show more',

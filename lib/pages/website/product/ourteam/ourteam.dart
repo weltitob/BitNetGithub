@@ -24,7 +24,7 @@ class OurTeamController extends State<OurTeam> {
         double cardWidth = 900; // Assume a fixed card width for simplicity
         double spacing = AppTheme.cardPadding * 4;
         double offset = cardWidth + spacing;
-        scrollController.animateTo(offset, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+        scrollController.animateTo(offset, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
       }
     });
   }

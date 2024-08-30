@@ -24,19 +24,19 @@ class ReportView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return bitnetScaffold(
-        appBar: kIsWeb ? bitnetWebsiteAppBar() : bitnetAppBar(context: context),
+        appBar: kIsWeb ? const bitnetWebsiteAppBar() : bitnetAppBar(context: context),
         body: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 32),
+            margin: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(
               children: [
                 FadeIn(
-                  delay: Duration(milliseconds: 0),
-                  duration: Duration(seconds: 2),
+                  delay: const Duration(milliseconds: 0),
+                  duration: const Duration(seconds: 2),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.cardPadding * 2,
                       ),
                       Container(
@@ -45,7 +45,7 @@ class ReportView extends StatelessWidget {
                           style: Theme.of(context).textTheme.headlineLarge,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.cardPadding,
                       ),
                       Container(
@@ -54,7 +54,7 @@ class ReportView extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.elementSpacing,
                       ),
                       //email optional
@@ -62,7 +62,7 @@ class ReportView extends StatelessWidget {
                         width: AppTheme.cardPadding * 18,
                         child: FormTextField(hintText: L10n.of(context)!.contactInfoHint, controller: controller.contactInfoController),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.elementSpacing,
                       ),
                       Container(
@@ -71,7 +71,7 @@ class ReportView extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.cardPadding,
                       ),
                       Builder(builder: (context) {
@@ -82,7 +82,7 @@ class ReportView extends StatelessWidget {
                               context: context,
                               direction: PopoverDirection.bottom,
                               bodyBuilder: (context) {
-                                return IssueTypeColumn();
+                                return const IssueTypeColumn();
                               },
                             ) as String;
 
@@ -101,13 +101,13 @@ class ReportView extends StatelessWidget {
                                   children: [
                                     Text(controller.issueType == '' ? "Select The Type of Issue" : controller.issueType,
                                         style: Theme.of(context).textTheme.bodyLarge),
-                                    Icon(Icons.arrow_drop_down_outlined)
+                                    const Icon(Icons.arrow_drop_down_outlined)
                                   ],
                                 ),
                               )),
                         );
                       }),
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.cardPadding,
                       ),
                       Stack(
@@ -115,7 +115,7 @@ class ReportView extends StatelessWidget {
                           Container(
                             width: AppTheme.cardPadding * 18,
                             //height: AppTheme.cardPadding * 12,
-                            constraints: BoxConstraints(
+                            constraints: const BoxConstraints(
                               minHeight: 60, // Minimum height that the container starts with
                               maxHeight: 300, // Maximum height that the container can expand to
                             ),
@@ -141,7 +141,7 @@ class ReportView extends StatelessWidget {
                         ],
                       ),
                       //submit button
-                      SizedBox(
+                      const SizedBox(
                         height: AppTheme.elementSpacing,
                       ),
                       Container(
@@ -151,11 +151,11 @@ class ReportView extends StatelessWidget {
                             onTap: () async {
                               if (controller.contactInfoController.text.isEmpty || controller.complaintController.text.isEmpty) {
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill out all fields first.')));
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill out all fields first.')));
                                 }
                               } else if (controller.issueType == '') {
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please select an issue type first.')));
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select an issue type first.')));
                                 }
                               } else {
                                 //initiate upload.
@@ -174,7 +174,7 @@ class ReportView extends StatelessWidget {
                                 await ref.update({'image_urls': imageUrls});
                                 controller.setSubmitting(false);
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Your report was sent successfully.')));
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Your report was sent successfully.')));
                                 }
                               }
                             }),
@@ -187,7 +187,7 @@ class ReportView extends StatelessWidget {
                           ),
                         ),
                       ],
-                      SizedBox(height: AppTheme.elementSpacing),
+                      const SizedBox(height: AppTheme.elementSpacing),
                       ...controller.imageList
                           .mapIndexed((index, data) => ReportImage(data: data, delete: () => controller.deleteImage(index)))
                           .toList(),
@@ -214,7 +214,7 @@ class ReportImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 16),
       child: SizedBox(
         width: AppTheme.cardPadding * 18,
         child: Stack(children: [
@@ -244,7 +244,7 @@ class ReportImage extends StatelessWidget {
           Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                icon: Container(decoration: BoxDecoration(color: Colors.black, shape: BoxShape.circle), child: Icon(Icons.close)),
+                icon: Container(decoration: const BoxDecoration(color: Colors.black, shape: BoxShape.circle), child: const Icon(Icons.close)),
                 onPressed: delete,
               ))
         ]),
@@ -269,9 +269,9 @@ class IssueTypeColumn extends StatelessWidget {
               width: AppTheme.cardPadding * 18,
               decoration: BoxDecoration(
                   color: AppTheme.colorGlassContainer,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text("Complaint", style: TextStyle(color: Colors.white)),
               )),
         ),
@@ -284,8 +284,8 @@ class IssueTypeColumn extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.colorGlassContainer,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text("Bug", style: TextStyle(color: Colors.white)),
               )),
         ),
@@ -298,8 +298,8 @@ class IssueTypeColumn extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.colorGlassContainer,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text("Fraud", style: TextStyle(color: Colors.white)),
               )),
         ),
@@ -311,9 +311,9 @@ class IssueTypeColumn extends StatelessWidget {
               width: AppTheme.cardPadding * 18,
               decoration: BoxDecoration(
                   color: AppTheme.colorGlassContainer,
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text("Other", style: TextStyle(color: Colors.white)),
               )),
         )

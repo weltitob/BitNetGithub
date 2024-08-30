@@ -49,13 +49,13 @@ class _AGBScreenState extends State<AGBScreen> {
 
       return bitnetScaffold(
         extendBodyBehindAppBar: true,
-        appBar: bitnetWebsiteAppBar(),
+        appBar: const bitnetWebsiteAppBar(),
         context: context,
         backgroundColor: AppTheme.colorBackground,
         body: Container(
-          padding: EdgeInsets.only(top: AppTheme.cardPadding * 2),
+          padding: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
           child: ListView(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppTheme.columnWidth,
               vertical: AppTheme.cardPadding,
             ),
@@ -63,11 +63,11 @@ class _AGBScreenState extends State<AGBScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.article_outlined,
                     color: Colors.white,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: AppTheme.elementSpacing / 2,
                   ),
                   Text(
@@ -78,89 +78,89 @@ class _AGBScreenState extends State<AGBScreen> {
                 ],
               ),
               MyDivider(),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding,
               ),
               Text(
                 L10n.of(context)!.scope,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              SizedBox(height: AppTheme.elementSpacing / 2),
+              const SizedBox(height: AppTheme.elementSpacing / 2),
               Text(L10n.of(context)!.termsAndConditionsDescription,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding,
               ),
               Text(
                 L10n.of(context)!.functionality,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              SizedBox(height: AppTheme.elementSpacing / 2),
+              const SizedBox(height: AppTheme.elementSpacing / 2),
               Text(L10n.of(context)!.appAllowsUsers,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding,
               ),
               Text(
                 L10n.of(context)!.userResponsibility,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              SizedBox(height: AppTheme.elementSpacing / 2),
+              const SizedBox(height: AppTheme.elementSpacing / 2),
               Text(L10n.of(context)!.userSolelyResponsible,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding,
               ),
               Text(
                 L10n.of(context)!.fees,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              SizedBox(height: AppTheme.elementSpacing / 2),
+              const SizedBox(height: AppTheme.elementSpacing / 2),
               Text(
                 L10n.of(context)!.certainFeaturesOfApp,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding,
               ),
               Text(
                 L10n.of(context)!.limitationOfLiability,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              SizedBox(height: AppTheme.elementSpacing / 2),
+              const SizedBox(height: AppTheme.elementSpacing / 2),
               Text(L10n.of(context)!.walletLiable, style: Theme.of(context).textTheme.bodySmall,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding,
               ),
               Text(
                 L10n.of(context)!.changes,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              SizedBox(height: AppTheme.elementSpacing / 2),
+              const SizedBox(height: AppTheme.elementSpacing / 2),
               Text(L10n.of(context)!.walletReserves,  style: Theme.of(context).textTheme.bodySmall,
               ),
-              SizedBox(
+              const SizedBox(
                 height: AppTheme.cardPadding,
               ),
               Text(
                 L10n.of(context)!.finalProvisions,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              SizedBox(height: AppTheme.elementSpacing / 2),
+              const SizedBox(height: AppTheme.elementSpacing / 2),
               Text(L10n.of(context)!.termsAndConditionsEntire, style: Theme.of(context).textTheme.bodySmall,
               ),
-              SizedBox(height: AppTheme.cardPadding * 2),
+              const SizedBox(height: AppTheme.cardPadding * 2),
               Center(
                 child: Text(
                   "© BitNet 2023",
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
-              SizedBox(height: AppTheme.cardPadding * 4),
+              const SizedBox(height: AppTheme.cardPadding * 4),
             ],
           ),
         ),

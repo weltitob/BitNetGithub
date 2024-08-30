@@ -46,7 +46,7 @@ class _VerificationSpaceState extends State<VerificationSpace> {
               horizontal: AppTheme.cardPadding * 2.ws,
               vertical: AppTheme.elementSpacing.h,
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -60,7 +60,7 @@ class _VerificationSpaceState extends State<VerificationSpace> {
                   height: AppTheme.cardPadding.h,
                 ),
                 Text(
-                  L10n.of(context)!.invitationCode,
+                  L10n.of(context).invitationCode,
                   style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.left,
                 ),
@@ -89,7 +89,7 @@ class _VerificationSpaceState extends State<VerificationSpace> {
                       borderWidth: 2,
                     ),
                     cursorColor: Colors.white,
-                    animationDuration: Duration(milliseconds: 300),
+                    animationDuration: const Duration(milliseconds: 300),
                     textStyle: Theme.of(context).textTheme.titleLarge,
                     backgroundColor: Colors.transparent,
                     enableActiveFill: false,
@@ -109,7 +109,7 @@ class _VerificationSpaceState extends State<VerificationSpace> {
                     },
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.elementSpacing,
                 ),
                 Center(

@@ -58,7 +58,7 @@ class _PodestWidgetState extends State<PodestWidget> {
                   ? Matrix4.translationValues(0, -4,
                       0) // adjust the value to control the height of the jump
                   : Matrix4.translationValues(0, 4, 0),
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               child: Column(
                 children: [
                   Avatar(
@@ -67,7 +67,7 @@ class _PodestWidgetState extends State<PodestWidget> {
                     mxContent: Uri.parse(widget.avatarUri),
                     isNft: false,
                   ),
-                  SizedBox(height: AppTheme.elementSpacing),
+                  const SizedBox(height: AppTheme.elementSpacing),
                   isHovered ? BitNetShaderMask(child: Text(
                     widget.avatarName,
                     style: Theme.of(context).textTheme.titleSmall!.copyWith(
@@ -80,7 +80,7 @@ class _PodestWidgetState extends State<PodestWidget> {
                 ],
               ),
             ),
-            SizedBox(height: AppTheme.cardPadding),
+            const SizedBox(height: AppTheme.cardPadding),
             GlassContainer(
               width: widget.width,
               height: widget.height,

@@ -30,7 +30,7 @@ class CryptoItemController extends GetxController with GetSingleTickerProviderSt
     );
     controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 2000),
     );
     animation = ColorTween(begin: animationColor, end: Colors.transparent).animate(controller)
       ..addStatusListener((status) {

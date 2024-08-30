@@ -58,20 +58,20 @@ class WalletScreen extends GetWidget<WalletsController> {
         onTap: () {
           context.go('/wallet/lightningcard');
         },
-        child: BalanceCardLightning(),
+        child: const BalanceCardLightning(),
       ),
       GestureDetector(
         //
         onTap: () {
           context.go('/wallet/fiatcard');
         },
-        child: FiatCard(),
+        child: const FiatCard(),
       ),
       GestureDetector(
         onTap: () {
           context.go('/wallet/bitcoincard');
         },
-        child: BalanceCardBtc(),
+        child: const BalanceCardBtc(),
       ),
     ];
 
@@ -115,7 +115,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                                     L10n.of(context)!.totalWalletBal,
                                     style: Theme.of(context).textTheme.bodyMedium,
                                   ),
-                                  SizedBox(height: AppTheme.elementSpacing * 0.25),
+                                  const SizedBox(height: AppTheme.elementSpacing * 0.25),
                                   Obx(
                                     () => Row(
                                       children: [

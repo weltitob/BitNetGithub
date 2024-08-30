@@ -240,7 +240,7 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
 
   void nextPageFunction() async {
     await _pageController.nextPage(
-        duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
   }
 
   @override

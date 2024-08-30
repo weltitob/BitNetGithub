@@ -56,7 +56,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
             onTap: () {
               Navigator.of(context).pop();
             },
-            actions: [PopUpLangPickerWidget()]),
+            actions: [const PopUpLangPickerWidget()]),
         body: Stack(
           children: [
             Padding(
@@ -105,7 +105,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                     textAlign: TextAlign.left,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: AppTheme.cardPadding,
                   ),
                   Row(
@@ -137,7 +137,7 @@ class _OtherDeviceScreenState extends State<OtherDeviceScreen> {
                     textAlign: TextAlign.left,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: AppTheme.elementSpacing,
                   ),
                   Row(

@@ -15,16 +15,16 @@ class _EditProfileTabState extends State<EditProfileTab> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+      margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: AppTheme.cardPadding,),
+          const SizedBox(height: AppTheme.cardPadding,),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text("Private Profile:", style: Theme.of(context).textTheme.titleMedium,),
-              SizedBox(width: AppTheme.cardPadding,),
+              const SizedBox(width: AppTheme.cardPadding,),
               Switcher(
                 value: false,
                 size: SwitcherSize.medium,
@@ -39,16 +39,16 @@ class _EditProfileTabState extends State<EditProfileTab> {
               ),
             ],
           ),
-          SizedBox(height: AppTheme.cardPadding,),
+          const SizedBox(height: AppTheme.cardPadding,),
           Text("Unchangeable Profile information:",
             style: Theme.of(context).textTheme.titleMedium,),
-          SizedBox(height: AppTheme.elementSpacing,),
+          const SizedBox(height: AppTheme.elementSpacing,),
           Text("WalletAdress: Brrjflakjasdkaskldajkdklajdlka",
             style: Theme.of(context).textTheme.bodyMedium,),
-          SizedBox(height: AppTheme.elementSpacing / 2,),
+          const SizedBox(height: AppTheme.elementSpacing / 2,),
           Text("Did: 290891280937810237812897310923890",
             style: Theme.of(context).textTheme.bodyMedium,),
-          SizedBox(height: AppTheme.cardPadding,),
+          const SizedBox(height: AppTheme.cardPadding,),
           // Center(
           //   child: LongButtonWidget(
           //     title: "Save changes",

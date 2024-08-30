@@ -131,7 +131,7 @@ String flag = iso.toUpperCase().replaceAllMapped(RegExp(r'[A-Z]'),
                       child: Text((initialCountry?.flag ?? isoToFlag("US")), style: Theme.of(context).textTheme.displaySmall),
                     ),
                     Text((initialCountry?.name ?? "United States" ), style: Theme.of(context).textTheme.bodyLarge),
-                    Spacer(),
+                    const Spacer(),
                     Icon(sheetOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down)
                    
                   ],

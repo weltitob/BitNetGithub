@@ -9,7 +9,7 @@ class RandomAvatarWidget extends StatefulWidget {
   final double height;
   final bool start;
 
-  RandomAvatarWidget(
+  const RandomAvatarWidget(
       {required this.width, required this.height, this.start = false});
 
   @override
@@ -68,16 +68,16 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget>
     super.initState();
     int avatarCounter = 0;
 
-    Future.delayed(Duration(milliseconds: 4000)).then((_) async {
+    Future.delayed(const Duration(milliseconds: 4000)).then((_) async {
       // Delay by 700 milliseconds initially
       if (!widget.start) {
-        await Future.delayed(Duration(
+        await Future.delayed(const Duration(
             milliseconds: 125)); // Additional Delay of 100ms if start is false
       }
 
       return Future.doWhile(() async {
         await Future.delayed(
-            Duration(milliseconds: 250)); // Delay between each avatar spawn
+            const Duration(milliseconds: 250)); // Delay between each avatar spawn
 
         if (avatarCounter >= 30) return false;
 
@@ -108,7 +108,7 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget>
 
         avatar.size =
             Tween<double>(begin: 0, end: endRadius).animate(avatar.controller);
-        avatar.controller.duration = Duration(milliseconds: 1000);
+        avatar.controller.duration = const Duration(milliseconds: 1000);
         avatar.controller.addStatusListener((status) {
           if (status == AnimationStatus.dismissed) {
             avatar.controller.dispose();
@@ -126,7 +126,7 @@ class _RandomAvatarWidgetState extends State<RandomAvatarWidget>
 
         avatarCounter++;
 
-        await Future.delayed(Duration(milliseconds: 200));
+        await Future.delayed(const Duration(milliseconds: 200));
 
         return true;
       });
@@ -156,7 +156,7 @@ class AvatarLayout extends StatelessWidget {
   final double width;
   final double height;
 
-  AvatarLayout({
+  const AvatarLayout({
     required this.animatedAvatars,
     required this.width,
     required this.height,

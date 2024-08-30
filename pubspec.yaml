@@ -197,6 +197,9 @@ dependencies:
   shake: ^2.2.0
   #internet_popup: ^1.0.8+5
 
+  mime: any
+  html: any
+  web_smooth_scroll: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

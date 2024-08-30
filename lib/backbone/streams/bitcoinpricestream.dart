@@ -94,7 +94,7 @@ class BitcoinPriceStream {
   final String _url = 'https://api.coingecko.com/api/v3/simple/price';
   late StreamController<ChartLine> _priceController;
   Timer? _timer;
-  final Duration _updateInterval = Duration(seconds: 45);
+  final Duration _updateInterval = const Duration(seconds: 45);
   String localCurrency = 'eur'; // Default currency
 
   BitcoinPriceStream() {

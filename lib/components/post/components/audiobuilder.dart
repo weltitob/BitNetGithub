@@ -18,7 +18,7 @@ class AdjustSpeedContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassContainer(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+        padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
         child: child,
       ),
     );
@@ -89,7 +89,7 @@ class AudioBuilderLocalState extends State<AudioBuilderLocal>
       alignment: Alignment.centerLeft,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 10.0,
         ),
         child: Row(
@@ -101,7 +101,7 @@ class AudioBuilderLocalState extends State<AudioBuilderLocal>
                 stream: player.speedStream,
                 builder: (context, snapshot) => GestureDetector(
                   child: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                   onTap: () {
                     showSliderDialog(
                       context: context,
@@ -194,7 +194,7 @@ class AudioBuilderNetworkState extends State<AudioBuilderNetwork>
     return GlassContainer(
       child: Container(
         width: MediaQuery.of(context).size.width * 1,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 10.0,
         ),
         child: Row(
@@ -206,7 +206,7 @@ class AudioBuilderNetworkState extends State<AudioBuilderNetwork>
                 stream: player.speedStream,
                 builder: (context, snapshot) => GestureDetector(
                   child: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                   onTap: () {
                     showSliderDialog(
                       context: context,
@@ -245,7 +245,7 @@ class AudioBuilderNetworkState extends State<AudioBuilderNetwork>
 class AudioControlButton extends StatelessWidget {
   final AudioPlayer player;
 
-  AudioControlButton(this.player);
+  const AudioControlButton(this.player);
 
   @override
   Widget build(BuildContext context) {
@@ -349,7 +349,7 @@ class AudioSeekBar extends StatefulWidget {
   final ValueChanged<Duration>? onChanged;
   final ValueChanged<Duration>? onChangeEnd;
 
-  AudioSeekBar({
+  const AudioSeekBar({
     required this.duration,
     required this.position,
     required this.bufferedPosition,
@@ -371,7 +371,7 @@ class _AudioSeekBarState extends State<AudioSeekBar> {
 
     _sliderThemeData = SliderTheme.of(context).copyWith(
         trackHeight: 1.0,
-        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0));
+        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6.0));
   }
 
   @override
@@ -380,7 +380,7 @@ class _AudioSeekBarState extends State<AudioSeekBar> {
       child: Stack(
         children: [
           Container(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: const EdgeInsets.only(right: 20.0),
             height: 20,
             child: SliderTheme(
               data: _sliderThemeData.copyWith(
@@ -414,7 +414,7 @@ class _AudioSeekBarState extends State<AudioSeekBar> {
             ),
           ),
           Container(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: const EdgeInsets.only(right: 20.0),
             height: 20,
             child: SliderTheme(
               data: _sliderThemeData.copyWith(
@@ -494,7 +494,7 @@ void showSliderDialog({
           child: Column(
             children: [
               Text('${snapshot.data?.toStringAsFixed(1)}$valueSuffix',
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontFamily: 'Fixed',
                       fontWeight: FontWeight.bold,
                       fontSize: 24.0)),

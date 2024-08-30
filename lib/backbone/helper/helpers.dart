@@ -87,7 +87,7 @@ String getRandomString(int length) {
 //also needs to get added in sperate stroagepoint where there simply are all codes and info if theyre already used
 }
 
-var uuid = Uuid();
+var uuid = const Uuid();
 
 // Load Lottie composition from an asset file
 Future<LottieComposition> loadComposition(String assetPath) async {
@@ -254,7 +254,7 @@ class NumericalRangeFormatter extends TextInputFormatter {
     }
     // If the new value is less than the minimum allowed, set it to the minimum value
     else if (double.parse(newValue.text) < min) {
-      return TextEditingValue().copyWith(text: min.toString());
+      return const TextEditingValue().copyWith(text: min.toString());
     }
     // If the new value is greater than the maximum allowed, display a snackbar and set the value to the old value
     else if (double.parse(newValue.text) > max) {

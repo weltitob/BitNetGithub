@@ -95,14 +95,14 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       } else {
         errorController
             .add(ErrorAnimationType.shake); // Triggering error shake animation
-        _error = L10n.of(context)!.codeAlreadyUsed;
+        _error = L10n.of(context).codeAlreadyUsed;
         setState(() {
           _loading = false;
           hasError = true;
         });
       }
     } catch (error) {
-      _error = L10n.of(context)!.codeNotValid;
+      _error = L10n.of(context).codeNotValid;
       errorController
           .add(ErrorAnimationType.shake); // Triggering error shake animation
       setState(() {
@@ -121,11 +121,11 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
           onTap: () {
             context.go('/authhome');
           },
-          text: L10n.of(context)!.pinCodeVerification,
+          text: L10n.of(context).pinCodeVerification,
           // text:
           context: context,
           actions: [
-            PopUpLangPickerWidget()
+            const PopUpLangPickerWidget()
           ]),
       // body: Container(),
       // key: scaffoldKey,
@@ -163,7 +163,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                 margin: EdgeInsets.symmetric(
                     horizontal: AppTheme.cardPadding * 2.w),
                 child: Text(
-                  L10n.of(context)!.platformDemandText,
+                  L10n.of(context).platformDemandText,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium!,

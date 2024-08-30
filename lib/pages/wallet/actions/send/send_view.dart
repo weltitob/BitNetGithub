@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 
@@ -64,8 +63,8 @@ class SendBTCScreen extends GetWidget<SendsController> {
             Obx(
               ()=> Expanded(
                 child: controller.initializedValues.value ? (controller.sendType == SendType.Invoice || controller.sendType == SendType.LightningUrl)
-                    ? LightningSendTab()
-                    : OnChainSendTab() : dotProgress(context),
+                    ? const LightningSendTab()
+                    : const OnChainSendTab() : dotProgress(context),
               ),
             ),
           ],

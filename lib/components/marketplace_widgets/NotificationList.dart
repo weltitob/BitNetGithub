@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,12 +7,7 @@ class NotificationList extends StatelessWidget {
   final notificationTime;
   final headingColor;
 
-  const NotificationList(
-      {Key? key,
-      this.notificationImg,
-      this.notificationText = '',
-      this.notificationTime = '',
-      this.headingColor})
+  const NotificationList({Key? key, this.notificationImg, this.notificationText = '', this.notificationTime = '', this.headingColor})
       : super(key: key);
 
   @override
@@ -23,10 +17,10 @@ class NotificationList extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 15.h),
       margin: EdgeInsets.only(bottom: 15.h),
       width: size.width,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Color.fromRGBO(255, 255, 255, 0.1),
+            color: Theme.of(context).brightness == Brightness.light ? Colors.black : const Color.fromRGBO(255, 255, 255, 0.1),
           ),
         ),
       ),
@@ -59,7 +53,7 @@ class NotificationList extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
-                    color: const Color.fromRGBO(255, 255, 255, 0.5),
+                    color: Theme.of(context).brightness == Brightness.light ? Colors.black : const Color.fromRGBO(255, 255, 255, 0.5),
                   ),
                 ),
               ],

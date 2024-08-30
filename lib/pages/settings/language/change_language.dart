@@ -34,7 +34,7 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
           controller.switchTab('main');
         },
       ),
-      body: LanguagePickerPage(),
+      body: const LanguagePickerPage(),
     );
   }
 } 

@@ -49,7 +49,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     ),
                   ),
                 ),
-                Padding(
+                const Padding(
                     padding: EdgeInsets.only(
                       top: 10,
                     )),
@@ -57,7 +57,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                   children: [
                     Column(
                       children: [
-                        Text(
+                        const Text(
                           "\$",
                           style: TextStyle(
                             color: Colors.white,
@@ -70,7 +70,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                         )
                       ],
                     ),
-                    Padding(
+                    const Padding(
                         padding: EdgeInsets.only(
                           left: 5,
                         )),
@@ -81,7 +81,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                           if (snapshot.hasData) {
                             return Text(
                               snapshot.data![0].marketConsensusTargetPrice,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
@@ -89,7 +89,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                             );
                           }
                           if(snapshot.hasError){
-                            return Text(
+                            return const Text(
                               'N/A',
                               style: TextStyle(
                                 color: Colors.white,
@@ -112,13 +112,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     ),
                   ],
                 ),
-                Padding(
+                const Padding(
                     padding: EdgeInsets.only(
                       top: 5,
                     )),
                 ChildbuildAnalysis2("${L10n.of(context)!.highestAssesment}", 1200.28),
                 ChildbuildAnalysis2("${L10n.of(context)!.lowestAssesment}", 321.1),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(
                     top: 5,
                   ),
@@ -150,7 +150,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               text,
               style: Theme.of(context).textTheme.bodyMedium
           ),
-          Padding(
+          const Padding(
               padding: EdgeInsets.only(
                 right: 5,
               )),
@@ -163,7 +163,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                   showTicks: false,
                   showLabels: false,
                   useRangeColorForAxis: true,
-                  axisTrackStyle: LinearAxisTrackStyle(
+                  axisTrackStyle: const LinearAxisTrackStyle(
                       thickness: 5,
                       color: Colors.grey,
                       edgeStyle: LinearEdgeStyle.bothCurve,
@@ -181,7 +181,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                         child: Container(
                           height: 15,
                           width: 7.5,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius:
                             BorderRadius.all(Radius.circular(4.0)),
@@ -196,7 +196,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     children: [
                       Text(
                         textred,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.redAccent,
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
@@ -204,7 +204,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                       ),
                       Text(
                         textgreen,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.greenAccent,
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
@@ -240,7 +240,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                           yValueMapper: (PieChartData data, _) => data.y)
                     ])),
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(
               left: 5,
             ),
@@ -250,14 +250,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             children: [
               ChildChildbuildAnalysisChartLegend(
                   "Buy:", "121 Analysts", Colors.greenAccent),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(
                   top: 10,
                 ),
               ),
               ChildChildbuildAnalysisChartLegend(
                   "Sell:", "29 Analysts", Colors.redAccent),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(
                   top: 10,
                 ),
@@ -280,7 +280,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             size: 14,
             color: color,
           ),
-          Padding(padding: EdgeInsets.only(left: 5)),
+          const Padding(padding: EdgeInsets.only(left: 5)),
           Text(
             text,
             style: TextStyle(
@@ -289,10 +289,10 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               fontSize: 12,
             ),
           ),
-          Padding(padding: EdgeInsets.only(left: 5)),
+          const Padding(padding: EdgeInsets.only(left: 5)),
           Text(
             text2,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
               fontSize: 16,
@@ -314,13 +314,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             fontSize: 14,
           ),
         ),
-        Padding(
+        const Padding(
             padding: EdgeInsets.only(
               left: 5,
             )),
         Column(
           children: [
-            Text(
+            const Text(
               "\$",
               style: TextStyle(
                 color: Colors.white,
@@ -333,13 +333,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             )
           ],
         ),
-        Padding(
+        const Padding(
             padding: EdgeInsets.only(
               left: 2.5,
             )),
         Text(
           assesment.toString(),
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -366,20 +366,20 @@ class ChartData {
 
 dynamic getColumnData() {
   List<ChartData> columnData = <ChartData>[
-    ChartData("BMW", 54, Color.fromRGBO(65, 157, 120, 1)),
-    ChartData("AMC", 19, Color.fromRGBO(65, 157, 120, 1)),
-    ChartData("VW", 7, Color.fromRGBO(219, 80, 74, 1)),
-    ChartData("BB", 5, Color.fromRGBO(65, 157, 120, 1)),
-    ChartData("HITI", 3, Color.fromRGBO(219, 80, 74, 1)),
+    ChartData("BMW", 54, const Color.fromRGBO(65, 157, 120, 1)),
+    ChartData("AMC", 19, const Color.fromRGBO(65, 157, 120, 1)),
+    ChartData("VW", 7, const Color.fromRGBO(219, 80, 74, 1)),
+    ChartData("BB", 5, const Color.fromRGBO(65, 157, 120, 1)),
+    ChartData("HITI", 3, const Color.fromRGBO(219, 80, 74, 1)),
   ];
   return columnData;
 }
 
 dynamic getPieData() {
   List<PieChartData> piechartData = [
-    PieChartData('positive mentions', 50, Color.fromRGBO(65, 157, 120, 1)),
-    PieChartData('negative mentions', 20, Color.fromRGBO(219, 80, 74, 1)),
-    PieChartData('neutral', 30, Color.fromRGBO(221, 209, 199, 1)),
+    PieChartData('positive mentions', 50, const Color.fromRGBO(65, 157, 120, 1)),
+    PieChartData('negative mentions', 20, const Color.fromRGBO(219, 80, 74, 1)),
+    PieChartData('neutral', 30, const Color.fromRGBO(221, 209, 199, 1)),
   ];
   return piechartData;
 }

@@ -36,12 +36,12 @@ class EmptyPage extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: AppTheme.cardPadding,),
+          const SizedBox(height: AppTheme.cardPadding,),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
             child: Text(text, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
           ),
-          SizedBox(height: AppTheme.cardPadding,),
+          const SizedBox(height: AppTheme.cardPadding,),
           if (loading)
             Center(
               child: SizedBox(
@@ -49,7 +49,7 @@ class EmptyPage extends StatelessWidget {
                 child: dotProgress(context),
               ),
             ),
-          SizedBox(height: AppTheme.cardPadding,),
+          const SizedBox(height: AppTheme.cardPadding,),
           LongButtonWidget(buttonType: ButtonType.transparent, title: "ESCAPE BUTTON", onTap:
               (){
             Auth().signOut();}

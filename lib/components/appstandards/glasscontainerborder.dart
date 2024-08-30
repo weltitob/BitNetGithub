@@ -5,7 +5,7 @@ class GradientBoxBorder extends BoxBorder {
   final double borderWidth;
   final bool isTransparent;
 
-  GradientBoxBorder({
+  const GradientBoxBorder({
     this.borderRadius = const BorderRadius.all(Radius.circular(14.0)),
     this.borderWidth = 1.5,
     this.isTransparent = false,
@@ -89,7 +89,7 @@ class GradientOutlineInputBorder extends InputBorder {
   final double borderWidth;
   final bool isFocused;
 
-  GradientOutlineInputBorder({
+  const GradientOutlineInputBorder({
     this.borderRadius = const BorderRadius.all(Radius.circular(4.0)),
     this.borderWidth = 1.5,
     required this.isFocused,

@@ -36,7 +36,7 @@ class QrButton extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.all(AppTheme.cardPadding * 3),
+                    margin: const EdgeInsets.all(AppTheme.cardPadding * 3),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: AppTheme.cardRadiusSmall),

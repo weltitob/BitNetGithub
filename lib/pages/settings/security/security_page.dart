@@ -8,7 +8,6 @@ import 'package:bitnet/models/settings/settingsmodel.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/settings/security/recoverwithqrpage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -47,7 +46,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         title: "Plain Key and DID",
       ),
       SettingsPageModel(
-        widget: RecoverWithQRPage(),
+        widget: const RecoverWithQRPage(),
         goBack: true,
         iconData: Icons.verified_user,
         title: "Recover with QR Code"
@@ -93,14 +92,14 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
       body: isVerified
           ? Column(
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: AppTheme.cardPadding * 1.5,
                 ),
                 pages[currentview].widget,
               ],
             )
           : Container(
-              child: Expanded(
+              child: const Expanded(
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -132,12 +131,12 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
 
   Widget buildSettings() {
     return Container(
-      margin: EdgeInsets.only(top: AppTheme.cardPadding),
+      margin: const EdgeInsets.only(top: AppTheme.cardPadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           BitNetListTile(
-            leading: Icon(FontAwesomeIcons.buildingLock),
+            leading: const Icon(FontAwesomeIcons.buildingLock),
             text: "DID and private key",
             onTap: () {
               setState(() {
@@ -146,7 +145,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             },
           ),
           BitNetListTile(
-            leading: Icon(FontAwesomeIcons.book),
+            leading: const Icon(FontAwesomeIcons.book),
             text:"Word recovery",
             onTap: () {
               setState(() {
@@ -155,7 +154,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             },
           ),
           BitNetListTile(
-              leading: Icon(FontAwesomeIcons.qrcode),
+              leading: const Icon(FontAwesomeIcons.qrcode),
               text: "Recover with QR Code",
               onTap: () {
                 setState(() {
@@ -163,7 +162,7 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
                 });
               }),
           BitNetListTile(
-            leading: Icon(FontAwesomeIcons.person),
+            leading: const Icon(FontAwesomeIcons.person),
             text: "Social recovery",
             onTap: () {
               setState(() {
@@ -172,9 +171,9 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             },
           ),
           BitNetListTile(
-            leading: Icon(Icons.shield_outlined),
+            leading: const Icon(Icons.shield_outlined),
             text: "Extended Sec", //L10n.of(context)!.security
-            trailing: Icon(
+            trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
               size: AppTheme.iconSize * 0.75,
             ),
@@ -185,9 +184,9 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
             },
           ),
           BitNetListTile(
-            leading: Icon(FontAwesomeIcons.trash),
+            leading: const Icon(FontAwesomeIcons.trash),
             text: "Delete account",
-            trailing: Icon(
+            trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
               size: AppTheme.iconSize * 0.75,
             ),

@@ -37,9 +37,7 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
       child: Container(
         width: 300.w,
         padding: EdgeInsets.all(10.w),
-        margin: widget.columnMargin
-            ? EdgeInsets.symmetric(horizontal: 8.w)
-            : EdgeInsets.zero,
+        margin: widget.columnMargin ? EdgeInsets.symmetric(horizontal: 8.w) : EdgeInsets.zero,
         decoration: BoxDecoration(
           color: const Color.fromRGBO(255, 255, 255, 0.1),
           borderRadius: BorderRadius.circular(12.r),
@@ -73,7 +71,7 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
-                      color: const Color.fromRGBO(249, 249, 249, 1),
+                      color: Theme.of(context).brightness == Brightness.light ? Colors.black : const Color.fromRGBO(249, 249, 249, 1),
                     ),
                   ),
                 ),
@@ -82,8 +80,7 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
                     color: const Color.fromRGBO(255, 255, 255, 0.1),
                     borderRadius: BorderRadius.circular(100.r),
                   ),
-                  padding: EdgeInsets.only(
-                      top: 5.w, bottom: 4.w, right: 10.w, left: 10.w),
+                  padding: EdgeInsets.only(top: 5.w, bottom: 4.w, right: 10.w, left: 10.w),
                   child: Row(
                     children: [
                       Container(
@@ -99,7 +96,7 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
-                          color: const Color.fromRGBO(255, 255, 255, 0.7),
+                          color: Theme.of(context).brightness == Brightness.light ? Colors.black : const Color.fromRGBO(255, 255, 255, 0.7),
                         ),
                       )
                     ],
@@ -107,10 +104,10 @@ class _NftProductHorizontalState extends State<NftProductHorizontal> {
                 ),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             if (widget.onDelete != null)
               IconButton(
-                icon: Icon(Icons.delete_forever),
+                icon: const Icon(Icons.delete_forever),
                 onPressed: widget.onDelete,
               )
           ],

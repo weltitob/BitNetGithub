@@ -19,15 +19,13 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class BitcoinCardInformationScreen extends StatefulWidget {
-  BitcoinCardInformationScreen({super.key});
+  const BitcoinCardInformationScreen({super.key});
 
   @override
-  State<BitcoinCardInformationScreen> createState() =>
-      _BitcoinCardInformationScreenState();
+  State<BitcoinCardInformationScreen> createState() => _BitcoinCardInformationScreenState();
 }
 
-class _BitcoinCardInformationScreenState
-    extends State<BitcoinCardInformationScreen> {
+class _BitcoinCardInformationScreenState extends State<BitcoinCardInformationScreen> {
   bool isShowMore = false;
   final controller = Get.put(TransactionController());
   final homeController = Get.put(HomeController());
@@ -71,41 +69,35 @@ class _BitcoinCardInformationScreenState
                 padding: const EdgeInsets.only(top: AppTheme.cardPadding * 3),
                 child: Container(
                   height: AppTheme.cardPadding * 7.5,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                  child: BalanceCardBtc(),
+                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                  child: const BalanceCardBtc(),
                 ),
               ),
             ),
             SliverToBoxAdapter(
               child: Center(
                   child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.elementSpacing),
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                 child: BitNetListTile(
-                  text: "Addresses",
-                  trailing: Text("Show"),
-                  onTap: () async {
-
+                    text: "Addresses",
+                    trailing: const Text("Show"),
+                    onTap: () async {
                       BitNetBottomSheet(
                           context: context,
                           height: MediaQuery.of(context).size.height * 0.65.h,
                           borderRadius: AppTheme.borderRadiusBig,
-                          child: AddressesWidget());
-                    }
-                ),
+                          child: const AddressesWidget());
+                    }),
               )),
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding),
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: AppTheme.cardPadding.h * 1.75),
-                    Text(L10n.of(context)!.activity,
-                        style: Theme.of(context).textTheme.titleLarge),
+                    Text(L10n.of(context)!.activity, style: Theme.of(context).textTheme.titleLarge),
                     SizedBox(height: AppTheme.elementSpacing.h),
                   ],
                 ),
@@ -125,7 +117,7 @@ class _BitcoinCardInformationScreenState
 }
 
 class AddressesWidget extends StatefulWidget {
-  AddressesWidget({
+  const AddressesWidget({
     super.key,
   });
 
@@ -134,7 +126,6 @@ class AddressesWidget extends StatefulWidget {
 }
 
 class _AddressesWidgetState extends State<AddressesWidget> {
-
   String searchPrompt = '';
   bool isLoadingAddress = false;
   late List<MapEntry<String, double>> sortedAddresses;
@@ -153,19 +144,16 @@ class _AddressesWidgetState extends State<AddressesWidget> {
       });
       Map<String, double> finalAddresses = {};
       RestResponse response = await listBtcAddresses();
-      var accounts =
-      response.data['account_with_addresses'] as List;
+      var accounts = response.data['account_with_addresses'] as List;
       for (int i = 0; i < accounts.length; i++) {
         var addresses = accounts[i]['addresses'];
         for (int j = 0; j < addresses.length; j++) {
-          finalAddresses[addresses[j]['address']] =
-              double.parse(addresses[j]['balance']);
+          finalAddresses[addresses[j]['address']] = double.parse(addresses[j]['balance']);
         }
       }
       sortedAddresses = finalAddresses.entries.toList();
 
-      sortedAddresses
-          .sort((a, b) => b.value.compareTo(a.value));
+      sortedAddresses.sort((a, b) => b.value.compareTo(a.value));
 
       isLoadingAddress = false;
       setState(() {});
@@ -186,30 +174,30 @@ class _AddressesWidgetState extends State<AddressesWidget> {
       ),
       body: isLoadingAddress
           ? Container(
-        margin: EdgeInsets.symmetric(
-            horizontal: AppTheme.cardPadding * 2),
-        height: AppTheme.cardPadding * 5,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-
-            Center(
-              child: dotProgress(context),
-            ),
-            SizedBox(height: AppTheme.cardPadding),
-            Text("Loading your OnChain addresses... This might take a while", textAlign: TextAlign.center,),
-          ],
-        ),
-      )
+              margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2),
+              height: AppTheme.cardPadding * 5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: dotProgress(context),
+                  ),
+                  const SizedBox(height: AppTheme.cardPadding),
+                  const Text(
+                    "Loading your OnChain addresses... This might take a while",
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )
           : SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: AppTheme.cardPadding * 3),
+                  const SizedBox(height: AppTheme.cardPadding * 3),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.cardPadding),
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
                     child: SearchFieldWidget(
                       hintText: 'Search for specific address',
                       isSearchEnabled: true,
@@ -227,9 +215,7 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                       // shrinkWrap: true,
                       itemCount: sortedAddresses.length,
                       itemBuilder: (ctx, i) {
-                        if (!sortedAddresses[i].key
-                                .contains(searchPrompt) &&
-                            searchPrompt.isNotEmpty) {
+                        if (!sortedAddresses[i].key.contains(searchPrompt) && searchPrompt.isNotEmpty) {
                           return Container();
                         }
                         return Padding(
@@ -250,18 +236,14 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                                   children: [
                                     Text(
                                       textAlign: TextAlign.end,
-                                      sortedAddresses[i].value
-                                          .toInt()
-                                          .toString(),
+                                      sortedAddresses[i].value.toInt().toString(),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Icon(AppTheme.satoshiIcon)
                                   ],
                                 )),
                             onTap: () {
-                              context.go(
-                                  '/wallet/bitcoincard/btcaddressinfo/${sortedAddresses[i].key}',
-                                  extra: sortedAddresses[i].value);
+                              context.go('/wallet/bitcoincard/btcaddressinfo/${sortedAddresses[i].key}', extra: sortedAddresses[i].value);
                             },
                           ),
                         );
