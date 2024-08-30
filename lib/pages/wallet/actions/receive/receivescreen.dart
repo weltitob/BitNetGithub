@@ -249,7 +249,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
             );
           }),
           const SizedBox(
-            width: AppTheme.elementSpacing,
+            width: AppTheme.elementSpacing / 2,
           ),
         ],
       ),
@@ -278,7 +278,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(FontAwesomeIcons.bolt),
+                        Icon(FontAwesomeIcons.bolt, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,),
                         const SizedBox(
                           width: AppTheme.cardPadding * 0.25,
                         ),
@@ -291,7 +291,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(FontAwesomeIcons.bitcoin),
+                        Icon(FontAwesomeIcons.bitcoin, color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80),
                         const SizedBox(
                           width: AppTheme.cardPadding * 0.25,
                         ),
@@ -304,8 +304,8 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
                   ],
                   labelStyle: Theme.of(context).textTheme.headlineSmall,
                   indicator: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: AppTheme.cardRadiusMid,
+                    color: Theme.of(context).brightness == Brightness.light ? Colors.white.withOpacity(1) :  Colors.white.withOpacity(0.1),
                   ),
                   unselectedLabelColor: Colors.white,
                 ),

@@ -194,7 +194,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                 const SizedBox(
                                                   height: AppTheme.elementSpacing * 0.5,
                                                 ),
-                                                const Text("Sender"),
+                                                Text("Sender (${controller.transactionModel?.vin?.length})"),
                                               ],
                                             ),
                                             const SizedBox(
@@ -220,7 +220,7 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                 const SizedBox(
                                                   height: AppTheme.elementSpacing * 0.5,
                                                 ),
-                                                const Text("Receiver"),
+                                                Text("Receiver (${controller.transactionModel?.vout?.length})"),
                                               ],
                                             ),
                                           ],
