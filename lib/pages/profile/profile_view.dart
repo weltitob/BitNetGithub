@@ -36,9 +36,6 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void _scrollListener() {
-    print('scroll controller pos: ${controller.scrollController.offset}');
-    print('length: ${controller.assetsLazyLoading.length}');
-
     if (controller.scrollController.position.pixels == controller.scrollController.position.maxScrollExtent &&
         !controller.assetsLoading.value) {
       _loadMoreData();
