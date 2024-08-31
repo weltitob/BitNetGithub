@@ -104,8 +104,8 @@ class ProfileHeader extends StatelessWidget {
                                                   ),
                                                 ),
                                                 BottomButtons(
-                                                    leftButtonTitle: "Change Profile Picture",
-                                                    rightButtonTitle: "Change Background Image",
+                                                    leftButtonTitle: "Profile Picture",
+                                                    rightButtonTitle: "Background",
                                                     onLeftButtonTap: () async {
                                                       Navigator.pop(context);
                                                       final PermissionState ps = await PhotoManager.requestPermissionExtend();

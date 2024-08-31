@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:share_plus/share_plus.dart';
 
 class QrButton extends StatelessWidget {
   QrButton({super.key});
@@ -24,6 +25,7 @@ class QrButton extends StatelessWidget {
           context: context,
           extendBodyBehindAppBar: true,
           appBar: bitnetAppBar(
+            hasBackButton: false,
             onTap: () {
               context.pop(context);
             },
@@ -35,8 +37,9 @@ class QrButton extends StatelessWidget {
               key: controller.globalKeyQR,
               child: Column(
                 children: [
+                  SizedBox(height: AppTheme.cardPadding * 3,),
                   Container(
-                    margin: const EdgeInsets.all(AppTheme.cardPadding * 3),
+                    height: AppTheme.cardPadding * 12,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: AppTheme.cardRadiusSmall),
@@ -52,11 +55,23 @@ class QrButton extends StatelessWidget {
                         ),
                         // typeNumber: 5,
                         // size: AppTheme.cardPadding * 10,
-                        data: 'did: ${controller.userData.value.did}',
+                        data: 'did: ${controller.userData.value.did}', //this can be used to route to the user
                         errorCorrectLevel: QrErrorCorrectLevel.M,
                         // roundEdges: true,
                       ),
                     ),
+                  ),
+                  SizedBox(height: AppTheme.cardPadding * 1),
+                  LongButtonWidget(
+                    customHeight: AppTheme.cardPadding * 2,
+                    customWidth: AppTheme.cardPadding * 5,
+                    title: L10n.of(context)!.share,
+                    leadingIcon: const Icon(Icons.share_rounded),
+                    onTap: () {
+                      Share.share(
+                          'Put the deeplink for the specific user here...');
+                    },
+                    buttonType: ButtonType.transparent,
                   ),
                 ],
               ),
