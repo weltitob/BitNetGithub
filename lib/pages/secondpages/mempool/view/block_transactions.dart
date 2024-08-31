@@ -6,6 +6,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/components/fields/searchfield/searchfield.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/mempool_models/txPaginationModel.dart';
 import 'package:bitnet/pages/secondpages/mempool/controller/home_controller.dart';
 import 'package:bitnet/pages/transactions/controller/transaction_controller.dart';
 import 'package:bitnet/pages/transactions/view/single_transaction_screen.dart';
@@ -205,6 +206,7 @@ class _BlockTransactionsState extends State<BlockTransactions> {
                                       );
                                       if (!controller.txDetails[index].txid.isEmpty) {
                                         controllerTransaction.txID = controller.txDetails[index].txid.toString();
+                                        controllerTransaction.amount = amountCalc(controller.txDetails[index]);
                                         await controllerTransaction.getSingleTransaction(
                                           controllerTransaction.txID!,
                                         );
@@ -634,4 +636,11 @@ class _BlockTransactionsState extends State<BlockTransactions> {
       context: context,
     );
   }
+
+ String amountCalc(TransactionDetailsModel transaction) {
+  int totalOutput = transaction.vout.fold(0, (sum, output) => sum + output.value);
+
+  return totalOutput.toString();
+}
+
 }

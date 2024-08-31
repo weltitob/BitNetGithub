@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -36,7 +38,22 @@ class SingleTransactionScreen extends StatefulWidget {
 class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
   final TextEditingController inputCtrl = TextEditingController();
   final TextEditingController outputCtrl = TextEditingController();
+  late final StreamSubscription sub;
+  @override
+  void initState() {
+    super.initState();
+        final controller = Get.put(TransactionController());
 
+    sub = controller.isLoading.listen((b) {
+      setState((){});
+    });
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    sub.cancel();
+  }
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TransactionController());
@@ -47,38 +64,37 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
     int amount = 0;
-    if (controller.transactionModel != null) {
-      String amountPredefined = controller.amount;
-      // Initialize variables for amounts and addresses
-      num totalReceived = 0;
-      num totalSent = 0;
+    String amountPredefined = controller.amount;
+    if(controller.transactionModel != null) {
+    // Initialize variables for amounts and addresses
+    num totalReceived = 0;
+    num totalSent = 0;
 
-      for (var vin in controller.transactionModel!.vin!) {
-        if (vin.prevout != null && vin.prevout!.value != null) {
-          // Check if the input is from our address
-          if (vin.prevout?.scriptpubkeyAddress == controller.addressId) {
-            totalSent += vin.prevout!.value!;
-          }
+    for (var vin in controller.transactionModel!.vin!) {
+      if (vin.prevout != null && vin.prevout!.value != null) {
+        // Check if the input is from our address
+        if (vin.prevout?.scriptpubkeyAddress == controller.addressId) {
+          totalSent += vin.prevout!.value!;
         }
-      }
-
-      for (var vout in controller.transactionModel!.vout!) {
-        if (vout.value != null) {
-          // Check if the output is to our address
-          if (vout.scriptpubkeyAddress == controller.addressId) {
-            totalReceived += vout.value!;
-          }
-        }
-      }
-
-// Determine the net amount and direction
-      if (controller.addressId.isEmpty) {
-        amount = int.parse(amountPredefined);
-      } else {
-        amount = (totalReceived - totalSent).toInt();
       }
     }
 
+    for (var vout in controller.transactionModel!.vout!) {
+      if (vout.value != null) {
+        // Check if the output is to our address
+        if (vout.scriptpubkeyAddress == controller.addressId) {
+          totalReceived += vout.value!;
+        }
+      }
+    }
+
+// Determine the net amount and direction
+    if (controller.addressId.isEmpty) {
+      amount = int.parse(amountPredefined);
+    } else {
+      amount = (totalReceived - totalSent).toInt();
+    }
+    }
     final chartLine = controllerWallet.chartLines.value;
     final bitcoinPrice = chartLine?.price;
 

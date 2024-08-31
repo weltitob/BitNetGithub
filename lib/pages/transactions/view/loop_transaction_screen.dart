@@ -47,6 +47,7 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
         extendBodyBehindAppBar: true,
         appBar: bitnetAppBar(
           context: context,
+          text: 'Loop Transaction',
           onTap: () {
             Navigator.pop(context);
           },
