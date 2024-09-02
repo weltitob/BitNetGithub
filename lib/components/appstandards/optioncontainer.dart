@@ -11,7 +11,7 @@ class BitNetImageWithTextContainer extends StatelessWidget {
   final double width;
   final double height;
   final bool isActive;
-
+  final Color? customColor;
   const BitNetImageWithTextContainer(
     this.text,
     this.action, {
@@ -20,7 +20,7 @@ class BitNetImageWithTextContainer extends StatelessWidget {
     this.width = AppTheme.cardPadding * 6,
     this.height = AppTheme.cardPadding * 7,
     this.isActive = true, // default value is true
-    Key? key,
+    Key? key, this.customColor,
   }) : super(key: key);
 
   @override
@@ -47,6 +47,7 @@ class BitNetImageWithTextContainer extends StatelessWidget {
         child: GlassContainer(
           width: width,
           height: height,
+          customColor: customColor,
           borderThickness: isActive ? 1 : 0,
           borderRadius: borderRadius,
           child: Column(

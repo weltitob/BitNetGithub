@@ -14,52 +14,54 @@ class EditProfileTab extends StatefulWidget {
 class _EditProfileTabState extends State<EditProfileTab> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: AppTheme.cardPadding,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text("Private Profile:", style: Theme.of(context).textTheme.titleMedium,),
-              const SizedBox(width: AppTheme.cardPadding,),
-              Switcher(
-                value: false,
-                size: SwitcherSize.medium,
-                switcherButtonRadius: 50,
-                enabledSwitcherButtonRotate: true,
-                iconOff: Icons.lock_open_rounded,
-                iconOn: Icons.lock,
-                colorOff: Theme.of(context).colorScheme.secondary,
-                colorOn: Theme.of(context).colorScheme.primary,
-                onChanged: (bool state) {
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: AppTheme.cardPadding,),
-          Text("Unchangeable Profile information:",
-            style: Theme.of(context).textTheme.titleMedium,),
-          const SizedBox(height: AppTheme.elementSpacing,),
-          Text("WalletAdress: Brrjflakjasdkaskldajkdklajdlka",
-            style: Theme.of(context).textTheme.bodyMedium,),
-          const SizedBox(height: AppTheme.elementSpacing / 2,),
-          Text("Did: 290891280937810237812897310923890",
-            style: Theme.of(context).textTheme.bodyMedium,),
-          const SizedBox(height: AppTheme.cardPadding,),
-          // Center(
-          //   child: LongButtonWidget(
-          //     title: "Save changes",
-          //     onTap: () {
-          //       print("Saved changes");
-          //     },
-          //     buttonColor: Theme.of(context).colorScheme.primaryContainer,
-          //     textColor: Theme.of(context).colorScheme.onPrimaryContainer,
-          //   ),
-          // ),
-        ],
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: AppTheme.cardPadding,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text("Private Profile:", style: Theme.of(context).textTheme.titleMedium,),
+                const SizedBox(width: AppTheme.cardPadding,),
+                Switcher(
+                  value: false,
+                  size: SwitcherSize.medium,
+                  switcherButtonRadius: 50,
+                  enabledSwitcherButtonRotate: true,
+                  iconOff: Icons.lock_open_rounded,
+                  iconOn: Icons.lock,
+                  colorOff: Theme.of(context).colorScheme.secondary,
+                  colorOn: Theme.of(context).colorScheme.primary,
+                  onChanged: (bool state) {
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.cardPadding,),
+            Text("Unchangeable Profile information:",
+              style: Theme.of(context).textTheme.titleMedium,),
+            const SizedBox(height: AppTheme.elementSpacing,),
+            Text("WalletAdress: Brrjflakjasdkaskldajkdklajdlka",
+              style: Theme.of(context).textTheme.bodyMedium,),
+            const SizedBox(height: AppTheme.elementSpacing / 2,),
+            Text("Did: 290891280937810237812897310923890",
+              style: Theme.of(context).textTheme.bodyMedium,),
+            const SizedBox(height: AppTheme.cardPadding,),
+            // Center(
+            //   child: LongButtonWidget(
+            //     title: "Save changes",
+            //     onTap: () {
+            //       print("Saved changes");
+            //     },
+            //     buttonColor: Theme.of(context).colorScheme.primaryContainer,
+            //     textColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            //   ),
+            // ),
+          ],
+        ),
       ),
     );
   }

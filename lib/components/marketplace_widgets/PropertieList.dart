@@ -19,7 +19,7 @@ class PropertieList extends StatelessWidget {
       padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
-        color: const Color.fromRGBO(255, 255, 255, 0.1),
+        color:Theme.of(context).brightness == Brightness.light ? Colors.grey.withAlpha(50): const Color.fromRGBO(255, 255, 255, 0.1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

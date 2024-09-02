@@ -32,12 +32,13 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
   Widget build(BuildContext context) {
     return Container(
       child: GlassContainer(
+        customColor: Theme.of(context).brightness == Brightness.light ? Colors.grey.withAlpha(50) : null,
         borderRadius: AppTheme.cardRadiusSmall,
         child: Container(
           height: AppTheme.cardPadding * 1.75,
           decoration: BoxDecoration(
             borderRadius: AppTheme.cardRadiusSmall,
-            boxShadow: [
+            boxShadow: Theme.of(context).brightness == Brightness.light ? [] : [
               AppTheme.boxShadowProfile,
             ],
           ),

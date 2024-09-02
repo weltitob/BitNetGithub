@@ -124,6 +124,7 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                     children: [
                       BitNetImageWithTextContainer(
                         L10n.of(context)!.bitcoin,
+                        customColor: Theme.of(context).brightness == Brightness.light ?  Colors.white.withAlpha(50) : null,
                         () {
                           context.push('/wallet/bitcoinscreen/mempool');
                         },
@@ -134,6 +135,8 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                       ),
                       BitNetImageWithTextContainer(
                         L10n.of(context)!.hashrateDifficulty,
+                        customColor: Theme.of(context).brightness == Brightness.light ?  Colors.white.withAlpha(50) : null,
+
                         () {
                           context.push('/wallet/bitcoinscreen/hashrate');
                         },
@@ -144,6 +147,8 @@ class BitcoinScreen extends GetWidget<BitcoinScreenController> {
                       ),
                       BitNetImageWithTextContainer(
                         L10n.of(context)!.fearAndGreed,
+                        customColor: Theme.of(context).brightness == Brightness.light ?  Colors.white.withAlpha(50) : null,
+
                         () {
                           context.push('/wallet/bitcoinscreen/fearandgreed');
                         },

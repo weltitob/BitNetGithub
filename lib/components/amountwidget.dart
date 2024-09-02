@@ -184,6 +184,20 @@ class _AmountWidgetState extends State<AmountWidget> {
                             },
                             textAlign: TextAlign.center,
                             onChanged: (text) {
+                              if (!swapped) {
+                                if (currentUnit == BitcoinUnits.SAT) {
+                                  widget.btcController.text =
+                                      CurrencyConverter.convertSatoshiToBTC(double.tryParse(widget.satController.text) ?? 0)
+                                          .toStringAsFixed(8);
+                                  print('btcissue onchanged: ${widget.btcController.text}');
+                                } else {
+                                  widget.satController.text =
+                                      CurrencyConverter.convertBitcoinToSats(double.tryParse(widget.btcController.text) ?? 0)
+                                          .toInt()
+                                          .toString();
+                                  print('btcissue satonchanged1: ${widget.satController.text}');
+                                }
+                              }
                               if (widget.onAmountChange != null) {
                                 if (swapped) {
                                   //widget.onAmountChange!(currencyType, widget.btcController.text.isEmpty ? '0' : widget.btcController.text);
@@ -358,10 +372,12 @@ class _AmountWidgetState extends State<AmountWidget> {
         widget.btcController.text = unitEquivalent.amount.toString();
       } else if (unitEquivalent.bitcoinUnit == BitcoinUnits.SAT && currentUnit != BitcoinUnits.SAT) {
         widget.satController.text = unitEquivalent.amount.toString();
+        print('btcissue satonchanged2: ${widget.satController.text}');
       } else if (unitEquivalent.bitcoinUnit == currentUnit && currentUnit == BitcoinUnits.SAT) {
         widget.btcController.text = oppositeUnit.toString();
       } else if (unitEquivalent.bitcoinUnit == currentUnit && currentUnit == BitcoinUnits.BTC) {
         widget.satController.text = oppositeUnit.toString();
+        print('btcissue satonchanged3: ${widget.satController.text}');
       }
     }
     if (!preventConversion) {
@@ -385,8 +401,10 @@ class _AmountWidgetState extends State<AmountWidget> {
       currentUnit = unitEquivalent.bitcoinUnit;
       if (currentUnit == BitcoinUnits.BTC) {
         widget.btcController.text = unitEquivalent.amount.toString();
+        print('btcissue onconvert: ${widget.btcController.text}');
       } else {
         widget.satController.text = unitEquivalent.amount.toString();
+        print('btcissue satonchanged4: ${widget.satController.text}');
       }
       WidgetsBinding.instance.addPostFrameCallback((d) {
         setState(() {});
@@ -417,6 +435,7 @@ class _AmountWidgetState extends State<AmountWidget> {
     if (!preventConversion) {
       widget.btcController.text = double.parse(currencyEquivalent).toString();
       widget.satController.text = double.parse(currencyEquivalentSats).round().toString();
+      print('btcissue satonchanged5: ${widget.satController.text}');
     }
     if (widget.autoConvert) {
       final unitEquivalent = CurrencyConverter.convertToBitcoinUnit(
