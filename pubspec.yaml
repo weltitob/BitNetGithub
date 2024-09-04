@@ -81,7 +81,7 @@ dependencies:
   #slugify: ^2.0.0
   #  scrollable_positioned_list: ^0.3.8
   #swipe_to_action: ^0.2.0
-  flutter_card_swiper: ^7.0.0
+  flutter_card_swiper: ^7.0.1
   #tor_detector_web: ^1.1.0
   uni_links: ^0.5.1
   #unifiedpush: ^4.0.3
@@ -93,7 +93,7 @@ dependencies:
   #webrtc_interface: ^1.0.13
   #wakelock: ^0.6.2
 
-  app_links: ^2.0.0
+  app_links: ^6.3.1
   animated_text_kit: ^4.2.2
   animated_flip_counter: ^0.2.6
   flutter_secure_storage: ^5.0.2
@@ -131,7 +131,7 @@ dependencies:
   #animator: ^3.3.0
   avatar_glow: ^2.0.2
   flutter_svg: ^2.0.6
-  dio: ^5.2.1+1
+  dio: ^5.7.0
   #json_annotation: ^4.0.0
   flutter_spinkit: ^5.0.0
   shared_preferences: ^2.0.15

@@ -100,11 +100,10 @@ class WalletScreen extends GetWidget<WalletsController> {
                           Row(
                             children: [
                               Avatar(
-                                size: AppTheme.cardPadding * 2.5.h,
-                                mxContent: Uri.parse(profilecontroller.userData.value.profileImageUrl),
-                                type: profilePictureType.lightning,
-                                isNft: profilecontroller.userData.value.nft_profile_id.isNotEmpty
-                              ),
+                                  size: AppTheme.cardPadding * 2.5.h,
+                                  mxContent: Uri.parse(profilecontroller.userData.value.profileImageUrl),
+                                  type: profilePictureType.lightning,
+                                  isNft: profilecontroller.userData.value.nft_profile_id.isNotEmpty),
                               SizedBox(
                                 width: AppTheme.elementSpacing * 1.25.w,
                               ),
@@ -176,16 +175,22 @@ class WalletScreen extends GetWidget<WalletsController> {
                         children: [
                           CardSwiper(
                             backCardOffset: const Offset(0, -AppTheme.cardPadding),
+                            numberOfCardsDisplayed: 3,
                             padding:
                                 const EdgeInsets.only(left: AppTheme.cardPadding, right: AppTheme.cardPadding, top: AppTheme.cardPadding),
                             scale: 1.0,
-                            initialIndex:
-                                controller.selectedCard.value == 'onchain'
+                            initialIndex: controller.selectedCard.value == 'onchain'
+                                ? 2
+                                : controller.selectedCard.value == 'fiat'
                                     ? 1
                                     : 0,
                             cardsCount: cards.length,
                             onSwipe: (int index, int? previousIndex, CardSwiperDirection direction) {
-                              controller.setSelectedCard(controller.selectedCard.value == 'onchain' ? 'lightning' : 'onchain');
+                              controller.setSelectedCard(previousIndex == 2
+                                  ? 'onchain'
+                                  : previousIndex == 1
+                                      ? 'fiat'
+                                      : 'lightning');
                               return true;
                             },
                             cardBuilder: (context, index, percentThresholdX, percentThresholdY) => cards[index],
@@ -324,8 +329,9 @@ class WalletScreen extends GetWidget<WalletsController> {
               );
             }),
           ),
-          Transactions(scrollController: controller.scrollController,)
-          
+          Transactions(
+            scrollController: controller.scrollController,
+          )
         ],
       ),
     );

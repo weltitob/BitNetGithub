@@ -1,0 +1,17 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appIDs": [
+                    "TeamID.BundleID"
+                ],
+                "components": [
+                    {
+                        "/": "/#/website/redirect"
+                    }
+                ]
+            }
+        ]
+    }
+}

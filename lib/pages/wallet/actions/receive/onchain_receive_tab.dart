@@ -111,7 +111,8 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                                         image: PrettyQrDecorationImage(
                                           image: const AssetImage('assets/images/bitcoin.png'),
                                         ),
-                                      )),
+                                      ),
+                                      errorCorrectLevel: QrErrorCorrectLevel.H),
                                 ),
                               ),
                             ),
@@ -124,9 +125,11 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                                 // Share the wallet address
                                 double? invoiceAmount = double.tryParse(controller.btcController.text);
                                 if (invoiceAmount != null && invoiceAmount > 0) {
-                                  Share.share('bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}');
+                                  Share.share(
+                                      'https://${AppTheme.currentWebDomain}/#/wallet/send/bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}');
                                 } else {
-                                  Share.share(controller.qrCodeDataStringOnchain.value);
+                                  Share.share(
+                                      'https://${AppTheme.currentWebDomain}/#/wallet/send/${controller.qrCodeDataStringOnchain.value}');
                                 }
                               },
                               buttonType: ButtonType.transparent,

@@ -35,8 +35,7 @@ class Matrix extends StatefulWidget {
   MatrixState createState() => MatrixState();
 
   /// Returns the (nearest) Client instance of your application.
-  static MatrixState of(BuildContext context) =>
-      Provider.of<MatrixState>(context, listen: false);
+  static MatrixState of(BuildContext context) => Provider.of<MatrixState>(context, listen: false);
 }
 
 class MatrixState extends State<Matrix> with WidgetsBindingObserver {
@@ -59,7 +58,6 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     //         print(snapshot.data);
     //          showOverlayInternet(context, 'No Internet Connection',
     //             color: AppTheme.errorColor);
-            
 
     //         return SizedBox();
     //       }),
@@ -71,10 +69,8 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
     if (PlatformInfos.isMobile) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ([TargetPlatform.linux].contains(Theme.of(context).platform)
-                ? SharedPreferences.getInstance()
-                    .then((prefs) => prefs.getString(SettingKeys.appLockKey))
-                : const FlutterSecureStorage()
-                    .read(key: SettingKeys.appLockKey))
+                ? SharedPreferences.getInstance().then((prefs) => prefs.getString(SettingKeys.appLockKey))
+                : const FlutterSecureStorage().read(key: SettingKeys.appLockKey))
             .then((lock) {
           if (lock?.isNotEmpty ?? false) {
             AppLock.of(widget.context)!.enable();
@@ -83,6 +79,21 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
         });
       });
     }
+  }
+
+  @override
+  Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
+    // if (routeInformation.uri.fragment == '/website/redirect') {
+    //   print('prevented something ig');
+    //   return SynchronousFuture(false);
+
+    //   /// let the event bubble up to [GoRouteInformationProvider]
+    // }
+    // print('prevented something ig but weird');
+
+    return SynchronousFuture(true);
+
+    /// and stop event bubbling
   }
 
   void initLoadingDialog() {
@@ -95,8 +106,7 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
   Future<void> initConfig() async {
     LoggerService logger = Get.find();
     try {
-      final configJsonString =
-          utf8.decode((await http.get(Uri.parse('config.json'))).bodyBytes);
+      final configJsonString = utf8.decode((await http.get(Uri.parse('config.json'))).bodyBytes);
       final configJson = json.decode(configJsonString);
       AppTheme.loadFromJson(configJson);
     } on FormatException catch (_) {
@@ -121,22 +131,10 @@ class MatrixState extends State<Matrix> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    bool shouldBeBuilder = kIsWeb &&
-        !(widget.child as Router)
-            .routeInformationProvider!
-            .value
-            .uri
-            .toString()
-            .contains('website');
+    bool shouldBeBuilder = kIsWeb && !(widget.child as Router).routeInformationProvider!.value.uri.toString().contains('website');
     return Provider(
       create: (_) => this,
-      child: (kIsWeb &&
-              !(widget.child as Router)
-                  .routeInformationProvider!
-                  .value
-                  .uri
-                  .toString()
-                  .contains('website'))
+      child: (kIsWeb && !(widget.child as Router).routeInformationProvider!.value.uri.toString().contains('website'))
           ? WebBuilder(widget: widget)
           : widget.child,
     );
@@ -154,8 +152,7 @@ class WebBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: cloneMediaQueryWithSize(
-          MediaQueryData.fromView(View.of(context)), const Size(375, 812)),
+      data: cloneMediaQueryWithSize(MediaQueryData.fromView(View.of(context)), const Size(375, 812)),
       child: Container(
           width: double.infinity,
           height: double.infinity,
@@ -165,20 +162,15 @@ class WebBuilder extends StatelessWidget {
               end: Alignment.centerRight,
               colors: [
                 Theme.of(context).brightness == Brightness.light
-                    ? lighten(
-                        Theme.of(context).colorScheme.primaryContainer, 50)
-                    : darken(
-                        Theme.of(context).colorScheme.primaryContainer, 80),
+                    ? lighten(Theme.of(context).colorScheme.primaryContainer, 50)
+                    : darken(Theme.of(context).colorScheme.primaryContainer, 80),
                 Theme.of(context).brightness == Brightness.light
-                    ? lighten(
-                        Theme.of(context).colorScheme.tertiaryContainer, 50)
-                    : darken(
-                        Theme.of(context).colorScheme.tertiaryContainer, 80),
+                    ? lighten(Theme.of(context).colorScheme.tertiaryContainer, 50)
+                    : darken(Theme.of(context).colorScheme.tertiaryContainer, 80),
               ],
             ),
           ),
-          child: ClipRRect(
-              child: Center(child: SizedBox(width: 375, child: widget.child)))),
+          child: ClipRRect(child: Center(child: SizedBox(width: 375, child: widget.child)))),
     );
   }
 

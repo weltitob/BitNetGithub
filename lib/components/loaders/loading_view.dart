@@ -1,10 +1,11 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/pages/routetrees/controllers/widget_tree_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:provider/provider.dart';
 
 class LoadingViewAppStart extends StatefulWidget {
@@ -17,7 +18,11 @@ class LoadingViewAppStart extends StatefulWidget {
 class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
   @override
   void initState() {
+    bool deepLink = Get.find<WidgetTreeController>().openedWithDeepLink;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (deepLink) {
+        return;
+      }
       if (Auth().currentUser != null) {
         context.go('/feed');
       } else {
@@ -43,16 +48,13 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
             if (kIsWeb && Auth().currentUser == null) {
               context.go('/website');
             } else {
-              context.go(Uri(
-                path: Auth().currentUser != null
-                    ? '/feed'
-                    : '/authhome', //'/website' : '/website', //'/feed' : '/authhome'
-                queryParameters: GoRouter.of(context)
-                    .routeInformationProvider
-                    .value
-                    .uri
-                    .queryParameters,
-              ).toString());
+              print(GoRouter.of(context).routerDelegate.currentConfiguration.matches.map((e) => e.matchedLocation).toList());
+              if (!Get.find<WidgetTreeController>().openedWithDeepLink) {
+                context.go(Uri(
+                  path: Auth().currentUser != null ? '/feed' : '/authhome', //'/website' : '/website', //'/feed' : '/authhome'
+                  queryParameters: GoRouter.of(context).routeInformationProvider.value.uri.queryParameters,
+                ).toString());
+              }
             }
           });
           return Container();
@@ -63,12 +65,10 @@ class _LoadingViewAppStartState extends State<LoadingViewAppStart> {
             if (kIsWeb) {
               context.go('/website');
             } else {
-              Locale deviceLocale =
-                  PlatformDispatcher.instance.locale; // or html.window.locale
+              Locale deviceLocale = PlatformDispatcher.instance.locale; // or html.window.locale
               String langCode = deviceLocale.languageCode;
 
-              Provider.of<LocalProvider>(context, listen: false)
-                  .setLocaleInDatabase(langCode, deviceLocale, isUser: false);
+              Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(langCode, deviceLocale, isUser: false);
 
               context.go('/authhome');
             }

@@ -126,7 +126,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   static bool _isHiveInitialized = false;
-
   static Future<void> _initializeHive() async {
     if (!_isHiveInitialized) {
       if (PlatformInfos.isLinux) {
@@ -145,6 +144,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (!kIsWeb) {
       PhotoManager.clearFileCache();
     }
+
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }

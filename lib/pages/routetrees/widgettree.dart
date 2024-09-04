@@ -31,8 +31,7 @@ class WidgetTree extends StatelessWidget {
     return ThemeBuilder(
       builder: (context, themeMode, primaryColor) => LayoutBuilder(
         builder: (context, constraints) {
-          final isColumnMode =
-              AppTheme.isColumnModeByWidth(constraints.maxWidth);
+          final isColumnMode = AppTheme.isColumnModeByWidth(constraints.maxWidth);
           if (isColumnMode != controller.columnMode!.value) {
             logger.i('Set Column Mode = $isColumnMode');
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -57,18 +56,17 @@ class WidgetTree extends StatelessWidget {
                   scrollBehavior: CustomScrollBehavior(),
                   locale: provider.locale,
                   supportedLocales: L10n.supportedLocales,
-                  localizationsDelegates:  [
+                  localizationsDelegates: [
                     intl.L10n.delegate,
                     L10n.delegate,
                     GlobalMaterialLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                     GlobalWidgetsLocalizations.delegate,
                   ],
-                  builder: (context, child) =>  Matrix(
-                            context: context,
-                            child: child,
-                          ),
-                  
+                  builder: (context, child) => Matrix(
+                    context: context,
+                    child: child,
+                  ),
                 );
               });
         },
@@ -78,5 +76,4 @@ class WidgetTree extends StatelessWidget {
 
   int? primaryColor;
   SharedPreferences? preferences;
- 
 }

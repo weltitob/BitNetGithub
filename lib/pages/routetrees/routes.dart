@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/components/loaders/loading_view.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
@@ -18,6 +20,7 @@ import 'package:bitnet/pages/marketplace/CollectionScreen.dart';
 import 'package:bitnet/pages/marketplace/ListScreen.dart';
 import 'package:bitnet/pages/marketplace/NftProductScreen.dart';
 import 'package:bitnet/pages/marketplace/NotificationScreen.dart';
+import 'package:bitnet/pages/other_profile/other_profile.dart';
 import 'package:bitnet/pages/profile/profile.dart';
 import 'package:bitnet/pages/qrscanner/qrscanner.dart';
 import 'package:bitnet/pages/report/report_mobile_controller.dart';
@@ -45,6 +48,7 @@ import 'package:bitnet/pages/wallet/actions/receive/receivescreen.dart';
 import 'package:bitnet/pages/wallet/actions/send/send.dart';
 import 'package:bitnet/pages/wallet/btc_address_screen.dart';
 import 'package:bitnet/pages/wallet/cardinfo/btc_cardinfoscreen.dart';
+import 'package:bitnet/pages/wallet/cardinfo/fiat_card_info_screen.dart';
 import 'package:bitnet/pages/wallet/cardinfo/lightning_cardinfoscreen.dart';
 import 'package:bitnet/pages/wallet/loop/loop.dart';
 import 'package:bitnet/pages/website/compliance/agbscreen.dart';
@@ -55,6 +59,7 @@ import 'package:bitnet/pages/website/product/aboutus/aboutus.dart';
 import 'package:bitnet/pages/website/product/ourteam/ourteam.dart';
 import 'package:bitnet/pages/website/redirecttoapp.dart';
 import 'package:bitnet/pages/website/website_landingpage/website_landingpage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -77,10 +82,22 @@ class AppRoutes {
         GoRoute(path: '/loading', builder: (ctx, state) => const LoadingViewAppStart()),
         GoRoute(
           path: '/report',
+          redirect: webRedirect,
           builder: (ctx, state) => const ReportMobile(),
         ),
         GoRoute(
+          path: '/showprofile/:profile_id',
+          builder: _dynamicTransition == null ? (ctx, state) => OtherProfile(profileId: state.pathParameters['profile_id'] ?? '') : null,
+          pageBuilder: _dynamicTransition != null
+              ? (ctx, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: OtherProfile(profileId: state.pathParameters['profile_id'] ?? ''),
+                  transitionsBuilder: _dynamicTransition!)
+              : null,
+        ),
+        GoRoute(
             path: '/qrscanner',
+            redirect: webRedirect,
             builder: _dynamicTransition == null ? (ctx, state) => const QrScanner() : null,
             pageBuilder: _dynamicTransition != null
                 ? (ctx, state) =>
@@ -88,6 +105,7 @@ class AppRoutes {
                 : null),
         GoRoute(
           path: '/error',
+          redirect: webRedirect,
           builder: _dynamicTransition == null ? (ctx, state) => const ReceiveScreen() : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) =>
@@ -96,13 +114,14 @@ class AppRoutes {
         ),
         GoRoute(
           path: '/asset_screen/:nft_id',
+          redirect: webRedirect,
           builder: (ctx, state) {
             final batchKey = state.pathParameters['nft_id'];
             print('Batch key in route: $batchKey');
             return NftProductScreen(routerState: state);
           },
         ),
-        GoRoute(path: '/feed', builder: (ctx, state) => BottomNav(routerState: state), routes: [
+        GoRoute(path: '/feed', builder: (ctx, state) => BottomNav(routerState: state), redirect: webRedirect, routes: [
           GoRoute(path: kListScreenRoute, name: kListScreenRoute, builder: (ctx, state) => const ListScreen()),
           GoRoute(path: kNotificationScreenRoute, builder: (ctx, state) => const NotificationScreen()),
           GoRoute(
@@ -115,11 +134,12 @@ class AppRoutes {
           ),
         ]), //(path: '/feed', builder: (ctx,state) => FeedScreen()),
 
-        GoRoute(path: "/agbs", builder: (ctx, state) => AgbsAndImpressumScreen(key: state.pageKey)),
+        GoRoute(path: "/agbs", redirect: webRedirect, builder: (ctx, state) => AgbsAndImpressumScreen(key: state.pageKey)),
 
         GoRoute(
           path: '/wallet',
           builder: (ctx, state) => Container(),
+          redirect: webRedirect,
           routes: [
             GoRoute(
                 path: 'bitcoinscreen',
@@ -196,6 +216,7 @@ class AppRoutes {
                 ]),
             GoRoute(
               path: 'block_transactions',
+              redirect: webRedirect,
               builder: _dynamicTransition == null ? (ctx, state) => const BlockTransactions() : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) =>
@@ -204,6 +225,7 @@ class AppRoutes {
             ),
             GoRoute(
               path: 'unaccepted_block_transactions',
+              redirect: webRedirect,
               builder: _dynamicTransition == null ? (ctx, state) => const UnacceptedBlockTransactions() : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(
@@ -222,6 +244,8 @@ class AppRoutes {
             GoRoute(
               name: 'receive',
               path: 'receive/:network',
+              redirect: webRedirect,
+
               builder: (ctx, state) {
                 final batchKey = state.pathParameters['network'];
                 print('network: $batchKey');
@@ -237,19 +261,35 @@ class AppRoutes {
             GoRoute(
               path: 'loop_screen',
               builder: _dynamicTransition == null ? (ctx, state) => const Loop() : null,
+              redirect: webRedirect,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(key: state.pageKey, child: const Loop(), transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
               path: 'send',
+              redirect: webRedirect,
               builder: _dynamicTransition == null ? (ctx, state) => Send(key: state.pageKey) : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) => CustomTransitionPage(key: state.pageKey, child: const Send(), transitionsBuilder: _dynamicTransition!)
                   : null,
             ),
             GoRoute(
+              path: 'send/:code',
+              redirect: webRedirect,
+              builder: _dynamicTransition == null
+                  ? (ctx, state) => Send(key: state.pageKey, parameters: state.pathParameters['code'], state: state)
+                  : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: Send(key: state.pageKey, parameters: state.pathParameters['code'], state: state),
+                      transitionsBuilder: _dynamicTransition!)
+                  : null,
+            ),
+            GoRoute(
               path: 'lightningcard',
+              redirect: webRedirect,
               builder: _dynamicTransition == null ? (ctx, state) => const LightningCardInformationScreen() : null,
               pageBuilder: _dynamicTransition != null
                   ? (ctx, state) =>
@@ -257,7 +297,17 @@ class AppRoutes {
                   : null,
             ),
             GoRoute(
+              path: 'fiatcard',
+              redirect: webRedirect,
+              builder: _dynamicTransition == null ? (ctx, state) => const FiatCardInfoScreen() : null,
+              pageBuilder: _dynamicTransition != null
+                  ? (ctx, state) =>
+                      CustomTransitionPage(key: state.pageKey, child: const FiatCardInfoScreen(), transitionsBuilder: _dynamicTransition!)
+                  : null,
+            ),
+            GoRoute(
                 path: 'bitcoincard',
+                redirect: webRedirect,
                 builder: _dynamicTransition == null ? (ctx, state) => const BitcoinCardInformationScreen() : null,
                 pageBuilder: _dynamicTransition != null
                     ? (ctx, state) =>
@@ -266,6 +316,7 @@ class AppRoutes {
                 routes: [
                   GoRoute(
                     path: 'btcaddressinfo/:address',
+                    redirect: webRedirect,
                     builder: _dynamicTransition == null ? (ctx, state) => BitcoinAddressInformationScreen(state: state) : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
@@ -277,7 +328,7 @@ class AppRoutes {
                 ]),
           ],
         ),
-        GoRoute(path: '/profile/:profileId', name: '/profile', builder: (ctx, state) => const Profile(), routes: []),
+        GoRoute(path: '/profile/:profileId', name: '/profile', redirect: webRedirect, builder: (ctx, state) => const Profile(), routes: []),
         GoRoute(
           path: '/create',
           builder: (ctx, state) => const CreateAsset(),
@@ -296,6 +347,7 @@ class AppRoutes {
 
         GoRoute(
           path: '/single_transaction',
+          redirect: webRedirect,
           builder: _dynamicTransition == null ? (ctx, state) => const SingleTransactionScreen() : null,
           pageBuilder: _dynamicTransition != null
               ? (ctx, state) =>
@@ -304,6 +356,7 @@ class AppRoutes {
         ),
         GoRoute(
           path: '/settings',
+          redirect: webRedirect,
           builder: (ctx, state) => const Settings(),
           routes: _settingsRoutes,
         ),
@@ -322,8 +375,18 @@ class AppRoutes {
         // ),
       ];
 
+  FutureOr<String?> webRedirect(ctx, state) {
+    if (kIsWeb && Auth().currentUser == null) {
+      return '/';
+    }
+    return null;
+  }
+
   List<GoRoute> get _authRoutes => [
-        GoRoute(path: '/', builder: (ctx, state) => const LoadingViewAppStart()),
+        GoRoute(
+          path: '/',
+          builder: (ctx, state) => const LoadingViewAppStart(),
+        ),
         GoRoute(path: '/website', builder: (ctx, state) => const WebsiteLandingPage(), routes: [
           GoRoute(
             path: 'report',

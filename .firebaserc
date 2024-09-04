@@ -1,5 +1,16 @@
 {
   "projects": {
     "default": "bitnet-cb34f"
-  }
+  },
+  "targets": {
+    "bitnet-cb34f": {
+      "hosting": {
+        "default": [
+          "bitnet"
+        ]
+      }
+    }
+  },
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

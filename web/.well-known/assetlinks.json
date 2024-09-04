@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.bitnet",
+            "sha256_cert_fingerprints": [
+                "5E:92:58:FC:29:F7:0D:26:91:8E:9F:9C:BC:CB:1B:9C:C3:67:73:7E:F9:90:56:B9:41:1C:E4:7E:24:E4:AA:C1"
+            ]
+        }
+    }
+]

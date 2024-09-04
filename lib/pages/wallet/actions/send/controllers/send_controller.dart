@@ -39,7 +39,8 @@ import 'package:http/http.dart' as http;
 
 class SendsController extends BaseController {
   late BuildContext context;
-  SendsController({required this.context});
+  final bool getClipOnInit;
+  SendsController({required this.context, this.getClipOnInit = true});
 
   late FocusNode myFocusNodeAdressSearch;
   late TextEditingController bitcoinReceiverAdressController;
@@ -203,7 +204,9 @@ class SendsController extends BaseController {
       scrollToSearchFunc(sendScrollerController, myFocusNodeAdressSearch);
     });
     myFocusNodeAdressSearch = FocusNode();
-    getClipboardData();
+    if (getClipOnInit) {
+      getClipboardData();
+    }
     getSendUsers();
   }
 

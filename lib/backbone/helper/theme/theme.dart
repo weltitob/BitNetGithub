@@ -103,6 +103,7 @@ abstract class AppTheme {
   static const String appOpenUrlScheme = 'com.bitnet';
   static String _webBaseUrl = 'https://mybitnet.com'; //'https://fluffychat.im/web';
   static String get webBaseUrl => _webBaseUrl;
+  static const String currentWebDomain = 'bitnet.ai';
   static const String supportUrl = 'https://gitlab.com/famedly/fluffychat/issues';
   static final Uri newIssueUrl = Uri(
     scheme: 'https',

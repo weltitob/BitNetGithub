@@ -223,6 +223,9 @@ class LightningSendTab extends GetWidget<SendsController> {
   Widget bitcoinWidget(BuildContext context) {
     String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";
+    if (!Get.isRegistered<WalletsController>()) {
+      Get.put(WalletsController());
+    }
     final chartLine = Get.find<WalletsController>().chartLines.value;
 
     final bitcoinPrice = chartLine?.price;
