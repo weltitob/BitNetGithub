@@ -22,6 +22,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -64,13 +65,16 @@ Future<void> main() async {
   // }
   // Ensure that Flutter binding is initialized
 
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // Initialize Date Formatting
   await initializeDateFormatting();
 
   if (!kIsWeb) {
     Stripe.publishableKey = AppTheme.stripeTestKey;
     await Stripe.instance.applySettings();
+  }
+  if (kIsWeb) {
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   }
   await LocalStorage.instance.initStorage();
   ShakeDetector.autoStart(
@@ -108,6 +112,9 @@ Future<void> main() async {
   runApp(
     const MyApp(),
   );
+  if (kIsWeb) {
+    FlutterNativeSplash.remove();
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -119,7 +126,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   static bool _isHiveInitialized = false;
-
   static Future<void> _initializeHive() async {
     if (!_isHiveInitialized) {
       if (PlatformInfos.isLinux) {
@@ -138,6 +144,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (!kIsWeb) {
       PhotoManager.clearFileCache();
     }
+
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }

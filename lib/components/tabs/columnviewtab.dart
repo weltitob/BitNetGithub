@@ -1,20 +1,26 @@
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/postmodels/post.dart';
+import 'package:bitnet/pages/other_profile/other_profile_controller.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class ColumnViewTab extends StatefulWidget {
-  const ColumnViewTab({Key? key}) : super(key: key);
-
+  const ColumnViewTab({Key? key, this.other = false}) : super(key: key);
+  final bool other;
   @override
   State<ColumnViewTab> createState() => _ColumnViewTabState();
 }
 
 class _ColumnViewTabState extends State<ColumnViewTab> {
-  final controller = Get.put(ProfileController());
+  late final controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = widget.other ? Get.find<OtherProfileController>() : Get.put(ProfileController());
+  }
 
   @override
   Widget build(BuildContext context) {

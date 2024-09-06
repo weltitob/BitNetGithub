@@ -32,11 +32,12 @@
             </intent-filter>
             <!-- Deep Linking intent filter -->
             <meta-data android:name="flutter_deeplinking_enabled" android:value="true"/>
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="bitnet" android:host="open"/>
+                <data android:scheme="https" android:host="bitnet.ai"/>
+
             </intent-filter>
 
         </activity>
@@ -44,8 +45,6 @@
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data android:name="flutterEmbedding" android:value="2" />
         <meta-data android:name="com.google.firebase.api_key" android:value="AIzaSyAjN44otvMhSGsLOQeDHduRw6x2KQgbYQY" />
-        <meta-data
-            android:name="com.google.android.gms.wallet.api.enabled"
-            android:value="true" />
+        <meta-data android:name="com.google.android.gms.wallet.api.enabled" android:value="true" />
     </application>
 </manifest>

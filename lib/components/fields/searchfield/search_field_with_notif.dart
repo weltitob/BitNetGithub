@@ -35,13 +35,15 @@ class _SearchFieldWithNotificationsWidgetState extends State<SearchFieldWithNoti
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
       child: GlassContainer(
+        customColor:Theme.of(context).brightness == Brightness.light ? Colors.grey.withAlpha(50) : null,
         borderRadius: AppTheme.cardRadiusSmall,
         child: Container(
           height: AppTheme.cardPadding * 2,
           decoration: BoxDecoration(
             borderRadius: AppTheme.cardRadiusSmall,
-            boxShadow: [
-              AppTheme.boxShadowProfile,
+            boxShadow: Theme.of(context).brightness == Brightness.light ? [
+            ] : [
+              AppTheme.boxShadowProfile
             ],
           ),
           child: Row(

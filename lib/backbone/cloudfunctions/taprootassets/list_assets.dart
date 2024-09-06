@@ -34,6 +34,7 @@ Future<List<Asset>> listTaprootAssets() async {
   // 'https://$restHost/v1/taproot-assets/assets';
   try {
     final DioClient dioClient = Get.find<DioClient>();
+
     var response = await dioClient.get(url: url, headers: headers);
     logger.i("Raw Response: ${response}");
 
@@ -41,8 +42,7 @@ Future<List<Asset>> listTaprootAssets() async {
       List<dynamic> data = response.data['assets'];
       return data.map((item) => Asset.fromJson(item)).toList();
     } else {
-      logger.e(
-          'Failed to load Taproot asset data: ${response.statusCode}, ${response}');
+      logger.e('Failed to load Taproot asset data: ${response.statusCode}, ${response}');
       return [];
     }
   } catch (e) {

@@ -637,7 +637,7 @@ class TransactionController extends BaseController {
   getSingleTransaction(String txID) async {
     try {
       print('get single transaction called ');
-      // isLoading.value = true;
+      isLoading.value = true;
       String url = '${baseUrl}tx/$txID';
       await dioClient
           .get(url: url)

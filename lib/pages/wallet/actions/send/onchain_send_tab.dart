@@ -187,6 +187,9 @@ class OnChainSendTab extends GetWidget<SendsController> {
   }
 
   Widget bitcoinWidget(BuildContext context) {
+    if (!Get.isRegistered<WalletsController>()) {
+      Get.put(WalletsController());
+    }
     final chartLine = Get.find<WalletsController>().chartLines.value;
     String? currency = Provider.of<CurrencyChangeProvider>(context).selectedCurrency;
     currency = currency ?? "USD";

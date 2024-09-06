@@ -212,40 +212,46 @@ class _ReceiveScreenState extends State<ReceiveScreen> with TickerProviderStateM
         },
         actions: [
           Obx(() {
-            return SizeTransition(
-              sizeFactor: _animation,
-              axis: Axis.horizontal,
-              axisAlignment: -1.0, // Adjust to control the direction of the animation
-              child: controller.receiveType.value == ReceiveType.Lightning
-                  ? LongButtonWidget(
-                      buttonType: ButtonType.transparent,
-                      customHeight: AppTheme.cardPadding * 1.5,
-                      customWidth: AppTheme.cardPadding * 4,
-                      leadingIcon: controller.createdInvoice.value
-                          ? Icon(
-                              FontAwesomeIcons.cancel,
-                              color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80,
-                            )
-                          : Icon(
-                              FontAwesomeIcons.refresh,
-                              color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80,
-                            ),
-                      title: "${controller.min.value}:${controller.sec.value}",
-                      onTap: () {
-                        controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
-                        controller.timer.cancel();
-                        controller.duration = const Duration(minutes: 20);
-                        controller.timer = Timer.periodic(const Duration(seconds: 1), controller.updateTimer);
-                      },
-                    )
-                  : RoundedButtonWidget(
-                      size: AppTheme.cardPadding * 1.5,
-                      buttonType: ButtonType.transparent,
-                      iconData: FontAwesomeIcons.refresh,
-                      onTap: () {
-                        controller.getTaprootAddress();
-                      },
-                    ),
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizeTransition(
+                  sizeFactor: _animation,
+                  axis: Axis.horizontal,
+                  axisAlignment: -1.0, // Adjust to control the direction of the animation
+                  child: controller.receiveType.value == ReceiveType.Lightning
+                      ? LongButtonWidget(
+                        customShadow: Theme.of(context).brightness == Brightness.light ? [] : null,
+                          buttonType: ButtonType.transparent,
+                          customHeight: AppTheme.cardPadding * 1.5,
+                          customWidth: AppTheme.cardPadding * 4,
+                          leadingIcon: controller.createdInvoice.value
+                              ? Icon(
+                                  FontAwesomeIcons.cancel,
+                                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80,
+                                )
+                              : Icon(
+                                  FontAwesomeIcons.refresh,
+                                  color: Theme.of(context).brightness == Brightness.light ? AppTheme.black60 : AppTheme.white80,
+                                ),
+                          title: "${controller.min.value}:${controller.sec.value}",
+                          onTap: () {
+                            controller.getInvoice((double.parse(controller.satController.text)).toInt(), "");
+                            controller.timer.cancel();
+                            controller.duration = const Duration(minutes: 20);
+                            controller.timer = Timer.periodic(const Duration(seconds: 1), controller.updateTimer);
+                          },
+                        )
+                      : RoundedButtonWidget(
+                          size: AppTheme.cardPadding * 1.5,
+                          buttonType: ButtonType.transparent,
+                          iconData: FontAwesomeIcons.refresh,
+                          onTap: () {
+                            controller.getTaprootAddress();
+                          },
+                        ),
+                ),
+              ],
             );
           }),
           const SizedBox(

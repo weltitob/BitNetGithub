@@ -20,6 +20,7 @@ class LongButtonWidget extends StatefulWidget {
   dynamic textColor;
   final ButtonType buttonType;
   final bool backgroundPainter;
+  final List<BoxShadow>? customShadow;
 
   LongButtonWidget(
       {required this.title,
@@ -32,7 +33,7 @@ class LongButtonWidget extends StatefulWidget {
       this.customWidth = AppTheme.cardPadding * 12,
       this.customHeight = AppTheme.cardPadding * 2.5,
       this.buttonType = ButtonType.solid,
-      this.backgroundPainter = true});
+      this.backgroundPainter = true, this.customShadow});
 
   @override
   _LongButtonWidgetState createState() => _LongButtonWidgetState();
@@ -51,7 +52,7 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
         // Your background content goes here:
         Container(
           decoration: BoxDecoration(
-            boxShadow: [AppTheme.boxShadowProfile],
+            boxShadow: widget.customShadow ?? [AppTheme.boxShadowProfile],
             borderRadius: borderRadius,
           ),
           child: widget.buttonType == ButtonType.solid

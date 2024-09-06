@@ -6,12 +6,12 @@ import 'package:bitnet/components/buttons/roundedbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_sheet.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
-
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class QrButton extends StatelessWidget {
   QrButton({super.key});
@@ -37,27 +37,31 @@ class QrButton extends StatelessWidget {
               key: controller.globalKeyQR,
               child: Column(
                 children: [
-                  SizedBox(height: AppTheme.cardPadding * 3,),
+                  SizedBox(
+                    height: AppTheme.cardPadding * 3,
+                  ),
                   Container(
                     height: AppTheme.cardPadding * 12,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: AppTheme.cardRadiusSmall),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusSmall),
                     child: Padding(
                       padding: const EdgeInsets.all(AppTheme.elementSpacing),
-                      child: PrettyQrView.data(
-                        decoration: const PrettyQrDecoration(
-                          shape: PrettyQrSmoothSymbol(),
-                          image: PrettyQrDecorationImage(
-                            image: AssetImage('assets/logo.png'),
-                            position: PrettyQrDecorationImagePosition.embedded,
+                      child: GestureDetector(
+                        onTap: () => launchUrlString('https://${AppTheme.currentWebDomain}/#/showprofile/${controller.userData.value.did}'),
+                        child: PrettyQrView.data(
+                          decoration: const PrettyQrDecoration(
+                            shape: PrettyQrSmoothSymbol(),
+                            image: PrettyQrDecorationImage(
+                              image: AssetImage('assets/logo.png'),
+                              position: PrettyQrDecorationImagePosition.embedded,
+                            ),
                           ),
+                          // typeNumber: 5,
+                          // size: AppTheme.cardPadding * 10,
+                          data:
+                              'https://${AppTheme.currentWebDomain}/#/showprofile/${controller.userData.value.did}', //this can be used to route to the user
+                          errorCorrectLevel: QrErrorCorrectLevel.M,
+                          // roundEdges: true,
                         ),
-                        // typeNumber: 5,
-                        // size: AppTheme.cardPadding * 10,
-                        data: 'did: ${controller.userData.value.did}', //this can be used to route to the user
-                        errorCorrectLevel: QrErrorCorrectLevel.M,
-                        // roundEdges: true,
                       ),
                     ),
                   ),
@@ -68,8 +72,7 @@ class QrButton extends StatelessWidget {
                     title: L10n.of(context)!.share,
                     leadingIcon: const Icon(Icons.share_rounded),
                     onTap: () {
-                      Share.share(
-                          'Put the deeplink for the specific user here...');
+                      Share.share('https://${AppTheme.currentWebDomain}/showprofile/${controller.userData.value.did}');
                     },
                     buttonType: ButtonType.transparent,
                   ),
@@ -93,9 +96,7 @@ class QrButton extends StatelessWidget {
           ),
           child: RoundedButtonWidget(
             iconData: Icons.qr_code_rounded,
-            iconColor: Theme.of(context).brightness == Brightness.light
-                ? AppTheme.black70
-                : AppTheme.white90,
+            iconColor: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90,
             onTap: () {
               onQRButtonPressed(context);
             },

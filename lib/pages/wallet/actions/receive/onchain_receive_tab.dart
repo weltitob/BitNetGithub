@@ -27,6 +27,28 @@ class OnChainReceiveTab extends StatefulWidget {
 class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKeepAliveClientMixin {
   // Get the current user's wallet from a provider
   final GlobalKey globalKeyQR = GlobalKey();
+  ValueNotifier<String> btcControllerNotifier = ValueNotifier('');
+  @override
+  void initState() {
+    final controller = Get.find<ReceiveController>();
+
+    btcControllerNotifier = ValueNotifier(controller.btcController.text);
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final controller = Get.find<ReceiveController>();
+
+    btcControllerNotifier = ValueNotifier(controller.btcController.text);
+  }
+
+  @override
+  void dispose() {
+    btcControllerNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +67,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
               height: AppTheme.cardPadding * 2,
             ),
             Obx(() {
+              controller.qrCodeDataStringOnchain.value;
               return GestureDetector(
                 onTap: () async {
                   double? invoiceAmount = double.tryParse(controller.btcController.text);
@@ -59,51 +82,61 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                 },
                 child: SizedBox(
                   child: Center(
-                    child: RepaintBoundary(
-                      // The Qr code is generated from this widget's global key
-                      key: globalKeyQR,
-                      child: Column(
-                        children: [
-                          // Custom border painted around the Qr code
-                          CustomPaint(
-                            foregroundPainter: Theme.of(context).brightness == Brightness.light ? BorderPainterBlack() : BorderPainter(),
-                            child: Container(
-                              margin: const EdgeInsets.all(AppTheme.cardPadding),
-                              decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusBigger),
-                              child: Padding(
-                                padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
-                                // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
-                                child: PrettyQrView.data(
-                                    data: "bitcoin: ${controller.qrCodeDataStringOnchain}",
-                                    decoration: const PrettyQrDecoration(
-                                      shape: PrettyQrSmoothSymbol(
-                                        roundFactor: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: btcControllerNotifier,
+                      builder: (ctx, notifier, _) => RepaintBoundary(
+                        // The Qr code is generated from this widget's global key
+                        key: globalKeyQR,
+                        child: Column(
+                          children: [
+                            // Custom border painted around the Qr code
+                            CustomPaint(
+                              foregroundPainter: Theme.of(context).brightness == Brightness.light ? BorderPainterBlack() : BorderPainter(),
+                              child: Container(
+                                margin: const EdgeInsets.all(AppTheme.cardPadding),
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusBigger),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
+                                  // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
+                                  child: PrettyQrView.data(
+                                      data: "bitcoin:${controller.qrCodeDataStringOnchain}" +
+                                          ((double.tryParse(controller.btcController.text) != null &&
+                                                  double.tryParse(controller.btcController.text) != 0)
+                                              ? '?amount=${double.parse(controller.btcController.text)}'
+                                              : ''),
+                                      decoration: const PrettyQrDecoration(
+                                        shape: PrettyQrSmoothSymbol(
+                                          roundFactor: 1,
+                                        ),
+                                        image: PrettyQrDecorationImage(
+                                          image: const AssetImage('assets/images/bitcoin.png'),
+                                        ),
                                       ),
-                                      image: PrettyQrDecorationImage(
-                                        image: const AssetImage('assets/images/bitcoin.png'),
-                                      ),
-                                    )),
+                                      errorCorrectLevel: QrErrorCorrectLevel.H),
+                                ),
                               ),
                             ),
-                          ),
-                          LongButtonWidget(
-                            customHeight: AppTheme.cardPadding * 2,
-                            customWidth: AppTheme.cardPadding * 5,
-                            title: L10n.of(context)!.share,
-                            leadingIcon: const Icon(Icons.share_rounded),
-                            onTap: () {
-                              // Share the wallet address
-                              double? invoiceAmount = double.tryParse(controller.btcController.text);
-                              if (invoiceAmount != null && invoiceAmount > 0) {
-                                Share.share('bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}');
-                              } else {
-                                Share.share(controller.qrCodeDataStringOnchain.value);
-                              }
-                            },
-                            buttonType: ButtonType.transparent,
-                          ),
-                          // SizedBox to add some spacing
-                        ],
+                            LongButtonWidget(
+                              customHeight: AppTheme.cardPadding * 2,
+                              customWidth: AppTheme.cardPadding * 5,
+                              title: L10n.of(context)!.share,
+                              leadingIcon: const Icon(Icons.share_rounded),
+                              onTap: () {
+                                // Share the wallet address
+                                double? invoiceAmount = double.tryParse(controller.btcController.text);
+                                if (invoiceAmount != null && invoiceAmount > 0) {
+                                  Share.share(
+                                      'https://${AppTheme.currentWebDomain}/#/wallet/send/bitcoin:${controller.qrCodeDataStringOnchain.value}?amount=${invoiceAmount}');
+                                } else {
+                                  Share.share(
+                                      'https://${AppTheme.currentWebDomain}/#/wallet/send/${controller.qrCodeDataStringOnchain.value}');
+                                }
+                              },
+                              buttonType: ButtonType.transparent,
+                            ),
+                            // SizedBox to add some spacing
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -173,6 +206,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                   );
 
                   setState(() {});
+                  btcControllerNotifier.value = controller.btcController.text;
                 },
                 text: L10n.of(context)!.amount,
                 trailing: Row(
@@ -193,10 +227,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
                             getCurrencyIcon(
                               BitcoinUnits.SAT.name,
                             ),
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? AppTheme.black70
-                                    : AppTheme.white90,
+                            color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90,
                           )
                   ],
                 ),
@@ -210,7 +241,7 @@ class _OnChainReceiveTabState extends State<OnChainReceiveTab> with AutomaticKee
       ),
     );
   }
-  
+
   @override
   bool get wantKeepAlive => true;
 }

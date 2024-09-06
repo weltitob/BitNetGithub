@@ -46,6 +46,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
         extendBodyBehindAppBar: true,
         appBar: bitnetAppBar(
           context: context,
+          text: 'Lightning Transaction',
           onTap: () {
             Navigator.pop(context);
           },

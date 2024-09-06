@@ -47,8 +47,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
             ),
             GestureDetector(
               onTap: () async {
-                await Clipboard.setData(ClipboardData(
-                    text: controller.qrCodeDataStringLightning.value));
+                await Clipboard.setData(ClipboardData(text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
                 showOverlay(context, L10n.of(context)!.walletAddressCopied);
               },
@@ -61,29 +60,21 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                       children: [
                         // Custom border painted around the Qr code
                         CustomPaint(
-                          foregroundPainter:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? BorderPainterBlack()
-                                  : BorderPainter(),
+                          foregroundPainter: Theme.of(context).brightness == Brightness.light ? BorderPainterBlack() : BorderPainter(),
                           child: Container(
                             margin: const EdgeInsets.all(AppTheme.cardPadding),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: AppTheme.cardRadiusBigger),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.cardRadiusBigger),
                             child: Padding(
-                              padding: const EdgeInsets.all(
-                                  AppTheme.cardPadding / 1.25),
+                              padding: const EdgeInsets.all(AppTheme.cardPadding / 1.25),
                               // The Qr code is generated using the pretty_qr package with an image, size, and error correction level
                               child: Obx(() => PrettyQrView.data(
-                                  data:
-                                      "lightning: ${controller.qrCodeDataStringLightning}",
+                                  data: "lightning: ${controller.qrCodeDataStringLightning}",
                                   decoration: const PrettyQrDecoration(
                                     shape: PrettyQrSmoothSymbol(
                                       roundFactor: 1,
                                     ),
                                     image: PrettyQrDecorationImage(
-                                      image: const AssetImage(
-                                          'assets/images/lightning.png'),
+                                      image: const AssetImage('assets/images/lightning.png'),
                                     ),
                                   ))),
                             ),
@@ -95,8 +86,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                           title: L10n.of(context)!.share,
                           leadingIcon: const Icon(Icons.share_rounded),
                           onTap: () {
-                            Share.share(
-                                '${controller.qrCodeDataStringLightning}');
+                            Share.share('https://${AppTheme.currentWebDomain}/#/wallet/send/${controller.qrCodeDataStringLightning}');
                           },
                           buttonType: ButtonType.transparent,
                         ),
@@ -112,33 +102,23 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
             ),
             BitNetListTile(
               onTap: () async {
-                await Clipboard.setData(ClipboardData(
-                    text: controller.qrCodeDataStringLightning.value));
+                await Clipboard.setData(ClipboardData(text: controller.qrCodeDataStringLightning.value));
                 // Display a snackbar to indicate that the wallet address has been copied
                 showOverlay(context, L10n.of(context)!.walletAddressCopied);
               },
               text: L10n.of(context)!.invoice,
               trailing: Obx(() {
                 final qrCodeData = controller.qrCodeDataStringLightning.value;
-                if (qrCodeData.isEmpty ||
-                    qrCodeData == '' ||
-                    qrCodeData == 'null') {
+                if (qrCodeData.isEmpty || qrCodeData == '' || qrCodeData == 'null') {
                   return Text('${L10n.of(context)!.loading}...');
                 } else {
-                  final start = qrCodeData.length >= 8
-                      ? qrCodeData.substring(0, 8)
-                      : qrCodeData;
-                  final end = qrCodeData.length > 8
-                      ? qrCodeData.substring(qrCodeData.length - 5)
-                      : '';
+                  final start = qrCodeData.length >= 8 ? qrCodeData.substring(0, 8) : qrCodeData;
+                  final end = qrCodeData.length > 8 ? qrCodeData.substring(qrCodeData.length - 5) : '';
                   return Row(
                     children: [
                       Icon(
                         Icons.copy_rounded,
-                        color: Theme.of(context).colorScheme.brightness ==
-                                Brightness.dark
-                            ? AppTheme.white60
-                            : AppTheme.black80,
+                        color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,
                       ),
                       const SizedBox(width: AppTheme.elementSpacing / 2),
                       Text(start),
@@ -176,29 +156,21 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
                   children: [
                     Icon(
                       Icons.edit,
-                      color: Theme.of(context).colorScheme.brightness ==
-                              Brightness.dark
-                          ? AppTheme.white60
-                          : AppTheme.black80,
+                      color: Theme.of(context).colorScheme.brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black80,
                     ),
                     const SizedBox(width: AppTheme.elementSpacing / 2),
                     Text(
-                      controller.satController.text == "0" ||
-                              controller.satController.text.isEmpty
+                      controller.satController.text == "0" || controller.satController.text.isEmpty
                           ? L10n.of(context)!.changeAmount
                           : controller.satController.text,
                     ),
-                    controller.satController.text == "0" ||
-                            controller.satController.text.isEmpty
+                    controller.satController.text == "0" || controller.satController.text.isEmpty
                         ? const SizedBox()
                         : Icon(
                             getCurrencyIcon(
                               BitcoinUnits.SAT.name,
                             ),
-                            color:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? AppTheme.black70
-                                    : AppTheme.white90,
+                            color: Theme.of(context).brightness == Brightness.light ? AppTheme.black70 : AppTheme.white90,
                           )
                   ],
                 ),
@@ -212,7 +184,7 @@ class _LightningReceiveTabState extends State<LightningReceiveTab> with Automati
       ),
     );
   }
-  
+
   @override
   bool get wantKeepAlive => true;
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -36,7 +38,22 @@ class SingleTransactionScreen extends StatefulWidget {
 class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
   final TextEditingController inputCtrl = TextEditingController();
   final TextEditingController outputCtrl = TextEditingController();
+  late final StreamSubscription sub;
+  @override
+  void initState() {
+    super.initState();
+        final controller = Get.put(TransactionController());
 
+    sub = controller.isLoading.listen((b) {
+      setState((){});
+    });
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    sub.cancel();
+  }
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TransactionController());
@@ -47,38 +64,37 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
     final coin = Provider.of<CurrencyTypeProvider>(context, listen: true);
     currency = currency ?? "USD";
     int amount = 0;
-    if (controller.transactionModel != null) {
-      String amountPredefined = controller.amount;
-      // Initialize variables for amounts and addresses
-      num totalReceived = 0;
-      num totalSent = 0;
+    String amountPredefined = controller.amount;
+    if(controller.transactionModel != null) {
+    // Initialize variables for amounts and addresses
+    num totalReceived = 0;
+    num totalSent = 0;
 
-      for (var vin in controller.transactionModel!.vin!) {
-        if (vin.prevout != null && vin.prevout!.value != null) {
-          // Check if the input is from our address
-          if (vin.prevout?.scriptpubkeyAddress == controller.addressId) {
-            totalSent += vin.prevout!.value!;
-          }
+    for (var vin in controller.transactionModel!.vin!) {
+      if (vin.prevout != null && vin.prevout!.value != null) {
+        // Check if the input is from our address
+        if (vin.prevout?.scriptpubkeyAddress == controller.addressId) {
+          totalSent += vin.prevout!.value!;
         }
-      }
-
-      for (var vout in controller.transactionModel!.vout!) {
-        if (vout.value != null) {
-          // Check if the output is to our address
-          if (vout.scriptpubkeyAddress == controller.addressId) {
-            totalReceived += vout.value!;
-          }
-        }
-      }
-
-// Determine the net amount and direction
-      if (controller.addressId.isEmpty) {
-        amount = int.parse(amountPredefined);
-      } else {
-        amount = (totalReceived - totalSent).toInt();
       }
     }
 
+    for (var vout in controller.transactionModel!.vout!) {
+      if (vout.value != null) {
+        // Check if the output is to our address
+        if (vout.scriptpubkeyAddress == controller.addressId) {
+          totalReceived += vout.value!;
+        }
+      }
+    }
+
+// Determine the net amount and direction
+    if (controller.addressId.isEmpty) {
+      amount = int.parse(amountPredefined);
+    } else {
+      amount = (totalReceived - totalSent).toInt();
+    }
+    }
     final chartLine = controllerWallet.chartLines.value;
     final bitcoinPrice = chartLine?.price;
 
@@ -681,45 +697,151 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
             builder: (context, setState) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: AppTheme.cardPadding * 2.5,
-                    ),
-                    SearchFieldWidget(
-                      // controller: searchCtrl,
-                      hintText: L10n.of(context)!.search,
-                      handleSearch: (v) {
-                        setState(() {
-                          outputCtrl.text = v;
-                        });
-                      },
-                      isSearchEnabled: true,
-                    ),
-                    const SizedBox(
-                      height: AppTheme.elementSpacing,
-                    ),
-                    !controller.showDetail.value
-                        ? Expanded(
-                            child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: controller.transactionModel?.vout?.length,
-                              itemBuilder: (context, index) {
-                                double value = (controller.transactionModel!.vout![index].value!) / 100000000;
+                child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
 
-                                controller.output.value = double.parse(
-                                  value.toStringAsFixed(8),
-                                );
-                                String address = '';
-                                if (controller.transactionModel!.vout?[index].scriptpubkeyAddress != null)
-                                  address = controller.transactionModel!.vout?[index].scriptpubkeyAddress ?? '';
-                                return address.contains(outputCtrl.text)
-                                    ? Padding(
+                  child: SizedBox(
+                                                  height: MediaQuery.of(context).size.height * 0.6 - AppTheme.cardPadding * 1.25,
+
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: AppTheme.cardPadding * 2.5,
+                        ),
+                        SearchFieldWidget(
+                          // controller: searchCtrl,
+                          hintText: L10n.of(context)!.search,
+                          handleSearch: (v) {
+                            setState(() {
+                              outputCtrl.text = v;
+                            });
+                          },
+                          isSearchEnabled: true,
+                        ),
+                        const SizedBox(
+                          height: AppTheme.elementSpacing,
+                        ),
+                        !controller.showDetail.value
+                            ? Expanded(
+                                child: MediaQuery.removePadding(
+                                    context: context,
+                                  removeTop: true,
+                                  child: ListView.builder(
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: controller.transactionModel?.vout?.length,
+                                    itemBuilder: (context, index) {
+                                      double value = (controller.transactionModel!.vout![index].value!) / 100000000;
+                                  
+                                      controller.output.value = double.parse(
+                                        value.toStringAsFixed(8),
+                                      );
+                                      String address = '';
+                                      if (controller.transactionModel!.vout?[index].scriptpubkeyAddress != null)
+                                        address = controller.transactionModel!.vout?[index].scriptpubkeyAddress ?? '';
+                                      return address.contains(outputCtrl.text)
+                                          ? Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
+                                              child: GlassContainer(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(AppTheme.elementSpacing),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        height: 20,
+                                                        width: 20,
+                                                        decoration: BoxDecoration(
+                                                          color: controller.dataOutSpents1.data[0][index]['spent'] == false
+                                                              ? AppTheme.successColor
+                                                              : controller.dataOutSpents1.data[0][index]['spent'] == true
+                                                                  ? AppTheme.errorColor
+                                                                  : Colors.grey.shade600,
+                                                          shape: BoxShape.circle,
+                                                        ),
+                                                        child: const Center(
+                                                          child: Icon(
+                                                            Icons.arrow_forward_outlined,
+                                                            size: 15,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Flexible(
+                                                            flex: 2,
+                                                            child: GestureDetector(
+                                                              onTap: () {
+                                                                controller.getAddressComponent(
+                                                                    controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString());
+                                                                controller.addressId =
+                                                                    controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ??
+                                                                        '';
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (context) => const AddressComponent(),
+                                                                  ),
+                                                                );
+                                                              },
+                                                              child: Text(
+                                                                controller.transactionModel!.vout?[index].scriptpubkeyAddress == null &&
+                                                                        controller.transactionModel!.vout?[index].scriptpubkeyType == "op_return"
+                                                                    ? 'OP_RETURN (R)'
+                                                                    : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ??
+                                                                        '',
+                                                                style: AppTheme.textTheme.bodyMedium,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Flexible(
+                                                            flex: 2,
+                                                            child: Container(
+                                                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.grey,
+                                                                borderRadius: AppTheme.cardRadiusCircular,
+                                                              ),
+                                                              child: controller.isShowBTC.value
+                                                                  ? Text(
+                                                                      '${controller.isShowBTC.value ? controller.outPutBTC(index) : controller.outPutDollar(index)} BTC',
+                                                                      style: AppTheme.textTheme.bodyMedium)
+                                                                  : Text(
+                                                                      '\$ ${controller.outPutDollar(index)} ',
+                                                                      style: AppTheme.textTheme.bodyMedium,
+                                                                    ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox();
+                                    },
+                                  ),
+                                ),
+                              )
+                            : Expanded(
+                                child: MediaQuery.removePadding(
+                                  context: context,
+                                  removeTop: true,
+                                  child: ListView.builder(
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: controller.transactionModel?.vout?.length,
+                                    itemBuilder: (context, index) {
+                                      double value = (controller.transactionModel!.vout![index].value!) / 100000000;
+                                      controller.output.value = double.parse(value.toStringAsFixed(8));
+                                      return Padding(
                                         padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
                                         child: GlassContainer(
                                           child: Padding(
-                                            padding: const EdgeInsets.all(AppTheme.elementSpacing),
+                                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
@@ -741,32 +863,28 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                     ),
                                                   ),
                                                 ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
                                                     Flexible(
-                                                      flex: 2,
+                                                      flex: 3,
                                                       child: GestureDetector(
                                                         onTap: () {
                                                           controller.getAddressComponent(
                                                               controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString());
                                                           controller.addressId =
-                                                              controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ??
-                                                                  '';
-                                                          Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                              builder: (context) => const AddressComponent(),
-                                                            ),
-                                                          );
+                                                              controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '';
+                                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddressComponent()));
                                                         },
                                                         child: Text(
                                                           controller.transactionModel!.vout?[index].scriptpubkeyAddress == null &&
                                                                   controller.transactionModel!.vout?[index].scriptpubkeyType == "op_return"
                                                               ? 'OP_RETURN (R)'
-                                                              : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ??
-                                                                  '',
+                                                              : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '',
                                                           style: AppTheme.textTheme.bodyMedium,
                                                         ),
                                                       ),
@@ -774,10 +892,10 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                     Flexible(
                                                       flex: 2,
                                                       child: Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                                        padding: const EdgeInsets.all(4),
                                                         decoration: BoxDecoration(
-                                                          color: Colors.grey,
                                                           borderRadius: AppTheme.cardRadiusCircular,
+                                                          color: Colors.grey,
                                                         ),
                                                         child: controller.isShowBTC.value
                                                             ? Text(
@@ -791,161 +909,75 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
                                                     ),
                                                   ],
                                                 ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text('ScriptPubKey (ASM)	', style: AppTheme.textTheme.bodyMedium),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Flexible(
+                                                      child: Text(
+                                                        '${controller.transactionModel?.vout?[index].scriptpubkeyAsm}',
+                                                        style: AppTheme.textTheme.bodyMedium,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text('ScriptPubKey (HEX)	', style: AppTheme.textTheme.bodyMedium),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Flexible(
+                                                      child: Text(
+                                                        '${controller.transactionModel?.vout?[index].scriptpubkey}',
+                                                        style: AppTheme.textTheme.bodyMedium,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(L10n.of(context)!.typeBehavior, style: AppTheme.textTheme.bodyMedium),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Flexible(
+                                                      child: Text(
+                                                        '${controller.transactionModel?.vout?[index].scriptpubkeyType}',
+                                                        style: AppTheme.textTheme.bodyMedium,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
                                               ],
                                             ),
                                           ),
                                         ),
-                                      )
-                                    : const SizedBox();
-                              },
-                            ),
-                          )
-                        : Expanded(
-                            child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: controller.transactionModel?.vout?.length,
-                              itemBuilder: (context, index) {
-                                double value = (controller.transactionModel!.vout![index].value!) / 100000000;
-                                controller.output.value = double.parse(value.toStringAsFixed(8));
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
-                                  child: GlassContainer(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            height: 20,
-                                            width: 20,
-                                            decoration: BoxDecoration(
-                                              color: controller.dataOutSpents1.data[0][index]['spent'] == false
-                                                  ? AppTheme.successColor
-                                                  : controller.dataOutSpents1.data[0][index]['spent'] == true
-                                                      ? AppTheme.errorColor
-                                                      : Colors.grey.shade600,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Center(
-                                              child: Icon(
-                                                Icons.arrow_forward_outlined,
-                                                size: 15,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Flexible(
-                                                flex: 3,
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    controller.getAddressComponent(
-                                                        controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString());
-                                                    controller.addressId =
-                                                        controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '';
-                                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AddressComponent()));
-                                                  },
-                                                  child: Text(
-                                                    controller.transactionModel!.vout?[index].scriptpubkeyAddress == null &&
-                                                            controller.transactionModel!.vout?[index].scriptpubkeyType == "op_return"
-                                                        ? 'OP_RETURN (R)'
-                                                        : controller.transactionModel!.vout?[index].scriptpubkeyAddress.toString() ?? '',
-                                                    style: AppTheme.textTheme.bodyMedium,
-                                                  ),
-                                                ),
-                                              ),
-                                              Flexible(
-                                                flex: 2,
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(4),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: AppTheme.cardRadiusCircular,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  child: controller.isShowBTC.value
-                                                      ? Text(
-                                                          '${controller.isShowBTC.value ? controller.outPutBTC(index) : controller.outPutDollar(index)} BTC',
-                                                          style: AppTheme.textTheme.bodyMedium)
-                                                      : Text(
-                                                          '\$ ${controller.outPutDollar(index)} ',
-                                                          style: AppTheme.textTheme.bodyMedium,
-                                                        ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text('ScriptPubKey (ASM)	', style: AppTheme.textTheme.bodyMedium),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Flexible(
-                                                child: Text(
-                                                  '${controller.transactionModel?.vout?[index].scriptpubkeyAsm}',
-                                                  style: AppTheme.textTheme.bodyMedium,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text('ScriptPubKey (HEX)	', style: AppTheme.textTheme.bodyMedium),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Flexible(
-                                                child: Text(
-                                                  '${controller.transactionModel?.vout?[index].scriptpubkey}',
-                                                  style: AppTheme.textTheme.bodyMedium,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(L10n.of(context)!.typeBehavior, style: AppTheme.textTheme.bodyMedium),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Flexible(
-                                                child: Text(
-                                                  '${controller.transactionModel?.vout?[index].scriptpubkeyType}',
-                                                  style: AppTheme.textTheme.bodyMedium,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                  ],
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             },
@@ -984,276 +1016,292 @@ class _SingleTransactionScreenState extends State<SingleTransactionScreen> {
             padding: const EdgeInsets.symmetric(
               horizontal: AppTheme.cardPadding,
             ),
-            child: Column(
-              children: [
-                const SizedBox(height: AppTheme.cardPadding * 2.5),
-                SearchFieldWidget(
-                  // controller: searchCtrl,
-                  hintText: L10n.of(context)!.search,
-                  handleSearch: (v) {
-                    setState(() {
-                      inputCtrl.text = v;
-                    });
-                  },
-                  isSearchEnabled: true,
-                ),
-                !controller.showDetail.value
-                    ? Expanded(
-                        child: ListView.builder(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: controller.transactionModel?.vin?.length,
-                          itemBuilder: (context, index) {
-                            double value = (controller.transactionModel!.vin![index].prevout!.value!) / 100000000;
-                            controller.input.value = double.parse(value.toStringAsFixed(8));
-                            String address = '';
-                            if (controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress != null)
-                              address = controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
-                            return address.contains(inputCtrl.text)
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
-                                    child: GlassContainer(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              height: 20,
-                                              width: 20,
-                                              decoration: const BoxDecoration(
-                                                color: Colors.red,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Center(
-                                                  child: Icon(
-                                                Icons.arrow_forward_outlined,
-                                                size: 15,
-                                              )),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Flexible(
-                                                  flex: 2,
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      controller.getAddressComponent(
-                                                          controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress);
-                                                      controller.addressId =
-                                                          controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
-                                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AddressComponent()));
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.6 - AppTheme.cardPadding * 1.25,
 
-                                                      // Get.to(() =>
-                                                      //     AddressComponent());
-                                                    },
-                                                    child: Text(
-                                                      controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null &&
-                                                              controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType ==
-                                                                  "op_return"
-                                                          ? 'OP_RETURN (R)'
-                                                          : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
-                                                              '... '
-                                                              '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
-                                                      style: const TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.blue,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                controller.isShowBTC.value
-                                                    ? Text(
-                                                        '${controller.inPutBTC(index)} BTC',
-                                                        style: AppTheme.textTheme.bodyMedium,
-                                                      )
-                                                    : Text('\$ ${controller.inPutDollar(index)} ', style: const TextStyle(color: Colors.black))
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox();
-                          },
-                        ),
-                      )
-                    : Expanded(
-                        child: ListView.builder(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: controller.transactionModel?.vin?.length,
-                          itemBuilder: (context, index) {
-                            double value = (controller.transactionModel!.vin![index].prevout!.value!) / 100000000;
-                            controller.input.value = double.parse(value.toStringAsFixed(8));
-                            String address = '';
-                            if (controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress != null)
-                              address = controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
-                            return address.contains(inputCtrl.text)
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
-                                    child: GlassContainer(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              height: 20,
-                                              width: 20,
-                                              decoration: const BoxDecoration(
-                                                color: Colors.red,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Center(
-                                                child: Icon(
-                                                  Icons.arrow_forward_outlined,
-                                                  size: 15,
-                                                ),
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Flexible(
-                                                  flex: 3,
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      controller.getAddressComponent(
-                                                          controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress);
-                                                      controller.addressId =
-                                                          controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => const AddressComponent(),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null &&
-                                                              controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType ==
-                                                                  "op_return"
-                                                          ? 'OP_RETURN (R)'
-                                                          : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
-                                                              '... '
-                                                              '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
-                                                      style: const TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.blue,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Flexible(
-                                                  flex: 2,
-                                                  child: Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.grey,
-                                                      borderRadius: AppTheme.cardRadiusCircular,
-                                                    ),
-                                                    child: controller.isShowBTC.value
-                                                        ? Text(
-                                                            '${controller.isShowBTC.value ? controller.inPutBTC(index) : controller.inPutDollar(index)} BTC',
-                                                            style: const TextStyle(color: Colors.black),
-                                                          )
-                                                        : Text('\$ ${controller.inPutDollar(index)} ',
-                                                            style: const TextStyle(color: Colors.black)),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            SizedBox(
-                                              child: Row(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: AppTheme.cardPadding * 2.5),
+                    SearchFieldWidget(
+                      // controller: searchCtrl,
+                      hintText: L10n.of(context)!.search,
+                      handleSearch: (v) {
+                        setState(() {
+                          inputCtrl.text = v;
+                        });
+                      },
+                      isSearchEnabled: true,
+                    ),
+                    !controller.showDetail.value
+                        ? Expanded(
+                            child: MediaQuery.removePadding(
+                              context: context,
+                              removeTop: true,
+                              child: ListView.builder(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: controller.transactionModel?.vin?.length,
+                                itemBuilder: (context, index) {
+                                  double value = (controller.transactionModel!.vin![index].prevout!.value!) / 100000000;
+                                  controller.input.value = double.parse(value.toStringAsFixed(8));
+                                  String address = '';
+                                  if (controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress != null)
+                                    address = controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
+                                  return address.contains(inputCtrl.text)
+                                      ? Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
+                                          child: GlassContainer(
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
+                                              child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Expanded(
-                                                    child: Text(L10n.of(context)!.witness, style: AppTheme.textTheme.bodyMedium),
-                                                  ),
-                                                  Expanded(
-                                                    child: Column(
-                                                      children: [
-                                                        ListView.builder(
-                                                          physics: const NeverScrollableScrollPhysics(),
-                                                          shrinkWrap: true,
-                                                          itemCount: controller.transactionModel!.vin?[index].witness?.length,
-                                                          itemBuilder: (context, ind) {
-                                                            return Padding(
-                                                              padding: const EdgeInsets.only(bottom: 10),
-                                                              child: Text(
-                                                                  controller.transactionModel?.vin != null
-                                                                      ? '${controller.transactionModel?.vin?[index].witness?[ind]}'
-                                                                      : '',
-                                                                  style: AppTheme.textTheme.bodyMedium),
-                                                            );
-                                                          },
-                                                        )
-                                                      ],
+                                                  Container(
+                                                    height: 20,
+                                                    width: 20,
+                                                    decoration: const BoxDecoration(
+                                                      color: Colors.red,
+                                                      shape: BoxShape.circle,
                                                     ),
-                                                  )
+                                                    child: const Center(
+                                                        child: Icon(
+                                                      Icons.arrow_forward_outlined,
+                                                      size: 15,
+                                                    )),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Flexible(
+                                                        flex: 2,
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            controller.getAddressComponent(
+                                                                controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress);
+                                                            controller.addressId =
+                                                                controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
+                                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const AddressComponent()));
+                              
+                                                            // Get.to(() =>
+                                                            //     AddressComponent());
+                                                          },
+                                                          child: Text(
+                                                            controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null &&
+                                                                    controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType ==
+                                                                        "op_return"
+                                                                ? 'OP_RETURN (R)'
+                                                                : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
+                                                                    '... '
+                                                                    '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
+                                                            style: const TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors.blue,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      controller.isShowBTC.value
+                                                          ? Text(
+                                                              '${controller.inPutBTC(index)} BTC',
+                                                              style: AppTheme.textTheme.bodyMedium,
+                                                            )
+                                                          : Text('\$ ${controller.inPutDollar(index)} ', style: const TextStyle(color: Colors.black))
+                                                    ],
+                                                  ),
                                                 ],
                                               ),
                                             ),
-                                            const SizedBox(
-                                              height: 10,
+                                          ),
+                                        )
+                                      : const SizedBox();
+                                },
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: MediaQuery.removePadding(
+                              context: context,
+                              removeTop: true,
+                              child: ListView.builder(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: controller.transactionModel?.vin?.length,
+                                itemBuilder: (context, index) {
+                                  double value = (controller.transactionModel!.vin![index].prevout!.value!) / 100000000;
+                                  controller.input.value = double.parse(value.toStringAsFixed(8));
+                                  String address = '';
+                                  if (controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress != null)
+                                    address = controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
+                                  return address.contains(inputCtrl.text)
+                                      ? Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: AppTheme.elementSpacing),
+                                          child: GlassContainer(
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: AppTheme.elementSpacing, vertical: AppTheme.elementSpacing),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    height: 20,
+                                                    width: 20,
+                                                    decoration: const BoxDecoration(
+                                                      color: Colors.red,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons.arrow_forward_outlined,
+                                                        size: 15,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Flexible(
+                                                        flex: 3,
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            controller.getAddressComponent(
+                                                                controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress);
+                                                            controller.addressId =
+                                                                controller.transactionModel!.vin?[index].prevout!.scriptpubkeyAddress ?? '';
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => const AddressComponent(),
+                                                              ),
+                                                            );
+                                                          },
+                                                          child: Text(
+                                                            controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress == null &&
+                                                                    controller.transactionModel!.vin?[index].prevout?.scriptpubkeyType ==
+                                                                        "op_return"
+                                                                ? 'OP_RETURN (R)'
+                                                                : '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring(0, 10)}'
+                                                                    '... '
+                                                                    '${controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.substring((controller.transactionModel!.vin?[index].prevout?.scriptpubkeyAddress!.length)! - 5)}',
+                                                            style: const TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors.blue,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Flexible(
+                                                        flex: 2,
+                                                        child: Container(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.grey,
+                                                            borderRadius: AppTheme.cardRadiusCircular,
+                                                          ),
+                                                          child: controller.isShowBTC.value
+                                                              ? Text(
+                                                                  '${controller.isShowBTC.value ? controller.inPutBTC(index) : controller.inPutDollar(index)} BTC',
+                                                                  style: const TextStyle(color: Colors.black),
+                                                                )
+                                                              : Text('\$ ${controller.inPutDollar(index)} ',
+                                                                  style: const TextStyle(color: Colors.black)),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  SizedBox(
+                                                    child: Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(L10n.of(context)!.witness, style: AppTheme.textTheme.bodyMedium),
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            children: [
+                                                              ListView.builder(
+                                                                physics: const NeverScrollableScrollPhysics(),
+                                                                shrinkWrap: true,
+                                                                itemCount: controller.transactionModel!.vin?[index].witness?.length,
+                                                                itemBuilder: (context, ind) {
+                                                                  return Padding(
+                                                                    padding: const EdgeInsets.only(bottom: 10),
+                                                                    child: Text(
+                                                                        controller.transactionModel?.vin != null
+                                                                            ? '${controller.transactionModel?.vin?[index].witness?[ind]}'
+                                                                            : '',
+                                                                        style: AppTheme.textTheme.bodyMedium),
+                                                                  );
+                                                                },
+                                                              )
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text('nSequence', style: AppTheme.textTheme.bodyMedium),
+                                                      Text('0x${controller.transactionModel?.vin?[index].sequence?.toRadixString(16)}',
+                                                          style: AppTheme.textTheme.bodyMedium)
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(L10n.of(context)!.previousOutputScripts, style: AppTheme.textTheme.bodyMedium),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Flexible(
+                                                          child: Text('${controller.transactionModel?.vin?[index].prevout?.scriptpubkeyAsm}',
+                                                              style: AppTheme.textTheme.bodyMedium))
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text('Previous output type', style: AppTheme.textTheme.bodyMedium),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Flexible(
+                                                          child: Text('${controller.transactionModel?.vin?[index].prevout?.scriptpubkeyType}',
+                                                              style: AppTheme.textTheme.bodyMedium))
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text('nSequence', style: AppTheme.textTheme.bodyMedium),
-                                                Text('0x${controller.transactionModel?.vin?[index].sequence?.toRadixString(16)}',
-                                                    style: AppTheme.textTheme.bodyMedium)
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(L10n.of(context)!.previousOutputScripts, style: AppTheme.textTheme.bodyMedium),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Flexible(
-                                                    child: Text('${controller.transactionModel?.vin?[index].prevout?.scriptpubkeyAsm}',
-                                                        style: AppTheme.textTheme.bodyMedium))
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text('Previous output type', style: AppTheme.textTheme.bodyMedium),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Flexible(
-                                                    child: Text('${controller.transactionModel?.vin?[index].prevout?.scriptpubkeyType}',
-                                                        style: AppTheme.textTheme.bodyMedium))
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox();
-                          },
-                        ),
-                      ),
-              ],
+                                          ),
+                                        )
+                                      : const SizedBox();
+                                },
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+              ),
             ),
           );
         }),
