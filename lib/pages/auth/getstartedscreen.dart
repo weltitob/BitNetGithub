@@ -65,7 +65,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                height: AppTheme.cardPadding * 5.h,
+                height: AppTheme.cardPadding * 4.h,
               ),
               Container(
                 color: Colors.transparent,
