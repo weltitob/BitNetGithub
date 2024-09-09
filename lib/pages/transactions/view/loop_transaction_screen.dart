@@ -285,7 +285,7 @@ class LoopTransactionScreen extends GetWidget<WalletsController> {
                             coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
                           },
                           child: Text(
-                            coin.coin ?? true ? '${transactionItemData.fee}' : "$currencyEquivalentFee${getCurrency(currency!)}",
+                            coin.coin ?? true ? '${transactionItemData.fee}' : "$currencyEquivalentFee ${getCurrency(currency!)}",
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),

@@ -29,11 +29,12 @@ enum TransactionDirection { received, sent }
 class TransactionItem extends StatefulWidget {
   final TransactionItemData data;
   final BuildContext context;
-
+  final Function()? onTap;
   const TransactionItem({
     Key? key,
     required this.context,
     required this.data,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -107,6 +108,14 @@ class _TransactionItemState extends State<TransactionItem> with AutomaticKeepAli
             return;
           }
           await Future.delayed(const Duration(milliseconds: 100));
+          if (widget.onTap != null) {
+            widget.onTap!();
+            isTapped = false;
+            setState(() {});
+
+            return;
+          }
+
           if (widget.data.type == TransactionType.lightning) {
             Navigator.push(
               context,

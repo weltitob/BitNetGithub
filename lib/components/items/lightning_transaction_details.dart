@@ -123,7 +123,13 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                       child: Row(
                                         children: [
                                           Text(
-                                            coin.coin ?? true ? data.amount : "$currencyEquivalent",
+                                            coin.coin ?? true
+                                                ? double.parse(data.amount) > 0
+                                                    ? '+${data.amount}'
+                                                    : data.amount
+                                                : double.parse(data.amount) > 0
+                                                    ? "+${currencyEquivalent}"
+                                                    : "$currencyEquivalent",
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context).textTheme.displayMedium!.copyWith(
                                                 color: data.direction == TransactionDirection.received
@@ -132,8 +138,11 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                                           ),
                                           if (!(coin.coin ?? true)) ...[
                                             Text(
-                                              '${getCurrency(currency!)}',
-                                              style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.grey),
+                                              ' ${getCurrency(currency!)}',
+                                              style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                                                  color: data.direction == TransactionDirection.received
+                                                      ? AppTheme.successColor
+                                                      : AppTheme.errorColor),
                                             )
                                           ]
                                         ],
@@ -326,7 +335,7 @@ class LightningTransactionDetails extends GetWidget<WalletsController> {
                             coin.setCurrencyType(coin.coin != null ? !coin.coin! : false);
                           },
                           child: Text(
-                            coin.coin ?? true ? '${data.fee}' : "$currencyEquivalentFee${getCurrency(currency!)}",
+                            coin.coin ?? true ? '${data.fee}' : "$currencyEquivalentFee ${getCurrency(currency!)}",
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),

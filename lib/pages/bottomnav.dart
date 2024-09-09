@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/cloudfunctions/load_btc_addresses.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
@@ -32,8 +33,7 @@ class BottomNav extends StatefulWidget {
   State<BottomNav> createState() => _BottomNavState();
 }
 
-class _BottomNavState extends State<BottomNav>
-    with SingleTickerProviderStateMixin {
+class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMixin {
   String? profileId;
   Map<String, AnimationController> animationControllers = {};
 
@@ -41,6 +41,7 @@ class _BottomNavState extends State<BottomNav>
   void initState() {
     super.initState();
     initUser();
+    loadAddresses();
   }
 
   void initUser() async {
@@ -77,23 +78,15 @@ class _BottomNavState extends State<BottomNav>
     final allData = querySnapshot.docs.map((doc) => doc.id).toList();
     print(allData);
     if (allData.contains(FirebaseAuth.instance.currentUser?.uid)) {
-      var data = await settingsCollection
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .get();
-      ThemeController.of(context).setThemeMode(ThemeMode.values
-              .singleWhereOrNull(
-                  (value) => value.name == data.data()?['theme_mode']) ??
-          ThemeMode.system);
+      var data = await settingsCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
       ThemeController.of(context)
-          .setPrimaryColor(Color(data.data()?['primary_color']));
+          .setThemeMode(ThemeMode.values.singleWhereOrNull((value) => value.name == data.data()?['theme_mode']) ?? ThemeMode.system);
+      ThemeController.of(context).setPrimaryColor(Color(data.data()?['primary_color']));
       final locale = Locale.fromSubtags(languageCode: data.data()?['lang']);
-      Provider.of<LocalProvider>(context, listen: false)
-          .setLocaleInDatabase(data.data()?['lang'], locale);
-      Provider.of<CardChangeProvider>(context, listen: false)
-          .setCardInDatabase(data.data()?['selected_card']);
+      Provider.of<LocalProvider>(context, listen: false).setLocaleInDatabase(data.data()?['lang'], locale);
+      Provider.of<CardChangeProvider>(context, listen: false).setCardInDatabase(data.data()?['selected_card']);
       final walletController = Get.find<WalletsController>();
-      walletController.setHideBalance(
-          hide: data.data()?['hide_balance'] ?? false);
+      walletController.setHideBalance(hide: data.data()?['hide_balance'] ?? false);
       setState(() {});
     } else {
       Map<String, dynamic> data = {
@@ -119,8 +112,7 @@ class _BottomNavState extends State<BottomNav>
   void _onItemTapped(int index, ScrollController controller) {
     setState(() {
       if (index == _selectedIndex) {
-        controller.animateTo(0,
-            duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+        controller.animateTo(0, duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
       } else {
         _selectedIndex = index;
       }
@@ -156,15 +148,10 @@ class _BottomNavState extends State<BottomNav>
             ? Container(height: 0, width: 0)
             : Container(
                 color: Theme.of(context).brightness == Brightness.light
-                    ? lighten(
-                        Theme.of(context).colorScheme.primaryContainer, 50)
-                    : darken(
-                        Theme.of(context).colorScheme.primaryContainer, 80),
-                padding: const EdgeInsets.only(
-                    top: 3,
-                    left: AppTheme.cardPadding,
-                    right: AppTheme.cardPadding,
-                    bottom: AppTheme.elementSpacing),
+                    ? lighten(Theme.of(context).colorScheme.primaryContainer, 50)
+                    : darken(Theme.of(context).colorScheme.primaryContainer, 80),
+                padding:
+                    const EdgeInsets.only(top: 3, left: AppTheme.cardPadding, right: AppTheme.cardPadding, bottom: AppTheme.elementSpacing),
                 child: GlassContainer(
                   child: Theme(
                     data: Theme.of(context).copyWith(
@@ -197,27 +184,18 @@ class _BottomNavState extends State<BottomNav>
                       type: BottomNavigationBarType.fixed,
                       backgroundColor: Colors.transparent,
                       currentIndex: _selectedIndex,
-                      selectedItemColor:
-                          Theme.of(context).colorScheme.onPrimaryContainer,
-                      unselectedItemColor: Theme.of(context)
-                          .colorScheme
-                          .onPrimaryContainer
-                          .withOpacity(0.5),
+                      selectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                      unselectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5),
                       showSelectedLabels: false,
                       showUnselectedLabels: false,
                       onTap: (i) {
                         switch (i) {
                           case 0:
-                            _onItemTapped(
-                                i,
-                                Get.find<FeedController>()
-                                    .scrollControllerColumn);
+                            _onItemTapped(i, Get.find<FeedController>().scrollControllerColumn);
                           case 1:
-                            _onItemTapped(i,
-                                Get.find<WalletsController>().scrollController);
+                            _onItemTapped(i, Get.find<WalletsController>().scrollController);
                           case 2:
-                            _onItemTapped(i,
-                                Get.find<ProfileController>().scrollController);
+                            _onItemTapped(i, Get.find<ProfileController>().scrollController);
                         }
                       },
                       elevation: 0, // Box-Shadow entfernen
@@ -237,17 +215,22 @@ class _BottomNavState extends State<BottomNav>
         ));
   }
 
-  final CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('settings');
+  final CollectionReference _collectionRef = FirebaseFirestore.instance.collection('settings');
 
   void getUserTheme() {
-    _collectionRef
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((value) {
+    _collectionRef.doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) {
       setState(() {
         String myTheme = value.get("theme");
       });
     });
+  }
+}
+
+void loadAddresses() async {
+  AggregateQuery count =
+      FirebaseFirestore.instance.collection('addresses_cache').where(FieldPath.documentId, isEqualTo: Auth().currentUser!.uid).count();
+  bool shouldLoad = !(((await count.get()).count ?? 0) >= 1);
+  if (shouldLoad) {
+    loadBtcAddresses(Auth().currentUser!.uid);
   }
 }

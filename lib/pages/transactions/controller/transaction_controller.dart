@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:bitnet/backbone/cloudfunctions/check_addresses_ownership.dart';
 import 'package:bitnet/backbone/mempool_utils.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/models/mempool_models/address_component.dart';
@@ -73,6 +74,7 @@ class TransactionController extends BaseController {
   List<String> ids = [];
   RxInt page = 1.obs;
   String searchValue = '';
+  List<String> currentOwnedAddresses = [];
 
   void toggleExpansion() {
     showDetail.value = !showDetail.value;
@@ -652,6 +654,26 @@ class TransactionController extends BaseController {
             // print(height);
             // print(chainTip);
             print('before calculating confirmations');
+            List<String> addresses = List.empty(growable: true);
+            for (Vin vin in (transactionModel!.vin ?? [])) {
+              if (vin.prevout != null && vin.prevout!.scriptpubkeyAddress != null) {
+                addresses.add(vin.prevout!.scriptpubkeyAddress!);
+              }
+            }
+            for (Prevout vout in (transactionModel!.vout ?? [])) {
+              if (vout.scriptpubkeyAddress != null) {
+                addresses.add(vout.scriptpubkeyAddress!);
+              }
+            }
+            await checkAddressesOwnership(addresses).then((val) {
+              currentOwnedAddresses = List.empty(growable: true);
+              for (String k in val.data.keys) {
+                bool owned = val.data[k];
+                if (owned) {
+                  currentOwnedAddresses.add(k);
+                }
+              }
+            });
             await calculateConfirmation();
             await calculateStatus(transactionModel!.status!.confirmed!);
             // print(

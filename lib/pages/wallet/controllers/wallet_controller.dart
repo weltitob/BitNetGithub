@@ -35,6 +35,7 @@ class WalletsController extends BaseController {
   late final Future<LottieComposition> compositionSend;
   late final Future<LottieComposition> compositionReceive;
   late final ScrollController scrollController;
+  RxInt currentView = 0.obs;
   late OnchainBalance onchainBalance = OnchainBalance(
     totalBalance: '0',
     confirmedBalance: '0',
@@ -56,7 +57,6 @@ class WalletsController extends BaseController {
 
   RxString predictedLightningBalance = '0'.obs;
   RxString predictedBtcBalance = '0'.obs;
-
 
   RxBool visible = false.obs;
 

@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -55,36 +56,53 @@ class _OtherProfileViewState extends State<OtherProfileView> {
   Widget build(BuildContext context) {
     return Obx(
       () => bitnetScaffold(
-        context: context,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        extendBodyBehindAppBar: true,
-        appBar: bitnetAppBar(
           context: context,
-          onTap: () {
-            try {
-              context.pop();
-            } catch (e) {
-              context.go('/');
-            }
-          },
-        ),
-        body: controller.isUserLoading.value
-            ? Center(child: dotProgress(context))
-            : CustomScrollView(
-                controller: controller.scrollController,
-                slivers: [
-                  const SliverToBoxAdapter(child: const OtherProfileHeader()),
-                  const SliverToBoxAdapter(
-                    child: const SizedBox(
-                      height: AppTheme.cardPadding * 0.75,
-                    ),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          extendBodyBehindAppBar: true,
+          appBar: bitnetAppBar(
+            context: context,
+            onTap: () {
+              try {
+                context.pop();
+              } catch (e) {
+                if (Auth().currentUser != null) {
+                  context.go('/feed');
+                } else {
+                  context.go('/authhome');
+                }
+              }
+            },
+          ),
+          body: PopScope(
+            canPop: false,
+            onPopInvoked: (b) {
+              try {
+                context.pop();
+              } catch (e) {
+                if (Auth().currentUser != null) {
+                  context.go('/feed');
+                } else {
+                  context.go('/authhome');
+                }
+              }
+            },
+            child: controller.isUserLoading.value
+                ? Center(child: dotProgress(context))
+                : CustomScrollView(
+                    controller: controller.scrollController,
+                    slivers: [
+                      const SliverToBoxAdapter(child: const OtherProfileHeader()),
+                      const SliverToBoxAdapter(
+                        child: const SizedBox(
+                          height: AppTheme.cardPadding * 0.75,
+                        ),
+                      ),
+                      Obx(() {
+                        return controller.pages[controller.currentview.value];
+                      }),
+                    ],
                   ),
-                  Obx(() {
-                    return controller.pages[controller.currentview.value];
-                  }),
-                ],
-              ),
-      ),
+          )),
     );
   }
 }

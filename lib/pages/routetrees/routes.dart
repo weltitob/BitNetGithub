@@ -183,7 +183,11 @@ class AppRoutes {
                   ),
                   GoRoute(
                     path: 'transactions',
-                    builder: _dynamicTransition == null ? (ctx, state) => const LastTransactions() : null,
+                    builder: _dynamicTransition == null
+                        ? (ctx, state) => const LastTransactions(
+                              ownedTransactions: [],
+                            )
+                        : null,
                     pageBuilder: _dynamicTransition != null
                         ? (ctx, state) => CustomTransitionPage(
                             key: state.pageKey, child: const BlockTransactions(), transitionsBuilder: _dynamicTransition!)
