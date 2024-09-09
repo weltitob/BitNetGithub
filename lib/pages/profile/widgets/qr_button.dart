@@ -72,7 +72,7 @@ class QrButton extends StatelessWidget {
                     title: L10n.of(context)!.share,
                     leadingIcon: const Icon(Icons.share_rounded),
                     onTap: () {
-                      Share.share('https://${AppTheme.currentWebDomain}/showprofile/${controller.userData.value.did}');
+                      Share.share('https://${AppTheme.currentWebDomain}/#/showprofile/${controller.userData.value.did}');
                     },
                     buttonType: ButtonType.transparent,
                   ),

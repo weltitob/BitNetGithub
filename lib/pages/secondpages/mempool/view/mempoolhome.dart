@@ -90,15 +90,17 @@ class _MempoolHomeState extends State<MempoolHome> {
   @override
   void initState() {
     super.initState();
-    setState(
-      () {
-        controller.showBlock.value = true;
-        controller.showNextBlock.value = false;
-        controller.indexBlock.value = 0;
-        controller.selectedIndex = 0;
-        controller.selectedIndexData = -1;
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(
+        () {
+          controller.showBlock.value = true;
+          controller.showNextBlock.value = false;
+          controller.indexBlock.value = 0;
+          controller.selectedIndex = 0;
+          controller.selectedIndexData = -1;
+        },
+      );
+    });
     getDataBlockHeightSearch();
     if (controller.blockHeight == null)
       Future.delayed(
@@ -915,7 +917,7 @@ class _MempoolHomeState extends State<MempoolHome> {
                 SizedBox(
                   height: AppTheme.cardPadding.h * 1.75,
                 ),
-                const LastTransactions(),
+                LastTransactions(ownedTransactions: onchainTransactionsFull),
 
                 //recentReplacements(),
                 //recentTransactions(),

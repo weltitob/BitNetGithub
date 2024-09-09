@@ -84,7 +84,7 @@ class FiatCard extends StatelessWidget {
       ]),
       child: Stack(
         children: [
-          const CardBackgroundLightning(),
+          const CardBackgroundFiat(),
           BalanceTextWidget(
             balanceStr: "balanceStr",
             textColor: textColor,
@@ -353,6 +353,61 @@ class CardBackgroundLightning extends StatelessWidget {
                 Theme.of(context).brightness == Brightness.light
                     ? darken(Theme.of(context).colorScheme.tertiaryContainer, 10)
                     : Theme.of(context).colorScheme.tertiaryContainer,
+              ],
+            ),
+          ),
+          child: Stack(
+            children: [
+              TopLeftGradient(),
+              BottomRightGradient(),
+              CustomPaint(
+                size: const Size(double.infinity, double.infinity), // nimmt die Größe des Containers an
+                painter: WavyGleamPainter(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CardBackgroundFiat extends StatelessWidget {
+  const CardBackgroundFiat({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(0.5),
+      decoration: BoxDecoration(
+        borderRadius: AppTheme.cardRadiusBiggest,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0, 0.25, 0.75, 1],
+          colors: [
+            Color(0x99FFFFFF),
+            Color(0x00FFFFFF),
+            Color(0x00FFFFFF),
+            Color(0x99FFFFFF),
+          ],
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: AppTheme.cardRadiusBiggest,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomLeft,
+              end: Alignment.topRight,
+              stops: [0, 0.75],
+              colors: [
+                // Color(0xffA0E7E5),
+                // Color.fromARGB(255, 169, 226, 224),
+                Theme.of(context).colorScheme.secondaryContainer,
+                Theme.of(context).brightness == Brightness.light
+                    ? lighten(Theme.of(context).colorScheme.onSecondaryContainer, 50)
+                    : Theme.of(context).colorScheme.onSecondaryContainer,
               ],
             ),
           ),
