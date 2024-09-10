@@ -167,14 +167,14 @@ class WalletScreen extends GetWidget<WalletsController> {
                       ),
                     ),
                     SizedBox(
-                      height: AppTheme.cardPadding.h * 1.25,
+                      height: AppTheme.cardPadding.h * 1.5,
                     ),
                     Container(
                       height: AppTheme.cardPadding * 7.75.h,
                       child: Stack(
                         children: [
                           CardSwiper(
-                            backCardOffset: const Offset(0, -AppTheme.cardPadding),
+                            backCardOffset: const Offset(0, -AppTheme.elementSpacing * 1.25),
                             numberOfCardsDisplayed: 3,
                             padding:
                                 const EdgeInsets.only(left: AppTheme.cardPadding, right: AppTheme.cardPadding, top: AppTheme.cardPadding),

@@ -64,6 +64,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             // even space distribution
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(
+                height: AppTheme.cardPadding * 4.h,
+              ),
               Container(
                 color: Colors.transparent,
                 width: (AppTheme.cardPadding * 20 * spacingMultiplier.ws),
@@ -89,7 +92,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 ),
               ),
               SizedBox(
-                height: AppTheme.cardPadding * 4.h,
+                height: AppTheme.cardPadding * 6.h,
               ),
               LongButtonWidget(
                 customWidth: AppTheme.cardPadding * 14.h,
