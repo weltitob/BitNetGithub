@@ -18,8 +18,6 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
-import 'package:bitnet/pages/wallet/notifications/notifications_widget.dart';
-import 'package:bitnet/pages/wallet/wallet_center_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -315,28 +313,24 @@ class WalletScreen extends GetWidget<WalletsController> {
             ),
           ),
 
-          // Section 5: Activity and Transactions
           SliverToBoxAdapter(
-              child: Padding(
-            padding: EdgeInsets.only(
-                top: 32.0,
-                bottom: 8,
-                left: MediaQuery.of(context).size.width / 2 - 100,
-                right: MediaQuery.of(context).size.width / 2 - 100),
-            child: WalletCenterWidget(),
-          )),
-
-          Obx(
-            () => SliverOffstage(
-              offstage: controller.currentView.value != 0,
-              sliver: Transactions(
-                scrollController: controller.scrollController,
-              ),
-            ),
+            child: StatefulBuilder(builder: (context, setState) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: AppTheme.cardPadding.h * 1.75),
+                    Text(L10n.of(context)!.activity, style: Theme.of(context).textTheme.titleLarge),
+                    SizedBox(height: AppTheme.elementSpacing.h),
+                  ],
+                ),
+              );
+            }),
           ),
-          Obx(
-            () => SliverOffstage(offstage: controller.currentView.value == 0, sliver: NotificationsWidget()),
-          ),
+          Transactions(
+            scrollController: controller.scrollController,
+          )
         ],
       ),
     );

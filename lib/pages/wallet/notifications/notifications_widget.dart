@@ -11,7 +11,9 @@ import 'package:bitnet/components/dialogsandsheets/bottom_sheets/bit_net_bottom_
 import 'package:bitnet/components/items/amount_previewer.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class NotificationsWidget extends StatefulWidget {
@@ -36,9 +38,6 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
     NotificationModel(amount: 200, type: 'sold', date: DateTime(2024, 5, 7)),
     NotificationModel(amount: 900, type: 'sold', date: DateTime(2024, 5, 6)),
   ];
-  bool isLoading = true;
-  List<Widget> organizedNotifications = [];
-  Map<String, List<SingleNotificationWidget>> categorizedNotifications = {};
 
   @override
   void initState() {
@@ -48,31 +47,36 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
 
   @override
   Widget build(BuildContext context) {
+    final ProfileController controller = Get.find<ProfileController>();
     super.build(context);
-    return isLoading
+    return controller.isLoadingNotifs
         ? SliverToBoxAdapter(child: dotProgress(context))
         : SliverList(delegate: SliverChildBuilderDelegate((ctx, index) {
-            if (index == organizedNotifications.length) {
+            if (index == controller.organizedNotifications.length) {
               return SizedBox(height: 80);
-            } else if (index == organizedNotifications.length + 1) {
+            } else if (index == controller.organizedNotifications.length + 1) {
               return null;
             }
-            return organizedNotifications[index];
+            return controller.organizedNotifications[index];
           }));
   }
 
   Future<void> getNotifications() async {
     //loading
+    final ProfileController controller = Get.find<ProfileController>();
+
     await Future.delayed(Duration(seconds: 3));
     organizeNotifications();
-    isLoading = false;
+    controller.isLoadingNotifs = false;
     if (mounted) {
       setState(() {});
     }
   }
 
   void organizeNotifications() {
-    categorizedNotifications = {
+    final ProfileController controller = Get.find<ProfileController>();
+
+    controller.categorizedNotifications = {
       'Your Pending Offers': [],
       'This Week': [],
       'Last Week': [],
@@ -88,23 +92,23 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
     for (NotificationModel item in fakeNotifications) {
       DateTime date = item.date;
       if (item.type == 'offer') {
-        categorizedNotifications['Your Pending Offers']!.add(SingleNotificationWidget(model: item));
+        controller.categorizedNotifications['Your Pending Offers']!.add(SingleNotificationWidget(model: item));
       } else if (date.isAfter(startOfThisMonth)) {
         String timeTag = displayTimeAgoFromInt(item.date.millisecondsSinceEpoch ~/ 1000);
-        categorizedNotifications.putIfAbsent(timeTag, () => []).add(SingleNotificationWidget(model: item));
+        controller.categorizedNotifications.putIfAbsent(timeTag, () => []).add(SingleNotificationWidget(model: item));
       } else if (date.year == now.year) {
         String monthName = DateFormat('MMMM').format(date);
         String key = monthName;
-        categorizedNotifications.putIfAbsent(key, () => []).add(SingleNotificationWidget(model: item));
+        controller.categorizedNotifications.putIfAbsent(key, () => []).add(SingleNotificationWidget(model: item));
       } else {
         String yearMonth = '${date.year}, ${DateFormat('MMMM').format(date)}';
-        categorizedNotifications.putIfAbsent(yearMonth, () => []).add(SingleNotificationWidget(model: item));
+        controller.categorizedNotifications.putIfAbsent(yearMonth, () => []).add(SingleNotificationWidget(model: item));
       }
     }
-    categorizedNotifications.forEach((category, notifications) {
+    controller.categorizedNotifications.forEach((category, notifications) {
       if (notifications.isEmpty) return;
       if (category == 'Your Pending Offers') {
-        organizedNotifications.add(
+        controller.organizedNotifications.add(
           Builder(builder: (context) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
@@ -137,7 +141,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
           }),
         );
       } else {
-        organizedNotifications.add(
+        controller.organizedNotifications.add(
           Builder(builder: (context) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding, vertical: AppTheme.elementSpacing),
@@ -150,7 +154,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> with Automati
         );
       }
 
-      organizedNotifications.add(NotificationsContainer(notifications: notifications));
+      controller.organizedNotifications.add(NotificationsContainer(notifications: notifications));
     });
   }
 

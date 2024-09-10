@@ -15,7 +15,7 @@ class CenterWidget extends StatelessWidget {
       bottom: 0,
       child: Container(
         height: AppTheme.cardPadding * 2,
-        width: AppTheme.cardPadding * 12,
+        width: AppTheme.cardPadding * 14,
         decoration: BoxDecoration(
           borderRadius: AppTheme.cardRadiusBigger,
           boxShadow: [AppTheme.boxShadowProfile],
@@ -50,10 +50,17 @@ class CenterWidget extends StatelessWidget {
                   },
                 ),
                 CenterWidgetIcon(
-                  iconData: Icons.edit,
+                  iconData: Icons.notifications,
                   index: 2,
                   onTap: () {
                     controller.currentview.value = 2;
+                  },
+                ),
+                CenterWidgetIcon(
+                  iconData: Icons.edit,
+                  index: 3,
+                  onTap: () {
+                    controller.currentview.value = 3;
                   },
                 ),
               ],

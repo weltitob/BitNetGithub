@@ -15,6 +15,7 @@ import 'package:bitnet/components/tabs/rowviewtab.dart';
 import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/wallet/notifications/notifications_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,10 @@ class ProfileController extends BaseController {
 
   late final ScrollController scrollController;
 
+  bool isLoadingNotifs = true;
+  List<Widget> organizedNotifications = [];
+  Map<String, List<SingleNotificationWidget>> categorizedNotifications = {};
+
   RxString? validDisplayName;
   RxString? validUserName;
   RxString? validBio;
@@ -81,6 +86,7 @@ class ProfileController extends BaseController {
     pages = [
       const ColumnViewTab(),
       RowViewTab(),
+      NotificationsWidget(),
       const EditProfileTab(),
     ];
   }

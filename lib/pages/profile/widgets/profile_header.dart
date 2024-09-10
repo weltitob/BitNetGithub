@@ -61,7 +61,7 @@ class ProfileHeader extends StatelessWidget {
                           Center(
                             child: Obx(
                               () => GestureDetector(
-                                onTap: controller.currentview.value != 2
+                                onTap: controller.currentview.value != 3
                                     ? () {
                                         print('follow dagelassen lol');
                                       }
@@ -192,7 +192,7 @@ class ProfileHeader extends StatelessWidget {
                                     size: AppTheme.cardPadding * 5.25.h,
                                     type: profilePictureType.lightning,
                                     isNft: controller.userData.value.nft_profile_id.isNotEmpty,
-                                    cornerWidget: controller.currentview.value == 2 ? const ProfileButton() : null,
+                                    cornerWidget: controller.currentview.value == 3 ? const ProfileButton() : null,
                                   ),
                                 ),
                               ),
