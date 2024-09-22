@@ -50,7 +50,6 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
     node.addListener(nodeListener = () {
       setState(() {});
     });
-    //izak, intentional typo for testing purposes...
     String? initUser = LocalStorage.instance.getString('social_recovery_init_user');
     if (initUser != null && initUser.isNotEmpty) {
       setupRecoveryData(initUser, true);
@@ -477,7 +476,6 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                                   protocolType: 'social_recovery_show_mnemonic',
                                   protocolData: {'user_doc_id': selectedUser!['doc_id'], 'user_name': selectedUser!['username']});
                               model.sendProtocol(await getDeviceInfo());
-                              print('izaksprints deviceId: ${await getDeviceInfo()}');
                               ProtocolModel modelAccess =
                                   ProtocolModel(protocolId: '', protocolType: 'social_recovery_access_attempt', protocolData: {});
                               modelAccess.sendProtocol(selectedUser!['doc_id']);

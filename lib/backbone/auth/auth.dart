@@ -118,7 +118,6 @@ class Auth {
     final PrivateData privateData = PrivateData(did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
     // Call the function to store Private data in secure storage
     await storePrivateData(privateData);
-    print('izaksprints token: ${iondata.customToken}');
 
     final currentuser = await signInWithToken(customToken: iondata.customToken);
     final newUser = user.copyWith(did: iondata.did);

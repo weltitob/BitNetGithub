@@ -121,7 +121,6 @@ class MnemonicController extends State<MnemonicGen> {
       final UserData? currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
       //izak: temporary bypass to the fact that we have no way of accessing user did due to temporary auth system.
       LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
-      print('izaksprints after setting did: ${LocalStorage.instance.getString(Auth().currentUser!.uid)}');
       LocalProvider localeProvider = Provider.of<LocalProvider>(
         context,
         listen: false,

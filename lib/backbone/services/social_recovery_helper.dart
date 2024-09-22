@@ -35,7 +35,6 @@ import 'package:go_router/go_router.dart';
 
 String getUserDidTemp() {
   Auth auth = Auth();
-  print('izaksprints did: ${LocalStorage.instance.getString(Auth().currentUser!.uid)}');
   return LocalStorage.instance.getString(Auth().currentUser!.uid)!;
 }
 
@@ -71,7 +70,6 @@ Future<bool> initiateSocialSecurity(String mnemonic, String private_key, int tot
         });
       } else {
         try {
-          print('izaksprints trying index: ${i} when userIndex is ${user_index != null ? user_index : -1}');
           users.add({
             'username': invitedUsers[user_index != null ? i - 1 : i].username,
             'accepted_invite': false,
@@ -82,7 +80,7 @@ Future<bool> initiateSocialSecurity(String mnemonic, String private_key, int tot
             'request_invited': false
           });
         } catch (e) {
-          print('izaksprints: error at index: ${i} : ${e}');
+          Get.find<LoggerService>().i('error while initiating social recovery for users at index: ${i} : ${e}');
         }
       }
     }
@@ -96,7 +94,6 @@ Future<bool> initiateSocialSecurity(String mnemonic, String private_key, int tot
       'prime_mod': messageData['prime_mod'],
       'users': users
     });
-    print('izaksprints: $messageData');
 
     for (int i = 0; i < invitedUsers.length; i++) {
       UserData user = invitedUsers[i];
@@ -298,7 +295,6 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                               users[i]['open_key'] = '';
                               users[i]['encrypted_key'] = encryptedText;
                               users[i]['accepted_invite'] = true;
-                              print('izaksprints users aaa ${users}');
                             }
                           }
                           bool initiateFinalStep = true;
@@ -326,8 +322,6 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                             await protocolCollection.doc(inviterData!.docId!).collection('protocols').add(protocol.toFirestore());
                           }
                           socialRecoveryCollection.doc(inviterData!.username).update({'users': users});
-                          print(
-                              'izaksprints updated social recovery collection of ${inviterData!.username} when ${Get.find<ProfileController>().userData.value.username} accepted invite, please check data');
                           isLoadingButton = false;
                           setState(() {});
                           context.pop(true);
@@ -411,8 +405,6 @@ class _SettingUpSocialRecoveryWidgetState extends State<SettingUpSocialRecoveryW
         users[userIndex]['encrypted_key'] = '';
         users[userIndex]['open_key'] = decryptedKey;
         await socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).update({'users': users});
-        print(
-            'izaksprints updated social recovery collection of ${Get.find<ProfileController>().userData.value.username} when all users accepted their invites, please check data');
 
         await Future.delayed(Duration(seconds: 5));
         if (mounted) context.pop(true);

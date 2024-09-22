@@ -138,8 +138,6 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
 
                               controller.socialRecoveryUsers.clear();
                               controller.socialRecoveryUsers.addAll(users);
-
-                              print('izaksprints');
                             },
                           ),
                           const SizedBox(
