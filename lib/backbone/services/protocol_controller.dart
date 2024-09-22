@@ -66,7 +66,7 @@ class ProtocolController extends BaseController {
           model: protocol,
         ));
       case 'social_recovery_set_up':
-        return showProtocolBottomSheet(isDismissible: false, child: SettingUpSocialRecoveryWidget());
+        return showProtocolBottomSheet(isDismissible: false, child: SettingUpSocialRecoveryWidget(model: protocol));
       case 'social_recovery_access_attempt':
         return showProtocolBottomSheet(isDismissible: false, child: AccountAccessAttemptWidget(model: protocol));
       case 'social_recovery_recovery_request':

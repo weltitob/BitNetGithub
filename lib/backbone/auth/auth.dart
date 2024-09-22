@@ -112,7 +112,7 @@ class Auth {
         username: user.username,
         customToken: customToken,
         publicIONKey: "publicIONKey",
-        privateIONKey: "b65d1c737b37bd1f8562b67f62e1d2d4f375f1d4a9830eb7b87feacb3c717ad94222f7f479d9ab853e4c1ae9e8fe7514",
+        privateIONKey: "0173abded6729bc12b7c06d64e6f6c9c975b55c5ab7a5e1d27f6c93ba92a68e39dce719e41973eb3a7ef8d7b92a32bcd",
         mnemonic: mnemonic);
 
     final PrivateData privateData = PrivateData(did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);

@@ -21,6 +21,7 @@ import 'package:bitnet/components/loaders/loaders.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:crypto/crypto.dart';
@@ -301,14 +302,25 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                             }
                           }
                           bool initiateFinalStep = true;
+                          int acceptedUsers = 0;
                           for (int i = 0; i < users.length; i++) {
                             if (users[i]['accepted_invite'] == false) {
                               initiateFinalStep = false;
+                            } else {
+                              acceptedUsers++;
                             }
                           }
                           if (initiateFinalStep) {
+                            Map<String, dynamic> protocolData = {};
+                            if (acceptedUsers < 4) {
+                              protocolData = {
+                                'satisfied_requirements': false,
+                              };
+                            } else {
+                              protocolData = {'satisfied_requirements': true};
+                            }
                             ProtocolModel protocol =
-                                ProtocolModel(protocolId: '', protocolType: 'social_recovery_set_up', protocolData: {});
+                                ProtocolModel(protocolId: '', protocolType: 'social_recovery_set_up', protocolData: protocolData);
 
                             await protocolCollection.doc(inviterData!.docId!).set({'initialized': true});
                             await protocolCollection.doc(inviterData!.docId!).collection('protocols').add(protocol.toFirestore());
@@ -333,8 +345,8 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
  * protocol_type: social_recovery_set_up
  */
 class SettingUpSocialRecoveryWidget extends StatefulWidget {
-  const SettingUpSocialRecoveryWidget({super.key});
-
+  const SettingUpSocialRecoveryWidget({super.key, required this.model});
+  final ProtocolModel model;
   @override
   State<SettingUpSocialRecoveryWidget> createState() => _SettingUpSocialRecoveryWidgetState();
 }
@@ -361,7 +373,9 @@ class _SettingUpSocialRecoveryWidgetState extends State<SettingUpSocialRecoveryW
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                  'All invited users have accepted your social recovery invite request, please hold as we finish setting somethings up...',
+                  widget.model.protocolData['satisfied_requirements']
+                      ? 'All invited users have accepted your social recovery invite request, please hold as we finish setting somethings up...'
+                      : 'Not enough users accepted your social recovery invite request, resetting social recovery data. please try again...',
                   style: Theme.of(context).textTheme.headlineSmall),
             ),
             SizedBox(height: AppTheme.elementSpacing),
@@ -378,29 +392,39 @@ class _SettingUpSocialRecoveryWidgetState extends State<SettingUpSocialRecoveryW
 
   void initAsync() async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> doc =
-          await socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).get();
-      PrivateData privData = await getPrivateData(getUserDidTemp());
-      privData.privateKey;
-      AESCipher cipher = AESCipher(privData.privateKey);
-      int userIndex =
-          (doc.data()!['users'] as List).indexOf((test) => test['username'] == Get.find<ProfileController>().userData.value.username);
-      for (int i = 0; i < doc.data()!['users'].length; i++) {
-        if (doc.data()!['users'][i]['username'] == Get.find<ProfileController>().userData.value.username) {
-          userIndex = i;
+      if (widget.model.protocolData['satisfied_requirements']) {
+        DocumentSnapshot<Map<String, dynamic>> doc =
+            await socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).get();
+        PrivateData privData = await getPrivateData(getUserDidTemp());
+        privData.privateKey;
+        AESCipher cipher = AESCipher(privData.privateKey);
+        int userIndex =
+            (doc.data()!['users'] as List).indexOf((test) => test['username'] == Get.find<ProfileController>().userData.value.username);
+        for (int i = 0; i < doc.data()!['users'].length; i++) {
+          if (doc.data()!['users'][i]['username'] == Get.find<ProfileController>().userData.value.username) {
+            userIndex = i;
+          }
         }
-      }
-      String encryptedKey = doc.data()!['users'][userIndex]['encrypted_key'];
-      String decryptedKey = cipher.decryptText(encryptedKey);
-      List<dynamic> users = doc.data()!['users'];
-      users[userIndex]['encrypted_key'] = '';
-      users[userIndex]['open_key'] = decryptedKey;
-      await socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).update({'users': users});
-      print(
-          'izaksprints updated social recovery collection of ${Get.find<ProfileController>().userData.value.username} when all users accepted their invites, please check data');
+        String encryptedKey = doc.data()!['users'][userIndex]['encrypted_key'];
+        String decryptedKey = cipher.decryptText(encryptedKey);
+        List<dynamic> users = doc.data()!['users'];
+        users[userIndex]['encrypted_key'] = '';
+        users[userIndex]['open_key'] = decryptedKey;
+        await socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).update({'users': users});
+        print(
+            'izaksprints updated social recovery collection of ${Get.find<ProfileController>().userData.value.username} when all users accepted their invites, please check data');
 
-      await Future.delayed(Duration(seconds: 10));
-      if (mounted) context.pop(true);
+        await Future.delayed(Duration(seconds: 5));
+        if (mounted) context.pop(true);
+      } else {
+        await socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).delete();
+        Get.find<SettingsController>().initiateSocialRecovery.value = 0;
+        Get.find<SettingsController>().pageControllerSocialRecovery = PageController(
+          initialPage: 0,
+        );
+        await Future.delayed(Duration(seconds: 5));
+        if (mounted) context.pop(true);
+      }
     } catch (e) {
       print(e);
       context.pop(false);
@@ -451,6 +475,10 @@ class _AccountAccessAttemptWidgetState extends State<AccountAccessAttemptWidget>
                 customHeight: AppTheme.cardPadding * 2.5,
                 onTap: () {
                   socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).delete();
+                  Get.find<SettingsController>().initiateSocialRecovery.value = 0;
+                  Get.find<SettingsController>().pageControllerSocialRecovery = PageController(
+                    initialPage: 0,
+                  );
                   context.pop(true);
                 },
                 title: 'Deny Access'),

@@ -203,40 +203,6 @@ class _UserResultState extends State<UserResult> {
                           ),
                         ],
                         if (widget.model == 4) ...[
-                          InkWell(
-                            onTap: () async {
-                              if (widget.invited) {
-                                return;
-                              }
-                              setState(() {
-                                _loading = true;
-                              });
-                              try {
-                                await widget.onTap();
-                              } catch (e) {
-                                print(e);
-                              } finally {
-                                setState(() {
-                                  _loading = false;
-                                });
-                              }
-                            },
-                            child: Container(
-                              height: AppTheme.cardPadding * 1.5,
-                              width: AppTheme.cardPadding * 1.5,
-                              child: GlassContainer(
-                                borderThickness: 1.5, // remove border if not active
-                                blur: 50,
-                                opacity: 0.1,
-                                borderRadius: AppTheme.cardRadiusMid,
-                                child: Icon(
-                                  widget.invited ? Icons.check : Icons.send,
-                                  size: AppTheme.elementSpacing * 1.5,
-                                  color: AppTheme.white70,
-                                ),
-                              ),
-                            ),
-                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
                             child: InkWell(

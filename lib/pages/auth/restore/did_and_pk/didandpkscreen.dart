@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -56,8 +57,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen> with TickerProvid
       errorMessage = null;
     });
     try {
-      //izak: temporary alteration
-      final bool isDID = isStringaDID(_controllerUsername.text) || _controllerUsername.text == 'did';
+      final bool isDID = isStringaDID(_controllerUsername.text);
       late String did;
       late String myusername;
       if (isDID) {
@@ -72,12 +72,9 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen> with TickerProvid
 
       logger.i("didandpkscreen.dart: recover privatekey from user (broken if no real did) for user $did");
 
-      // final recoveredprivatkey = await recoverKey(
-      //     "did:ion:EiDzohpJZiOLnibQRpC0mcvh6S6mBBTAGJJcanIY2_-jxg",
-      //     _controllerPassword.text);
+      final recoveredprivatkey = await recoverKey("did:ion:EiDzohpJZiOLnibQRpC0mcvh6S6mBBTAGJJcanIY2_-jxg", _controllerPassword.text);
       // final recoveredprivatkey = await recoverKey(did, _controllerPassword.text);
-      //izak: alteration
-      final signedMessage = await Auth().signMessageAuth(did, _controllerPassword.text);
+      final signedMessage = await Auth().signMessageAuth(did, recoveredprivatkey);
       await Auth().signIn(did, signedMessage, context);
     } catch (e) {
       setState(() {

@@ -38,7 +38,6 @@ Future<void> storePrivateData(PrivateData privateData) async {
 }
 
 Future<PrivateData> getPrivateData(String DidOrUsername) async {
-  //izak
   final bool isDID = isStringaDID(DidOrUsername);
   late String did;
   //late String username;

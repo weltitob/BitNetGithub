@@ -70,6 +70,9 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
 
         if (socialDoc.data() == null) {
           state = -1;
+          if (initUserExists) {
+            LocalStorage.instance.prefs.remove('social_recovery_init_user');
+          }
           if (controller.page == 0) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (initUserExists) {
@@ -92,11 +95,14 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
 
           if (!allAcceptedInvite ||
               socialRecoveryModel!.users.where((test) => test.username == selectedUser!['username']).first.openKey.isEmpty) {
+            if (initUserExists) {
+              LocalStorage.instance.prefs.remove('social_recovery_init_user');
+            }
             state = -2;
             if (controller.page == 0) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (initUserExists) {
-                  controller.jumpToPage(1);
+                  //controller.jumpToPage(1);
                 } else {
                   controller.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
                 }
@@ -108,6 +114,7 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
           if (socialRecoveryModel!.requestedRecovery && !initUserExists) {
             showOverlay(context, 'Someone else is trying to recover this account.', color: AppTheme.errorColor);
             state = 0;
+            setState(() {});
             return;
           }
           List users = socialData['users'];
@@ -446,8 +453,24 @@ class _SocialRecoveryScreenState extends State<SocialRecoveryScreen> {
                               showOverlay(context, 'Something bad happened, please try again later.', color: AppTheme.errorColor);
                               return;
                             }
+                            QuerySnapshot<Map<String, dynamic>> snap = await protocolCollection
+                                .doc(await getDeviceInfo())
+                                .collection('protocols')
+                                .where('protocol_type', isEqualTo: 'social_recovery_show_mnemonic')
+                                .get();
+                            bool activeProtocol = false;
+                            for (int i = 0; i < snap.docs.length; i++) {
+                              if (snap.docs[i].data()['satisfied'] == false) {
+                                activeProtocol = true;
+                                break;
+                              }
+                            }
+                            if (activeProtocol) {
+                              showOverlay(context, 'Please wait 3 days for your mnemonic to be retrieved.', color: AppTheme.errorColor);
+                              return;
+                            }
                             int successfulInvites = socialRecoveryModel!.users.where((test) => test.requestState == 2).length;
-                            if (successfulInvites >= 3) {
+                            if (successfulInvites >= 4) {
                               ProtocolModel model = ProtocolModel(
                                   protocolId: '',
                                   activateTime: Timestamp.fromDate(DateTime.now().add(Duration(days: 3))),
