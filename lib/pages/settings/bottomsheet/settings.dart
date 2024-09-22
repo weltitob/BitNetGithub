@@ -5,6 +5,7 @@ import 'package:bitnet/pages/settings/invite/invitation_page.dart';
 import 'package:bitnet/pages/settings/language/change_language.dart';
 import 'package:bitnet/pages/settings/security/security_page.dart';
 import 'package:bitnet/pages/settings/settings_style/settings_style_view.dart';
+import 'package:bitnet/pages/settings/social_recovery/social_recovery_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,15 +19,12 @@ class Settings extends StatelessWidget {
     final controller = Get.find<SettingsController>();
 
     return Obx(
-      ()=> PopScope(
+      () => PopScope(
         canPop: controller.currentTab.value == 'main',
         onPopInvoked: (val) {
-          if(controller.currentTab.value != 'main') {
+          if (controller.currentTab.value != 'main') {
             controller.switchTab('main');
-            
-          } else {
-      
-          }
+          } else {}
         },
         child: Obx(
           () => Column(
@@ -54,6 +52,10 @@ class Settings extends StatelessWidget {
               if (controller.currentTab.value == 'language')
                 const Expanded(
                   child: ChangeLanguage(),
+                ),
+              if (controller.currentTab.value == 'social_recovery')
+                Expanded(
+                  child: SocialRecoveryView(),
                 ),
               if (controller.currentTab.value == "agbs")
                 Expanded(

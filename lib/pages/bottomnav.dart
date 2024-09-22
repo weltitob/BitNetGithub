@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/cloudfunctions/load_btc_addresses.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
+import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/backbone/streams/card_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/appstandards/bottomnavgradient.dart';
@@ -124,6 +125,14 @@ class _BottomNavState extends State<BottomNav> with SingleTickerProviderStateMix
     Get.put(FeedController());
     Get.put(ProfileController());
     Get.put(WalletsController());
+    //we need to make sure we have the user doc id
+    Get.find<ProfileController>().isUserLoading.listen((val) {
+      if (!val) {
+        if (!Get.isRegistered<ProtocolController>()) {
+          Get.put(ProtocolController(logIn: true));
+        }
+      }
+    });
 
     //final navItems = getNavItems();
     // print(widget.routerState.fullPath);

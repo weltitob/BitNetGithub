@@ -6,6 +6,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/local_storage.dart';
 import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
@@ -102,7 +103,7 @@ class MnemonicController extends State<MnemonicGen> {
         backgroundImageUrl: profileimageurl,
         isPrivate: false,
         showFollowers: false,
-        did: "",
+        did: "did:example:Z9Y8X7W6V5U4T3S2R1PqPoNmLkJiHgF",
         displayName: username,
         bio: L10n.of(context)!.joinedRevolution,
         customToken: "customToken",
@@ -117,8 +118,10 @@ class MnemonicController extends State<MnemonicGen> {
       );
 
       VerificationCode verificationCode = VerificationCode(used: false, code: code, issuer: issuer, receiver: username);
-
       final UserData? currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
+      //izak: temporary bypass to the fact that we have no way of accessing user did due to temporary auth system.
+      LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
+      print('izaksprints after setting did: ${LocalStorage.instance.getString(Auth().currentUser!.uid)}');
       LocalProvider localeProvider = Provider.of<LocalProvider>(
         context,
         listen: false,

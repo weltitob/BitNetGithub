@@ -7,23 +7,18 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MnemonicFieldWidget extends StatefulWidget {
   final MnemonicController? mnemonicController;
-  final Function(MnemonicController?, List<TextEditingController>)
-      triggerMnemonicCheck;
-  const MnemonicFieldWidget(
-      {super.key,
-      required this.mnemonicController,
-      required this.triggerMnemonicCheck});
+  final Function(MnemonicController?, List<TextEditingController>) triggerMnemonicCheck;
+  const MnemonicFieldWidget({super.key, required this.mnemonicController, required this.triggerMnemonicCheck});
 
   @override
-  State<MnemonicFieldWidget> createState() => _MnemonicFieldWidgetState();
+  State<MnemonicFieldWidget> createState() => MnemonicFieldWidgetState();
 }
 
-class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
+class MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
   PageController _pageController = PageController();
   bool onLastPage = false;
 
@@ -32,8 +27,7 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
   late String lottiefile;
   TextEditingController _usernameController = TextEditingController();
 
-  List<TextEditingController> textControllers =
-      List.generate(24, (index) => TextEditingController());
+  List<TextEditingController> textControllers = List.generate(24, (index) => TextEditingController());
   List<FocusNode> focusNodes = List.generate(24, (index) => FocusNode());
 
   void triggerCheck() {
@@ -68,99 +62,26 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
                 child: PageView(
                   onPageChanged: (val) {
                     setState(() {
-                      onLastPage = (val ==
-                          5); // Update this to check if the last page is reached
+                      onLastPage = (val == 5); // Update this to check if the last page is reached
                     });
                   },
                   controller: _pageController,
                   children: [
-                    buildInputFields(
-                        "1.",
-                        textControllers[0],
-                        focusNodes[0],
-                        "2.",
-                        textControllers[1],
-                        focusNodes[1],
-                        "3.",
-                        textControllers[2],
-                        focusNodes[2],
-                        "4.",
-                        textControllers[3],
-                        focusNodes[3],
-                        splittedbipwords),
-                    buildInputFields(
-                        "5.",
-                        textControllers[4],
-                        focusNodes[4],
-                        "6.",
-                        textControllers[5],
-                        focusNodes[5],
-                        "7.",
-                        textControllers[6],
-                        focusNodes[6],
-                        "8.",
-                        textControllers[7],
-                        focusNodes[7],
-                        splittedbipwords),
-                    buildInputFields(
-                        "9.",
-                        textControllers[8],
-                        focusNodes[8],
-                        "10.",
-                        textControllers[9],
-                        focusNodes[9],
-                        "11.",
-                        textControllers[10],
-                        focusNodes[10],
-                        "12.",
-                        textControllers[11],
-                        focusNodes[11],
-                        splittedbipwords),
+                    buildInputFields("1.", textControllers[0], focusNodes[0], "2.", textControllers[1], focusNodes[1], "3.",
+                        textControllers[2], focusNodes[2], "4.", textControllers[3], focusNodes[3], splittedbipwords),
+                    buildInputFields("5.", textControllers[4], focusNodes[4], "6.", textControllers[5], focusNodes[5], "7.",
+                        textControllers[6], focusNodes[6], "8.", textControllers[7], focusNodes[7], splittedbipwords),
+                    buildInputFields("9.", textControllers[8], focusNodes[8], "10.", textControllers[9], focusNodes[9], "11.",
+                        textControllers[10], focusNodes[10], "12.", textControllers[11], focusNodes[11], splittedbipwords),
                     // New set of input fields for 13-16
-                    buildInputFields(
-                        "13.",
-                        textControllers[12],
-                        focusNodes[12],
-                        "14.",
-                        textControllers[13],
-                        focusNodes[13],
-                        "15.",
-                        textControllers[14],
-                        focusNodes[14],
-                        "16.",
-                        textControllers[15],
-                        focusNodes[15],
-                        splittedbipwords),
+                    buildInputFields("13.", textControllers[12], focusNodes[12], "14.", textControllers[13], focusNodes[13], "15.",
+                        textControllers[14], focusNodes[14], "16.", textControllers[15], focusNodes[15], splittedbipwords),
                     // New set of input fields for 17-20
-                    buildInputFields(
-                        "17.",
-                        textControllers[16],
-                        focusNodes[16],
-                        "18.",
-                        textControllers[17],
-                        focusNodes[17],
-                        "19.",
-                        textControllers[18],
-                        focusNodes[18],
-                        "20.",
-                        textControllers[19],
-                        focusNodes[19],
-                        splittedbipwords),
+                    buildInputFields("17.", textControllers[16], focusNodes[16], "18.", textControllers[17], focusNodes[17], "19.",
+                        textControllers[18], focusNodes[18], "20.", textControllers[19], focusNodes[19], splittedbipwords),
                     // New set of input fields for 21-24
-                    buildInputFields(
-                        "21.",
-                        textControllers[20],
-                        focusNodes[20],
-                        "22.",
-                        textControllers[21],
-                        focusNodes[21],
-                        "23.",
-                        textControllers[22],
-                        focusNodes[22],
-                        "24.",
-                        textControllers[23],
-                        focusNodes[23],
-                        splittedbipwords),
+                    buildInputFields("21.", textControllers[20], focusNodes[20], "22.", textControllers[21], focusNodes[21], "23.",
+                        textControllers[22], focusNodes[22], "24.", textControllers[23], focusNodes[23], splittedbipwords),
                   ],
                 ),
               ),
@@ -172,15 +93,11 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
                 height: AppTheme.cardPadding * 2.h,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: AppTheme.cardPadding * 2.ws),
+                padding: EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 2.ws),
                 child: LongButtonWidget(
-                  title: onLastPage
-                      ? L10n.of(context)!.confirmKey
-                      : L10n.of(context)!.next,
+                  title: onLastPage ? L10n.of(context)!.confirmKey : L10n.of(context)!.next,
                   onTap: onLastPage ? triggerCheck : nextPageFunction,
-                  state: (widget.mnemonicController != null &&
-                          widget.mnemonicController!.isLoadingSignUp)
+                  state: (widget.mnemonicController != null && widget.mnemonicController!.isLoadingSignUp)
                       ? ButtonState.loading
                       : ButtonState.idle,
                 ),
@@ -239,8 +156,7 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
   }
 
   void nextPageFunction() async {
-    await _pageController.nextPage(
-        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+    await _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
   }
 
   @override
@@ -252,6 +168,7 @@ class _MnemonicFieldWidgetState extends State<MnemonicFieldWidget> {
   getBIPWords() async {
     bipwords = await rootBundle.loadString('assets/textfiles/bip_words.txt');
     splittedbipwords = bipwords.split(" ");
+    if (mounted) setState(() {});
   }
 
   @override
@@ -298,8 +215,7 @@ class MnemonicPage extends StatefulWidget {
   State<MnemonicPage> createState() => _MnemonicPageState();
 }
 
-class _MnemonicPageState extends State<MnemonicPage>
-    with AutomaticKeepAliveClientMixin {
+class _MnemonicPageState extends State<MnemonicPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);

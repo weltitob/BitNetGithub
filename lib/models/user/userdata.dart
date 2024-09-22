@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 @immutable
 class UserData extends Equatable {
   //use decentralized user identity (dids instead of uids)
+  //necessary atm because we don't quite use did for identification in firestore yet.
+  final String? docId;
   final String did;
   final String displayName;
   final String bio;
@@ -41,8 +44,9 @@ class UserData extends Equatable {
     required this.updatedAt,
     required this.isActive,
     required this.dob,
-    this.nft_profile_id ='',
-    this.nft_background_id='', 
+    this.nft_profile_id = '',
+    this.nft_background_id = '',
+    this.docId,
   });
 
   @override
@@ -67,25 +71,26 @@ class UserData extends Equatable {
     ];
   }
 
-  UserData copyWith({
-    String? did,
-    String? customToken,
-    String? username,
-    String? bio,
-    String? displayName,
-    String? profileImageUrl,
-    String? backgroundImageUrl,
-    List<String>? codes,
-    Timestamp? createdAt,
-    Timestamp? updatedAt,
-    bool? isActive,
-    bool? isPrivate,
-    bool? showFollowers,
-    int? dob,
-    String? nft_profile_id,
-    String? nft_background_id
-  }) {
+  UserData copyWith(
+      {String? docId,
+      String? did,
+      String? customToken,
+      String? username,
+      String? bio,
+      String? displayName,
+      String? profileImageUrl,
+      String? backgroundImageUrl,
+      List<String>? codes,
+      Timestamp? createdAt,
+      Timestamp? updatedAt,
+      bool? isActive,
+      bool? isPrivate,
+      bool? showFollowers,
+      int? dob,
+      String? nft_profile_id,
+      String? nft_background_id}) {
     return UserData(
+      docId: docId ?? this.docId,
       did: did ?? this.did,
       customToken: customToken ?? this.customToken,
       username: username ?? this.username,
@@ -99,8 +104,8 @@ class UserData extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
-      dob: dob ?? this.dob, 
-      nft_profile_id: nft_profile_id ?? this.nft_profile_id, 
+      dob: dob ?? this.dob,
+      nft_profile_id: nft_profile_id ?? this.nft_profile_id,
       nft_background_id: nft_background_id ?? this.nft_background_id,
     );
   }
@@ -128,6 +133,7 @@ class UserData extends Equatable {
 
   factory UserData.fromMap(Map<String, dynamic> map) {
     return UserData(
+      docId: map.containsKey('doc_id') ? map['doc_id'] : null,
       did: map['did'] ?? '',
       customToken: map['customToken'] ?? '',
       username: map['username'] ?? '',
@@ -141,8 +147,8 @@ class UserData extends Equatable {
       isActive: map['isActive'] ?? false,
       showFollowers: map['showFollowers'] ?? false,
       isPrivate: map['isPrivate'] ?? false,
-      dob: map['dob']?.toInt() ?? 0, 
-      nft_profile_id: map['nft_profile_id'] ?? '', 
+      dob: map['dob']?.toInt() ?? 0,
+      nft_profile_id: map['nft_profile_id'] ?? '',
       nft_background_id: map['nft_background_id'] ?? '',
       // mainWallet: UserWallet.fromMap(map['mainWallet'] ?? {}),
       // wallets: List<UserWallet>.from(
@@ -165,9 +171,9 @@ class UserData extends Equatable {
       isActive: doc['isActive'],
       showFollowers: doc['showFollowers'],
       isPrivate: doc['isPrivate'],
-      dob: doc['dob'], 
-      nft_profile_id: (doc.data() as Map<String,dynamic>).containsKey('nft_profile_id') ? doc['nft_profile_id'] : '',
-       nft_background_id: (doc.data() as Map<String,dynamic>).containsKey('nft_background_id') ? doc['nft_background_id'] : '',
+      dob: doc['dob'],
+      nft_profile_id: (doc.data() as Map<String, dynamic>).containsKey('nft_profile_id') ? doc['nft_profile_id'] : '',
+      nft_background_id: (doc.data() as Map<String, dynamic>).containsKey('nft_background_id') ? doc['nft_background_id'] : '',
       // mainWallet: UserWallet.fromMap(doc['mainWallet'] ?? {}),
       // wallets: List<UserWallet>.from(
       //     doc['wallets'].map((x) => UserWallet.fromMap(x))),
@@ -176,8 +182,7 @@ class UserData extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory UserData.fromJson(String source) =>
-      UserData.fromMap(json.decode(source));
+  factory UserData.fromJson(String source) => UserData.fromMap(json.decode(source));
 
   @override
   String toString() {

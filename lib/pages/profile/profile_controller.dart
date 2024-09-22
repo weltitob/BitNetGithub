@@ -9,12 +9,14 @@ import 'package:bitnet/backbone/cloudfunctions/taprootassets/list_assets.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/image_picker.dart';
 import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
+import 'package:bitnet/backbone/services/social_recovery_helper.dart';
 import 'package:bitnet/components/tabs/columnviewtab.dart';
 import 'package:bitnet/components/tabs/editprofile.dart';
 import 'package:bitnet/components/tabs/rowviewtab.dart';
 import 'package:bitnet/models/tapd/asset.dart';
 import 'package:bitnet/models/tapd/assetmeta.dart';
 import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
 import 'package:bitnet/pages/wallet/notifications/notifications_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,7 +25,7 @@ import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class ProfileController extends BaseController {
-  String profileId = "GUsuvr19SPrGELGZtrAq";
+  late String profileId;
 
   late List<Widget> pages;
   RxInt currentview = 0.obs;
@@ -91,6 +93,15 @@ class ProfileController extends BaseController {
     ];
   }
 
+  Future<void> getUserId() async {
+    QuerySnapshot<Map<String, dynamic>> query = await usersCollection.where('did', isEqualTo: getUserDidTemp()).get();
+    if (query.docs.isEmpty) {
+      profileId = "GUsuvr19SPrGELGZtrAq";
+    } else {
+      profileId = query.docs.first.id;
+    }
+  }
+
   void fetchTaprootAssets() async {
     print('fetch taproot started ');
     isLoading.value = true;
@@ -137,7 +148,9 @@ class ProfileController extends BaseController {
   }
 
   loadData() async {
+    await getUserId();
     await getUser();
+    socialRecoveryInit();
     getFollowers();
     getFollowing();
     checkIfFollowing();
@@ -375,5 +388,24 @@ class ProfileController extends BaseController {
     await usersCollection
         .doc(profileId)
         .update({'backgroundImageUrl': userData.value.backgroundImageUrl, 'nft_profile_id': '${pair.assetId}'});
+  }
+
+  void socialRecoveryInit() {
+    socialRecoveryCollection.doc(Get.find<ProfileController>().userData.value.username).get().then((doc) {
+      if (doc.exists) {
+        Get.find<SettingsController>().initiateSocialRecovery.value = 2;
+        Get.find<SettingsController>().pageControllerSocialRecovery = PageController(
+            initialPage: 3,
+            onAttach: (pos) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Get.find<SettingsController>().pageControllerSocialRecovery.jumpToPage(3);
+              });
+            });
+      } else {
+        Get.find<SettingsController>().pageControllerSocialRecovery = PageController(initialPage: 0);
+      }
+    }, onError: (_) {
+      Get.find<SettingsController>().pageControllerSocialRecovery = PageController(initialPage: 0);
+    });
   }
 }

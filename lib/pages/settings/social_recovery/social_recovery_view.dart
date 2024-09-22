@@ -1,0 +1,403 @@
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/responsiveness/max_width_body.dart';
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/social_recovery_helper.dart';
+import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
+import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/bottom_buybuttons.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/imagewithtext.dart';
+import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
+import 'package:bitnet/components/fields/searchfield/searchfield.dart';
+import 'package:bitnet/components/items/userresult.dart';
+import 'package:bitnet/components/loaders/loaders.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
+import 'package:bitnet/models/user/userdata.dart';
+import 'package:bitnet/pages/auth/mnemonicgen/mnemonic_field_widget.dart';
+import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
+import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:get/get.dart';
+import 'package:popover/popover.dart';
+
+class SocialRecoveryView extends GetWidget<SettingsController> {
+  SocialRecoveryView({Key? key}) : super(key: key);
+  final GlobalKey<MnemonicFieldWidgetState> mnemonicFieldKey = GlobalKey<MnemonicFieldWidgetState>();
+  @override
+  Widget build(BuildContext context) {
+    const colorPickerSize = AppTheme.cardPadding * 1.5;
+
+    return bitnetScaffold(
+      extendBodyBehindAppBar: true,
+      context: context,
+      appBar: bitnetAppBar(
+        text: L10n.of(context)!.socialRecovery,
+        buttonType: ButtonType.transparent,
+        context: context,
+        onTap: () {
+          if (controller.pageControllerSocialRecovery.page != null && controller.pageControllerSocialRecovery.page != 0) {
+            controller.pageControllerSocialRecovery.previousPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+          } else {
+            controller.switchTab('main');
+          }
+        },
+        actions: [
+          Builder(builder: (context) {
+            return IconButton(
+              icon: Icon(Icons.info),
+              onPressed: () {
+                showPopover(
+                  backgroundColor: Colors.transparent,
+                  contentDxOffset: -200,
+                  context: context,
+                  direction: PopoverDirection.bottom,
+                  bodyBuilder: (context) {
+                    return GlassContainer(
+                      opacity: 0.5,
+                      width: 200,
+                      height: 250,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Please Select your social recovery users',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
+                            ),
+                            SizedBox(height: 5),
+                            Text('These users will help recover your account in case of emergency',
+                                textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Minimum: ', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white)),
+                                Text('3', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white))
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Maximum: ', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white)),
+                                Text('5',
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white))
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          })
+        ],
+      ),
+      body: PageView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: controller.pageControllerSocialRecovery,
+        children: [
+          if (controller.initiateSocialRecovery.value != 2)
+            Stack(
+              children: [
+                if (controller.initiateSocialRecovery.value != 2)
+                  MaxWidthBody(
+                    withScrolling: true,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: AppTheme.cardPadding * 3,
+                          ),
+                          SearchFieldWidget(
+                            hintText: 'Search for users here',
+                            isSearchEnabled: true,
+                            handleSearch: (String query) async {
+                              List<Map<String, dynamic>> users = [];
+                              if (!query.isEmpty) {
+                                QuerySnapshot<Map<String, dynamic>> queryData = await usersCollection
+                                    .where('username', isGreaterThanOrEqualTo: query)
+                                    .where('username', isLessThanOrEqualTo: query + '\uf8ff')
+                                    .get();
+                                users = queryData.docs.map((doc) => {'doc_id': doc.id, ...doc.data()}).toList();
+                              }
+
+                              controller.socialRecoveryUsers.clear();
+                              controller.socialRecoveryUsers.addAll(users);
+
+                              print('izaksprints');
+                            },
+                          ),
+                          const SizedBox(
+                            height: AppTheme.elementSpacing,
+                          ),
+                          Obx(() {
+                            List<Map<String, dynamic>> users = [...controller.selectedUsers, ...controller.socialRecoveryUsers];
+                            removeAllDuplicates(users);
+                            users.removeWhere(
+                                (test1) => controller.selectedUsers.firstWhereOrNull((test2) => test2['did'] == test1['did']) != null);
+                            users = [...controller.selectedUsers, ...users];
+                            return Column(
+                                children: users
+                                    .map((user) => Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                          child: UserResult(
+                                              userData: UserData.fromMap(user),
+                                              onTap: () {
+                                                if (controller.selectedUsers.firstWhereOrNull((test) => test['did'] == user['did']) !=
+                                                    null) {
+                                                  controller.selectedUsers.removeWhere((test) => test['did'] == user['did']);
+                                                } else {
+                                                  if (controller.selectedUsers.length < 5) {
+                                                    controller.selectedUsers.add(user);
+                                                  } else {
+                                                    showOverlay(
+                                                        context, 'You already have 5 users selected, please deselect one, then try again.',
+                                                        color: AppTheme.errorColor);
+                                                  }
+                                                }
+                                              },
+                                              onDelete: () {},
+                                              model: 1,
+                                              onTapIcon:
+                                                  controller.selectedUsers.firstWhereOrNull((test) => user['did'] == test['did']) != null
+                                                      ? Icons.check
+                                                      : null),
+                                        ))
+                                    .toList());
+                          }),
+                          SizedBox(height: 200),
+                        ],
+                      ),
+                    ),
+                  ),
+                Obx(
+                  () => BottomCenterButton(
+                    buttonTitle: 'Activate',
+                    buttonState: (controller.selectedUsers.length >= 3 && controller.selectedUsers.length <= 5)
+                        ? ButtonState.idle
+                        : ButtonState.disabled,
+                    onButtonTap: () async {
+                      controller.pageControllerSocialRecovery.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                    },
+                    onButtonTapDisabled: () {
+                      showOverlay(context, 'You should select atleast 3 users and at most 5.', color: AppTheme.errorColor);
+                    },
+                  ),
+                )
+              ],
+            ),
+          if (controller.initiateSocialRecovery.value != 2)
+            Stack(children: [
+              MnemonicFieldWidget(
+                mnemonicController: null,
+                key: mnemonicFieldKey,
+                triggerMnemonicCheck: (mCtrl, tCtrls) {
+                  //triggerMnemonicCheck(context, mCtrl, tCtrls);
+                },
+              ),
+              BottomCenterButton(
+                buttonTitle: 'Confirm',
+                buttonState: ButtonState.idle,
+                onButtonTap: () async {
+                  triggerMnemonicCheck(context, null, mnemonicFieldKey.currentState?.textControllers ?? []);
+                },
+                onButtonTapDisabled: () {
+                  showOverlay(context, 'Please fill out your Mnemonic.', color: AppTheme.errorColor);
+                },
+              ),
+            ]),
+          if (controller.initiateSocialRecovery.value != 2)
+            Obx(
+              () => ConfirmPrivateKeyPage(
+                keyController: controller.keyController,
+                buttonState: controller.keyValid.value ? ButtonState.idle : ButtonState.disabled,
+                onChanged: (str) {
+                  if (str.isEmpty) {
+                    controller.keyValid.value = false;
+                  } else if (str.length < 6) {
+                    controller.keyValid.value = false;
+                  } else {
+                    controller.keyValid.value = true;
+                  }
+                },
+                onConfirm: () async {
+                  String did = getUserDidTemp();
+                  PrivateData privData = await getPrivateData(getUserDidTemp());
+                  if (controller.keyController.text == privData.privateKey) {
+                  } else {
+                    // showOverlay(context, 'Your private key was incorrect, try again.', color: AppTheme.errorColor);
+                  }
+                  List<UserData> invitedUsers = controller.selectedUsers.map((item) => UserData.fromMap(item)).toList();
+                  initiateSocialSecurity(privData.mnemonic, privData.privateKey, controller.selectedUsers.length, invitedUsers).then((val) {
+                    controller.initiateSocialRecovery.value = val ? 2 : 1;
+                  });
+
+                  controller.pageControllerSocialRecovery.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                },
+              ),
+            ),
+          Obx(
+            () => MaxWidthBody(
+                child: controller.initiateSocialRecovery.value == 0
+                    ? dotProgress(context)
+                    : controller.initiateSocialRecovery.value == 2
+                        ? Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(children: [
+                              SizedBox(
+                                height: 50,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white),
+                                ),
+                                child: Icon(Icons.check, size: 128),
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Your social recovery has been activated, you will be notified when all your friends have accepted their invites.',
+                                style: Theme.of(context).textTheme.headlineSmall,
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 8),
+                              Divider(indent: 32, endIndent: 32),
+                              Text(
+                                'Select Restore Account -> Social Recovery in cases of emergency',
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 25),
+                            ]))
+                        : Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(children: [
+                              SizedBox(
+                                height: 50,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white),
+                                ),
+                                child: Icon(Icons.clear, size: 128),
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Something bad happened...',
+                                style: Theme.of(context).textTheme.headlineSmall,
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 8),
+                              Divider(indent: 32, endIndent: 32),
+                              Text(
+                                'Please try again later.',
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 25),
+                            ]))),
+          )
+        ],
+      ),
+    );
+  }
+
+  void removeAllDuplicates(List<Map<String, dynamic>> list) {
+    Map<String, int> didCount = {};
+
+    // Count occurrences of each 'did'
+    for (var item in list) {
+      didCount[item['did']] = (didCount[item['did']] ?? 0) + 1;
+    }
+
+    // Remove items that have duplicates
+    list.removeWhere((item) => (didCount[item['did']]! > 1) || item['did'] == getUserDidTemp());
+  }
+
+  triggerMnemonicCheck(BuildContext context, MnemonicController? mCtrl, List<TextEditingController> tCtrls) async {
+    // final String mnemonic = tCtrls.map((controller) => controller.text).join(' ');
+    //  PrivateData privData = await getPrivateData(getUserDidTemp());
+    // if (privData.mnemonic == mnemonic) {
+    //   controller.pageControllerSocialRecovery.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+    //   Future.delayed(Duration(seconds: 10), () {
+    //     if (context.mounted) {
+    //       context.pop();
+    //     }
+    //   });
+    // } else {
+    //   showOverlay(context, 'Your Mnemonic was Incorrect, please try again', color: AppTheme.errorColor);
+    // }
+
+    controller.pageControllerSocialRecovery.nextPage(duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+    // Future.delayed(Duration(seconds: 10), () {
+    //   if (context.mounted) {
+    //     context.pop();
+    //   }
+    // });
+  }
+}
+
+class ConfirmPrivateKeyPage extends StatelessWidget {
+  const ConfirmPrivateKeyPage({
+    super.key,
+    required this.keyController,
+    required this.onConfirm,
+    required this.buttonState,
+    required this.onChanged,
+  });
+  final TextEditingController keyController;
+  final Function() onConfirm;
+  final ButtonState buttonState;
+  final Function(String) onChanged;
+  @override
+  Widget build(BuildContext context) {
+    return MaxWidthBody(
+        child: Stack(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Please enter your private key', style: Theme.of(context).textTheme.headlineSmall),
+            SizedBox(height: AppTheme.elementSpacing),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: GlassContainer(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    onChanged: onChanged,
+                    decoration: InputDecoration(hintText: L10n.of(context)!.privateKey),
+                    controller: keyController,
+                    obscureText: true,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: AppTheme.cardPadding * 3,
+            ),
+          ],
+        ),
+        BottomCenterButton(
+            buttonState: buttonState,
+            buttonTitle: 'Confirm Private Key',
+            onButtonTap: onConfirm,
+            onButtonTapDisabled: () => showOverlay(context, 'please write down your private key.', color: AppTheme.errorColor))
+      ],
+    ));
+  }
+}

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/cloudfunctions/recoverkey.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -30,8 +29,7 @@ class DidAndPrivateKeyScreen extends StatefulWidget {
   }
 }
 
-class _SignupScreenState extends State<DidAndPrivateKeyScreen>
-    with TickerProviderStateMixin {
+class _SignupScreenState extends State<DidAndPrivateKeyScreen> with TickerProviderStateMixin {
   // error message if sign in fails
   String? errorMessage = null;
   // user's email
@@ -58,7 +56,8 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       errorMessage = null;
     });
     try {
-      final bool isDID = isStringaDID(_controllerUsername.text);
+      //izak: temporary alteration
+      final bool isDID = isStringaDID(_controllerUsername.text) || _controllerUsername.text == 'did';
       late String did;
       late String myusername;
       if (isDID) {
@@ -71,16 +70,14 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
       //call login with signed message and then store the iondata in the privatestorage of new device!
       //Auth().signIn(did, _controllerPassword.text, myusername);
 
-      logger.i(
-          "didandpkscreen.dart: recover privatekey from user (broken if no real did) for user $did");
+      logger.i("didandpkscreen.dart: recover privatekey from user (broken if no real did) for user $did");
 
-      final recoveredprivatkey = await recoverKey(
-          "did:ion:EiDzohpJZiOLnibQRpC0mcvh6S6mBBTAGJJcanIY2_-jxg",
-          _controllerPassword.text);
+      // final recoveredprivatkey = await recoverKey(
+      //     "did:ion:EiDzohpJZiOLnibQRpC0mcvh6S6mBBTAGJJcanIY2_-jxg",
+      //     _controllerPassword.text);
       // final recoveredprivatkey = await recoverKey(did, _controllerPassword.text);
-
-      final signedMessage =
-          await Auth().signMessageAuth(did, recoveredprivatkey);
+      //izak: alteration
+      final signedMessage = await Auth().signMessageAuth(did, _controllerPassword.text);
       await Auth().signIn(did, signedMessage, context);
     } catch (e) {
       setState(() {
@@ -95,15 +92,11 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
       final screenWidth = MediaQuery.of(context).size.width;
-      bool isSuperSmallScreen =
-          constraints.maxWidth < AppTheme.isSuperSmallScreen;
+      bool isSuperSmallScreen = constraints.maxWidth < AppTheme.isSuperSmallScreen;
       return bitnetScaffold(
-        margin: 
-            const EdgeInsets.symmetric(horizontal: 0)
-            ,
+        margin: const EdgeInsets.symmetric(horizontal: 0),
         extendBodyBehindAppBar: true,
         context: context,
         gradientColor: Colors.black,
@@ -120,10 +113,8 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
         body: Form(
           key: _form,
           child: ListView(
-            padding: EdgeInsets.only(
-                left: AppTheme.cardPadding * 2.ws,
-                right: AppTheme.cardPadding * 2.ws,
-                top: AppTheme.cardPadding * 6.h),
+            padding:
+                EdgeInsets.only(left: AppTheme.cardPadding * 2.ws, right: AppTheme.cardPadding * 2.ws, top: AppTheme.cardPadding * 6.h),
             physics: const BouncingScrollPhysics(),
             children: [
               Container(
@@ -142,8 +133,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Container(
-                    margin:
-                        EdgeInsets.only(left: AppTheme.elementSpacing / 2.ws),
+                    margin: EdgeInsets.only(left: AppTheme.elementSpacing / 2.ws),
                     height: AppTheme.cardPadding * 1.5.h,
                     child: Image.asset("assets/images/ion.png"),
                   ),
@@ -162,8 +152,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                       controller: _controllerUsername,
                       isObscure: false,
                       //das muss eh noch geändert werden gibt ja keine email
-                      validator: (val) =>
-                          val!.isEmpty ? "Iwas geht nicht" : null,
+                      validator: (val) => val!.isEmpty ? "Iwas geht nicht" : null,
                       onChanged: (val) {
                         setState(() {
                           username = val;
@@ -208,15 +197,11 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                   errorMessage == null
                       ? Container()
                       : Padding(
-                          padding:
-                              const EdgeInsets.only(top: AppTheme.cardPadding),
+                          padding: const EdgeInsets.only(top: AppTheme.cardPadding),
                           child: Text(
                             errorMessage!,
                             textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(color: AppTheme.errorColor),
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppTheme.errorColor),
                           ),
                         ),
                   Container(
@@ -230,9 +215,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     margin: EdgeInsets.only(top: AppTheme.cardPadding.h),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? AppTheme.white60
-                            : AppTheme.black60,
+                        color: Theme.of(context).brightness == Brightness.dark ? AppTheme.white60 : AppTheme.black60,
                         width: 2,
                       ),
                       borderRadius: AppTheme.cardRadiusCircular,
@@ -243,9 +226,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen>
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(
-                        top: AppTheme.cardPadding,
-                        bottom: AppTheme.cardPadding),
+                    margin: const EdgeInsets.only(top: AppTheme.cardPadding, bottom: AppTheme.cardPadding),
                     child: GestureDetector(
                       onTap: () {
                         context.go("/authhome/pinverification");
