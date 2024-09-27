@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 final usersCollection = FirebaseFirestore.instance.collection("users");
+final socialRecoveryCollection = FirebaseFirestore.instance.collection("socialRecovery");
+final protocolCollection = FirebaseFirestore.instance.collection("protocols");
 final transactionCollection = FirebaseFirestore.instance.collection("transactions");
 final issueCollection = FirebaseFirestore.instance.collection("issues");
 final codesCollection = FirebaseFirestore.instance.collection("codes");

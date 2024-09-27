@@ -41,7 +41,7 @@ dependencies:
   #desktop_drop: ^0.4.0
   #desktop_lifecycle: ^0.1.0
   #desktop_notifications: ^0.6.3
-  #device_info_plus: ^8.0.0
+  device_info_plus: ^10.1.2
   dynamic_color: ^1.6.0
   #emoji_picker_flutter: ^1.5.1
   #emoji_proposal: ^0.0.1
@@ -200,6 +200,8 @@ dependencies:
   mime: any
   html: any
   flutter_native_splash: ^2.3.7
+  encrypt: ^5.0.3
+  crypto: ^3.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

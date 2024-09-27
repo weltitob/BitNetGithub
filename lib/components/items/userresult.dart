@@ -11,11 +11,28 @@ class UserResult extends StatefulWidget {
   final UserData userData;
   final dynamic onTap;
   final VoidCallback onDelete;
-
+  final IconData? onTapIcon;
+  final bool selected;
+  final bool obscureUsername;
+  final bool invited;
+  //0 not yet, 1 no, 2 yes
+  final int acceptedInvite;
+  //to not have duplicate classes, this widget will have models, model 0 will be the x and the key icon,
+  // model 1 will be invite icon alone
+  //model 2 will have 0 icons
+  //model 3 signifies the account no longer exists
+  //model 4 has two icons, send invitation, and key
+  final int model;
   const UserResult({
     required this.userData,
     required this.onTap,
     required this.onDelete,
+    this.onTapIcon,
+    this.model = 0,
+    this.obscureUsername = false,
+    this.invited = false,
+    this.acceptedInvite = 0,
+    this.selected = false,
   });
 
   @override
@@ -32,10 +49,11 @@ class _UserResultState extends State<UserResult> {
       child: GlassContainer(
         borderThickness: 1.5, // remove border if not active
         blur: 50,
+        customColor: widget.selected ? AppTheme.successColor : null,
         opacity: 0.1,
         borderRadius: AppTheme.cardRadiusMid,
         child: InkWell(
-          onTap: () {},
+          onTap: widget.model == 2 ? widget.onTap : () {},
           borderRadius: AppTheme.cardRadiusBig,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -46,12 +64,11 @@ class _UserResultState extends State<UserResult> {
                     width: AppTheme.elementSpacing,
                   ),
                   Avatar(
-                    profileId: widget.userData.did,
-                    mxContent: Uri.parse(widget.userData.profileImageUrl),
-                    size: AppTheme.cardPadding * 1.75,
-                    onTap: widget.onTap,
-                    isNft: widget.userData.nft_profile_id.isNotEmpty
-                  ),
+                      profileId: widget.userData.did,
+                      mxContent: Uri.parse(widget.userData.profileImageUrl),
+                      size: AppTheme.cardPadding * 1.75,
+                      onTap: widget.onTap,
+                      isNft: widget.userData.nft_profile_id.isNotEmpty),
                   const SizedBox(width: AppTheme.elementSpacing),
                   Container(
                     width: AppTheme.cardPadding * 5,
@@ -60,12 +77,14 @@ class _UserResultState extends State<UserResult> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "@${widget.userData.username}",
+                          widget.obscureUsername ? "@${widget.userData.username.substring(0, 3)}***" : "@${widget.userData.username}",
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                         Text(
-                          widget.userData.did,
-                          style: Theme.of(context).textTheme.bodySmall,
+                          widget.model == 3 ? 'this account no longer exists...' : widget.userData.did,
+                          style: widget.model == 3
+                              ? Theme.of(context).textTheme.bodySmall!.copyWith(color: AppTheme.errorColor)
+                              : Theme.of(context).textTheme.bodySmall,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -83,71 +102,133 @@ class _UserResultState extends State<UserResult> {
                         )
                       ]
                     : [
-                        InkWell(
-                          onTap: () {
-                            showDialogue(
-                              context: context,
-                              title: 'Delte saved account from device?',
-                              image: 'assets/images/trash.png',
-                              leftAction: () {},
-                              rightAction: () {
-                                widget.onDelete();
-                              },
-                            );
-                          },
-                          child: Container(
-                            height: AppTheme.cardPadding * 1.5,
-                            width: AppTheme.cardPadding * 1.5,
-                            child: GlassContainer(
-                              borderThickness:
-                                  1.5, // remove border if not active
-                              blur: 50,
-                              opacity: 0.1,
-                              borderRadius: AppTheme.cardRadiusMid,
-                              child: Icon(
-                                FontAwesomeIcons.remove,
-                                size: AppTheme.elementSpacing * 1.5,
-                                color: AppTheme.white70,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.elementSpacing),
-                          child: InkWell(
-                            onTap: () async {
-                              setState(() {
-                                _loading = true;
-                              });
-                              try {
-                                await widget.onTap();
-                              } catch (e) {
-                                print(e);
-                              } finally {
-                                setState(() {
-                                  _loading = false;
-                                });
-                              }
+                        if (widget.model == 0) ...[
+                          InkWell(
+                            onTap: () {
+                              showDialogue(
+                                context: context,
+                                title: 'Delte saved account from device?',
+                                image: 'assets/images/trash.png',
+                                leftAction: () {},
+                                rightAction: () {
+                                  widget.onDelete();
+                                },
+                              );
                             },
                             child: Container(
                               height: AppTheme.cardPadding * 1.5,
                               width: AppTheme.cardPadding * 1.5,
                               child: GlassContainer(
-                                borderThickness:
-                                    1.5, // remove border if not active
+                                borderThickness: 1.5, // remove border if not active
                                 blur: 50,
                                 opacity: 0.1,
-                                borderRadius: AppTheme.cardRadiusCircular,
+                                borderRadius: AppTheme.cardRadiusMid,
                                 child: Icon(
-                                  FontAwesomeIcons.key,
+                                  FontAwesomeIcons.remove,
                                   size: AppTheme.elementSpacing * 1.5,
                                   color: AppTheme.white70,
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            child: InkWell(
+                              onTap: () async {
+                                setState(() {
+                                  _loading = true;
+                                });
+                                try {
+                                  await widget.onTap();
+                                } catch (e) {
+                                  print(e);
+                                } finally {
+                                  setState(() {
+                                    _loading = false;
+                                  });
+                                }
+                              },
+                              child: Container(
+                                height: AppTheme.cardPadding * 1.5,
+                                width: AppTheme.cardPadding * 1.5,
+                                child: GlassContainer(
+                                  borderThickness: 1.5, // remove border if not active
+                                  blur: 50,
+                                  opacity: 0.1,
+                                  borderRadius: AppTheme.cardRadiusCircular,
+                                  child: Icon(
+                                    FontAwesomeIcons.key,
+                                    size: AppTheme.elementSpacing * 1.5,
+                                    color: AppTheme.white70,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (widget.model == 1) ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            child: InkWell(
+                              onTap: () async {
+                                setState(() {
+                                  _loading = true;
+                                });
+                                try {
+                                  await widget.onTap();
+                                } catch (e) {
+                                  print(e);
+                                } finally {
+                                  setState(() {
+                                    _loading = false;
+                                  });
+                                }
+                              },
+                              child: Container(
+                                height: AppTheme.cardPadding * 1.5,
+                                width: AppTheme.cardPadding * 1.5,
+                                child: GlassContainer(
+                                  borderThickness: 1.5, // remove border if not active
+                                  blur: 50,
+                                  opacity: 0.1,
+                                  borderRadius: AppTheme.cardRadiusCircular,
+                                  child: Icon(
+                                    widget.onTapIcon ?? Icons.person_add,
+                                    size: AppTheme.elementSpacing * 1.5,
+                                    color: AppTheme.white70,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (widget.model == 4) ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppTheme.elementSpacing),
+                            child: InkWell(
+                              onTap: () async {},
+                              child: Container(
+                                height: AppTheme.cardPadding * 1.5,
+                                width: AppTheme.cardPadding * 1.5,
+                                child: GlassContainer(
+                                  borderThickness: 1.5, // remove border if not active
+                                  blur: 50,
+                                  opacity: 0.1,
+                                  borderRadius: AppTheme.cardRadiusCircular,
+                                  child: Icon(
+                                    FontAwesomeIcons.key,
+                                    size: AppTheme.elementSpacing * 1.5,
+                                    color: widget.acceptedInvite == 1
+                                        ? AppTheme.errorColor
+                                        : widget.acceptedInvite == 2
+                                            ? AppTheme.successColor
+                                            : AppTheme.white70,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ]
                       ],
               ),
             ],

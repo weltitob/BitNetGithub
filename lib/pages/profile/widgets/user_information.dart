@@ -19,14 +19,14 @@ class UserInformation extends StatelessWidget {
               const SizedBox(
                 height: AppTheme.elementSpacing / 2,
               ),
-              controller.currentview.value == 2
+              controller.currentview.value == 3
                   ? GlassContainer(
                       customColor: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.5) : null,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
                           focusNode: controller.focusNodeUsername,
-                          readOnly: controller.currentview.value == 2 ? false : true,
+                          readOnly: controller.currentview.value == 3 ? false : true,
                           textAlign: TextAlign.center,
                           textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
@@ -44,7 +44,7 @@ class UserInformation extends StatelessWidget {
                     )
                   : TextField(
                       focusNode: controller.focusNodeUsername,
-                      readOnly: controller.currentview.value == 2 ? false : true,
+                      readOnly: controller.currentview.value == 3 ? false : true,
                       textAlign: TextAlign.center,
                       textAlignVertical: TextAlignVertical.center,
                       decoration: InputDecoration(
@@ -59,14 +59,14 @@ class UserInformation extends StatelessWidget {
                       controller: controller.userNameController,
                     ),
               const SizedBox(height: AppTheme.cardPadding - 4),
-              controller.currentview.value == 2
+              controller.currentview.value == 3
                   ? GlassContainer(
                       customColor: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.5) : null,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
                           focusNode: controller.focusNodeDisplayName,
-                          readOnly: controller.currentview.value == 2 ? false : true,
+                          readOnly: controller.currentview.value == 3 ? false : true,
                           textAlign: TextAlign.center,
                           textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
@@ -81,7 +81,7 @@ class UserInformation extends StatelessWidget {
                     )
                   : TextField(
                       focusNode: controller.focusNodeDisplayName,
-                      readOnly: controller.currentview.value == 2 ? false : true,
+                      readOnly: controller.currentview.value == 3 ? false : true,
                       textAlign: TextAlign.center,
                       textAlignVertical: TextAlignVertical.center,
                       decoration: InputDecoration(
@@ -93,14 +93,14 @@ class UserInformation extends StatelessWidget {
                       controller: controller.displayNameController,
                     ),
               const SizedBox(height: 4),
-              controller.currentview.value == 2
+              controller.currentview.value == 3
                   ? GlassContainer(
                       customColor: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.5) : null,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
                           focusNode: controller.focusNodeBio,
-                          readOnly: controller.currentview.value == 2 ? false : true,
+                          readOnly: controller.currentview.value == 3 ? false : true,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
                           textAlign: TextAlign.center,
@@ -117,7 +117,7 @@ class UserInformation extends StatelessWidget {
                     )
                   : TextField(
                       focusNode: controller.focusNodeBio,
-                      readOnly: controller.currentview.value == 2 ? false : true,
+                      readOnly: controller.currentview.value == 3 ? false : true,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       textAlign: TextAlign.center,

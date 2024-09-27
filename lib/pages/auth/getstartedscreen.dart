@@ -3,6 +3,7 @@ import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/size_extension.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
@@ -13,7 +14,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
-
 
 class GetStartedScreen extends StatefulWidget {
   const GetStartedScreen({Key? key}) : super(key: key);
@@ -26,18 +26,20 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   @override
   void initState() {
     super.initState();
-    _compostionBitcoin =
-        loadComposition('assets/lottiefiles/bitcoinanimation.json');
+    if (!Get.isRegistered<ProtocolController>()) {
+      Get.put(ProtocolController(logIn: false));
+    }
+
+    _compostionBitcoin = loadComposition('assets/lottiefiles/bitcoinanimation.json');
   }
 
   @override
   Widget build(BuildContext context) {
     LoggerService logger = Get.find();
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
       bool isSmallScreen = 375.w < AppTheme.isSmallScreen;
       bool isMidScreen = 375.w < AppTheme.isMidScreen;
-   
+
       double spacingMultiplier = isMidScreen
           ? isSmallScreen
               ? 0.5
@@ -50,8 +52,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
         ]),
         context: context,
         backgroundColor: Theme.of(context).colorScheme.surface,
-        margin:  const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding)
-                ,
+        margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
         body: Container(
           margin: EdgeInsets.only(
             top: AppTheme.cardPadding * 1.hs,
@@ -112,14 +113,13 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   }),
               SizedBox(height: AppTheme.cardPadding * 1.h),
               Container(
-                margin: const EdgeInsets.only(
-                    top: AppTheme.cardPadding, bottom: 2),
+                margin: const EdgeInsets.only(top: AppTheme.cardPadding, bottom: 2),
                 child: GestureDetector(
                   onTap: () {
                     logger.i("AGBS and Impressum was clicked");
                   },
                   child: TextButton(
-                    onPressed:()=> context.push("/agbs"),
+                    onPressed: () => context.push("/agbs"),
                     child: Text(
                       "AGBS and Impressum",
                       style: Theme.of(context).textTheme.bodyMedium,

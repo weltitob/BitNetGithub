@@ -4,10 +4,10 @@ import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 class BottomCenterButton extends StatefulWidget {
   final String buttonTitle;
   final VoidCallback onButtonTap;
+  final VoidCallback? onButtonTapDisabled;
   final ButtonState buttonState;
 
   const BottomCenterButton({
@@ -15,6 +15,7 @@ class BottomCenterButton extends StatefulWidget {
     required this.buttonTitle,
     required this.buttonState,
     required this.onButtonTap,
+    this.onButtonTapDisabled,
   }) : super(key: key);
 
   @override
@@ -45,10 +46,12 @@ class _BottomCenterButtonState extends State<BottomCenterButton> {
               child: Center(
                 child: LongButtonWidget(
                   state: widget.buttonState,
+                  buttonType: widget.buttonState == ButtonState.disabled ? ButtonType.transparent : ButtonType.solid,
                   customWidth: AppTheme.cardPadding * 13.w,
                   customHeight: AppTheme.cardPadding * 2.5,
                   title: widget.buttonTitle,
                   onTap: widget.onButtonTap,
+                  onTapDisabled: widget.onButtonTapDisabled,
                 ),
               ),
             ),
@@ -58,7 +61,6 @@ class _BottomCenterButtonState extends State<BottomCenterButton> {
     );
   }
 }
-
 
 class BottomButtons extends StatefulWidget {
   final String leftButtonTitle;

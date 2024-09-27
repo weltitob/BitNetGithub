@@ -40,8 +40,7 @@ class Auth {
   The userWalletStreamForAuthChanges getter returns a stream of the authenticated user's wallet data.
   The authStateChanges stream is used as the source stream, and the asyncMap operator is used to map the stream of User objects to UserWallet objects.
    */
-  Stream<UserData?> get userWalletStreamForAuthChanges =>
-      authStateChanges.asyncMap<UserData?>((firebaseUser) async {
+  Stream<UserData?> get userWalletStreamForAuthChanges => authStateChanges.asyncMap<UserData?>((firebaseUser) async {
         if (firebaseUser == null) {
           return null;
         }
@@ -59,10 +58,7 @@ class Auth {
   The snapshots() method is used to listen to changes in the document, and the map
   operator is used to transform the DocumentSnapshot to a UserWallet object.
    */
-  Stream<UserData?> get userWalletStream => usersCollection
-          .doc(_firebaseAuth.currentUser?.uid)
-          .snapshots()
-          .map<UserData?>((snapshot) {
+  Stream<UserData?> get userWalletStream => usersCollection.doc(_firebaseAuth.currentUser?.uid).snapshots().map<UserData?>((snapshot) {
         if (_firebaseAuth.currentUser?.uid == null) {
           return null;
         }
@@ -89,8 +85,7 @@ class Auth {
   Future<fbAuth.UserCredential?> signInWithToken({
     required String customToken,
   }) async {
-    fbAuth.UserCredential user =
-        await _firebaseAuth.signInWithCustomToken(customToken);
+    fbAuth.UserCredential user = await _firebaseAuth.signInWithCustomToken(customToken);
     return user;
   }
 
@@ -117,13 +112,10 @@ class Auth {
         username: user.username,
         customToken: customToken,
         publicIONKey: "publicIONKey",
-        privateIONKey: "privateIONKey",
+        privateIONKey: "0173abded6729bc12b7c06d64e6f6c9c975b55c5ab7a5e1d27f6c93ba92a68e39dce719e41973eb3a7ef8d7b92a32bcd",
         mnemonic: mnemonic);
 
-    final PrivateData privateData = PrivateData(
-        did: iondata.did,
-        privateKey: iondata.privateIONKey,
-        mnemonic: iondata.mnemonic);
+    final PrivateData privateData = PrivateData(did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
     // Call the function to store Private data in secure storage
     await storePrivateData(privateData);
 
@@ -133,8 +125,7 @@ class Auth {
     logger.i("User signed in with token. Creating user in database now...");
 
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    logger
-        .i('Successfully created wallet/user in database: ${newUser.toMap()}');
+    logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
     await settingsCollection.doc(currentuser?.user!.uid).set({
       "theme_mode": "system",
       "lang": "en",
@@ -145,8 +136,7 @@ class Auth {
       "country": "US"
     });
     // Call the function to generate and store verification codes
-    logger.i(
-        "Generating and storing verification codes for friends of the new user now...");
+    logger.i("Generating and storing verification codes for friends of the new user now...");
     await generateAndStoreVerificationCodes(
       numCodes: 4,
       codeLength: 5,
@@ -187,10 +177,7 @@ class Auth {
     final IONData iondata = await createDID(user.username, challenge);
     logger.i("User created: IONDATA RECEIVED: $iondata.");
     logger.i("Storing private data now...");
-    final PrivateData privateData = PrivateData(
-        did: iondata.did,
-        privateKey: iondata.privateIONKey,
-        mnemonic: iondata.mnemonic);
+    final PrivateData privateData = PrivateData(did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
     // Call the function to store Private data in secure storage
     await storePrivateData(privateData);
     logger.i("Private data stored. Signing in with token now...");
@@ -198,11 +185,9 @@ class Auth {
     final newUser = user.copyWith(did: iondata.did);
     logger.i("User signed in with token. Creating user in database now...");
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    logger
-        .i('Successfully created wallet/user in database: ${newUser.toMap()}');
+    logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
     // Call the function to generate and store verification codes
-    logger.i(
-        "Generating and storing verification codes for friends of the new user now...");
+    logger.i("Generating and storing verification codes for friends of the new user now...");
     await generateAndStoreVerificationCodes(
       numCodes: 4,
       codeLength: 5,
@@ -254,8 +239,7 @@ class Auth {
   }
 
   String generateRandomString(int length) {
-    const characters =
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     final random = Random();
     return String.fromCharCodes(
       Iterable.generate(
@@ -265,8 +249,7 @@ class Auth {
     );
   }
 
-  Future<void> signIn(
-      String did, dynamic signedAuthMessage, BuildContext context) async {
+  Future<void> signIn(String did, dynamic signedAuthMessage, BuildContext context) async {
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
     LoggerService logger = Get.find();
@@ -292,8 +275,7 @@ class Auth {
         context.pop();
         throw Exception("User couldnt be signed in with custom Token!");
       } else {
-        WidgetsBinding.instance
-            .addPostFrameCallback(ThemeController.of(context).loadData);
+        WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
         //if successfull push back to homescreen
         context.go("/");
       }
@@ -307,8 +289,7 @@ class Auth {
   //-----------------------------FIREBASE HELPERS---------------------------
 
   Future<String> getUserDID(String username) async {
-    QuerySnapshot snapshot =
-        await usersCollection.where('username', isEqualTo: username).get();
+    QuerySnapshot snapshot = await usersCollection.where('username', isEqualTo: username).get();
 
     if (snapshot.docs.isEmpty) {
       throw Exception('No user found with the provided username');
@@ -319,8 +300,7 @@ class Auth {
   }
 
   Future<String> getUserUsername(String did) async {
-    QuerySnapshot snapshot =
-        await usersCollection.where('did', isEqualTo: did).get();
+    QuerySnapshot snapshot = await usersCollection.where('did', isEqualTo: did).get();
 
     if (snapshot.docs.isEmpty) {
       throw Exception('No user found with the provided username');
@@ -331,8 +311,7 @@ class Auth {
   }
 
   Future<bool> doesUsernameExist(String username) async {
-    final QuerySnapshot snapshot =
-        await usersCollection.where('username', isEqualTo: username).get();
+    final QuerySnapshot snapshot = await usersCollection.where('username', isEqualTo: username).get();
     return snapshot.docs.isNotEmpty;
   }
 
@@ -344,8 +323,7 @@ class Auth {
 }
 
 extension on String {
-  static final RegExp _phoneRegex =
-      RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
+  static final RegExp _phoneRegex = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
   static final RegExp _emailRegex = RegExp(r'(.+)@(.+)\.(.+)');
   bool get isEmail => _emailRegex.hasMatch(this);
   bool get isPhoneNumber => _phoneRegex.hasMatch(this);

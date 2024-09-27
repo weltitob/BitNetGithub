@@ -1,8 +1,8 @@
+import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/components/appstandards/solidcolorcontainer.dart';
 import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
-import 'package:bitnet/components/appstandards/solidcolorcontainer.dart';
 import 'package:flutter/material.dart';
-import 'package:bitnet/backbone/helper/theme/theme.dart';
 
 enum ButtonState { idle, loading, disabled }
 
@@ -21,6 +21,7 @@ class LongButtonWidget extends StatefulWidget {
   final ButtonType buttonType;
   final bool backgroundPainter;
   final List<BoxShadow>? customShadow;
+  final Function()? onTapDisabled;
 
   LongButtonWidget(
       {required this.title,
@@ -33,7 +34,9 @@ class LongButtonWidget extends StatefulWidget {
       this.customWidth = AppTheme.cardPadding * 12,
       this.customHeight = AppTheme.cardPadding * 2.5,
       this.buttonType = ButtonType.solid,
-      this.backgroundPainter = true, this.customShadow});
+      this.backgroundPainter = true,
+      this.customShadow,
+      this.onTapDisabled});
 
   @override
   _LongButtonWidgetState createState() => _LongButtonWidgetState();
@@ -57,19 +60,17 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
           ),
           child: widget.buttonType == ButtonType.solid
               ? SolidContainer(
-                  gradientColors: _isHovered
-                      ? [
-                          darken(
-                              Theme.of(context).colorScheme.secondaryContainer,
-                              10),
-                          darken(
-                              Theme.of(context).colorScheme.tertiaryContainer,
-                              10)
-                        ]
-                      : [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(context).colorScheme.secondary,
-                        ],
+                  gradientColors: widget.state == ButtonState.disabled
+                      ? [Colors.grey, Colors.grey]
+                      : _isHovered
+                          ? [
+                              darken(Theme.of(context).colorScheme.secondaryContainer, 10),
+                              darken(Theme.of(context).colorScheme.tertiaryContainer, 10)
+                            ]
+                          : [
+                              Theme.of(context).colorScheme.primary,
+                              Theme.of(context).colorScheme.secondary,
+                            ],
                   gradientBegin: Alignment.topCenter,
                   gradientEnd: Alignment.bottomCenter,
                   borderRadius: borderRadiusNum,
@@ -82,7 +83,7 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
               : GlassContainer(
                   height: widget.customHeight,
                   width: widget.customWidth,
-                  borderThickness: 1.5, // remove border if not active
+                  borderThickness: widget.state == ButtonState.disabled ? 0 : 1.5, // remove border if not active
                   blur: 50,
                   opacity: 0.1,
                   borderRadius: borderRadius,
@@ -98,7 +99,7 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
             child: InkWell(
               hoverColor: Colors.black.withOpacity(0.1),
               onHover: (value) => setState(() => _isHovered = value),
-              onTap: widget.onTap,
+              onTap: widget.state == ButtonState.disabled ? widget.onTapDisabled : widget.onTap,
               borderRadius: borderRadius,
               child: Ink(
                 decoration: BoxDecoration(
@@ -106,47 +107,31 @@ class _LongButtonWidgetState extends State<LongButtonWidget> {
                   borderRadius: borderRadius,
                 ),
                 child: widget.state == ButtonState.loading
-                    ? Center(
-                        child: Transform.scale(
-                            scale: 0.6,
-                            child:
-                                dotProgress(context, color: AppTheme.white90)))
+                    ? Center(child: Transform.scale(scale: 0.6, child: dotProgress(context, color: AppTheme.white90)))
                     : Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (widget.leadingIcon != null)
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    right: AppTheme.elementSpacing * 0.75),
+                                padding: const EdgeInsets.only(right: AppTheme.elementSpacing * 0.75),
                                 child: widget.leadingIcon,
                               ),
                             Text(
                               widget.title,
                               style: widget.titleStyle != null
                                   ? widget.titleStyle
-                                  : Theme.of(context)
-                                      .textTheme
-                                      .titleSmall
-                                      ?.copyWith(
+                                  : Theme.of(context).textTheme.titleSmall?.copyWith(
                                       color: widget.textColor != null
                                           ? widget.textColor
-                                          : widget.buttonType ==
-                                                  ButtonType.solid
-                                              ? Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimary
-                                              : Theme.of(context).brightness ==
-                                                      Brightness.light
+                                          : widget.buttonType == ButtonType.solid
+                                              ? Theme.of(context).colorScheme.onPrimary
+                                              : Theme.of(context).brightness == Brightness.light
                                                   ? AppTheme.black70
                                                   : AppTheme.white90,
                                       shadows: [
                                         //AppTheme.boxShadowBig,
-                                        Theme.of(context).brightness ==
-                                            Brightness.light
-                                            ? AppTheme.boxShadow
-                                            : AppTheme.boxShadowButton,
-
+                                        Theme.of(context).brightness == Brightness.light ? AppTheme.boxShadow : AppTheme.boxShadowButton,
                                       ],
                                     ),
                             ),

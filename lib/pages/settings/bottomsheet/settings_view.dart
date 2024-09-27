@@ -1,10 +1,13 @@
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetListTile.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/settings/bottomsheet/settings_controller.dart';
+import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
@@ -88,6 +91,17 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               BitNetListTile(
+                leading: const Icon(Icons.people),
+                text: L10n.of(context)!.socialRecovery,
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: AppTheme.iconSize * 0.75,
+                ),
+                onTap: () async {
+                  controller.switchTab('social_recovery');
+                },
+              ),
+              BitNetListTile(
                 leading: const Icon(Icons.info),
                 text: L10n.of(context)!.agbsImpress,
                 trailing: const Icon(
@@ -115,10 +129,15 @@ class SettingsView extends StatelessWidget {
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   await prefs.remove('theme_mode');
                   await prefs.remove('primary_color');
+                  Get.delete<ProfileController>();
+                  Get.delete<WalletsController>();
+                  Get.delete<SettingsController>();
+                  Get.delete<ProtocolController>();
                   await Auth().signOut();
 
                   context.pop();
                   context.go('/authhome');
+                  Get.put(ProtocolController(logIn: false));
                 },
               ),
               const SizedBox(
