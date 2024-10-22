@@ -1,3 +1,6 @@
+import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -256,39 +259,39 @@ class WalletScreen extends GetWidget<WalletsController> {
           ),
 
           // Section 3: Long Buttons
-          // SliverToBoxAdapter(
-          //   child: Column(
-          //     children: [
-          //       SizedBox(height: AppTheme.cardPadding),
-          //       Center(
-          //         child: LongButtonWidget(
-          //           title: "LOGIN: PLEASE DONT PRESS",
-          //           onTap: () async {
-          //             final result = await startEcsTask('inapp_user_dev_tags');
-          //           },
-          //         ),
-          //       ),
-          //       SizedBox(height: AppTheme.cardPadding),
-          //       Center(
-          //         child: LongButtonWidget(
-          //           title: "REGISTER: PLEASE DONT PRESS",
-          //           onTap: () async {
-          //             final result = await registerLitEcs('inapp_user_dev_tags');
-          //           },
-          //         ),
-          //       ),
-          //       SizedBox(height: AppTheme.cardPadding),
-          //       Center(
-          //         child: LongButtonWidget(
-          //           title: "STOP ECS TASK",
-          //           onTap: () async {
-          //             final result = await stopUserTask('inapp_user_dev_tags');
-          //           },
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(height: AppTheme.cardPadding),
+                Center(
+                  child: LongButtonWidget(
+                    title: "LOGIN: PLEASE DONT PRESS",
+                    onTap: () async {
+                      final result = await startEcsTask('08_inapp_user_dev_tags');
+                    },
+                  ),
+                ),
+                SizedBox(height: AppTheme.cardPadding),
+                Center(
+                  child: LongButtonWidget(
+                    title: "REGISTER: PLEASE DONT PRESS",
+                    onTap: () async {
+                      final result = await registerLitEcs('08_inapp_user_dev_tags');
+                    },
+                  ),
+                ),
+                SizedBox(height: AppTheme.cardPadding),
+                Center(
+                  child: LongButtonWidget(
+                    title: "STOP ECS TASK",
+                    onTap: () async {
+                      final result = await stopUserTask('07_inapp_user_dev_tags');
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
 
           // Section 4: Buy/Sell Text and Item
           SliverToBoxAdapter(

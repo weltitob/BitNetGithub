@@ -3,6 +3,7 @@ import 'package:bitnet/components/container/imagewithtext.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/profile/widgets/center_widget_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class CenterWidget extends StatelessWidget {
@@ -31,8 +32,9 @@ class CenterWidget extends StatelessWidget {
             topRight: AppTheme.cornerRadiusMid,
           ),
           child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding * 1.5),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CenterWidgetIcon(

@@ -84,7 +84,7 @@ class _ProfileViewState extends State<ProfileView> {
             customWidth: AppTheme.cardPadding * 4,
             leadingIcon: Icon(
               FontAwesomeIcons.add,
-              color: Theme.of(context).brightness == Brightness.light ? AppTheme.black80 : AppTheme.white80,
+              color: Theme.of(context).brightness == Brightness.light ? AppTheme.white70 : AppTheme.black60,
             ),
             title: 'Add',
             onTap: () {
