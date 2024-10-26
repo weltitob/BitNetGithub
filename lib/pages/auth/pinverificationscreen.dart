@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
@@ -16,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:get/get.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -61,13 +64,15 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
 
   void _getClipboard() async {
 
+    final logger = Get.find<LoggerService>();
+
     ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
     if (data != null && data.text?.length == 5) {
       setState(() {
         textEditingController.text = data.text!;
       });
     } else {
-      throw Exception('No code in users clipboard could be found');
+      logger.i('No code in users clipboard could be found');
     }
   }
 

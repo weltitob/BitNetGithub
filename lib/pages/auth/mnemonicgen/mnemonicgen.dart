@@ -121,10 +121,12 @@ class MnemonicController extends State<MnemonicGen> {
       final UserData? currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
       //izak: temporary bypass to the fact that we have no way of accessing user did due to temporary auth system.
       LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
+
       LocalProvider localeProvider = Provider.of<LocalProvider>(
         context,
         listen: false,
       );
+
       Locale deviceLocale = PlatformDispatcher.instance.locale; // or html.window.locale
       String langCode = deviceLocale.languageCode;
       localeProvider.setLocaleInDatabase(localeProvider.locale.languageCode ?? langCode, localeProvider.locale ?? deviceLocale);
@@ -134,6 +136,7 @@ class MnemonicController extends State<MnemonicGen> {
       WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
       logger.i("Navigating to homescreen now...");
       context.go('/');
+
     } on FirebaseException catch (e) {
       logger.e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
       throw Exception("We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");
