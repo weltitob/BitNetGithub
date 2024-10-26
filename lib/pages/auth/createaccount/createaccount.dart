@@ -19,6 +19,14 @@ class CreateAccount extends StatefulWidget {
 class CreateAccountController extends State<CreateAccount> {
   late String code;
   late String issuer;
+  final GlobalKey<FormState> form = GlobalKey<FormState>();
+  String? errorMessage = null;
+  String? username = '';
+  late String localpart;
+  final TextEditingController controllerUsername = TextEditingController();
+  bool isLoading = false;
+  bool isDefaultPlatform = (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
+  void login() => context.go('/authhome/login');
 
   @override
   void initState() {
@@ -38,29 +46,14 @@ class CreateAccountController extends State<CreateAccount> {
     }
   }
 
-  final GlobalKey<FormState> form = GlobalKey<FormState>();
-
-  String? errorMessage = null;
-  String? username = '';
-  late String localpart;
-
-  final TextEditingController controllerUsername = TextEditingController();
-  bool isLoading = false;
-
-  bool isDefaultPlatform =
-      (PlatformInfos.isMobile || PlatformInfos.isWeb || PlatformInfos.isMacOS);
-
-  void login() => context.go('/authhome/login');
-
-  createAccountPressed() async {
+  void createAccountPressed() async {
     LoggerService logger = Get.find();
     setState(() {
       errorMessage = null;
       isLoading = true;
     });
 
-    localpart =
-        controllerUsername.text.trim().toLowerCase().replaceAll(' ', '_');
+    localpart = controllerUsername.text.trim().toLowerCase().replaceAll(' ', '_');
     if (localpart.isEmpty) {
       setState(() {
         errorMessage = L10n.of(context)!.pleaseChooseAUsername;
@@ -70,16 +63,9 @@ class CreateAccountController extends State<CreateAccount> {
 
     try {
       bool usernameExists = await Auth().doesUsernameExist(localpart);
-
       if (!usernameExists) {
-        // You can create the user here since they don't exist yet.
         logger.i("Username is still available");
-
-        //VRouter.of(context).queryParameters.clear();
-
-        logger.i(
-            "Queryparameters that will be passed: $code, $issuer, $localpart");
-
+        logger.i("Queryparameters that will be passed: $code, $issuer, $localpart");
         context.go(
           Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
             'code': code,
@@ -87,12 +73,9 @@ class CreateAccountController extends State<CreateAccount> {
             'username': localpart,
           }).toString(),
         );
-
-        //await createUserLocal();
       } else {
         logger.e("Username already exists.");
         errorMessage = L10n.of(context)!.usernameTaken;
-        // The username already exists.
       }
     } catch (e) {
       print("Error: $e");

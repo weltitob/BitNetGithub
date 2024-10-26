@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
@@ -20,6 +21,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
@@ -94,19 +96,29 @@ class Auth {
     required VerificationCode code,
     required String mnemonic,
   }) async {
+
     LoggerService logger = Get.find();
+    logger.i("Calling Cloudfunction that registers and starts ECS now...");
 
-    // logger.i("Calling registerLitEcs now...");
-    // final result = await registerLitEcs(user.did);
-    // logger.i("Result from registerLitEcs: $result");
+    // try{
+    //
+    //   final ecsregresult = await registerLitEcs('10_inapp_user_dev_tags');
+    //
+    //   //wait for the container to start and then instantly spin up the container
+    //   final ecsresult = await startEcsTask('10_inapp_user_dev_tags');
+    //
+    // }catch(e){
+    //   logger.e("Error calling Cloudfunction that registers and starts ECS: $e");
+    //   throw Exception(e);
+    // }
 
-    logger.i("Calling Cloudfunction with Microsoft ION now...");
-    logger.i("Generating challenge...");
-    final String challenge = generateChallenge(user.username);
+
     final String randomstring = generateRandomString(20); // length 20
+
     final String customToken = await fakeLoginION(
       randomstring,
     );
+
     final IONData iondata = IONData(
         did: user.did,
         username: user.username,
@@ -188,12 +200,14 @@ class Auth {
     logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
     // Call the function to generate and store verification codes
     logger.i("Generating and storing verification codes for friends of the new user now...");
+
     await generateAndStoreVerificationCodes(
       numCodes: 4,
       codeLength: 5,
       issuer: newUser.did,
       codesCollection: codesCollection,
     );
+
     logger.i("Marking the verification code as used now...");
     // Call the function to mark the verification code as used
     await markVerificationCodeAsUsed(
@@ -202,7 +216,7 @@ class Auth {
       codesCollection: codesCollection,
     );
     logger.i("Verification code marked as used.");
-    logger.i("Adding user to userscount");
+    logger.i("Adding user to users count");
     addUserCount();
     logger.i("Returning new user now...");
     return newUser;

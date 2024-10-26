@@ -267,7 +267,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "LOGIN: PLEASE DONT PRESS",
                     onTap: () async {
-                      final result = await startEcsTask('08_inapp_user_dev_tags');
+                      final result = await startEcsTask('11_inapp_user_dev_tags');
                     },
                   ),
                 ),
@@ -276,7 +276,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "REGISTER: PLEASE DONT PRESS",
                     onTap: () async {
-                      final result = await registerLitEcs('08_inapp_user_dev_tags');
+                      final result = await registerLitEcs('11_inapp_user_dev_tags');
                     },
                   ),
                 ),
@@ -285,7 +285,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "STOP ECS TASK",
                     onTap: () async {
-                      final result = await stopUserTask('07_inapp_user_dev_tags');
+                      final result = await stopUserTask('11_inapp_user_dev_tags');
                     },
                   ),
                 ),

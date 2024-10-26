@@ -12,8 +12,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-//import 'package:universal_html/html.dart' as html;
-
 class CreateAccountView extends StatefulWidget {
   final CreateAccountController controller;
   const CreateAccountView({required this.controller});
