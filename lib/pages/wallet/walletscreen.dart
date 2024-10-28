@@ -263,22 +263,36 @@ class WalletScreen extends GetWidget<WalletsController> {
             child: Column(
               children: [
                 SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "LOGIN: PLEASE DONT PRESS",
-                    onTap: () async {
-                      final result = await startEcsTask('12_inapp_user_dev_tags');
-                      print("Result received: $result");
-                    },
-                  ),
-                ),
+                // Center(
+                //   child: LongButtonWidget(
+                //     title: "LOGIN: PLEASE DONT PRESS",
+                //     onTap: () async {
+                //       print("Login button pressed");
+                //       final resultstatus = await startEcsTask('21_inapp_user_dev_tags');
+                //       print("Result received now: $resultstatus");
+                //       if (resultstatus == 200){
+                //         print("Usertask started successfully");
+                //       } else {
+                //         print("Some issue occurred (walletscreen).");
+                //       }
+                //     },
+                //   ),
+                // ),
                 SizedBox(height: AppTheme.cardPadding),
                 Center(
                   child: LongButtonWidget(
-                    title: "REGISTER: PLEASE DONT PRESS",
+                    title: "REGISTER AND START", //PLEASE DON'T PRESS
                     onTap: () async {
-                      final result = await registerLitEcs('12_inapp_user_dev_tags');
-                      print("Result received: $result");
+                      print("Register button pressed");
+                      final resultstatus = await registerUserWithEcsTask('23_inapp_user_dev_tags');
+                      print("Result received now: $resultstatus");
+                      if (resultstatus == 200){
+                        print("User registered successfully");
+                        final resultstatus = await startEcsTask('23_inapp_user_dev_tags');
+                        print("Result received now: $resultstatus");
+                      } else {
+                        print("Some issue occurred (walletscreen).");
+                      }
                     },
                   ),
                 ),
@@ -287,14 +301,14 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "STOP ECS TASK",
                     onTap: () async {
-                      final result = await stopUserTask('11_inapp_user_dev_tags');
+                      dynamic result = await stopUserTask('18_inapp_user_dev_tags');
+                      print("Result received now: ${result.toString()}");
                     },
                   ),
                 ),
               ],
             ),
           ),
-
           // Section 4: Buy/Sell Text and Item
           SliverToBoxAdapter(
             child: Padding(
