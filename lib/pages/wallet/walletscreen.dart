@@ -301,8 +301,8 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "STOP ECS TASK",
                     onTap: () async {
-                      dynamic result = await stopUserTask('18_inapp_user_dev_tags');
-                      print("Result received now: ${result.toString()}");
+                      dynamic statusresult = await stopUserTask('23_inapp_user_dev_tags');
+                      print("Result received now: ${statusresult.toString()}");
                     },
                   ),
                 ),

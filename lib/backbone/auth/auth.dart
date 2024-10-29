@@ -5,6 +5,7 @@ import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
@@ -90,87 +91,87 @@ class Auth {
     return user;
   }
 
-  Future<UserData> createUserFake({
+
+  //Future<UserData>
+  dynamic createUserFake({
     required UserData user,
     required VerificationCode code,
     required String mnemonic,
   }) async {
-
     LoggerService logger = Get.find();
     logger.i("Calling Cloudfunction that registers and starts ECS now...");
+    try{
+      final resultstatus = await registerUserWithEcsTask("${user.did}_${user.username}");
+      print("Result received now: $resultstatus");
+      if (resultstatus == 200){
+        print("User registered successfully");
+        final resultstatus = await startEcsTask("${user.did}_${user.username}");
+        print("Result received now: $resultstatus");
+        final String randomstring = generateRandomString(20); // length 20
+        final String customToken = await fakeLoginION(
+          randomstring,
+        );
+        final IONData iondata = IONData(
+            did: user.did,
+            username: user.username,
+            customToken: customToken,
+            publicIONKey: "publicIONKey",
+            privateIONKey: "0173abded6729bc12b7c06d64e6f6c9c975b55c5ab7a5e1d27f6c93ba92a68e39dce719e41973eb3a7ef8d7b92a32bcd",
+            mnemonic: mnemonic);
 
-    // try{
-    //
-    //   final ecsregresult = await registerLitEcs('10_inapp_user_dev_tags');
-    //
-    //   //wait for the container to start and then instantly spin up the container
-    //   final ecsresult = await startEcsTask('10_inapp_user_dev_tags');
-    //
-    // }catch(e){
-    //   logger.e("Error calling Cloudfunction that registers and starts ECS: $e");
-    //   throw Exception(e);
-    // }
+        final PrivateData privateData = PrivateData(did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
+        // Call the function to store Private data in secure storage
+        await storePrivateData(privateData);
 
+        final currentuser = await signInWithToken(customToken: iondata.customToken);
+        final newUser = user.copyWith(did: iondata.did);
 
-    final String randomstring = generateRandomString(20); // length 20
+        logger.i("User signed in with token. Creating user in database now...");
 
-    final String customToken = await fakeLoginION(
-      randomstring,
-    );
+        await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
+        logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
+        await settingsCollection.doc(currentuser?.user!.uid).set({
+          "theme_mode": "system",
+          "lang": "en",
+          "primary_color": 4283657726,
+          "selected_currency": "USD",
+          "selected_card": "lightning",
+          "hide_balance": false,
+          "country": "US"
+        });
+        // Call the function to generate and store verification codes
+        logger.i("Generating and storing verification codes for friends of the new user now...");
+        await generateAndStoreVerificationCodes(
+          numCodes: 4,
+          codeLength: 5,
+          issuer: newUser.did,
+          codesCollection: codesCollection,
+        );
+        logger.i("Marking the verification code as used now...");
+        // Call the function to mark the verification code as used
+        await markVerificationCodeAsUsed(
+          code: code,
+          receiver: newUser.did,
+          codesCollection: codesCollection,
+        );
+        logger.i("Verification code marked as used.");
+        logger.i("Adding user to userscount");
+        addUserCount();
+        //now login new user
+        // logger.i("logging in user with startEcs now..");
+        // final loginresult = await startEcsTask(newUser.did);
+        // logger.i("Result from startEcsTask: $loginresult");
 
-    final IONData iondata = IONData(
-        did: user.did,
-        username: user.username,
-        customToken: customToken,
-        publicIONKey: "publicIONKey",
-        privateIONKey: "0173abded6729bc12b7c06d64e6f6c9c975b55c5ab7a5e1d27f6c93ba92a68e39dce719e41973eb3a7ef8d7b92a32bcd",
-        mnemonic: mnemonic);
-
-    final PrivateData privateData = PrivateData(did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
-    // Call the function to store Private data in secure storage
-    await storePrivateData(privateData);
-
-    final currentuser = await signInWithToken(customToken: iondata.customToken);
-    final newUser = user.copyWith(did: iondata.did);
-
-    logger.i("User signed in with token. Creating user in database now...");
-
-    await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
-    await settingsCollection.doc(currentuser?.user!.uid).set({
-      "theme_mode": "system",
-      "lang": "en",
-      "primary_color": 4283657726,
-      "selected_currency": "USD",
-      "selected_card": "lightning",
-      "hide_balance": false,
-      "country": "US"
-    });
-    // Call the function to generate and store verification codes
-    logger.i("Generating and storing verification codes for friends of the new user now...");
-    await generateAndStoreVerificationCodes(
-      numCodes: 4,
-      codeLength: 5,
-      issuer: newUser.did,
-      codesCollection: codesCollection,
-    );
-    logger.i("Marking the verification code as used now...");
-    // Call the function to mark the verification code as used
-    await markVerificationCodeAsUsed(
-      code: code,
-      receiver: newUser.did,
-      codesCollection: codesCollection,
-    );
-    logger.i("Verification code marked as used.");
-    logger.i("Adding user to userscount");
-    addUserCount();
-    //now login new user
-    // logger.i("logging in user with startEcs now..");
-    // final loginresult = await startEcsTask(newUser.did);
-    // logger.i("Result from startEcsTask: $loginresult");
-
-    logger.i("Returning new user now...");
-    return newUser;
+        logger.i("Returning new user now...");
+        return newUser;
+      } else {
+        print("Some issue occurred (walletscreen).");
+        return null;
+      }
+    }catch(e){
+      logger.e("Error calling createUserFake: $e");
+      throw Exception(e);
+    }
   }
 
   Future<UserData> createUser({

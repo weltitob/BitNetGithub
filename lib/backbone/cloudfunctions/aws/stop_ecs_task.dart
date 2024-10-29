@@ -4,12 +4,20 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'dart:core';
 
-Future<String?> stopUserTask(String userId) async {
-  final stopwatch = Stopwatch()..start(); // Start timing
+import 'package:bitnet/backbone/helper/deepmapcast.dart';
+import 'package:bitnet/models/firebase/restresponse.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'dart:convert';
+import 'dart:core';
+
+dynamic stopUserTask(String userId) async {
+  final stopwatch = Stopwatch()..start();
 
   try {
     print("STOPPING ECS TASK");
 
+    // AppCheck-Token erhalten
     try {
       final appCheckToken = await FirebaseAppCheck.instance.getLimitedUseToken();
       final newAppCheckToken = await FirebaseAppCheck.instance.getToken(false);
@@ -19,21 +27,22 @@ Future<String?> stopUserTask(String userId) async {
       print("INAPP Error getting App Check tokens: $e");
     }
 
+    // Firebase Functions vorbereiten und Callable Funktion initialisieren
     final functions = FirebaseFunctions.instance;
     final callable = functions.httpsCallable(
       'stop_ecs_task',
       options: HttpsCallableOptions(
-        timeout: const Duration(minutes: 10),  // Increase the timeout duration
+        timeout: const Duration(minutes: 10),
         limitedUseAppCheckToken: true,
       ),
     );
 
+    // Funktion aufrufen mit user_id als Parameter
     final dynamic response = await callable.call(<String, dynamic>{
-      'user_id': userId,  // Changed from 'userid' to 'user_id' to match Python function
+      'user_id': userId,
     });
 
     print("Response FROM SERVER: ${response}");
-    // Check if response.data is a Map, if not, wrap it in a Map
     Map<String, dynamic> responseData;
     if (response.data is Map) {
       responseData = deepMapCast(response.data as Map<Object?, Object?>);
@@ -41,19 +50,30 @@ Future<String?> stopUserTask(String userId) async {
       responseData = {'message': response.data};
     }
 
+    // RestResponse erzeugen und Logausgabe
     final RestResponse callback = RestResponse.fromJson(responseData);
     print("CloudfunctionCallback: ${callback.toString()}");
 
-    // The Python function doesn't return a status code, so we'll assume it's successful if we get here
-    print(callback.message);
+    // `message` aus Callback parsen und Statuscode extrahieren
+    Map<String, dynamic> messageMap = jsonDecode(callback.message);
+    int statusCode = messageMap['statusCode'];
+    Map<String, dynamic> bodyData = jsonDecode(messageMap['body']);
+    String stopMessage = bodyData['message'];
+    String stoppedTaskArn = bodyData['stoppedTask'];
 
-    // The Python function doesn't return a customToken, so we'll return the message instead
-    return callback.message;
+    print("Stop Task Message: $stopMessage");
+    print("Stopped Task ARN: $stoppedTaskArn");
+
+    // Erfolgreiche Rückgabe des Statuscodes
+    if (statusCode != 200) {
+      print("Error stopping user task: $stopMessage");
+    }
+    return statusCode;
   } catch (e) {
-    print("Error calling start_ecs_task: $e");
+    print("Error calling stop_ecs_task: $e");
     return null;
   } finally {
-    stopwatch.stop(); // Stop timing
+    stopwatch.stop();
     print('Time taken for response: ${stopwatch.elapsed}');
   }
 }
