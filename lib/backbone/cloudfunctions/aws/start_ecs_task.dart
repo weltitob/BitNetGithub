@@ -57,12 +57,12 @@ Future<dynamic> startEcsTask(String userId) async {
     Map<String, dynamic> bodyData = jsonDecode(messageMap['body']);
 
     // Process ECS task response
-    EcsTaskStartResponse ecsResponse = EcsTaskStartResponse.fromJson(bodyData);
+    EcsTaskStartResponse ecsResponse = EcsTaskStartResponse.fromJson(messageMap);
     if (statusCode != 200) {
       logger.e("Error starting ECS task: ${ecsResponse.details?.message}");
-      return statusCode;
+      return ecsResponse;
     } else {
-      return statusCode;
+      return ecsResponse;
     }
   } catch (e) {
     logger.e("Error in ECS task start: $e");

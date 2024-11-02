@@ -1,3 +1,7 @@
+import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -26,6 +30,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
+
 
 class WalletScreen extends GetWidget<WalletsController> {
   const WalletScreen({Key? key}) : super(key: key);
@@ -256,56 +263,87 @@ class WalletScreen extends GetWidget<WalletsController> {
           ),
 
           // Section 3: Long Buttons
-          // SliverToBoxAdapter(
-          //   child: Column(
-          //     children: [
-          //       SizedBox(height: AppTheme.cardPadding),
-          //       Center(
-          //         child: LongButtonWidget(
-          //           title: "LOGIN: PLEASE DONT PRESS",
-          //           onTap: () async {
-          //             print("Login button pressed");
-          //             final resultstatus = await startEcsTask('21_inapp_user_dev_tags');
-          //             print("Result received now: $resultstatus");
-          //             if (resultstatus == 200){
-          //               print("Usertask started successfully");
-          //             } else {
-          //               print("Some issue occurred (walletscreen).");
-          //             }
-          //           },
-          //         ),
-          //       ),
-          //       SizedBox(height: AppTheme.cardPadding),
-          //       Center(
-          //         child: LongButtonWidget(
-          //           title: "REGISTER AND START", //PLEASE DON'T PRESS
-          //           onTap: () async {
-          //             print("Register button pressed");
-          //             final resultstatus = await registerUserWithEcsTask('23_inapp_user_dev_tags');
-          //             print("Result received now: $resultstatus");
-          //             if (resultstatus == 200){
-          //               print("User registered successfully");
-          //               final resultstatus = await startEcsTask('23_inapp_user_dev_tags');
-          //               print("Result received now: $resultstatus");
-          //             } else {
-          //               print("Some issue occurred (walletscreen).");
-          //             }
-          //           },
-          //         ),
-          //       ),
-          //       SizedBox(height: AppTheme.cardPadding),
-          //       Center(
-          //         child: LongButtonWidget(
-          //           title: "STOP ECS TASK",
-          //           onTap: () async {
-          //             dynamic statusresult = await stopUserTask('23_inapp_user_dev_tags');
-          //             print("Result received now: ${statusresult.toString()}");
-          //           },
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(height: AppTheme.cardPadding),
+                Center(
+                  child: LongButtonWidget(
+                    title: "LOGIN: PLEASE DONT PRESS",
+                    onTap: () async {
+                      print("Login button pressed");
+                      final resultstatus = await startEcsTask('21_inapp_user_dev_tags');
+                      print("Result received now: $resultstatus");
+                      if (resultstatus == 200){
+                        print("Usertask started successfully");
+                      } else {
+                        print("Some issue occurred (walletscreen).");
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(height: AppTheme.cardPadding),
+                Center(
+                  child: LongButtonWidget(
+                    title: "REGISTER AND START: DONT PRESS", //PLEASE DON'T PRESS
+                    onTap: () async {
+                      print("Register button pressed");
+                      final resultstatus = await registerUserWithEcsTask('38_inapp_user_dev_tags');
+                      //get the right ip address
+
+                      print("Result received now: $resultstatus");
+                      if (resultstatus == 200){
+                        print("User registered successfully");
+                        EcsTaskStartResponse ecsResponse = await startEcsTask('38_inapp_user_dev_tags');
+
+
+                        //parse the response to get the
+                        print("Result for publicIp received now: ${ecsResponse}");
+                        print("Result for publicIp received now: ${ecsResponse.details!.publicIp}");
+
+                        //now let's call our diffrent functions in the right order
+                        //1. generate seed
+                        //skipped for now
+                        print("Calling genseed now...");
+                        dynamic genseed_response = await generateSeed(ecsResponse.details!.publicIp);
+                        print("Response from genseed: ${genseed_response}");
+
+                        //2. init wallet
+                        print("Calling initwallet now...");
+                        dynamic initwallet_response = await initWallet(ecsResponse.details!.publicIp);
+                        print("Response from initwallet: ${initwallet_response}");
+
+                        //3. unlock the wallet
+                        print("Calling unlock Wallet now...");
+                        dynamic unlockwallet_response = await unlockWallet(ecsResponse.details!.publicIp);
+                        print("Response from unlockwallet: ${unlockwallet_response}");
+
+                        //4. change the password to the key
+                        //dynamic passwordchange_response = unlockWallet();
+
+                        //5. check the status of the wallet services
+                        //dynamic status_response = unlockWallet();
+                      } else {
+                        print("Some issue occurred (walletscreen).");
+                      }
+
+
+                    },
+                  ),
+                ),
+                SizedBox(height: AppTheme.cardPadding),
+                Center(
+                  child: LongButtonWidget(
+                    title: "STOP ECS TASK",
+                    onTap: () async {
+                      dynamic statusresult = await stopUserTask('23_inapp_user_dev_tags');
+                      print("Result received now: ${statusresult.toString()}");
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
           // Section 4: Buy/Sell Text and Item
           SliverToBoxAdapter(
             child: Padding(

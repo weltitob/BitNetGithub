@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 
-Future<void> unlockWallet() async {
-  const String restHost = '98.81.97.167:8443';
-  const String tlsPath = 'LND_DIR/tls.cert';
+Future<dynamic> unlockWallet(String restHostIP) async {
+  String restHost = '$restHostIP:8443';
 
   // Encode the password to Base64
   String password = "i__hate..passwords!!";
@@ -23,28 +21,26 @@ Future<void> unlockWallet() async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
-    // Initialize Dio for HTTP requests
-    Dio dio = Dio();
+    // Initialize HttpClient for HTTP requests
+    HttpClient httpClient = HttpClient();
+    httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
 
-    // Send POST request
-    Response response = await dio.post(
-      url,
-      data: jsonEncode(data),
-      options: Options(
-        headers: {'Content-Type': 'application/json'},
-        validateStatus: (status) => status! < 500, // Allow handling 4xx errors
-      ),
-    );
+    // Prepare the request
+    HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
+    request.headers.contentType = ContentType.json;
+    request.add(utf8.encode(jsonEncode(data)));
+
+    // Await the response
+    HttpClientResponse response = await request.close();
+    String responseData = await response.transform(utf8.decoder).join();
 
     // Log the response
     if (response.statusCode == 200) {
-      print("Response data: ${response.data}");
+      print("Response data: $responseData");
     } else {
-      print("Failed to unlock wallet: ${response.statusCode}, ${response.data}");
+      print("Failed to unlock wallet: ${response.statusCode}, $responseData");
     }
   } catch (e) {
     print("Error in unlocking wallet: $e");
   }
 }
-
-// Custom HttpOverrides for self-signed certificates (define MyHttpOverrides class)

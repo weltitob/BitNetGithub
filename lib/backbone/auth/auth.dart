@@ -101,12 +101,16 @@ class Auth {
     LoggerService logger = Get.find();
     logger.i("Calling Cloudfunction that registers and starts ECS now...");
     try{
+
       final resultstatus = await registerUserWithEcsTask("${user.did}_${user.username}");
       logger.i("Result received now: $resultstatus");
-      if (resultstatus == 200){
+
+      if (true){
         logger.i("User registered successfully");
+
         final resultstatus = await startEcsTask("${user.did}_${user.username}");
         logger.i("Result received now: $resultstatus");
+
         final String randomstring = generateRandomString(20); // length 20
         final String customToken = await fakeLoginION(
           randomstring,

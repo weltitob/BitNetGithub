@@ -133,7 +133,13 @@ class MnemonicController extends State<MnemonicGen> {
 
       CountryProvider countryProvider = Provider.of<CountryProvider>(context, listen: false);
       countryProvider.setCountryInDatabase(countryProvider.getCountry() ?? "US");
+
+
       WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
+
+      //Loading...
+
+
       logger.i("Navigating to homescreen now...");
       context.go('/');
 
