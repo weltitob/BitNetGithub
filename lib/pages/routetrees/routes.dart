@@ -6,6 +6,7 @@ import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
 import 'package:bitnet/pages/auth/getstartedscreen.dart';
 import 'package:bitnet/pages/auth/ionloadingscreen.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen.dart';
+import 'package:bitnet/pages/auth/persona/personascreen.dart';
 import 'package:bitnet/pages/auth/pinverificationscreen.dart';
 import 'package:bitnet/pages/auth/restore/chooserestorescreen.dart';
 import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
@@ -428,10 +429,18 @@ class AppRoutes {
                   path: 'mnemonicgen',
                   builder: (ctx, state) => const MnemonicGen(),
                 ),
+                GoRoute(
+                  path: 'persona',
+                  builder: (ctx, state) => const PersonaScreen(),
+                ),
+                GoRoute(
+                  path: 'reg_loading',
+                  builder: (ctx, state) => const IONLoadingScreen(loadingText: "Patience, please. We're creating your account on the blockchain...",),
+                ),
               ],
             ),
             GoRoute(
-              path: 'ionloading',
+              path: 'log_loading',
               builder: (ctx, state) => const IONLoadingScreen(
                 loadingText: "Patience, please. We're validating your account on the blockchain...",
               ),

@@ -66,8 +66,9 @@ class CreateAccountController extends State<CreateAccount> {
       if (!usernameExists) {
         logger.i("Username is still available");
         logger.i("Queryparameters that will be passed: $code, $issuer, $localpart");
+        // context.go("/persona)");
         context.go(
-          Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
+          Uri(path: '/authhome/pinverification/persona', queryParameters: {
             'code': code,
             'issuer': issuer,
             'username': localpart,
