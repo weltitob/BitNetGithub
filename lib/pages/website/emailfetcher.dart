@@ -114,7 +114,7 @@ class _EmailFetcherLandingPageState extends State<EmailFetcherLandingPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: AppTheme.cardPadding * 4 * spacingMultiplier),
+                      SizedBox(height: AppTheme.cardPadding * 6 * spacingMultiplier),
                       Container(
                         width: bigtextWidth + AppTheme.cardPadding,
                         child: SeoText(
@@ -193,7 +193,7 @@ class _EmailFetcherLandingPageState extends State<EmailFetcherLandingPage> {
                           }
                         },
                       ),
-                      SizedBox(height: AppTheme.cardPadding * 15 * spacingMultiplier),
+                      SizedBox(height: AppTheme.cardPadding * 10 * spacingMultiplier),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
