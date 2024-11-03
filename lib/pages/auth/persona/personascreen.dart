@@ -39,6 +39,7 @@ class _PersonaScreenState extends State<PersonaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    processParameters(context);
     return bitnetScaffold(
         body: Container(
           child: Column(

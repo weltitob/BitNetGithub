@@ -1,8 +1,11 @@
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 class IONLoadingScreen extends StatefulWidget {
@@ -18,6 +21,29 @@ class IONLoadingScreen extends StatefulWidget {
 class _IONLoadingScreenState extends State<IONLoadingScreen> {
   late final Future<LottieComposition> comp;
 
+  late String code;
+  late String issuer;
+  late String username;
+  late String mnemonicString;
+
+
+  void processParameters(BuildContext context) {
+    LoggerService logger = Get.find();
+    logger.i("Process parameters for mnemonicgen called");
+    final Map<String, String> parameters = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
+
+    if (parameters.containsKey('code')) {
+      code = parameters['code']!;
+    }
+    if (parameters.containsKey('issuer')) {
+      issuer = parameters['issuer']!;
+    }
+    if (parameters.containsKey('username')) {
+      username = parameters['username']!;
+    }
+  }
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -26,6 +52,7 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    processParameters(context);
     return WillPopScope(
       onWillPop: () async => false, // prevent the user from going back
       child: bitnetScaffold(
@@ -79,16 +106,18 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      L10n.of(context)!.poweredByDIDs,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
                     Container(
                       margin:
-                          const EdgeInsets.only(left: AppTheme.elementSpacing / 2),
-                      height: AppTheme.cardPadding * 2,
-                      child: Image.asset("assets/images/ion.png"),
+                      const EdgeInsets.only(left: AppTheme.elementSpacing / 2),
+                      height: AppTheme.cardPadding * 1.25,
+                      child: Image.asset("assets/images/logoclean.png"),
                     ),
+                    SizedBox(width: AppTheme.elementSpacing,),
+                    Text(
+                      "BitNet",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+
                   ],
                 ),
               ),
