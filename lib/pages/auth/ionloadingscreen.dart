@@ -103,12 +103,22 @@ class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
 
                     final registrationController = Get.find<RegistrationController>();
                     final logger = Get.find<LoggerService>();
-                    if (registrationController.isLoading.value == true.obs){
+                    print("Second message");
+
+                    if (registrationController.isLoading.value == true.obs.value){
                       logger.i("Loading is true");
-                    } else if (registrationController.isLoading.value == false.obs){
+                    } else if (registrationController.isLoading.value == false.obs.value){
                       logger.i("Loading is false the user is now deployed and ready to go");
+                      context.go(
+                        Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
+                          'code': code,
+                          'issuer': issuer,
+                          'username': username,
+                        }).toString(),
+                      );
                     }
-                  })
+                  }
+                  )
                 ],
               ),
             ),

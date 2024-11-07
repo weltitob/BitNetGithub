@@ -76,7 +76,7 @@ class CreateAccountController extends State<CreateAccount> {
 
         logger.i("Clling registerAndSetupUser for our backend litd node");
         registrationController.isLoading.value == true.obs;
-        await registrationController.registerAndSetupUser("${localpart}_uid");
+        registrationController.registerAndSetupUser("${localpart}_uid");
 
         context.go(
           Uri(path: '/authhome/pinverification/persona', queryParameters: {
