@@ -1,24 +1,26 @@
+import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-class IONLoadingScreen extends StatefulWidget {
+class AuthLoadingScreen extends StatefulWidget {
   final String loadingText;
 
-  const IONLoadingScreen({Key? key, required this.loadingText})
+  const AuthLoadingScreen({Key? key, required this.loadingText})
       : super(key: key);
 
   @override
-  State<IONLoadingScreen> createState() => _IONLoadingScreenState();
+  State<AuthLoadingScreen> createState() => _AuthLoadingScreenState();
 }
 
-class _IONLoadingScreenState extends State<IONLoadingScreen> {
+class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
   late final Future<LottieComposition> comp;
 
   late String code;
@@ -46,6 +48,7 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
 
   @override
   void initState() {
+    super.initState();
     // TODO: implement initState
     comp = loadComposition('assets/lottiefiles/blockchain_loader.json');
   }
@@ -95,6 +98,17 @@ class _IONLoadingScreenState extends State<IONLoadingScreen> {
                       },
                     ),
                   ),
+                  LongButtonWidget(title: "title", onTap: () async {
+                    print("Button pressed");
+
+                    final registrationController = Get.find<RegistrationController>();
+                    final logger = Get.find<LoggerService>();
+                    if (registrationController.isLoading.value == true.obs){
+                      logger.i("Loading is true");
+                    } else if (registrationController.isLoading.value == false.obs){
+                      logger.i("Loading is false the user is now deployed and ready to go");
+                    }
+                  })
                 ],
               ),
             ),

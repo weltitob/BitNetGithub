@@ -6,7 +6,6 @@ import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
 import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
 import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
@@ -105,10 +104,7 @@ class Auth {
     logger.i("Calling Cloudfunction that registers the user now...");
     try {
       // Register user using the RegistrationController
-      registrationController.isLoading.value == true.obs;
-      await registrationController.registerAndSetupUser("${user.did}_${user.username}");
-
-      if (registrationController.isLoading.value == false.obs) {
+      if (true) {
         logger.i("User registered successfully");
 
         // Generate random string and custom token

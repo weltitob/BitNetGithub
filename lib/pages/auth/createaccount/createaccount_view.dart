@@ -104,6 +104,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                         //no sso removed sso (single-sign-on) buttons because we have own system
                         if (widget.controller.form.currentState!.validate()) {
                           widget.controller.createAccountPressed();
+
                         }
                       },
                       state: widget.controller.isLoading

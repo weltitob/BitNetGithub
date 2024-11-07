@@ -435,13 +435,13 @@ class AppRoutes {
                 ),
                 GoRoute(
                   path: 'reg_loading',
-                  builder: (ctx, state) => const IONLoadingScreen(loadingText: "Patience, please. We're creating your account on the blockchain...",),
+                  builder: (ctx, state) => const AuthLoadingScreen(loadingText: "Patience, please. We're creating your account on the blockchain...",),
                 ),
               ],
             ),
             GoRoute(
               path: 'log_loading',
-              builder: (ctx, state) => const IONLoadingScreen(
+              builder: (ctx, state) => const AuthLoadingScreen(
                 loadingText: "Patience, please. We're validating your account on the blockchain...",
               ),
             ),

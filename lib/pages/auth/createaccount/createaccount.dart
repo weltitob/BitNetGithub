@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount_view.dart';
@@ -6,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:flutter/cupertino.dart';
+
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({
@@ -66,7 +70,14 @@ class CreateAccountController extends State<CreateAccount> {
       if (!usernameExists) {
         logger.i("Username is still available");
         logger.i("Queryparameters that will be passed: $code, $issuer, $localpart");
-        // context.go("/persona)");
+        // context.go("/persona)")
+
+        final registrationController = Get.find<RegistrationController>();
+
+        logger.i("Clling registerAndSetupUser for our backend litd node");
+        registrationController.isLoading.value == true.obs;
+        await registrationController.registerAndSetupUser("${localpart}_uid");
+
         context.go(
           Uri(path: '/authhome/pinverification/persona', queryParameters: {
             'code': code,
