@@ -1,3 +1,4 @@
+import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
@@ -5,6 +6,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -287,47 +289,21 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "REGISTER AND START: DONT PRESS", //PLEASE DON'T PRESS
                     onTap: () async {
-                      print("Register button pressed");
-                      final resultstatus = await registerUserWithEcsTask('38_inapp_user_dev_tags');
-                      //get the right ip address
+                      LoggerService logger = Get.find();
+                      final registrationController = Get.find<RegistrationController>();
 
-                      print("Result received now: $resultstatus");
-                      if (resultstatus == 200){
-                        print("User registered successfully");
-                        EcsTaskStartResponse ecsResponse = await startEcsTask('38_inapp_user_dev_tags');
+                      logger.i("Calling Cloudfunction that registers the user now...");
 
+                      // Register user using the RegistrationController
+                      registrationController.isLoading.value == true.obs;
+                      await registrationController.registerAndSetupUser("walletscreen_testuser_01");
 
-                        //parse the response to get the
-                        print("Result for publicIp received now: ${ecsResponse}");
-                        print("Result for publicIp received now: ${ecsResponse.details!.publicIp}");
+                      if (registrationController.isLoading.value == false.obs) {
+                        logger.i("User registered successfully");
 
-                        //now let's call our diffrent functions in the right order
-                        //1. generate seed
-                        //skipped for now
-                        print("Calling genseed now...");
-                        dynamic genseed_response = await generateSeed(ecsResponse.details!.publicIp);
-                        print("Response from genseed: ${genseed_response}");
-
-                        //2. init wallet
-                        print("Calling initwallet now...");
-                        dynamic initwallet_response = await initWallet(ecsResponse.details!.publicIp);
-                        print("Response from initwallet: ${initwallet_response}");
-
-                        //3. unlock the wallet
-                        print("Calling unlock Wallet now...");
-                        dynamic unlockwallet_response = await unlockWallet(ecsResponse.details!.publicIp);
-                        print("Response from unlockwallet: ${unlockwallet_response}");
-
-                        //4. change the password to the key
-                        //dynamic passwordchange_response = unlockWallet();
-
-                        //5. check the status of the wallet services
-                        //dynamic status_response = unlockWallet();
                       } else {
                         print("Some issue occurred (walletscreen).");
                       }
-
-
                     },
                   ),
                 ),
