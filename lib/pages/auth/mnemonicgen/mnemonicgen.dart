@@ -141,7 +141,9 @@ class MnemonicController extends State<MnemonicGen> {
 
 
       logger.i("Navigating to homescreen now...");
-      context.go('/');
+      context.go(
+        Uri(path: '/authhome/pinverification/reg_loading').toString(),
+      );
 
     } on FirebaseException catch (e) {
       logger.e("Firebase Exception calling signUp in mnemonicgen.dart: $e");

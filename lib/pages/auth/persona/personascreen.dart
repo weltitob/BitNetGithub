@@ -50,7 +50,7 @@ class _PersonaScreenState extends State<PersonaScreen> {
               SizedBox(height: AppTheme.cardPadding * 2),
               LongButtonWidget(title: "Forward to next screen", onTap: () {
                 context.go(
-                  Uri(path: '/authhome/pinverification/reg_loading', queryParameters: {
+                  Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
                     'code': code,
                     'issuer': issuer,
                     'username': username,

@@ -23,28 +23,6 @@ class AuthLoadingScreen extends StatefulWidget {
 class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
   late final Future<LottieComposition> comp;
 
-  late String code;
-  late String issuer;
-  late String username;
-  late String mnemonicString;
-
-
-  void processParameters(BuildContext context) {
-    LoggerService logger = Get.find();
-    logger.i("Process parameters for mnemonicgen called");
-    final Map<String, String> parameters = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
-
-    if (parameters.containsKey('code')) {
-      code = parameters['code']!;
-    }
-    if (parameters.containsKey('issuer')) {
-      issuer = parameters['issuer']!;
-    }
-    if (parameters.containsKey('username')) {
-      username = parameters['username']!;
-    }
-  }
-
 
   @override
   void initState() {
@@ -55,7 +33,6 @@ class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    processParameters(context);
     return WillPopScope(
       onWillPop: () async => false, // prevent the user from going back
       child: bitnetScaffold(
@@ -110,11 +87,7 @@ class _AuthLoadingScreenState extends State<AuthLoadingScreen> {
                     } else if (registrationController.isLoading.value == false.obs.value){
                       logger.i("Loading is false the user is now deployed and ready to go");
                       context.go(
-                        Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
-                          'code': code,
-                          'issuer': issuer,
-                          'username': username,
-                        }).toString(),
+                        Uri(path: '/').toString(),
                       );
                     }
                   }
