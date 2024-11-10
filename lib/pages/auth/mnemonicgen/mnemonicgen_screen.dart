@@ -43,7 +43,7 @@ class MnemonicGenScreen extends StatelessWidget {
                 ),
                 Icon(
                   FontAwesomeIcons.key,
-                  size: AppTheme.cardPadding * 2.75.ws,
+                  size: AppTheme.cardPadding * 3.ws,
                 ),
                 SizedBox(
                   height: AppTheme.cardPadding * 2.h,

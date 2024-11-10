@@ -123,12 +123,13 @@ String flag = iso.toUpperCase().replaceAllMapped(RegExp(r'[A-Z]'),
                   color: Theme.of(context).colorScheme.brightness == Brightness.light ? AppTheme.white60 : AppTheme.colorGlassContainer,
              ),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(AppTheme.elementSpacing / 1.75),
                 child: Row(
                   children: [
+                    SizedBox(width: AppTheme.elementSpacing / 2,),
                      Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Text((initialCountry?.flag ?? isoToFlag("US")), style: Theme.of(context).textTheme.displaySmall),
+                      padding: const EdgeInsets.only(right: AppTheme.elementSpacing / 2),
+                      child: Text((initialCountry?.flag ?? isoToFlag("US")), style: Theme.of(context).textTheme.titleLarge),
                     ),
                     Text((initialCountry?.name ?? "United States" ), style: Theme.of(context).textTheme.bodyLarge),
                     const Spacer(),

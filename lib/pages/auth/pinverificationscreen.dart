@@ -90,9 +90,16 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
 
       if (code.used == false) {
         _loading = false;
-        //passing code to SignUp that it can be flagged as used later on
+        // //passing code to SignUp that it can be flagged as used later on
+        // context.go(Uri(
+        //     path: '/authhome/pinverification/createaccount',
+        //     queryParameters: {
+        //       'code': code.code,
+        //       'issuer': code.issuer,
+        //     }).toString());
+
         context.go(Uri(
-            path: '/authhome/pinverification/createaccount',
+            path: '/authhome/pinverification/mnemonicgen',
             queryParameters: {
               'code': code.code,
               'issuer': code.issuer,

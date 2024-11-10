@@ -37,19 +37,6 @@ class CreateAccountController extends State<CreateAccount> {
     super.initState();
   }
 
-  void processParameters(BuildContext context) {
-    LoggerService logger = Get.find();
-    logger.i("Process parameters for createAccount called");
-    final Map<String, String> parameters =
-        GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
-    if (parameters.containsKey('code')) {
-      code = parameters['code']!;
-    }
-    if (parameters.containsKey('issuer')) {
-      issuer = parameters['issuer']!;
-    }
-  }
-
   void createAccountPressed() async {
     LoggerService logger = Get.find();
     setState(() {
@@ -69,22 +56,21 @@ class CreateAccountController extends State<CreateAccount> {
       bool usernameExists = await Auth().doesUsernameExist(localpart);
       if (!usernameExists) {
         logger.i("Username is still available");
-        logger.i("Queryparameters that will be passed: $code, $issuer, $localpart");
-        // context.go("/persona)")
+        // logger.i("Queryparameters that will be passed: $code, $issuer, $localpart");
+        // // context.go("/persona)")
 
-        final registrationController = Get.find<RegistrationController>();
-
-        logger.i("Clling registerAndSetupUser for our backend litd node");
-        registrationController.isLoading.value == true.obs;
-        registrationController.registerAndSetupUser("${localpart}_uid");
 
         context.go(
-          Uri(path: '/authhome/pinverification/persona', queryParameters: {
-            'code': code,
-            'issuer': issuer,
-            'username': localpart,
-          }).toString(),
+          Uri(path: '/authhome/pinverification/persona').toString(),
         );
+
+        // context.go(
+        //   Uri(path: '/authhome/pinverification/persona', queryParameters: {
+        //     'code': code,
+        //     'issuer': issuer,
+        //     'username': localpart,
+        //   }).toString(),
+        // );
       } else {
         logger.e("Username already exists.");
         errorMessage = L10n.of(context)!.usernameTaken;
@@ -99,8 +85,6 @@ class CreateAccountController extends State<CreateAccount> {
 
   @override
   Widget build(BuildContext context) {
-    processParameters(context);
-
     return CreateAccountView(
       controller: this,
     );

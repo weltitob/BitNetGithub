@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bitnet/backbone/auth/macaroon_mnemnoic.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:get/get.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/genseed.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
@@ -15,18 +15,33 @@ class RegistrationController extends GetxController {
   var publicIp = ''.obs;
   var registrationSuccess = false.obs;
 
+  var mnemonicSeed = [].obs;
+
+  //login
+  dynamic loginAndStartEcs(String taskTag) async {
+    final logger = Get.find<LoggerService>();
+    dynamic statusresult = await startEcsTask(taskTag);
+    logger.i("Result received now: ${statusresult.toString()}");
+  }
+
+  //logout
+  dynamic logoutAndStopEcs(String taskTag) async {
+    final logger = Get.find<LoggerService>();
+    dynamic statusresult = await stopUserTask(taskTag);
+    logger.i("Result received now: ${statusresult.toString()}");
+  }
+
   // Method to handle full registration and setup
   dynamic registerAndSetupUser(String taskTag) async {
     try {
 
       isLoading.value = true;
-
       // Step 1: Register the user
       int resultStatus = await registerUserWithEcsTask(taskTag);
+
       if (resultStatus == 200) {
         final logger = Get.find<LoggerService>();
         print("User registered successfully");
-
 
         // Step 2: Start ECS Task
         EcsTaskStartResponse ecsResponse = await startEcsTask(taskTag);
@@ -36,9 +51,6 @@ class RegistrationController extends GetxController {
         // Step 3: Generate Seed
         //would like to skip this step and generate locally if possible
         //can be skipped if we use root key in the next step
-
-        dynamic time = await Timer(Duration(seconds: 3), () => logger.i('10 seconds passed'));
-
 
         //Relationship Between Mnemonic and Macaroon Root Key: By default, lnd generates the macaroon root key independently of the mnemonic. However, for scenarios requiring deterministic or pre-generated macaroons, you can derive the macaroon root key from the wallet's seed. This approach ensures that the macaroon root key is reproducible from the mnemonic, facilitating consistent authorization tokens across different instances.
         // dynamic genseedResponse = await generateSeed(publicIp.value);
@@ -57,9 +69,7 @@ class RegistrationController extends GetxController {
         String mnemonic = mnemonicSeed.join(' ');
 
         //generate a custom admin macaroon root key
-        dynamic macaroon_root_key =  deriveMacaroonRootKey(mnemonic);
-
-
+        dynamic macaroon_root_key =  deriveSeedFromMnemonic(mnemonic);
 
         dynamic time2 = await Timer(Duration(seconds: 10), () => logger.i('10 seconds passed'));
 

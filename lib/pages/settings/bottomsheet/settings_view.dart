@@ -1,4 +1,5 @@
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/protocol_controller.dart';
@@ -127,12 +128,22 @@ class SettingsView extends StatelessWidget {
 
                   // Clear shared preferences if used
                   SharedPreferences prefs = await SharedPreferences.getInstance();
+
                   await prefs.remove('theme_mode');
                   await prefs.remove('primary_color');
+
+                  final profile_controller = Get.put(ProfileController());
+                  final registrationController = Get.find<RegistrationController>();
+                  String username = '${profile_controller.userData.value.username}';
+
+                  dynamic stopecs_response = await registrationController.logoutAndStopEcs('${username}_uid');
+                  print('Stop ecs response: $stopecs_response');
+
                   Get.delete<ProfileController>();
                   Get.delete<WalletsController>();
                   Get.delete<SettingsController>();
                   Get.delete<ProtocolController>();
+
                   await Auth().signOut();
 
                   context.pop();

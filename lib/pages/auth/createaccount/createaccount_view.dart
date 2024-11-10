@@ -5,8 +5,10 @@ import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/buttons/country_picker_widget.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
 import 'package:bitnet/components/buttons/longbutton.dart';
+import 'package:bitnet/components/container/avatar.dart';
 import 'package:bitnet/components/fields/textfield/formtextfield.dart';
 import 'package:bitnet/pages/auth/createaccount/createaccount.dart';
+import 'package:bitnet/pages/profile/widgets/profile_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -64,22 +66,30 @@ class _CreateAccountViewState extends State<CreateAccountView>
                 SizedBox(
                   height: AppTheme.cardPadding * 2.h,
                 ),
-                Container(
-                  height: AppTheme.cardPadding * 5.h,
-                  child: Text(
-                    L10n.of(context)!.powerToThePeople,
-                    style: Theme.of(context).textTheme.displayMedium,
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                SizedBox(
-                  height: AppTheme.cardPadding.h,
-                ),
+
+
+
+                // Container(
+                //   height: AppTheme.cardPadding * 5.h,
+                //   child: Text(
+                //     L10n.of(context)!.powerToThePeople,
+                //     style: Theme.of(context).textTheme.displayMedium,
+                //     textAlign: TextAlign.left,
+                //   ),
+                // ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const PopUpCountryPickerWidget(),
+                    Avatar(
+                      mxContent: Uri.parse(""),
+                      size: AppTheme.cardPadding * 5.25.h,
+                      type: profilePictureType.none,
+                      isNft: false,
+                      // cornerWidget: ProfileButton(),
+                    ),
+                    SizedBox(height: AppTheme.cardPadding.h * 2,),
+                    PopUpCountryPickerWidget(),
                     FormTextField(
                       width: AppTheme.cardPadding * 14.ws,
                       hintText: L10n.of(context)!.username,
@@ -126,7 +136,7 @@ class _CreateAccountViewState extends State<CreateAccountView>
                             ),
                           ),
                     Container(
-                      margin: const EdgeInsets.only(top: AppTheme.cardPadding * 2),
+                      margin: EdgeInsets.only(top: AppTheme.cardPadding * 2.h),
                       child: Text(
                         textAlign: TextAlign.center,
                         L10n.of(context)!.alreadyHaveAccount,

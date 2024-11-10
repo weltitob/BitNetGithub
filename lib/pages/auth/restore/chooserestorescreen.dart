@@ -6,6 +6,7 @@ import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
+import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/resultlist/users.dart';
 import 'package:flutter/material.dart';
@@ -109,19 +110,22 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
             SizedBox(
               height: AppTheme.cardPadding.h,
             ),
-            TextField(
-              controller: tokenController,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+              child: TextField(
+                controller: tokenController,
+              ),
             ),
+            SizedBox(height: AppTheme.elementSpacing,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                BitNetImageWithTextContainer('backdoor: login token', () async {
+                LongButtonWidget(title: "Izaks Backdoor", onTap:  () async {
                   final currentuser = await Auth().signInWithToken(customToken: tokenController.text);
                   WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
                   Get.delete<ProtocolController>();
-
                   context.go('/');
-                }, image: "assets/images/friends.png"),
+                },)
               ],
             ),
             SizedBox(

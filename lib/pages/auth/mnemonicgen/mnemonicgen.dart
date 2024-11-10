@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
+import 'package:bitnet/backbone/auth/macaroon_mnemnoic.dart';
+import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
@@ -21,6 +23,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+
 class MnemonicGen extends StatefulWidget {
   const MnemonicGen({super.key});
 
@@ -29,12 +32,10 @@ class MnemonicGen extends StatefulWidget {
 }
 
 class MnemonicController extends State<MnemonicGen> {
-  String profileimageurl =
-      "https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=338&ext=jpg&ga=GA1.1.735520172.1711238400&semt=ais";
+  String profileimageurl = "https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=338&ext=jpg&ga=GA1.1.735520172.1711238400&semt=ais";
 
   late String code;
   late String issuer;
-  late String username;
 
   bool hasWrittenDown = false;
 
@@ -60,9 +61,6 @@ class MnemonicController extends State<MnemonicGen> {
     if (parameters.containsKey('issuer')) {
       issuer = parameters['issuer']!;
     }
-    if (parameters.containsKey('username')) {
-      username = parameters['username']!;
-    }
   }
 
   // Constructs Mnemonic from random secure 256bits entropy with optional passphrase
@@ -74,7 +72,30 @@ class MnemonicController extends State<MnemonicGen> {
       );
       mnemonicString = mnemonic.sentence;
       mnemonicTextController.text = mnemonicString;
+
+      final logger = Get.find<LoggerService>();
+
+      final seed = deriveSeedFromMnemonic(mnemonicString);
+      logger.i("Seed: $seed");
+      dynamic privatekeymap = derivePrivateMasterKey(seed);
+      logger.i("Private Key: $privatekeymap");
+      dynamic privatekey = privatekeymap['privateKey'];
+      logger.i("Private Key: $privatekey");
+      final publickey = deriveMasterPublicKey(privatekey);
+      logger.i("Public Key: $publickey");
+
+      String userdid = publickey.toString();
+
+      final registrationController = Get.find<RegistrationController>();
+
+      logger.i("Calling registerAndSetupUser for our backend litd node");
+
+      registrationController.isLoading.value == true.obs;
+      registrationController.registerAndSetupUser("${userdid}");
+
     });
+
+
   }
 
   void confirmMnemonic(String typedMnemonic) {
@@ -88,6 +109,11 @@ class MnemonicController extends State<MnemonicGen> {
       logger.e("Mnemonic does not match");
       changeWrittenDown();
     }
+  }
+
+  String generateUsername() {
+    final wordPair = "example_user_23";
+    return wordPair; // Or wordPair.asSnakeCase or wordPair.asCamelCase for different styles
   }
 
   void signUp() async {
@@ -104,10 +130,10 @@ class MnemonicController extends State<MnemonicGen> {
         isPrivate: false,
         showFollowers: false,
         did: "did:example:Z9Y8X7W6V5U4T3S2R1PqPoNmLkJiHgF",
-        displayName: username,
+        displayName: "User Nr. 123",
         bio: L10n.of(context)!.joinedRevolution,
         customToken: "customToken",
-        username: username,
+        username: "username", //generate a unique username for each user
         profileImageUrl: profileimageurl,
         createdAt: timestamp,
         updatedAt: timestamp,
@@ -117,7 +143,9 @@ class MnemonicController extends State<MnemonicGen> {
         nft_background_id: '',
       );
 
-      VerificationCode verificationCode = VerificationCode(used: false, code: code, issuer: issuer, receiver: username);
+
+      //use the did for the verifcation codes!!!
+      VerificationCode verificationCode = VerificationCode(used: false, code: code, issuer: issuer, receiver: userdata.did);
       final UserData? currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
       //izak: temporary bypass to the fact that we have no way of accessing user did due to temporary auth system.
       LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
@@ -141,9 +169,11 @@ class MnemonicController extends State<MnemonicGen> {
 
 
       logger.i("Navigating to homescreen now...");
-      context.go(
-        Uri(path: '/authhome/pinverification/reg_loading').toString(),
-      );
+      context.go(Uri(
+          path: '/authhome/pinverification/createaccount').toString());
+      // context.go(
+      //   Uri(path: '/authhome/pinverification/reg_loading').toString(),
+      // );
 
     } on FirebaseException catch (e) {
       logger.e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
