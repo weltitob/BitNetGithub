@@ -49,13 +49,18 @@ class _PersonaScreenState extends State<PersonaScreen> {
               Text("Persona Screen"),
               SizedBox(height: AppTheme.cardPadding * 2),
               LongButtonWidget(title: "Forward to next screen", onTap: () {
+
                 context.go(
-                  Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
-                    'code': code,
-                    'issuer': issuer,
-                    'username': username,
-                  }).toString(),
+                  Uri(path: '/authhome/pinverification/reg_loading').toString(),
                 );
+
+                // context.go(
+                //   Uri(path: '/authhome/pinverification/mnemonicgen', queryParameters: {
+                //     'code': code,
+                //     'issuer': issuer,
+                //     'username': username,
+                //   }).toString(),
+                // );
 
               })
             ],

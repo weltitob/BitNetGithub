@@ -22,6 +22,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 
 class MnemonicGen extends StatefulWidget {
@@ -32,10 +33,12 @@ class MnemonicGen extends StatefulWidget {
 }
 
 class MnemonicController extends State<MnemonicGen> {
-  String profileimageurl = "https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg?size=338&ext=jpg&ga=GA1.1.735520172.1711238400&semt=ais";
+
+
 
   late String code;
   late String issuer;
+  late String did;
 
   bool hasWrittenDown = false;
 
@@ -84,14 +87,14 @@ class MnemonicController extends State<MnemonicGen> {
       final publickey = deriveMasterPublicKey(privatekey);
       logger.i("Public Key: $publickey");
 
-      String userdid = publickey.toString();
+      did = publickey.toString();
 
       final registrationController = Get.find<RegistrationController>();
 
       logger.i("Calling registerAndSetupUser for our backend litd node");
 
       registrationController.isLoading.value == true.obs;
-      registrationController.registerAndSetupUser("${userdid}");
+      registrationController.registerAndSetupUser("${did}");
 
     });
 
@@ -111,8 +114,19 @@ class MnemonicController extends State<MnemonicGen> {
     }
   }
 
+  String generateShortUUID() {
+    return Uuid().v4().substring(0, 5); // Nimmt nur die ersten 5 Zeichen
+  }
+
   String generateUsername() {
-    final wordPair = "example_user_23";
+    //use faker
+
+    final wordPair = "example_user_${generateShortUUID()}";
+    return wordPair; // Or wordPair.asSnakeCase or wordPair.asCamelCase for different styles
+  }
+
+  String generateDisplayName() {
+    final wordPair = "Example User";
     return wordPair; // Or wordPair.asSnakeCase or wordPair.asCamelCase for different styles
   }
 
@@ -126,15 +140,15 @@ class MnemonicController extends State<MnemonicGen> {
       logger.i("Making firebase auth now...");
 
       final userdata = UserData(
-        backgroundImageUrl: profileimageurl,
+        backgroundImageUrl: '',
         isPrivate: false,
         showFollowers: false,
-        did: "did:example:Z9Y8X7W6V5U4T3S2R1PqPoNmLkJiHgF",
-        displayName: "User Nr. 123",
+        did: did,
+        displayName: generateDisplayName(),
         bio: L10n.of(context)!.joinedRevolution,
         customToken: "customToken",
-        username: "username", //generate a unique username for each user
-        profileImageUrl: profileimageurl,
+        username: generateUsername(), //generate a unique username for each user
+        profileImageUrl: '',
         createdAt: timestamp,
         updatedAt: timestamp,
         isActive: true,
@@ -142,7 +156,6 @@ class MnemonicController extends State<MnemonicGen> {
         nft_profile_id: '',
         nft_background_id: '',
       );
-
 
       //use the did for the verifcation codes!!!
       VerificationCode verificationCode = VerificationCode(used: false, code: code, issuer: issuer, receiver: userdata.did);
@@ -162,11 +175,7 @@ class MnemonicController extends State<MnemonicGen> {
       CountryProvider countryProvider = Provider.of<CountryProvider>(context, listen: false);
       countryProvider.setCountryInDatabase(countryProvider.getCountry() ?? "US");
 
-
       WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
-
-      //Loading...
-
 
       logger.i("Navigating to homescreen now...");
       context.go(Uri(
