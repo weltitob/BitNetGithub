@@ -67,8 +67,8 @@ class MnemonicController extends State<MnemonicGen> {
   }
 
   // Constructs Mnemonic from random secure 256bits entropy with optional passphrase
-  void generateMnemonic() {
-    setState(() {
+  void generateMnemonic() async {
+    setState(() async {
       mnemonic = Mnemonic.generate(
         Language.english,
         entropyLength: 256, // this will be a 24-word-long mnemonic
@@ -87,14 +87,16 @@ class MnemonicController extends State<MnemonicGen> {
       final publickey = deriveMasterPublicKey(privatekey);
       logger.i("Public Key: $publickey");
 
-      did = publickey.toString();
-
       final registrationController = Get.find<RegistrationController>();
 
       logger.i("Calling registerAndSetupUser for our backend litd node");
 
       registrationController.isLoading.value == true.obs;
-      registrationController.registerAndSetupUser("${did}");
+
+      did = generateShortUUID().toString();
+      dynamic registerandsetup_resp = await registrationController.registerAndSetupUser("${did}");
+
+      registrationController.isLoading.value == false.obs;
 
     });
 

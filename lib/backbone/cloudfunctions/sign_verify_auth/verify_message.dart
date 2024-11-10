@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -7,15 +8,15 @@ import 'package:flutter/material.dart';
 
 //verifymessage
 
-verify_message(String fakedid) async {
+verify_message() async {
   HttpsCallable callable =
-  FirebaseFunctions.instance.httpsCallable('old_fake_login');
+  FirebaseFunctions.instance.httpsCallable('verify_signature_func');
   print("FAKE LOGIN WHILE ION IS BROKEN..");
 
   try {
     final HttpsCallableResult<dynamic> response =
     await callable.call(<String, dynamic>{
-      'fakedid': fakedid,
+      'did': Auth().currentUser?.uid,
     });
 
     print("Response: ${response.data}");
