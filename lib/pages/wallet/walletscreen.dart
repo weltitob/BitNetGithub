@@ -1,3 +1,6 @@
+
+import 'package:bip39_mnemonic/bip39_mnemonic.dart';
+import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
@@ -26,6 +29,7 @@ import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controlle
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
 import 'package:bitnet/pages/wallet/controllers/wallet_controller.dart';
 import 'package:bitnet/pages/wallet/loop/loop_controller.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -298,7 +302,14 @@ class WalletScreen extends GetWidget<WalletsController> {
 
                       // Register user using the RegistrationController
                       registrationController.isLoading.value == true.obs;
-                      await registrationController.registerAndSetupUser("walletscreen_testuser_01");
+
+                      dynamic mnemonic = Mnemonic.generate(
+                        Language.english,
+                        entropyLength: 256, // this will be a 24-word-long mnemonic
+                      );
+                      final String mnemonicString = mnemonic.sentence;
+
+                      await registrationController.registerAndSetupUser("walletscreen_testuser_01", mnemonicString);
 
                       if (registrationController.isLoading.value == false.obs) {
                         logger.i("User registered successfully");
@@ -324,7 +335,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "CREATE CHALLENGE",
                     onTap: () async {
-                      dynamic create_challengeeee = await create_challenge();
+                      dynamic create_challengeeee = await create_challenge(Auth().currentUser!.uid);
                       print("Create challenge response: ${create_challengeeee.toString()}");
                     },
                   ),
@@ -334,7 +345,11 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "VERIFY MESSAGE",
                     onTap: () async {
-                      dynamic verify_messageeee = await verify_message();
+                      dynamic verify_messageeee = await verify_message(
+                        "example_did_327892",
+                        "example_challenge_id_327892",
+                        "example_signature_327892",
+                      );
                       print("Verify message response: ${verify_messageeee.toString()}");
 
                     },
@@ -345,7 +360,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "VERIFY & SIGN & VERIFY",
                     onTap: () async {
-                      dynamic userchallenge_rsponse = await create_challenge();
+                      dynamic userchallenge_rsponse = await create_challenge(Auth().currentUser!.uid);
                       print("Create challenge response: ${userchallenge_rsponse.toString()}");
 
 
@@ -353,6 +368,12 @@ class WalletScreen extends GetWidget<WalletsController> {
                       PrivateData privateData = await getPrivateData(getUserDidTemp());
                       print("Private mnemonic data: ${privateData.mnemonic.toString()}");
                       print("Private key data: ${privateData.privateKey.toString()}");
+
+                      //sign message with the private key
+
+
+
+                      //verifiziere dem server gegnüber der user des privatekeys zu sein
 
 
 

@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 
 //verifymessage
 
-verify_message() async {
+verify_message(String userId, String challengeId, String signature) async {
   final logger = Get.find<LoggerService>();
   HttpsCallable callable =
   FirebaseFunctions.instance.httpsCallable('verify_signature');

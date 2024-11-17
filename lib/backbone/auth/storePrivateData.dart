@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 
 final secureStorage = const FlutterSecureStorage();
 
@@ -37,35 +39,69 @@ Future<void> storePrivateData(PrivateData privateData) async {
   }
 }
 
-Future<PrivateData> getPrivateData(String DidOrUsername) async {
-  final bool isDID = isStringaDID(DidOrUsername);
+Future<PrivateData> getPrivateData(String didOrUsername) async {
+  // Assuming you have a logger instance set up
+  LoggerService logger = Get.find();
+
+  final bool isDID = isStringaDID(didOrUsername);
   late String did;
   //late String username;
 
-  print(isDID);
+  logger.d('Input DidOrUsername: $didOrUsername');
+  logger.d('Is input a DID: $isDID');
 
   if (isDID) {
-    did = DidOrUsername;
+    did = didOrUsername;
+    logger.d('Using DID directly: $did');
     //username = await Auth().getUserUsername(did);
   } else {
-    //getdid for username in database
-    final String username = DidOrUsername;
-    did = await Auth().getUserDID(username);
+    // Get DID for username from database
+    final String username = didOrUsername;
+    logger.d('Input is a username: $username');
+    try {
+      did = await Auth().getUserDID(username);
+      logger.d('Retrieved DID for username $username: $did');
+    } catch (e, stackTrace) {
+      logger.e('Error retrieving DID for username $username, $e');
+      throw Exception('Failed to retrieve DID for username $username');
+    }
   }
 
+  logger.d('Attempting to read private data from secure storage');
   final privateDataJson = await secureStorage.read(key: 'usersInSecureStorage');
 
   if (privateDataJson == null) {
-    throw Exception('Failed to retrieve IONData from secure storage');
+    logger.e('No private data found in secure storage for key usersInSecureStorage');
+    throw Exception('Failed to retrieve private data from secure storage');
   }
 
-  // Decode the JSON data and map it to a list of IONData objects
-  List<PrivateData> usersStored = (jsonDecode(privateDataJson) as List).map((json) => PrivateData.fromMap(json)).toList();
+  // Decode the JSON data and map it to a list of PrivateData objects
+  List<PrivateData> usersStored;
+  try {
+    usersStored = (jsonDecode(privateDataJson) as List)
+        .map((json) => PrivateData.fromMap(json))
+        .toList();
+    logger.d('Decoded private data JSON into PrivateData objects');
+  } catch (e, stackTrace) {
+    logger.e('Error decoding private data JSON $e');
+    throw Exception('Failed to decode private data');
+  }
 
-  // Find the IONData object with the matching DID
-  final matchingPrivateData = usersStored.firstWhere((user) => user.did == did);
-
-  return matchingPrivateData;
+  // Find the PrivateData object with the matching DID
+  try {
+    final matchingPrivateData = usersStored.firstWhere(
+          (user) => user.did == did,
+      orElse: () {
+        logger.e('No matching private data found for DID $did');
+        throw Exception('No private data found for DID $did');
+      },
+    );
+    logger.d('Found matching private data for DID $did');
+    return matchingPrivateData;
+  } catch (e, stackTrace) {
+    logger.e('Error searching for matching private data $e');
+    throw Exception('Error retrieving private data for DID $did');
+  }
 }
 
 Future<List<PrivateData>> getAllStoredIonData() async {

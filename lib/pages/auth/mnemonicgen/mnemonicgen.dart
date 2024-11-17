@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/macaroon_mnemnoic.dart';
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
@@ -13,16 +15,23 @@ import 'package:bitnet/backbone/streams/country_provider.dart';
 import 'package:bitnet/backbone/streams/locale_provider.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
+import 'package:bitnet/backbone/helper/key_services/wif_service.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:blockchain_utils/base58/base58_base.dart';
+import '';
 
 
 class MnemonicGen extends StatefulWidget {
@@ -33,9 +42,6 @@ class MnemonicGen extends StatefulWidget {
 }
 
 class MnemonicController extends State<MnemonicGen> {
-
-
-
   late String code;
   late String issuer;
   late String did;
@@ -56,7 +62,8 @@ class MnemonicController extends State<MnemonicGen> {
   void processParameters(BuildContext context) {
     LoggerService logger = Get.find();
     logger.i("Process parameters for mnemonicgen called");
-    final Map<String, String> parameters = GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
+    final Map<String, String> parameters =
+        GoRouter.of(context).routeInformationProvider.value.uri.queryParameters;
 
     if (parameters.containsKey('code')) {
       code = parameters['code']!;
@@ -80,12 +87,41 @@ class MnemonicController extends State<MnemonicGen> {
 
       final seed = deriveSeedFromMnemonic(mnemonicString);
       logger.i("Seed: $seed");
+
       dynamic privatekeymap = derivePrivateMasterKey(seed);
-      logger.i("Private Key: $privatekeymap");
-      dynamic privatekey = privatekeymap['privateKey'];
-      logger.i("Private Key: $privatekey");
-      final publickey = deriveMasterPublicKey(privatekey);
-      logger.i("Public Key: $publickey");
+      logger.i("Private Key Map: $privatekeymap");
+
+      // Extract private key List<int>
+      dynamic privateKey = privatekeymap['privateKey'];
+      logger.i("Raw Private Key: $privateKey");
+
+      // Convert private key to WIF
+      String wifPrivateKey = convertPrivateKeyToWIF(privateKey);
+      logger.i("WIF Private Key: $wifPrivateKey");
+
+      // Derive public key List<int>
+      dynamic publicKey = deriveMasterPublicKey(privateKey);
+      logger.i("Raw Public Key: $publicKey");
+
+      // Convert public key to hex
+      String publicKeyHex = bytesToHex(publicKey);
+      logger.i("Public Key (Hex): $publicKeyHex");
+
+      did = publicKeyHex;
+
+      //save the mnemonic and privatekey and ubkey as did to the secure storage
+      logger.i("Storing private data now...");
+
+      logger.i("DID: $did");
+      logger.i("Mnemonic: $mnemonicString");
+      logger.i("WIF Private Key: $wifPrivateKey");
+
+
+      final PrivateData privateData = PrivateData(
+          did: did, privateKey: wifPrivateKey, mnemonic: mnemonicString);
+      // Call the function to store Private data in secure storage
+      await storePrivateData(privateData);
+      logger.i("Private data stored. Signing in with token now...");
 
       final registrationController = Get.find<RegistrationController>();
 
@@ -93,24 +129,23 @@ class MnemonicController extends State<MnemonicGen> {
 
       registrationController.isLoading.value == true.obs;
 
-      did = generateShortUUID().toString();
-      dynamic registerandsetup_resp = await registrationController.registerAndSetupUser("${did}");
+      dynamic registerandsetup_resp = await registrationController
+          .registerAndSetupUser("${did}", mnemonicString);
 
       registrationController.isLoading.value == false.obs;
-
     });
-
-
   }
 
   void confirmMnemonic(String typedMnemonic) {
     LoggerService logger = Get.find();
     if (mnemonicString == typedMnemonic) {
-      showOverlay(context, L10n.of(context)!.mnemonicCorrect, color: AppTheme.successColor);
+      showOverlay(context, L10n.of(context)!.mnemonicCorrect,
+          color: AppTheme.successColor);
       signUp();
     } else {
       //implement error throw
-      showOverlay(context, L10n.of(context)!.mnemonicInCorrect, color: AppTheme.errorColor);
+      showOverlay(context, L10n.of(context)!.mnemonicInCorrect,
+          color: AppTheme.errorColor);
       logger.e("Mnemonic does not match");
       changeWrittenDown();
     }
@@ -160,8 +195,10 @@ class MnemonicController extends State<MnemonicGen> {
       );
 
       //use the did for the verifcation codes!!!
-      VerificationCode verificationCode = VerificationCode(used: false, code: code, issuer: issuer, receiver: userdata.did);
-      final UserData? currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
+      VerificationCode verificationCode = VerificationCode(
+          used: false, code: code, issuer: issuer, receiver: userdata.did);
+      final UserData? currentuserwallet =
+          await firebaseAuthentication(userdata, verificationCode);
       //izak: temporary bypass to the fact that we have no way of accessing user did due to temporary auth system.
       LocalStorage.instance.setString(userdata.did, Auth().currentUser!.uid);
 
@@ -170,25 +207,31 @@ class MnemonicController extends State<MnemonicGen> {
         listen: false,
       );
 
-      Locale deviceLocale = PlatformDispatcher.instance.locale; // or html.window.locale
+      Locale deviceLocale =
+          PlatformDispatcher.instance.locale; // or html.window.locale
       String langCode = deviceLocale.languageCode;
-      localeProvider.setLocaleInDatabase(localeProvider.locale.languageCode ?? langCode, localeProvider.locale ?? deviceLocale);
+      localeProvider.setLocaleInDatabase(
+          localeProvider.locale.languageCode ?? langCode,
+          localeProvider.locale ?? deviceLocale);
 
-      CountryProvider countryProvider = Provider.of<CountryProvider>(context, listen: false);
-      countryProvider.setCountryInDatabase(countryProvider.getCountry() ?? "US");
+      CountryProvider countryProvider =
+          Provider.of<CountryProvider>(context, listen: false);
+      countryProvider
+          .setCountryInDatabase(countryProvider.getCountry() ?? "US");
 
-      WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
+      WidgetsBinding.instance
+          .addPostFrameCallback(ThemeController.of(context).loadData);
 
       logger.i("Navigating to homescreen now...");
-      context.go(Uri(
-          path: '/authhome/pinverification/createaccount').toString());
+      context
+          .go(Uri(path: '/authhome/pinverification/createaccount').toString());
       // context.go(
       //   Uri(path: '/authhome/pinverification/reg_loading').toString(),
       // );
-
     } on FirebaseException catch (e) {
       logger.e("Firebase Exception calling signUp in mnemonicgen.dart: $e");
-      throw Exception("We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");
+      throw Exception(
+          "We currently have troubles reaching our servers which connect you with the blockchain. Please try again later.");
     } catch (e) {
       //implement error throw
       logger.e("Error trying to call signUp in mnemonicgen.dart: $e");
@@ -198,14 +241,14 @@ class MnemonicController extends State<MnemonicGen> {
     });
   }
 
-  Future<UserData?> firebaseAuthentication(UserData userData, VerificationCode code) async {
+  Future<UserData?> firebaseAuthentication(
+      UserData userData, VerificationCode code) async {
     LoggerService logger = Get.find();
     try {
       //blablabla
       logger.i("Creating firebase user now...");
 
-      final UserData currentuserwallet = await Auth().createUserFake(
-        mnemonic: mnemonicString,
+      final UserData currentuserwallet = await Auth().createUser(
         user: userData,
         code: code,
       );

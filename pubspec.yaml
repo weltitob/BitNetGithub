@@ -29,6 +29,9 @@ dependencies:
   #another_flushbar: ^1.12.30
   blockchain_utils: ^2.1.2
 
+
+  asn1lib: ^1.1.0
+
   adaptive_dialog: ^1.9.0-no-macos.2
   #animations: ^2.0.7
   #badges: ^2.0.3
@@ -112,6 +115,7 @@ dependencies:
   pin_code_fields: ^8.0.1
   #floating_bottom_navigation_bar: ^1.5.2
   pointycastle: ^3.9.1
+  bs58: ^1.0.2
   #asn1lib: ^1.0.0
   #jose: ^0.3.0
   bip39_mnemonic: ^3.0.6

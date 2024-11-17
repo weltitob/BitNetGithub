@@ -5,15 +5,17 @@ import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
-import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
-import 'package:bitnet/backbone/cloudfunctions/createdid.dart';
-import 'package:bitnet/backbone/cloudfunctions/fakelogin.dart';
+import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/key_services/getecprivatekeyfromwif.dart';
+import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/models/IONdata.dart';
 import 'package:bitnet/models/firebase/verificationcode.dart';
+
 import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +23,8 @@ import 'package:firebase_auth/firebase_auth.dart' as fbAuth;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
+import 'package:bitnet/models/keys/userchallenge.dart';
+import 'package:pointycastle/ecc/api.dart';
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
@@ -91,101 +94,10 @@ class Auth {
     return user;
   }
 
-
-  //Future<UserData>
-  dynamic createUserFake({
-    required UserData user,
-    required VerificationCode code,
-    required String mnemonic,
-  }) async {
-    LoggerService logger = Get.find();
-    final registrationController = Get.find<RegistrationController>();
-
-    logger.i("Calling Cloudfunction that registers the user now...");
-    try {
-      // Register user using the RegistrationController
-      if (true) {
-        logger.i("User registered successfully");
-
-        // Generate random string and custom token
-        final String randomString = generateRandomString(20); // length 20
-        final String customToken = await fakeLoginION(randomString);
-
-        // Create ION data
-        final IONData ionData = IONData(
-          did: user.did,
-          username: user.username,
-          customToken: customToken,
-          publicIONKey: "publicIONKey",
-          privateIONKey: "0173abded6729bc12b7c06d64e6f6c9c975b55c5ab7a5e1d27f6c93ba92a68e39dce719e41973eb3a7ef8d7b92a32bcd",
-          mnemonic: mnemonic,
-        );
-
-        final PrivateData privateData = PrivateData(
-          did: ionData.did,
-          privateKey: ionData.privateIONKey,
-          mnemonic: ionData.mnemonic,
-        );
-
-        // Store private data in secure storage
-        await storePrivateData(privateData);
-
-        // Sign in the user with the custom token and save to the database
-        final currentUser = await signInWithToken(customToken: ionData.customToken);
-        final newUser = user.copyWith(did: ionData.did);
-
-        logger.i("User signed in with token. Creating user in database now...");
-        await usersCollection.doc(currentUser?.user!.uid).set(newUser.toMap());
-        logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
-
-        // Initialize user settings in the database
-        await settingsCollection.doc(currentUser?.user!.uid).set({
-          "theme_mode": "system",
-          "lang": "en",
-          "primary_color": 4283657726,
-          "selected_currency": "USD",
-          "selected_card": "lightning",
-          "hide_balance": false,
-          "country": "US"
-        });
-
-        // Generate and store verification codes
-        logger.i("Generating and storing verification codes for friends of the new user now...");
-        await generateAndStoreVerificationCodes(
-          numCodes: 4,
-          codeLength: 5,
-          issuer: newUser.did,
-          codesCollection: codesCollection,
-        );
-
-        // Mark the verification code as used
-        logger.i("Marking the verification code as used now...");
-        await markVerificationCodeAsUsed(
-          code: code,
-          receiver: newUser.did,
-          codesCollection: codesCollection,
-        );
-
-        // Increment the user count
-        logger.i("Adding user to users count");
-        addUserCount();
-
-        logger.i("Returning new user now...");
-        return newUser;
-      } else {
-        logger.e("Some issue occurred during registration.");
-        return null;
-      }
-    } catch (e) {
-      logger.e("Error calling createUserFake: $e");
-      throw Exception(e);
-    }
-  }
-
-
   Future<UserData> createUser({
     required UserData user,
     required VerificationCode code,
+
   }) async {
     LoggerService logger = Get.find();
 
@@ -193,22 +105,68 @@ class Auth {
 
     logger.i("Generating challenge...");
     //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
-    final String challenge = generateChallenge(user.username);
-    logger.i("Challenge created: $challenge. Creating user now...");
-    final IONData iondata = await createDID(user.username, challenge);
-    logger.i("User created: IONDATA RECEIVED: $iondata.");
-    logger.i("Storing private data now...");
-    final PrivateData privateData = PrivateData(did: iondata.did, privateKey: iondata.privateIONKey, mnemonic: iondata.mnemonic);
-    // Call the function to store Private data in secure storage
-    await storePrivateData(privateData);
-    logger.i("Private data stored. Signing in with token now...");
-    final currentuser = await signInWithToken(customToken: iondata.customToken);
-    final newUser = user.copyWith(did: iondata.did);
+    // final String challenge = generateChallenge(user.username);
+    // logger.i("Challenge created: $challenge. Creating user now...");
+    UserChallengeResponse? userChallengeResponse = await create_challenge(user.did);
+    logger.d('Created challenge for user ${user.did}: $userChallengeResponse');
+
+    String challengeId = userChallengeResponse!.challenge.challengeId;
+    logger.d('Challenge ID: $challengeId');
+
+    String challengeTitle = userChallengeResponse.challenge.title;
+    logger.d('Challenge Title: $challengeTitle');
+
+    PrivateData privateData = await getPrivateData(user.did);
+    logger.d('Retrieved private data for user ${user.did}');
+
+    String wifPrivateKey = privateData.privateKey;
+    logger.d('WIF Private Key: $wifPrivateKey');
+
+    // Convert WIF private key to ECPrivateKey
+    ECPrivateKey privateKey = getUserPrivateKeyFromWIF(wifPrivateKey);
+    logger.d('Converted WIF private key to ECPrivateKey');
+
+    String signatureHex = signChallengeData(challengeTitle, privateKey);
+    logger.d('Generated signature hex: $signatureHex');
+
+
+    // final IONData iondata = await createDID(user.username, challenge);
+    // logger.i("User created: IONDATA RECEIVED: $iondata.");
+    //This owuld normalls return the token
+
+    //sign the message somehow then we need to send the challenge back to the verify sign message which will then return us the customtoken
+
+    // Verify the signature with the server
+    dynamic verifyResponse = await verify_message(
+       user.did,
+       challengeId,
+      signatureHex,
+    );
+    //get the customtoken from the response
+    print("Verify message response: ${verifyResponse.toString()}");
+
+
+    final currentuser = await signInWithToken(customToken: "iondata.customToken");
+    final newUser = user.copyWith(did: user.did);
     logger.i("User signed in with token. Creating user in database now...");
+
+
     await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
     logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
     // Call the function to generate and store verification codes
     logger.i("Generating and storing verification codes for friends of the new user now...");
+
+
+    // Initialize user settings in the database
+    await settingsCollection.doc(currentuser?.user!.uid).set({
+      "theme_mode": "system",
+      "lang": "en",
+      "primary_color": 4283657726,
+      "selected_currency": "USD",
+      "selected_card": "lightning",
+      "hide_balance": false,
+      "country": "US"
+    });
 
     await generateAndStoreVerificationCodes(
       numCodes: 4,
@@ -230,6 +188,7 @@ class Auth {
     logger.i("Returning new user now...");
     return newUser;
   }
+
 
   signMessageAuth(did, privateIONKey) async {
     try {
@@ -282,14 +241,14 @@ class Auth {
       //context.go('/ionloading');
       final String randomstring = generateRandomString(20); // length 20
 
-      final String customToken = await fakeLoginION(
-        randomstring,
-      );
-
-      // final String customToken = await loginION(
-      //   did.toString(),
-      //   signedAuthMessage.toString(),
+      // final String customToken = await fakeLoginION(
+      //   randomstring,
       // );
+
+      final String customToken = await loginION(
+        did.toString(),
+        signedAuthMessage.toString(),
+      );
 
       final currentuser = await signInWithToken(customToken: customToken);
 

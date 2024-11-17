@@ -32,7 +32,7 @@ class RegistrationController extends GetxController {
   }
 
   // Method to handle full registration and setup
-  dynamic registerAndSetupUser(String taskTag) async {
+  dynamic registerAndSetupUser(String taskTag, String mnemonicString) async {
     try {
 
       isLoading.value = true;
@@ -60,13 +60,24 @@ class RegistrationController extends GetxController {
         //macaroon_root_key is an optional 32 byte macaroon root key that can be provided when initializing the wallet rather than letting lnd generate one on its own.#
 
         //maybe zu schnell oder somehow called der das 3mal
-        List<String> mnemonicSeed = [
-          'about', 'double', 'estate', 'saddle', 'floor', 'where', 'nut', 'soon',
-          'beach', 'address', 'describe', 'maple', 'child', 'razor', 'claim', 'mountain',
-          'kitten', 'struggle', 'boost', 'useful', 'prevent', 'baby', 'more', 'rescue'
-        ];
 
-        String mnemonic = mnemonicSeed.join(' ');
+        //this needs tpo
+
+
+        // List<String> mnemonicSeed = [
+        //   'about', 'double', 'estate', 'saddle', 'floor', 'where', 'nut', 'soon',
+        //   'beach', 'address', 'describe', 'maple', 'child', 'razor', 'claim', 'mountain',
+        //   'kitten', 'struggle', 'boost', 'useful', 'prevent', 'baby', 'more', 'rescue'
+        // ];
+        // String mnemonic = mnemonicSeed.join(' ');
+
+
+
+        String mnemonic = mnemonicString;
+
+        // make a list of strings from the mnemonic
+        List<String> mnemonicSeed = mnemonic.split(' ');
+
 
         //generate a custom admin macaroon root key
         dynamic macaroon_root_key =  deriveSeedFromMnemonic(mnemonic);
