@@ -1,12 +1,17 @@
 import 'dart:convert';
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:get/get.dart';
+
 
 fakeLoginION(String fakedid) async {
   HttpsCallable callable =
       FirebaseFunctions.instance.httpsCallable('old_fake_login');
-  print("FAKE LOGIN WHILE ION IS BROKEN..");
+
+  final logger = Get.find<LoggerService>();
+  logger.i("FAKE LOGIN WHILE ION IS BROKEN..");
 
   try {
     final HttpsCallableResult<dynamic> response =

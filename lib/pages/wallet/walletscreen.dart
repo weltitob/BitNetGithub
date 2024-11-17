@@ -1,9 +1,13 @@
+import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
 import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
 import 'package:bitnet/backbone/helper/currency/getcurrency.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/backbone/services/social_recovery_helper.dart';
 import 'package:bitnet/backbone/streams/currency_provider.dart';
 import 'package:bitnet/backbone/streams/currency_type_provider.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
@@ -16,6 +20,7 @@ import 'package:bitnet/components/items/cryptoitem.dart';
 import 'package:bitnet/components/resultlist/transactions.dart';
 import 'package:bitnet/models/bitcoin/chartline.dart';
 import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/profile/profile_controller.dart';
 import 'package:bitnet/pages/wallet/actions/receive/controller/receive_controller.dart';
 import 'package:bitnet/pages/wallet/actions/send/controllers/send_controller.dart';
@@ -311,6 +316,50 @@ class WalletScreen extends GetWidget<WalletsController> {
                     onTap: () async {
                       dynamic statusresult = await stopUserTask('23_inapp_user_dev_tags');
                       print("Result received now: ${statusresult.toString()}");
+                    },
+                  ),
+                ),
+                SizedBox(height: AppTheme.cardPadding),
+                Center(
+                  child: LongButtonWidget(
+                    title: "CREATE CHALLENGE",
+                    onTap: () async {
+                      dynamic create_challengeeee = await create_challenge();
+                      print("Create challenge response: ${create_challengeeee.toString()}");
+                    },
+                  ),
+                ),
+                SizedBox(height: AppTheme.cardPadding),
+                Center(
+                  child: LongButtonWidget(
+                    title: "VERIFY MESSAGE",
+                    onTap: () async {
+                      dynamic verify_messageeee = await verify_message();
+                      print("Verify message response: ${verify_messageeee.toString()}");
+
+                    },
+                  ),
+                ),
+                SizedBox(height: AppTheme.cardPadding),
+                Center(
+                  child: LongButtonWidget(
+                    title: "VERIFY & SIGN & VERIFY",
+                    onTap: () async {
+                      dynamic userchallenge_rsponse = await create_challenge();
+                      print("Create challenge response: ${userchallenge_rsponse.toString()}");
+
+
+                      //get my key from secure storage
+                      PrivateData privateData = await getPrivateData(getUserDidTemp());
+                      print("Private mnemonic data: ${privateData.mnemonic.toString()}");
+                      print("Private key data: ${privateData.privateKey.toString()}");
+
+
+
+
+                      // dynamic verify_messageeee = await verify_message();
+                      // print("Verify message response: ${verify_messageeee.toString()}");
+
                     },
                   ),
                 ),
