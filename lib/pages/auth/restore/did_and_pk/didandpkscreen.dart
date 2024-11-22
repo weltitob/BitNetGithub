@@ -57,7 +57,7 @@ class _SignupScreenState extends State<DidAndPrivateKeyScreen> with TickerProvid
       errorMessage = null;
     });
     try {
-      final bool isDID = isStringaDID(_controllerUsername.text);
+      final bool isDID = isCompressedPublicKey(_controllerUsername.text);
       late String did;
       late String myusername;
       if (isDID) {

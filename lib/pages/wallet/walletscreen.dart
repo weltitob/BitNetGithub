@@ -345,7 +345,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "VERIFY MESSAGE",
                     onTap: () async {
-                      dynamic verify_messageeee = await verify_message(
+                      dynamic verify_messageeee = await verifyMessage(
                         "example_did_327892",
                         "example_challenge_id_327892",
                         "example_signature_327892",

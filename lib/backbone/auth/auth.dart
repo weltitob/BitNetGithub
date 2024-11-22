@@ -137,8 +137,8 @@ class Auth {
     //sign the message somehow then we need to send the challenge back to the verify sign message which will then return us the customtoken
 
     // Verify the signature with the server
-    dynamic verifyResponse = await verify_message(
-       user.did,
+    dynamic verifyResponse = await verifyMessage(
+         user.did,
        challengeId,
       signatureHex,
     );

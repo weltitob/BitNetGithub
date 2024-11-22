@@ -44,11 +44,12 @@ Color getRandomColor() {
 final datetime = DateTime.now();
 Timestamp timestamp = Timestamp.fromDate(datetime); //To TimeStamp
 
-bool isStringaDID(String input) {
-  RegExp didPattern = RegExp(r'^did:[a-zA-Z0-9]+:[A-Za-z0-9._-]{22,}$', caseSensitive: false);
-  return didPattern.hasMatch(input);
+bool isCompressedPublicKey(String input) {
+  // Compressed public keys in hex format are 66 characters long
+  // They start with '02' or '03', followed by 64 hex characters (32 bytes)
+  RegExp compressedKeyPattern = RegExp(r'^(02|03)[0-9a-fA-F]{64}$');
+  return compressedKeyPattern.hasMatch(input);
 }
-
 bool isValidBitcoinTransactionID(String input) {
   RegExp txidPattern = RegExp(r'^[a-zA-Z0-9]{64}$');
   return txidPattern.hasMatch(input);

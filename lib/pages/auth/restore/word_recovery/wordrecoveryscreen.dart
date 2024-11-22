@@ -57,7 +57,7 @@ class _RestoreWalletScreenState extends State<WordRecoveryScreen> {
       print("reover Key should be triggered!!!");
 
       //getthedid from Username or DID
-      final bool isDID = isStringaDID(_usernameController.text);
+      final bool isDID = isCompressedPublicKey(_usernameController.text);
       late String did;
       if (isDID) {
         did = _usernameController.text;

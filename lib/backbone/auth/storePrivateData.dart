@@ -43,7 +43,7 @@ Future<PrivateData> getPrivateData(String didOrUsername) async {
   // Assuming you have a logger instance set up
   LoggerService logger = Get.find();
 
-  final bool isDID = isStringaDID(didOrUsername);
+  final bool isDID = isCompressedPublicKey(didOrUsername);
   late String did;
   //late String username;
 
