@@ -22,7 +22,6 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
 import 'package:bitnet/backbone/helper/key_services/wif_service.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
@@ -156,21 +155,6 @@ class MnemonicController extends State<MnemonicGen> {
     }
   }
 
-  String generateShortUUID() {
-    return Uuid().v4().substring(0, 5); // Takes only the first 5 characters
-  }
-
-  String generateUsername() {
-    // Generate a unique username
-    final wordPair = "example_user_${generateShortUUID()}";
-    return wordPair;
-  }
-
-  String generateDisplayName() {
-    final wordPair = "Example User";
-    return wordPair;
-  }
-
   void signUp() async {
     LoggerService logger = Get.find();
     setState(() {
@@ -184,10 +168,10 @@ class MnemonicController extends State<MnemonicGen> {
         isPrivate: false,
         showFollowers: false,
         did: did,
-        displayName: generateDisplayName(),
+        displayName: did,
         bio: L10n.of(context)!.joinedRevolution,
         customToken: "customToken",
-        username: generateUsername(),
+        username: did,
         profileImageUrl: '',
         createdAt: timestamp,
         updatedAt: timestamp,
@@ -205,8 +189,7 @@ class MnemonicController extends State<MnemonicGen> {
         receiver: userdata.did,
       );
 
-      final UserData? currentuserwallet =
-      await firebaseAuthentication(userdata, verificationCode);
+      final UserData? currentuserwallet = await firebaseAuthentication(userdata, verificationCode);
 
       // Temporary bypass due to temporary auth system
       LocalStorage.instance

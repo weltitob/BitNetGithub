@@ -1,11 +1,8 @@
 import 'dart:convert';
-
-import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/deepmapcast.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,7 +11,7 @@ import 'dart:convert';
 
 dynamic verifyMessage(String userId, String challengeId, String signature) async {
   HttpsCallable callable =
-  FirebaseFunctions.instance.httpsCallable('verify_signature');
+  FirebaseFunctions.instance.httpsCallable('verify_signature'); //old_fake_login
 
   final logger = Get.find<LoggerService>();
   logger.i("FAKE LOGIN WHILE ION IS BROKEN..");

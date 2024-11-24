@@ -101,7 +101,10 @@ class Auth {
   }) async {
     LoggerService logger = Get.find();
 
-    logger.i("Calling Cloudfunction with Microsoft ION now...");
+    await usersCollection.doc(user.did).set(user.toMap());
+    logger.i('Successfully created wallet/user in database: ${user.toMap()}');
+    // Call the function to generate and store verification codes
+    logger.i("Generating and storing verification codes for friends of the new user now...");
 
     logger.i("Generating challenge...");
     //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
@@ -137,25 +140,16 @@ class Auth {
     //sign the message somehow then we need to send the challenge back to the verify sign message which will then return us the customtoken
 
     // Verify the signature with the server
-    dynamic verifyResponse = await verifyMessage(
+    dynamic customAuthToken = await verifyMessage(
          user.did,
-       challengeId,
-      signatureHex,
+         challengeId,
+        signatureHex,
     );
     //get the customtoken from the response
-    print("Verify message response: ${verifyResponse.toString()}");
+    print("Verify message response: ${customAuthToken.toString()}");
 
 
-    final currentuser = await signInWithToken(customToken: "iondata.customToken");
-    final newUser = user.copyWith(did: user.did);
-    logger.i("User signed in with token. Creating user in database now...");
-
-
-    await usersCollection.doc(currentuser?.user!.uid).set(newUser.toMap());
-    logger.i('Successfully created wallet/user in database: ${newUser.toMap()}');
-    // Call the function to generate and store verification codes
-    logger.i("Generating and storing verification codes for friends of the new user now...");
-
+    final currentuser = await signInWithToken(customToken: customAuthToken);
 
     // Initialize user settings in the database
     await settingsCollection.doc(currentuser?.user!.uid).set({
@@ -171,7 +165,7 @@ class Auth {
     await generateAndStoreVerificationCodes(
       numCodes: 4,
       codeLength: 5,
-      issuer: newUser.did,
+      issuer: user.did,
       codesCollection: codesCollection,
     );
 
@@ -179,14 +173,14 @@ class Auth {
     // Call the function to mark the verification code as used
     await markVerificationCodeAsUsed(
       code: code,
-      receiver: newUser.did,
+       receiver: user.did,
       codesCollection: codesCollection,
     );
     logger.i("Verification code marked as used.");
     logger.i("Adding user to users count");
     addUserCount();
     logger.i("Returning new user now...");
-    return newUser;
+    return user;
   }
 
 
