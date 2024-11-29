@@ -30,23 +30,41 @@ Map<String, Uint8List> derivePrivateMasterKey(Uint8List seed) {
   // Right half (32 bytes) is the master chain code
   final masterChainCode = I.sublist(32);
 
+  // Validate the private key (must be less than curve order)
+  final curve = ECCurve_secp256k1();
+  final privateKeyNum = BigInt.parse(
+    masterPrivateKey.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join(),
+    radix: 16,
+  );
+  if (privateKeyNum >= curve.n) {
+    throw Exception('Invalid private key: exceeds curve order.');
+  }
+
   return {
     'privateKey': masterPrivateKey,
     'chainCode': masterChainCode,
   };
 }
 
-Uint8List deriveMasterPublicKey(Uint8List masterPrivateKey) {
+Uint8List deriveMasterPublicKey(Uint8List masterPrivateKey, {bool compressed = true}) {
   // Use the secp256k1 elliptic curve (same as Bitcoin)
   final curve = ECCurve_secp256k1();
   final G = curve.G;
 
+  // Parse the private key into a BigInt
+  final privateKeyNum = BigInt.parse(
+    masterPrivateKey.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join(),
+    radix: 16,
+  );
+
   // Multiply the generator point G with the private key to get the public key point
-  final privateKeyNum = BigInt.parse(masterPrivateKey.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join(), radix: 16);
   final publicKeyPoint = G * privateKeyNum;
 
-  // Convert the public key point to compressed format
-  final publicKeyBytes = publicKeyPoint!.getEncoded(true);
+  // Validate that the public key point is not null
+  if (publicKeyPoint == null) {
+    throw Exception('Failed to derive public key.');
+  }
 
-  return publicKeyBytes;
+  // Convert the public key point to the desired format
+  return publicKeyPoint.getEncoded(compressed);
 }

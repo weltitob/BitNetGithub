@@ -20,16 +20,12 @@ import 'package:bitnet/models/user/userdata.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_confirm.dart';
 import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
 import 'package:bitnet/backbone/helper/key_services/wif_service.dart';
-import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
-import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:blockchain_utils/base58/base58_base.dart';
 
 // Removed unnecessary empty import
 
@@ -78,66 +74,70 @@ class MnemonicController extends State<MnemonicGen> {
     LoggerService logger = Get.find<LoggerService>();
     logger.i("Generating mnemonic...");
 
-    // Perform asynchronous operations
-    mnemonic = Mnemonic.generate(
-      Language.english,
-      entropyLength: 256, // This will be a 24-word-long mnemonic
-    );
-    mnemonicString = mnemonic.sentence;
-    mnemonicTextController.text = mnemonicString;
+    try {
+      // Generate 256-bit entropy and create a mnemonic
+      mnemonic = Mnemonic.generate(
+        Language.english,
+        entropyLength: 256, // 24-word mnemonic
+      );
+      mnemonicString = mnemonic.sentence;
+      mnemonicTextController.text = mnemonicString;
 
-    final seed = deriveSeedFromMnemonic(mnemonicString);
-    logger.i("Seed: $seed");
+      logger.i("Generated Mnemonic: $mnemonicString");
 
-    dynamic privatekeymap = derivePrivateMasterKey(seed);
-    logger.i("Private Key Map: $privatekeymap");
+      // Derive the seed from the mnemonic
+      final seed = deriveSeedFromMnemonic(mnemonicString);
+      logger.i("Derived Seed: ${bytesToHex(seed)}");
 
-    // Extract private key List<int>
-    dynamic privateKey = privatekeymap['privateKey'];
-    logger.i("Raw Private Key: $privateKey");
+      // Derive private master key and chain code
+      final privateKeyMap = derivePrivateMasterKey(seed);
+      final privateKey = privateKeyMap['privateKey'];
+      final chainCode = privateKeyMap['chainCode'];
+      logger.i("Derived Private Key: ${bytesToHex(privateKey!)}");
+      logger.i("Derived Chain Code: ${bytesToHex(chainCode!)}");
 
-    // Convert private key to WIF
-    String wifPrivateKey = convertPrivateKeyToWIF(privateKey);
-    logger.i("WIF Private Key: $wifPrivateKey");
+      // Convert private key to WIF (if required)
+      String wifPrivateKey = convertPrivateKeyToWIF(privateKey);
+      logger.i("WIF Private Key: $wifPrivateKey");
 
-    // Derive public key List<int>
-    dynamic publicKey = deriveMasterPublicKey(privateKey);
-    logger.i("Raw Public Key: $publicKey");
+      // Derive the public key from the private key
+      final publicKey = deriveMasterPublicKey(privateKey);
+      final publicKeyHex = bytesToHex(publicKey);
+      logger.i("Derived Public Key (Hex): $publicKeyHex");
 
-    // Convert public key to hex
-    String publicKeyHex = bytesToHex(publicKey);
-    logger.i("Public Key (Hex): $publicKeyHex");
+      // Set the DID (Decentralized Identifier) as the public key hex
+      did = publicKeyHex;
 
-    did = publicKeyHex;
+      // Save the mnemonic and keys securely
+      logger.i("Storing private data securely...");
+      final privateData = PrivateData(
+        did: did,
+        privateKey: wifPrivateKey,
+        mnemonic: mnemonicString,
+      );
+      await storePrivateData(privateData);
+      logger.i("Private data stored successfully.");
 
-    // Save the mnemonic and keys to secure storage
-    logger.i("Storing private data now...");
+      // Begin user registration process
+      final registrationController = Get.find<RegistrationController>();
+      logger.i("Registering and setting up user...");
 
-    final PrivateData privateData = PrivateData(
-      did: did,
-      privateKey: wifPrivateKey,
-      mnemonic: mnemonicString,
-    );
+      registrationController.isLoading.value = true;
 
-    // Call the function to store Private data in secure storage
-    await storePrivateData(privateData);
-    logger.i("Private data stored. Signing in with token now...");
+      final registrationResponse = await registrationController.registerAndSetupUser(did, mnemonicString);
 
-    final registrationController = Get.find<RegistrationController>();
+      registrationController.isLoading.value = false;
 
-    logger.i("Calling registerAndSetupUser for our backend litd node");
+      // Update the state (if needed)
+      setState(() {
+        // Placeholder for any UI updates
+      });
 
-    registrationController.isLoading.value = true.obs.value;
-
-    dynamic registerandsetupResp =
-    await registrationController.registerAndSetupUser(did, mnemonicString);
-
-    registrationController.isLoading.value = false.obs.value;
-
-    // Update state synchronously after async operations
-    setState(() {
-      // Any state updates if necessary
-    });
+      logger.i("User registration and setup completed.");
+    } catch (e) {
+      logger.e("Error in generateMnemonic: $e");
+      // Handle errors (e.g., show user-friendly error message)
+    }
   }
 
   void confirmMnemonic(String typedMnemonic) {
