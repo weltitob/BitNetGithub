@@ -137,14 +137,14 @@ class Auth {
     final String privateKeyHex = privateData.privateKey;
     logger.d('Private Key Hex: $privateKeyHex');
 
-    String signatureHex = signChallengeData(privateKeyHex, publicKeyHex, challengeData);
+    String signatureHex = await signChallengeData(privateKeyHex, publicKeyHex, challengeData);
     logger.d('Generated signature hex: $signatureHex');
 
     // Verify the signature with the server
     dynamic customAuthToken = await verifyMessage(
-          publicKeyHex,
-         challengeId,
-         signatureHex,
+         publicKeyHex.toString(),
+         challengeId.toString(),
+         signatureHex.toString(),
     );
     //get the customtoken from the response
     print("Verify message response: ${customAuthToken.toString()}");

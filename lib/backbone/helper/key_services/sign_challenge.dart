@@ -9,7 +9,7 @@ import 'package:convert/convert.dart';
 import 'package:pointycastle/macs/hmac.dart';
 import 'package:pointycastle/pointycastle.dart';
 
-dynamic signChallengeData(String masterPrivateKeyHex, String masterPublicKeyHex, String challengeData) async {
+Future<String> signChallengeData(String masterPrivateKeyHex, String masterPublicKeyHex, String challengeData) async {
   try {
     // Step 1: Use a fixed mnemonic for consistency
 
@@ -62,11 +62,11 @@ dynamic signChallengeData(String masterPrivateKeyHex, String masterPublicKeyHex,
     final Uint8List signatureRaw = _serializeSignature(r, s);
     print('Signature (Raw R || S, Hex): ${hex.encode(signatureRaw)}');
     print('Generated Signature (Hex): ${hex.encode(signatureRaw)}');
-    return hex.encode(signatureRaw);
+    return (hex.encode(signatureRaw)).toString();
 
   } catch (e) {
     print("Error in entireWorkflow: $e");
-    return Uint8List(0);
+    return "Error in entireWorkflow: $e";
   }
 }
 

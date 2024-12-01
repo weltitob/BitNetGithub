@@ -19,8 +19,8 @@ dynamic verifyMessage(String userId, String challengeId, String signature) async
   final HttpsCallableResult<dynamic> response =
   await callable.call(<String, dynamic>{
     'fakedid': userId,
-    'challengeid': challengeId.toString(),
-    'signature': signature.toString(),
+    'challengeid': challengeId,
+    'signature': signature,
   });
 
   logger.i("Response VERIFY MESSAGE: ${response.data}");
