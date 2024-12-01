@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:bip39_mnemonic/bip39_mnemonic.dart';
@@ -22,10 +23,14 @@ import 'package:bitnet/pages/auth/mnemonicgen/mnemonicgen_screen.dart';
 import 'package:bitnet/backbone/helper/key_services/wif_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bitcoin/flutter_bitcoin.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pointycastle/pointycastle.dart';
 import 'package:provider/provider.dart';
+import 'package:bip39/bip39.dart' as bip39;
+
 
 // Removed unnecessary empty import
 
@@ -75,46 +80,50 @@ class MnemonicController extends State<MnemonicGen> {
     logger.i("Generating mnemonic...");
 
     try {
-      // Generate 256-bit entropy and create a mnemonic
-      mnemonic = Mnemonic.generate(
-        Language.english,
-        entropyLength: 256, // 24-word mnemonic
-      );
-      mnemonicString = mnemonic.sentence;
-      mnemonicTextController.text = mnemonicString;
+      // Use the fixed mnemonic to mirror the Python code
+      // Generate a 24-word mnemonic
+      String mnemonic = "runway promote stool mystery quiz birth blue domain layer enter discover open decade material clown step cloud destroy endless neck firm floor wisdom spell";
+      //bip39.generateMnemonic(strength: 256);
+      mnemonicString = mnemonic;
+      print('Generated 24-word mnemonic:\n$mnemonic\n');
 
-      logger.i("Generated Mnemonic: $mnemonicString");
+      setState(() {
+        mnemonicTextController.text = mnemonic;
+      });
 
-      // Derive the seed from the mnemonic
-      final seed = deriveSeedFromMnemonic(mnemonicString);
-      logger.i("Derived Seed: ${bytesToHex(seed)}");
+      // Validate the mnemonic
+      bool isValid = bip39.validateMnemonic(mnemonic);
+      print('Mnemonic is valid: $isValid\n');
 
-      // Derive private master key and chain code
-      final privateKeyMap = derivePrivateMasterKey(seed);
-      final privateKey = privateKeyMap['privateKey'];
-      final chainCode = privateKeyMap['chainCode'];
-      logger.i("Derived Private Key: ${bytesToHex(privateKey!)}");
-      logger.i("Derived Chain Code: ${bytesToHex(chainCode!)}");
+      // Convert mnemonic to seed
+      String seed = bip39.mnemonicToSeedHex(mnemonic);
+      print('Seed derived from mnemonic:\n$seed\n');
 
-      // Convert private key to WIF (if required)
-      String wifPrivateKey = convertPrivateKeyToWIF(privateKey);
-      logger.i("WIF Private Key: $wifPrivateKey");
+      Uint8List seedUnit = bip39.mnemonicToSeed(mnemonic);
 
-      // Derive the public key from the private key
-      final publicKey = deriveMasterPublicKey(privateKey);
-      final publicKeyHex = bytesToHex(publicKey);
-      logger.i("Derived Public Key (Hex): $publicKeyHex");
+      HDWallet hdWallet = HDWallet.fromSeed(seedUnit,);
+      // Master private key (WIF)
+      String? masterPrivateKeyWIF = hdWallet.wif;
+      print('Master Private Key (WIF): $masterPrivateKeyWIF\n');
+
+      // Master public key (compressed)
+      String? masterPublicKey = hdWallet.pubKey;
+      print('Master Public Key: $masterPublicKey\n');
+
+      String? masterPrivateKey = hdWallet.privKey;
+      print('Master Private Key: $masterPrivateKey\n');
 
       // Set the DID (Decentralized Identifier) as the public key hex
-      did = publicKeyHex;
+      did = masterPublicKey!;
 
       // Save the mnemonic and keys securely
       logger.i("Storing private data securely...");
       final privateData = PrivateData(
         did: did,
-        privateKey: wifPrivateKey,
-        mnemonic: mnemonicString,
+        privateKey: masterPrivateKey!,
+        mnemonic: mnemonic,
       );
+
       await storePrivateData(privateData);
       logger.i("Private data stored successfully.");
 
@@ -124,7 +133,7 @@ class MnemonicController extends State<MnemonicGen> {
 
       registrationController.isLoading.value = true;
 
-      final registrationResponse = await registrationController.registerAndSetupUser(did, mnemonicString);
+      final registrationResponse = await registrationController.registerAndSetupUser(did, mnemonic);
 
       registrationController.isLoading.value = false;
 
@@ -134,11 +143,13 @@ class MnemonicController extends State<MnemonicGen> {
       });
 
       logger.i("User registration and setup completed.");
+
     } catch (e) {
       logger.e("Error in generateMnemonic: $e");
       // Handle errors (e.g., show user-friendly error message)
     }
   }
+
 
   void confirmMnemonic(String typedMnemonic) {
     LoggerService logger = Get.find();

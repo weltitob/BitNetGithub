@@ -10,7 +10,6 @@ import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
 import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
-import 'package:bitnet/backbone/helper/key_services/getecprivatekeyfromwif.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
@@ -111,39 +110,41 @@ class Auth {
     // final String challenge = generateChallenge(user.username);
     // logger.i("Challenge created: $challenge. Creating user now...");
     UserChallengeResponse? userChallengeResponse = await create_challenge(user.did);
+
     logger.d('Created challenge for user ${user.did}: $userChallengeResponse');
 
     String challengeId = userChallengeResponse!.challenge.challengeId;
     logger.d('Challenge ID: $challengeId');
 
-    String challengeTitle = userChallengeResponse.challenge.title;
-    logger.d('Challenge Title: $challengeTitle');
+    String challengeData = userChallengeResponse.challenge.title;
+    logger.d('Challenge Data: $challengeData');
 
     PrivateData privateData = await getPrivateData(user.did);
     logger.d('Retrieved private data for user ${user.did}');
 
-    String wifPrivateKey = privateData.privateKey;
-    logger.d('WIF Private Key: $wifPrivateKey');
+    // // Convert WIF private key to ECPrivateKey
+    // ECPrivateKey privateKey = getUserPrivateKeyFromWIF(wifPrivateKey);
+    // logger.d('Converted WIF private key to ECPrivateKey: $privateKey');
 
-    // Convert WIF private key to ECPrivateKey
-    ECPrivateKey privateKey = getUserPrivateKeyFromWIF(wifPrivateKey);
-    logger.d('Converted WIF private key to ECPrivateKey');
+    // final privateKeyHex = wifPrivateKey;
+    // final publicKeyHex = privateData.publicKey;
+    // final privateKey = getECPrivateKeyFromHex(privateKeyHex, publicKeyHex);
+    //convert privatekeywif into privatekeyhex
 
-    String signatureHex = signChallengeData(challengeTitle, privateKey);
+    final String publicKeyHex = privateData.did;
+    logger.d('Public Key Hex: $publicKeyHex');
+
+    final String privateKeyHex = privateData.privateKey;
+    logger.d('Private Key Hex: $privateKeyHex');
+
+    String signatureHex = signChallengeData(privateKeyHex, publicKeyHex, challengeData);
     logger.d('Generated signature hex: $signatureHex');
-
-
-    // final IONData iondata = await createDID(user.username, challenge);
-    // logger.i("User created: IONDATA RECEIVED: $iondata.");
-    //This owuld normalls return the token
-
-    //sign the message somehow then we need to send the challenge back to the verify sign message which will then return us the customtoken
 
     // Verify the signature with the server
     dynamic customAuthToken = await verifyMessage(
-         user.did,
+          publicKeyHex,
          challengeId,
-        signatureHex,
+         signatureHex,
     );
     //get the customtoken from the response
     print("Verify message response: ${customAuthToken.toString()}");
