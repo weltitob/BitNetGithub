@@ -8,6 +8,7 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.da
 import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
+import 'package:bip39/bip39.dart' as bip39;
 
 class RegistrationController extends GetxController {
   // Define observable states
@@ -35,6 +36,9 @@ class RegistrationController extends GetxController {
   dynamic registerAndSetupUser(String taskTag, String mnemonicString) async {
     try {
 
+      final logger = Get.find<LoggerService>();
+      logger.i("AWS ECS Register and setup user called");
+
       isLoading.value = true;
       // Step 1: Register the user
       int resultStatus = await registerUserWithEcsTask(taskTag);
@@ -48,39 +52,17 @@ class RegistrationController extends GetxController {
         publicIp.value = ecsResponse.details!.publicIp;
         print("Public IP: ${publicIp.value}");
 
-        // Step 3: Generate Seed
-        //would like to skip this step and generate locally if possible
-        //can be skipped if we use root key in the next step
-
-        //Relationship Between Mnemonic and Macaroon Root Key: By default, lnd generates the macaroon root key independently of the mnemonic. However, for scenarios requiring deterministic or pre-generated macaroons, you can derive the macaroon root key from the wallet's seed. This approach ensures that the macaroon root key is reproducible from the mnemonic, facilitating consistent authorization tokens across different instances.
-        // dynamic genseedResponse = await generateSeed(publicIp.value);
-        // print("Seed generation response: $genseedResponse");
-
-        // Step 4: Initialize Wallet
-        //macaroon_root_key is an optional 32 byte macaroon root key that can be provided when initializing the wallet rather than letting lnd generate one on its own.#
-
-        //maybe zu schnell oder somehow called der das 3mal
-
-        //this needs tpo
-
-
-        // List<String> mnemonicSeed = [
-        //   'about', 'double', 'estate', 'saddle', 'floor', 'where', 'nut', 'soon',
-        //   'beach', 'address', 'describe', 'maple', 'child', 'razor', 'claim', 'mountain',
-        //   'kitten', 'struggle', 'boost', 'useful', 'prevent', 'baby', 'more', 'rescue'
-        // ];
-        // String mnemonic = mnemonicSeed.join(' ');
-
-
-
         String mnemonic = mnemonicString;
 
         // make a list of strings from the mnemonic
         List<String> mnemonicSeed = mnemonic.split(' ');
 
-
         //generate a custom admin macaroon root key
-        dynamic macaroon_root_key =  deriveSeedFromMnemonic(mnemonic);
+        // dynamic macaroon_root_key =  deriveSeedFromMnemonic(mnemonic);
+        // Convert mnemonic to seed
+        String seed = bip39.mnemonicToSeedHex(mnemonic);
+        print('Seed derived from mnemonic:\n$seed\n');
+        dynamic macaroon_root_key = seed;
 
         dynamic time2 = await Timer(Duration(seconds: 10), () => logger.i('10 seconds passed'));
 
