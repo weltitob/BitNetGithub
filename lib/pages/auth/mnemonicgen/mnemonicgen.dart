@@ -82,8 +82,9 @@ class MnemonicController extends State<MnemonicGen> {
     try {
       // Use the fixed mnemonic to mirror the Python code
       // Generate a 24-word mnemonic
-      String mnemonic = "runway promote stool mystery quiz birth blue domain layer enter discover open decade material clown step cloud destroy endless neck firm floor wisdom spell";
-      //bip39.generateMnemonic(strength: 256);
+      // String mnemonic = "runway promote stool mystery quiz birth blue domain layer enter discover open decade material clown step cloud destroy endless neck firm floor wisdom spell";
+      String mnemonic = bip39.generateMnemonic(strength: 256);
+
       mnemonicString = mnemonic;
       print('Generated 24-word mnemonic:\n$mnemonic\n');
 
@@ -129,11 +130,12 @@ class MnemonicController extends State<MnemonicGen> {
 
       // Begin user registration process
       final registrationController = Get.find<RegistrationController>();
-      logger.i("Registering and setting up user...");
+      logger.i("AWS ECS: Registering and setting up user...");
 
       registrationController.isLoading.value = true;
 
-      final registrationResponse = await registrationController.registerAndSetupUser(did, mnemonic);
+      final String shortDid = did.substring(0, 12);
+      final registrationResponse = await registrationController.registerAndSetupUser(shortDid, mnemonic);
 
       registrationController.isLoading.value = false;
 

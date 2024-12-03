@@ -106,9 +106,6 @@ class Auth {
     logger.i("Generating and storing verification codes for friends of the new user now...");
 
     logger.i("Generating challenge...");
-    //does it make sense to call user.did before even having a challenge? wtf something wrong here!!
-    // final String challenge = generateChallenge(user.username);
-    // logger.i("Challenge created: $challenge. Creating user now...");
     UserChallengeResponse? userChallengeResponse = await create_challenge(user.did);
 
     logger.d('Created challenge for user ${user.did}: $userChallengeResponse');
@@ -121,15 +118,6 @@ class Auth {
 
     PrivateData privateData = await getPrivateData(user.did);
     logger.d('Retrieved private data for user ${user.did}');
-
-    // // Convert WIF private key to ECPrivateKey
-    // ECPrivateKey privateKey = getUserPrivateKeyFromWIF(wifPrivateKey);
-    // logger.d('Converted WIF private key to ECPrivateKey: $privateKey');
-
-    // final privateKeyHex = wifPrivateKey;
-    // final publicKeyHex = privateData.publicKey;
-    // final privateKey = getECPrivateKeyFromHex(privateKeyHex, publicKeyHex);
-    //convert privatekeywif into privatekeyhex
 
     final String publicKeyHex = privateData.did;
     logger.d('Public Key Hex: $publicKeyHex');
@@ -181,6 +169,7 @@ class Auth {
     logger.i("Adding user to users count");
     addUserCount();
     logger.i("Returning new user now...");
+
     return user;
   }
 
