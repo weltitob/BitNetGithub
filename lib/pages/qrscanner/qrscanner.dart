@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
+import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/models/keys/privatedata.dart';
@@ -43,6 +47,8 @@ class QRScannerController extends State<QrScanner> {
     print("isStringInvoice: $isStringInvoice");
     final isBitcoinValid = isBitcoinWalletValid(encodedString);
     print("isBitcoinValid: $isBitcoinValid");
+    final isStringPrivateData = isStringPrivateDataFunc(encodedString);
+    print("isStringPrivateData: $isStringPrivateData");
 
     late QRTyped qrTyped;
 
@@ -51,6 +57,8 @@ class QRScannerController extends State<QrScanner> {
     // Return the appropriate QRTyped enum value
     if (isLightningMailValid) {
       qrTyped = QRTyped.LightningMail;
+    } else if (isStringPrivateData) {
+      qrTyped = QRTyped.RestoreLogin;
     } else if (isStringInvoice) {
       qrTyped = QRTyped.Invoice;
     } else if (isBitcoinValid) {
@@ -98,10 +106,31 @@ class QRScannerController extends State<QrScanner> {
 
   void onScannedForSignIn(dynamic encodedString) async {
     try {
-      final privateData = PrivateData.fromJson(encodedString);
-      final signedMessage = await Auth().signMessageAuth(privateData.did, privateData.privateKey);
-      await storePrivateData(privateData);
-      await Auth().signIn(privateData.did, signedMessage, context);
+      Map<String, dynamic> data = jsonDecode(encodedString);
+
+      final privateData = PrivateData.fromJson(data);
+
+      print("onScannedForSignIn: $privateData");
+      print("onScannedForSignIn: ${privateData.did}");
+      print("onScannedForSignIn: ${privateData.privateKey}");
+
+      //generate based on mnemonix the privatekeyhex the did and...#
+
+      //generate the signature
+
+      //call auth sign in
+
+      final logger = Get.find<LoggerService>();
+
+      String challengeData = "QRCode Login Challenge";
+
+      String signatureHex = await signChallengeData(
+          privateData.privateKey, privateData.did, challengeData);
+
+      logger.d('Generated signature hex: $signatureHex');
+
+      await Auth().signIn(
+          ChallengeType.qrcode_login, privateData, signatureHex, context);
 
       setState(() {});
     } catch (e) {

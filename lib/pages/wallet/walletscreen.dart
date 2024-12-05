@@ -307,6 +307,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                         Language.english,
                         entropyLength: 256, // this will be a 24-word-long mnemonic
                       );
+
                       final String mnemonicString = mnemonic.sentence;
 
                       await registrationController.registerAndSetupUser("walletscreen_testuser_01", mnemonicString);
@@ -335,7 +336,7 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "CREATE CHALLENGE",
                     onTap: () async {
-                      dynamic create_challengeeee = await create_challenge(Auth().currentUser!.uid);
+                      dynamic create_challengeeee = await create_challenge(Auth().currentUser!.uid, ChallengeType.default_registration);
                       print("Create challenge response: ${create_challengeeee.toString()}");
                     },
                   ),
@@ -360,13 +361,13 @@ class WalletScreen extends GetWidget<WalletsController> {
                   child: LongButtonWidget(
                     title: "VERIFY & SIGN & VERIFY",
                     onTap: () async {
-                      dynamic userchallenge_rsponse = await create_challenge(Auth().currentUser!.uid);
+                      dynamic userchallenge_rsponse = await create_challenge(Auth().currentUser!.uid, ChallengeType.default_registration);
                       print("Create challenge response: ${userchallenge_rsponse.toString()}");
 
 
                       //get my key from secure storage
                       PrivateData privateData = await getPrivateData(getUserDidTemp());
-                      print("Private mnemonic data: ${privateData.mnemonic.toString()}");
+                      // print("Private mnemonic data: ${privateData.mnemonic.toString()}");
                       print("Private key data: ${privateData.privateKey.toString()}");
 
                       //sign message with the private key

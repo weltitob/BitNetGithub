@@ -62,8 +62,10 @@ class _UsersListState extends State<UsersList>
       //print("Calling recoverkey for user now...");
       //final recoveredprivatkey = await recoverKey(privateData.did, key.d);
 
-      final signedMessage = await Auth().signMessageAuth(privateData.did, privateData.privateKey);
-      await Auth().signIn(privateData.did, signedMessage, context);
+
+      //THIS WAS ACTIVATED BACK THEN WITH ION
+      // final signedMessage = await Auth().signMessageAuth(privateData.did, privateData.privateKey);
+      // await Auth().signIn(privateData.did, signedMessage, context);
 
     } catch (e) {
       print("Second widgetloading should be called...");

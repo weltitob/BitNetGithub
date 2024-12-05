@@ -241,7 +241,7 @@ class SocialRecoveryView extends GetWidget<SettingsController> {
                     // showOverlay(context, 'Your private key was incorrect, try again.', color: AppTheme.errorColor);
                   }
                   List<UserData> invitedUsers = controller.selectedUsers.map((item) => UserData.fromMap(item)).toList();
-                  initiateSocialSecurity(privData.mnemonic, privData.privateKey, controller.selectedUsers.length, invitedUsers).then((val) {
+                  initiateSocialSecurity(privData.privateKey, controller.selectedUsers.length, invitedUsers).then((val) {
                     controller.initiateSocialRecovery.value = val ? 2 : 1;
                   });
 

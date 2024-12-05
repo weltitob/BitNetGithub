@@ -122,7 +122,6 @@ class MnemonicController extends State<MnemonicGen> {
       final privateData = PrivateData(
         did: did,
         privateKey: masterPrivateKey!,
-        mnemonic: mnemonic,
       );
 
       await storePrivateData(privateData);

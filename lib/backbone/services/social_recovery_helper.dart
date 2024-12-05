@@ -38,7 +38,7 @@ String getUserDidTemp() {
   return LocalStorage.instance.getString(Auth().currentUser!.uid)!;
 }
 
-Future<bool> initiateSocialSecurity(String mnemonic, String private_key, int total_shares, List<UserData> invitedUsers) async {
+Future<bool> initiateSocialSecurity(String private_key, int total_shares, List<UserData> invitedUsers) async {
   //mnemonic, private_key, required_shares, total_shares, user_did
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('create_keyshares');
   print("Creating Keyshares..");
@@ -47,7 +47,7 @@ Future<bool> initiateSocialSecurity(String mnemonic, String private_key, int tot
     String did = getUserDidTemp();
     final HttpsCallableResult<dynamic> response = await callable.call(<String, dynamic>{
       'user_did': did,
-      'mnemonic': mnemonic,
+      // 'mnemonic': mnemonic,
       'private_key': private_key,
       'required_shares': 3,
       'total_shares': total_shares
@@ -290,10 +290,10 @@ class _AcceptSocialInviteWidgetState extends State<AcceptSocialInviteWidget> {
                             if (users[i]['username'] == Get.find<ProfileController>().userData.value.username) {
                               String openKey = users[i]['open_key'];
                               PrivateData data = await getPrivateData(getUserDidTemp());
-                              AESCipher cipher = AESCipher(data.mnemonic);
-                              String encryptedText = cipher.encryptText(openKey);
+                              // AESCipher cipher = AESCipher(data.mnemonic);
+                              // String encryptedText = cipher.encryptText(openKey);
                               users[i]['open_key'] = '';
-                              users[i]['encrypted_key'] = encryptedText;
+                              // users[i]['encrypted_key'] = encryptedText;
                               users[i]['accepted_invite'] = true;
                             }
                           }
@@ -583,10 +583,10 @@ class _RecoveryRequestWidgetState extends State<RecoveryRequestWidget> {
                     if (users[i]['username'] == Get.find<ProfileController>().userData.value.username) {
                       String encryptedKey = users[i]['encrypted_key'];
                       PrivateData data = await getPrivateData(getUserDidTemp());
-                      AESCipher cipher = AESCipher(data.mnemonic);
-                      String decryptedKey = cipher.decryptText(encryptedKey);
+                      // AESCipher cipher = AESCipher(data.mnemonic);
+                      // String decryptedKey = cipher.decryptText(encryptedKey);
                       users[i]['encrypted_key'] = '';
-                      users[i]['open_key'] = decryptedKey;
+                      // users[i]['open_key'] = decryptedKey;
                       users[i]['request_state'] = 2;
                       await socialRecoveryCollection.doc(userData.username).update({'users': users});
                       context.pop(true);

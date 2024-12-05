@@ -5,10 +5,10 @@ import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/auth/uniqueloginmessage.dart';
 import 'package:bitnet/backbone/auth/updateuserscount.dart';
 import 'package:bitnet/backbone/auth/verificationcodes.dart';
+import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
 import 'package:bitnet/backbone/cloudfunctions/loginion.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/verify_message.dart';
-import 'package:bitnet/backbone/cloudfunctions/signmessage.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
 import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
@@ -23,7 +23,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bitnet/models/keys/userchallenge.dart';
-import 'package:pointycastle/ecc/api.dart';
+import 'package:bitnet/backbone/helper/key_services/wif_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:bip39/bip39.dart' as bip39;
+
 
 /*
 The class Auth manages user authentication and user wallet management using Firebase
@@ -106,7 +110,7 @@ class Auth {
     logger.i("Generating and storing verification codes for friends of the new user now...");
 
     logger.i("Generating challenge...");
-    UserChallengeResponse? userChallengeResponse = await create_challenge(user.did);
+    UserChallengeResponse? userChallengeResponse = await create_challenge(user.did, ChallengeType.default_registration);
 
     logger.d('Created challenge for user ${user.did}: $userChallengeResponse');
 
@@ -174,35 +178,59 @@ class Auth {
   }
 
 
-  signMessageAuth(did, privateIONKey) async {
-    try {
-      LoggerService logger = Get.find();
-
-      logger.i("Signing Message in auth.dart ...");
-      logger.i("did: $did, privateIONKey: $privateIONKey");
-
-      final message = generateChallenge(did);
-
-      logger.i("Message: $message");
-
-      logger.i("signMessage function called now...");
-
-      final signedMessage = await signMessageFunction(
-          did,
-          privateIONKey, // Convert the private key object to a JSON string
-          message);
-
-      //signed message gets verified from loginION function which logs in the user if successful
-      if (signedMessage == null) {
-        throw Exception("Failed to sign message for Auth");
-      }
-
-      print("Message signed... $signedMessage");
-      return signedMessage;
-    } catch (e) {
-      throw Exception("Error signing message: $e");
-    }
-  }
+  // signMessageWithMnemonicAuth(String mnemonic, String challenge) async {
+  //   try {
+  //     LoggerService logger = Get.find();
+  //
+  //     logger.i("Signing Message in auth.dart ...");
+  //
+  //     // Validate the mnemonic
+  //     bool isValid = bip39.validateMnemonic(mnemonic);
+  //     print('Mnemonic is valid: $isValid\n');
+  //
+  //     // Convert mnemonic to seed
+  //     String seed = bip39.mnemonicToSeedHex(mnemonic);
+  //     print('Seed derived from mnemonic:\n$seed\n');
+  //
+  //     Uint8List seedUnit = bip39.mnemonicToSeed(mnemonic);
+  //
+  //     HDWallet hdWallet = HDWallet.fromSeed(seedUnit,);
+  //     // Master private key (WIF)
+  //     String? masterPrivateKeyWIF = hdWallet.wif;
+  //     print('Master Private Key (WIF): $masterPrivateKeyWIF\n');
+  //
+  //     // Master public key (compressed)
+  //     String? masterPublicKey = hdWallet.pubKey;
+  //     print('Master Public Key: $masterPublicKey\n');
+  //
+  //     String? masterPrivateKey = hdWallet.privKey;
+  //     print('Master Private Key: $masterPrivateKey\n');
+  //
+  //     // Set the DID (Decentralized Identifier) as the public key hex
+  //     String did = masterPublicKey!;
+  //
+  //     final message = generateChallenge(did);
+  //
+  //     logger.i("Message: $message");
+  //
+  //     logger.i("signMessage function called now...");
+  //
+  //     //sign the message locally
+  //
+  //     // final signedMessage = await signMessageFunction(
+  //     //     did,
+  //     //     privateIONKey, // Convert the private key object to a JSON string
+  //     //     message);
+  //
+  //
+  //
+  //
+  //     print("Message signed... $signedMessage");
+  //     return signedMessage;
+  //   } catch (e) {
+  //     throw Exception("Error signing message: $e");
+  //   }
+  // }
 
   String generateRandomString(int length) {
     const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -215,36 +243,70 @@ class Auth {
     );
   }
 
-  Future<void> signIn(String did, dynamic signedAuthMessage, BuildContext context) async {
+  Future<void> signIn(ChallengeType challengeType, PrivateData privateData, String signatureHex, BuildContext context) async {
     // Sign a message using the user's private key (you can use the signMessage function provided earlier)
     // You may need to create a Dart version of the signMessage function
     LoggerService logger = Get.find();
 
+    final String did = privateData.did;
+
     try {
       //showLoadingScreen
       //context.go('/ionloading');
-      final String randomstring = generateRandomString(20); // length 20
+
 
       // final String customToken = await fakeLoginION(
       //   randomstring,
       // );
 
-      final String customToken = await loginION(
+      // final String customToken = await loginION(
+      //   did.toString(),
+      //   signedAuthMessage.toString(),
+      // );
+
+      //create challenge for
+
+      logger.i("Generating challenge...");
+      UserChallengeResponse? userChallengeResponse = await create_challenge(did, challengeType);
+
+      String challengeId = userChallengeResponse!.challenge.challengeId;
+
+      // Verify the signature with the server
+      dynamic customAuthToken = await verifyMessage(
         did.toString(),
-        signedAuthMessage.toString(),
+        challengeId.toString(),
+        signatureHex.toString(),
       );
 
-      final currentuser = await signInWithToken(customToken: customToken);
+      print("Verify message response: ${customAuthToken.toString()}");
+      final currentuser = await signInWithToken(customToken: customAuthToken);
 
       if (currentuser == null) {
         // Remove the loading screen
         context.pop();
         throw Exception("User couldnt be signed in with custom Token!");
       } else {
+
+        await storePrivateData(privateData);
+
+        // Begin user registration process
+        // final registrationController = Get.find<RegistrationController>();
+        // logger.i("AWS ECS: Registering and setting up user...");
+
+        // registrationController.isLoading.value = true;
+        //
+        // final String shortDid = did.substring(0, 12);
+        // final registrationResponse = await registrationController.loginAndStartEcs(shortDid);
+        //
+        // registrationController.isLoading.value = false;
+
         WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
         //if successfull push back to homescreen
         context.go("/");
       }
+
+
+
     } catch (e) {
       // Also pop the loading screen when an error occurs
       Navigator.pop(context);

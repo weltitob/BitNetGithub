@@ -9,6 +9,10 @@ import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/unlock_wallet.
 import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
 import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui';
+
 
 class RegistrationController extends GetxController {
   // Define observable states

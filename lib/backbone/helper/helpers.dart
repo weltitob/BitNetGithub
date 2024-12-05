@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:math';
 
+import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/pages/auth/restore/did_and_pk/didandpkscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +80,17 @@ bool isLightningAdressAsMail(String input) {
   RegExp lightningAddressPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', caseSensitive: false);
   return lightningAddressPattern.hasMatch(input);
 }
+
+bool isStringPrivateDataFunc(String input) {
+  try {
+    Map<String, dynamic> data = jsonDecode(input);
+    PrivateData.fromJson(data);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 
 String getRandomString(int length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

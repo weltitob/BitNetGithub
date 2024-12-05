@@ -1,13 +1,11 @@
 class PrivateData {
   String did; // The decentralized identifier (DID) associated with the private data.
   String privateKey; // The private key associated with the private data.
-  String mnemonic; // The mnemonic associated with the private data.
 
   // Constructor that creates a [PrivateData] instance.
   PrivateData({
     required this.did,
     required this.privateKey,
-    required this.mnemonic,
   });
 
   // Factory method that creates a [PrivateData] instance from a JSON map.
@@ -15,7 +13,6 @@ class PrivateData {
     return PrivateData(
       did: json['did'].toString(),
       privateKey: json['privateKey'].toString(),
-      mnemonic: json['mnemonic'].toString(),
     );
   }
 
@@ -24,7 +21,6 @@ class PrivateData {
     return {
       'did': did,
       'privateKey': privateKey,
-      'mnemonic': mnemonic,
     };
   }
 
@@ -33,7 +29,6 @@ class PrivateData {
     return PrivateData(
       did: map['did'] ?? '',
       privateKey: map['privateKey'] ?? '',
-      mnemonic: map['mnemonic'] ?? '',
     );
   }
 
@@ -41,12 +36,10 @@ class PrivateData {
   PrivateData copyWith({
     String? did,
     String? privateKey,
-    String? mnemonic,
   }) {
     return PrivateData(
       did: did ?? this.did,
       privateKey: privateKey ?? this.privateKey,
-      mnemonic: mnemonic ?? this.mnemonic,
     );
   }
 }

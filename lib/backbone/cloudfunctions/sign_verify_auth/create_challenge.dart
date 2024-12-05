@@ -12,16 +12,26 @@ import 'package:get/get.dart';
 
 //signmessage
 
+enum ChallengeType {
+  default_registration,
+  mnemonic_login,
+  qrcode_login,
+  privkey_login,
+}
 
-Future<UserChallengeResponse?> create_challenge(String did) async {
+
+Future<UserChallengeResponse?> create_challenge(String did, ChallengeType challengeType) async {
   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('create_user_challenge');
   final logger = Get.find<LoggerService>();
   logger.i("CREATE CHALLENGE CALLED...");
 
   try {
+    print("Challenge type: ${challengeType.toString().split('.').last}");
+
     final HttpsCallableResult<dynamic> response =
     await callable.call(<String, dynamic>{
       'did': did,
+      'challengeType': challengeType.toString().split('.').last,
     });
 
     logger.i("Response: ${response.data}");
