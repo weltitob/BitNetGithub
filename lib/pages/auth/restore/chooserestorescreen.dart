@@ -1,18 +1,13 @@
-import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/helper/theme/theme_builder.dart';
-import 'package:bitnet/backbone/services/protocol_controller.dart';
 import 'package:bitnet/components/appstandards/BitNetAppBar.dart';
 import 'package:bitnet/components/appstandards/BitNetScaffold.dart';
 import 'package:bitnet/components/appstandards/optioncontainer.dart';
 import 'package:bitnet/components/buttons/lang_picker_widget.dart';
-import 'package:bitnet/components/buttons/longbutton.dart';
 import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
 import 'package:bitnet/components/resultlist/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class ChooseRestoreScreen extends StatefulWidget {
@@ -69,7 +64,7 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
         body: ListView(
           children: [
             SizedBox(
-              height: AppTheme.cardPadding * 1.h,
+              height: AppTheme.cardPadding * 1.5.h,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
@@ -107,27 +102,27 @@ class _ChooseRestoreScreenState extends State<ChooseRestoreScreen> {
                 }, image: "assets/images/key_removed_bck.png"),
               ],
             ),
-            SizedBox(
-              height: AppTheme.cardPadding.h,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
-              child: TextField(
-                controller: tokenController,
-              ),
-            ),
-            SizedBox(height: AppTheme.elementSpacing,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                LongButtonWidget(title: "Izaks Backdoor", onTap:  () async {
-                  final currentuser = await Auth().signInWithToken(customToken: tokenController.text);
-                  WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
-                  Get.delete<ProtocolController>();
-                  context.go('/');
-                },)
-              ],
-            ),
+            // SizedBox(
+            //   height: AppTheme.cardPadding.h,
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: AppTheme.cardPadding),
+            //   child: TextField(
+            //     controller: tokenController,
+            //   ),
+            // ),
+            // SizedBox(height: AppTheme.elementSpacing,),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     LongButtonWidget(title: "Izaks Backdoor", onTap:  () async {
+            //       final currentuser = await Auth().signInWithToken(customToken: tokenController.text);
+            //       WidgetsBinding.instance.addPostFrameCallback(ThemeController.of(context).loadData);
+            //       Get.delete<ProtocolController>();
+            //       context.go('/');
+            //     },)
+            //   ],
+            // ),
             SizedBox(
               height: AppTheme.cardPadding * 2.h,
             ),

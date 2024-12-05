@@ -17,6 +17,7 @@ enum ChallengeType {
   mnemonic_login,
   qrcode_login,
   privkey_login,
+  securestorage_login,
 }
 
 

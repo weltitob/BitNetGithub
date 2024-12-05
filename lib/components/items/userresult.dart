@@ -79,6 +79,7 @@ class _UserResultState extends State<UserResult> {
                         Text(
                           widget.obscureUsername ? "@${widget.userData.username.substring(0, 3)}***" : "@${widget.userData.username}",
                           style: Theme.of(context).textTheme.titleSmall,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         Text(
                           widget.model == 3 ? 'this account no longer exists...' : widget.userData.did,

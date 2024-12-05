@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'package:bitnet/backbone/auth/auth.dart';
 import 'package:bitnet/backbone/auth/storePrivateData.dart';
+import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/databaserefs.dart';
+import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';
+import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
+import 'package:bitnet/components/appstandards/fadelistviewwrapper.dart';
 import 'package:bitnet/components/indicators/smoothpageindicator.dart';
 import 'package:bitnet/components/items/userresult.dart';
 import 'package:bitnet/models/keys/privateionkey.dart';
@@ -9,6 +13,7 @@ import 'package:bitnet/models/keys/privatedata.dart';
 import 'package:bitnet/models/user/userdata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/components/loaders/loaders.dart';
@@ -59,13 +64,17 @@ class _UsersListState extends State<UsersList>
 
       print(key.toString());
 
-      //print("Calling recoverkey for user now...");
-      //final recoveredprivatkey = await recoverKey(privateData.did, key.d);
+      final logger = Get.find<LoggerService>();
 
+      String challengeData = "Saved User SecureStorage Challenge";
 
-      //THIS WAS ACTIVATED BACK THEN WITH ION
-      // final signedMessage = await Auth().signMessageAuth(privateData.did, privateData.privateKey);
-      // await Auth().signIn(privateData.did, signedMessage, context);
+      String signatureHex = await signChallengeData(
+          privateData.privateKey, privateData.did, challengeData);
+
+      logger.d('Generated signature hex: $signatureHex');
+
+      await Auth().signIn(
+          ChallengeType.securestorage_login, privateData, signatureHex, context);
 
     } catch (e) {
       print("Second widgetloading should be called...");
@@ -85,6 +94,7 @@ class _UsersListState extends State<UsersList>
     // Assuming you have a method to get all stored IONData from secure storage
     print("Get Private Data from secure storage...");
     dynamic storeddata = await getAllStoredIonData();
+    print(storeddata);
     return storeddata;
   }
 
@@ -92,15 +102,30 @@ class _UsersListState extends State<UsersList>
     print("Fetching firebase Data for user...");
     List<UserData> userDataList = [];
 
-    for (String did in dids) {
-      // Fetch user document from Firestore using the did
-      DocumentSnapshot doc = await usersCollection.doc(did).get();
+    try {
+      for (String did in dids) {
+        try {
+          // Fetch user document from Firestore using the did
+          DocumentSnapshot doc = await usersCollection.doc(did).get();
 
-      // Convert the document data to UserData and add to the list
-      userDataList.add(UserData.fromDocument(doc));
+          // Convert the document data to UserData and add to the list
+          userDataList.add(UserData.fromDocument(doc));
+        } catch (e) {
+          print("Error trying to fetch user with did $did from Firebase: $e");
+          // If desired, handle removal of local user data here:
+          // await deleteUserFromStoredIONData(did);
+          // print("User with did $did removed from local storage");
+          throw Exception(
+              "An error occured trying to fetch user with did $did from Firebase: $e");
+        }
+      }
+      print(userDataList);
+      return userDataList;
+    } catch (e) {
+      print("Error trying to fetch user data from Firebase: $e");
+      throw Exception(
+          "An error occured trying to fetch user data from Firebase: $e");
     }
-    print(userDataList);
-    return userDataList;
   }
 
   PageController pageController = PageController(viewportFraction: 0.8);
@@ -123,7 +148,7 @@ class _UsersListState extends State<UsersList>
                       child: Center(child: dotProgress(context)));
                 }
                 List<String> dids =
-                    ionSnapshot.data!.map((ionData) => ionData.did).toList();
+                ionSnapshot.data!.map((ionData) => ionData.did).toList();
 
                 return FutureBuilder<List<UserData>>(
                   future: getUserDatafromFirebase(dids),
@@ -134,70 +159,123 @@ class _UsersListState extends State<UsersList>
                           child: Center(child: dotProgress(context)));
                     }
                     List<UserData> all_userresults = userDataSnapshot.data!;
-                    if (all_userresults.length == 0) {
-                      return searchForFilesAnimation(
-                          _searchforfilesComposition);
+                    if (all_userresults.isEmpty) {
+                      return searchForFilesAnimation(_searchforfilesComposition);
                     }
-                    return Column(
-                      children: <Widget>[
-                        Container(
-                          height: AppTheme.cardPadding * 3.5,
-                          child: Expanded(
-                            child: PageView.builder(
-                              controller: pageController,
-                              onPageChanged: (index) {
-                                setState(() {
-                                  _selectedindex = index;
-                                });
-                              },
-                              itemCount: all_userresults.length,
-                              itemBuilder: (context, index) {
-                                final userData = all_userresults.reversed.toList()[index];
-                                var _scale =
-                                    _selectedindex == index ? 1.0 : 0.85;
 
-                                final privateData = ionSnapshot.data!
-                                    .firstWhere((ionData) =>
-                                        ionData.did == userData.did);
-                                return TweenAnimationBuilder<double>(
-                                  tween:
-                                      Tween<double>(begin: _scale, end: _scale),
-                                  curve: Curves.ease,
-                                  duration: const Duration(milliseconds: 350),
-                                  builder: (context, value, child) {
-                                    return Transform.scale(
-                                      scale: value,
-                                      child: child,
-                                    );
-                                  },
-                                  child: Center(
-                                    child: UserResult(
-                                      onTap: () async {
-                                        await loginButtonPressed(privateData);
-                                      },
-                                      userData: userData,
-                                      onDelete: () async {
-                                        await deleteUserFromStoredIONData(userData.did);
-                                        setState(() {
-                                          all_userresults.removeAt(all_userresults.length - 1 - index); // calculate original index
-                                        });
-                                      },
-                                    ),
+                    // Check if we have more than 10 users
+                    if (all_userresults.length > 10) {
+                      // Show a vertical ScrollView with all users
+                      return VerticalFadeListView(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.cardPadding),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: all_userresults
+                                        .map((userData) {
+                                      final privateData = ionSnapshot.data!
+                                          .firstWhere((ionData) =>
+                                      ionData.did == userData.did);
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4.0),
+                                        child: UserResult(
+                                          onTap: () async {
+                                            await loginButtonPressed(privateData);
+                                          },
+                                          userData: userData,
+                                          onDelete: () async {
+                                            await deleteUserFromStoredIONData(userData.did);
+                                            setState(() {
+                                              all_userresults.remove(userData);
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    })
+                                        .toList(),
                                   ),
-                                );
-                              },
-                            ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(
-                          height: AppTheme.cardPadding,
-                        ),
-                        Center(
-                          child: CustomIndicator(
-                              pageController: pageController, count: all_userresults.length)
-                        ),
-                      ],
-                    );
+                      );
+                    } else {
+                      // Show the PageView indicator as before
+                      return Column(
+                        children: <Widget>[
+                          Container(
+                            height: AppTheme.cardPadding * 3.5,
+                            child: Expanded(
+                              child: PageView.builder(
+                                controller: pageController,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    _selectedindex = index;
+                                  });
+                                },
+                                itemCount: all_userresults.length,
+                                itemBuilder: (context, index) {
+                                  final userData = all_userresults
+                                      .reversed
+                                      .toList()[index];
+                                  var _scale =
+                                  _selectedindex == index ? 1.0 : 0.85;
+
+                                  final privateData = ionSnapshot.data!
+                                      .firstWhere((ionData) =>
+                                  ionData.did == userData.did);
+                                  return TweenAnimationBuilder<double>(
+                                    tween:
+                                    Tween<double>(begin: _scale, end: _scale),
+                                    curve: Curves.ease,
+                                    duration:
+                                    const Duration(milliseconds: 350),
+                                    builder: (context, value, child) {
+                                      return Transform.scale(
+                                        scale: value,
+                                        child: child,
+                                      );
+                                    },
+                                    child: Center(
+                                      child: UserResult(
+                                        onTap: () async {
+                                          await loginButtonPressed(privateData);
+                                        },
+                                        userData: userData,
+                                        onDelete: () async {
+                                          await deleteUserFromStoredIONData(
+                                              userData.did);
+                                          setState(() {
+                                            all_userresults.removeAt(
+                                                all_userresults.length -
+                                                    1 -
+                                                    index); // calculate original index
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: AppTheme.cardPadding,
+                          ),
+                          Center(
+                            child: CustomIndicator(
+                                pageController: pageController,
+                                count: all_userresults.length),
+                          ),
+                        ],
+                      );
+                    }
                   },
                 );
               },
