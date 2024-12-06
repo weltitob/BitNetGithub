@@ -274,117 +274,117 @@ class WalletScreen extends GetWidget<WalletsController> {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "LOGIN: PLEASE DONT PRESS",
-                    onTap: () async {
-                      print("Login button pressed");
-                      final resultstatus = await startEcsTask('21_inapp_user_dev_tags');
-                      print("Result received now: $resultstatus");
-                      if (resultstatus == 200){
-                        print("Usertask started successfully");
-                      } else {
-                        print("Some issue occurred (walletscreen).");
-                      }
-                    },
-                  ),
-                ),
-                SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "REGISTER AND START: DONT PRESS", //PLEASE DON'T PRESS
-                    onTap: () async {
-                      LoggerService logger = Get.find();
-                      final registrationController = Get.find<RegistrationController>();
-
-                      logger.i("Calling Cloudfunction that registers the user now...");
-
-                      // Register user using the RegistrationController
-                      registrationController.isLoading.value == true.obs;
-
-                      dynamic mnemonic = Mnemonic.generate(
-                        Language.english,
-                        entropyLength: 256, // this will be a 24-word-long mnemonic
-                      );
-
-                      final String mnemonicString = mnemonic.sentence;
-
-                      await registrationController.registerAndSetupUser("walletscreen_testuser_01", mnemonicString);
-
-                      if (registrationController.isLoading.value == false.obs) {
-                        logger.i("User registered successfully");
-
-                      } else {
-                        print("Some issue occurred (walletscreen).");
-                      }
-                    },
-                  ),
-                ),
-                SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "STOP ECS TASK",
-                    onTap: () async {
-                      dynamic statusresult = await stopUserTask('23_inapp_user_dev_tags');
-                      print("Result received now: ${statusresult.toString()}");
-                    },
-                  ),
-                ),
-                SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "CREATE CHALLENGE",
-                    onTap: () async {
-                      dynamic create_challengeeee = await create_challenge(Auth().currentUser!.uid, ChallengeType.default_registration);
-                      print("Create challenge response: ${create_challengeeee.toString()}");
-                    },
-                  ),
-                ),
-                SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "VERIFY MESSAGE",
-                    onTap: () async {
-                      dynamic verify_messageeee = await verifyMessage(
-                        "example_did_327892",
-                        "example_challenge_id_327892",
-                        "example_signature_327892",
-                      );
-                      print("Verify message response: ${verify_messageeee.toString()}");
-
-                    },
-                  ),
-                ),
-                SizedBox(height: AppTheme.cardPadding),
-                Center(
-                  child: LongButtonWidget(
-                    title: "VERIFY & SIGN & VERIFY",
-                    onTap: () async {
-                      dynamic userchallenge_rsponse = await create_challenge(Auth().currentUser!.uid, ChallengeType.default_registration);
-                      print("Create challenge response: ${userchallenge_rsponse.toString()}");
-
-
-                      //get my key from secure storage
-                      PrivateData privateData = await getPrivateData(getUserDidTemp());
-                      // print("Private mnemonic data: ${privateData.mnemonic.toString()}");
-                      print("Private key data: ${privateData.privateKey.toString()}");
-
-                      //sign message with the private key
-
-
-
-                      //verifiziere dem server gegnüber der user des privatekeys zu sein
-
-
-
-
-                      // dynamic verify_messageeee = await verify_message();
-                      // print("Verify message response: ${verify_messageeee.toString()}");
-
-                    },
-                  ),
-                ),
+                // SizedBox(height: AppTheme.cardPadding),
+                // Center(
+                //   child: LongButtonWidget(
+                //     title: "LOGIN: PLEASE DONT PRESS",
+                //     onTap: () async {
+                //       print("Login button pressed");
+                //       final resultstatus = await startEcsTask('21_inapp_user_dev_tags');
+                //       print("Result received now: $resultstatus");
+                //       if (resultstatus == 200){
+                //         print("Usertask started successfully");
+                //       } else {
+                //         print("Some issue occurred (walletscreen).");
+                //       }
+                //     },
+                //   ),
+                // ),
+                // SizedBox(height: AppTheme.cardPadding),
+                // Center(
+                //   child: LongButtonWidget(
+                //     title: "REGISTER AND START: DONT PRESS", //PLEASE DON'T PRESS
+                //     onTap: () async {
+                //       LoggerService logger = Get.find();
+                //       final registrationController = Get.find<RegistrationController>();
+                //
+                //       logger.i("Calling Cloudfunction that registers the user now...");
+                //
+                //       // Register user using the RegistrationController
+                //       registrationController.isLoading.value == true.obs;
+                //
+                //       dynamic mnemonic = Mnemonic.generate(
+                //         Language.english,
+                //         entropyLength: 256, // this will be a 24-word-long mnemonic
+                //       );
+                //
+                //       final String mnemonicString = mnemonic.sentence;
+                //
+                //       await registrationController.registerAndSetupUser("walletscreen_testuser_01", mnemonicString);
+                //
+                //       if (registrationController.isLoading.value == false.obs) {
+                //         logger.i("User registered successfully");
+                //
+                //       } else {
+                //         print("Some issue occurred (walletscreen).");
+                //       }
+                //     },
+                //   ),
+                // ),
+                // SizedBox(height: AppTheme.cardPadding),
+                // Center(
+                //   child: LongButtonWidget(
+                //     title: "STOP ECS TASK",
+                //     onTap: () async {
+                //       dynamic statusresult = await stopUserTask('23_inapp_user_dev_tags');
+                //       print("Result received now: ${statusresult.toString()}");
+                //     },
+                //   ),
+                // ),
+                // SizedBox(height: AppTheme.cardPadding),
+                // Center(
+                //   child: LongButtonWidget(
+                //     title: "CREATE CHALLENGE",
+                //     onTap: () async {
+                //       dynamic create_challengeeee = await create_challenge(Auth().currentUser!.uid, ChallengeType.default_registration);
+                //       print("Create challenge response: ${create_challengeeee.toString()}");
+                //     },
+                //   ),
+                // ),
+                // SizedBox(height: AppTheme.cardPadding),
+                // Center(
+                //   child: LongButtonWidget(
+                //     title: "VERIFY MESSAGE",
+                //     onTap: () async {
+                //       dynamic verify_messageeee = await verifyMessage(
+                //         "example_did_327892",
+                //         "example_challenge_id_327892",
+                //         "example_signature_327892",
+                //       );
+                //       print("Verify message response: ${verify_messageeee.toString()}");
+                //
+                //     },
+                //   ),
+                // ),
+                // SizedBox(height: AppTheme.cardPadding),
+                // Center(
+                //   child: LongButtonWidget(
+                //     title: "VERIFY & SIGN & VERIFY",
+                //     onTap: () async {
+                //       dynamic userchallenge_rsponse = await create_challenge(Auth().currentUser!.uid, ChallengeType.default_registration);
+                //       print("Create challenge response: ${userchallenge_rsponse.toString()}");
+                //
+                //
+                //       //get my key from secure storage
+                //       PrivateData privateData = await getPrivateData(getUserDidTemp());
+                //       // print("Private mnemonic data: ${privateData.mnemonic.toString()}");
+                //       print("Private key data: ${privateData.privateKey.toString()}");
+                //
+                //       //sign message with the private key
+                //
+                //
+                //
+                //       //verifiziere dem server gegnüber der user des privatekeys zu sein
+                //
+                //
+                //
+                //
+                //       // dynamic verify_messageeee = await verify_message();
+                //       // print("Verify message response: ${verify_messageeee.toString()}");
+                //
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),

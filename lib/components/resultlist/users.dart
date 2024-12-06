@@ -59,11 +59,6 @@ class _UsersListState extends State<UsersList>
       print("Login for user ${privateData.did} pressed");
       print("Privatekey: ${privateData.privateKey}");
 
-      String keyString = privateData.privateKey.trim();
-      PrivateIONKey key = PrivateIONKey.fromString(keyString);
-
-      print(key.toString());
-
       final logger = Get.find<LoggerService>();
 
       String challengeData = "Saved User SecureStorage Challenge";
