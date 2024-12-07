@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bitnet/backbone/auth/auth.dart';
-import 'package:bitnet/backbone/auth/storePrivateData.dart';
 import 'package:bitnet/backbone/cloudfunctions/sign_verify_auth/create_challenge.dart';
 import 'package:bitnet/backbone/helper/helpers.dart';
 import 'package:bitnet/backbone/helper/key_services/sign_challenge.dart';

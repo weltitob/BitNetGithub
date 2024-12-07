@@ -1,6 +1,5 @@
 import 'dart:async';
-
-import 'package:bitnet/backbone/auth/walletunlock_controller.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/platform_infos.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
 import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
@@ -34,7 +33,6 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/seo.dart';
 import 'package:shake/shake.dart';
-
 import 'backbone/auth/auth.dart';
 
 //⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⢀⣀⣤⣴⣶⣶⣶⣶⣦⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -109,7 +107,7 @@ Future<void> main() async {
   Get.put(DioClient(), permanent: true);
   Get.put(SettingsController());
   Get.put(TransactionController());
-  Get.put(RegistrationController());
+  Get.put(LitdController());
   // Run the app
   runApp(
     const MyApp(),

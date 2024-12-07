@@ -1,78 +1,89 @@
-import 'package:flutter/material.dart';
-
-//
-
-//make a getx controller to use in the application
-
-//having a check if the app is in test / debug mode and ifg so use our custom testbackend (edwins sever)
-
+import 'package:bitnet/backbone/cloudfunctions/aws/register_lits_ecs.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/start_ecs_task.dart';
+import 'package:bitnet/backbone/cloudfunctions/aws/stop_ecs_task.dart';
+import 'package:bitnet/backbone/cloudfunctions/lnd/walletunlocker/init_wallet.dart';
 import 'dart:async';
-
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/channel_balance.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/get_transactions.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_invoices.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/list_payments.dart';
-import 'package:bitnet/backbone/cloudfunctions/lnd/lightningservice/wallet_balance.dart';
-import 'package:bitnet/backbone/cloudfunctions/loop/listswaps.dart';
-import 'package:bitnet/backbone/helper/currency/currency_converter.dart';
-import 'package:bitnet/backbone/helper/databaserefs.dart';
 import 'package:bitnet/backbone/helper/theme/theme.dart';
-import 'package:bitnet/backbone/services/base_controller/base_controller.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
-import 'package:bitnet/backbone/services/local_storage.dart';
-import 'package:bitnet/components/dialogsandsheets/notificationoverlays/overlay.dart';
-import 'package:bitnet/components/items/crypto_item_controller.dart';
-import 'package:bitnet/models/bitcoin/chartline.dart';
-import 'package:bitnet/models/bitcoin/lnd/lightning_balance_model.dart';
-import 'package:bitnet/models/bitcoin/lnd/onchain_balance_model.dart';
-import 'package:bitnet/models/bitcoin/lnd/received_invoice_model.dart';
-import 'package:bitnet/models/bitcoin/lnd/transaction_model.dart';
-import 'package:bitnet/models/bitcoin/transactiondata.dart';
-import 'package:bitnet/models/currency/bitcoinunitmodel.dart';
-import 'package:bitnet/models/firebase/restresponse.dart';
-import 'package:bitnet/pages/secondpages/mempool/controller/bitcoin_screen_controller.dart';
-import 'package:bitnet/pages/wallet/component/wallet_filter_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+import 'package:bip39/bip39.dart' as bip39;
 
-class LitdController extends BaseController {
-  RxBool hideBalance = false.obs;
-  RxBool showInfo = false.obs;
-  RxBool coin = false.obs;
-  final arguments = Get.arguments;
-  RxString? selectedCurrency;
-
+class LitdController extends GetxController   { //BaseController
   RxString litd_baseurl= '${AppTheme.baseUrlLightningTerminal}'.obs;
+  // Define observable states
+  var isLoading = false.obs;
+  var publicIp = ''.obs;
+  var registrationSuccess = false.obs;
+  var mnemonicSeed = [].obs;
 
-
-  void setHideBalance({bool? hide}) {
-
+  //login
+  dynamic loginAndStartEcs(String taskTag) async {
+    final logger = Get.find<LoggerService>();
+    dynamic statusresult = await startEcsTask(taskTag);
+    logger.i("Result received now: ${statusresult.toString()}");
   }
 
-
-  void setSelectedCard(String card) {
-
+  //logout
+  dynamic logoutAndStopEcs(String taskTag) async {
+    final logger = Get.find<LoggerService>();
+    dynamic statusresult = await stopUserTask(taskTag);
+    logger.i("Result received now: ${statusresult.toString()}");
   }
 
-  void setAmtWidgetReversed(bool val) {
+  // Method to handle full registration and setup
+  dynamic registerAndSetupUser(String taskTag, String mnemonicString) async {
+    try {
 
-  }
+      final logger = Get.find<LoggerService>();
+      logger.i("AWS ECS Register and setup user called");
 
+      isLoading.value = true;
+      // Step 1: Register the user
+      int resultStatus = await registerUserWithEcsTask(taskTag);
 
-  // Method to update the first currency and its corresponding Firestore document
-  void setCurrencyType(bool type, {bool updateDatabase = true}) {
+      if (resultStatus == 200) {
+        final logger = Get.find<LoggerService>();
+        print("User registered successfully");
 
-  }
-  // Method to update the first currency and its corresponding Firestore document
-  void setFirstCurrencyInDatabase(String currency) {
+        // Step 2: Start ECS Task
+        EcsTaskStartResponse ecsResponse = await startEcsTask(taskTag);
+        publicIp.value = ecsResponse.details!.publicIp;
+        print("Public IP: ${publicIp.value}");
 
-  }
+        litd_baseurl.value = "${ecsResponse.details!.publicIp}:8443";
+        String mnemonic = mnemonicString;
 
+        // make a list of strings from the mnemonic
+        List<String> mnemonicSeed = mnemonic.split(' ');
 
-  void handleFuturesCompleted(BuildContext context) {
+        String seed = bip39.mnemonicToSeedHex(mnemonic);
+        print('Seed derived from mnemonic:\n$seed\n');
+        dynamic macaroon_root_key = seed;
 
+        dynamic time2 = await Timer(Duration(seconds: 10), () => logger.i('10 seconds passed'));
+
+        dynamic initWalletResponse = await initWallet(mnemonicSeed, macaroon_root_key);
+        logger.i("Wallet initialization response: $initWalletResponse");
+
+        // Step 5: Unlock Wallet
+        //braucht man gar nicht mehr nach init wallet vllt weil es das automatisch macht da sbrauchen wir aber für den login maybe wenn wir nen bestehenden container neu hochfahren
+        // dynamic unlockWalletResponse = await unlockWallet();
+        // print("Wallet unlock response: $unlockWalletResponse");
+
+        //check if the litd service is available
+
+        // Indicate success
+        registrationSuccess.value = true;
+      } else {
+        print("Registration failed");
+        registrationSuccess.value = false;
+      }
+    } catch (error) {
+      print("Error occurred: $error");
+      registrationSuccess.value = false;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
 
@@ -85,9 +96,6 @@ class LitdController extends BaseController {
   void dispose() {
 
   }
-
-  //die 3 lottiefiles downloaden und anzeigen direkt gespeichert?
-  final PageController pageController = PageController();
 }
 
 

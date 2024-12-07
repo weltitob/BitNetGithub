@@ -1,17 +1,18 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:bitnet/backbone/cloudfunctions/aws/litd_controller.dart';
 import 'package:bitnet/backbone/helper/http_no_ssl.dart';
 import 'package:bitnet/backbone/helper/loadmacaroon.dart';
-import 'package:bitnet/backbone/services/base_controller/dio/dio_service.dart';
 import 'package:bitnet/backbone/services/base_controller/logger_service.dart';
 import 'package:bitnet/models/firebase/restresponse.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-Future<RestResponse> initWallet(String restHostIP, List<String> mnemonicSeed, macaroonRootKey) async {
+Future<RestResponse> initWallet(List<String> mnemonicSeed, macaroonRootKey) async {
   LoggerService logger = Get.find();
-  String restHost = '$restHostIP:8443';
+  final litdController = Get.find<LitdController>();
+  final String restHost = litdController.litd_baseurl.value;
   String url = 'https://$restHost/v1/initwallet';
 
   logger.i("Macaroon Root Key: $macaroonRootKey");
